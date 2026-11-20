@@ -659,8 +659,10 @@ EOF;
      */
     protected function startModulesQueue ($a)
     {
+        $sToken = bin2hex(random_bytes(24));
         $aQueue = array(
-            'token' => bin2hex(random_bytes(24)),
+            // only a hash: the file may be readable where the web server doesn't deny inc/
+            'token_hash' => hash('sha256', $sToken),
             'admin_email' => $a['admin_email'],
             'modules' => $this->getModulesToInstall($a),
             'done' => array(),
@@ -671,7 +673,7 @@ EOF;
             return array(BX_INSTALL_ERR_GENERAL => _t('_sys_inst_msg_file_write_failed', BX_INSTALL_PATH_QUEUE));
 
         if (!headers_sent())
-            setcookie(BX_INSTALL_QUEUE_COOKIE, $aQueue['token'], array(
+            setcookie(BX_INSTALL_QUEUE_COOKIE, $sToken, array(
                 'expires' => 0,
                 'path' => rtrim(dirname($this->_sServerPhpSelf), '/\\') . '/',
                 'secure' => 'https://' === $this->proto(),
@@ -698,10 +700,20 @@ EOF;
             return false;
 
         $aQueue = json_decode(substr($s, $i + 1), true);
-        if (!is_array($aQueue) || empty($aQueue['token']) || !hash_equals($aQueue['token'], $sToken))
+        if (!is_array($aQueue) || empty($aQueue['token_hash']) || !is_string($aQueue['token_hash']) || !hash_equals($aQueue['token_hash'], hash('sha256', $sToken)))
             return false;
 
         return $aQueue;
+    }
+
+    /**
+     * A batched install has started and not finished: its staged configuration file or its queue exists.
+     * Only the browser that started it (see getModulesQueue) may continue it or start over.
+     */
+    public static function isModulesBatchInProgress ()
+    {
+        clearstatcache();
+        return file_exists(BX_INSTALL_PATH_HEADER_STAGED) || file_exists(BX_INSTALL_PATH_QUEUE);
     }
 
     protected static function writeModulesQueue ($aQueue)

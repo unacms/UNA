@@ -19,6 +19,13 @@ class BxDolInstallController
 
     function run ($sAction = '')
     {
+        // While a batched install runs, only the browser that started it may continue it or submit the form
+        // again: anyone else could otherwise re-create the database under it. The command line passes.
+        if ('empty' !== $sAction && BxDolInstallSiteConfig::isModulesBatchInProgress() && !BxDolInstallSiteConfig::getModulesQueue($this->_getQueueToken())) {
+            $this->_inProgress();
+            return;
+        }
+
         $sMethod = 'action' . bx_gen_method_name($sAction);
         if ($sAction && method_exists($this, $sMethod))
             $this->$sMethod ();
@@ -204,6 +211,17 @@ class BxDolInstallController
         }
 
         $this->_finish();
+    }
+
+    protected function _inProgress ()
+    {
+        http_response_code(403);
+        header('Cache-Control: no-store');
+
+        $this->_oView->pageStart();
+        $this->_oView->out('modules_error.php', array('sErrorMessage' => _t('_sys_inst_msg_install_in_progress'), 'bBack' => false, 'sTitleKey' => '_sys_inst_in_progress'));
+        $this->_oView->setStep('install');
+        $this->_oView->pageEnd($this->_getTitle());
     }
 
     protected function _getQueueToken ()

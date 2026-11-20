@@ -3703,6 +3703,7 @@
 	<string name="_sys_inst_help_site_config"><![CDATA[Помощь с базой данных и настройками]]></string>
 	<string name="_sys_inst_hosting_fails"><![CDATA[Этот хост не соответствует минимальным требованиям:]]></string>
 	<string name="_sys_inst_hosting_warnings"><![CDATA[На этом хосте есть предупреждения. Полный отчёт на <a href="?action=audit">странице аудита сервера</a>.]]></string>
+	<string name="_sys_inst_in_progress"><![CDATA[Идёт установка]]></string>
 	<string name="_sys_inst_modules_back_to_progress"><![CDATA[Вернуться к установке]]></string>
 	<string name="_sys_inst_modules_count"><![CDATA[Установлено: {0} из {1}]]></string>
 	<string name="_sys_inst_modules_failed"><![CDATA[Не удалось завершить установку]]></string>
@@ -3726,6 +3727,7 @@
 	<string name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Удалите папку <b>/install/</b> из корневой папки скрипта.]]></string>
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Перейти в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Проверьте отмеченные поля.]]></string>
+	<string name="_sys_inst_msg_install_in_progress"><![CDATA[UNA устанавливается из другого браузера: продолжите там. Если та установка брошена, удалите на сервере inc/header.installing.php и inc/install.queue.php, затем обновите эту страницу.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
 	<string name="_sys_inst_msg_module_needs_composer"><![CDATA[Сначала выполните composer install в {0}.]]></string>
 	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Эти пути должны быть доступны для записи или исполняемые, прежде чем продолжить.]]></string>

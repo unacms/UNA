@@ -197,5 +197,7 @@ class BxDolInstallSiteConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(BxDolInstallSiteConfig::getModulesQueue(array('x')));
         if (!file_exists(BX_INSTALL_PATH_QUEUE))
             $this->assertFalse(BxDolInstallSiteConfig::getModulesQueue('anything'));
+        if (!file_exists(BX_INSTALL_PATH_QUEUE) && !file_exists(BX_INSTALL_PATH_HEADER_STAGED))
+            $this->assertFalse(BxDolInstallSiteConfig::isModulesBatchInProgress());
     }
 }

@@ -3733,6 +3733,7 @@
 	<string name="_sys_inst_help_site_config"><![CDATA[Database and settings help]]></string>
 	<string name="_sys_inst_hosting_fails"><![CDATA[This host does not meet the minimum requirements:]]></string>
 	<string name="_sys_inst_hosting_warnings"><![CDATA[This host has a few warnings. See the full report on the <a href="?action=audit">server audit page</a>.]]></string>
+	<string name="_sys_inst_in_progress"><![CDATA[Installation in progress]]></string>
 	<string name="_sys_inst_modules_back_to_progress"><![CDATA[Back to the installation]]></string>
 	<string name="_sys_inst_modules_count"><![CDATA[{0} of {1} installed]]></string>
 	<string name="_sys_inst_modules_failed"><![CDATA[The installation couldn't finish]]></string>
@@ -3756,6 +3757,7 @@
 	<string name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Remove <b>/install/</b> folder from the script root folder.]]></string>
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Go to Studio</a> to add additional modules and customize the site.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Some fields need attention.]]></string>
+	<string name="_sys_inst_msg_install_in_progress"><![CDATA[UNA is being installed from another browser: continue there. If that installation was abandoned, delete inc/header.installing.php and inc/install.queue.php on the server, then reload this page.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
 	<string name="_sys_inst_msg_module_needs_composer"><![CDATA[Run composer install in {0} first.]]></string>
 	<string name="_sys_inst_msg_permissions_lead"><![CDATA[These paths need to be writable, or executable, before you continue.]]></string>
