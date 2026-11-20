@@ -4312,6 +4312,7 @@
 	<string name="_sys_page_block_title_forgot_password"><![CDATA[Забыли пароль]]></string>
         <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Форма поиска]]></string>
         <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Результаты поиска]]></string>
+        <string name="_sys_page_block_title_setup"><![CDATA[Настройте сайт]]></string>
         <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI поиск]]></string>
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
@@ -4326,6 +4327,7 @@
         <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Панель - аудит]]></string>
 
         <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Панель - Администрирование (только для App-а)]]></string>
+        <string name="_sys_page_block_title_system_setup"><![CDATA[Список настройки для операторов]]></string>
         <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
         <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Панель - жалобы]]></string>
         <string name="_sys_page_block_title_system_cmts_view"><![CDATA[Просмотр комментария]]></string>
@@ -5118,5 +5120,4 @@
   <string name="_sys_setup_step_profile"><![CDATA[Создайте свой профиль]]></string>
   <string name="_sys_setup_step_profile_action"><![CDATA[Создать профиль]]></string>
   <string name="_sys_setup_step_profile_txt"><![CDATA[От имени этого профиля вы публикуете и отвечаете на сайте.]]></string>
-  <string name="_sys_setup_title"><![CDATA[Настройте сайт]]></string>
 </resources>

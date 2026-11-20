@@ -4355,6 +4355,7 @@
     <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot password]]></string>
     <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search Form]]></string>
     <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
+    <string name="_sys_page_block_title_setup"><![CDATA[Set up your site]]></string>
     <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
@@ -4368,6 +4369,7 @@
     <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - Content]]></string>
     <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - Audit]]></string>
     <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Dashboard - Administration (for App only)]]></string>
+    <string name="_sys_page_block_title_system_setup"><![CDATA[Setup checklist for operators]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
     <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - Reports]]></string>
     <string name="_sys_page_block_title_system_cmts_view"><![CDATA[View Comment]]></string>
@@ -5205,5 +5207,4 @@
     <string name="_sys_setup_step_profile"><![CDATA[Create your profile]]></string>
     <string name="_sys_setup_step_profile_action"><![CDATA[Create profile]]></string>
     <string name="_sys_setup_step_profile_txt"><![CDATA[You post and reply on the site as this profile.]]></string>
-    <string name="_sys_setup_title"><![CDATA[Set up your site]]></string>
 </resources>

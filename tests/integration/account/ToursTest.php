@@ -177,4 +177,31 @@ class ToursTest extends BxDolIntegrationTestCase
             $this->assertSame(BxDolTours::JOIN_OPEN, $sMode);
         }
     }
+
+    public function testSetupBlockGivesTheProgressAndTheStepsForTheApps(): void
+    {
+        $this->bxLoginAsAdmin();
+        setParam('sys_site_logo', '');
+        setParam('sys_site_mark', '');
+        setParam('sys_site_logo_inline', '');
+        setParam('sys_site_mark_inline', '');
+
+        $aSteps = BxDolTours::getInstance()->getSetupSteps();
+        foreach($aSteps as $aStep)
+            $this->assertNotEmpty($aStep['icon'], 'every step has its own icon');
+
+        $mBlock = BxDolService::call('system', 'get_block_setup', [], 'TemplServiceAccount', true);
+        $this->assertIsArray($mBlock);
+        $this->assertStringContainsString('of ' . count($aSteps), $mBlock['description']);
+        $this->assertStringContainsString('bx-setup-step-icon', $mBlock['content']);
+        $this->assertSame('sys-setup-hide', $mBlock['menu'][0]['name']);
+
+        $this->assertTrue(BxDolService::call('system', 'is_safe_service', ['setup_dismiss'], 'TemplServices'));
+        $this->assertSame(['code' => 0], BxDolService::call('system', 'setup_dismiss', [], 'TemplServiceAccount', true));
+        $this->assertSame('', BxDolService::call('system', 'get_block_setup', [], 'TemplServiceAccount', true), 'hidden: the block is left out');
+
+        $this->bxBecomeGuest();
+        $this->assertSame('', BxDolService::call('system', 'get_block_setup', [], 'TemplServiceAccount', true));
+        $this->assertSame(['code' => 1], BxDolService::call('system', 'setup_dismiss', [], 'TemplServiceAccount', true));
+    }
 }

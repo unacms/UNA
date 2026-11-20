@@ -1986,17 +1986,19 @@ if(typeof MutationObserver !== 'undefined')
 document.addEventListener('DOMContentLoaded', bx_sync_theme_color);
 
 /*
- * Hides the homepage setup checklist (BxDolTours, template/homepage_setup.html) for the account:
- * tour.php keeps it, so it shows again only from the account menu ("Set up your site").
+ * Hides the homepage setup checklist (the "Set up your site" block, BxDolTours) for the account,
+ * from its block menu: tour.php keeps it, so it shows again only from the account menu ("Set up your site").
  */
-function bx_setup_dismiss(oButton)
+function bx_setup_dismiss()
 {
     $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: 'home'});
 
-    var oSection = oButton.closest('.bx-setup');
-    oSection?.parentNode?.remove();
+    // The menu is a popup outside the block: close it, then remove the block that holds the checklist.
+    $('.bx-popup-applied:visible').dolPopupHide();
+    var oBlock = document.querySelector('.bx-setup')?.closest('.bx-page-block-container');
+    oBlock?.remove();
 
-    // Focus would be lost with the button, so it goes to the page's main content.
+    // Focus would be lost with the menu, so it goes to the page's main content.
     var oMain = document.querySelector('main');
     if(oMain) {
         if(!oMain.hasAttribute('tabindex'))

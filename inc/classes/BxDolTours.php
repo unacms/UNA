@@ -98,7 +98,7 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
 
     /**
      * The homepage setup checklist's steps for the logged in operator, in order. Each step is
-     * ['done' => bool, 'url' => where it is done, 'locked' => true when it needs a step before it].
+     * ['done' => bool, 'url' => where it is done, 'icon' => its Lucide icon, 'locked' => true when it needs a step before it].
      * A step for something the site doesn't have (covers off, no Timeline) is left out.
      */
     public function getSetupSteps()
@@ -108,10 +108,12 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
 
         $aSteps = [
             'profile' => [
+                'icon' => 'circle-user-round',
                 'done' => !empty($aProfileIds),
                 'url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=account-profile-switcher')),
             ],
             'logo' => [
+                'icon' => 'target',
                 'done' => (int)getParam('sys_site_logo') || (int)getParam('sys_site_mark') || trim(getParam('sys_site_logo_inline')) !== '' || trim(getParam('sys_site_mark_inline')) !== '',
                 'url' => BX_DOL_URL_STUDIO . 'designer.php?page=logo',
             ],
@@ -119,14 +121,16 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
 
         if(getParam('sys_site_cover_disabled') != 'on')
             $aSteps['cover'] = [
+                'icon' => 'gallery-vertical',
                 'done' => (bool)(int)getParam('sys_site_cover_common'),
                 'url' => BX_DOL_URL_STUDIO . 'designer.php?page=cover',
             ];
 
         if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline'))
             $aSteps['post'] = [
+                'icon' => 'square-pen',
                 'done' => !empty($aProfileIds) && BxDolService::call('bx_timeline', 'has_posts_by', [$aProfileIds]),
-                'url' => BX_DOL_URL_ROOT, // bx_setup_step() opens the homepage's post form
+                'url' => BX_DOL_URL_ROOT, // bx_setup_step() opens the homepage's post form; the apps have it on the same page too
                 'locked' => empty($aProfileIds),
             ];
 
