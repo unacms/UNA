@@ -1031,6 +1031,8 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
 
         BxDolTours::getInstance()->onAccountDelete($this->_iAccountID);
 
+        BxDolApiTokens::revokeAll($this->_iAccountID);
+
         // unset class instance to prevent creating the instance again
         $sClass = __CLASS__ . '_' . $this->_iAccountID;
         unset($GLOBALS['bxDolClasses'][$sClass]);

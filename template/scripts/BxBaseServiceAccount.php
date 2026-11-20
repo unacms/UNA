@@ -282,6 +282,28 @@ class BxBaseServiceAccount extends BxDol
         return $mixedResult;
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-account Account
+     * @subsubsection bx_system_general-account_settings_connectors account_settings_connectors
+     *
+     * @code bx_srv('system', 'account_settings_connectors', [], 'TemplServiceAccount'); @endcode
+     *
+     * The signed-in account's personal access tokens for AI clients (the MCP server at /api/mcp)
+     * and API v2: where to connect, the tokens, making and revoking them. The same block is in
+     * Studio > Agents > Connectors for operators.
+     *
+     * @see BxBaseServiceAccount::serviceAccountSettingsConnectors
+     */
+    /**
+     * @ref bx_system_general-account_settings_connectors "account_settings_connectors"
+     */
+    public function serviceAccountSettingsConnectors ()
+    {
+        return BxDolApiTokens::getBlockCode();
+    }
+
     public function serviceAccountSettingsDelAccount ($iAccountId = false)
     {
         if (!$iAccountId)

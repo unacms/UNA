@@ -4,7 +4,7 @@
 
 -- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_migrations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_videos_editor`, `sys_videos_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_api_idempotency`, `sys_api_rate_limits`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_agents_chat_images`, `sys_agents_sql_log`, `sys_agents_prompt_feedback`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`, `sys_accounts_tours`;
+DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_migrations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_videos_editor`, `sys_videos_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_api_idempotency`, `sys_api_rate_limits`, `sys_api_tokens`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_agents_chat_images`, `sys_agents_sql_log`, `sys_agents_prompt_feedback`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`, `sys_accounts_tours`;
 
 ALTER DATABASE DEFAULT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
@@ -1013,7 +1013,8 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key_info', '', 'digit', '', '', '', 0),
-(@iCategoryId, 'sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent_info', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:26:"get_options_operator_agent";s:5:"class";s:13:"TemplServices";}', '', '', 1);
+(@iCategoryId, 'sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent_info', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:26:"get_options_operator_agent";s:5:"class";s:13:"TemplServices";}', '', '', 1),
+(@iCategoryId, 'sys_mcp_enable', '_adm_stg_cpt_option_sys_mcp_enable', '_adm_stg_cpt_option_sys_mcp_enable_info', '', 'checkbox', '', '', '', 10);
 
 --
 -- CATEGORY (HIDDEN): Agents (usage)
@@ -5295,6 +5296,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_settings', 'system', 'account-settings-email', '_sys_menu_item_title_system_account_settings_email', '_sys_menu_item_title_account_settings_email', 'page.php?i=account-settings-email', '', '', 'envelope', '', 2147483646, '', 1, 1, 3),
 ('sys_account_settings', 'system', 'account-settings-password', '_sys_menu_item_title_system_account_settings_pwd', '_sys_menu_item_title_account_settings_pwd', 'page.php?i=account-settings-password', '', '', 'key', '', 2147483646, '', 1, 1, 4),
 ('sys_account_settings', 'system', 'profile-settings-cfilter', '_sys_menu_item_title_system_profile_settings_cfilter', '_sys_menu_item_title_profile_settings_cfilter', 'page.php?i=profile-settings-cfilter', '', '', 'filter', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"is_enabled_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 1, 1, 5),
+('sys_account_settings', 'system', 'account-settings-connectors', '_sys_menu_item_title_system_account_settings_connectors', '_sys_menu_item_title_account_settings_connectors', 'page.php?i=account-settings-connectors', '', '', 'plug', '', 2147483646, '', 1, 1, 6),
 ('sys_account_settings', 'system', 'account-settings-delete', '_sys_menu_item_title_system_account_settings_delete', '_sys_menu_item_title_account_settings_delete', 'page.php?i=account-settings-delete', '', '', 'remove', '', 2147483646, '', 1, 1, 9999);
 -- Its sections, items without a link: the apps draw each as a heading over its subitems (the current profile's under
 -- the profile's name), the site's tab row shows the subitems in their place
@@ -5303,7 +5305,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_settings', 'system', 'account-settings-section-profile', '_sys_menu_item_title_system_account_settings_section_profile', '_sys_menu_item_title_account_settings_section_profile', '', '', '', '', '', 2147483646, '', 1, 0, 2);
 SET @iMiAccountSettingsAccount = (SELECT `id` FROM `sys_menu_items` WHERE `set_name`='sys_account_settings' AND `name`='account-settings-section-account' LIMIT 1);
 SET @iMiAccountSettingsProfile = (SELECT `id` FROM `sys_menu_items` WHERE `set_name`='sys_account_settings' AND `name`='account-settings-section-profile' LIMIT 1);
-UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsAccount WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-settings-info', 'account-profile-switcher', 'account-settings-email', 'account-settings-password');
+UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsAccount WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-settings-info', 'account-profile-switcher', 'account-settings-email', 'account-settings-password', 'account-settings-connectors');
 UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='profile-settings-cfilter';
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
@@ -5874,6 +5876,22 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_grid_related_me', 'single', 'add', '_sys_add_relation', 'plus-circle', 1, 0, 3),
 ('sys_grid_related_me', 'single', 'delete', '_Delete', 'remove', 1, 1, 4);
 
+-- GRID: personal access tokens of the signed-in account (account settings > Connectors, Studio > Agents > Connectors)
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `override_class_name`, `override_class_file`) VALUES
+('sys_grid_api_tokens', 'Sql', 'SELECT `id`, `title`, `hint`, `added`, `expires`, `last_used` FROM `sys_api_tokens` WHERE `account_id` = {account_id} ', 'sys_api_tokens', 'id', '', '', '', 20, NULL, 'start', '', '', '', 'auto', '', '', 2147483646, 1, 'BxDolGridApiTokens', '');
+
+INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `params`, `hidden_on`, `order`) VALUES
+('sys_grid_api_tokens', 'title', '_sys_api_tokens_txt_title', '30%', '', '', 1),
+('sys_grid_api_tokens', 'hint', '_sys_api_tokens_txt_hint', '10%', '', '1', 2),
+('sys_grid_api_tokens', 'added', '_sys_api_tokens_txt_added', '15%', '', '1', 3),
+('sys_grid_api_tokens', 'last_used', '_sys_api_tokens_txt_last_used', '15%', '', '1', 4),
+('sys_grid_api_tokens', 'expires', '_sys_api_tokens_txt_expires', '15%', '', '', 5),
+('sys_grid_api_tokens', 'actions', '', '15%', '', '', 6);
+
+INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
+('sys_grid_api_tokens', 'independent', 'add', '_sys_api_tokens_btn_add', 'plus', 0, 0, 1),
+('sys_grid_api_tokens', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'remove', 1, 1, 1);
+
 -- GRID: API Origins
 
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `override_class_name`, `override_class_file`) VALUES
@@ -6015,7 +6033,9 @@ INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `fie
 ('sys_studio_agents_tools', 'Sql', 'SELECT * FROM `sys_agents_tools` WHERE 1 ', 'sys_agents_tools', 'id', 'id', 'active', '', 20, NULL, 'start', '', 'title,type', '', 'like', '', '', 128, 1, 1, 'BxTemplStudioAgentsTools', '');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
-('sys_studio_agents_tools', 'switcher', '_sys_active', '10%', 0, 0, '', '', 10),
+('sys_studio_agents_tools', 'switcher', '_sys_agents_tools_txt_agents', '10%', 0, 0, '', '', 10),
+('sys_studio_agents_tools', 'mcp', '_sys_agents_mcp_txt_operators', '10%', 0, 0, '', '', 11),
+('sys_studio_agents_tools', 'mcp_members', '_sys_agents_mcp_txt_members', '10%', 0, 0, '', '', 12),
 ('sys_studio_agents_tools', 'type', '_adm_form_txt_fields_type', '10%', 0, 0, '', '', 20),
 ('sys_studio_agents_tools', 'title', '_Title', '40%', 0, 0, '', '', 30),
 ('sys_studio_agents_tools', 'actions', '', '40%', 0, 0, '', '', 40);
@@ -6024,6 +6044,23 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_studio_agents_tools', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 1, 20),
 ('sys_studio_agents_tools', 'single', 'delete', '_Delete', 'remove', 1, 1, 1, 30),
 ('sys_studio_agents_tools', 'single', 'duplicate', '_Duplicate', 'copy', 1, 0, 1, 40);
+
+-- GRID: Agents Connectors, the operator's own personal access tokens (the same as account settings > Connectors)
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
+('sys_studio_agents_connectors', 'Sql', 'SELECT `id`, `title`, `hint`, `added`, `expires`, `last_used` FROM `sys_api_tokens` WHERE `account_id` = {account_id} ', 'sys_api_tokens', 'id', '', '', '', 20, NULL, 'start', '', '', '', 'auto', '', '', 128, 1, 0, 'BxDolStudioAgentsConnectors', '');
+
+INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
+('sys_studio_agents_connectors', 'title', '_sys_api_tokens_txt_title', '25%', 0, 0, '', '', 10),
+('sys_studio_agents_connectors', 'hint', '_sys_api_tokens_txt_hint', '15%', 0, 0, '', '', 20),
+('sys_studio_agents_connectors', 'added', '_sys_api_tokens_txt_added', '15%', 0, 0, '', '', 30),
+('sys_studio_agents_connectors', 'last_used', '_sys_api_tokens_txt_last_used', '15%', 0, 0, '', '', 40),
+('sys_studio_agents_connectors', 'expires', '_sys_api_tokens_txt_expires', '15%', 0, 0, '', '', 50),
+('sys_studio_agents_connectors', 'actions', '', '15%', 0, 0, '', '', 60);
+
+INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
+('sys_studio_agents_connectors', 'independent', 'add', '_sys_api_tokens_btn_add', '', 0, 0, 1, 10),
+('sys_studio_agents_connectors', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'remove', 1, 1, 1, 20);
+
 
 -- --------------------------------------------------------
 
@@ -6323,6 +6360,7 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_account_settings_pwd', 'account-settings-password', '_sys_page_title_system_account_settings_pwd', '_sys_page_title_account_settings_pwd', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-settings-pwd', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_settings_info', 'account-settings-info', '_sys_page_title_system_account_settings_info', '_sys_page_title_account_settings_info', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-settings-info', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_settings_delete', 'account-settings-delete', '_sys_page_title_system_account_settings_delete', '_sys_page_title_account_settings_delete', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-settings-delete', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
+('sys_account_settings_connectors', 'account-settings-connectors', '_sys_page_title_system_account_settings_connectors', '_sys_page_title_account_settings_connectors', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=account-settings-connectors', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_profile_switcher', 'account-profile-switcher', '_sys_page_title_system_account_profile_switcher', '_sys_page_title_account_profile_switcher', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-profile-switcher', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_profile_settings_cfilter', 'profile-settings-cfilter', '_sys_page_title_system_profile_settings_cfilter', '_sys_page_title_profile_settings_cfilter', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=profile-settings-cfilter', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_unsubscribe_notifications', 'unsubscribe-notifications', '_sys_page_title_system_unsubscribe_notifications', '_sys_page_title_unsubscribe_notifications', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=unsubscribe-notifications', '', '', '', 0, 1, 0, '', '', 0),
@@ -6624,6 +6662,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_account_settings_info', 1, 'system', '', '_sys_page_block_title_account_settings_info', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"account_settings_info";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
 
 ('sys_account_settings_delete', 1, 'system', '', '_sys_page_block_title_account_settings_delete', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_settings_del_account";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
+('sys_account_settings_connectors', 1, 'system', '', '_sys_page_block_title_account_settings_connectors', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:27:"account_settings_connectors";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
 
 ('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_switcher', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_profile_switcher_all";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
 
@@ -7007,6 +7046,23 @@ CREATE TABLE `sys_api_rate_limits` (
   KEY `started` (`started`)
 ) ENGINE=InnoDB;
 
+-- Personal access tokens (BxDolApiTokens): keys an account makes for itself, for API v2 and the MCP server (/api/mcp).
+-- A request with one acts as the account's current profile. hash: sha256 of the token, which is shown once and never kept;
+-- hint: its last characters, to tell tokens apart; expires: 0 for never; last_used: updated at most once a minute.
+CREATE TABLE `sys_api_tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `hash` binary(32) NOT NULL,
+  `hint` varchar(8) NOT NULL DEFAULT '',
+  `added` int(10) unsigned NOT NULL,
+  `expires` int(10) unsigned NOT NULL DEFAULT '0',
+  `last_used` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `hash` (`hash`),
+  KEY `account_id` (`account_id`)
+) ENGINE=InnoDB;
+
 -- --------------------------------------------------------
 
 CREATE TABLE `sys_agents_models` (
@@ -7341,6 +7397,8 @@ CREATE TABLE IF NOT EXISTS `sys_agents_tools` (
   `duplicate` tinyint(4) NOT NULL DEFAULT 1,
   `changed` int(11) NOT NULL DEFAULT 0,
   `active` tinyint(4) NOT NULL DEFAULT 0,
+  `mcp` tinyint(4) NOT NULL DEFAULT 0,
+  `mcp_members` tinyint(4) NOT NULL DEFAULT 0,
   `class_name` varchar(255) NOT NULL DEFAULT '',
   `class_file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -7377,6 +7435,12 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 ('mockup_upsert', 'Mockup upsert', 'Save a NEO mockup JSON tree (view/row/text/image/icon/button) onto a get_mockup_block service page block. The tree is stored in sys_pages_blocks_data and rendered by the NEO app as a mockup block. Add a "get_mockup_block" service block (system / get_mockup_block / TemplServices) to the page first. Do not use MySQL Write for mockups.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMockup', ''),
 ('splash_update', 'Splash update', 'Read or change the guest splash of Studio > Designer > Splash: the switch and code of the site and of each app (web, iOS, Android). Refuses scripts, frames and inline event handlers. Each change is snapshotted into sys_agents_sql_log, so MySQL Undo rolls it back.', '{}', NULL, 0, 0, 1, 'BxDolAIToolSplash', ''),
 ('agent_create', 'Agent create', 'Create or update a Studio agent (sys_agents_agents). Do not use mysql_write on that table. action=catalog|create|update. Never ask for numeric profile_id — catalog.profile_buttons as chat_buttons, then profile=Name or profile_new=Name; create without a profile is refused. preset=comment_reply for comment-reply alert agents.', '{}', NULL, 0, 0, 1, 'BxDolAIToolAgentCreate', '');
+
+-- The MCP server (/api/mcp, BxDolMcpServer): `mcp` gives a tool to operators, `mcp_members` to every member, which
+-- only a tool made for it can be (BxDolAITool::isMemberSafe()), apart from `active` (agents). Studio > Agents > Tools
+-- switches them; a tool whose code says no (BxDolAIToolFactory::isMcpAllowed()) is never given.
+-- Operators start with the tools the operator agent has.
+UPDATE `sys_agents_tools` SET `mcp` = 1 WHERE `type` IN ('content_structure', 'content_search', 'content_get', 'comments_get', 'mysql_schema', 'mysql_select', 'mysql_write_safe', 'mysql_undo', 'agent_create', 'mockup_upsert', 'splash_update');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -7657,6 +7721,10 @@ INSERT INTO `sys_std_roles_actions` (`name`, `title`, `description`) VALUES
 ('use integrations', '_adm_rl_txt_action_use_integrations', '_adm_rl_txt_action_use_integrations_dsc');
 SET @iIdActionUseIntegrations = LAST_INSERT_ID();
 
+INSERT INTO `sys_std_roles_actions` (`name`, `title`, `description`) VALUES
+('use mcp', '_adm_rl_txt_action_use_mcp', '_adm_rl_txt_action_use_mcp_dsc');
+SET @iIdActionUseMcp = LAST_INSERT_ID();
+
 SET @iMaster = 1;
 SET @iOperator = 2;
 
@@ -7692,7 +7760,11 @@ INSERT INTO `sys_std_roles_actions2roles` (`role_id`, `action_id`) VALUES
 
 -- use integrations
 (@iMaster, @iIdActionUseIntegrations),
-(@iOperator, @iIdActionUseIntegrations);
+(@iOperator, @iIdActionUseIntegrations),
+
+-- use mcp: the operator tools of the MCP server (BxDolMcpServer)
+(@iMaster, @iIdActionUseMcp),
+(@iOperator, @iIdActionUseMcp);
 
 -- --------------------------------------------------------
 

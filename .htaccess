@@ -11,6 +11,9 @@ Options -MultiViews -Indexes
     # The favicon uploaded in Designer, else the default one (favicon.php), before the static file is served.
     RewriteRule ^favicon\.ico$  favicon.php [L]
     RewriteRule ^api/v2(/(.*))?$  api_v2.php?_q=$2 [QSA,L]
+    RewriteRule ^api/mcp/?$  api_mcp.php [QSA,L]
+    RewriteRule ^\.well-known/oauth-protected-resource(/.*)?$  api_mcp.php?_wk=protected-resource [QSA,L]
+    RewriteRule ^\.well-known/oauth-authorization-server(/.*)?$  api_mcp.php?_wk=authorization-server [QSA,L]
     RewriteRule ^m/(.*)$  modules/index.php?r=$1 [QSA,L]
     RewriteRule ^page/(.*)$  page.php?i=$1 [QSA,L]
     RewriteRule ^s/([a-zA-Z0-9_]+)/([a-zA-Z0-9\.]+)  storage.php?o=$1&f=$2   [QSA,L]

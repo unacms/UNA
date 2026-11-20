@@ -14,6 +14,12 @@ use NeuronAI\Tools\ObjectProperty;
 
 class BxDolAIToolChatButtons extends BxDolAITool
 {
+    /** Works only inside an agent's chat: never given through MCP. */
+    public static function isMcpAllowed(): bool
+    {
+        return false;
+    }
+
     public function __construct()
     {
         $sYes = _t('_Yes');

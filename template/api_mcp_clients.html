@@ -1,0 +1,15 @@
+<div class="sys-api-mcp-clients mt-4">
+    <div class="bx-def-font-h3 mb-1">__txt_title__</div>
+    <div class="bx-def-font-grayed mb-3">__txt_command__</div>
+<bx_repeat:commands>    <div class="mb-3">
+        <label for="__cmd_id__" class="block bx-def-font-grayed mb-1">__cmd_title__</label>
+        <div class="flex items-center gap-2">
+            <input type="text" id="__cmd_id__" class="bx-def-font-inputs bx-form-input-text flex-1 min-w-0" readonly="readonly" value="__command__" onclick="this.select()" />
+            <button type="button" class="bx-btn bx-btn-small" onclick="var o = $(this).prev('input'); o.select(); if (navigator.clipboard) navigator.clipboard.writeText(o.val());">__txt_copy__</button>
+        </div>
+    </div>
+</bx_repeat:commands>    <div class="flex flex-wrap gap-2 mb-3">
+<bx_repeat:links>        <a class="bx-btn bx-btn-small" href="__link_href__">__link_label__</a>
+</bx_repeat:links>    </div>
+    <div class="bx-def-font-grayed">__txt_web__</div>
+</div>

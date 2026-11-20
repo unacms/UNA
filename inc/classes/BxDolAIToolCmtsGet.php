@@ -12,6 +12,11 @@ use NeuronAI\Tools\ToolProperty;
 
 class BxDolAIToolCmtsGet extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
     public function __construct()
     {
         parent::__construct(
@@ -53,7 +58,10 @@ class BxDolAIToolCmtsGet extends BxDolAITool
     public function __invoke(string $module, int $content_id, int $per_page = 10, int $start = 0): array
     {
         $o = BxDolCmts::getObjectInstance($module, $content_id);
-        if ($o->isEnabled()) {
+        if ($o && ($aError = $this->memberCmtsError($o, 'view'))) {
+            return $aError;
+        }
+        if ($o && $o->isEnabled()) {
             $a = $o->serviceGetAll([
                 'type' => 'latest',
                 'object_id' => $content_id,

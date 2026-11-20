@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- MCP: its switches are on the Tools tab, and a Studio role decides who uses the operator tools. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_rl_txt_action_use_mcp"><![CDATA[Использовать операторские инструменты через MCP (ИИ-ассистенты)]]></string_add>
+    <string_add name="_adm_rl_txt_action_use_mcp_dsc"><![CDATA[]]></string_add>
+    <string_upd name="_sys_api_tokens_txt_info_operator"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT. Поскольку вы оператор, ваши токены дают им и операторские инструменты, включённые в Studio > Agents > Tools, которые могут изменить на сайте что угодно. Создайте отдельный токен для каждого ассистента; отзовите токен, чтобы отключить его.]]></string_upd>
+</resources>

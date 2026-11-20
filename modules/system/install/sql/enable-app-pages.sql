@@ -49,6 +49,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_setting
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_pwd' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_pwd';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_info' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_info';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_delete' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_delete';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_connectors' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_connectors';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_profile_switcher' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_profile_create';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_profile_switcher' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_profile_switcher';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_profile_settings_cfilter' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_profile_settings_cfilter';

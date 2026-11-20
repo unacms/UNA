@@ -12,6 +12,11 @@ use NeuronAI\Tools\ToolProperty;
 
 class BxDolAIToolCmtsDelete extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
     public function __construct()
     {
         parent::__construct(
