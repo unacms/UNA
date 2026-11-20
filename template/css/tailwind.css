@@ -821,10 +821,10 @@
         @apply flex-row;
     }
     /* Blocks and cards are NEO's surfaces (bg-card/60, shadow-block-outline / shadow-card-outline in NEO's theme.css): the card
-       colour at 60% over the page, so a field or a button on its solid fill stands out from the block it is in, in light and
-       in dark. Blocks are Studio's (.bx-std-block): white at 60%, and white at 10% in dark. Popups float over content and stay solid. */
+       colour at 60% over the page (white, gray-800 in dark), so a field or a button on its solid fill stands out from the block it
+       is in. The site, Studio and NEO share them, over the same gray-100 / gray-950 page. Popups float over content and stay solid. */
     .bx-def-color-bg-block {
-        @apply bg-white/60 dark:bg-white/10;
+        @apply bg-white/60 dark:bg-gray-800/60;
     }
     .bx-def-color-bg-box {
         @apply bg-white/60 dark:bg-gray-800/60;
@@ -832,9 +832,9 @@
     .bx-popup-color-bg {
         @apply bg-white dark:bg-gray-800 shadow-md;
     }
-    /* The fade over cut-off text ends in the block's colour as it shows on the page (white at 60% over gray-100, white at 10% over gray-950). */
+    /* The fade over cut-off text ends in the block's colour as it shows on the page (white at 60% over gray-100, gray-800 at 60% over gray-950). */
     .bx-def-color-bg-box-overflow {
-        @apply bg-gradient-to-b from-transparent to-[#fbfbfb] dark:to-[#232324];
+        @apply bg-gradient-to-b from-transparent to-[#fbfbfb] dark:to-[#1b1b1e];
     }
     /* A block's edge is Studio's (.bx-std-block, smooth-shadow-sm): a light hairline inside the surface (white/50, white/2.5 in dark)
        and a soft six-layer drop under it, never a border; NEO's shadow-block-outline has the same values. */
@@ -2305,7 +2305,7 @@
     }
 
     .bx-std-bg.bx-def-color-bg-page {
-        @apply bg-gray-200 dark:bg-black;
+        @apply bg-gray-100 dark:bg-gray-950; /* the site's and NEO's page */
     }
 
     /* Active dock item: the sidebar's active item round its tile, the hover halo's layer one step darker: black/8 (white/10 in dark), 0.5rem
@@ -2435,10 +2435,10 @@
         @apply w-6 h-6;
     }
 
-    /* Studio surfaces: translucent white (60% light, 6% dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
+    /* Studio surfaces: the site's block (white at 60%, gray-800 at 60% in dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
     .bx-std-block.cnt-ttl-bg,
     .bx-std-block.cnt-bg {
-        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];
+        @apply bg-white/60 dark:bg-gray-800/60 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];
         @apply rounded-3xl smooth-shadow-sm; /* 24px, the same corner as the header bar and the sidebar column */
     }
 
@@ -2480,10 +2480,10 @@
     }
 
     .bx-std .bx-def-color-bg-block {
-        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
+        @apply bg-white/60 dark:bg-gray-800/60 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
     }
     .bx-std .bx-popup-color-bg {
-        @apply bg-white dark:bg-[#1a1a1a]; /* popups float over content, so the surface is solid: white, and in dark the black page plus white/10 composite (one step above the white/6 blocks) */
+        @apply bg-white dark:bg-gray-800; /* popups float over content, so the surface is solid: white, gray-800 in dark (the site's and NEO's popover) */
     }
 
     /* Icon tiles (launcher, top menu, side menu): soft outer shadow plus inset hairlines over the artwork's edge: in light mode a black/10 line with
@@ -3040,7 +3040,7 @@
     
     /* Studio: Launcher */
     .bx-std-bg.bx-std-page-launcher {
-        @apply bg-gray-100 dark:bg-black;
+        @apply bg-gray-100 dark:bg-gray-950;
     }
 
     /* Keyboard focus in Studio chrome: one blue ring on the visual control, the link itself carries no outline. */
@@ -3097,7 +3097,7 @@
         @apply py-8 px-4 text-center text-sm text-gray-600 dark:text-gray-400;
     }
     .bx-std .bx-std-launcher-edit {
-        @apply fixed bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 pl-4 pr-1 py-1 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 text-sm font-medium text-gray-800 dark:text-gray-200 smooth-shadow-ring-lg;
+        @apply fixed bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 pl-4 pr-1 py-1 rounded-full bg-white/90 dark:bg-gray-800/90 text-sm font-medium text-gray-800 dark:text-gray-200 smooth-shadow-ring-lg;
     }
     .bx-std .bx-std-launcher-edit[hidden] {
         @apply hidden;
@@ -3381,7 +3381,7 @@
 .bx-std .select2-dropdown,
 .bx-std .select2-container--open .select2-dropdown--below,
 .bx-std .select2-container--open .select2-dropdown--above {
-    @apply border-0 rounded-xl p-1 smooth-shadow-lg ring-1 ring-inset ring-white/50 dark:ring-white/5 bg-white dark:bg-[#1a1a1a];
+    @apply border-0 rounded-xl p-1 smooth-shadow-lg ring-1 ring-inset ring-white/50 dark:ring-white/5 bg-white dark:bg-gray-800;
 }
 .bx-std .select2-container--open .select2-dropdown--below {
     @apply mt-1;
@@ -3413,7 +3413,7 @@
 }
 /* Dark mode, spelled out with the .dark prefix so these outrank the site's own dark select2 rules below. */
 .dark .bx-std .select2-container--default .select2-dropdown {
-    @apply bg-[#1a1a1a];
+    @apply bg-gray-800;
 }
 .dark .bx-std .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
     @apply bg-blue-400/10 text-white;

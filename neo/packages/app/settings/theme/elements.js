@@ -195,7 +195,7 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-4 ',
         'u-block-bg':
-            ' bg-card/60 dark:bg-white/10 shadow-block-outline dark:shadow-block-outline-deep ', // UNA Studio's block: white/60, white/10 in dark
+            ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ', // the card at 60%, as on the UNA site and in Studio: white/60, neutral-800/60 in dark
         // 16px on every screen size, like cards. Call sites and blocks that set padding per
         // breakpoint (designbox.padding) can still change it.
         'u-block-pad':
