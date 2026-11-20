@@ -664,13 +664,15 @@ export function getMenuHub(menu?: MenuWithItems | null): string {
 }
 
 /**
- * How a menu block draws its items: `grid` (icon tiles, as UNA's home menu) when the menu's `config`
- * (UNA's `sys_objects_menu.config_api`) says `"view": "grid"`, otherwise a list.
+ * How a menu block draws its items, as the menu's `config` (UNA's `sys_objects_menu.config_api`) says: `"view": "grid"`
+ * icon tiles (UNA's home menu), `"view": "cards"` cards with descriptions (the profile types of "Create your
+ * profile"), otherwise a list.
  */
-export function getMenuView(menu?: MenuWithItems | null): 'grid' | 'list' {
+export function getMenuView(menu?: MenuWithItems | null): 'grid' | 'cards' | 'list' {
     if (!menu?.object) return 'list';
     const settings = getMenuSettings(menu.object, menu.config, menu);
-    return settings && !Array.isArray(settings) && settings.view === 'grid' ? 'grid' : 'list';
+    const view = settings && !Array.isArray(settings) ? settings.view : undefined;
+    return view === 'grid' || view === 'cards' ? view : 'list';
 }
 
 /** The title of `menu`'s item that opens page `uri` (UNA sends item links as page uris). */

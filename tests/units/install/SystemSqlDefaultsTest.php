@@ -26,6 +26,21 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['module' => 'system', 'method' => 'get_profile_requirement_modes', 'class' => 'BaseServiceAccount'], unserialize($aMatch[2]), 'The choices come from the account service.');
     }
 
+    public function testProfileTypesAreCardsWithDescriptions(): void
+    {
+        // "Create your profile" lists the profile types as cards: icon, title, the menu item's Info and a chevron.
+        $this->assertSame(1, preg_match("/\\(36, 'menu_list_desc_cards\\.html', '_sys_menu_template_title_list_desc_cards', 1\\)/", self::systemSql()), 'system.sql adds the "Cards with descriptions" menu template.');
+        $this->assertSame(1, preg_match("/\\('sys_add_profile', '_sys_menu_title_add_profile', '', 'sys_add_profile_links', 'system', 36,/", self::systemSql()), 'The add-profile menu uses it.');
+
+        $sApp = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        $this->assertStringContainsString("SET `config_api`='{\"view\":\"cards\"}' WHERE `object`='sys_add_profile'", $sApp, 'The apps draw it as cards too.');
+
+        $sTemplate = file_get_contents(__DIR__ . '/../../../template/menu_list_desc_cards.html');
+        foreach (['bx-menu-list-desc-cards', 'bx-menu-object-__object__', '__title__', '__info__', 'menu_icon.html', 'chevron-right'] as $s)
+            $this->assertStringContainsString($s, $sTemplate);
+        $this->assertStringContainsString('group-[:only-child]:border-blue-600', $sTemplate, 'A lone type reads as the one action: accent border.');
+    }
+
     public function testHomeCreatePostBlockIsACardWithTitle(): void
     {
         // The home page's create-post block: designbox_id follows object, cell, module, title_system and title.

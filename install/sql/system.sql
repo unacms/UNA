@@ -4986,7 +4986,8 @@ INSERT INTO `sys_menu_templates` (`id`, `template`, `title`, `visible`) VALUES
 (32, 'menu_multilevel.html', '_sys_menu_template_title_multilevel', 1),
 (33, 'menu_toolbar_left.html', '_sys_menu_template_title_toolbar_left', 0),
 (34, 'menu_toolbar_right.html', '_sys_menu_template_title_toolbar_right', 0),
-(35, 'menu_list_desc.html', '_sys_menu_template_title_list_desc', 1);
+(35, 'menu_list_desc.html', '_sys_menu_template_title_list_desc', 1),
+(36, 'menu_list_desc_cards.html', '_sys_menu_template_title_list_desc_cards', 1);
 
 CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -5027,7 +5028,7 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 ('sys_toolbar_application', '_sys_menu_title_toolbar_application', '', 'sys_toolbar_application', 'system', 34, 0, 1, 'BxTemplMenuToolbar', ''),
 ('sys_onboarding_operator', '_sys_menu_title_onboarding_operator', '', 'sys_onboarding_operator', 'system', 35, 0, 1, 'BxTemplMenuOnboarding', ''),
 ('sys_add_content', '_sys_menu_title_add_content', '', 'sys_add_content_links', 'system', 29, 0, 1, 'BxTemplMenuSite', ''),
-('sys_add_profile', '_sys_menu_title_add_profile', '', 'sys_add_profile_links', 'system', 7, 0, 1, 'BxTemplMenuProfileAdd', ''),
+('sys_add_profile', '_sys_menu_title_add_profile', '', 'sys_add_profile_links', 'system', 36, 0, 1, 'BxTemplMenuProfileAdd', ''),
 ('sys_add_profile_vertical', '_sys_menu_title_add_profile_vertical', '', 'sys_add_profile_links', 'system', 6, 0, 1, 'BxTemplMenuProfileAdd', ''),
 ('sys_account_dashboard', '_sys_menu_title_account_dashboard', '_sys_menu_title_public_account_dashboard', 'sys_account_dashboard', 'system', 8, 0, 1, 'BxTemplMenuAccountDashboard', ''),
 ('sys_account_dashboard_manage_tools', '_sys_menu_title_account_dashboard_manage_tools', '', 'sys_account_dashboard_manage_tools', 'system', 24, 0, 1, 'BxTemplMenuDashboardManageTools', ''),
