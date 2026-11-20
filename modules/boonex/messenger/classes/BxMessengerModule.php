@@ -3403,7 +3403,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
             ));
         }
 
-        return echoJson(['code' => 1, 'html' => MsgBox(_t('_bx_messenger_txt_msg_no_results')), 'title' => _t($sTitle)]);
+        return echoJson(['code' => 1, 'html' => $this->_oTemplate->getEmptyState('list', $this->_iProfileId), 'title' => _t($sTitle)]);
     }
 
     public function actionGetTopMenuItems()

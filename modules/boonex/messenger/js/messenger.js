@@ -1083,12 +1083,9 @@
     oMessenger.prototype.starLot = function (iLotId, oEl) {
         const iVal = parseInt($(oEl).data('value'));
 
-        if (!iVal)
-            $('i', oEl)
-                .addClass('fill');
-        else
-            $('i', oEl)
-                .removeClass('fill');
+        // the icon is Lucide's <svg class="sys-icon star"> once the iconset has drawn it
+        $('.sys-icon', oEl).toggleClass('fill', !iVal);
+        $(oEl).attr('aria-pressed', !iVal ? 'true' : 'false');
 
         $(oEl).data('value', +!iVal);
         $.post('modules/?r=messenger/star', { lot: iLotId }, function (oData) {
@@ -3588,6 +3585,28 @@
 
             _oMessenger = new oMessenger(oOptions);
 
+            // Much of Messenger's HTML is put in place without bxProcessHtml (talks, the new talk form, the composer):
+            // draw the Lucide icons (<i class="sys-icon ...">) that arrive that way too, once per frame.
+            if (typeof MutationObserver !== 'undefined' && !window.oMessengerIconsObserver) {
+                let bQueued = false;
+                window.oMessengerIconsObserver = new MutationObserver((aMutations) => {
+                    if (bQueued || typeof bx_iconset_init_lucide !== 'function')
+                        return;
+
+                    const bNew = aMutations.some(({ addedNodes }) => Array.prototype.some.call(addedNodes, (oNode) =>
+                        oNode.nodeType === 1 && (oNode.matches('i.sys-icon:not([data-lucide])') || oNode.querySelector('i.sys-icon:not([data-lucide])'))));
+                    if (!bNew)
+                        return;
+
+                    bQueued = true;
+                    window.requestAnimationFrame(() => {
+                        bQueued = false;
+                        bx_iconset_init_lucide();
+                    });
+                });
+                window.oMessengerIconsObserver.observe(document.body, { childList: true, subtree: true });
+            }
+
             const { inputArea, sendAreaActionsButtons } = window.oMessengerSelectors.TEXT_AREA,
                 { talkItem, talksListItems } = window.oMessengerSelectors.TALKS_LIST,
                 { infoArea, typingInfoArea, connectionFailedArea } = window.oMessengerSelectors.HISTORY_INFO,
@@ -4209,16 +4228,12 @@
          *@param object oEl
          */
         showStarred: function (oEl) {
-            if (!_oMessenger.iStarredTalks) {
-                $(oEl)
-                    .addClass('active')
-                    .find('.star')
-                    .addClass('fill')
-            } else
-                $(oEl)
-                    .removeClass('active')
-                    .find('.star')
-                    .removeClass('fill');
+            const bOn = !_oMessenger.iStarredTalks;
+            $(oEl)
+                .toggleClass('active', bOn)
+                .attr('aria-pressed', bOn ? 'true' : 'false')
+                .find('.star')
+                .toggleClass('fill', bOn);
 
             _oMessenger.iStarredTalks = !_oMessenger.iStarredTalks;
             _oMessenger.searchByItems();

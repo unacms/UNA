@@ -263,7 +263,14 @@
 	<string name="_bx_messenger_acl_action_send_files"><![CDATA[Отправлять файлы]]></string>
 	<string name="_bx_messenger_show_friends"><![CDATA[Показывать по умолчанию список друзей, если участник не имеет созданных разговоров]]></string>
 	<string name="_bx_messenger_contact_privacy_not_allowed"><![CDATA[Участник разговора не разрешает посылать сообщения]]></string>
+	<string name="_bx_messenger_empty_action_new"><![CDATA[Новое сообщение]]></string>
 	<string name="_bx_messenger_empty_history"><![CDATA[Пусто]]></string>
+	<string name="_bx_messenger_empty_history_text"><![CDATA[Выберите беседу или начните новую.]]></string>
+	<string name="_bx_messenger_empty_history_title"><![CDATA[Здесь пока нет сообщений]]></string>
+	<string name="_bx_messenger_empty_inbox_text"><![CDATA[Здесь появятся беседы, которые вы начнёте или в которые вас добавят.]]></string>
+	<string name="_bx_messenger_empty_inbox_title"><![CDATA[Пока нет бесед]]></string>
+	<string name="_bx_messenger_empty_list_text"><![CDATA[Здесь появятся беседы этого вида.]]></string>
+	<string name="_bx_messenger_empty_people_text"><![CDATA[Введите имя, чтобы найти собеседника.]]></string>
 	<string name="_bx_messenger_add_users_message"><![CDATA[Добавьте пользователей чтобы начать разговор]]></string>
 	<string name="_bx_messenger_check_toxic"><![CDATA[Блокировать сообщения с плохими словами. Опция работает только с установленным Antispam модулем.]]></string>
 	<string name="_bx_messenger_toxic_message"><![CDATA[Сообщение не может быть отправлено, так как противоречит стандартам нашего сообщества. Пожалуйста, используйте нормативную лексику!]]></string>
@@ -294,6 +301,7 @@
 	<string name="_bx_messenger_jot_menu_share"><![CDATA[Копировать ссылку на сообщение]]></string>
 	<string name="_bx_messenger_jot_menu_save"><![CDATA[Сохранить сообщение]]></string>
 	<string name="_bx_messenger_bad_request"><![CDATA[Запрос неверный!]]></string>
+	<string name="_bx_messenger_search_clear"><![CDATA[Очистить поиск]]></string>
 	<string name="_bx_messenger_search_criteria_list"><![CDATA[Используйте выделенные критерии для поиска]]></string>
 	<string name="_bx_messenger_search_item_titles"><![CDATA[заголовки разговоров]]></string>
 	<string name="_bx_messenger_search_item_participants"><![CDATA[имена участников]]></string>

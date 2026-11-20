@@ -215,10 +215,12 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 continue;
             }
 
+            // a button that acts on the page (`onclick`) keeps its link as the fallback without script
             $aButtons[] = [
                 'class' => empty($aButtons) ? 'bx-btn-primary' : '',
                 'link' => bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))),
                 'title' => bx_process_output($aButton['title']),
+                'attrs' => !empty($aButton['onclick']) && is_string($aButton['onclick']) ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
             ];
         }
 
