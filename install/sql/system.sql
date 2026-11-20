@@ -485,6 +485,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 
 (@iCategoryId, 'sys_site_icon', '', '0', 'digit', '', '', '', 15),
 (@iCategoryId, 'sys_site_icon_svg', '', '0', 'digit', '', '', '', 16),
+(@iCategoryId, 'sys_site_icon_dark', '', '0', 'digit', '', '', '', 16),
 (@iCategoryId, 'sys_site_icon_apple', '', '0', 'digit', '', '', '', 17),
 (@iCategoryId, 'sys_site_icon_android', '', '0', 'digit', '', '', '', 18),
 (@iCategoryId, 'sys_site_icon_android_splash', '', '0', 'digit', '', '', '', 19),

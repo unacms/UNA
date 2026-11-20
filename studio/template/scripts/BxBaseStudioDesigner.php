@@ -694,8 +694,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
         // A section per place the icons show: previews of what the site uses, then the uploads, each with a hint.
         $aPreviews = $this->getIconPreviews();
-        $aAccept = ['icon' => '.ico', 'icon_svg' => '.svg'];
-        foreach(['tab' => ['icon_svg', 'icon'], 'home' => ['icon_apple', 'icon_android', 'icon_android_splash']] as $sSection => $aIcons) {
+        $aAccept = ['icon' => '.ico', 'icon_svg' => '.svg', 'icon_dark' => '.svg,.png'];
+        foreach(['tab' => ['icon_svg', 'icon', 'icon_dark'], 'home' => ['icon_apple', 'icon_android', 'icon_android_splash']] as $sSection => $aIcons) {
             $aForm['inputs'] = array_merge($aForm['inputs'], [
                 $sSection . '_section' => [
                     'type' => 'block_header',
@@ -786,13 +786,16 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $aDefaults = [
             'icon' => 'favicon.svg',
             'icon_svg' => 'favicon.svg',
+            'icon_dark' => 'favicon-dark.svg',
             'icon_apple' => 'apple-touch-icon.png',
             'icon_android' => 'android-icon-192.png',
             'icon_android_splash' => 'android-icon-512.png',
         ];
+        $sSizeTab = 'w-8 h-8';
         $aSizes = [
-            'icon' => 'w-8 h-8',
-            'icon_svg' => 'w-8 h-8',
+            'icon' => $sSizeTab,
+            'icon_svg' => $sSizeTab,
+            'icon_dark' => $sSizeTab,
             'icon_apple' => 'w-16 h-16 rounded-2xl',
             'icon_android' => 'w-16 h-16 rounded-2xl',
             'icon_android_splash' => 'w-20 h-20 rounded-2xl',
@@ -809,15 +812,24 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 $sUrl = $sIcon == 'icon' ? $aUrls['icon_svg'] : $aUrls['icon'];
                 $sInfo = _t('_adm_dsg_txt_icon_src_none_' . $sIcon);
             }
+            elseif($sIcon == 'icon_dark' && $bFavicons) {
+                // An uploaded favicon without a dark one: dark tabs show the uploaded one as it is.
+                $sUrl = $aUrls['icon_svg'] ?: $aUrls['icon'];
+                $sInfo = _t('_adm_dsg_txt_icon_src_none_icon_dark');
+            }
             else {
                 $sUrl = $this->getIconDefaultUrl($aDefaults[$sIcon]);
                 $sInfo = _t(in_array($sIcon, ['icon', 'icon_svg']) ? '_adm_dsg_txt_icon_src_default_svg' : '_adm_dsg_txt_icon_src_default');
             }
 
             $bTab = in_array($sIcon, ['icon', 'icon_svg']);
+            $sStage = $bTab ? 'adm-dsg-ip-light' : 'adm-dsg-ip-home';
+            if($sIcon == 'icon_dark') {
+                $sStage = 'adm-dsg-ip-dark';
+            }
             $aResult[$sIcon] = [
                 'name' => $sIcon,
-                'stage' => $bTab ? 'adm-dsg-ip-light' : 'adm-dsg-ip-home',
+                'stage' => $sStage,
                 'caption' => _t('_adm_dsg_txt_icon_preview_' . $sIcon),
                 'info' => $sInfo,
                 'bx_if:show_image' => [
@@ -828,8 +840,9 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     ]
                 ],
                 // Browser tab icons on both: an SVG icon can switch colours itself (prefers-color-scheme, see designer.css).
+                // An uploaded dark mode icon has its own preview, and dark tabs show it instead.
                 'bx_if:show_dark' => [
-                    'condition' => !empty($sUrl) && $bTab,
+                    'condition' => !empty($sUrl) && $bTab && empty($aUrls['icon_dark']),
                     'content' => [
                         'url' => $sUrl,
                         'size' => $aSizes[$sIcon],

@@ -110,6 +110,10 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'icon_svg' => [
                 'storage' => BX_DOL_STORAGE_OBJ_IMAGES
             ],
+            // Browser tabs in a dark browser/OS colour scheme: Chrome ignores an SVG favicon's own prefers-color-scheme style.
+            'icon_dark' => [
+                'storage' => BX_DOL_STORAGE_OBJ_IMAGES
+            ],
             'icon_apple' => [
                 'storage' => BX_DOL_STORAGE_OBJ_IMAGES,
                 'transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_APPLE
