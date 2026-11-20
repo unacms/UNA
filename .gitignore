@@ -48,3 +48,6 @@ modules/vendor
 
 # Exclude IDE project folder
 .idea
+
+# Local docker compose settings (see README.md)
+/.env
