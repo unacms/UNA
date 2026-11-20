@@ -5,7 +5,7 @@ description: Add a missing English or Russian UNA string with tools/add_lang_key
 
 # Language keys
 
-Add a missing English or Russian string with `tools/add_lang_key.php`. Do not insert keys by hand into language XML, `sys_localization_keys`, or `sys_localization_strings`.
+Add a missing English or Russian string with `tools/add_lang_key.php`. Word English strings as the `una-vocabulary` skill says. Do not insert keys by hand into language XML, `sys_localization_keys`, or `sys_localization_strings`.
 
 The file is an MCP server (stdio, protocol `2026-07-28`). Run it in the php container from the UNA root. A `tools/call` of the `add` tool takes `language` (`en` or `ru`), `key`, and `translation`. An existing translation is left unchanged. The tool inserts the key in the right language file next to the closest existing keys (`_sys_…` to system, `_bx_posts_…` to Posts, and so on), inserts it into the database when that language is installed, and recompiles the language cache.
 
