@@ -83,9 +83,7 @@ BxDolGridAg.prototype._adoptBx = function () {
         if (!oData)
             return;
 
-        // enable/disable have no `grid` key, so onReload does not run for them.
-        if (oData.enable !== undefined || oData.disable !== undefined || oData.enable_api !== undefined || oData.disable_api !== undefined)
-            self.refresh();
+        // A switch only flips its own control. Reloading the grid would jump the scroll.
         if (sAction === 'reorder')
             self.refresh();
     };
