@@ -43,12 +43,21 @@ function copyCustomizationResources() {
         // PNG icon and apple-touch-icon: link previews (iMessage, Slack, Telegram) can't use SVG.
         { src: path.resolve(__dirname, 'public/logo192.png'), dest: 'logo192.png' },
     ];
+    // The dark tab icon (linked with media="(prefers-color-scheme: dark)"): the repo's white glyph goes with the
+    // repo's favicon only. A project that brings its own favicon.svg and no dark one shows its own on dark tabs too.
+    const staticDark = path.join(staticDest, 'favicon-dark.svg');
+    const staticFavicon = path.join(staticDest, 'favicon.svg');
+    const ownFavicon = fs.existsSync(staticFavicon)
+        && !fs.readFileSync(staticFavicon).equals(fs.readFileSync(path.resolve(__dirname, 'public/favicon.svg')));
     staticDefaults.forEach(({ src, dest }) => {
         const destPath = path.join(staticDest, dest);
         if (!fs.existsSync(destPath) && fs.existsSync(src)) {
             fs.copyFileSync(src, destPath);
         }
     });
+    if (!fs.existsSync(staticDark)) {
+        fs.copyFileSync(ownFavicon ? path.join(staticDest, 'favicon.svg') : path.resolve(__dirname, 'public/favicon-dark.svg'), staticDark);
+    }
 
     // The manifest's icon paths are relative, so they resolve under /static/ too. Fill in the
     // repo's default for each icon it names that customization did not supply; a missing one

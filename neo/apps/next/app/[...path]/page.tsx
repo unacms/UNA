@@ -9,6 +9,7 @@ import { headers } from "next/headers"
 import { resolveLangCode } from '../../lib/resolve-lang'
 import { cachedUnaPageJson, unaPageCacheKey } from '../../lib/una-page-cache'
 import { resolveRequestTenant } from '../../lib/request-tenant'
+import { faviconLinks, type UnaPageIcons } from '../../lib/favicon-links';
 import type { Tenant } from '../../lib/tenant'
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -37,6 +38,8 @@ type UnaPage = {
     page_status?: number | string;
     redirect?: string;
     meta?: UnaPageMeta;
+    // The favicons uploaded in UNA's Designer; only newer UNA versions send them.
+    icons?: UnaPageIcons;
 };
 
 /** UNA's api.php envelope, or the fallback getData builds when the request fails. */
@@ -317,12 +320,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
         alternates: { canonical: url },
         manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {
-            // PNG for link previews and clients without SVG icons; the SVG last, for
-            // browsers that take the last icon they can use.
-            icon: [
-                { url: iconPng, type: 'image/png', sizes: '192x192' },
-                { url: isClientProject ? '/static/favicon.svg' : '/favicon.svg', type: 'image/svg+xml' },
-            ],
+            // Designer's favicons (light and dark) when UNA has them, else the build's (lib/favicon-links.ts).
+            icon: faviconLinks(page.icons, isClientProject ? '/static/' : '/', iconPng),
             apple: iconPng,
         },
         other,
