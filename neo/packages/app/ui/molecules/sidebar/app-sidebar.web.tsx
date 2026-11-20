@@ -147,14 +147,15 @@ function SidebarMenu({ object, url }: Readonly<{ object: string; url: string }>)
     );
 }
 
-/** The first row: the logo (its mark in the narrow sidebar), Search and Add, 36px and 12px apart; in the drawer, its close button. */
+/** The first row: the logo (its mark in the narrow sidebar), Search and Add, 44px and 12px apart; in the drawer, its close button. */
 function SidebarHead() {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const addMenu = useMenuAddItems(true);
     const toolbar = currentUser ? currentUser.toolbar : undefined;
     const hasSearch = appSetting('layout', 'search') == true && (!Array.isArray(toolbar) || toolbar.includes('search'));
-    const buttonProps = { ...getHeaderToolbarNeoButtonDefaults(false), controlSize: 'small' };
+    // One look for the row's buttons, the drawer's too: the desktop header toolbar's (bordered, 44px).
+    const buttonProps = getHeaderToolbarNeoButtonDefaults(true);
 
     return (
         <View className="neo-app-sidebar-head flex-none flex-row items-center gap-3">
@@ -163,11 +164,11 @@ function SidebarHead() {
                 <View className="neo-app-sidebar-logo-mark">{appStatic('logo', { mode: 'mark', height: 36 })}</View>
             </Link>
             <View className="neo-app-sidebar-tools flex-row items-center gap-3">
-                {hasSearch && <Search params={{ trigger: { controlSize: 'small' } }} />}
+                {hasSearch && <Search params={{ trigger: buttonProps }} />}
                 {!addMenu.empty && <MenuAdd buttonProps={buttonProps} />}
             </View>
             <View className="neo-app-sidebar-close flex-none">
-                <NeoButton borderShape="circle" image="PanelLeftClose" style="bordered" controlSize="small" accessibilityLabel={t('Close')} sound={false} onPress={() => setAppSidebarOpen(false)} />
+                <NeoButton {...buttonProps} borderShape="circle" image="PanelLeftClose" accessibilityLabel={t('Close')} sound={false} onPress={() => setAppSidebarOpen(false)} />
             </View>
         </View>
     );
