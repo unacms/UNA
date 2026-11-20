@@ -1375,7 +1375,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
             $oAccountInfo = BxDolAccount::getInstance($aProfileInfo['account_id']);
 
             $sThumb = $oProfile->getThumb();
-            $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+            $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
             $sDisplayName = $oProfile->getDisplayName();
             if (!empty($aProfileInfoDetails) && !empty($oAccountInfo)) {
                 $aResult[$aProfileInfo['type']]['results'][] = array(

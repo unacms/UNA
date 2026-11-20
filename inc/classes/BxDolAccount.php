@@ -720,6 +720,14 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The picture of an account without one: its name's first letter on its colour, as the account units show it (getUnit).
+     */
+    protected function getLetterAvatarUrl($iAccountId = false)
+    {
+        return BxDolTemplate::getLetterAvatarUrl($this->getDisplayName($iAccountId), $iAccountId ? $iAccountId : $this->_iAccountID);
+    }
+
+    /**
      * Get picture url
      */
     public function getPicture($iAccountId = false)
@@ -729,7 +737,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
 
         $sImageUrl = $this->_getImageUrl('picture', $iAccountId);
         if(!$sImageUrl)
-            $sImageUrl = BxDolTemplate::getInstance()->getImageUrl('account.svg');
+            $sImageUrl = $this->getLetterAvatarUrl($iAccountId);
 
         return $sImageUrl;
     }
@@ -744,7 +752,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
 
         $sImageUrl = $this->_getImageUrl('ava_big', $iAccountId);
         if(!$sImageUrl)
-            $sImageUrl = BxDolTemplate::getInstance()->getImageUrl('account.svg');
+            $sImageUrl = $this->getLetterAvatarUrl($iAccountId);
 
         return $sImageUrl;
     }
@@ -759,7 +767,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
 
         $sImageUrl = $this->_getImageUrl('ava', $iAccountId);
         if(!$sImageUrl)
-            $sImageUrl = BxDolTemplate::getInstance()->getImageUrl('account.svg');
+            $sImageUrl = $this->getLetterAvatarUrl($iAccountId);
 
         return $sImageUrl;
     }
@@ -774,7 +782,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
 
         $sImageUrl = $this->_getImageUrl('thumb', $iAccountId);
         if(!$sImageUrl)
-            $sImageUrl = BxDolTemplate::getInstance()->getImageUrl('account.svg');
+            $sImageUrl = $this->getLetterAvatarUrl($iAccountId);
 
         return $sImageUrl;
     }
@@ -789,7 +797,7 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
 
         $sImageUrl = $this->_getImageUrl('icon', $iAccountId);
         if(!$sImageUrl)
-            $sImageUrl = BxDolTemplate::getInstance()->getImageUrl('account.svg');
+            $sImageUrl = $this->getLetterAvatarUrl($iAccountId);
 
         return $sImageUrl;
     }

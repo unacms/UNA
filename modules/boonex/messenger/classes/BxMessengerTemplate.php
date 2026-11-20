@@ -385,7 +385,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
                 continue;
 
            $sThumb = $oProfile->getThumb();
-           $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+           $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
            $sDisplayName = $oProfile->getDisplayName();
 
            $aVars['bx_repeat:usernames'][] = array(
@@ -537,7 +537,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
             return false;
 
         $sThumb = $oProfile->getThumb();
-        $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+        $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
         $sDisplayName = $oProfile->getDisplayName();
 
         $iUserId = $oProfile -> id();
@@ -682,7 +682,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
                 continue;
 
             $sThumb = $oProfile->getThumb();
-            $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+            $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
             $sDisplayName = $oProfile->getDisplayName();
 
             $aItems[] = array(
@@ -795,7 +795,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
                 );
 
                 $sThumb = $oAuthor->getThumb();
-                $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+                $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
                 $sTitle = $oAuthor->getDisplayName();
                     
                 $aVars['bx_repeat:avatars'][] = array(
@@ -823,7 +823,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
                     $oProfile = $this->getObjectUser($iParticipant);
                     if ($oProfile) {
                         $sThumb = $oProfile->getThumb();
-                        $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+                        $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
                         $sDisplayName = $oProfile->getDisplayName();
                         $aParticipantsViewList[] = array(
                             'bx_if:avatars' => array(
@@ -1147,7 +1147,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
 
                 $sDisplayName = $oProfile->getDisplayName();
                 $sThumb = $oProfile->getThumb();
-                $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+                $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
 
                 $sReactions = $this->getJotReactions($iJot);
 				$aVars['bx_repeat:jots'][] = [
@@ -1648,7 +1648,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
 			$aJot = [];
             $sDisplayName = $oProfile->getDisplayName();
             $sThumb = $oProfile->getThumb();
-            $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+            $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
 
 		    $aVars['bx_repeat:jots'][] = array
 			(
@@ -2445,7 +2445,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
             foreach ($aFiles as &$aValue) {
                 $oOwner = $this->getObjectUser($aValue[$CNF['FIELD_ST_AUTHOR']]);
                 $sThumb = $oOwner->getThumb();
-                $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+                $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
                 $sDisplayName = $oOwner->getDisplayName();
                 $aFilesItems[] = array(
                     'time' => bx_time_js($aValue[$CNF['FIELD_ST_ADDED']], BX_FORMAT_TIME, !$CNF['TIME-FROM-NOW']),
@@ -2765,7 +2765,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
             else
             {
                 $sThumb = $oProfile->getThumb();
-                $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+                $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
                 $sTitle = $oProfile->getDisplayName();
                 $aVars['bx_repeat:contacts'][] = [
                     'status' => $this->getOnlineStatus($iProfileId, $iStatus),
@@ -2835,7 +2835,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
             return '';
 
         $sThumb = $oProfile->getAvatar();
-        $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+        $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
         $sDisplayName = $oProfile->getDisplayName();
 
         $aPartList = $this->_oDb->getParticipantsList($iLotId);

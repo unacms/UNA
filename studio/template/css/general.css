@@ -409,3 +409,23 @@ img.bx-std-api {
         text-align: start;
     }
 }
+
+/* The account popup's name row: the same avatar as the site's header (the profile unit), drawn at 24px. */
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture {
+    display: inline-flex;
+    flex: none;
+}
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture > div,
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture .bx-def-unit-img,
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture img,
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture p {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture img {
+    object-fit: cover;
+}
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture p {
+    font-size: 0.75rem;
+    line-height: 1;
+}

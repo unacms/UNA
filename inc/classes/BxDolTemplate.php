@@ -639,6 +639,37 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         return $aColor;
     }
 
+    /**
+     * A letter avatar as an image URL (an SVG data URI), for code that needs a picture URL where there is no picture:
+     * the first letter of the name, white on the name's colour from the palette, as the letter avatars in the units
+     * (account_unit*.html, the profile units) draw it in markup.
+     * @param $sName display name
+     * @param $mixedColor the getColorCode key: an account or profile id
+     * @return string data:image/svg+xml URI
+     */
+    public static function getLetterAvatarUrl($sName, $mixedColor)
+    {
+        $sName = trim(html_entity_decode((string)$sName, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $sLetter = mb_strtoupper(get_mb_substr($sName, 0, 1), 'UTF-8');
+        if($sLetter === '')
+            $sLetter = '?';
+
+        $sSvg = self::getInstance()->parseHtmlByName('letter_avatar_svg.html', [
+            'color' => implode(', ', array_slice(self::getColorCode($mixedColor), 0, 3)),
+            'letter' => htmlspecialchars($sLetter, ENT_QUOTES | ENT_XML1, 'UTF-8'),
+        ]);
+
+        return 'data:image/svg+xml;base64,' . base64_encode($sSvg);
+    }
+
+    /**
+     * Whether a picture URL is a letter avatar from getLetterAvatarUrl, for code that draws its own letter where there is no picture.
+     */
+    public static function isLetterAvatarUrl($sUrl)
+    {
+        return is_string($sUrl) && strncmp($sUrl, 'data:image/svg+xml;base64,', 26) === 0;
+    }
+
     public static function getColorClass($sType = BX_DOL_COLOR_FT, $sName = '')
     {
         $aClasses = array_keys(self::getColorPalette());
