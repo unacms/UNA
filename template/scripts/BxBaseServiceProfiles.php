@@ -332,7 +332,7 @@ class BxBaseServiceProfiles extends BxDol
                     'content' => [
                         'title_attr' => bx_html_attribute($aItem['title']),
                         'percent' => $aItem['percent'],
-                        'bar_class' => $aItem['percent'] >= 100 ? 'bg-red-600' : ($aItem['percent'] >= 80 ? 'bg-amber-500' : 'bg-blue-600'),
+                        'bar_class' => $this->_getMembershipBarClass($aItem['percent']),
                     ]
                 ],
             ];
@@ -398,6 +398,17 @@ class BxBaseServiceProfiles extends BxDol
             $oInformer->remove('sys-account-profile-system');
 
         return $oMenu->getCode();
+    }
+
+    /**
+     * A usage bar's colour: amber from 80%, red when full.
+     */
+    protected function _getMembershipBarClass($iPercent)
+    {
+        if($iPercent >= 100)
+            return 'bg-red-600';
+
+        return $iPercent >= 80 ? 'bg-amber-500' : 'bg-blue-600';
     }
 
     /**
