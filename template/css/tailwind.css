@@ -166,6 +166,20 @@
         text-decoration-color: currentColor;
     }
     
+    /* Quill's alignment, indent and direction are classes, styled by its own CSS only in the editor: shown text keeps them too. */
+    /* The editor's Marker: a highlight the text keeps its colour on, in light and dark. */
+    .bx-def-vanilla-html mark {
+        @apply bg-yellow-200 dark:bg-yellow-400/30 text-inherit rounded-sm px-0.5;
+    }
+    .bx-def-vanilla-html .ql-align-center { text-align: center; }
+    .bx-def-vanilla-html .ql-align-right { text-align: right; }
+    .bx-def-vanilla-html .ql-align-justify { text-align: justify; }
+    .bx-def-vanilla-html .ql-direction-rtl { direction: rtl; text-align: inherit; }
+    .bx-def-vanilla-html .ql-indent-1 { padding-inline-start: 3em; }
+    .bx-def-vanilla-html .ql-indent-2 { padding-inline-start: 6em; }
+    .bx-def-vanilla-html .ql-indent-3 { padding-inline-start: 9em; }
+    .bx-def-vanilla-html .ql-indent-4 { padding-inline-start: 12em; }
+
     .bx-def-vanilla-html.bx-def-vh-sm {
         @apply prose-sm;
     }

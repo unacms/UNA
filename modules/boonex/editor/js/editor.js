@@ -1,7 +1,7 @@
 function bx_ex_editor_init(oEditor, oParams)
 {
-    // the look of a text input is in tailwind.css (.bx-form-input-html-editor)
-    $(oParams.selector).after("<div id='" + oParams.name + "' class='" + oParams.name + " bx-def-font-inputs bx-form-input-textarea bx-form-input-html bx-form-input-html-editor w-full text-base flex-wrap" + (oParams.css_class ? ' ' + oParams.css_class : '') + "'></div>" );
+    // the look of a text input is in tailwind.css (.bx-form-input-html-editor); the text inside reads as it will be shown (.bx-def-vanilla-html)
+    $(oParams.selector).after("<div id='" + oParams.name + "' class='" + oParams.name + " bx-def-font-inputs bx-form-input-textarea bx-form-input-html bx-form-input-html-editor bx-def-vanilla-html max-w-none w-full text-base flex-wrap" + (oParams.css_class ? ' ' + oParams.css_class : '') + "'></div>" );
     
     $(oParams.selector).hide();
     
@@ -67,7 +67,14 @@ function bx_ex_editor_init(oEditor, oParams)
         oParams.toolbar.forEach(function(item){
             switch(item) {
                 case 'header':
-                    oTools.header = Header;
+                    // H1 is the page's own title
+                    oTools.header = {
+                        class: Header,
+                        config: {
+                            levels: [2, 3, 4],
+                            defaultLevel: 2
+                        }
+                    };
                     break;
 
                 case 'list':
