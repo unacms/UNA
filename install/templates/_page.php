@@ -55,7 +55,7 @@
 
     <footer class="bx-install-footer">
         <div class="bx-install-footer-lang">
-            <?php include('lang_switcher.php'); ?>
+            <?php include_once 'lang_switcher.php'; ?>
         </div>
         <div class="bx-install-footer-links">
             <a href="https://unacms.com" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_product'); ?></a>
