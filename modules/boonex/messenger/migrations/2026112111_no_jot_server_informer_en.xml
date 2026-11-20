@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Messenger's page without a Jot server URL: the informer for members and for operators (with a button to the settings). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_messenger_informer_no_server"><![CDATA[New messages show up when you reload the page.]]></string_add>
+    <string_add name="_bx_messenger_informer_no_server_action"><![CDATA[Messenger settings]]></string_add>
+    <string_add name="_bx_messenger_informer_no_server_operator"><![CDATA[Messages don't arrive live: Messenger has no Jot server. Set its URL in Messenger settings.]]></string_add>
+</resources>

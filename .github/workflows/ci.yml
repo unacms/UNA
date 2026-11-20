@@ -80,6 +80,8 @@ jobs:
         path: |
           plugins
           plugins_public
+          modules/boonex/messenger/js/emoji
+          modules/boonex/messenger/template/css/*.css
 
   test:
     # Units and Integration each get a runner per PHP version. Deploy waits on every leg, and a

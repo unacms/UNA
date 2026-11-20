@@ -4,6 +4,7 @@
 # (see "Settings" in README.md). Defaults:
 #   UNA_PORT=80             site port on the host; the site URL is http://localhost:<UNA_PORT>
 #   PMA_PORT=8080           phpMyAdmin, MAILPIT_PORT=8025 Mailpit, MYSQL_PORT=3306, JOT_PORT=5555
+#   UNA_JOT_URL             Messenger's Jot server URL, http://localhost:<JOT_PORT> by default
 #   PHP_DISPLAY_ERRORS=0    1 prints PHP errors in pages; they always go to `docker compose logs php`
 #   XDEBUG_MODE=off         debug turns Xdebug on (a request starts a session with the XDEBUG_TRIGGER cookie)
 #
@@ -37,6 +38,9 @@ services:
             UNA_PORT: ${UNA_PORT:-80}
             # the cron service below runs periodic/cron.php, so the installer doesn't ask for a crontab line
             UNA_CRON_RUNNER: docker
+            # Messenger's Jot server (the jot service below) as the browser reaches it; the Messenger installer saves
+            # it in Messenger's settings when they have none. Set UNA_JOT_URL in .env for another address.
+            UNA_JOT_URL: ${UNA_JOT_URL:-http://localhost:${JOT_PORT:-5555}}
             PHP_DISPLAY_ERRORS: ${PHP_DISPLAY_ERRORS:-0}
             XDEBUG_MODE: ${XDEBUG_MODE:-off}
         volumes:

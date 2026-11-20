@@ -280,6 +280,11 @@ class BxMessengerModule extends BxBaseModGeneralModule
         if (bx_is_api())
             return bx_srv($this->getName(), 'get_block_main', [], 'Services');
 
+        if (($sMsg = $this->getNoProfileMessage()) !== false) {
+            return MsgBox($sMsg);
+        }
+
+        $this->addNoServerInformer();
         $this->initDefaultParams();
 
         $bSimpleMode = $this->_oConfig->CNF['USE-UNIQUE-MODE'];
@@ -293,6 +298,43 @@ class BxMessengerModule extends BxBaseModGeneralModule
         ];
 
         return $this->_oTemplate->parseHtmlByName('main.html', $aData);
+    }
+
+    /**
+     * The message an account without a profile gets in place of Messenger: it acts as its system profile, whose
+     * level may not send messages, so it sees "Create a profile first" with the button that helps
+     * (BxDolAcl::getDenialState), the same state as the rest of the site. False for anyone else.
+     */
+    public function getNoProfileMessage()
+    {
+        $iViewerId = (int)bx_get_logged_profile_id();
+        if (!$iViewerId || !($oViewer = BxDolProfile::getInstance($iViewerId)) || $oViewer->getModule() != 'system') {
+            return false;
+        }
+
+        $aCheck = checkActionModule($iViewerId, str_replace('_', ' ', BX_MSG_ACTION_SEND_MESSAGE), $this->getName());
+        return $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED ? $aCheck[CHECK_ACTION_MESSAGE] : false;
+    }
+
+    /**
+     * Without a Jot server URL messages are sent and saved, but new ones show only after a reload. The page says so
+     * in the site's informer, and an operator gets a button to Messenger's settings in Studio.
+     */
+    protected function addNoServerInformer()
+    {
+        if (trim((string)$this->_oConfig->CNF['SERVER_URL']) !== '') {
+            return;
+        }
+
+        $sMsg = '_bx_messenger_informer_no_server';
+        $aParams = ['icon' => 'wifi-off'];
+        if (isAdmin()) {
+            $sMsg = '_bx_messenger_informer_no_server_operator';
+            $aParams['action_url'] = BX_DOL_URL_STUDIO . 'module.php?name=' . $this->getName() . '&page=settings';
+            $aParams['action_title'] = _t('_bx_messenger_informer_no_server_action');
+        }
+
+        BxDolInformer::getInstance($this->_oTemplate)->add('bx-messenger-no-server', _t($sMsg), BX_INFORMER_INFO, $aParams);
     }
 
     public function actionGetThreadReplies()

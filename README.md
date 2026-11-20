@@ -78,7 +78,7 @@ git clone https://github.com/unacms/UNA.git una
 cd una
 ```
 
-Install the JavaScript dependencies. This also builds `plugins_public/` and takes about 2 minutes:
+Install the JavaScript dependencies. This also builds `plugins_public/` and Messenger's styles and emoji picker, and takes about 3 minutes:
 
 ```bash
 yarn
@@ -128,6 +128,7 @@ All settings for `.env`:
 | `MAILPIT_PORT` | `8025` | Mailpit |
 | `MYSQL_PORT` | `3306` | MariaDB, for a database client on your computer |
 | `JOT_PORT` | `5555` | Jot sockets server |
+| `UNA_JOT_URL` | `http://localhost:<JOT_PORT>` | Jot server address for Messenger, as the browser reaches it. Change it when you open the site from another device. |
 | `PHP_DISPLAY_ERRORS` | `0` | `1` prints PHP errors in pages. Errors are always in `docker compose logs php`. |
 | `XDEBUG_MODE` | `off` | `debug` turns Xdebug on, see below |
 | `COMPOSE_PROJECT_NAME` | folder name | Set a different one to run a second copy of UNA side by side, with different ports |
@@ -151,6 +152,7 @@ The finish page lists three next steps. In this setup:
 Other local services:
 
 - Emails go to Mailpit: http://localhost:8025.
+- Messenger delivers messages live through the Jot server in the `jot` container. Installing Messenger saves its address (`UNA_JOT_URL`) in Studio > Messenger > Settings > Jot Server URL; a site that already had Messenger needs it entered there. Without a Jot server URL, messages are still sent, and others see them when they reload the page.
 - Database: phpMyAdmin at http://localhost:8080 signs you in as MySQL `root` (password `root`).
 
 ### Everyday commands
