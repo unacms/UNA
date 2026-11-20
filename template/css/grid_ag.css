@@ -368,3 +368,75 @@ html.dark .bx-grid-ag-item,
     background: #111827;
     border-color: #374151;
 }
+
+/* Card rows (from tablets up, set by the script): every row is a card 4px inside its slot, so two
+   cards sit 8px apart. The card is the row's ::before, which the theme also uses for hover and
+   selection, so those states recolour the card. No column is pinned, so a card is one piece. */
+.bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
+    --bx-grid-ag-bg: #f9fafb;
+    --bx-grid-ag-card: #fff;
+    --bx-grid-ag-card-border: #e5e7eb;
+    --bx-grid-ag-card-border-hover: #d1d5db;
+    --bx-grid-ag-card-border-selected: #bfdbfe;
+    --ag-row-border-width: 0;
+    --ag-cell-horizontal-padding: 16px;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row {
+    background-color: transparent;
+    border: 0;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row::before,
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-hover:not(.ag-full-width-row)::before,
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-selected::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: auto;
+    height: auto;
+    border: 1px solid var(--bx-grid-ag-card-border);
+    border-radius: 12px;
+    background-color: var(--bx-grid-ag-card);
+    background-image: none;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-hover:not(.ag-full-width-row)::before {
+    background-color: var(--bx-grid-ag-hover);
+    border-color: var(--bx-grid-ag-card-border-hover);
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-selected::before {
+    background-color: var(--bx-grid-ag-selected);
+    border-color: var(--bx-grid-ag-card-border-selected);
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row .ag-cell {
+    z-index: 1;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row.bx-grid-ag-row-open .ag-cell {
+    top: 4px !important;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .bx-grid-ag-items {
+    left: 4px;
+    right: 4px;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+}
+
+html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
+.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
+    --bx-grid-ag-bg: #18212f;
+    --bx-grid-ag-card: #1f2937;
+    --bx-grid-ag-card-border: #374151;
+    --bx-grid-ag-card-border-hover: #4b5563;
+    --bx-grid-ag-card-border-selected: #1d4ed8;
+}

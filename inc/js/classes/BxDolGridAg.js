@@ -40,6 +40,10 @@ function BxDolGridAg(oCfg, oBx) {
     this._oItemsBx = null;
     this._iRowHeight = 52;
     this._iItemHeight = 44;
+    // From tablets up every row is a card: the row is taller by the gap between the cards, and no
+    // column is pinned, so a card is one piece. Phones keep the plain table.
+    this._bCards = !!(window.matchMedia && window.matchMedia('(min-width: 768px)').matches);
+    this._iRowGap = this._bCards ? 8 : 0;
 
     this._adoptBx();
     this._mount();
@@ -117,6 +121,9 @@ BxDolGridAg.prototype._mount = function () {
     if (!eGrid || typeof bxAgGrid === 'undefined' || typeof bxAgGrid.createGrid !== 'function')
         return;
 
+    if (this._bCards)
+        eGrid.classList.add('bx-grid-ag-cards');
+
     var self = this;
     var oOptions = {
         theme: 'legacy',
@@ -130,7 +137,7 @@ BxDolGridAg.prototype._mount = function () {
         suppressMovableColumns: true,
         suppressCellFocus: true,
         headerHeight: 44,
-        rowHeight: 52,
+        rowHeight: this._iRowHeight + this._iRowGap,
         rowModelType: 'infinite',
         cacheBlockSize: this._iPerPage,
         infiniteInitialRowCount: this._iPerPage,
@@ -174,7 +181,7 @@ BxDolGridAg.prototype._mount = function () {
         oOptions.selectionColumnDef = {
             width: 52,
             maxWidth: 64,
-            pinned: 'left',
+            pinned: this._bCards ? null : 'left',
             sortable: false,
             resizable: false,
             suppressHeaderMenuButton: true
@@ -218,7 +225,7 @@ BxDolGridAg.prototype._columns = function () {
             minWidth: 46,
             maxWidth: 46,
             flex: 0,
-            pinned: 'left',
+            pinned: this._bCards ? null : 'left',
             lockPosition: 'left',
             sortable: false,
             resizable: false,
@@ -247,7 +254,7 @@ BxDolGridAg.prototype._columns = function () {
                 width: 52,
                 maxWidth: 64,
                 flex: 0,
-                pinned: 'left',
+                pinned: this._bCards ? null : 'left',
                 sortable: false,
                 resizable: false,
                 suppressHeaderMenuButton: true,
@@ -394,14 +401,15 @@ BxDolGridAg.prototype._setTotal = function (o) {
 };
 
 BxDolGridAg.prototype._rowHeight = function (oData) {
+    var iRow = this._iRowHeight + this._iRowGap;
     if (!this._oExpand || !oData)
-        return this._iRowHeight;
+        return iRow;
     var sId = String(oData[this._sFieldId]);
     if (!this._oExpanded[sId])
-        return this._iRowHeight;
+        return iRow;
     var a = this._oChildren[sId] || [];
     var n = a.length || 1;
-    return this._iRowHeight + n * this._iItemHeight + 8;
+    return iRow + n * this._iItemHeight + 8;
 };
 
 BxDolGridAg.prototype._layoutRow = function (node) {
@@ -436,7 +444,7 @@ BxDolGridAg.prototype._fitHeight = function () {
     var iHeight = 44 + 2;
     for (var i = 0; i < iCount && iHeight < iMax; i++) {
         var oNode = this._oApi.getDisplayedRowAtIndex(i);
-        iHeight += oNode && oNode.rowHeight ? oNode.rowHeight : this._iRowHeight;
+        iHeight += oNode && oNode.rowHeight ? oNode.rowHeight : this._iRowHeight + this._iRowGap;
     }
 
     eGrid.style.height = Math.ceil(Math.min(iHeight, iMax)) + 'px';
@@ -698,7 +706,7 @@ BxDolGridAgCell.prototype._childItems = function (params, oAg) {
     var oMeta = params.data._meta || {};
     var ePanel = document.createElement('div');
     ePanel.className = 'bx-grid-ag-items';
-    ePanel.style.top = oAg._iRowHeight + 'px';
+    ePanel.style.top = (oAg._iRowGap / 2 + oAg._iRowHeight) + 'px';
 
     if (!aItems.length) {
         var eEmpty = document.createElement('div');
