@@ -545,6 +545,9 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
         if(isset($GLOBALS['bx_profiler']))
         	$GLOBALS['bx_profiler']->beginQuery($oStatement->queryString);
 
+        // Read before the statement runs: a deadlock rolls the transaction back and clears the flag.
+        $bInTransaction = self::$_rLink->inTransaction();
+
         for ($iAttempts = 3; $iAttempts > 0; --$iAttempts) {
 
             $oException = null;
@@ -556,8 +559,11 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
                 $iErrorCode = $oException->errorInfo[1];
             }
 
-            // if deadlock timeout - try again, make sure that deadlock timeout is short
-            if (!$bResult && (1205 == $iErrorCode || 1213 == $iErrorCode)) {
+            // A lock wait timeout rolls back only the statement: try it again.
+            // A deadlock rolls back the whole transaction: try it again only when the statement
+            // was a transaction of its own, otherwise the caller has to roll back and start over.
+            // The last attempt's error reaches the caller.
+            if (!$bResult && $iAttempts > 1 && (1205 == $iErrorCode || (1213 == $iErrorCode && !$bInTransaction && !$this->isAutocommitOff()))) {
                 continue;
             }
 
@@ -584,6 +590,22 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 			$this->error($this->_aError);
 
         return $bResult;
+    }
+
+    /**
+     * Whether the session runs with autocommit off (SET autocommit = 0), where every statement
+     * belongs to a transaction that PDO does not know about. When the server can't tell, the answer
+     * is yes: a statement is then not run again outside a transaction that may have been rolled back.
+     */
+    protected function isAutocommitOff()
+    {
+        try {
+            $oStatement = self::$_rLink->query("SELECT @@autocommit");
+            return !$oStatement || '0' === (string)$oStatement->fetchColumn();
+        }
+        catch (PDOException $oException) {
+            return true;
+        }
     }
 
     /**
