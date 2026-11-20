@@ -1326,6 +1326,13 @@
     .bx-artificer .bx-form-input-html-editor {
         @apply min-h-[7.5rem] px-4 py-3 cursor-text;
     }
+    /* A mini editor (a post in the feed, a comment) starts at about two and a half lines and grows as text is typed. */
+    .bx-artificer .bx-form-input-html-editor.bx-form-input-html-mini {
+        @apply min-h-[5.25rem];
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill.bx-form-input-html-mini) .ql-editor {
+        @apply min-h-[3.75rem];
+    }
     .bx-artificer .bx-form-input-html-editor:focus-within,
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill):focus-within {
         @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;

@@ -7,13 +7,17 @@ div.bx-tl-post-cnt {
 }
 
 /*--- Post Form Styles ---*/
+/* A plain text field starts at about two and a half lines and grows as text is typed (field-sizing, see tailwind.css). */
 #bx_timeline_post textarea.bx-form-input-textarea {
-    height: 2.2rem;
+    min-height: 5.25rem;
 }
 
+/* The uploaders and the poll form are empty until something is added, so they take no room under the buttons. */
 #bx_timeline_post div#bx-form-element-link,
 #bx_timeline_post div#bx-form-element-photo,
 #bx_timeline_post div#bx-form-element-video,
+#bx_timeline_post div#bx-form-element-file,
+#bx_timeline_post div#bx-form-element-polls,
 #bx_timeline_post .bx-form-input-files-uploaders {
     margin-top: 0px;
 }

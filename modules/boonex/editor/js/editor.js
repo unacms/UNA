@@ -101,7 +101,7 @@ function bx_ex_editor_init(oEditor, oParams)
     }
     oEditor = new EditorJS({
         holder : document.getElementById(oParams.name),
-        minHeight: 48, // the room under the text a click starts a new line in; the box itself is as tall as a textarea
+        minHeight: oParams.css_class && oParams.css_class.indexOf('bx-form-input-html-mini') != -1 ? 0 : 48, // room under the text; the box's own height is in tailwind.css
         placeholder: $(oParams.selector).attr('placeholder') || '',
         inlineToolbar: oParams.toolbar_inline.concat(['mention']),
         tools: oTools,
@@ -135,6 +135,12 @@ function bx_ex_editor_init(oEditor, oParams)
             })  
         }
     }); 
+
+    // a press on the box around the text (its padding, the room under a short text) puts the caret at the end
+    $('#' + oParams.name).on('click', function(oEvent) {
+        if (oEvent.target === this)
+            oEditor.focus(true);
+    });
 
     tribute = new Tribute({
         collection: [
