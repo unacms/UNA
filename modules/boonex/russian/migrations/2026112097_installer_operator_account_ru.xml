@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Installer: the account it creates is the site operator's, named as such. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_inst_conf_section_operator"><![CDATA[Ваша учётная запись оператора]]></string_add>
+    <string_add name="_sys_inst_conf_section_operator_desc"><![CDATA[Эта учётная запись управляет сайтом и Студией. Свой профиль на сайте у неё появится позже, когда вы его создадите.]]></string_add>
+    <string_upd name="_sys_inst_conf_section_site_info"><![CDATA[Сайт]]></string_upd>
+    <string_upd name="_sys_inst_conf_field_admin_username"><![CDATA[Ваше имя]]></string_upd>
+    <string_upd name="_sys_inst_conf_desc_admin_username"><![CDATA[Ваше собственное имя, а не роль.]]></string_upd>
+    <string_upd name="_sys_inst_conf_field_admin_email"><![CDATA[Ваш email]]></string_upd>
+    <string_upd name="_sys_inst_conf_desc_admin_email"><![CDATA[С ним вы входите на сайт, на него приходят уведомления сайта.]]></string_upd>
+    <string_upd name="_sys_inst_conf_field_admin_pwd"><![CDATA[Пароль]]></string_upd>
+    <string_upd name="_sys_inst_conf_next_site"><![CDATA[Далее: сайт и ваша учётная запись]]></string_upd>
+    <string_upd name="_sys_inst_site_config_lead"><![CDATA[Шаги 2–4: база данных, сайт и ваша учётная запись, затем приложения.]]></string_upd>
+    <string_upd name="_sys_inst_welcome_step_site"><![CDATA[Название и адрес сайта, ваша учётная запись оператора.]]></string_upd>
+    <string_upd name="_sys_inst_msg_admin_account_not_found"><![CDATA[Учётная запись оператора не найдена по email: {0}]]></string_upd>
+</resources>

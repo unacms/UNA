@@ -225,20 +225,34 @@ class BxDolInstallSiteConfig
                 'type' => 'email',
                 'autocomplete' => 'off',
             ),
+            'section_site_info_close' => array(
+                'func' => 'rowSectionClose',
+            ),
+
+            // the site operator's account: it runs the site and Studio; its profile comes later.
+            // The field names stay admin_* so the command line flags keep working.
+
+            'section_operator_open' => array(
+                'name' => _t('_sys_inst_conf_section_operator'),
+                'desc' => _t('_sys_inst_conf_section_operator_desc'),
+                'func' => 'rowSectionOpen',
+                'step' => 'site',
+            ),
+
+            'admin_username' => array(
+                'name' => _t('_sys_inst_conf_field_admin_username'),
+                'ex' => 'Alex Smith',
+                'desc' => _t('_sys_inst_conf_desc_admin_username'),
+                'check' => array('checkLength', 1),
+                'autocomplete' => 'name',
+            ),
             'admin_email' => array(
                 'name' => _t('_sys_inst_conf_field_admin_email'),
-                'ex' => 'admin@example.com',
+                'ex' => 'alex@example.com',
                 'desc' => _t('_sys_inst_conf_desc_admin_email'),
                 'check' => array('checkEmail', 3),
                 'type' => 'email',
                 'autocomplete' => 'email',
-            ),
-            'admin_username' => array(
-                'name' => _t('_sys_inst_conf_field_admin_username'),
-                'ex' => 'admin',
-                'desc' => _t('_sys_inst_conf_desc_admin_username'),
-                'check' => array('checkLength', 1),
-                'autocomplete' => 'username',
             ),
             'admin_password' => array(
                 'name' => _t('_sys_inst_conf_field_admin_pwd'),
@@ -248,7 +262,7 @@ class BxDolInstallSiteConfig
                 'autocomplete' => 'new-password',
             ),
 
-            'section_site_info_close' => array(
+            'section_operator_close' => array(
                 'func' => 'rowSectionClose',
             ),
 

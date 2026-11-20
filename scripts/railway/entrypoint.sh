@@ -114,7 +114,7 @@ if [ "$rc" -eq 2 ]; then
         --server_php_self=/install/index.php \
         --server_doc_root=/var/www/html/ \
         --site_title="${UNA_SITE_TITLE:-UNA}" \
-        --admin_username="${UNA_ADMIN_USERNAME:-admin}" \
+        --admin_username="${UNA_ADMIN_USERNAME:-Site Operator}" \
         --admin_password="${UNA_ADMIN_PASSWORD:-unauna}"
 else
     echo "UNA already installed; writing header from environment."
