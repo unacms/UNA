@@ -8,6 +8,7 @@
 UPDATE `sys_objects_menu` SET `config_api`='{"icon":"compass"}' WHERE `object`='sys_homepage_submenu';
 -- Home menu: the apps draw it as a grid, as the site does
 UPDATE `sys_objects_menu` SET `config_api`='{"view":"grid"}' WHERE `object`='sys_homepage';
+UPDATE `sys_objects_menu` SET `config_api`='{"view":"grid"}' WHERE `object`='sys_add_profile';
 UPDATE `sys_objects_menu` SET `config_api`='{}' WHERE `object`='sys_ntfs_submenu';
 -- Settings: `hub` is the section's own page, where the apps show the menu as a list on phones and tablets (the menu's
 -- `section_nav_small`), in the sections its items without a link make (Account, the current profile); `icon` is the

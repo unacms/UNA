@@ -1921,11 +1921,12 @@
      * Menus in popups (More, add content, item menus, language and design switchers) all take the header More list's
      * look: 44px rows like the header tabs and NEO's regular menu items, 16px from the label to either side, 12px corners,
      * 4px apart (NEO's gap-1). The list is inset 8px, so each row's 12px corner sits inside the popup's 20px one. Horizontal menus
-     * (share icons and the like) keep their own layout, and the account panel's list pads its own rows (its template).
+     * (share icons and the like) and the apps grid (the homepage menu, the profile types of "Create your profile") keep
+     * their own layout, and the account panel's list pads its own rows (its template).
      * The rows are matched by structure and styled in plain CSS:
      * naming the bx-stl-mil* classes here would make Tailwind's @apply of them circular.
      */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         /* A column with a gap rather than Artificer's 1px row margins (menu.css): hidden rows leave no gap, and the
@@ -1934,39 +1935,39 @@
         flex-direction: column;
         gap: 0.25rem;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide)::after,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-highlight-list)::before {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks)::after,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-highlight-list)::before {
         display: none; /* bx-clearfix's table boxes would be flex items, with a gap of their own; the highlight's ::before stays */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li {
         position: relative;
         margin-top: 0;
         border-width: 0;
     }
     /* A focused row draws its ring on its edge, as NEO's do, and above its neighbours, so the current item's blue row
        next to it doesn't cover the ring. */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:has(:focus-visible) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li:has(:focus-visible) {
         z-index: 1;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li a:focus-visible {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li a:focus-visible {
         outline-offset: 0;
     }
     /* The indent wrapper already gives these popups 8px above and below the list. */
-    .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
+    .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) {
         margin-top: 0;
         margin-bottom: 0;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li .sys-action-element-holder > a {
         border-radius: var(--bx-radius-xl);
         font-size: 1rem;
         line-height: 1.5rem;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li .sys-action-element-holder > a {
         display: flex;
         align-items: center;
         width: 100%;
@@ -1985,37 +1986,37 @@
      * accent row (blue-100 / blue-900, its label blue-700 / blue-300) with a solid blue-600 circle and a white glyph,
      * so the circle still shows on the blue row. Rows without an icon only take the label.
      */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a:has(> .bx-stl-mii > *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li > a:has(> .bx-stl-mii > *) {
         padding-inline-start: 0.5rem; /* the circle sits 8px in from the row's side; 6px above and below in the 44px row */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii:has(> *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li .bx-stl-mii:has(> *) {
         @apply shrink-0 w-8 h-8 rounded-full ltr:mr-2 rtl:ml-2 bg-gray-200/50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400;
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii > * {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li .bx-stl-mii > * {
         @apply w-5 h-5 m-0 text-xl;
         color: inherit;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii > img {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li .bx-stl-mii > img {
         @apply w-8 h-8 rounded-full object-cover; /* a picture fills the circle */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mit {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li .bx-stl-mit {
         @apply text-sm font-medium text-gray-600 dark:text-gray-400; /* every menu's label: 14px medium, as the main menu's tabs and NEO's menus */
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mii:has(> *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li:hover .bx-stl-mii:has(> *) {
         @apply bg-gray-300 dark:bg-gray-700 text-gray-950 dark:text-gray-50;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mit {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li:hover .bx-stl-mit {
         @apply text-gray-950 dark:text-gray-50;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li.bx-menu-tab-active {
         @apply bg-blue-100 dark:bg-blue-900;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active .bx-stl-mit {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li.bx-menu-tab-active .bx-stl-mit {
         @apply text-blue-700 dark:text-blue-300;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
         @apply bg-blue-600 text-white;
     }
     /* Header: the More list's rows are drawn as the main menu's tabs: a 24px icon without its circle, 12px from the row's side and

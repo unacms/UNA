@@ -176,8 +176,8 @@
     <string name="_bx_snipcart_menu_item_title_system_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_snipcart_menu_item_title_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_snipcart_menu_item_title_system_view_entry"><![CDATA[View Goods]]></string>
-    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Shopping]]></string>
-    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Shopping]]></string>
+    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Snipcart]]></string>
+    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Snipcart]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_public"><![CDATA[Latest]]></string>
     <string name="_bx_snipcart_menu_item_title_entries_public"><![CDATA[Latest]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_search"><![CDATA[Search]]></string>

@@ -362,6 +362,31 @@ class BxBaseServiceAccount extends BxDol
         return $aResult;
     }
 
+    /**
+     * Choices of "Accounts without a profile" (sys_account_require_profile) in Studio > Settings > Account.
+     */
+    public function serviceGetProfileRequirementModes()
+    {
+        return [
+            BxDolAccount::PROFILE_OPTIONAL => _t('_sys_acc_profile_requirement_optional'),
+            BxDolAccount::PROFILE_PROMPT => _t('_sys_acc_profile_requirement_prompt'),
+            BxDolAccount::PROFILE_REQUIRED => _t('_sys_acc_profile_requirement_required'),
+        ];
+    }
+
+    /**
+     * An app showed the "Create your profile" window it was asked for (`profile_prompt` in the viewer's data): it is not
+     * asked again until the next sign-in.
+     * @return array with `profile_prompt` - whether the window is still due (false after this call)
+     */
+    public function serviceAccountProfilePromptSeen()
+    {
+        if(isLogged())
+            BxDolAccount::setProfilePromptSeen();
+
+        return ['profile_prompt' => BxDolAccount::isProfilePromptDue()];
+    }
+
     protected function _unsubscribeForm($sDisplay)
     {
         $iAccountId = bx_process_input(bx_get('id'));
