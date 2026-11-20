@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- System strings: Latin letters in place of Cyrillic look-alikes, and typos. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_DELETE_SUCCESS"><![CDATA[Your account was successfully deleted]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_lock_from_unauthenticated_exceptions"><![CDATA[Comma-separated list of page URIs available to unauthenticated users]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_captcha_default"><![CDATA[Default Captcha]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_content_cache_engine"><![CDATA[Content cache engine (other than File option may require custom server setup)]]></string_upd>
+    <string_upd name="_sys_et_txt_subject_manage_approve"><![CDATA[Approval: a question about '{content_title}']]></string_upd>
+    <string_upd name="_sys_grid_total_count"><![CDATA[Count: {0}]]></string_upd>
+    <string_upd name="_sys_menu_set_title_cmts_item_counters"><![CDATA[Comment Counters]]></string_upd>
+</resources>

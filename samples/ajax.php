@@ -46,8 +46,8 @@ function PageCompMainCode()
         });
     }
     </script>
-    <button class="bx-btn" onclick="getHtmlData('bx-result', 'samples/ajax.php?ajax=1')">Нажми Меня</button>
-    <button class="bx-btn bx-def-margin-left" onclick="ajaxTest(this)">И Меня!</button>
+    <button class="bx-btn" onclick="getHtmlData('bx-result', 'samples/ajax.php?ajax=1')">Click me</button>
+    <button class="bx-btn bx-def-margin-left" onclick="ajaxTest(this)">And me!</button>
 
     <div class="bx-clear"></div>
 

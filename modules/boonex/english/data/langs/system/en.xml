@@ -31,7 +31,7 @@
         <string name="_Contents"><![CDATA[Contents]]></string>
         <string name="_Context"><![CDATA[Context]]></string>
 	<string name="_Count"><![CDATA[Count]]></string>
-	<string name="_DELETE_SUCCESS"><![CDATA[You account was successfully deleted]]></string>
+	<string name="_DELETE_SUCCESS"><![CDATA[Your account was successfully deleted]]></string>
 	<string name="_DELETE_TEXT"><![CDATA[All your content will be deleted. Are you sure you want to delete your account?]]></string>
 	<string name="_Date"><![CDATA[Date]]></string>
 	<string name="_Delete"><![CDATA[Delete]]></string>
@@ -2000,7 +2000,7 @@
     <string name="_adm_stg_cpt_option_sys_accounts_force_password_change_after_expiration"><![CDATA[Force password change after password expiration]]></string>
     
     <string name="_adm_stg_cpt_option_sys_lock_from_unauthenticated"><![CDATA[Lock site from unauthenticated users]]></string>
-    <string name="_adm_stg_cpt_option_sys_lock_from_unauthenticated_exceptions"><![CDATA[Comma separated list of pages URIs, which are avalilable for unauthenticated users]]></string>
+    <string name="_adm_stg_cpt_option_sys_lock_from_unauthenticated_exceptions"><![CDATA[Comma-separated list of page URIs available to unauthenticated users]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_delete"><![CDATA[Delete accounts with no login within N days]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_suspend"><![CDATA[Suspend accounts with no login within N days]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_confirm_delete"><![CDATA[Delete accounts which didn't confirm email within N days]]></string>
@@ -2033,7 +2033,7 @@
     <string name="_adm_stg_cpt_option_sys_cache_memcache_port"><![CDATA[Memcached server port]]></string>
     <string name="_adm_stg_cpt_option_sys_cache_redis_connection_string"><![CDATA[Redis server connection string]]></string>
     <string name="_adm_stg_cpt_option_sys_cache_redis_connection_string_info"><![CDATA[For example: redis://pwdhere@localhost:6379/2, where 2 is database number (0 by default)]]></string>
-    <string name="_adm_stg_cpt_option_sys_captcha_default"><![CDATA[Default Сaptcha]]></string>
+    <string name="_adm_stg_cpt_option_sys_captcha_default"><![CDATA[Default Captcha]]></string>
     <string name="_adm_stg_cpt_option_sys_cf_enable"><![CDATA[Enable content filters]]></string>
     <string name="_adm_stg_cpt_option_sys_cf_enable_comments"><![CDATA[Enable content filters for comments]]></string>
     <string name="_adm_stg_cpt_option_sys_cf_prohibited"><![CDATA[Prohibited content]]></string>
@@ -2043,7 +2043,7 @@
     <string name="_adm_stg_cpt_option_sys_db_cache_enable"><![CDATA[Enable DB cache]]></string>
     <string name="_adm_stg_cpt_option_sys_db_cache_engine"><![CDATA[DB cache engine (other than File option may require custom server setup)]]></string>
     <string name="_adm_stg_cpt_option_sys_content_cache_enable"><![CDATA[Enable content cache]]></string>
-    <string name="_adm_stg_cpt_option_sys_content_cache_engine"><![CDATA[DContent cache engine (other than File option may require custom server setup)]]></string>
+    <string name="_adm_stg_cpt_option_sys_content_cache_engine"><![CDATA[Content cache engine (other than File option may require custom server setup)]]></string>
     <string name="_adm_stg_cpt_option_sys_default_payment"><![CDATA[Payment module]]></string>
     <string name="_adm_stg_cpt_option_sys_editor_default"><![CDATA[Default HTML editor]]></string>
     <string name="_adm_stg_cpt_option_sys_player_default"><![CDATA[Default Player]]></string>
@@ -3272,7 +3272,7 @@
 	<string name="_sys_et_txt_subject_profile_change_status_suspended"><![CDATA[Profile suspended]]></string>
         <string name="_sys_et_txt_subject_account_change_status_activate"><![CDATA[Account activated]]></string>
         <string name="_sys_et_txt_subject_account_change_status_suspended"><![CDATA[Account suspended]]></string>
-        <string name="_sys_et_txt_subject_manage_approve"><![CDATA[Approvement. A question about '{content_title}'.]]></string>
+        <string name="_sys_et_txt_subject_manage_approve"><![CDATA[Approval: a question about '{content_title}']]></string>
 	<string name="_sys_et_txt_subject_account"><![CDATA[{site_name} {account_count} accounts created yesterday]]></string>
         <string name="_sys_et_txt_subject_account_password_expired"><![CDATA[Your password will expire soon]]></string>
 	<string name="_sys_et_txt_subject_pruning"><![CDATA[{site_name} pruning result]]></string>
@@ -3639,7 +3639,7 @@
 	<string name="_sys_grid_secret_hide"><![CDATA[Hide]]></string>
 	<string name="_sys_grid_secret_password_prompt"><![CDATA[Enter your current password]]></string>
 	<string name="_sys_grid_secret_reveal"><![CDATA[Show]]></string>
-  <string name="_sys_grid_total_count"><![CDATA[Сount: {0}]]></string>
+  <string name="_sys_grid_total_count"><![CDATA[Count: {0}]]></string>
   <string name="_sys_grid_txt_account_manager"><![CDATA[Redirect to manage account.]]></string>
 	<string name="_sys_inst_audit_failed"><![CDATA[{0} failed]]></string>
 	<string name="_sys_inst_audit_lead"><![CDATA[A check of PHP, extensions, and paths on this host.]]></string>
@@ -4122,7 +4122,7 @@
     <string name="_sys_menu_set_title_dashboard_reports_manage"><![CDATA[Reports Manage]]></string>
     <string name="_sys_menu_set_title_add_profile"><![CDATA[Add Profile]]></string>
     <string name="_sys_menu_set_title_cmts_item_actions"><![CDATA[Comment Actions]]></string>
-    <string name="_sys_menu_set_title_cmts_item_counters"><![CDATA[Comment Сounters]]></string>
+    <string name="_sys_menu_set_title_cmts_item_counters"><![CDATA[Comment Counters]]></string>
     <string name="_sys_menu_set_title_cmts_item_manage"><![CDATA[Manage Comment]]></string>
     <string name="_sys_menu_set_title_cmts_item_meta"><![CDATA[Comment Meta Info]]></string>
     <string name="_sys_menu_set_title_switch_language"><![CDATA[Switch Language]]></string>
