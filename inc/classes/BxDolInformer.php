@@ -122,6 +122,14 @@ class BxDolInformer extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Show every message again: for a process that renders more than one page, such as a test run.
+     */
+    public static function resetHidden ()
+    {
+        self::$aHidden = array();
+    }
+
+    /**
      * Get message from informer.
      * @param $sId - message id
      */

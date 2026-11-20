@@ -133,7 +133,7 @@ class DenialStatesTest extends BxDolAccountTestCase
 
     protected function tearDown(): void
     {
-        (new ReflectionProperty(BxDolInformer::class, 'aHidden'))->setValue(null, []);
+        BxDolInformer::resetHidden();
         unset($GLOBALS['bxDolClasses']['BxDolInformer']);
 
         parent::tearDown();
