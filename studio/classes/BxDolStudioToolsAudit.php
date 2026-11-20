@@ -574,6 +574,11 @@ class BxDolStudioToolsAudit extends BxDol
         if (preg_match('/ffmpeg version (\S+)/', $sFfmpegOut, $m))
             return $this->getRow('ffmpeg', $m[1], BX_DOL_AUDIT_OK);
 
+        // A build for another CPU, for example the x64 one of a release package on an arm64 server.
+        if (is_file($sFfmpegPath)) {
+            return $this->getRow('ffmpeg', '', BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_ffmpeg_not_runnable', $sFfmpegPath, php_uname('m')));
+        }
+
         return $this->getRow('ffmpeg', '', BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_ffmpeg', $sFfmpegPath));
     }
 

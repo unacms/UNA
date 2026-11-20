@@ -9,9 +9,6 @@
  * @{
  */
 
-$aPathInfo = pathinfo(__FILE__);
-require_once ($aPathInfo['dirname'] . '/../vendor/autoload.php');
-
 use Alancting\Microsoft\JWT\AzureAd\AzureAdConfiguration;
 use Alancting\Microsoft\JWT\AzureAd\AzureAdAccessTokenJWT;
 use Alancting\Microsoft\JWT\AzureAd\AzureAdIdTokenJWT;

@@ -22,7 +22,8 @@ class ModuleUninstallVendorTest extends BxDolIntegrationTestCase
     {
         parent::setUp();
 
-        $this->_oDb = new BxDolStudioInstallerQuery();
+        // A singleton: an installer built by an earlier test already holds the instance.
+        $this->_oDb = bx_instance('BxDolStudioInstallerQuery');
         $this->cleanup();
     }
 
