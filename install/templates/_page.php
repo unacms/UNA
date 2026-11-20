@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <title><?=$sTitle; ?></title>
+    <!-- The site's default favicon; a dark browser/OS colour scheme gets the white one (template/meta_icons.html). -->
+    <link rel="icon" href="../template/images/icons/favicon.svg" type="image/svg+xml" data-bx-icon-light="../template/images/icons/favicon.svg" data-bx-icon-dark="../template/images/icons/favicon-dark.svg" />
+    <script>
+        (function () {
+            var oMedia = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+            if (!oMedia)
+                return;
+            var fUpdate = function () {
+                document.querySelectorAll('link[data-bx-icon-dark]').forEach(function (oLink) {
+                    oLink.href = oLink.getAttribute(oMedia.matches ? 'data-bx-icon-dark' : 'data-bx-icon-light');
+                });
+            };
+            fUpdate();
+            if (oMedia.addEventListener)
+                oMedia.addEventListener('change', fUpdate);
+        })();
+    </script>
     <script>
         // Studio's dark scheme is the "dark" class (Tailwind's class strategy). The installer follows the system
         // setting unless the footer's theme menu chose Light or Dark in this browser.

@@ -891,15 +891,8 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     function getMetaIcons()
     {
-        // favicon icon
-        $sImageUrlFav = '';
-        if(($iId = (int)getParam('sys_site_icon')) != 0)
-            $sImageUrlFav = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_FILES)->getFileUrlById($iId);          
-
-        // svg icon
-        $sImageUrlSvg = '';
-        if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
-            $sImageUrlSvg = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+        // favicon and svg icon uploaded in Designer
+        ['fav' => $sImageUrlFav, 'svg' => $sImageUrlSvg] = self::getUploadedFaviconUrls();
 
         // default icon, with a dark variant for a dark browser/OS colour scheme when the template has one
         $sImageUrlDark = '';
@@ -947,6 +940,24 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             ],
             'url_apple' => bx_html_attribute($sImageUrlApl),
         ]);
+    }
+
+    /**
+     * Favicons uploaded in Designer (Studio > Designer > Icon): any format in 'fav', an SVG in 'svg'.
+     * favicon.php sends /favicon.ico to them too.
+     * @return array ['fav' => URL, 'svg' => URL], '' for each one not uploaded
+     */
+    public static function getUploadedFaviconUrls()
+    {
+        $aUrls = ['fav' => '', 'svg' => ''];
+
+        if(($iId = (int)getParam('sys_site_icon')) != 0)
+            $aUrls['fav'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_FILES)->getFileUrlById($iId);
+
+        if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
+            $aUrls['svg'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+
+        return $aUrls;
     }
 
     /**
