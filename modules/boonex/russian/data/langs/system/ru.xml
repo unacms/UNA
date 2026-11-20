@@ -2633,7 +2633,7 @@
 	<string name="_sys_acc_profile_requirement_optional"><![CDATA[Необязателен: напоминание вверху каждой страницы]]></string>
 	<string name="_sys_acc_profile_requirement_prompt"><![CDATA[Предлагать после входа: окно «Создайте профайл» на первой странице]]></string>
 	<string name="_sys_acc_profile_requirement_required"><![CDATA[Обязателен: сначала направлять к созданию профайла]]></string>
-	<string name="_sys_acl_action_account"><![CDATA[Вы не создали ни одного профиля, поэтому Вы не можете '{1}'.]]></string>
+	<string name="_sys_acl_action_account"><![CDATA[Чтобы использовать «{1}», нужен профиль. Всё, чем вы делитесь, публикуется от имени профиля.]]></string>
 	<string name="_sys_acl_action_chart_view"><![CDATA[Диаграммы - Просматривать]]></string>
     <string name="_sys_acl_action_chart_view_desc"><![CDATA[Просматривать статистические диаграммы]]></string>
 	<string name="_sys_acl_action_comments_edit_all"><![CDATA[Комментарии - Редактировать Все]]></string>
@@ -2656,7 +2656,7 @@
 	<string name="_sys_acl_action_view_view"><![CDATA[Просмотры - Просматривать]]></string>
 	<string name="_sys_acl_action_view_view_viewers_own"><![CDATA[Просмотры - Просматривать смотревших для своего контента]]></string>
 	<string name="_sys_acl_action_limit_reached"><![CDATA[Вы достигли лимита. Ваше текущее членство ({2}) позволяет {1} не более {3} раз]]></string>
-	<string name="_sys_acl_action_not_allowed"><![CDATA[Ваше текущее членство ({2}) не позволяет '{1}'.]]></string>
+	<string name="_sys_acl_action_not_allowed"><![CDATA[Ваше членство ({2}) не включает «{1}».]]></string>
 	<string name="_sys_acl_action_not_allowed_after"><![CDATA[Ваше текущее членство ({2}) более не позволяет '{1}' {5}.]]></string>
 	<string name="_sys_acl_action_not_allowed_before"><![CDATA[Ваше текущее членство ({2}) позволит '{1}' {6}.]]></string>
         <string name="_sys_acl_action_pending"><![CDATA[В данный момент вы неактивный пользователь. Пожалуйста, попросите <a href="mailto:{7}">администратора сайта</a> активировать Вас, чтобы Вы могли <b>{1}</b>.]]></string>
@@ -2679,7 +2679,7 @@
         <string name="_sys_acl_action_set_form_fields_privacy"><![CDATA[Назначение приватности для полей форм]]></string>
 	<string name="_sys_acl_action_set_form_fields_privacy_desc"><![CDATA[Разрешать менять приватность для полей форм]]></string>
 	<string name="_sys_acl_action_suspended"><![CDATA[Вы не можете '{1}', потому что Ваш профайл заблокирован. Если Вы не знаете, почему, постарайтесь связаться с <a href="mailto:{7}">администратором</a>.]]></string>
-	<string name="_sys_acl_action_unauthenticated"><![CDATA[Не вошедшие пользователи не могут '{1}'.]]></string>
+	<string name="_sys_acl_action_unauthenticated"><![CDATA[Войдите или зарегистрируйтесь, чтобы использовать «{1}».]]></string>
 	<string name="_sys_acl_action_unconfirmed"><![CDATA[Вы не подтвердили свой профиль. Пожалуйста, проверьте эл. сообщение со ссылкой на активацию профиля. Неподтверждённые пользователи не могут <b>{1}</b>.]]></string>
 	<string name="_sys_acl_action_vote"><![CDATA[Голосовать]]></string>
         <string name="_sys_acl_action_vote_view"><![CDATA[Просматривать голоса]]></string>
@@ -2697,7 +2697,13 @@
 	<string name="_sys_acl_expire"><![CDATA[Окончание: ]]></string>
 	<string name="_sys_acl_expire_never"><![CDATA[никогда]]></string>
         <string name="_sys_acl_state"><![CDATA[Состояние: ]]></string>
+        <string name="_sys_acl_state_account_title"><![CDATA[Сначала создайте профиль]]></string>
+        <string name="_sys_acl_state_not_allowed_title"><![CDATA[Нет в вашем членстве]]></string>
+        <string name="_sys_acl_state_pending_title"><![CDATA[Ожидает одобрения]]></string>
+        <string name="_sys_acl_state_suspended_title"><![CDATA[Профиль заблокирован]]></string>
         <string name="_sys_acl_state_trial"><![CDATA[Пробный]]></string>
+        <string name="_sys_acl_state_unauthenticated_title"><![CDATA[Войдите, чтобы продолжить]]></string>
+        <string name="_sys_acl_state_unconfirmed_title"><![CDATA[Подтвердите email]]></string>
         <string name="_sys_acl_downgrade"><![CDATA[Понизить]]></string>
 
         <string name="_sys_agents_form_field_err_enter"><![CDATA[Это поле имеет важное значение. Пожалуйста, напишите что-нибудь здесь.]]></string>
@@ -4766,6 +4772,8 @@
     <string name="_sys_txt_api_key"><![CDATA[Ключ API]]></string>
     <string name="_sys_txt_auth_or"><![CDATA[или]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Доступ запрещён]]></string>
+    <string name="_sys_txt_access_denied_text"><![CDATA[У вас нет доступа к этому.]]></string>
+    <string name="_sys_txt_access_denied_title"><![CDATA[Нет доступа]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Ваш аккаунт ожидает одобрения, пожалуйста, дождитесь его активации.]]></string>
     <string name="_sys_txt_account_profile_context_change_suggestion"><![CDATA[Это Ваш профиль, Вы можете <a href="{0}">изменить свой текущий профиль</a> на этот]]></string>
     <string name="_sys_txt_account_profile_context_change_to_another_suggestion"><![CDATA[Вы можете <a href="{0}">изменить свой текущий профиль</a> на этот]]></string>
