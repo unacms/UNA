@@ -6,15 +6,13 @@
  * column never shows a card without content.
  */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { type ReactNode, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 
 import type { Schema } from 'una-api';
 
 import { ProfileBadges } from '../../components/profile-badges';
 import { RichText } from '../../components/rich-text';
-import { useWindowAnnounce } from '../../lib/announce';
 import { useApp } from '../../lib/context';
-import { errorMessage } from '../../lib/errors';
 import { num, t, tn } from '../../lib/i18n';
 import { rich } from '../../lib/i18n-rich';
 import { useNavigation, useRoute } from '../../lib/navigation';
@@ -23,9 +21,8 @@ import { discussionKey, lastActivity } from '../discussions/discussions';
 import { eventContext, eventWhen } from '../events/events';
 import { groupKey } from '../groups/groups';
 import { postKey } from '../posts/posts';
-import { announcement, type GraphAction } from '../profile/graph';
 import { ProfileAvatar, ProfileName } from '../profile/profile-link';
-import { useGraphAction } from '../profile/relation-buttons';
+import { SuggestionAction } from '../profile/suggestion-action';
 import { usePanesMode } from '../../shell/layout';
 import { usePaneBody } from '../../shell/pane';
 import { SideCard, SideDivider, StickySide, useSideColumn } from './side-columns';
@@ -174,66 +171,12 @@ function PeopleBlock<T>({ block, screen, pick, action }: { block: ResolvedBlock;
                                 <ProfileName profile={p} className="truncate" />
                                 <ProfileBadges badges={p.badges} max={1} />
                             </span>
-                            {action ? <PersonAction profile={p} action={action} endpoint={block.endpoint ?? ''} /> : null}
+                            {action ? <SuggestionAction profile={p} action={action} errorClassName="error page-block-error" /> : null}
                         </li>
                     );
                 })}
             </ul>
         </BlockCard>
-    );
-}
-
-const DONE_LABELS: Record<'befriend' | 'follow', string> = { befriend: t('Requested'), follow: t('Following', { context: 'state' }) };
-
-/**
- * Add friend or Follow for a suggested profile. Once the site took it the button says so
- * (Requested, Following) and stays where it was, so focus stays on it; the suggestion goes from
- * the list the next time the block is read. Why the site refused shows under the row.
- */
-function PersonAction({ profile, action, endpoint }: { profile: Profile; action: 'befriend' | 'follow'; endpoint: string }) {
-    const run = useGraphAction(profile);
-    const announce = useWindowAnnounce();
-    const queryClient = useQueryClient();
-    const [state, setState] = useState<'idle' | 'busy' | 'done'>('idle');
-    const [error, setError] = useState<string | null>(null);
-    const busy = useRef(false);
-    const press = async () => {
-        if (busy.current || state === 'done') return;
-        busy.current = true;
-        setState('busy');
-        setError(null);
-        try {
-            const status = await run(action as GraphAction);
-            setState('done');
-            announce(announcement(action, profile.display_name, status));
-            // read again when the block is next shown (now would take the row from under the pointer)
-            void queryClient.invalidateQueries({ queryKey: pageBlockKey(endpoint), refetchType: 'none' });
-        } catch (e) {
-            setState('idle');
-            setError(errorMessage(e));
-        } finally {
-            busy.current = false;
-        }
-    };
-    const label = state === 'done' ? DONE_LABELS[action] : action === 'befriend' ? t('Add friend') : t('Follow');
-    return (
-        <>
-            <button
-                type="button"
-                className={`btn small${state === 'done' ? '' : ' btn-primary'}`}
-                aria-label={`${label}, ${profile.display_name}`}
-                aria-disabled={state !== 'idle' || undefined}
-                data-busy={state === 'busy' ? '' : undefined}
-                onClick={() => void press()}
-            >
-                <span>{label}</span>
-            </button>
-            {error ? (
-                <p className="error page-block-error" role="alert">
-                    {error}
-                </p>
-            ) : null}
-        </>
     );
 }
 
