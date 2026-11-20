@@ -10,6 +10,7 @@
 class BxBaseCmtsGridAdministration extends BxDolCmtsGridAdministration
 {
     protected $sJsObject = 'oBxDolCmtsManageTools';
+    protected $_oSelectedModule;
 
     public function __construct($aInfo, $oTemplate = false)
     {

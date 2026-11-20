@@ -17,6 +17,8 @@ class BxDolMStudioPage extends BxTemplStudioModule
      *  @var ref $_oModule main module reference
      */
     protected $_oModule;
+
+    protected $MODULE;
 	
     function __construct($sModule, $mixedPageName, $sPage = "")
     {

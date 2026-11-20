@@ -3,7 +3,8 @@
 
 DELETE FROM `top`, `toc`, `to` USING `sys_options_types` AS `top` LEFT JOIN `sys_options_categories` AS `toc` ON `top`.`id`=`toc`.`type_id` LEFT JOIN `sys_options` AS `to` ON `toc`.`id`=`to`.`category_id` WHERE `top`.`name` = 'bx_fontawesome';
 
-UPDATE `sys_options` SET `value` = 'sys_fontawesome' WHERE `name` = 'sys_iconset_default';
+-- Only a site that uses this module's icon set gets the free Font Awesome set instead.
+UPDATE `sys_options` SET `value` = 'sys_fontawesome' WHERE `name` = 'sys_iconset_default' AND `value` = 'bx_fontawesome';
 
 -- Alerts
 
