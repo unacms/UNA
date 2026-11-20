@@ -2024,8 +2024,11 @@ function bx_setup_step(oLink)
 }
 
 /*
- * Introduction tours (BxDolTours): the Studio tour, built on Shepherd (plugins_public/shepherd)
- * and styled by template/css/tour.css.
+ * Introduction tours (BxDolTours): the Studio tour, built on Shepherd (plugins_public/shepherd). A step is drawn as a
+ * standard popup (popup_box.html): the popup surface and ring (bx-popup-box, bx-popup-color-bg, bx-popup-border), its
+ * header with the title as an h2 and the popup's close button with the close icon, the text as popup content, and
+ * Back / Next as small buttons (bx-btn bx-btn-small, Next primary). template/css/tour.css holds only what a tour adds:
+ * Shepherd's showing and hiding, the pointer in the popup's colour, and the dimmed page.
  *
  * bx_tour(oOptions) returns the Shepherd tour:
  *   name       'studio', as BxDolTours knows it
@@ -2033,9 +2036,10 @@ function bx_setup_step(oLink)
  *   autostart  start now (the account hasn't closed or finished this tour yet)
  *   inert      selector of the page behind the overlay: inert while a step is open, so Tab
  *              and screen readers stay inside the step
+ *   close_icon selector of a <template> holding the popup's close icon
  *   labels     {back, next, done, close, step} with step as "{0} of {1}"
  *
- * Every step can be closed (its X button or Esc). Closing or finishing the tour is kept for
+ * Every step can be closed (its close button or Esc). Closing or finishing the tour is kept for
  * the account (tour.php), so it doesn't start by itself again; ?tour=1 in the address and
  * the "Introduction Tour" item of the Studio account popup start it.
  *
@@ -2053,7 +2057,7 @@ function bx_tour(oOptions)
         exitOnEsc: true,
         keyboardNavigation: true,
         defaultStepOptions: {
-            classes: 'bx-tour bx-def-z-index-modal',
+            classes: 'bx-tour bx-def-z-index-modal bx-popup-box bx-popup-color-bg bx-popup-border',
             cancelIcon: {enabled: true, label: oLabels.close || ''},
             canClickTarget: false,
             scrollTo: {behavior: bStill ? 'auto' : 'smooth', block: 'center'},
@@ -2071,8 +2075,8 @@ function bx_tour(oOptions)
 
         var aButtons = [];
         if(iIndex > 0)
-            aButtons.push({text: oLabels.back, action: oTour.back, classes: 'shepherd-button-secondary'});
-        aButtons.push({text: bLast ? oLabels.done : oLabels.next, action: bLast ? oTour.complete : oTour.next, classes: 'shepherd-button-primary'});
+            aButtons.push({text: oLabels.back, action: oTour.back, classes: 'bx-btn bx-btn-small'});
+        aButtons.push({text: bLast ? oLabels.done : oLabels.next, action: bLast ? oTour.complete : oTour.next, classes: 'bx-btn bx-btn-small bx-btn-primary'});
 
         oTour.addStep({
             id: oStep.id,
@@ -2082,15 +2086,14 @@ function bx_tour(oOptions)
             buttons: aButtons,
             when: {
                 show: function() {
-                    // "2 of 5" at the start of the step's footer.
-                    var oFooter = this.getElement() && this.getElement().querySelector('.shepherd-footer');
-                    if(!oFooter || aSteps.length < 2 || oFooter.querySelector('.bx-tour-progress'))
-                        return;
+                    var oElement = this.getElement();
+                    bx_tour_popup(oElement, oOptions, aSteps.length > 1 ? (oLabels.step || '{0} / {1}').replace('{0}', iIndex + 1).replace('{1}', aSteps.length) : '');
 
-                    var oProgress = document.createElement('span');
-                    oProgress.className = 'bx-tour-progress';
-                    oProgress.textContent = (oLabels.step || '{0} / {1}').replace('{0}', iIndex + 1).replace('{1}', aSteps.length);
-                    oFooter.insertBefore(oProgress, oFooter.firstChild);
+                    // Keyboard and screen readers start in the step (Tab, Esc, the arrow keys), not on the inert page.
+                    setTimeout(function() {
+                        if(oElement && oElement.isConnected && !oElement.contains(document.activeElement))
+                            oElement.focus({preventScroll: true});
+                    }, 0);
                 }
             }
         });
@@ -2123,6 +2126,61 @@ function bx_tour(oOptions)
         oTour.start();
 
     return oTour;
+}
+
+/**
+ * Give a step Shepherd has drawn the parts of a standard popup (popup_box.html), once per step.
+ */
+function bx_tour_popup(oElement, oOptions, sProgress)
+{
+    if(!oElement || oElement.classList.contains('bx-tour-ready'))
+        return;
+    oElement.classList.add('bx-tour-ready');
+
+    var oHeader = oElement.querySelector('.shepherd-header');
+    if(oHeader)
+        oHeader.classList.add('bx-popup-header');
+
+    // The popup's title is an h2; Shepherd names the step by the title's id.
+    var oTitle = oElement.querySelector('.shepherd-title');
+    if(oTitle && oTitle.tagName != 'H2') {
+        var oH2 = document.createElement('h2');
+        oH2.id = oTitle.id;
+        oH2.className = oTitle.className;
+        oH2.textContent = oTitle.textContent;
+        oTitle.replaceWith(oH2);
+    }
+
+    var oClose = oElement.querySelector('.shepherd-cancel-icon');
+    var oIcon = oOptions.close_icon ? document.querySelector(oOptions.close_icon) : null;
+    if(oClose) {
+        oClose.classList.add('bx-popup-element-close');
+        if(oIcon && oIcon.content) {
+            oClose.textContent = '';
+            oClose.appendChild(oIcon.content.cloneNode(true));
+        }
+    }
+
+    var oText = oElement.querySelector('.shepherd-text');
+    if(oText)
+        oText.classList.add('bx-popup-content', 'p-4', 'text-base', 'text-gray-700', 'dark:text-gray-300');
+
+    // Back and Next at the end of the footer, "2 of 5" at its start.
+    var oFooter = oElement.querySelector('.shepherd-footer');
+    if(oFooter) {
+        oFooter.classList.add('flex', 'items-center', 'justify-end', 'gap-2', 'px-4', 'pb-4');
+        if(sProgress) {
+            var oProgress = document.createElement('span');
+            oProgress.className = 'bx-tour-progress mr-auto text-sm tabular-nums text-gray-600 dark:text-gray-400';
+            oProgress.textContent = sProgress;
+            oFooter.insertBefore(oProgress, oFooter.firstChild);
+        }
+    }
+
+    // The pointer takes the popup's surface.
+    var oArrow = oElement.querySelector('.shepherd-arrow');
+    if(oArrow)
+        oArrow.classList.add('bx-popup-color-bg');
 }
 
 var glBxTourSpotlight = {svg: null, hole: null, step: null, raf: 0, from: null, rect: null, start: 0};

@@ -487,13 +487,3 @@ div.bx-std-widget-caption-jitter {
 #bx-informer #sys-account-need-to-change-password.bx-informer-msg{
     display: flex;
 }
-
-/* Introduction tour (Shepherd): its stylesheet paints the primary button white at 75% on #3288e6 (3.6:1); blue-600 with white text gives 5.2:1. */
-.shepherd-button:not(.shepherd-button-secondary) {
-    background: rgb(37 99 235);
-    color: #fff;
-}
-.shepherd-button:not(.shepherd-button-secondary):not(:disabled):hover {
-    background: rgb(29 78 216);
-    color: #fff;
-}
