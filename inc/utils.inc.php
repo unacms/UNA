@@ -3506,9 +3506,23 @@ function bx_api_get_block($sType, $sData, $aParams = [])
     return $aData;
 }
 
+/**
+ * A message block for API clients. A message that BxDolAcl gave for a denied action also carries `empty_state`
+ * (BxDolAcl::getDenialState, in BxDolEmptyState's form): its title, text and the action that helps, such as
+ * "Create profile" for an account without a profile, so the apps can say the same as the site.
+ */
 function bx_api_get_msg($sMessage, $aParams = [])
 {
-    return bx_api_get_block('msg', $sMessage != '' ? _t($sMessage) : '', $aParams);
+    $sMessage = $sMessage != '' ? _t($sMessage) : '';
+
+    if (($aState = BxDolAcl::getDenialState($sMessage)) && !isset($aParams['ext']['empty_state'])) {
+        $aEmptyState = BxDolEmptyState::resolve($aState);
+        if ($aEmptyState) {
+            $aParams['ext'] = array_merge($aParams['ext'] ?? [], ['empty_state' => $aEmptyState]);
+        }
+    }
+
+    return bx_api_get_block('msg', $sMessage, $aParams);
 }
 
 function bx_api_get_image($mixedStorage, $iId)

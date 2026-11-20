@@ -1,8 +1,17 @@
 import { View } from 'app/design/view'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import Html from 'app/ui/atoms/html';
+import EmptyState from 'app/ui/molecules/misc/empty-state';
 
-export default function ElementMsg({ data, msg_type, blockWrapperProps }) {
+export default function ElementMsg({ data, msg_type, empty_state, blockWrapperProps }) {
+    // A denied action says why and what to do (UNA's BxDolAcl::getDenialState): "Create profile", "Log in"...
+    if (empty_state)
+        return (
+            <BlockWrapper {...blockWrapperProps}>
+                <EmptyState state={empty_state} fallbackTitle={data} fill={false} />
+            </BlockWrapper>
+        );
+
     if (!data.length)
         return null;
 

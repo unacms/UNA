@@ -4008,13 +4008,20 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         bx_import('BxDolLanguages');
         header('HTTP/1.0 403 Forbidden');
         header('Status: 403 Forbidden');
-        
-        $a = [
-            'title' => _t('_access_denied_page_title'),
-            'content' => _t('_access_denied_page_content'),
-        ];
-        
-        $this->displayMsg($sMsg ? $sMsg : _t('_Access denied'), false, $iPage, $iDesignBox);
+
+        // An expected permission state, not an error: titled by its reason (BxDolAcl::getDenialState), else "No access".
+        if (!$sMsg || $sMsg == _t('_Access denied') || $sMsg == _t('_sys_txt_access_denied'))
+            $sMsg = _t('_sys_txt_access_denied_text');
+
+        $aState = BxDolAcl::getDenialState($sMsg);
+        if (!$aState)
+            $aState = ['icon' => 'lock', 'title' => _t('_sys_txt_access_denied_title'), 'text' => $sMsg];
+
+        $this->displayMsg([
+            'title' => $aState['title'],
+            'content' => $sMsg,
+            'state' => $iPage == BX_PAGE_DEFAULT ? array_merge($aState, ['title' => '']) : $aState, // a design box has the title
+        ], false, $iPage, $iDesignBox);
     }
 
     function displayNoData ($sMsg = '', $iPage = BX_PAGE_DEFAULT, $iDesignBox = BX_DB_PADDING_DEF)
@@ -4063,7 +4070,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         if (bx_is_api())
             return [bx_api_get_msg($sContent)];
 
-        $sContent = MsgBox($sContent);
+        // A state (see BxBaseFunctions::msgBox) shows an icon, the text and actions; a denial of BxDolAcl gets its own.
+        $sContent = MsgBox($bArray && !empty($s['state']) ? $s['state'] : $sContent);
         if($iPage == BX_PAGE_DEFAULT)
             $sContent = DesignBoxContent($sTitle, $sContent, $iDesignBox);
 

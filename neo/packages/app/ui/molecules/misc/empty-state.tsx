@@ -45,6 +45,8 @@ type EmptyStateProps = {
     fallbackTitle: string;
     /** The preview's size once settled, against the list's (skeletonPreviewScale). */
     previewScale?: number;
+    /** False inside a block beside others (a denied action's message): only as tall as its words. */
+    fill?: boolean;
 };
 
 /** How far the preview settles: a quieter, slightly smaller copy of the list. */
@@ -78,7 +80,7 @@ function usePageFade(): ViewStyle | undefined {
  * the words fade in under it; with reduce motion it appears at once. The preview is decoration,
  * hidden from assistive tech.
  */
-export default function EmptyState({ preview, fromSkeletons = false, state, fallbackTitle, previewScale = 0.75 }: Readonly<EmptyStateProps>) {
+export default function EmptyState({ preview, fromSkeletons = false, state, fallbackTitle, previewScale = 0.75, fill = true }: Readonly<EmptyStateProps>) {
     // Null until the setting is known: the settle waits for it rather than play for someone who turned motion off.
     const reduceMotion = useReduceMotionSetting();
     // 0: as the loading skeletons showed it; 1: settled.
@@ -106,7 +108,7 @@ export default function EmptyState({ preview, fromSkeletons = false, state, fall
 
     // On web at least the list's share of a tall window (60svh), so the words sit mid-page, not in its top third.
     return (
-        <View className="w-full flex-1 items-center justify-center py-8 min-h-120 web:min-h-[60svh]" role="status">
+        <View className={'w-full items-center justify-center py-8' + (fill ? ' flex-1 min-h-120 web:min-h-[60svh]' : '')} role="status">
             {preview ? (
                 <View
                     aria-hidden

@@ -147,25 +147,94 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return $mixedResult;
     }
 
-    function msgBox($sText, $iTimer = 0, $sOnClose = "")
+    /**
+     * A message in a box. A state says why something isn't shown and what to do: an array with 'text' and any of
+     * 'title', 'icon' (an icon name) and 'buttons' ([['title' => text, 'link' => url], ...], the first is primary).
+     * A message that BxDolAcl gave for a denied action becomes its state (BxDolAcl::getDenialState): a guest gets
+     * "Log in" and "Sign up", an account without a profile "Create profile".
+     *
+     * @param string|array $mixedText translated message, or a state
+     */
+    function msgBox($mixedText, $iTimer = 0, $sOnClose = "")
     {
         $iId = time() . mt_rand(1, 1000);
+
+        $aState = is_array($mixedText) ? $mixedText : ($iTimer > 0 ? null : BxDolAcl::getDenialState($mixedText));
+        if($aState)
+            return $this->_msgBoxState($iId, $aState);
 
         if($iTimer > 0)
             BxDolTemplate::getInstance()->addJs(array('jquery.anim.js'));
 
         return $this->_oTemplate->parseHtmlByName('messageBox.html', array(
-            'id' => $iId,
-            'msgText' => $sText,
-            'bx_if:timer' => array(
-                'condition' => $iTimer > 0,
+            'bx_if:plain' => array(
+                'condition' => true,
                 'content' => array(
                     'id' => $iId,
-                    'time' => 1000 * $iTimer,
-                    'on_close' => $sOnClose,
+                    'msgText' => $mixedText,
+                    'bx_if:timer' => array(
+                        'condition' => $iTimer > 0,
+                        'content' => array(
+                            'id' => $iId,
+                            'time' => 1000 * $iTimer,
+                            'on_close' => $sOnClose,
+                        )
+                    )
                 )
-            )
+            ),
+            'bx_if:state' => array('condition' => false, 'content' => array()),
         ));
+    }
+
+    /**
+     * The state version of msgBox: icon, title, text and buttons, centred, as the apps show an empty state.
+     */
+    protected function _msgBoxState($iId, $aState)
+    {
+        $sIconHtml = '';
+        if(!empty($aState['icon']) && is_string($aState['icon'])) {
+            $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
+            $sIconHtml = $oIconset ? $oIconset->getIconHtml($aState['icon']) : false;
+            if($sIconHtml === false)
+                $sIconHtml = '<i class="sys-icon ' . bx_html_attribute($aState['icon']) . '"></i>';
+        }
+
+        $aButtons = [];
+        foreach(is_array($aState['buttons'] ?? null) ? $aState['buttons'] : [] as $aButton) {
+            if(empty($aButton['title']) || empty($aButton['link']))
+                continue;
+
+            $aButtons[] = [
+                'class' => empty($aButtons) ? 'bx-btn-primary' : '',
+                'link' => bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))),
+                'title' => bx_process_output($aButton['title']),
+            ];
+        }
+
+        $sTitle = isset($aState['title']) && is_string($aState['title']) ? $aState['title'] : '';
+
+        return $this->_oTemplate->parseHtmlByName('messageBox.html', [
+            'bx_if:plain' => ['condition' => false, 'content' => []],
+            'bx_if:state' => [
+                'condition' => true,
+                'content' => [
+                    'id' => $iId,
+                    'msgText' => $aState['text'] ?? '',
+                    'bx_if:icon' => [
+                        'condition' => $sIconHtml !== '',
+                        'content' => ['icon_html' => $sIconHtml],
+                    ],
+                    'bx_if:title' => [
+                        'condition' => $sTitle !== '',
+                        'content' => ['title' => bx_process_output($sTitle)],
+                    ],
+                    'bx_if:buttons' => [
+                        'condition' => !empty($aButtons),
+                        'content' => ['bx_repeat:buttons' => $aButtons],
+                    ],
+                ],
+            ],
+        ]);
     }
 
     /**
