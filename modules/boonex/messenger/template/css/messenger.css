@@ -76,7 +76,14 @@
 	margin-left:0 !important;
 }
 
-#bx-content-wrapper .bx-def-page-width
+/* The page area fills the window; the informer bar keeps the page width and gutters, at full width in this column. */
+#bx-content-wrapper .bx-informer-wrapper
+{
+	width:100%;
+	flex:0 0 auto;
+}
+
+#bx-content-wrapper .bx-def-page-width:not(.bx-informer-wrapper)
 {
 	width:100%;
 	padding:0;

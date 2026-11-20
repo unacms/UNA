@@ -59,6 +59,10 @@ class BxBaseInformer extends BxDolInformer
         if ($sProfilePrompt)
             $this->remove('sys-account-profile-system');
 
+        foreach (array_keys(self::$aHidden) as $sId) {
+            $this->remove($sId);
+        }
+
         if (!$this->_aMessages)
             return $sProfilePrompt;
 

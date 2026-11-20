@@ -196,18 +196,27 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * A state's icon: the Lucide SVG, or a font icon of the default iconset when Lucide has no such icon.
+     */
+    protected function msgBoxIcon($sIcon)
+    {
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
+        $sIconHtml = $oIconset ? $oIconset->getIconHtml($sIcon) : false;
+
+        return $sIconHtml !== false ? $sIconHtml : '<i class="sys-icon ' . bx_html_attribute($sIcon) . '"></i>';
+    }
+
+    /**
      * The state version of msgBox: icon, title, text and buttons, centred, as the apps show an empty state.
      */
     protected function msgBoxState($iId, $aState)
     {
-        $sIconHtml = '';
-        if(!empty($aState['icon']) && is_string($aState['icon'])) {
-            $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
-            $sIconHtml = $oIconset ? $oIconset->getIconHtml($aState['icon']) : false;
-            if($sIconHtml === false) {
-                $sIconHtml = '<i class="sys-icon ' . bx_html_attribute($aState['icon']) . '"></i>';
-            }
+        // The state asks for a profile: the informer's "You don't have a profile yet" bar would say it twice.
+        if(($aState['level'] ?? 0) == MEMBERSHIP_ID_ACCOUNT) {
+            BxDolInformer::hide('sys-account-profile-system');
         }
+
+        $sIconHtml = !empty($aState['icon']) && is_string($aState['icon']) ? $this->msgBoxIcon($aState['icon']) : '';
 
         $aButtons = [];
         foreach(is_array($aState['buttons'] ?? null) ? $aState['buttons'] : [] as $aButton) {
