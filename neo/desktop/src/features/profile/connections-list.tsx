@@ -21,7 +21,7 @@ import { useAnnouncer } from '../feed/feed-list';
 import { ACTION_LABELS, announcement, type ConnectionList, connectionListKey, FRIEND_REQUESTS_KEY, type GraphAction, SENT_REQUESTS_KEY, suggestionsKey } from './graph';
 import { ProfileAvatar, ProfileName } from './profile-link';
 import { useGraphAction } from './relation-buttons';
-import { SuggestionAction } from './suggestion-action';
+import { SuggestionAction, type SuggestionVerb } from './suggestion-action';
 import { ago, exactTime, monthYear } from '../../lib/dates';
 
 type Page = Schema<'Page_Connected'>;
@@ -269,6 +269,23 @@ export function ConnectionsList({ source, label, emptyText, emptyHint, manage = 
     );
 }
 
+/**
+ * The buttons in a row: Accept and Decline on a request received, Cancel on one sent; a
+ * suggestion's one step, asking to be friends or following.
+ */
+export function rowButtons(source: ConnectionsSource): { buttons: GraphAction[]; suggestion: SuggestionVerb | null } {
+    switch (source.kind) {
+        case 'requests':
+            return { buttons: ['accept', 'decline'], suggestion: null };
+        case 'sent':
+            return { buttons: ['cancel'], suggestion: null };
+        case 'suggested':
+            return { buttons: [], suggestion: source.friends ? 'befriend' : 'follow' };
+        default:
+            return { buttons: [], suggestion: null };
+    }
+}
+
 function ConnectedRow({ connected: c, source, manage, onRemoved }: { connected: Connected; source: ConnectionsSource; manage: boolean; onRemoved: (text: string) => void }) {
     const { messageTo } = useApp();
     const run = useGraphAction(c.profile);
@@ -278,12 +295,9 @@ function ConnectedRow({ connected: c, source, manage, onRemoved }: { connected: 
     const owner = `connection-${c.profile.id}`;
     const expanded = useMenuExpanded(owner);
     const name = c.profile.display_name;
-    // the buttons in the row: Accept and Decline on a request received, Cancel on one sent
-    const buttons: GraphAction[] = source.kind === 'requests' ? ['accept', 'decline'] : source.kind === 'sent' ? ['cancel'] : [];
+    const { buttons, suggestion } = rowButtons(source);
     const menuActions = manage ? rowMenuActions(source) : [];
     const canMessage = manage && c.profile.kind === 'person';
-    // a suggestion's one step: ask to be friends, or follow
-    const suggestion = source.kind === 'suggested' ? (source.friends ? 'befriend' : 'follow') : null;
     const sinceText = connectionSince(source, c.since);
 
     const act = async (action: GraphAction) => {

@@ -34,8 +34,8 @@ export const SUGGESTIONS_KEY = ['suggestions'] as const;
 /** The site's suggestions for the acting profile: people to befriend, or profiles to follow. */
 export const suggestionsKey = (friends: boolean) => [...SUGGESTIONS_KEY, friends ? 'friends' : 'follows'] as const;
 
-/** The site's suggestions endpoints, as a page's suggestions block reads them. */
-const SUGGESTION_ENDPOINTS = /^\/me\/recommendations\//;
+/** Where the site's suggestions endpoints start, as a page's suggestions block reads them. */
+const SUGGESTION_ENDPOINTS = '/me/recommendations/';
 
 export type GraphAction = 'follow' | 'unfollow' | 'befriend' | 'accept' | 'decline' | 'cancel' | 'unfriend';
 
@@ -148,6 +148,11 @@ export function countText(n: number, list: ConnectionList): string {
     return list === 'friends' ? tn(n, '{{count}} friend', '{{count}} friends') : tn(n, '{{count}} follower', '{{count}} followers');
 }
 
+/** A page block's query that reads the site's suggestions (pageBlockKey of such an endpoint). */
+export function isSuggestionsBlock(key: readonly unknown[]): boolean {
+    return key[0] === 'page-block' && typeof key[1] === 'string' && key[1].startsWith(SUGGESTION_ENDPOINTS);
+}
+
 /**
  * After a change between the viewer and a profile: what both profiles' counts and lists show is
  * stale, and so are the viewer's friend requests and Following feed. The feed on screen keeps
@@ -155,11 +160,6 @@ export function countText(n: number, list: ConnectionList): string {
  * wait behind the new posts pill; its pages refetch when next shown, or now when the feed shows
  * nothing (an empty Home next to the profile would otherwise stay empty).
  */
-/** A page block's query that reads the site's suggestions (pageBlockKey of such an endpoint). */
-export function isSuggestionsBlock(key: readonly unknown[]): boolean {
-    return key[0] === 'page-block' && typeof key[1] === 'string' && SUGGESTION_ENDPOINTS.test(key[1]);
-}
-
 export function afterGraphChange(queryClient: QueryClient, profileId: string, viewerId: string): void {
     for (const id of [profileId, viewerId]) {
         void queryClient.invalidateQueries(connectionsKey(id));

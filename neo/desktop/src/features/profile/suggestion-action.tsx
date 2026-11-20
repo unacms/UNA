@@ -11,6 +11,7 @@ import { useGraphAction } from './relation-buttons';
 /** What a suggestion offers: asking to be friends, or following. */
 export type SuggestionVerb = 'befriend' | 'follow';
 
+const LABELS: Record<SuggestionVerb, string> = { befriend: t('Add friend'), follow: t('Follow') };
 const DONE_LABELS: Record<SuggestionVerb, string> = { befriend: t('Requested'), follow: t('Following', { context: 'state' }) };
 
 type Props = {
@@ -52,7 +53,7 @@ export function SuggestionAction({ profile, action, errorClassName = 'error smal
             busy.current = false;
         }
     };
-    const label = state === 'done' ? DONE_LABELS[action] : action === 'befriend' ? t('Add friend') : t('Follow');
+    const label = (state === 'done' ? DONE_LABELS : LABELS)[action];
     return (
         <>
             <button
