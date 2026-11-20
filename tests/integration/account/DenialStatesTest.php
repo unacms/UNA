@@ -98,6 +98,28 @@ class DenialStatesTest extends BxDolAccountTestCase
         $this->assertSame([], BxDolService::call('bx_timeline', 'get_block_view'), 'The feed block is left out, not an "Access denied" page.');
     }
 
+    public function testInformerLeavesOutWhatTheStateSays(): void
+    {
+        $sRequire = getParam('sys_account_require_profile');
+        $this->bxSetParamCache('sys_account_require_profile', BxDolAccount::PROFILE_OPTIONAL);
+        try {
+            $this->bxSignInMemberWithoutProfile();
+
+            $sInformer = $this->bxInformer();
+            $this->assertStringContainsString('id="sys-account-profile-system"', $sInformer, 'A page with its usual content keeps the bar.');
+            $this->assertStringContainsString('bx-informer-wrapper bx-def-page-width', $sInformer, 'The bar sits in the page width and gutters.');
+
+            MsgBox(['text' => 'Plain state', 'title' => 'Title']);
+            $this->assertStringContainsString('id="sys-account-profile-system"', $this->bxInformer(), 'Another state leaves the bar.');
+
+            MsgBox($this->bxDeniedMessage(bx_get_logged_profile_id(), 'bx_posts'));
+            $this->assertStringNotContainsString('sys-account-profile-system', $this->bxInformer(), 'The "Create a profile first" state says it already.');
+        }
+        finally {
+            $this->bxSetParamCache('sys_account_require_profile', $sRequire);
+        }
+    }
+
     public function testOtherMessagesStayPlain(): void
     {
         $this->assertNull(BxDolAcl::getDenialState('Some message'));
@@ -107,6 +129,22 @@ class DenialStatesTest extends BxDolAccountTestCase
         $sState = MsgBox(['icon' => 'lock', 'title' => 'Title <b>', 'text' => 'Text', 'buttons' => [['title' => 'Go', 'link' => 'page.php?i=home']]]);
         $this->assertStringContainsString('Title &lt;b&gt;', $sState, 'A state title is escaped.');
         $this->assertStringContainsString('bx-btn bx-btn-primary', $sState);
+    }
+
+    protected function tearDown(): void
+    {
+        BxDolInformer::resetHidden();
+        unset($GLOBALS['bxDolClasses']['BxDolInformer']);
+
+        parent::tearDown();
+    }
+
+    /** The informer as a page draws it (a fresh instance: it is a singleton). */
+    protected function bxInformer(): string
+    {
+        unset($GLOBALS['bxDolClasses']['BxDolInformer']);
+
+        return (string)BxDolInformer::getInstance(BxDolTemplate::getInstance())->display();
     }
 
     /** The message checkAction gives for "create entry" of the module, which must be denied. */

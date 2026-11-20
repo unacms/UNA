@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Picture fields show the picture with Change picture and Remove; a textarea with a limit counts its characters. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_uploader_crop_choose_picture"><![CDATA[Загрузить изображение]]></string_add>
+    <string_add name="_sys_uploader_crop_choose_cover"><![CDATA[Загрузить обложку]]></string_add>
+    <string_add name="_sys_uploader_crop_edit_picture"><![CDATA[Изменить изображение]]></string_add>
+    <string_add name="_sys_uploader_crop_edit_cover"><![CDATA[Изменить обложку]]></string_add>
+    <string_add name="_sys_uploader_crop_change_picture"><![CDATA[Заменить изображение]]></string_add>
+    <string_add name="_sys_uploader_crop_remove_picture"><![CDATA[Удалить]]></string_add>
+    <string_add name="_sys_form_input_counter_limit"><![CDATA[Достигнут предел в {0} символов.]]></string_add>
+</resources>

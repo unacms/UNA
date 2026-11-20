@@ -13,6 +13,7 @@ abstract class BxDolIntegrationTestCase extends BxDolTestCase
     protected function setUp(): void
     {
         BxDolDb::getInstance()->cleanMemoryAll();
+        BxDolInformer::resetHidden(); // a page's hidden informer messages (a "Create a profile first" state) don't carry over
 
         $this->_aAccountAuthBackups = [];
         foreach (['admin', 'user'] as $sKind) {

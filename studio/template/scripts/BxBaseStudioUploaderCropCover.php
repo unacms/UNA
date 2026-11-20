@@ -20,6 +20,8 @@ class BxBaseStudioUploaderCropCover extends BxTemplUploaderCrop
         parent::__construct($aObject, $sStorageObject, $sUniqId, $oTemplate);
 
         $this->_sUploaderFormTemplate = 'uploader_form_crop_cover.html';
+        // Designer shows the cover (and the default art) in its own preview, so the field keeps the button
+        $this->_sPreviewTemplate = '';
     }
 }
 

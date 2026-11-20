@@ -1,6 +1,7 @@
 function bx_ex_editor_init(oEditor, oParams)
 {
-    $(oParams.selector).after("<div id='" + oParams.name + "' class='" + oParams.name + " bx-def-font-inputs bx-form-input-textarea bx-form-input-html bx-form-input-html-editor mt-px text-gray-700 dark:text-gray-300  w-full p-4  ring-1 ring-gray-300 dark:ring-gray-700 dark:focus:placeholder-700 bg-gray-50 dark:bg-gray-900/50 placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:placeholder-gray-300 dark:focus:placeholder-gray-700  focus:text-gray-900 dark:focus:text-gray-100 text-base border-0 flex-wrap" + oParams.css_class + "'></div>" );
+    // the look of a text input is in tailwind.css (.bx-form-input-html-editor); the text inside reads as it will be shown (.bx-def-vanilla-html)
+    $(oParams.selector).after("<div id='" + oParams.name + "' class='" + oParams.name + " bx-def-font-inputs bx-form-input-textarea bx-form-input-html bx-form-input-html-editor bx-def-vanilla-html max-w-none w-full text-base flex-wrap" + (oParams.css_class ? ' ' + oParams.css_class : '') + "'></div>" );
     
     $(oParams.selector).hide();
     
@@ -66,7 +67,14 @@ function bx_ex_editor_init(oEditor, oParams)
         oParams.toolbar.forEach(function(item){
             switch(item) {
                 case 'header':
-                    oTools.header = Header;
+                    // H1 is the page's own title
+                    oTools.header = {
+                        class: Header,
+                        config: {
+                            levels: [2, 3, 4],
+                            defaultLevel: 2
+                        }
+                    };
                     break;
 
                 case 'list':
@@ -93,6 +101,8 @@ function bx_ex_editor_init(oEditor, oParams)
     }
     oEditor = new EditorJS({
         holder : document.getElementById(oParams.name),
+        minHeight: oParams.css_class && oParams.css_class.indexOf('bx-form-input-html-mini') != -1 ? 0 : 48, // room under the text; the box's own height is in tailwind.css
+        placeholder: $(oParams.selector).attr('placeholder') || '',
         inlineToolbar: oParams.toolbar_inline.concat(['mention']),
         tools: oTools,
         onReady: () => {
@@ -125,6 +135,12 @@ function bx_ex_editor_init(oEditor, oParams)
             })  
         }
     }); 
+
+    // a press on the box around the text (its padding, the room under a short text) puts the caret at the end
+    $('#' + oParams.name).on('click', function(oEvent) {
+        if (oEvent.target === this)
+            oEditor.focus(true);
+    });
 
     tribute = new Tribute({
         collection: [

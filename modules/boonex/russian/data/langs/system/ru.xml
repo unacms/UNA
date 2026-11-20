@@ -3355,6 +3355,7 @@
 	<string name="_sys_form_checkbox_value_off"><![CDATA[Нет]]></string>
 	<string name="_sys_form_checkbox_value_on"><![CDATA[Да]]></string>
         <string name="_sys_form_input_caption_author"><![CDATA[Автор]]></string>
+	<string name="_sys_form_input_counter_limit"><![CDATA[Достигнут предел в {0} символов.]]></string>
 	<string name="_sys_form_comment"><![CDATA[Комментарий]]></string>
 	<string name="_sys_form_comment_input_caption_cmt_author_id"><![CDATA[Автор]]></string>
 	<string name="_sys_form_comment_input_caption_cmt_text"><![CDATA[Текст]]></string>
@@ -5037,11 +5038,17 @@
 	<string name="_sys_uploader_confirm_close_popup"><![CDATA[О нет! Вы уверены? Это может прервать загрузку файлов.]]></string>
     <string name="_sys_uploader_confirm_leaving_page"><![CDATA[Загрузка в процессе! Не закрывайте эту страницу, или загрузка будет прервана на полпути.]]></string>
     <string name="_sys_uploader_crop_button_name"><![CDATA[Загрузить и обрезать]]></string>
+    <string name="_sys_uploader_crop_change_picture"><![CDATA[Заменить изображение]]></string>
+    <string name="_sys_uploader_crop_choose_cover"><![CDATA[Загрузить обложку]]></string>
+    <string name="_sys_uploader_crop_choose_picture"><![CDATA[Загрузить изображение]]></string>
+    <string name="_sys_uploader_crop_edit_cover"><![CDATA[Изменить обложку]]></string>
+    <string name="_sys_uploader_crop_edit_picture"><![CDATA[Изменить изображение]]></string>
     <string name="_sys_uploader_crop_rotate_left"><![CDATA[Повернуть налево]]></string>
 	<string name="_sys_uploader_crop_rotate_right"><![CDATA[Повернуть направо]]></string>
 	<string name="_sys_uploader_crop_submit_button"><![CDATA[Загрузить]]></string>    
     <string name="_sys_uploader_crop_title"><![CDATA[Обрезка картинки]]></string>
     <string name="_sys_uploader_crop_err_upload"><![CDATA[Ошибка загрузки.]]></string>
+    <string name="_sys_uploader_crop_remove_picture"><![CDATA[Удалить]]></string>
     <string name="_sys_uploader_crop_wrong_ext"><![CDATA[Неправильное расширение файла, можно обрезать только изображения в формате: jpg, jpeg, png, gif.]]></string>
 	<string name="_sys_uploader_err_msg"><![CDATA[Ой! Случилась проблема с файлом {0}: {1}]]></string>
 	<string name="_sys_uploader_html5_button_name"><![CDATA[Множественная загрузка]]></string>

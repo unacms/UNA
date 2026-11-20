@@ -192,6 +192,7 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
         }
 
         return [
+            'level' => $iLevel,
             'icon' => $aState['icon'],
             'title' => _t($aState['title']),
             'text' => $sMessage,
