@@ -29,11 +29,14 @@ export interface OnboardingData {
     hide?: { title?: string; request_url?: string };
 }
 
-const MARKS: Record<string, { icon: string; className: string }> = {
+type Mark = { icon: string; className: string };
+
+const NOTE_MARK: Mark = { icon: 'ChevronRight', className: 'text-muted-foreground' };
+const MARKS: Record<string, Mark> = {
     done: { icon: 'CircleCheck', className: 'text-green-700 dark:text-green-400' },
     locked: { icon: 'Lock', className: 'text-muted-foreground' },
-    todo: { icon: 'ChevronRight', className: 'text-muted-foreground' },
-    note: { icon: 'ChevronRight', className: 'text-muted-foreground' },
+    todo: NOTE_MARK,
+    note: NOTE_MARK,
 };
 
 /** An app path for a page of the site, a full link as it is; none for a step that waits. */
@@ -50,7 +53,7 @@ function stepHref(item: OnboardingItem): string {
  * button's surface and corners, the title over the item's Info, the state's mark at the end. The row is the link.
  */
 function OnboardingStep({ item }: Readonly<{ item: OnboardingItem }>) {
-    const mark = MARKS[item.state || 'note'] ?? MARKS.note;
+    const mark: Mark = MARKS[item.state || 'note'] ?? NOTE_MARK;
     const href = stepHref(item);
     const row = (
         <View className="flex-row items-center gap-3 rounded-xl p-2">
