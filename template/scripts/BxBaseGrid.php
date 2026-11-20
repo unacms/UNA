@@ -1607,6 +1607,16 @@ class BxBaseGrid extends BxDolGrid
                 $aMeta = $this->_agRowMeta(isset($aSource[$iIndex]) && is_array($aSource[$iIndex]) ? $aSource[$iIndex] : []);
                 if ($aMeta)
                     $aDecoded[$iIndex]['_meta'] = $aMeta;
+
+                foreach ($aOut as $sKey => $mixedCell) {
+                    if (!is_array($mixedCell) || !isset($mixedCell['type']) || $mixedCell['type'] !== 'actions' || empty($mixedCell['data']) || !is_array($mixedCell['data']))
+                        continue;
+
+                    foreach ($mixedCell['data'] as $iAction => $aAction) {
+                        if (is_array($aAction) && !empty($aAction['icon']))
+                            $aDecoded[$iIndex][$sKey]['data'][$iAction]['icon'] = $this->_agActionIcon($aAction['icon']);
+                    }
+                }
             }
 
             $aResult = [
@@ -1783,6 +1793,15 @@ class BxBaseGrid extends BxDolGrid
     protected function _agRowMeta($aRow)
     {
         return [];
+    }
+
+    /**
+     * Icon of a row action in AG data. The cells are built in API mode, which keeps the raw icon
+     * name, so a grid that draws its classic actions with other icons maps them here too.
+     */
+    protected function _agActionIcon($sIcon)
+    {
+        return $sIcon;
     }
 
     /**

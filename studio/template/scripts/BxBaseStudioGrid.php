@@ -33,6 +33,20 @@ class BxBaseStudioGrid extends BxDolStudioGrid
     }
 
     /**
+     * AG Grid rows get the same Lucide action icons as the classic grid.
+     */
+    protected function _agActionIcon($sIcon)
+    {
+        if(!is_string($sIcon) || !preg_match('/^[a-z0-9-]+$/i', $sIcon))
+            return $sIcon;
+
+        $sName = isset($this->_aActionIcons[$sIcon]) ? $this->_aActionIcons[$sIcon] : $sIcon;
+        $sSvg = $this->_getIconLucide($sName);
+
+        return $sSvg !== false ? $sSvg : $sIcon;
+    }
+
+    /**
      * The row drag handle is a Lucide grip in every Studio grid.
      */
     protected function _getCellOrder ($mixedValue, $sKey, $aField, $aRow)
