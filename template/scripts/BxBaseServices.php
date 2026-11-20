@@ -104,7 +104,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'SwitchProfile' => 'BxBaseServiceAccount',
             'AccountProfileSwitcher' => 'BxBaseServiceAccount',
             'AccountProfilePromptSeen' => 'BxBaseServiceAccount',
-            'SetupDismiss' => 'BxBaseServiceAccount',
+            'OnboardingHide' => 'BxBaseServiceAccount',
             'EmailConfirmation' => 'BxBaseServiceAccount',
             'ConfirmEmail' => 'BxBaseServiceAccount',
             

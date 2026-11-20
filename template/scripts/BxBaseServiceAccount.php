@@ -34,146 +34,83 @@ class BxBaseServiceAccount extends BxDol
     }
 
     /**
-     * The "Set up your site" block of the home page (sys_home): the setup checklist for operators (BxDolTours), while
-     * a step is left and it isn't hidden; index.php?setup=1 (the account menu's "Set up your site") brings a hidden
-     * one back. Its description is the progress, its menu hides it. The apps get a `setup_checklist` element.
+     * The "Get started" block: the onboarding checklist that the menu $sMenu holds (BxDolTours), drawn by the menu's
+     * template, its progress as the block's description and Hide as the block's button. Nothing once every step is
+     * done or the account hid it; index.php?onboarding=1 (the account menu's "Get started") brings a hidden one back.
+     * The block can go on any page (Studio > Pages, block "Get started checklist"), with another menu as its parameter.
+     * The apps get an `onboarding` element with the menu's items (each with its `state`) and the hide request.
      */
-    public function serviceGetBlockSetup()
+    public function serviceGetBlockOnboarding($sMenu = BxDolTours::ONBOARDING_OPERATOR)
     {
         $oTours = BxDolTours::getInstance();
-        if(!$oTours->isSetupShown(bx_get('setup') == 1))
+        $bForced = bx_get('onboarding') == 1;
+        if(!$oTours->isOnboardingShown($sMenu, $bForced))
             return '';
 
-        $aSteps = $oTours->getSetupSteps();
-        $iDone = count(array_filter(array_column($aSteps, 'done')));
-        $sDescription = _t('_sys_setup_progress', $iDone, count($aSteps));
+        $oMenu = BxDolMenu::getObjectInstance($sMenu);
+        if(!$oMenu || !($oMenu instanceof BxBaseMenuOnboarding))
+            return '';
 
-        // The checklist's first step says the same as the "create a profile" message.
-        if(!$aSteps['profile']['done'] && ($oInformer = BxDolInformer::getInstance(BxDolTemplate::getInstance())))
+        $mixedMenu = bx_is_api() ? $oMenu->getCodeAPI() : $oMenu->getCode();
+
+        list($iDone, $iSteps) = $oMenu->getProgress();
+        if(!$iSteps || ($iDone == $iSteps && !$bForced))
+            return '';
+
+        // "Create your profile" says the same as the "create a profile" message.
+        $aStates = $oMenu->getStates();
+        if(isset($aStates['profile']) && $aStates['profile'] != BxDolTours::STEP_DONE && ($oInformer = BxDolInformer::getInstance(BxDolTemplate::getInstance())))
             $oInformer->remove('sys-account-profile-system');
+
+        $sDescription = _t('_sys_onboarding_progress', $iDone, $iSteps);
+        $sHide = _t('_sys_onboarding_hide');
 
         if(bx_is_api())
             return [
                 'description' => $sDescription,
-                'content' => [bx_api_get_block('setup_checklist', $this->_getSetupDataAPI($oTours, $aSteps))],
+                'content' => [bx_api_get_block('onboarding', [
+                    'menu' => $mixedMenu,
+                    'hide' => [
+                        'title' => $sHide,
+                        'request_url' => 'system/onboarding_hide/TemplServiceAccount&params[]=' . $sMenu,
+                    ],
+                ])],
             ];
 
         return [
             'description' => $sDescription,
-            'content' => $this->_getSetupCode($oTours, $aSteps),
-            'menu' => [
-                ['id' => 'sys-setup-hide', 'name' => 'sys-setup-hide', 'class' => '', 'link' => 'javascript:void(0)', 'onclick' => 'bx_setup_dismiss()', 'target' => '_self', 'title' => _t('_sys_setup_dismiss'), 'icon' => 'eye-slash'],
+            'content' => $mixedMenu,
+            'buttons' => [
+                ['title' => $sHide, 'onclick' => "bx_onboarding_hide(this, '" . $sMenu . "')"],
             ],
         ];
     }
 
     /**
-     * Hides the setup checklist for the logged in operator, as its menu does on the site (tour.php there).
+     * Hides the onboarding checklist $sMenu for the logged in account, as the block's Hide button does on the site.
      */
-    public function serviceSetupDismiss()
+    public function serviceOnboardingHide($sMenu = BxDolTours::ONBOARDING_OPERATOR)
     {
-        return ['code' => BxDolTours::getInstance()->setSeen(BxDolTours::HOME) ? 0 : 1];
-    }
-
-    protected function _getSetupCode($oTours, $aSteps)
-    {
-        $oTemplate = BxDolTemplate::getInstance();
-        $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $oTemplate);
-        $fIcon = function($sIcon) use ($oIconset) {
-            return $oIconset ? $oIconset->getIconHtml($sIcon) : '';
-        };
-
-        $bNext = true; // the first step left to do gets the primary button
-        $aTmplSteps = [];
-        foreach($aSteps as $sName => $aStep) {
-            $bAction = !$aStep['done'] && !$aStep['locked'];
-
-            $sBadge = '';
-            if($aStep['done'])
-                $sBadge = 'check';
-            else if($aStep['locked'])
-                $sBadge = 'lock';
-
-            $aTmplSteps[] = [
-                'class' => 'bx-setup-step-' . ($aStep['done'] ? 'done' : ($aStep['locked'] ? 'locked' : 'todo')),
-                'icon' => $fIcon($aStep['icon']),
-                'bx_if:badge' => [
-                    'condition' => $sBadge !== '',
-                    'content' => ['badge' => $sBadge ? $fIcon($sBadge) : ''],
-                ],
-                'title' => _t('_sys_setup_step_' . $sName),
-                'state' => _t($aStep['done'] ? '_sys_setup_state_done' : '_sys_setup_state_todo'),
-                'text' => _t('_sys_setup_step_' . $sName . ($aStep['locked'] ? '_locked' : '') . '_txt'),
-                'bx_if:action' => [
-                    'condition' => $bAction,
-                    'content' => [
-                        'name' => $sName,
-                        'primary' => $bAction && $bNext ? ' bx-btn-primary' : '',
-                        'url' => bx_html_attribute($aStep['url']),
-                        'action' => _t('_sys_setup_step_' . $sName . '_action'),
-                    ],
-                ],
-            ];
-
-            if($bAction)
-                $bNext = false;
-        }
-
-        $oTemplate->addCss('homepage.css');
-
-        return $oTemplate->parseHtmlByName('homepage_setup.html', [
-            'bx_repeat:steps' => $aTmplSteps,
-            'icon_join' => $fIcon('user-plus'),
-            'join' => _t('_sys_setup_join_' . $oTours->getJoinMode()),
-            'join_url' => bx_html_attribute($oTours->getJoinSettingsUrl()),
-            'join_action_label' => bx_html_attribute(_t('_sys_setup_join_action_label')),
-        ]);
+        return ['code' => BxDolTours::getInstance()->setSeen($sMenu) ? 0 : 1];
     }
 
     /**
-     * The checklist for the apps: Lucide names as the apps draw them (CircleUserRound), the site's own pages as app
-     * paths, Studio as full links. Writing the first post has no link: the post form is on the same page.
+     * The state of a built-in step of the operators' checklist (BxDolTours::STEP_*): the add-on of its menu item.
      */
-    protected function _getSetupDataAPI($oTours, $aSteps)
+    public function serviceGetOnboardingStepState($sStep)
     {
-        $fLucide = function($sIcon) {
-            return str_replace(' ', '', ucwords(str_replace('-', ' ', $sIcon)));
-        };
+        return BxDolTours::getInstance()->getStepState($sStep);
+    }
 
-        $aResult = [];
-        foreach($aSteps as $sName => $aStep) {
-            $sUrl = '';
-            if($sName == 'profile')
-                $sUrl = '/' . BxDolPermalinks::getInstance()->permalink('page.php?i=account-profile-switcher');
-            else if($sName != 'post')
-                $sUrl = $aStep['url'];
+    /**
+     * Whether a built-in step applies to this site: the cover step only while covers are on (Studio > Designer).
+     */
+    public function serviceIsOnboardingStepAvailable($sStep)
+    {
+        if($sStep == 'cover')
+            return getParam('sys_site_cover_disabled') != 'on';
 
-            $aResult[] = [
-                'name' => $sName,
-                'icon' => $fLucide($aStep['icon']),
-                'done' => (bool)$aStep['done'],
-                'locked' => (bool)$aStep['locked'],
-                'title' => _t('_sys_setup_step_' . $sName),
-                'state' => trim(_t($aStep['done'] ? '_sys_setup_state_done' : '_sys_setup_state_todo'), ', '),
-                'text' => _t('_sys_setup_step_' . $sName . ($aStep['locked'] ? '_locked' : '') . '_txt'),
-                'url' => $sUrl,
-                'action' => $sUrl ? _t('_sys_setup_step_' . $sName . '_action') : '',
-            ];
-        }
-
-        return [
-            'steps' => $aResult,
-            'join' => [
-                'text' => _t('_sys_setup_join_' . $oTours->getJoinMode()),
-                'url' => $oTours->getJoinSettingsUrl(),
-                'action' => _t('_sys_setup_join_action'),
-                'label' => _t('_sys_setup_join_action_label'),
-            ],
-            'dismiss' => [
-                'title' => _t('_sys_setup_dismiss'),
-                'request_url' => 'system/setup_dismiss/TemplServiceAccount',
-            ],
-        ];
+        return true;
     }
 
     /**

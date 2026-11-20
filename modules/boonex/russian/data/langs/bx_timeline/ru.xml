@@ -304,6 +304,7 @@
     <string name="_bx_timeline_menu_item_view_owner"><![CDATA[Сообщения от {0}]]></string>
     <string name="_bx_timeline_menu_item_view_other"><![CDATA[Сообщения от других]]></string>
     <string name="_bx_timeline_menu_item_get_rss"><![CDATA[RSS]]></string>
+    <string name="_bx_timeline_menu_item_info_onboarding_post"><![CDATA[Запись в ленте покажет новым участникам, о чём этот сайт.]]></string>
 
     <string name="_bx_timeline_menu_title_item_share"><![CDATA[Поделиться]]></string>
     <string name="_bx_timeline_menu_set_title_item_share"><![CDATA[Поделиться]]></string>
@@ -385,7 +386,9 @@
     <string name="_bx_timeline_menu_item_title_system_view_timeline_view"><![CDATA[Лента]]></string>
     <string name="_bx_timeline_menu_item_title_view_timeline_view"><![CDATA[Лента]]></string>
     <string name="_bx_timeline_menu_item_title_system_manage_my_timeline"><![CDATA[Лента]]></string>
+    <string name="_bx_timeline_menu_item_title_system_onboarding_post"><![CDATA[Напишите первую запись]]></string>
     <string name="_bx_timeline_menu_item_title_manage_my_timeline"><![CDATA[Лента]]></string>
+    <string name="_bx_timeline_menu_item_title_onboarding_post"><![CDATA[Напишите первую запись]]></string>
 
     <string name="_bx_timeline_grid_filter_item_title_adm_select_one_filter1"><![CDATA[Все статусы]]></string>
     <string name="_bx_timeline_grid_filter_item_title_adm_active"><![CDATA[Активные]]></string>

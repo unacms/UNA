@@ -1,0 +1,15 @@
+<!-- Menu template "List with descriptions": a row per item, its icon on a 44px tile with the regular button's surface and corners, the title over the item's Info, and the item's add-on at the end. The whole row is the link. -->
+<ul class="bx-menu-list-desc bx-menu-object-__object__ flex flex-col gap-1 list-none p-0 my-0 -mx-2">
+    <bx_repeat:menu_items>
+        <li class="bx-menu-item bx-menu-item-__name__ __class_add__">
+            <a class="flex items-center gap-3 p-2 rounded-xl bx-btn-hover bx-btn-focus" href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick> __attrs__>
+                <span class="bx-btn-bg flex shrink-0 items-center justify-center w-11 h-11 rounded-xl text-gray-700 dark:text-gray-300" aria-hidden="true"><bx_include_auto:menu_icon.html /></span>
+                <span class="flex-1 min-w-0">
+                    <bx_if:title><span class="block text-base font-medium leading-6 text-gray-900 dark:text-gray-100">__title__</span></bx_if:title>
+                    <bx_if:info><span class="block text-sm leading-5 text-gray-600 dark:text-gray-400">__info__</span></bx_if:info>
+                </span>
+                <bx_if:addon><span class="flex shrink-0 items-center">__addon__</span></bx_if:addon>
+            </a>
+        </li>
+    </bx_repeat:menu_items>
+</ul>

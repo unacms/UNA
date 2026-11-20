@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
-<!-- The setup checklist is a home page block: its block titles; its own heading is now the block's title. -->
-<resources name="en" flag="gb" title="English">
-    <string_add name="_sys_page_block_title_setup"><![CDATA[Set up your site]]></string_add>
-    <string_add name="_sys_page_block_title_system_setup"><![CDATA[Setup checklist for operators]]></string_add>
-    <string_del name="_sys_setup_title"></string_del>
-</resources>

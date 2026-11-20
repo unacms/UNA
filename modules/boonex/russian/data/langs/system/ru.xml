@@ -1941,8 +1941,8 @@
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Основание HTML шаблона email сообщения]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Имя сообщества]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[Имя по умолчанию, используемое для ссылки на ваш сайт в текстах сайта, метатегах, электронных письмах и уведомлениях.]]></string>
-    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Список настройки на главной странице]]></string>
-    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Показывает операторам шаги, которые нужны новому сайту, пока все шаги не сделаны или список не скрыт. Его тексты можно редактировать в <a href="/studio/polyglot.php?page=keys">языковых ключах Polyglot</a>.]]></string>
+    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Список «Начало работы» для операторов]]></string>
+    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Показывает операторам блок «Начало работы» на главной странице, пока все шаги не сделаны или блок не скрыт. Шаги редактируются в Студии > Навигация > «Начало работы: операторы».]]></string>
     <string name="_adm_stg_cpt_option_site_tour_studio"><![CDATA[Экскурсия по студии]]></string>
     <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[Шаги и содержание тура по Studio можно редактировать в <a href="/studio/polyglot.php?page=keys">языковых ключах Polyglot</a>.]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner"><![CDATA[Smart App Banner]]></string>
@@ -3826,6 +3826,10 @@
     <string name="_sys_manage_txt_sent"><![CDATA[Сообщение было отправлено.]]></string>
     <string name="_sys_manage_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
     <string name="_sys_menu_item_info_audit_administration"><![CDATA[Для модерации контента.]]></string>
+    <string name="_sys_menu_item_info_onboarding_cover"><![CDATA[Она видна вверху главной страницы, которую гости видят первой.]]></string>
+    <string name="_sys_menu_item_info_onboarding_join"><![CDATA[Присоединиться к сайту может любой.]]></string>
+    <string name="_sys_menu_item_info_onboarding_logo"><![CDATA[Он виден в шапке сайта, в письмах и в приложениях.]]></string>
+    <string name="_sys_menu_item_info_onboarding_profile"><![CDATA[От имени этого профиля вы публикуете и отвечаете на сайте.]]></string>
     <string name="_sys_menu_item_title_about"><![CDATA[О нас]]></string>
     <string name="_sys_menu_item_title_copyright"><![CDATA[Копирайт]]></string>
     <string name="_sys_menu_item_title_privacy"><![CDATA[Конфиденциальность]]></string>
@@ -3879,7 +3883,6 @@
     <string name="_sys_menu_item_title_switch_profile"><![CDATA[Сменить профиль]]></string>
     <string name="_sys_menu_item_title_set_acl_level"><![CDATA[Назначить членство]]></string>
     <string name="_sys_menu_item_title_set_badges"><![CDATA[Назначить бейджи]]></string>
-    <string name="_sys_menu_item_title_setup"><![CDATA[Настройка сайта]]></string>
     <string name="_sys_menu_item_title_studio"><![CDATA[Студия]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Подписки]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
@@ -4001,7 +4004,6 @@
     <string name="_sys_menu_item_title_system_search"><![CDATA[Поиск]]></string>
     <string name="_sys_menu_item_title_system_set_acl_level"><![CDATA[Назначить членство]]></string>
     <string name="_sys_menu_item_title_system_set_badges"><![CDATA[Назначить бейджи]]></string>
-    <string name="_sys_menu_item_title_system_setup"><![CDATA[Настройка сайта]]></string>
     <string name="_sys_menu_item_title_system_studio"><![CDATA[Студия]]></string>
     <string name="_sys_menu_item_title_system_subscriptions"><![CDATA[Подписки]]></string>
     <string name="_sys_menu_title_view_actions"><![CDATA[Просмотр - Действия]]></string>
@@ -4113,6 +4115,7 @@
     <string name="_sys_menu_template_title_inline_sbtn"><![CDATA[В тексте ('спец' кнопки)]]></string>
     <string name="_sys_menu_template_title_interactive"><![CDATA[Интерактивные горизонтальные ссылки]]></string>
     <string name="_sys_menu_template_title_interactive_vertical"><![CDATA[Интерактивные вертикальные ссылки]]></string>
+    <string name="_sys_menu_template_title_list_desc"><![CDATA[Список с описаниями]]></string>
     <string name="_sys_menu_template_title_empty"><![CDATA[Пустое меню]]></string>
     <string name="_sys_menu_template_title_main"><![CDATA[Навигация по сайту - Меню]]></string>
     <string name="_sys_menu_template_title_main_submenu"><![CDATA[Навигация по сайту - Подменю]]></string>
@@ -4231,10 +4234,22 @@
     <string name="_sys_menu_item_title_recom_friends"><![CDATA[Предложения]]></string>
     <string name="_sys_menu_item_title_recom_subscriptions"><![CDATA[На кого подписаться]]></string>
     <string name="_sys_menu_title_ntfs_submenu"><![CDATA[Активность]]></string>
+    <string name="_sys_menu_title_onboarding_operator"><![CDATA[Начало работы: операторы]]></string>
     <string name="_sys_menu_title_public_ntfs_submenu"><![CDATA[Активность]]></string>
     <string name="_sys_menu_set_title_ntfs_submenu"><![CDATA[Уведомления]]></string>
+    <string name="_sys_menu_set_title_onboarding_operator"><![CDATA[Начало работы: операторы]]></string>
     <string name="_sys_menu_item_title_system_ntfs_context_invitations"><![CDATA[Уведомления: Контекстные приглашения]]></string>
+    <string name="_sys_menu_item_title_system_onboarding"><![CDATA[Начало работы]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_cover"><![CDATA[Добавьте обложку]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_join"><![CDATA[Выберите, кто может присоединиться]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_logo"><![CDATA[Добавьте логотип]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_profile"><![CDATA[Создайте свой профиль]]></string>
     <string name="_sys_menu_item_title_ntfs_context_invitations"><![CDATA[Приглашения]]></string>
+    <string name="_sys_menu_item_title_onboarding"><![CDATA[Начало работы]]></string>
+    <string name="_sys_menu_item_title_onboarding_cover"><![CDATA[Добавьте обложку]]></string>
+    <string name="_sys_menu_item_title_onboarding_join"><![CDATA[Выберите, кто может присоединиться]]></string>
+    <string name="_sys_menu_item_title_onboarding_logo"><![CDATA[Добавьте логотип]]></string>
+    <string name="_sys_menu_item_title_onboarding_profile"><![CDATA[Создайте свой профиль]]></string>
     <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} - упоминание о <b class="bx-ntfs-content-entry">{entry_caption}</b> в {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
     <string name="_sys_mobile_friends"><![CDATA[Друзья]]></string>
     <string name="_sys_mobile_info"><![CDATA[Инфо]]></string>
@@ -4297,6 +4312,7 @@
         <string name="_sys_page_block_title_sys_recom_subscriptions"><![CDATA[Рекомендуемые подписки]]></string>
         <string name="_sys_page_block_title_recom_subscriptions"><![CDATA[На кого подписаться]]></string>
         <string name="_sys_page_block_title_ntfs_context_invitations"><![CDATA[Приглашения]]></string>
+        <string name="_sys_page_block_title_onboarding"><![CDATA[Начало работы]]></string>
         <string name="_sys_page_block_title_sys_invitations"><![CDATA[Приглашения]]></string>
         <string name="_sys_page_block_title_invitations"><![CDATA[Приглашения]]></string>
         <string name="_sys_page_block_title_sys_create_post"><![CDATA[Создать публикацию]]></string>
@@ -4312,7 +4328,6 @@
 	<string name="_sys_page_block_title_forgot_password"><![CDATA[Забыли пароль]]></string>
         <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Форма поиска]]></string>
         <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Результаты поиска]]></string>
-        <string name="_sys_page_block_title_setup"><![CDATA[Настройте сайт]]></string>
         <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI поиск]]></string>
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
@@ -4327,7 +4342,8 @@
         <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Панель - аудит]]></string>
 
         <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Панель - Администрирование (только для App-а)]]></string>
-        <string name="_sys_page_block_title_system_setup"><![CDATA[Список настройки для операторов]]></string>
+        <string name="_sys_page_block_title_system_onboarding"><![CDATA[Список «Начало работы»]]></string>
+        <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Список «Начало работы» для операторов]]></string>
         <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
         <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Панель - жалобы]]></string>
         <string name="_sys_page_block_title_system_cmts_view"><![CDATA[Просмотр комментария]]></string>
@@ -5098,26 +5114,12 @@
   <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string>
-  <string name="_sys_setup_dismiss"><![CDATA[Скрыть этот список]]></string>
-  <string name="_sys_setup_join_action"><![CDATA[Изменить]]></string>
-  <string name="_sys_setup_join_action_label"><![CDATA[Изменить, кто может присоединиться]]></string>
-  <string name="_sys_setup_join_closed"><![CDATA[Присоединиться к сайту нельзя: форма регистрации выключена.]]></string>
-  <string name="_sys_setup_join_invite"><![CDATA[Присоединиться к сайту могут только приглашённые.]]></string>
-  <string name="_sys_setup_join_open"><![CDATA[Присоединиться к сайту может любой.]]></string>
-  <string name="_sys_setup_progress"><![CDATA[Готово {0} из {1}]]></string>
-  <string name="_sys_setup_state_done"><![CDATA[, готово]]></string>
-  <string name="_sys_setup_state_todo"><![CDATA[, ещё не сделано]]></string>
-  <string name="_sys_setup_step_cover"><![CDATA[Добавьте обложку]]></string>
-  <string name="_sys_setup_step_cover_action"><![CDATA[Добавить обложку]]></string>
-  <string name="_sys_setup_step_cover_txt"><![CDATA[Она видна вверху главной страницы, которую гости видят первой.]]></string>
-  <string name="_sys_setup_step_logo"><![CDATA[Добавьте логотип]]></string>
-  <string name="_sys_setup_step_logo_action"><![CDATA[Добавить логотип]]></string>
-  <string name="_sys_setup_step_logo_txt"><![CDATA[Он виден в шапке сайта, в письмах и в приложениях.]]></string>
-  <string name="_sys_setup_step_post"><![CDATA[Напишите первую запись]]></string>
-  <string name="_sys_setup_step_post_action"><![CDATA[Написать запись]]></string>
-  <string name="_sys_setup_step_post_locked_txt"><![CDATA[Сначала создайте профиль, затем публикуйте от его имени.]]></string>
-  <string name="_sys_setup_step_post_txt"><![CDATA[Запись в ленте покажет новым участникам, о чём этот сайт.]]></string>
-  <string name="_sys_setup_step_profile"><![CDATA[Создайте свой профиль]]></string>
-  <string name="_sys_setup_step_profile_action"><![CDATA[Создать профиль]]></string>
-  <string name="_sys_setup_step_profile_txt"><![CDATA[От имени этого профиля вы публикуете и отвечаете на сайте.]]></string>
+  <string name="_sys_onboarding_hide"><![CDATA[Скрыть]]></string>
+  <string name="_sys_onboarding_join_closed"><![CDATA[Присоединиться к сайту нельзя: форма регистрации выключена.]]></string>
+  <string name="_sys_onboarding_join_invite"><![CDATA[Присоединиться к сайту могут только приглашённые.]]></string>
+  <string name="_sys_onboarding_join_open"><![CDATA[Присоединиться к сайту может любой.]]></string>
+  <string name="_sys_onboarding_progress"><![CDATA[Готово {0} из {1}]]></string>
+  <string name="_sys_onboarding_state_done"><![CDATA[Готово]]></string>
+  <string name="_sys_onboarding_state_locked"><![CDATA[Нужен предыдущий шаг]]></string>
+  <string name="_sys_onboarding_state_todo"><![CDATA[Нужно сделать]]></string>
 </resources>

@@ -1986,19 +1986,16 @@ if(typeof MutationObserver !== 'undefined')
 document.addEventListener('DOMContentLoaded', bx_sync_theme_color);
 
 /*
- * Hides the homepage setup checklist (the "Set up your site" block, BxDolTours) for the account,
- * from its block menu: tour.php keeps it, so it shows again only from the account menu ("Set up your site").
+ * Hides an onboarding checklist (the "Get started" block, BxDolTours) for the account: its Hide button. tour.php keeps
+ * it under the checklist's menu, so it shows again only from the account menu ("Get started").
  */
-function bx_setup_dismiss()
+function bx_onboarding_hide(oButton, sMenu)
 {
-    $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: 'home'});
+    $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: sMenu});
 
-    // The menu is a popup outside the block: close it, then remove the block that holds the checklist.
-    $('.bx-popup-applied:visible').dolPopupHide();
-    var oBlock = document.querySelector('.bx-setup')?.closest('.bx-page-block-container');
-    oBlock?.remove();
+    oButton.closest('.bx-page-block-container')?.remove();
 
-    // Focus would be lost with the menu, so it goes to the page's main content.
+    // Focus would be lost with the button, so it goes to the page's main content.
     var oMain = document.querySelector('main');
     if(oMain) {
         if(!oMain.hasAttribute('tabindex'))
@@ -2008,14 +2005,11 @@ function bx_setup_dismiss()
 }
 
 /*
- * An action of the homepage setup checklist. "Write a post" opens the post form further down the
- * same page (the "Add new..." block) instead of reloading it; every other action follows its link.
+ * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form further
+ * down the same page (the "Add new..." block) instead of reloading it; without the form the link is followed.
  */
-function bx_setup_step(oLink)
+function bx_onboarding_post()
 {
-    if(oLink.dataset.step != 'post')
-        return true;
-
     var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
     if(!oForm)
         return true;
