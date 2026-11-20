@@ -181,8 +181,24 @@ BxDolGridAg.prototype._columns = function () {
     var sSortField = this._oCfg.sorting_field || '';
     var sSortDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'desc' : 'asc';
     var bExpand = !!this._oExpand;
-    var bExpandPlaced = false;
     var aCols = [];
+
+    if (bExpand) {
+        aCols.push({
+            colId: '_bx_expand',
+            headerName: '',
+            width: 44,
+            maxWidth: 48,
+            flex: 0,
+            pinned: 'left',
+            sortable: false,
+            resizable: false,
+            suppressHeaderMenuButton: true,
+            cellRenderer: BxDolGridAgCell,
+            bxExpand: true,
+            cellStyle: { paddingLeft: '4px', paddingRight: '4px' }
+        });
+    }
 
     for (var i = 0; i < aCfg.length; i++) {
         var col = aCfg[i];
@@ -239,11 +255,6 @@ BxDolGridAg.prototype._columns = function () {
             for (var sKey in oSize)
                 oCol[sKey] = oSize[sKey];
             oCol.cellRenderer = BxDolGridAgCell;
-        }
-
-        if (bExpand && !bExpandPlaced && !col.controls) {
-            oCol.bxExpand = true;
-            bExpandPlaced = true;
         }
 
         aCols.push(oCol);

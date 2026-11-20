@@ -168,15 +168,52 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
     margin: 0;
     padding: 0;
     border: 0;
     border-radius: 0.35rem;
     background: transparent;
-    color: #6b7280;
+    color: #374151;
+    font-size: 0.8rem;
     cursor: pointer;
+}
+
+.bx-grid-ag .bx-switcher-cont {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont button {
+    overflow: hidden;
+    width: 2rem;
+    height: 1.125rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont button span {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont.off button span {
+    transform: translateX(0.1rem);
+}
+
+.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont.on button span {
+    transform: translateX(0.95rem);
+}
+
+.bx-grid-ag .bx-item-icon,
+.bx-grid-ag img.bx-item-icon,
+.bx-grid-ag svg.bx-item-icon {
+    width: 21px;
+    height: 21px;
+    max-width: 21px;
+    max-height: 21px;
+    font-size: 21px;
+    line-height: 1;
 }
 
 .bx-grid-ag-chevron i {
