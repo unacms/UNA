@@ -88,6 +88,21 @@ class DarkFaviconTest extends BxDolIntegrationTestCase
         }
     }
 
+    /**
+     * The apps (NEO) draw their browser tabs from the page's `icons`: Designer's uploads, '' for each one not uploaded.
+     */
+    public function testPageApiCarriesTheUploads(): void
+    {
+        $this->assertSame(['fav' => '', 'svg' => '', 'dark' => ''], BxDolPage::getObjectInstanceByURI('about')->getPageAPI()['icons']);
+
+        $iLight = $this->storeSvg('#111111');
+        $iDark = $this->storeSvg('#eeeeee');
+        setParam('sys_site_icon_svg', (string)$iLight);
+        setParam('sys_site_icon_dark', (string)$iDark);
+
+        $this->assertSame(['fav' => '', 'svg' => $this->url($iLight), 'dark' => $this->url($iDark)], BxDolPage::getObjectInstanceByURI('about')->getPageAPI()['icons']);
+    }
+
     public function testUploadedLightWithoutDarkIsNotSwapped(): void
     {
         $iLight = $this->storeSvg('#111111');

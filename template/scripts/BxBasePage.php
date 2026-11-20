@@ -640,6 +640,8 @@ class BxBasePage extends BxDolPage
             'header' => BxDolTemplate::getHeaderLayout($this->getType()),
             // How wide the page's content is for this viewer, as Designer sets it: pixels, or 'full'.
             'page_width' => BxDolTemplate::getPageWidth($this->getType()),
+            // The favicons uploaded in Designer (fav, svg, dark: '' for each one not uploaded), for the apps' browser tabs.
+            'icons' => BxTemplFunctions::getUploadedFaviconUrls(),
             'layout' => $bSplash ? 'splash' : str_replace('.html', '', $this->_aObject['template']),
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
