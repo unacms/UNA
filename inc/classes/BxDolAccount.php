@@ -11,6 +11,19 @@ bx_import('BxDolAcl');
 
 class BxDolAccount extends BxDolFactory implements iBxDolSingleton
 {
+    /**
+     * "Accounts without a profile" (Studio > Settings > Account, sys_account_require_profile): such an account only
+     * gets the "create a profile" informer, is also asked to create one after sign-in, or is sent to profile creation.
+     */
+    const PROFILE_OPTIONAL = '';
+    const PROFILE_PROMPT = 'prompt';
+    const PROFILE_REQUIRED = 'on';
+
+    /**
+     * Session value set at sign-in: the next page asks the account to create a profile (see isProfilePromptDue).
+     */
+    const PROFILE_PROMPT_SESSION_KEY = 'sys_account_profile_prompt';
+
     protected $_bIsApi;
 
     protected $_iAccountID;
@@ -869,15 +882,57 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
     
     /**
      * Whether the logged in account has to create a profile before it can use the site: Studio > Settings > Account
-     * "Require a profile" (sys_account_require_profile) is on, and the account has no profile of its own yet, only its
-     * system profile (the case the "create a profile" informer is shown for). The site then sends it to profile
-     * creation (BxDolPage::isLockedFromNoProfile), and so do the apps (`profile_required` in the viewer's data).
+     * "Accounts without a profile" (sys_account_require_profile) is "Required", and the account has no profile of its
+     * own yet, only its system profile (the case the "create a profile" informer is shown for). The site then sends it
+     * to profile creation (BxDolPage::isLockedFromNoProfile), and so do the apps (`profile_required` in the viewer's data).
      */
     public static function isProfileRequired ()
     {
-        if(!isLogged() || !getParam('sys_account_require_profile') || defined('BX_DOL_CRON_EXECUTE'))
+        if(!isLogged() || getParam('sys_account_require_profile') !== self::PROFILE_REQUIRED || defined('BX_DOL_CRON_EXECUTE'))
             return false;
 
+        return self::_hasNoOwnProfile();
+    }
+
+    /**
+     * Whether the logged in account is to be asked to create a profile now: "Accounts without a profile" is "Ask after
+     * sign-in", the account signed in in this session and was not asked yet, has no profile of its own and isn't an
+     * operator (operators get the setup checklist on the homepage). The site shows the "Create your profile" window on
+     * the first page after sign-in (BxBaseInformer), the apps get `profile_prompt` in the viewer's data and say when
+     * they showed it (system/account_profile_prompt_seen).
+     */
+    public static function isProfilePromptDue ()
+    {
+        if(!isLogged() || getParam('sys_account_require_profile') !== self::PROFILE_PROMPT || defined('BX_DOL_CRON_EXECUTE'))
+            return false;
+
+        if(!BxDolSession::getInstance()->getValue(self::PROFILE_PROMPT_SESSION_KEY))
+            return false;
+
+        return !isAdmin() && self::_hasNoOwnProfile();
+    }
+
+    /**
+     * Called at sign-in (bx_login): the first page after it may ask for a profile (isProfilePromptDue).
+     */
+    public static function setProfilePromptDue ()
+    {
+        if(getParam('sys_account_require_profile') === self::PROFILE_PROMPT)
+            BxDolSession::getInstance()->setValue(self::PROFILE_PROMPT_SESSION_KEY, 1);
+    }
+
+    /**
+     * The account was asked for a profile in this session: not again until the next sign-in.
+     */
+    public static function setProfilePromptSeen ()
+    {
+        $oSession = BxDolSession::getInstance();
+        if($oSession->isValue(self::PROFILE_PROMPT_SESSION_KEY))
+            $oSession->unsetValue(self::PROFILE_PROMPT_SESSION_KEY);
+    }
+
+    protected static function _hasNoOwnProfile ()
+    {
         $oAccount = self::getInstance();
 
         return $oAccount && !$oAccount->getProfilesIds(false);

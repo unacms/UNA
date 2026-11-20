@@ -3,9 +3,10 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * "Require a profile" (sys_account_require_profile): an account with no profile of its own is sent to profile
- * creation on the site (BxDolPage::isLockedFromNoProfile) and in the apps (`profile_required` in the viewer's data),
- * while the option is on. Off, the default, it only gets the "create a profile" informer.
+ * "Accounts without a profile" (sys_account_require_profile) set to "Required" ('on'): an account with no profile of
+ * its own is sent to profile creation on the site (BxDolPage::isLockedFromNoProfile) and in the apps
+ * (`profile_required` in the viewer's data). "Optional" ('') leaves it the "create a profile" informer, "Ask after
+ * sign-in" ('prompt') adds a window after sign-in (ProfilePromptTest); neither locks a page.
  *
  * The option is changed in memory only, so the site itself never requires a profile because of the test.
  */

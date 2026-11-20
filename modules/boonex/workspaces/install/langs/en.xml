@@ -279,7 +279,7 @@
     <string name="_bx_workspaces_menu_item_title_system_entries_manage"><![CDATA[Manage]]></string>
     <string name="_bx_workspaces_menu_item_title_entries_manage"><![CDATA[Manage]]></string>
     <string name="_bx_workspaces_menu_item_title_system_entries_home"><![CDATA[Workspaces]]></string>
-    <string name="_bx_workspaces_menu_item_title_entries_home"><![CDATA[People]]></string>
+    <string name="_bx_workspaces_menu_item_title_entries_home"><![CDATA[Workspaces]]></string>
 	<string name="_bx_workspaces_menu_item_title_system_admt_workspaces"><![CDATA[Profiles]]></string>
 	<string name="_bx_workspaces_menu_item_title_admt_workspaces"><![CDATA[Profiles]]></string>
 	<string name="_bx_workspaces_menu_item_title_manage_my"><![CDATA[My Profiles]]></string>
