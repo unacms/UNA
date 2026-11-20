@@ -263,6 +263,9 @@ class BxResourcesModule extends BxBaseModTextModule
 
     public function isAllowAdd($iContextId)
     {
+        if($this->checkAllowedAdd() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         if(!($oContext = BxDolProfile::getInstance($iContextId)) || $oContext->checkAllowedPostInProfile($iContextId) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
@@ -286,13 +289,13 @@ class BxResourcesModule extends BxBaseModTextModule
         $CNF = &$this->_oConfig->CNF;
 
         $aContentInfo = !is_array($mixedContent) ? $this->_oDb->getContentInfoById((int)$mixedContent) : $mixedContent;
-        if($this->checkAllowedEdit($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED)
-            return true;
+        if($this->checkAllowedEdit($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
 
-        if($this->isAllowManageByContext(abs($aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']])))
-            return true;
+        if(!$this->isAllowManageByContext(abs($aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']])))
+            return false;
 
-        return false;
+        return true;
     }
     
     public function getListDefault($iContextId)
