@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "context" in member-facing strings becomes "community" (una-vocabulary skill). Studio wording keeps "context". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_classes_txt_err_cant_add_class_without_context"><![CDATA[A class can only be added inside a community.]]></string_upd>
+</resources>

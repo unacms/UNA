@@ -3481,7 +3481,7 @@
         <string name="_sys_form_labels_input_caption_system_list"><![CDATA[List]]></string>
         <string name="_sys_form_labels_input_caption_list"><![CDATA[or select from general labels]]></string>
         <string name="_sys_form_labels_input_caption_system_list_context"><![CDATA[List from contexts]]></string>
-        <string name="_sys_form_labels_input_caption_list_context"><![CDATA[from contexts' labels]]></string>
+        <string name="_sys_form_labels_input_caption_list_context"><![CDATA[from communities' labels]]></string>
         <string name="_sys_form_labels_input_caption_do_submit"><![CDATA[Submit]]></string>
         <string name="_sys_form_labels_input_caption_system_do_submit"><![CDATA[Submit]]></string>
         <string name="_sys_form_labels_input_caption_do_cancel"><![CDATA[Cancel]]></string>
@@ -4854,7 +4854,7 @@
     <string name="_sys_request_method_not_found_cpt"><![CDATA[Method was not found]]></string>
     <string name="_sys_request_method_not_found_cnt"><![CDATA[Method({0}) was not found in module({1})]]></string>
     <string name="_sys_sample_content"><![CDATA[content]]></string>
-    <string name="_sys_sample_context"><![CDATA[context]]></string>
+    <string name="_sys_sample_context"><![CDATA[community]]></string>
     <string name="_sys_sample_profile"><![CDATA[profile]]></string>
     <string name="_sys_score_counter"><![CDATA[{0}]]></string>
     <string name="_sys_score_counter_empty"><![CDATA[Vote]]></string>
