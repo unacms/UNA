@@ -48,10 +48,7 @@ class BxBasePageHome extends BxTemplPage
 
     public function getCode ()
     {
-        $s = parent::getCode ();
-        $oTours = BxDolTours::getInstance();
-        if ($oTours->isAvailable(BxDolTours::HOME))
-            $s .= $this->_oTemplate->parseHtmlByName('homepage_tour.html', $oTours->getTemplateVars(BxDolTours::HOME));
+        $s = $this->_getSetupChecklist() . parent::getCode ();
 
         if($this->_sCanonicalUrl)
             BxDolTemplate::getInstance()->setPageUrl($this->_sCanonicalUrl);
@@ -164,19 +161,69 @@ class BxBasePageHome extends BxTemplPage
         return parent::_getBlockRaw($aBlock);
     }
 
-    protected function _addJsCss()
+    /**
+     * The setup checklist for operators (BxDolTours) above the page blocks, while a step is left and it isn't
+     * dismissed; index.php?setup=1 (the account menu's "Set up your site") brings a dismissed one back.
+     */
+    protected function _getSetupChecklist()
     {
-        parent::_addJsCss();
-        if (isAdmin()) {
-            $this->_oTemplate->addJs(array(
-                'shepherd/js/shepherd.min.js',
-            ));
-            $this->_oTemplate->addCss(array(
-                'homepage.css',
-                BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'shepherd/css/|shepherd.css',
-                'tour.css',
-            ));
+        $oTours = BxDolTours::getInstance();
+        if (!$oTours->isSetupShown(bx_get('setup') == 1))
+            return '';
+
+        $aSteps = $oTours->getSetupSteps();
+
+        // The checklist's first step says the same as the "create a profile" message.
+        if (!$aSteps['profile']['done'] && ($oInformer = BxDolInformer::getInstance($this->_oTemplate)))
+            $oInformer->remove('sys-account-profile-system');
+
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
+        $fIcon = function($sIcon) use ($oIconset) {
+            return $oIconset ? $oIconset->getIconHtml($sIcon) : '';
+        };
+
+        $iDone = 0;
+        $bNext = true; // the first step left to do gets the primary button
+        $aTmplSteps = [];
+        foreach ($aSteps as $sName => $aStep) {
+            if ($aStep['done'])
+                $iDone++;
+
+            $bAction = !$aStep['done'] && !$aStep['locked'];
+            $aTmplSteps[] = [
+                'class' => 'bx-setup-step-' . ($aStep['done'] ? 'done' : 'todo'),
+                'icon' => $fIcon($aStep['done'] ? 'circle-check' : ($aStep['locked'] ? 'lock' : 'circle')),
+                'title' => _t('_sys_setup_step_' . $sName),
+                'state' => _t($aStep['done'] ? '_sys_setup_state_done' : '_sys_setup_state_todo'),
+                'text' => _t('_sys_setup_step_' . $sName . ($aStep['locked'] ? '_locked' : '') . '_txt'),
+                'bx_if:action' => [
+                    'condition' => $bAction,
+                    'content' => [
+                        'name' => $sName,
+                        'primary' => $bAction && $bNext ? ' bx-btn-primary' : '',
+                        'url' => bx_html_attribute($aStep['url']),
+                        'action' => _t('_sys_setup_step_' . $sName . '_action'),
+                    ],
+                ],
+            ];
+
+            if ($bAction)
+                $bNext = false;
         }
+
+        $sJoinMode = $oTours->getJoinMode();
+
+        $this->_oTemplate->addCss('homepage.css');
+
+        return $this->_oTemplate->parseHtmlByName('homepage_setup.html', [
+            'progress' => _t('_sys_setup_progress', $iDone, count($aSteps)),
+            'icon_close' => $fIcon('x'),
+            'bx_repeat:steps' => $aTmplSteps,
+            'icon_join' => $fIcon('user-plus'),
+            'join' => _t('_sys_setup_join_' . $sJoinMode),
+            'join_url' => bx_html_attribute($oTours->getJoinSettingsUrl()),
+            'join_action_label' => bx_html_attribute(_t('_sys_setup_join_action_label')),
+        ]);
     }
 }
 

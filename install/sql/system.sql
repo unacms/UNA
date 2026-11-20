@@ -5285,7 +5285,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 -- The homepage introduction tour, for operators while it is on (BxDolTours).
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_account_notifications', 'system', 'tour', '_sys_menu_item_title_system_tour', '_sys_menu_item_title_tour', 'index.php?tour=1', 'if(typeof glTour !== ''undefined'') { glTour.start(); return false; }', '', 'compass', '', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"is_tour_available";s:6:"params";a:1:{i:0;s:4:"home";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 9997);
+('sys_account_notifications', 'system', 'tour', '_sys_menu_item_title_system_setup', '_sys_menu_item_title_setup', 'index.php?setup=1', '', '', 'list-checks', '', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"is_tour_available";s:6:"params";a:1:{i:0;s:4:"home";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 9997);
 
 -- account settings menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES

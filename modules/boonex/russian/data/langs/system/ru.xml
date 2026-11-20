@@ -1940,8 +1940,8 @@
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Основание HTML шаблона email сообщения]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Имя сообщества]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[Имя по умолчанию, используемое для ссылки на ваш сайт в текстах сайта, метатегах, электронных письмах и уведомлениях.]]></string>
-    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Пользовательский тур]]></string>
-    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Шаги и содержание пользовательского тура можно редактировать в <a href="/studio/polyglot.php?page=keys">языковых ключах Polyglot</a>.]]></string>
+    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Список настройки на главной странице]]></string>
+    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Показывает операторам шаги, которые нужны новому сайту, пока все шаги не сделаны или список не скрыт. Его тексты можно редактировать в <a href="/studio/polyglot.php?page=keys">языковых ключах Polyglot</a>.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_studio"><![CDATA[Экскурсия по студии]]></string>
     <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[Шаги и содержание тура по Studio можно редактировать в <a href="/studio/polyglot.php?page=keys">языковых ключах Polyglot</a>.]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner"><![CDATA[Smart App Banner]]></string>
@@ -3747,7 +3747,6 @@
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Дизайн]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
     <string name="_sys_menu_item_title_terms"><![CDATA[Правила]]></string>
-    <string name="_sys_menu_item_title_tour"><![CDATA[Вводный тур]]></string>
     <string name="_sys_menu_item_title_account_menu"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_account_profile_context"><![CDATA[Профили]]></string>
     <string name="_sys_menu_item_title_account_dashboard"><![CDATA[Панель]]></string>
@@ -3791,6 +3790,7 @@
     <string name="_sys_menu_item_title_switch_profile"><![CDATA[Сменить профиль]]></string>
     <string name="_sys_menu_item_title_set_acl_level"><![CDATA[Назначить членство]]></string>
     <string name="_sys_menu_item_title_set_badges"><![CDATA[Назначить бейджи]]></string>
+    <string name="_sys_menu_item_title_setup"><![CDATA[Настройка сайта]]></string>
     <string name="_sys_menu_item_title_studio"><![CDATA[Студия]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Подписки]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
@@ -3848,7 +3848,6 @@
     <string name="_sys_menu_item_title_system_switch_language"><![CDATA[Язык]]></string>
     <string name="_sys_menu_item_title_system_switch_template"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_terms"><![CDATA[Правила]]></string>
-    <string name="_sys_menu_item_title_system_tour"><![CDATA[Вводный тур]]></string>
     <string name="_sys_menu_item_title_system_account_menu"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_system_account_profile_context"><![CDATA[Профили]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard"><![CDATA[Панель]]></string>
@@ -3913,6 +3912,7 @@
     <string name="_sys_menu_item_title_system_search"><![CDATA[Поиск]]></string>
     <string name="_sys_menu_item_title_system_set_acl_level"><![CDATA[Назначить членство]]></string>
     <string name="_sys_menu_item_title_system_set_badges"><![CDATA[Назначить бейджи]]></string>
+    <string name="_sys_menu_item_title_system_setup"><![CDATA[Настройка сайта]]></string>
     <string name="_sys_menu_item_title_system_studio"><![CDATA[Студия]]></string>
     <string name="_sys_menu_item_title_system_subscriptions"><![CDATA[Подписки]]></string>
     <string name="_sys_menu_title_view_actions"><![CDATA[Просмотр - Действия]]></string>
@@ -4656,39 +4656,21 @@
     <string name="_sys_template_mixed_mask"><![CDATA[{0} ({1})]]></string>
 
     <string name="_sys_tour_launcher_welcome_title"><![CDATA[Добро пожаловать в Студию]]></string>
-    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[В Студии настраивается сайт: приложения, дизайн, страницы, меню, формы, права и языки. Этот короткий тур покажет, что где находится.]]></string>
-    <string name="_sys_tour_launcher_apps_title"><![CDATA[Ваши приложения]]></string>
-    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Каждая плитка это приложение: модуль, инструмент, язык или шаблон. Установленные приложения появляются здесь.]]></string>
+    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[В Студии настраивается сайт. Этот короткий тур покажет приложения, с которых стоит начать. Запустить его снова можно из меню аккаунта.]]></string>
     <string name="_sys_tour_launcher_designer_title"><![CDATA[Дизайнер]]></string>
     <string name="_sys_tour_launcher_designer_txt"><![CDATA[Задайте логотип, выберите шаблон и измените обложку, которую гости видят первой.]]></string>
     <string name="_sys_tour_launcher_accounts_title"><![CDATA[Аккаунты]]></string>
     <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте администраторов и модераторов. Они следят за контентом и профилями на самом сайте, не в Студии.]]></string>    
-    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[Панель]]></string>
-    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA[Состояние сайта: версия UNA, занятое место, проверки сервера и кэш.]]></string>
     <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Страницы]]></string>
     <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Добавляйте, удаляйте и переставляйте блоки на любой странице или создавайте новые страницы. Здесь же настройки видимости и SEO.]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Права]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Создавайте уровни членства и выбирайте, что разрешено каждому уровню.]]></string>
-    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Формы]]></string>
-    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Меняйте поля любой формы, их списки значений и то, как форма показывается.]]></string>
     <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Навигация]]></string>
     <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Редактируйте меню: добавляйте, переставляйте и скрывайте ссылки, меняйте иконки и выбирайте, кто видит каждый пункт.]]></string>
-    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Полиглот]]></string>
-    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA[Выберите языки сайта и измените любой текст на сайте, включая тексты этого тура.]]></string>
-    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[Порядок приложений]]></string>
-    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Откройте это меню и выберите «Управление приложениями», чтобы переставить приложения или убрать ненужные. Отсюда же можно запустить этот тур снова.]]></string>
-    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Док]]></string>
-    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Недавно открытые приложения остаются здесь, в одном клике. В режиме редактирования приложение можно закрепить в доке.]]></string>
     <string name="_sys_tour_launcher_add_apps_title"><![CDATA[Магазин приложений]]></string>
     <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA сразу есть основные приложения. Остальные берите здесь: модули, шаблоны, языки и интеграции.]]></string>
     <string name="_sys_tour_step"><![CDATA[{0} из {1}]]></string>
 
     <string name="_sys_tour_back"><![CDATA[Назад]]></string>
     <string name="_sys_tour_close"><![CDATA[Закрыть тур]]></string>
-    <string name="_sys_tour_homepage_welcome_title"><![CDATA[Это главная страница]]></string>
-    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[Она наполняется вместе с сайтом. Добавьте приложения и расставьте блоки страницы в Студии, затем пригласите людей и опубликуйте что-нибудь.]]></string>
-    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Меню аккаунта]]></string>
-    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Здесь можно переключать профили, смотреть уведомления и открывать настройки аккаунта. Из этого меню можно запустить этот тур снова.]]></string>
 
     <string name="_sys_txt_api_key"><![CDATA[Ключ API]]></string>
     <string name="_sys_txt_auth_or"><![CDATA[или]]></string>
@@ -5025,4 +5007,27 @@
   <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string>
+  <string name="_sys_setup_dismiss"><![CDATA[Скрыть этот список]]></string>
+  <string name="_sys_setup_join_action"><![CDATA[Изменить]]></string>
+  <string name="_sys_setup_join_action_label"><![CDATA[Изменить, кто может присоединиться]]></string>
+  <string name="_sys_setup_join_closed"><![CDATA[Присоединиться к сайту нельзя: форма регистрации выключена.]]></string>
+  <string name="_sys_setup_join_invite"><![CDATA[Присоединиться к сайту могут только приглашённые.]]></string>
+  <string name="_sys_setup_join_open"><![CDATA[Присоединиться к сайту может любой.]]></string>
+  <string name="_sys_setup_progress"><![CDATA[Готово {0} из {1}]]></string>
+  <string name="_sys_setup_state_done"><![CDATA[, готово]]></string>
+  <string name="_sys_setup_state_todo"><![CDATA[, ещё не сделано]]></string>
+  <string name="_sys_setup_step_cover"><![CDATA[Добавьте обложку]]></string>
+  <string name="_sys_setup_step_cover_action"><![CDATA[Добавить обложку]]></string>
+  <string name="_sys_setup_step_cover_txt"><![CDATA[Она видна вверху главной страницы, которую гости видят первой.]]></string>
+  <string name="_sys_setup_step_logo"><![CDATA[Добавьте логотип]]></string>
+  <string name="_sys_setup_step_logo_action"><![CDATA[Добавить логотип]]></string>
+  <string name="_sys_setup_step_logo_txt"><![CDATA[Он виден в шапке сайта, в письмах и в приложениях.]]></string>
+  <string name="_sys_setup_step_post"><![CDATA[Напишите первую запись]]></string>
+  <string name="_sys_setup_step_post_action"><![CDATA[Написать запись]]></string>
+  <string name="_sys_setup_step_post_locked_txt"><![CDATA[Сначала создайте профиль, затем публикуйте от его имени.]]></string>
+  <string name="_sys_setup_step_post_txt"><![CDATA[Запись в ленте покажет новым участникам, о чём этот сайт.]]></string>
+  <string name="_sys_setup_step_profile"><![CDATA[Создайте свой профиль]]></string>
+  <string name="_sys_setup_step_profile_action"><![CDATA[Создать профиль]]></string>
+  <string name="_sys_setup_step_profile_txt"><![CDATA[От имени этого профиля вы публикуете и отвечаете на сайте.]]></string>
+  <string name="_sys_setup_title"><![CDATA[Настройте сайт]]></string>
 </resources>

@@ -1968,8 +1968,8 @@
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Email template footer]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Community name]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[The default name used to refer to your site in site texts, meta tags, emails and notifications.]]></string>
-    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[User Tour]]></string>
-    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[You can edit the steps and content of the User Tour in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string>
+    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Setup checklist on the homepage]]></string>
+    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Shows operators the steps a new site needs, until every step is done or the checklist is hidden. You can edit its texts in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_studio"><![CDATA[Studio Tour]]></string>
     <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[You can edit the steps and content of the Studio Tour in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner"><![CDATA[Smart App Banner]]></string>
@@ -3777,7 +3777,6 @@
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Design]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
     <string name="_sys_menu_item_title_terms"><![CDATA[Terms]]></string>
-    <string name="_sys_menu_item_title_tour"><![CDATA[Introduction Tour]]></string>
     <string name="_sys_menu_item_title_account_menu"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_account_profile_context"><![CDATA[Profiles]]></string>
     <string name="_sys_menu_item_title_account_dashboard"><![CDATA[Dashboard]]></string>
@@ -3821,6 +3820,7 @@
     <string name="_sys_menu_item_title_switch_profile"><![CDATA[Switch profile]]></string>
     <string name="_sys_menu_item_title_set_acl_level"><![CDATA[Set membership]]></string>
     <string name="_sys_menu_item_title_set_badges"><![CDATA[Set badges]]></string>
+    <string name="_sys_menu_item_title_setup"><![CDATA[Set up your site]]></string>
     <string name="_sys_menu_item_title_studio"><![CDATA[Studio]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Subscriptions]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share in Facebook]]></string>
@@ -3884,7 +3884,6 @@
     <string name="_sys_menu_item_title_system_switch_language"><![CDATA[Language]]></string>
     <string name="_sys_menu_item_title_system_switch_template"><![CDATA[Template]]></string>
     <string name="_sys_menu_item_title_system_terms"><![CDATA[Terms]]></string>
-    <string name="_sys_menu_item_title_system_tour"><![CDATA[Introduction Tour]]></string>
     <string name="_sys_menu_item_title_system_account_menu"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_system_account_profile_context"><![CDATA[Profiles]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard"><![CDATA[Dashboard]]></string>
@@ -3949,6 +3948,7 @@
     <string name="_sys_menu_item_title_system_search"><![CDATA[Search]]></string>
     <string name="_sys_menu_item_title_system_set_acl_level"><![CDATA[Set membership]]></string>
     <string name="_sys_menu_item_title_system_set_badges"><![CDATA[Set badges]]></string>
+    <string name="_sys_menu_item_title_system_setup"><![CDATA[Set up your site]]></string>
     <string name="_sys_menu_item_title_system_studio"><![CDATA[Studio]]></string>
     <string name="_sys_menu_item_title_system_subscriptions"><![CDATA[Subscriptions]]></string>
     <string name="_sys_menu_title_view_actions"><![CDATA[View Actions]]></string>
@@ -4726,39 +4726,21 @@
     <string name="_sys_template_mixed_mask"><![CDATA[{0} ({1})]]></string>
 
     <string name="_sys_tour_launcher_welcome_title"><![CDATA[Welcome to Studio]]></string>
-    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[Studio is where you set up your site: apps, design, pages, menus, forms, permissions and languages. This short tour shows where things are.]]></string>
-    <string name="_sys_tour_launcher_apps_title"><![CDATA[Your apps]]></string>
-    <string name="_sys_tour_launcher_apps_txt"><![CDATA[Each tile is an app: a module, a tool, a language or a template. Apps you install show up here.]]></string>
+    <string name="_sys_tour_launcher_welcome_txt"><![CDATA[Studio is where you set up your site. This short tour shows the apps to start with. You can start it again from your account menu.]]></string>
     <string name="_sys_tour_launcher_designer_title"><![CDATA[Designer]]></string>
     <string name="_sys_tour_launcher_designer_txt"><![CDATA[Set the logo, pick a template and edit the cover page that guests see first.]]></string>
     <string name="_sys_tour_launcher_accounts_title"><![CDATA[Accounts]]></string>
     <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Manage member accounts and choose who is an administrator or a moderator. They look after content and profiles on the site itself, not in Studio.]]></string>
-    <string name="_sys_tour_launcher_dashboard_title"><![CDATA[Dashboard]]></string>
-    <string name="_sys_tour_launcher_dashboard_txt"><![CDATA[See how the site is doing: the UNA version, storage use, server checks and cache.]]></string>
     <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Pages]]></string>
     <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Add, remove and rearrange blocks on any page, or create new pages. Visibility and SEO settings are here too.]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Permissions]]></string>
-    <string name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Create membership levels and choose what each level can do.]]></string>
-    <string name="_sys_tour_launcher_builder_forms_title"><![CDATA[Forms]]></string>
-    <string name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Change the fields of any form, the lists they use and how each form is shown.]]></string>
     <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Navigation]]></string>
     <string name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Edit the menus: add, reorder and hide links, change icons and choose who sees each item.]]></string>
-    <string name="_sys_tour_launcher_polyglot_title"><![CDATA[Polyglot]]></string>
-    <string name="_sys_tour_launcher_polyglot_txt"><![CDATA[Choose the site languages and edit any text on the site, including the texts of this tour.]]></string>
-    <string name="_sys_tour_launcher_reorganize_title"><![CDATA[Rearrange apps]]></string>
-    <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Open this menu and choose Manage Apps to move apps around or remove the ones you do not use. You can start this tour again from here.]]></string>
-    <string name="_sys_tour_launcher_favourites_title"><![CDATA[The Dock]]></string>
-    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Apps you opened recently stay here, one click away. In edit mode you can keep an app in the Dock.]]></string>
     <string name="_sys_tour_launcher_add_apps_title"><![CDATA[App Store]]></string>
     <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[UNA starts with the core apps. Get more here: modules, templates, languages and integrations.]]></string>
     <string name="_sys_tour_step"><![CDATA[{0} of {1}]]></string>
 
     <string name="_sys_tour_back"><![CDATA[Back]]></string>
     <string name="_sys_tour_close"><![CDATA[Close tour]]></string>
-    <string name="_sys_tour_homepage_welcome_title"><![CDATA[This is your homepage]]></string>
-    <string name="_sys_tour_homepage_welcome_txt"><![CDATA[It fills up as your site grows. Add apps and arrange page blocks in Studio, then invite people and post something.]]></string>
-    <string name="_sys_tour_homepage_account_menu_title"><![CDATA[Your account menu]]></string>
-    <string name="_sys_tour_homepage_account_menu_txt"><![CDATA[Switch profiles, check notifications and open your account settings here. You can start this tour again from this menu.]]></string>
 
     <string name="_sys_txt_api_key"><![CDATA[API Key]]></string>
     <string name="_sys_txt_auth_or"><![CDATA[or]]></string>
@@ -5112,4 +5094,27 @@
     <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string>
     <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string>
     <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string>
+    <string name="_sys_setup_dismiss"><![CDATA[Hide this checklist]]></string>
+    <string name="_sys_setup_join_action"><![CDATA[Change]]></string>
+    <string name="_sys_setup_join_action_label"><![CDATA[Change who can join]]></string>
+    <string name="_sys_setup_join_closed"><![CDATA[Nobody can join: the sign-up form is off.]]></string>
+    <string name="_sys_setup_join_invite"><![CDATA[Only people you invite can join this site.]]></string>
+    <string name="_sys_setup_join_open"><![CDATA[Anyone can join this site.]]></string>
+    <string name="_sys_setup_progress"><![CDATA[{0} of {1} done]]></string>
+    <string name="_sys_setup_state_done"><![CDATA[, done]]></string>
+    <string name="_sys_setup_state_todo"><![CDATA[, not done yet]]></string>
+    <string name="_sys_setup_step_cover"><![CDATA[Add a cover picture]]></string>
+    <string name="_sys_setup_step_cover_action"><![CDATA[Add cover]]></string>
+    <string name="_sys_setup_step_cover_txt"><![CDATA[It shows at the top of the homepage, which guests see first.]]></string>
+    <string name="_sys_setup_step_logo"><![CDATA[Add your logo]]></string>
+    <string name="_sys_setup_step_logo_action"><![CDATA[Add logo]]></string>
+    <string name="_sys_setup_step_logo_txt"><![CDATA[It shows in the site header, in emails and in the apps.]]></string>
+    <string name="_sys_setup_step_post"><![CDATA[Write the first post]]></string>
+    <string name="_sys_setup_step_post_action"><![CDATA[Write a post]]></string>
+    <string name="_sys_setup_step_post_locked_txt"><![CDATA[Create your profile first, then post as that profile.]]></string>
+    <string name="_sys_setup_step_post_txt"><![CDATA[A post in the feed shows new members what the site is about.]]></string>
+    <string name="_sys_setup_step_profile"><![CDATA[Create your profile]]></string>
+    <string name="_sys_setup_step_profile_action"><![CDATA[Create profile]]></string>
+    <string name="_sys_setup_step_profile_txt"><![CDATA[You post and reply on the site as this profile.]]></string>
+    <string name="_sys_setup_title"><![CDATA[Set up your site]]></string>
 </resources>
