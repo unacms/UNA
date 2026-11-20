@@ -144,7 +144,7 @@ The finish page lists three next steps. In this setup:
 
 - **Crontab line:** skip it. Cron already runs every minute in the `cron` container; anything UNA's cron prints shows in `docker compose logs -f cron`.
 - **Remove the `install` folder:** do it, from the repository folder: `rm -rf install`. Until then, every page of the site sends you to a page that asks you to remove it.
-- **Go to Studio:** you are already signed in as the administrator you created. Studio is at http://localhost/studio/ (with your port, if you set `UNA_PORT`), where you add apps and change settings.
+- **Go to Studio:** you are already signed in with the operator account you created. Studio is at http://localhost/studio/ (with your port, if you set `UNA_PORT`), where you add apps and change settings.
 
 `install` is part of the repository, so in a git checkout `git status` lists its files as deleted. Don't commit that deletion. `git checkout install` brings the folder back when you need the installer again, for example after a reset (see below).
 

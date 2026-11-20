@@ -3611,9 +3611,9 @@
 	<string name="_sys_inst_audit_warnings"><![CDATA[{0} предупреждений]]></string>
 	<string name="_sys_inst_back"><![CDATA[Назад]]></string>
 	<string name="_sys_inst_conf_desc"><![CDATA[{0}{1}<br />Пример: {2}]]></string>
-	<string name="_sys_inst_conf_desc_admin_email"><![CDATA[Ваш адрес электронной почты. С ним вы входите на сайт.]]></string>
+	<string name="_sys_inst_conf_desc_admin_email"><![CDATA[С ним вы входите на сайт, на него приходят уведомления сайта.]]></string>
 	<string name="_sys_inst_conf_desc_admin_pwd"><![CDATA[Не менее {0} символов.]]></string>
-	<string name="_sys_inst_conf_desc_admin_username"><![CDATA[Ваше имя на сайте.]]></string>
+	<string name="_sys_inst_conf_desc_admin_username"><![CDATA[Ваше собственное имя, а не роль.]]></string>
 	<string name="_sys_inst_conf_desc_db_host"><![CDATA[Хост сервера MySQL или MariaDB.]]></string>
 	<string name="_sys_inst_conf_desc_db_name"><![CDATA[Существующая пустая база данных.]]></string>
 	<string name="_sys_inst_conf_desc_db_port"><![CDATA[Оставьте пустым для порта по умолчанию.]]></string>
@@ -3639,9 +3639,9 @@
 	<string name="_sys_inst_conf_err_url_slash"><![CDATA[Адрес должен заканчиваться косой чертой (/).]]></string>
 	<string name="_sys_inst_conf_error"><![CDATA[Проверьте это значение.]]></string>
 	<string name="_sys_inst_conf_example"><![CDATA[Пример: {0}]]></string>
-	<string name="_sys_inst_conf_field_admin_email"><![CDATA[Email администратора]]></string>
-	<string name="_sys_inst_conf_field_admin_pwd"><![CDATA[Пароль админа]]></string>
-	<string name="_sys_inst_conf_field_admin_username"><![CDATA[Имя администратора]]></string>
+	<string name="_sys_inst_conf_field_admin_email"><![CDATA[Ваш email]]></string>
+	<string name="_sys_inst_conf_field_admin_pwd"><![CDATA[Пароль]]></string>
+	<string name="_sys_inst_conf_field_admin_username"><![CDATA[Ваше имя]]></string>
 	<string name="_sys_inst_conf_field_db_host"><![CDATA[Хост базы данных]]></string>
 	<string name="_sys_inst_conf_field_db_name"><![CDATA[База Данных - название]]></string>
 	<string name="_sys_inst_conf_field_db_port"><![CDATA[Порт базы данных]]></string>
@@ -3687,15 +3687,17 @@
 	<string name="_sys_inst_conf_modules_select_starter"><![CDATA[Стартовый набор]]></string>
 	<string name="_sys_inst_conf_modules_selected"><![CDATA[Выбрано: {0} из {1}]]></string>
 	<string name="_sys_inst_conf_next_apps"><![CDATA[Далее: приложения]]></string>
-	<string name="_sys_inst_conf_next_site"><![CDATA[Далее: сайт и администратор]]></string>
+	<string name="_sys_inst_conf_next_site"><![CDATA[Далее: сайт и ваша учётная запись]]></string>
 	<string name="_sys_inst_conf_no_example"><![CDATA[нет примера]]></string>
 	<string name="_sys_inst_conf_not_found"><![CDATA[<span class="bx-install-chip bx-install-chip-bad">Не определено</span>]]></string>
 	<string name="_sys_inst_conf_section_db_config"><![CDATA[База данных]]></string>
 	<string name="_sys_inst_conf_section_db_config_desc"><![CDATA[UNA хранит всё в базе данных MySQL или MariaDB. Сначала создайте пустую базу и пользователя для неё в панели хостинга.]]></string>
 	<string name="_sys_inst_conf_section_link_with_market"><![CDATA[Учётная запись UNA (необязательно)]]></string>
 	<string name="_sys_inst_conf_section_modules"><![CDATA[Язык, дизайн и приложения]]></string>
+	<string name="_sys_inst_conf_section_operator"><![CDATA[Ваша учётная запись оператора]]></string>
+	<string name="_sys_inst_conf_section_operator_desc"><![CDATA[Эта учётная запись управляет сайтом и Студией. Свой профиль на сайте у неё появится позже, когда вы его создадите.]]></string>
 	<string name="_sys_inst_conf_section_paths"><![CDATA[пути сайта]]></string>
-	<string name="_sys_inst_conf_section_site_info"><![CDATA[Сайт и администратор]]></string>
+	<string name="_sys_inst_conf_section_site_info"><![CDATA[Сайт]]></string>
 	<string name="_sys_inst_conf_submit"><![CDATA[Установить UNA]]></string>
 	<string name="_sys_inst_conf_submit_apps"><![CDATA[Установить UNA с приложениями: {0}]]></string>
 	<string name="_sys_inst_continue"><![CDATA[Продолжить]]></string>
@@ -3723,7 +3725,7 @@
 	<string name="_sys_inst_modules_state_failed"><![CDATA[ошибка]]></string>
 	<string name="_sys_inst_modules_state_skipped"><![CDATA[пропущено]]></string>
 	<string name="_sys_inst_modules_title"><![CDATA[Установка приложений]]></string>
-	<string name="_sys_inst_msg_admin_account_not_found"><![CDATA[Аккаунт админа не был найден по эл. адресу - {0}]]></string>
+	<string name="_sys_inst_msg_admin_account_not_found"><![CDATA[Учётная запись оператора не найдена по email: {0}]]></string>
 	<string name="_sys_inst_msg_db_err_connect"><![CDATA[Не удалось подключиться к базе данных. Проверьте хост, пользователя и пароль.]]></string>
 	<string name="_sys_inst_msg_db_err_select"><![CDATA[Такой базы данных нет, или у пользователя нет к ней доступа.]]></string>
 	<string name="_sys_inst_msg_file_read_failed"><![CDATA[Ошибка чтения файла: {0}]]></string>
@@ -3749,7 +3751,7 @@
 	<string name="_sys_inst_refresh"><![CDATA[Обновить]]></string>
 	<string name="_sys_inst_server_audit"><![CDATA[Аудит сервера]]></string>
 	<string name="_sys_inst_site_config"><![CDATA[Настройка сайта]]></string>
-	<string name="_sys_inst_site_config_lead"><![CDATA[Шаги 2–4: база данных, сайт и администратор, затем приложения.]]></string>
+	<string name="_sys_inst_site_config_lead"><![CDATA[Шаги 2–4: база данных, сайт и ваша учётная запись, затем приложения.]]></string>
 	<string name="_sys_inst_start_installation"><![CDATA[Начать установку]]></string>
 	<string name="_sys_inst_step_apps"><![CDATA[Приложения]]></string>
 	<string name="_sys_inst_step_database"><![CDATA[База данных]]></string>
@@ -3767,7 +3769,7 @@
 	<string name="_sys_inst_welcome_step_done"><![CDATA[Настройка заданий по расписанию и переход на сайт.]]></string>
 	<string name="_sys_inst_welcome_step_install"><![CDATA[UNA устанавливает приложения по одному.]]></string>
 	<string name="_sys_inst_welcome_step_server"><![CDATA[Проверка требований к серверу и прав на запись в папки UNA.]]></string>
-	<string name="_sys_inst_welcome_step_site"><![CDATA[Название и адрес сайта, учётная запись администратора.]]></string>
+	<string name="_sys_inst_welcome_step_site"><![CDATA[Название и адрес сайта, ваша учётная запись оператора.]]></string>
 	<string name="_sys_layout_1_column"><![CDATA[1 столбец]]></string>
         <string name="_sys_layout_1_column_thin"><![CDATA[1 столбец (узкий)]]></string>
         <string name="_sys_layout_1_column_half"><![CDATA[1 столбец (половина)]]></string>

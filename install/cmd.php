@@ -45,7 +45,7 @@ class BxDolInstallCmd
             'site_title' => 'UNA Test',
             'site_email' => 'no-reply@example.com',
             'admin_email' => 'admin@example.com',
-            'admin_username' => 'admin',
+            'admin_username' => 'Site Operator', // the operator's account; an account name, not a role
             'admin_password' => 'unauna',
             'language' => 'en',
             'modules' => 'persons', // comma separated module URIs, the web installer preselects a starter set instead

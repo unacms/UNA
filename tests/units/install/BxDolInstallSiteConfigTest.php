@@ -238,4 +238,26 @@ class BxDolInstallSiteConfigTest extends \PHPUnit\Framework\TestCase
             $this->assertStringContainsString('name="_sys_inst_welcome_step_' . $sStep . '"', $sEn);
         }
     }
+
+    /**
+     * The installer creates the site operator's account: it isn't called "admin", which is
+     * easily taken for the Administrator membership level or a profile.
+     */
+    public function testTheAccountIsTheOperatorsNotAnAdmin(): void
+    {
+        $sRoot = dirname(__DIR__, 3);
+
+        $this->assertStringNotContainsString("'admin_username' => 'admin'", file_get_contents($sRoot . '/install/cmd.php'));
+        $this->assertStringNotContainsString('UNA_ADMIN_USERNAME:-admin}', file_get_contents($sRoot . '/scripts/railway/entrypoint.sh'));
+
+        $sConfig = file_get_contents($sRoot . '/install/classes/BxDolInstallSiteConfig.php');
+        $this->assertDoesNotMatchRegularExpression("/'admin_username' => array\\([^)]*'ex' => 'admin'/s", $sConfig);
+
+        $sEn = file_get_contents($sRoot . '/modules/boonex/english/data/langs/system/en.xml');
+        foreach (array('_sys_inst_conf_field_admin_username', '_sys_inst_conf_field_admin_email', '_sys_inst_conf_field_admin_pwd', '_sys_inst_conf_section_site_info', '_sys_inst_conf_next_site') as $sKey) {
+            $this->assertMatchesRegularExpression('/name="' . $sKey . '"><!\[CDATA\[([^\]]*)\]\]>/', $sEn);
+            preg_match('/name="' . $sKey . '"><!\[CDATA\[([^\]]*)\]\]>/', $sEn, $m);
+            $this->assertStringNotContainsStringIgnoringCase('admin', $m[1], $sKey);
+        }
+    }
 }
