@@ -1552,6 +1552,28 @@ class BxBaseGrid extends BxDolGrid
     }
 
     /**
+     * Window the infinite grid asks for. A grid with no paginate GET names still scrolls:
+     * the data action then reads start and per_page.
+     */
+    protected function _agWindow()
+    {
+        $sStart = !empty($this->_aOptions['paginate_get_start']) ? (string)$this->_aOptions['paginate_get_start'] : 'start';
+        $sPer = !empty($this->_aOptions['paginate_get_per_page']) ? (string)$this->_aOptions['paginate_get_per_page'] : 'per_page';
+
+        $iStart = 0;
+        if (bx_get($sStart) !== false && ($iStartGet = (int)bx_get($sStart)) >= 0)
+            $iStart = $iStartGet;
+
+        $iPerPage = 10;
+        if (bx_get($sPer) !== false && ($iPerPageGet = (int)bx_get($sPer)) > 0)
+            $iPerPage = $iPerPageGet;
+        else if (!empty($this->_aOptions['paginate_per_page']))
+            $iPerPage = (int)$this->_aOptions['paginate_per_page'];
+
+        return [$sStart, $sPer, $iStart, $iPerPage];
+    }
+
+    /**
      * Page of rows for AG Grid. _bIsApi is on only while the cells are built, then put back,
      * so a web action does not start returning API blocks.
      */
@@ -1573,15 +1595,7 @@ class BxBaseGrid extends BxDolGrid
             $sOrderField = $this->_getOrderValue();
             $sOrderDir = 0 === strcasecmp('desc', (string)bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
 
-            $iStart = 0;
-            if (!empty($this->_aOptions['paginate_get_start']) && ($iStartGet = (int)bx_get($this->_aOptions['paginate_get_start'])) >= 0)
-                $iStart = $iStartGet;
-
-            $iPerPage = 10;
-            if (!empty($this->_aOptions['paginate_get_per_page']) && ($iPerPageGet = (int)bx_get($this->_aOptions['paginate_get_per_page'])) > 0)
-                $iPerPage = $iPerPageGet;
-            else if (!empty($this->_aOptions['paginate_per_page']))
-                $iPerPage = (int)$this->_aOptions['paginate_per_page'];
+            list(, , $iStart, $iPerPage) = $this->_agWindow();
 
             $aData = $this->_getData($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
             if (!is_array($aData))
@@ -1612,15 +1626,7 @@ class BxBaseGrid extends BxDolGrid
         $sOrderField = $this->_getOrderValue();
         $sOrderDir = 0 === strcasecmp('desc', (string)bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
 
-        $iStart = 0;
-        if (!empty($this->_aOptions['paginate_get_start']) && ($iStartGet = (int)bx_get($this->_aOptions['paginate_get_start'])) >= 0)
-            $iStart = $iStartGet;
-
-        $iPerPage = 10;
-        if (!empty($this->_aOptions['paginate_get_per_page']) && ($iPerPageGet = (int)bx_get($this->_aOptions['paginate_get_per_page'])) > 0)
-            $iPerPage = $iPerPageGet;
-        else if (!empty($this->_aOptions['paginate_per_page']))
-            $iPerPage = (int)$this->_aOptions['paginate_per_page'];
+        list($sStartName, $sPerName, $iStart, $iPerPage) = $this->_agWindow();
 
         $aQueryAppend = array_merge(is_array($this->_aQueryAppend) ? $this->_aQueryAppend : [], is_array($this->_aMarkers) ? $this->_aMarkers : []);
         if (!empty($this->_aQueryAppendExclude) && is_array($this->_aQueryAppendExclude))
@@ -1669,8 +1675,8 @@ class BxBaseGrid extends BxDolGrid
                 'csrf_token' => (string)BxDolForm::getCsrfToken(),
                 'sortable' => 0,
                 'sorting' => 0,
-                'paginate_get_start' => (string)$this->_aOptions['paginate_get_start'],
-                'paginate_get_per_page' => (string)$this->_aOptions['paginate_get_per_page'],
+                'paginate_get_start' => $sStartName,
+                'paginate_get_per_page' => $sPerName,
                 'start' => $iStart,
                 'per_page' => $iPerPage,
                 'filter' => $sFilter,
@@ -1719,19 +1725,12 @@ class BxBaseGrid extends BxDolGrid
                 ],
             ],
             'bx_if:display_footer' => [
-                'condition' => !empty($this->_aOptions['actions_bulk']) || $bReorder,
+                'condition' => !empty($this->_aOptions['actions_bulk']),
                 'content' => [
                     'bx_if:actions_bulk' => [
                         'condition' => !empty($this->_aOptions['actions_bulk']),
                         'content' => [
                             'actions_bulk' => $this->_getActions('bulk'),
-                        ],
-                    ],
-                    'bx_if:reorder' => [
-                        'condition' => $bReorder,
-                        'content' => [
-                            'paginate_prev' => _t('_sys_paginate_prev'),
-                            'paginate_next' => _t('_sys_paginate_next'),
                         ],
                     ],
                 ],

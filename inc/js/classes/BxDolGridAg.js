@@ -5,10 +5,9 @@
  * AG Grid (Community, MIT) for a grid whose sys_objects_grid.engine is 'ag'.
  * Quartz is the legacy CSS theme: template/css/grid_ag.css restyles it.
  *
- * Community has no server-side row model, and managed row dragging works only
- * on the client row model. A grid with field_order therefore loads one page
- * and drags rows inside it (the same page the classic reorder action saves).
- * A grid without field_order uses the infinite row model.
+ * Every engine=ag grid uses the infinite row model: blocks load as the grid is
+ * scrolled, there is no pager. Community managed row dragging needs the client
+ * row model, so an order column is not a drag handle here.
  *
  * Actions, bulk selection and the secret eye go through the BxDolGrid instance
  * kept in glGrids, so Studio scripts that call reload() and processJson()
@@ -25,12 +24,8 @@ function BxDolGridAg(oCfg, oBx) {
     this._iStart = parseInt(oCfg.start, 10) || 0;
     this._iPerPage = parseInt(oCfg.per_page, 10) || 10;
     this._iTotal = 0;
-    this._bReorder = parseInt(oCfg.sortable, 10) === 1;
-    this._bMuteSort = false;
-    this._bReady = false;
     this._sAppliedField = null;
     this._sAppliedDir = null;
-    this._iLoading = 0;
 
     var oBxOpts = oCfg.bx || {};
     this._sStartGet = oBxOpts.paginate_get_start || '';
@@ -40,7 +35,6 @@ function BxDolGridAg(oCfg, oBx) {
     this._sOrderGetDir = oBxOpts.order_get_dir || 'order_dir';
 
     this._adoptBx();
-    this._bindPager();
     this._mount();
 }
 
@@ -88,29 +82,6 @@ BxDolGridAg.prototype._adoptBx = function () {
     };
 };
 
-BxDolGridAg.prototype._bindPager = function () {
-    if (!this._bReorder)
-        return;
-
-    var e = document.querySelector('#' + this._sWrap + ' .bx-grid-ag-pager');
-    if (!e)
-        return;
-
-    var self = this;
-    e.querySelector('.bx-grid-ag-prev').addEventListener('click', function () {
-        if (this.disabled)
-            return;
-        self._iStart = Math.max(0, self._iStart - self._iPerPage);
-        self.refresh();
-    });
-    e.querySelector('.bx-grid-ag-next').addEventListener('click', function () {
-        if (this.disabled)
-            return;
-        self._iStart = self._iStart + self._iPerPage;
-        self.refresh();
-    });
-};
-
 BxDolGridAg.prototype._mount = function () {
     var eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
     if (!eGrid || typeof bxAgGrid === 'undefined' || typeof bxAgGrid.createGrid !== 'function')
@@ -128,58 +99,31 @@ BxDolGridAg.prototype._mount = function () {
         },
         suppressMovableColumns: true,
         suppressCellFocus: true,
-        headerHeight: 40,
-        rowHeight: 48,
-        animateRows: this._bReorder,
+        headerHeight: 44,
+        rowHeight: 52,
+        rowModelType: 'infinite',
+        cacheBlockSize: this._iPerPage,
+        infiniteInitialRowCount: this._iPerPage,
         overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">' + this._esc(this._oCfg.empty || '') + '</span>',
-        onGridReady: function (e) {
-            self._oApi = e.api;
-            self._bReady = true;
-            if (self._bReorder)
-                self._loadClient();
-        },
-        onSortChanged: function () {
-            if (!self._bReady || self._bMuteSort || !self._bReorder)
-                return;
-            var oSort = self._sort();
-            if (oSort.field === self._sAppliedField && oSort.dir === self._sAppliedDir)
-                return;
-            self._iStart = 0;
-            self._loadClient();
-        },
-        onSelectionChanged: function () {
-            self._syncChecks();
-        },
-        onRowDragEnd: function () {
-            self._saveOrder();
-        }
-    };
-
-    if (this._bReorder) {
-        oOptions.rowModelType = 'clientSide';
-        oOptions.rowData = [];
-        oOptions.rowDragManaged = true;
-    } else {
-        // Infinite row model asks the server per block. cacheBlockSize is that page.
-        // successCallback's lastRow is the row count (assigned to rowCount), so pass total.
-        oOptions.rowModelType = 'infinite';
-        oOptions.cacheBlockSize = this._iPerPage;
-        oOptions.infiniteInitialRowCount = this._iPerPage;
-        oOptions.maxBlocksInCache = 5;
-        oOptions.datasource = {
+        datasource: {
             getRows: function (params) {
                 self._getRows(params);
             }
-        };
-    }
+        },
+        onGridReady: function (e) {
+            self._oApi = e.api;
+        },
+        onSelectionChanged: function () {
+            self._syncChecks();
+        }
+    };
 
     if (this._hasCheckbox()) {
         oOptions.rowSelection = {
             mode: 'multiRow',
             checkboxes: true,
-            headerCheckbox: this._bReorder,
-            enableClickSelection: false,
-            selectAll: 'currentPage'
+            headerCheckbox: false,
+            enableClickSelection: false
         };
         oOptions.selectionColumnDef = {
             width: 52,
@@ -211,14 +155,14 @@ BxDolGridAg.prototype._columns = function () {
 
     for (var i = 0; i < aCfg.length; i++) {
         var col = aCfg[i];
-        if (col.kind === 'checkbox')
+        if (col.kind === 'checkbox' || col.kind === 'order')
             continue;
 
         var oCol = {
             colId: col.name,
             field: col.name,
             headerName: col.title || '',
-            sortable: parseInt(col.sortable, 10) === 1 && col.kind !== 'order',
+            sortable: parseInt(col.sortable, 10) === 1,
             filter: false,
             suppressHeaderMenuButton: true,
             cellDataType: false,
@@ -230,15 +174,7 @@ BxDolGridAg.prototype._columns = function () {
         if (sSortField && sSortField === col.name && oCol.sortable)
             oCol.sort = sSortDir;
 
-        if (col.kind === 'order') {
-            oCol.rowDrag = true;
-            oCol.sortable = false;
-            oCol.width = 48;
-            oCol.maxWidth = 56;
-            oCol.flex = 0;
-            oCol.pinned = 'left';
-            oCol.resizable = false;
-        } else if (col.controls && col.name === 'actions') {
+        if (col.controls && col.name === 'actions') {
             oCol.width = 168;
             oCol.minWidth = 96;
             oCol.flex = 0;
@@ -275,26 +211,8 @@ BxDolGridAg.prototype._size = function (sWidth) {
 };
 
 BxDolGridAg.prototype.refresh = function () {
-    if (!this._oApi)
-        return;
-
-    if (this._bReorder)
-        this._loadClient();
-    else if (this._oApi.purgeInfiniteCache)
+    if (this._oApi && this._oApi.purgeInfiniteCache)
         this._oApi.purgeInfiniteCache();
-};
-
-BxDolGridAg.prototype._loadClient = function () {
-    var self = this;
-    var oSort = this._sort();
-    this._fetch(this._iStart, this._iPerPage, oSort, function (o) {
-        self._setTotal(o);
-        self._bMuteSort = true;
-        self._oApi.setGridOption('rowData', o.data || []);
-        self._bMuteSort = false;
-        self._syncChecks();
-        self._renderPager();
-    });
 };
 
 BxDolGridAg.prototype._getRows = function (params) {
@@ -309,6 +227,7 @@ BxDolGridAg.prototype._getRows = function (params) {
 
     this._fetch(iStart, iPer, oSort, function (o) {
         self._setTotal(o);
+        // lastRow is stored as the row count, so this is the server total.
         params.successCallback(o.data || [], typeof o.total === 'number' ? o.total : 0);
     }, function () {
         params.failCallback();
@@ -316,15 +235,10 @@ BxDolGridAg.prototype._getRows = function (params) {
 };
 
 BxDolGridAg.prototype._fetch = function (iStart, iPerPage, oSort, fOk, fFail) {
-    var self = this;
     this._applySort(oSort);
     this._iStart = iStart;
     if (this._oBx)
         this._oBx._oOptions.start = iStart;
-
-    this._iLoading++;
-    if (this._oBx)
-        this._oBx.loading(true);
 
     jQuery.getJSON(sUrlRoot + 'grid.php', this._query(iStart, iPerPage))
         .done(function (o) {
@@ -334,11 +248,6 @@ BxDolGridAg.prototype._fetch = function (iStart, iPerPage, oSort, fOk, fFail) {
         .fail(function () {
             if (typeof fFail === 'function')
                 fFail();
-        })
-        .always(function () {
-            self._iLoading--;
-            if (self._iLoading <= 0 && self._oBx)
-                self._oBx.loading(false);
         });
 };
 
@@ -357,38 +266,12 @@ BxDolGridAg.prototype._query = function (iStart, iPerPage) {
         o[this._sOrderGetField] = this._sAppliedField;
         o[this._sOrderGetDir] = this._sAppliedDir || 'ASC';
     }
-    if (this._sStartGet)
-        o[this._sStartGet] = iStart;
-    if (this._sPerPageGet)
-        o[this._sPerPageGet] = iPerPage;
+    o[this._sStartGet || 'start'] = iStart;
+    o[this._sPerPageGet || 'per_page'] = iPerPage;
     if (this._oBx && this._oBx._sCsrfToken)
         o.csrf_token = this._oBx._sCsrfToken;
     o._r = Math.random();
     return o;
-};
-
-BxDolGridAg.prototype._sort = function () {
-    if (this._oApi && this._oApi.getColumnState) {
-        var aState = this._oApi.getColumnState() || [];
-        if (aState.length) {
-            for (var i = 0; i < aState.length; i++) {
-                if (aState[i].sort)
-                    return {
-                        field: aState[i].colId,
-                        dir: aState[i].sort === 'desc' ? 'DESC' : 'ASC'
-                    };
-            }
-            return { field: '', dir: 'ASC' };
-        }
-    }
-
-    if (this._oCfg.sorting_field)
-        return {
-            field: this._oCfg.sorting_field,
-            dir: String(this._oCfg.sorting_dir || '').toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
-        };
-
-    return { field: '', dir: 'ASC' };
 };
 
 BxDolGridAg.prototype._applySort = function (oSort) {
@@ -410,20 +293,6 @@ BxDolGridAg.prototype._setTotal = function (o) {
         e.textContent = o.total_f;
 };
 
-BxDolGridAg.prototype._renderPager = function () {
-    var e = document.querySelector('#' + this._sWrap + ' .bx-grid-ag-pager');
-    if (!e)
-        return;
-
-    var iTotal = this._iTotal;
-    var iFrom = iTotal ? this._iStart + 1 : 0;
-    var iTo = Math.min(this._iStart + this._iPerPage, iTotal);
-    e.style.display = '';
-    e.querySelector('.bx-grid-ag-page').textContent = iFrom + '-' + iTo + ' / ' + iTotal;
-    e.querySelector('.bx-grid-ag-prev').disabled = this._iStart <= 0;
-    e.querySelector('.bx-grid-ag-next').disabled = this._iStart + this._iPerPage >= iTotal;
-};
-
 BxDolGridAg.prototype._syncChecks = function () {
     var e = document.getElementById('bx-grid-table-' + this._sObject);
     if (!e || !this._oApi || !this._oApi.getSelectedRows)
@@ -443,25 +312,6 @@ BxDolGridAg.prototype._syncChecks = function () {
         oInput.value = aRows[i][sField];
         e.appendChild(oInput);
     }
-};
-
-BxDolGridAg.prototype._saveOrder = function () {
-    if (!this._oApi || !this._oBx || !this._oApi.forEachNode)
-        return;
-
-    var sField = this._sFieldId;
-    var a = [];
-    this._oApi.forEachNode(function (oNode) {
-        if (oNode.data && oNode.data[sField] != null)
-            a.push(encodeURIComponent(oNode.data[sField]));
-    });
-
-    var sName = encodeURIComponent(this._sObject + '_row[]');
-    var sData = '';
-    for (var i = 0; i < a.length; i++)
-        sData += (sData ? '&' : '') + sName + '=' + a[i];
-
-    this._oBx.action('reorder', {}, sData, true);
 };
 
 BxDolGridAg.prototype._esc = function (s) {

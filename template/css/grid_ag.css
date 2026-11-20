@@ -1,45 +1,140 @@
 /*
- * AG Grid Quartz, restyled from UNA. Quartz reads --ag-* on .ag-theme-quartz.
- * Tailwind 3 does not publish its palette as variables, so the colours below are that palette.
- * Radius comes from the template (--bx-radius-lg).
+ * AG Grid Quartz, drawn like the Studio list: a white card, a quiet header,
+ * horizontal rules only, green switches, blue links and a solid action button.
+ * Tailwind 3 does not publish its palette as variables, so the colours are that palette.
  */
+.bx-grid-ag-wrap {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    overflow: hidden;
+}
+
+.bx-grid-ag-wrap .bx-grid-header {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-cnt {
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header div.bx-form-element-wrapper {
+    width: 18rem;
+    max-width: 100%;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter input[type="text"] {
+    width: 100%;
+    height: 2.25rem;
+    padding: 0 0.75rem 0 2.15rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.7rem;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3-3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0.7rem 50%;
+    background-size: 1rem;
+    color: #111827;
+    box-shadow: none;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter input[type="text"]:focus {
+    border-color: #93c5fd;
+    outline: 2px solid #dbeafe;
+    outline-offset: 0;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-counter {
+    flex-grow: 0;
+    color: #6b7280;
+    font-size: 0.8125rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-independent {
+    margin-left: auto;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn {
+    height: 2.25rem;
+    padding: 0 0.9rem;
+    border: 0;
+    border-radius: 0.7rem;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: none;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn:hover {
+    background: #1d4ed8;
+    color: #fff;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn u {
+    color: inherit;
+    text-decoration: none;
+}
+
 .bx-grid-ag.ag-theme-quartz {
     --bx-grid-ag-bg: #fff;
-    --bx-grid-ag-fg: #1f2937;
-    --bx-grid-ag-muted: #4b5563;
-    --bx-grid-ag-header: #f9fafb;
-    --bx-grid-ag-border: #e5e7eb;
-    --bx-grid-ag-accent: #1d4ed8;
+    --bx-grid-ag-fg: #111827;
+    --bx-grid-ag-muted: #6b7280;
+    --bx-grid-ag-header: #fff;
+    --bx-grid-ag-border: #f1f5f9;
+    --bx-grid-ag-accent: #2563eb;
     --bx-grid-ag-selected: #eff6ff;
-    --bx-grid-ag-hover: rgb(0 0 0 / 0.04);
-    --bx-grid-ag-radius: var(--bx-radius-lg, 0.5rem);
+    --bx-grid-ag-hover: #f8fafc;
+    --bx-grid-ag-radius: 0;
 
     --ag-active-color: var(--bx-grid-ag-accent);
     --ag-background-color: var(--bx-grid-ag-bg);
     --ag-foreground-color: var(--bx-grid-ag-fg);
+    --ag-header-foreground-color: var(--bx-grid-ag-muted);
     --ag-secondary-foreground-color: var(--bx-grid-ag-muted);
     --ag-border-color: var(--bx-grid-ag-border);
     --ag-header-background-color: var(--bx-grid-ag-header);
+    --ag-odd-row-background-color: transparent;
     --ag-row-hover-color: var(--bx-grid-ag-hover);
     --ag-selected-row-background-color: var(--bx-grid-ag-selected);
     --ag-font-family: inherit;
     --ag-font-size: 14px;
-    --ag-border-radius: var(--bx-grid-ag-radius);
-    --ag-wrapper-border-radius: var(--bx-grid-ag-radius);
+    --ag-cell-horizontal-padding: 14px;
+    --ag-header-column-separator-display: none;
+    --ag-header-column-resize-handle-display: none;
+    --ag-borders: none;
+    --ag-row-border-style: solid;
+    --ag-row-border-width: 1px;
+    --ag-row-border-color: #f1f5f9;
+    --ag-checkbox-border-radius: 4px;
+    --ag-border-radius: 0;
+    --ag-wrapper-border-radius: 0;
     color-scheme: light;
 }
 
-html.dark .bx-grid-ag.ag-theme-quartz,
-.dark .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: #1f2937;
-    --bx-grid-ag-fg: #e5e7eb;
-    --bx-grid-ag-muted: #9ca3af;
-    --bx-grid-ag-header: #111827;
-    --bx-grid-ag-border: #374151;
-    --bx-grid-ag-accent: #60a5fa;
-    --bx-grid-ag-selected: #1e3a8a;
-    --bx-grid-ag-hover: rgb(255 255 255 / 0.06);
-    color-scheme: dark;
+.bx-grid-ag.ag-theme-quartz .ag-root-wrapper {
+    border: 0;
+    border-radius: 0;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell,
+.bx-grid-ag.ag-theme-quartz .ag-cell {
+    border-right: 0;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
+    border-color: transparent;
 }
 
 .bx-grid-ag-wrap .bx-grid-ag {
@@ -54,18 +149,81 @@ html.dark .bx-grid-ag.ag-theme-quartz,
     height: 100%;
     min-width: 0;
     overflow: hidden;
-    gap: 0.25rem;
+    gap: 0.35rem;
+    color: #111827;
 }
 
 .bx-grid-ag .bx-grid-ag-cell a {
-    color: var(--bx-grid-ag-accent, #1d4ed8);
+    color: #2563eb;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.bx-grid-ag .bx-grid-ag-cell a:hover {
+    color: #1d4ed8;
+}
+
+.bx-grid-ag .bx-switcher-cont button {
+    width: 2.25rem;
+    height: 1.25rem;
+    border: 0;
+    background: #e5e7eb;
+    box-shadow: none;
+}
+
+.bx-grid-ag .bx-switcher-cont button span {
+    width: 1rem;
+    height: 1rem;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.16);
+    transform: translateX(0.125rem);
+}
+
+.bx-grid-ag .bx-switcher-cont.on button {
+    background: #22c55e;
+}
+
+.bx-grid-ag .bx-switcher-cont.on button span {
+    transform: translateX(1.05rem);
+}
+
+.bx-grid-ag .bx-switcher-cont.off button {
+    background: #e5e7eb;
 }
 
 .bx-grid-ag .bx-grid-ag-actions {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     flex-wrap: nowrap;
-    gap: 0.25rem;
+    gap: 0.15rem;
+    width: 100%;
+}
+
+.bx-grid-ag .bx-grid-ag-actions .bx-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    margin: 0;
+    padding: 0 0.35rem;
+    border: 0;
+    border-radius: 0.55rem;
+    background: transparent;
+    color: #6b7280;
+    box-shadow: none;
+}
+
+.bx-grid-ag .bx-grid-ag-actions .bx-btn:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.bx-grid-ag .bx-grid-ag-actions .bx-btn u {
+    color: inherit;
+    text-decoration: none;
+    font-size: 13px;
 }
 
 .bx-grid-ag .bx-grid-ag-profile {
@@ -73,21 +231,92 @@ html.dark .bx-grid-ag.ag-theme-quartz,
     align-items: center;
     gap: 0.5rem;
     min-width: 0;
+    color: #111827;
+    font-weight: 500;
 }
 
 .bx-grid-ag .bx-grid-ag-profile img {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
     border-radius: 9999px;
     object-fit: cover;
 }
 
-.bx-grid-ag-wrap .bx-grid-ag-pager {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.bx-grid-ag-wrap .bx-grid-footer .bx-def-hr {
+    display: none;
 }
 
-.bx-grid-ag-wrap .bx-grid-ag-page {
-    color: var(--bx-grid-ag-muted, #4b5563);
+.bx-grid-ag-wrap .bx-grid-footer-cnt {
+    padding: 0.65rem 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+html.dark .bx-grid-ag-wrap,
+.dark .bx-grid-ag-wrap {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: none;
+}
+
+html.dark .bx-grid-ag-wrap .bx-grid-header,
+.dark .bx-grid-ag-wrap .bx-grid-header,
+html.dark .bx-grid-ag-wrap .bx-grid-footer-cnt,
+.dark .bx-grid-ag-wrap .bx-grid-footer-cnt {
+    border-color: #374151;
+}
+
+html.dark .bx-grid-ag-wrap .bx-grid-header-controls-filter input[type="text"],
+.dark .bx-grid-ag-wrap .bx-grid-header-controls-filter input[type="text"] {
+    background-color: #111827;
+    border-color: #374151;
+    color: #e5e7eb;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz,
+.dark .bx-grid-ag.ag-theme-quartz {
+    --bx-grid-ag-bg: #1f2937;
+    --bx-grid-ag-fg: #e5e7eb;
+    --bx-grid-ag-muted: #9ca3af;
+    --bx-grid-ag-header: #1f2937;
+    --bx-grid-ag-border: #374151;
+    --bx-grid-ag-accent: #60a5fa;
+    --bx-grid-ag-selected: #1e3a5f;
+    --bx-grid-ag-hover: rgb(255 255 255 / 0.04);
+    color-scheme: dark;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz .ag-header,
+.dark .bx-grid-ag.ag-theme-quartz .ag-header {
+    border-bottom-color: #374151;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text,
+.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    color: #9ca3af;
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-cell,
+.dark .bx-grid-ag .bx-grid-ag-cell {
+    color: #e5e7eb;
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-cell a,
+.dark .bx-grid-ag .bx-grid-ag-cell a {
+    color: #60a5fa;
+}
+
+html.dark .bx-grid-ag .bx-switcher-cont.off button,
+.dark .bx-grid-ag .bx-switcher-cont.off button {
+    background: #4b5563;
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-actions .bx-btn:hover,
+.dark .bx-grid-ag .bx-grid-ag-actions .bx-btn:hover {
+    background: #374151;
+    color: #f9fafb;
+}
+
+html.dark .bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn,
+.dark .bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn {
+    background: #2563eb;
 }
