@@ -67,6 +67,9 @@
 	<string name="_bx_messenger_menu_new_chat_sys_title"><![CDATA[Кнопка болталки]]></string>
 	<string name="_bx_messenger_menu_new_chat_action_title"><![CDATA[Сообщение]]></string>
 	<string name="_bx_messenger_home_page_all_members_block"><![CDATA[Кричалка]]></string>
+	<string name="_bx_messenger_informer_no_server"><![CDATA[Новые сообщения появляются после обновления страницы.]]></string>
+	<string name="_bx_messenger_informer_no_server_action"><![CDATA[Настройки мессенджера]]></string>
+	<string name="_bx_messenger_informer_no_server_operator"><![CDATA[Сообщения не приходят в реальном времени: у мессенджера нет сервера Jot. Укажите его адрес в настройках мессенджера.]]></string>
 	<string name="_bx_messenger_friends_page_all_friends_block"><![CDATA[Разговор друзей]]></string>
 	<string name="_bx_messenger_notification_request"><![CDATA[Вы не хотели бы получать оповещение о новых сообщениях?]]></string>
 	<string name="_bx_messenger_notification_request_yes"><![CDATA[Да]]></string>

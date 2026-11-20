@@ -66,6 +66,9 @@
 	<string name="_bx_messenger_menu_new_chat_sys_title"><![CDATA[Messenger button]]></string>	
 	<string name="_bx_messenger_menu_new_chat_action_title"><![CDATA[Message]]></string>	
 	<string name="_bx_messenger_home_page_all_members_block"><![CDATA[Shoutbox]]></string>
+	<string name="_bx_messenger_informer_no_server"><![CDATA[New messages show up when you reload the page.]]></string>
+	<string name="_bx_messenger_informer_no_server_action"><![CDATA[Messenger settings]]></string>
+	<string name="_bx_messenger_informer_no_server_operator"><![CDATA[Messages don't arrive live: Messenger has no Jot server. Set its URL in Messenger settings.]]></string>
 	<string name="_bx_messenger_friends_page_all_friends_block"><![CDATA[My Friends talk]]></string>		
 	<string name="_bx_messenger_notification_request"><![CDATA[Would you like to get notifications about new messages?]]></string>
 	<string name="_bx_messenger_notification_request_yes"><![CDATA[Yes]]></string>	

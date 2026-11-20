@@ -3652,13 +3652,8 @@
                     _oMessenger.oRTWSF = undefined;
                 };
 
-            } else {
-                console.log('Real-time frameworks was not initialized');
-                const { serverErrorArea } = window.oMessengerSelectors.HISTORY_INFO;
-                $(infoArea).fadeIn();
-                $(typingInfoArea).parent().hide();
-                $(serverErrorArea).show();
             }
+            // without a Jot server the page's informer says that new messages show after a reload (BxMessengerModule::addNoServerInformer)
 
             /* Init sockets settings end */
 
