@@ -1,0 +1,93 @@
+/*
+ * AG Grid Quartz, restyled from UNA. Quartz reads --ag-* on .ag-theme-quartz.
+ * Tailwind 3 does not publish its palette as variables, so the colours below are that palette.
+ * Radius comes from the template (--bx-radius-lg).
+ */
+.bx-grid-ag.ag-theme-quartz {
+    --bx-grid-ag-bg: #fff;
+    --bx-grid-ag-fg: #1f2937;
+    --bx-grid-ag-muted: #4b5563;
+    --bx-grid-ag-header: #f9fafb;
+    --bx-grid-ag-border: #e5e7eb;
+    --bx-grid-ag-accent: #1d4ed8;
+    --bx-grid-ag-selected: #eff6ff;
+    --bx-grid-ag-hover: rgb(0 0 0 / 0.04);
+    --bx-grid-ag-radius: var(--bx-radius-lg, 0.5rem);
+
+    --ag-active-color: var(--bx-grid-ag-accent);
+    --ag-background-color: var(--bx-grid-ag-bg);
+    --ag-foreground-color: var(--bx-grid-ag-fg);
+    --ag-secondary-foreground-color: var(--bx-grid-ag-muted);
+    --ag-border-color: var(--bx-grid-ag-border);
+    --ag-header-background-color: var(--bx-grid-ag-header);
+    --ag-row-hover-color: var(--bx-grid-ag-hover);
+    --ag-selected-row-background-color: var(--bx-grid-ag-selected);
+    --ag-font-family: inherit;
+    --ag-font-size: 14px;
+    --ag-border-radius: var(--bx-grid-ag-radius);
+    --ag-wrapper-border-radius: var(--bx-grid-ag-radius);
+    color-scheme: light;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz,
+.dark .bx-grid-ag.ag-theme-quartz {
+    --bx-grid-ag-bg: #1f2937;
+    --bx-grid-ag-fg: #e5e7eb;
+    --bx-grid-ag-muted: #9ca3af;
+    --bx-grid-ag-header: #111827;
+    --bx-grid-ag-border: #374151;
+    --bx-grid-ag-accent: #60a5fa;
+    --bx-grid-ag-selected: #1e3a8a;
+    --bx-grid-ag-hover: rgb(255 255 255 / 0.06);
+    color-scheme: dark;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag {
+    width: 100%;
+    height: min(40rem, calc(100vh - 14rem));
+    min-height: 16rem;
+}
+
+.bx-grid-ag .bx-grid-ag-cell {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+    gap: 0.25rem;
+}
+
+.bx-grid-ag .bx-grid-ag-cell a {
+    color: var(--bx-grid-ag-accent, #1d4ed8);
+}
+
+.bx-grid-ag .bx-grid-ag-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+}
+
+.bx-grid-ag .bx-grid-ag-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.bx-grid-ag .bx-grid-ag-profile img {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    object-fit: cover;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag-pager {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag-page {
+    color: var(--bx-grid-ag-muted, #4b5563);
+}

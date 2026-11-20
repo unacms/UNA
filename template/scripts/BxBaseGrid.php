@@ -81,6 +81,15 @@ class BxBaseGrid extends BxDolGrid
         ]);
     }
 
+    /**
+     * Rows for an AG Grid (engine 'ag'): the same page, filter and order as the classic grid,
+     * cells in the shape decodeDataAPI already returns. The request itself stays a web request.
+     */
+    public function performActionDataAg()
+    {
+        echoJson($this->_getDataAg());
+    }
+
     public function performActionLoadMore()
     {
         $this->performActionDisplay();
@@ -206,6 +215,10 @@ class BxBaseGrid extends BxDolGrid
 
     public function getCode ($isDisplayHeader = true)
     {
+        // 'ag' is drawn by AG Grid. Every other engine, including empty, keeps the HTML grid below.
+        if ($this->_isAgEngine())
+            return $this->_getCodeAg($isDisplayHeader);
+
         $this->_replaceMarkers ();
 
         if ($isDisplayHeader && empty($this->_aOptions['paginate_url'])) {
@@ -1531,6 +1544,230 @@ class BxBaseGrid extends BxDolGrid
         $sFieldId = $this->_aOptions['field_id'];
         $sQuery = $oDb->prepare("UPDATE `{$sTable}` SET `{$sFieldActiveApi}` = ? WHERE `{$sFieldId}` = ?", $this->_switcherChecked2State($isChecked), $mixedId);
         return $oDb->query($sQuery);
+    }
+
+    protected function _isAgEngine()
+    {
+        return isset($this->_aOptions['engine']) && $this->_aOptions['engine'] === 'ag';
+    }
+
+    /**
+     * Page of rows for AG Grid. _bIsApi is on only while the cells are built, then put back,
+     * so a web action does not start returning API blocks.
+     */
+    protected function _getDataAg()
+    {
+        if (!$this->_isAgEngine())
+            return ['data' => [], 'total' => 0];
+
+        $this->_replaceMarkers();
+
+        $bWasApi = $this->_bIsApi;
+        $iShowTotal = isset($this->_aOptions['show_total_count']) ? $this->_aOptions['show_total_count'] : 0;
+        $this->_bIsApi = true;
+        // The total is counted only when this option is on. Infinite row model needs it either way.
+        $this->_aOptions['show_total_count'] = 1;
+
+        try {
+            $sFilter = $this->_getFilterValue();
+            $sOrderField = $this->_getOrderValue();
+            $sOrderDir = 0 === strcasecmp('desc', (string)bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
+
+            $iStart = 0;
+            if (!empty($this->_aOptions['paginate_get_start']) && ($iStartGet = (int)bx_get($this->_aOptions['paginate_get_start'])) >= 0)
+                $iStart = $iStartGet;
+
+            $iPerPage = 10;
+            if (!empty($this->_aOptions['paginate_get_per_page']) && ($iPerPageGet = (int)bx_get($this->_aOptions['paginate_get_per_page'])) > 0)
+                $iPerPage = $iPerPageGet;
+            else if (!empty($this->_aOptions['paginate_per_page']))
+                $iPerPage = (int)$this->_aOptions['paginate_per_page'];
+
+            $aData = $this->_getData($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
+            if (!is_array($aData))
+                $aData = [];
+
+            $aResult = [
+                'data' => array_values($this->decodeDataAPI($aData)),
+                'total' => (int)$this->_iTotalCount,
+            ];
+            if ((int)$iShowTotal === 1)
+                $aResult['total_f'] = $this->_getCounter();
+
+            return $aResult;
+        } finally {
+            $this->_bIsApi = $bWasApi;
+            $this->_aOptions['show_total_count'] = $iShowTotal;
+        }
+    }
+
+    protected function _getCodeAg($isDisplayHeader = true)
+    {
+        $this->_replaceMarkers();
+
+        if ($isDisplayHeader && empty($this->_aOptions['paginate_url']))
+            $this->resetQueryParams();
+
+        $sFilter = $this->_getFilterValue();
+        $sOrderField = $this->_getOrderValue();
+        $sOrderDir = 0 === strcasecmp('desc', (string)bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
+
+        $iStart = 0;
+        if (!empty($this->_aOptions['paginate_get_start']) && ($iStartGet = (int)bx_get($this->_aOptions['paginate_get_start'])) >= 0)
+            $iStart = $iStartGet;
+
+        $iPerPage = 10;
+        if (!empty($this->_aOptions['paginate_get_per_page']) && ($iPerPageGet = (int)bx_get($this->_aOptions['paginate_get_per_page'])) > 0)
+            $iPerPage = $iPerPageGet;
+        else if (!empty($this->_aOptions['paginate_per_page']))
+            $iPerPage = (int)$this->_aOptions['paginate_per_page'];
+
+        $aQueryAppend = array_merge(is_array($this->_aQueryAppend) ? $this->_aQueryAppend : [], is_array($this->_aMarkers) ? $this->_aMarkers : []);
+        if (!empty($this->_aQueryAppendExclude) && is_array($this->_aQueryAppendExclude))
+            $aQueryAppend = array_diff_key($aQueryAppend, array_flip($this->_aQueryAppendExclude));
+
+        $aOrderFields = $this->_getOrderFields();
+        $aFields = !empty($this->_aOptions['fields']) && is_array($this->_aOptions['fields']) ? $this->_aOptions['fields'] : [];
+        $aColumns = [];
+        foreach ($aFields as $sKey => $aField) {
+            $sTitle = isset($aField['title']) ? $aField['title'] : '';
+            if ($sTitle === '')
+                $sTitle = $this->_getCellHeaderFallbackTitle($sKey);
+
+            $sKind = '';
+            if ($sKey === 'checkbox')
+                $sKind = 'checkbox';
+            else if (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey)
+                $sKind = 'order';
+
+            $aColumns[] = [
+                'name' => $sKey,
+                'title' => $sTitle,
+                'width' => isset($aField['width']) ? $aField['width'] : '',
+                'sortable' => in_array($sKey, $aOrderFields) ? 1 : 0,
+                'controls' => $this->_isControlsColumn($sKey) ? 1 : 0,
+                'kind' => $sKind,
+            ];
+        }
+
+        $bReorder = !empty($this->_aOptions['field_order']);
+        $sClassHeader = empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '';
+
+        $aConfig = [
+            'object' => $this->_sObject,
+            'field_id' => $this->_aOptions['field_id'],
+            'sortable' => $bReorder ? 1 : 0,
+            'sorting' => empty($aOrderFields) ? 0 : 1,
+            'sorting_field' => $sOrderField,
+            'sorting_dir' => $sOrderDir,
+            'start' => $iStart,
+            'per_page' => $iPerPage,
+            'show_total_count' => empty($this->_aOptions['show_total_count']) ? 0 : 1,
+            'empty' => _t('_Empty'),
+            'columns' => $aColumns,
+            'bx' => [
+                'csrf_token' => (string)BxDolForm::getCsrfToken(),
+                'sortable' => 0,
+                'sorting' => 0,
+                'paginate_get_start' => (string)$this->_aOptions['paginate_get_start'],
+                'paginate_get_per_page' => (string)$this->_aOptions['paginate_get_per_page'],
+                'start' => $iStart,
+                'per_page' => $iPerPage,
+                'filter' => $sFilter,
+                'filter_get' => (string)$this->_aOptions['filter_get'],
+                'order_field' => $sOrderField,
+                'order_dir' => $sOrderDir,
+                'order_get_field' => (string)$this->_aOptions['order_get_field'],
+                'order_get_dir' => (string)$this->_aOptions['order_get_dir'],
+                'text_search_input' => _t('_sys_grid_search'),
+                'popup_options' => $this->_agMap($this->_aPopupOptions),
+                'query_append' => $this->_agMap($aQueryAppend),
+                'confirm_messages' => $this->_agMap($this->_aConfirmMessages),
+                'columns' => count($aFields),
+            ],
+        ];
+
+        $aVars = [
+            'object' => $this->_sObject,
+            'id_table' => 'bx-grid-table-' . $this->_sObject,
+            'id_cont' => 'bx-grid-cont-' . $this->_sObject,
+            'id_wrap' => 'bx-grid-wrap-' . $this->_sObject,
+            'id_grid' => 'bx-grid-ag-' . $this->_sObject,
+            'config' => json_encode($aConfig, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE),
+            'bx_if:display_header' => [
+                'condition' => $isDisplayHeader,
+                'content' => [
+                    'class' => $sClassHeader,
+                    'bx_if:actions_independent' => [
+                        'condition' => !empty($this->_aOptions['actions_independent']),
+                        'content' => [
+                            'actions_independent' => $this->_getActions('independent'),
+                        ],
+                    ],
+                    'bx_if:filter' => [
+                        'condition' => !empty($this->_aOptions['filter_fields']) || !empty($this->_aOptions['filter_fields_translatable']),
+                        'content' => [
+                            'controls' => $this->_getFilterControls(),
+                        ],
+                    ],
+                    'bx_if:counter' => [
+                        'condition' => !empty($this->_aOptions['show_total_count']),
+                        'content' => [
+                            'counter' => '',
+                        ],
+                    ],
+                ],
+            ],
+            'bx_if:display_footer' => [
+                'condition' => !empty($this->_aOptions['actions_bulk']) || $bReorder,
+                'content' => [
+                    'bx_if:actions_bulk' => [
+                        'condition' => !empty($this->_aOptions['actions_bulk']),
+                        'content' => [
+                            'actions_bulk' => $this->_getActions('bulk'),
+                        ],
+                    ],
+                    'bx_if:reorder' => [
+                        'condition' => $bReorder,
+                        'content' => [
+                            'paginate_prev' => _t('_sys_paginate_prev'),
+                            'paginate_next' => _t('_sys_paginate_next'),
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        // Subclasses add their own scripts here (navigation items, for one). AG files come after.
+        $this->_addJsCss();
+        $this->_addJsCssAg();
+
+        return $this->_oTemplate->parseHtmlByName('grid_ag.html', $aVars);
+    }
+
+    /**
+     * json_encode turns an empty array into [], which the classic grid script treats as a list.
+     * Query append, popups and confirm texts are maps.
+     */
+    protected function _agMap($mixed)
+    {
+        if (empty($mixed) || !is_array($mixed))
+            return new stdClass();
+
+        return $mixed;
+    }
+
+    protected function _addJsCssAg()
+    {
+        $this->_oTemplate->addCss([
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'ag-grid/|ag-grid.min.css',
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'ag-grid/|ag-theme-quartz.min.css',
+            'grid_ag.css',
+        ]);
+        $this->_oTemplate->addJs([
+            'ag-grid/ag-grid.min.js',
+            'BxDolGridAg.js',
+        ]);
     }
 
     protected function _addJsCss()
