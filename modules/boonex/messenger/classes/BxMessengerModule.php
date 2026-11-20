@@ -1076,8 +1076,10 @@ class BxMessengerModule extends BxBaseModGeneralModule
                 $aMyLots = $this->_oDb->getMyLots($this->_iProfileId, $aParams, $aFoundConvos);
         }
 
-        if (empty($aMyLots))
-            $sContent = $sParam ? MsgBox(_t('_bx_messenger_txt_msg_no_results')) : $this->_oTemplate->getFriendsList($sParam); {
+        if (empty($aMyLots)) {
+            $sContent = $this->getSearchEmptyState($sParam, (bool)$iStarred, $sType);
+        }
+        else {
             $sContent = $this->_oTemplate->getLotsPreview($this->_iProfileId, $aMyLots);
             if (!empty($aFoundConvos['jots_list'])) {
                 foreach ($aFoundConvos['jots_list'] as $iJot => $iConvo) {
@@ -1088,6 +1090,23 @@ class BxMessengerModule extends BxBaseModGeneralModule
 
         $aResult['html'] = $sContent;
         echoJson($aResult);
+    }
+
+    /**
+     * What the talks list says when a search finds nothing: nothing matches the words, none of the kind (or starred),
+     * or no talks at all.
+     */
+    protected function getSearchEmptyState($sParam, $bStarred, $sType)
+    {
+        if ($sParam) {
+            return $this->_oTemplate->getEmptyState('search');
+        }
+
+        if ($bStarred || ($sType && $sType != BX_MSG_TALK_TYPE_INBOX)) {
+            return $this->_oTemplate->getEmptyState('list');
+        }
+
+        return $this->_oTemplate->getEmptyState('inbox', $this->_iProfileId);
     }
 
     /**
@@ -3403,7 +3422,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
             ));
         }
 
-        return echoJson(['code' => 1, 'html' => MsgBox(_t('_bx_messenger_txt_msg_no_results')), 'title' => _t($sTitle)]);
+        echoJson(['code' => 1, 'html' => $this->_oTemplate->getEmptyState('list', $this->_iProfileId), 'title' => _t($sTitle)]);
     }
 
     public function actionGetTopMenuItems()
@@ -4548,10 +4567,12 @@ class BxMessengerModule extends BxBaseModGeneralModule
         switch ($sType) {
             case BX_MSG_TALK_TYPE_BROADCAST:
                 $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_FILTER'], $CNF['OBJECT_FORM_FILTER_DISPLAY'], $this->_oTemplate);
-                if ($oForm->filteredForm())
+                if ($oForm->filteredForm()) {
                     $sHtml = $oForm->getCode();
-                else
+                }
+                else {
                     $sHtml = MsgBox(_t('_bx_messenger_no_criteria_available'));
+                }
 
                 break;
             case 'followers':

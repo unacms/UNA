@@ -107,7 +107,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
 		$CNF = $this->_oConfig->CNF;
 		$aParams = [
 			'content' => $this -> parseHtmlByName('history-block.html', array(
-                'content' => MsgBox(_t('_bx_messenger_empty_history'))
+                'content' => $this->getEmptyState('history', $iProfileId)
             )),
             'info' => $this -> parseHtmlByName('info-area.html', []),
             'new_msg_active' => 'none',
@@ -137,6 +137,39 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
 		return bx_is_api() ? $aParams : $this -> parseHtmlByName('history.html', $aParams);
 	}
 
+    /**
+     * The site's empty state (MsgBox with icon, title, text and an action, as on the rest of the site and in the apps)
+     * for Messenger's lists: `inbox` (no talks yet), `list` (none of the kind chosen in the menu), `history` (no talk
+     * open, or a talk with no messages), `people` (no one to suggest in the new talk form) and `search` (no talk matches the words). The action starts a new talk where the viewer may create one.
+     */
+    public function getEmptyState($sType, $iProfileId = 0)
+    {
+        $aStates = [
+            'inbox' => ['icon' => 'messages-square', 'title' => '_bx_messenger_empty_inbox_title', 'text' => '_bx_messenger_empty_inbox_text'],
+            'list' => ['icon' => 'messages-square', 'title' => '_Empty', 'text' => '_bx_messenger_empty_list_text'],
+            'history' => ['icon' => 'message-circle', 'title' => '_bx_messenger_empty_history_title', 'text' => '_bx_messenger_empty_history_text'],
+            'people' => ['icon' => 'user-search', 'title' => '_Empty', 'text' => '_bx_messenger_empty_people_text'],
+            'search' => ['icon' => 'search', 'title' => '_bx_messenger_nothing_found', 'text' => '_bx_messenger_empty_search_text'],
+        ];
+        $aState = $aStates[$sType] ?? $aStates['history'];
+
+        $aButtons = [];
+        if (in_array($sType, ['inbox', 'history']) && $this->_oConfig->isAllowedAction(BX_MSG_ACTION_CREATE_TALKS, $iProfileId ? $iProfileId : bx_get_logged_profile_id()) === true) {
+            $aButtons[] = [
+                'title' => _t('_bx_messenger_empty_action_new'),
+                'link' => 'page.php?i=messenger',
+                'onclick' => 'if (typeof oMessenger !== \'undefined\') { oMessenger.createList(); return false; }',
+            ];
+        }
+
+        return MsgBox([
+            'icon' => $aState['icon'],
+            'title' => _t($aState['title']),
+            'text' => _t($aState['text']),
+            'buttons' => $aButtons,
+        ]);
+    }
+
     public function getHistoryArea($aData, $bRead = false, $bEmptyMessage = false){
         $CNF = $this->_oConfig->CNF;
         $iProfileId = isset($aData['profile_id']) ? (int)$aData['profile_id']: BX_IM_EMPTY;
@@ -144,7 +177,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
         $iJotId = isset($aData['jot']) ? (int)$aData['jot']: BX_IM_EMPTY;
         $sArea = isset($aData['area']) ? $aData['area']: '';
 
-        $sContent = !$bEmptyMessage ? MsgBox(_t('_bx_messenger_empty_history')) : '';
+        $sContent = !$bEmptyMessage ? $this->getEmptyState('history', $iProfileId) : '';
         if ($iLotId){
             $aJots = $this -> getJotsOfLot($iProfileId,
                 array(
@@ -650,7 +683,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
 	function getFriendsList($sParam = '', $bListAsArray = false){
 		$iLimit = (int)$this->_oConfig->CNF['PARAM_FRIENDS_NUM_BY_DEFAULT'] ?? 5;
 
-		$sContent = MsgBox(_t('_Empty'));
+		$sContent = $this->getEmptyState('people');
 		if (!$this->_oConfig->CNF['SHOW-FRIENDS'])
 			return $sContent;
 
@@ -1270,7 +1303,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
     public function getLotsList($iProfileId, $iSelectedLotId = 0){
         $CNF = &$this->_oConfig->CNF;
         $aMyLots = $this->_oDb->getMyLots($iProfileId);
-        $sContent = MsgBox(_t('_Empty'));
+        $sContent = $this->getEmptyState('inbox', $iProfileId);
         if (!empty($aMyLots)) {
             if ($iSelectedLotId && array_search($iSelectedLotId, array_column($aMyLots, $CNF['FIELD_ID'])) === false) {
                 $aPrependConvo = $this->_oDb->getLotInfoById($iSelectedLotId);

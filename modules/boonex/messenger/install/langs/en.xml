@@ -277,7 +277,15 @@
 	<string name="_bx_messenger_acl_action_send_files"><![CDATA[Send files]]></string>
 	<string name="_bx_messenger_show_friends"><![CDATA[Show member's friends list in talks' area if there are no talks yet]]></string>
 	<string name="_bx_messenger_contact_privacy_not_allowed"><![CDATA[Participant of the talk doesn't allow to contact]]></string>
+	<string name="_bx_messenger_empty_action_new"><![CDATA[New message]]></string>
 	<string name="_bx_messenger_empty_history"><![CDATA[Empty]]></string>
+	<string name="_bx_messenger_empty_history_text"><![CDATA[Choose a conversation, or start a new one.]]></string>
+	<string name="_bx_messenger_empty_history_title"><![CDATA[No messages here yet]]></string>
+	<string name="_bx_messenger_empty_inbox_text"><![CDATA[Conversations you start or are added to show up here.]]></string>
+	<string name="_bx_messenger_empty_inbox_title"><![CDATA[No conversations yet]]></string>
+	<string name="_bx_messenger_empty_list_text"><![CDATA[Conversations of this kind show up here.]]></string>
+	<string name="_bx_messenger_empty_people_text"><![CDATA[Type a name to find someone to write to.]]></string>
+	<string name="_bx_messenger_empty_search_text"><![CDATA[Try another name or word.]]></string>
 	<string name="_bx_messenger_left_menu_groups_item_create_group"><![CDATA[Create group]]></string>
 	<string name="_bx_messenger_empty_users_list"><![CDATA[No profiles found]]></string>
 	<string name="_bx_messenger_add_users_message"><![CDATA[Add users to start messaging]]></string>
@@ -335,6 +343,7 @@
 	<string name="_bx_messenger_jot_menu_save"><![CDATA[Bookmark]]></string>
 	<string name="_bx_messenger_jot_menu_share"><![CDATA[Copy link]]></string>
 	<string name="_bx_messenger_bad_request"><![CDATA[Bad request attempt]]></string>
+	<string name="_bx_messenger_search_clear"><![CDATA[Clear search]]></string>
 	<string name="_bx_messenger_search_criteria_list"><![CDATA[Use these criteria for messages filtration]]></string>
 	<string name="_bx_messenger_search_item_titles"><![CDATA[talks titles]]></string>
 	<string name="_bx_messenger_search_item_participants"><![CDATA[participants names]]></string>

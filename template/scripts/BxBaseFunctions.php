@@ -217,19 +217,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         }
 
         $sIconHtml = !empty($aState['icon']) && is_string($aState['icon']) ? $this->msgBoxIcon($aState['icon']) : '';
-
-        $aButtons = [];
-        foreach(is_array($aState['buttons'] ?? null) ? $aState['buttons'] : [] as $aButton) {
-            if(empty($aButton['title']) || empty($aButton['link'])) {
-                continue;
-            }
-
-            $aButtons[] = [
-                'class' => empty($aButtons) ? 'bx-btn-primary' : '',
-                'link' => bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))),
-                'title' => bx_process_output($aButton['title']),
-            ];
-        }
+        $aButtons = $this->msgBoxStateButtons($aState['buttons'] ?? null);
 
         $sTitle = isset($aState['title']) && is_string($aState['title']) ? $aState['title'] : '';
 
@@ -255,6 +243,29 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 ],
             ],
         ]);
+    }
+
+    /**
+     * The state's buttons, the first one primary. A button that acts on the page (`onclick`) keeps its link as the
+     * fallback without script.
+     */
+    protected function msgBoxStateButtons($mixedButtons)
+    {
+        $aButtons = [];
+        foreach(is_array($mixedButtons) ? $mixedButtons : [] as $aButton) {
+            if(empty($aButton['title']) || empty($aButton['link'])) {
+                continue;
+            }
+
+            $aButtons[] = [
+                'class' => empty($aButtons) ? 'bx-btn-primary' : '',
+                'link' => bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))),
+                'title' => bx_process_output($aButton['title']),
+                'attrs' => !empty($aButton['onclick']) && is_string($aButton['onclick']) ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
+            ];
+        }
+
+        return $aButtons;
     }
 
     /**
