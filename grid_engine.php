@@ -10,15 +10,15 @@
 /**
  * Switches the engine that renders a grid (sys_objects_grid.engine).
  *
- * Web (site admin only): /scripts/grid_engine.php?object=<object>&engine=<engine>
- * Console:               php scripts/grid_engine.php <object> <engine>
+ * Web (site admin only): /grid_engine.php?object=<object>&engine=<engine>
+ * Console:               php grid_engine.php <object> <engine>
  *
  *   object - grid object name, for example bx_accounts_administration
  *   engine - ag (AG Grid) or classic (the classic HTML grid)
  */
 
 $aPathInfo = pathinfo(__FILE__);
-require_once($aPathInfo['dirname'] . '/../inc/header.inc.php');
+require_once($aPathInfo['dirname'] . '/inc/header.inc.php');
 require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
 
 class BxDolGridEngineCmd
@@ -71,8 +71,8 @@ class BxDolGridEngineCmd
 
     protected function getHelp()
     {
-        return "Web:     /scripts/grid_engine.php?object=<object>&engine=<engine>\n"
-            . "Console: php scripts/grid_engine.php <object> <engine>\n"
+        return "Web:     /grid_engine.php?object=<object>&engine=<engine>\n"
+            . "Console: php grid_engine.php <object> <engine>\n"
             . "\t object\tGrid object name (sys_objects_grid.object)\n"
             . "\t engine\t" . implode(' or ', array_keys($this->_aEngines));
     }
