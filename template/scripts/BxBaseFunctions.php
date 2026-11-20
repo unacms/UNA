@@ -200,6 +200,11 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     protected function msgBoxState($iId, $aState)
     {
+        // The state asks for a profile: the informer's "You don't have a profile yet" bar would say it twice.
+        if(($aState['level'] ?? 0) == MEMBERSHIP_ID_ACCOUNT) {
+            BxDolInformer::hide('sys-account-profile-system');
+        }
+
         $sIconHtml = '';
         if(!empty($aState['icon']) && is_string($aState['icon'])) {
             $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);

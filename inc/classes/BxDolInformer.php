@@ -32,6 +32,9 @@ class BxDolInformer extends BxDolFactory implements iBxDolSingleton
     protected $_bEnabled = true;
     protected $_aMessages = array();
 
+    /** Messages this page leaves out (hide): its content says the same. */
+    protected static $aHidden = array();
+
     /**
      * Constructor
      */
@@ -108,6 +111,16 @@ class BxDolInformer extends BxDolFactory implements iBxDolSingleton
         unset($this->_aMessages[$sId]);
     }
     
+    /**
+     * Leave a message out of this page's informer because the page's content already says it: a "Create a profile
+     * first" state needs no "You don't have a profile yet" bar above it. Can be called before the informer exists.
+     * @param $sId - message id
+     */
+    public static function hide ($sId)
+    {
+        self::$aHidden[$sId] = true;
+    }
+
     /**
      * Get message from informer.
      * @param $sId - message id
