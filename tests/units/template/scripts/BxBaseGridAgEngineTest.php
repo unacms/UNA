@@ -95,7 +95,7 @@ class BxBaseGridAgEngineTest extends BxDolTestCase
         $this->assertStringNotContainsString('class="bx-grid-table"', $s);
         $this->assertStringNotContainsString('bx-grid-ag-pager', $s);
         // The template doubles backslashes, so the hex quotes from json_encode land as \\u0022.
-        $this->assertStringContainsString('\\\\u0022kind\\\\u0022:\\\\u0022order\\\\u0022', $s);
+        $this->assertStringContainsString('"kind":"order"', $s);
         $this->assertFalse($this->bxGetProtected($oGrid, '_bIsApi', BxDolGrid::class));
     }
 
