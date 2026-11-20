@@ -140,7 +140,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
     /**
      * The site's empty state (MsgBox with icon, title, text and an action, as on the rest of the site and in the apps)
      * for Messenger's lists: `inbox` (no talks yet), `list` (none of the kind chosen in the menu), `history` (no talk
-     * open, or a talk with no messages) and `people` (no one to suggest in the new talk form). The action starts a new talk where the viewer may create one.
+     * open, or a talk with no messages), `people` (no one to suggest in the new talk form) and `search` (no talk matches the words). The action starts a new talk where the viewer may create one.
      */
     public function getEmptyState($sType, $iProfileId = 0)
     {
@@ -149,6 +149,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
             'list' => ['icon' => 'messages-square', 'title' => '_Empty', 'text' => '_bx_messenger_empty_list_text'],
             'history' => ['icon' => 'message-circle', 'title' => '_bx_messenger_empty_history_title', 'text' => '_bx_messenger_empty_history_text'],
             'people' => ['icon' => 'user-search', 'title' => '_Empty', 'text' => '_bx_messenger_empty_people_text'],
+            'search' => ['icon' => 'search', 'title' => '_bx_messenger_nothing_found', 'text' => '_bx_messenger_empty_search_text'],
         ];
         $aState = $aStates[$sType] ?? $aStates['history'];
 

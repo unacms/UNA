@@ -285,6 +285,7 @@
 	<string name="_bx_messenger_empty_inbox_title"><![CDATA[No conversations yet]]></string>
 	<string name="_bx_messenger_empty_list_text"><![CDATA[Conversations of this kind show up here.]]></string>
 	<string name="_bx_messenger_empty_people_text"><![CDATA[Type a name to find someone to write to.]]></string>
+	<string name="_bx_messenger_empty_search_text"><![CDATA[Try another name or word.]]></string>
 	<string name="_bx_messenger_left_menu_groups_item_create_group"><![CDATA[Create group]]></string>
 	<string name="_bx_messenger_empty_users_list"><![CDATA[No profiles found]]></string>
 	<string name="_bx_messenger_add_users_message"><![CDATA[Add users to start messaging]]></string>

@@ -1076,8 +1076,14 @@ class BxMessengerModule extends BxBaseModGeneralModule
                 $aMyLots = $this->_oDb->getMyLots($this->_iProfileId, $aParams, $aFoundConvos);
         }
 
-        if (empty($aMyLots))
-            $sContent = $sParam ? MsgBox(_t('_bx_messenger_txt_msg_no_results')) : $this->_oTemplate->getFriendsList($sParam); {
+        if (empty($aMyLots)) {
+            // nothing found for the words, none of the kind (or starred), or no talks at all
+            if ($sParam)
+                $sContent = $this->_oTemplate->getEmptyState('search');
+            else
+                $sContent = $iStarred || ($sType && $sType != BX_MSG_TALK_TYPE_INBOX) ? $this->_oTemplate->getEmptyState('list') : $this->_oTemplate->getEmptyState('inbox', $this->_iProfileId);
+        }
+        else {
             $sContent = $this->_oTemplate->getLotsPreview($this->_iProfileId, $aMyLots);
             if (!empty($aFoundConvos['jots_list'])) {
                 foreach ($aFoundConvos['jots_list'] as $iJot => $iConvo) {

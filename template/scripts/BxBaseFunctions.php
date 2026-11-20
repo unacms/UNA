@@ -200,29 +200,8 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     protected function msgBoxState($iId, $aState)
     {
-        $sIconHtml = '';
-        if(!empty($aState['icon']) && is_string($aState['icon'])) {
-            $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
-            $sIconHtml = $oIconset ? $oIconset->getIconHtml($aState['icon']) : false;
-            if($sIconHtml === false) {
-                $sIconHtml = '<i class="sys-icon ' . bx_html_attribute($aState['icon']) . '"></i>';
-            }
-        }
-
-        $aButtons = [];
-        foreach(is_array($aState['buttons'] ?? null) ? $aState['buttons'] : [] as $aButton) {
-            if(empty($aButton['title']) || empty($aButton['link'])) {
-                continue;
-            }
-
-            // a button that acts on the page (`onclick`) keeps its link as the fallback without script
-            $aButtons[] = [
-                'class' => empty($aButtons) ? 'bx-btn-primary' : '',
-                'link' => bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))),
-                'title' => bx_process_output($aButton['title']),
-                'attrs' => !empty($aButton['onclick']) && is_string($aButton['onclick']) ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
-            ];
-        }
+        $sIconHtml = $this->msgBoxStateIcon($aState['icon'] ?? '');
+        $aButtons = $this->msgBoxStateButtons($aState['buttons'] ?? null);
 
         $sTitle = isset($aState['title']) && is_string($aState['title']) ? $aState['title'] : '';
 
@@ -248,6 +227,44 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 ],
             ],
         ]);
+    }
+
+    /**
+     * The state's icon: Lucide's inline SVG, or a font icon of the current iconset when Lucide has no such icon.
+     */
+    protected function msgBoxStateIcon($sIcon)
+    {
+        if(empty($sIcon) || !is_string($sIcon)) {
+            return '';
+        }
+
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
+        $sIconHtml = $oIconset ? $oIconset->getIconHtml($sIcon) : false;
+
+        return $sIconHtml !== false ? $sIconHtml : '<i class="sys-icon ' . bx_html_attribute($sIcon) . '"></i>';
+    }
+
+    /**
+     * The state's buttons, the first one primary. A button that acts on the page (`onclick`) keeps its link as the
+     * fallback without script.
+     */
+    protected function msgBoxStateButtons($mixedButtons)
+    {
+        $aButtons = [];
+        foreach(is_array($mixedButtons) ? $mixedButtons : [] as $aButton) {
+            if(empty($aButton['title']) || empty($aButton['link'])) {
+                continue;
+            }
+
+            $aButtons[] = [
+                'class' => empty($aButtons) ? 'bx-btn-primary' : '',
+                'link' => bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))),
+                'title' => bx_process_output($aButton['title']),
+                'attrs' => !empty($aButton['onclick']) && is_string($aButton['onclick']) ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
+            ];
+        }
+
+        return $aButtons;
     }
 
     /**

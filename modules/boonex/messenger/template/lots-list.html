@@ -1,8 +1,8 @@
 <div class="bx-messenger-talks-list-area">
 	<div class="bx-messenger-talks-list-header bx-db-header">
-		<a onclick="oNavMenu.toggleMenuPanel()" href="javascript:void(0);" title="<bx_text_attribute:_bx_messenger_nav_menu_title_view />" class="xl:hidden bx-btn bx-btn-small bx-messenger-talks-list-header-menu">
-			<i class="sys-icon menu"></i>
-		</a>
+		<button type="button" onclick="oNavMenu.toggleMenuPanel()" title="<bx_text_attribute:_bx_messenger_nav_menu_title_view />" class="xl:hidden bx-btn bx-btn-small bx-messenger-talks-list-header-menu">
+			<i class="sys-icon menu" aria-hidden="true"></i>
+		</button>
 		<div class="bx-messenger-talks-list-header-title-area">
 			<div id="bx-messenger-inbox-area-title" class="bx-db-title bx-messenger-talks-list-header-title __custom_class_title__">
 				<bx_text:_bx_messenger_list_area_inbox />
@@ -15,25 +15,25 @@
 					   aria-label="<bx_text_attribute:_bx_messenger_title_search />"
 					   type="search" />
 				<div class="bx-messenger-talks-list-header-search-area-icon">
-					<a href="javascript:void(0);" onclick="oMessenger.clearSearch()" title="<bx_text_attribute:_bx_messenger_search_clear />">
-						<i class="sys-icon x"></i>
-					</a>
+					<button type="button" onclick="oMessenger.clearSearch()" title="<bx_text_attribute:_bx_messenger_search_clear />" aria-label="<bx_text_attribute:_bx_messenger_search_clear />">
+						<i class="sys-icon x" aria-hidden="true"></i>
+					</button>
 				</div>
 			</div>
 		</div>
 		<div class="bx-db-menu bx-messenger-talks-list-header-buttons">
-			<a href="javascript:void(0)" onclick="oMessenger.toggleFilterTalks()" title="<bx_text_attribute:_bx_messenger_title_search />" class="bx-btn bx-btn-small">
-				<i class="sys-icon search"></i>
-			</a>
+			<button type="button" onclick="oMessenger.toggleFilterTalks()" title="<bx_text_attribute:_bx_messenger_title_search />" class="bx-btn bx-btn-small">
+				<i class="sys-icon search" aria-hidden="true"></i>
+			</button>
 			<bx_if:create>
-				<a href="javascript:void(0)" onclick="oMessenger.createList();" title="<bx_text_attribute:_bx_messenger_lots_menu_create_lot_title />" id="bx-messenger-create-post-button" class="bx-btn bx-btn-small">
-					<i class="sys-icon square-pen"></i>
-				</a>
+				<button type="button" onclick="oMessenger.createList();" title="<bx_text_attribute:_bx_messenger_lots_menu_create_lot_title />" id="bx-messenger-create-post-button" class="bx-btn bx-btn-small">
+					<i class="sys-icon square-pen" aria-hidden="true"></i>
+				</button>
 			</bx_if:create>
 			<bx_if:featured>
-				<a href="javascript:void(0)" onclick="oMessenger.showStarred(this);" title="<bx_text_attribute:_bx_messenger_lots_menu_star_title />" id="bx-messenger-show-important-button" class="bx-btn bx-btn-small" aria-pressed="false">
-					<i class="sys-icon star"></i>
-				</a>
+				<button type="button" onclick="oMessenger.showStarred(this);" title="<bx_text_attribute:_bx_messenger_lots_menu_star_title />" id="bx-messenger-show-important-button" class="bx-btn bx-btn-small" aria-pressed="false">
+					<i class="sys-icon star" aria-hidden="true"></i>
+				</button>
 			</bx_if:featured>
 		</div>
 	</div>

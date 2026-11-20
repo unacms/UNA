@@ -271,6 +271,7 @@
 	<string name="_bx_messenger_empty_inbox_title"><![CDATA[Пока нет бесед]]></string>
 	<string name="_bx_messenger_empty_list_text"><![CDATA[Здесь появятся беседы этого вида.]]></string>
 	<string name="_bx_messenger_empty_people_text"><![CDATA[Введите имя, чтобы найти собеседника.]]></string>
+	<string name="_bx_messenger_empty_search_text"><![CDATA[Попробуйте другое имя или слово.]]></string>
 	<string name="_bx_messenger_add_users_message"><![CDATA[Добавьте пользователей чтобы начать разговор]]></string>
 	<string name="_bx_messenger_check_toxic"><![CDATA[Блокировать сообщения с плохими словами. Опция работает только с установленным Antispam модулем.]]></string>
 	<string name="_bx_messenger_toxic_message"><![CDATA[Сообщение не может быть отправлено, так как противоречит стандартам нашего сообщества. Пожалуйста, используйте нормативную лексику!]]></string>

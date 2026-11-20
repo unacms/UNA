@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
-<!-- Messenger's empty states (inbox, a list of one kind, the conversation pane, the people finder) and the clear-search button. -->
+<!-- Messenger's empty states (inbox, a list of one kind, the conversation pane, the people finder, search) and the clear-search button. -->
 <resources name="ru" flag="ru" title="Russian" category="Messenger">
     <string_add name="_bx_messenger_empty_inbox_title"><![CDATA[Пока нет бесед]]></string_add>
     <string_add name="_bx_messenger_empty_inbox_text"><![CDATA[Здесь появятся беседы, которые вы начнёте или в которые вас добавят.]]></string_add>
@@ -10,4 +10,5 @@
     <string_add name="_bx_messenger_empty_action_new"><![CDATA[Новое сообщение]]></string_add>
     <string_add name="_bx_messenger_search_clear"><![CDATA[Очистить поиск]]></string_add>
     <string_add name="_bx_messenger_empty_people_text"><![CDATA[Введите имя, чтобы найти собеседника.]]></string_add>
+    <string_add name="_bx_messenger_empty_search_text"><![CDATA[Попробуйте другое имя или слово.]]></string_add>
 </resources>
