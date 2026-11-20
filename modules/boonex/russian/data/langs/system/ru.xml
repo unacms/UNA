@@ -3620,7 +3620,7 @@
 	<string name="_sys_inst_conf_desc_db_pwd"><![CDATA[Пароль этого пользователя.]]></string>
 	<string name="_sys_inst_conf_desc_db_sock"><![CDATA[Оставьте пустым, если подключение идёт не через файл сокета.]]></string>
 	<string name="_sys_inst_conf_desc_db_user"><![CDATA[Пользователь, который может создавать и менять таблицы в этой базе.]]></string>
-    <string name="_sys_inst_conf_desc_db_engine"><![CDATA[Все таблицы сайта используют этот движок. InnoDB надёжнее при внезапной остановке сервера.]]></string>
+    <string name="_sys_inst_conf_desc_db_engine"><![CDATA[Все таблицы сайта используют этот движок. InnoDB, движок по умолчанию, сохраняет данные при внезапной остановке сервера.]]></string>
 	<string name="_sys_inst_conf_desc_language"><![CDATA[Первый язык сайта.]]></string>
 	<string name="_sys_inst_conf_desc_modules"><![CDATA[Выбраны приложения для начала работы. Добавлять и удалять приложения можно в любой момент в Студии.]]></string>
 	<string name="_sys_inst_conf_desc_profiles"><![CDATA[Модуль профилей для установки по умолчанию.]]></string>
@@ -3714,7 +3714,7 @@
 	<string name="_sys_inst_modules_count"><![CDATA[Установлено: {0} из {1}]]></string>
 	<string name="_sys_inst_modules_failed"><![CDATA[Не удалось завершить установку]]></string>
 	<string name="_sys_inst_modules_finishing"><![CDATA[Завершение…]]></string>
-	<string name="_sys_inst_modules_lead"><![CDATA[Не закрывайте эту страницу. Приложения устанавливаются по одному, поэтому это работает на любом сервере.]]></string>
+	<string name="_sys_inst_modules_lead"><![CDATA[Не закрывайте эту вкладку до конца установки. Приложения устанавливаются по одному, поэтому это работает на любом сервере.]]></string>
 	<string name="_sys_inst_modules_network_error"><![CDATA[Сервер не ответил. Проверьте, что он работает, и повторите.]]></string>
 	<string name="_sys_inst_modules_retry"><![CDATA[Повторить]]></string>
 	<string name="_sys_inst_modules_skip"><![CDATA[Пропустить приложение]]></string>
@@ -3729,25 +3729,27 @@
 	<string name="_sys_inst_msg_file_read_failed"><![CDATA[Ошибка чтения файла: {0}]]></string>
 	<string name="_sys_inst_msg_file_write_failed"><![CDATA[Ошибка записи файла: {0}]]></string>
 	<string name="_sys_inst_msg_finish"><![CDATA[Что дальше:]]></string>
+	<string name="_sys_inst_msg_finish_cron_docker"><![CDATA[Задания по расписанию уже работают: сервис cron в Docker запускает periodic/cron.php каждую минуту.]]></string>
 	<string name="_sys_inst_msg_finish_cron_jobs"><![CDATA[Добавьте эту строку в crontab сервера:]]></string>
-	<string name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Удалите папку <b>/install/</b> из корневой папки скрипта.]]></string>
+	<string name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Удалите папку <b>install</b> с сервера. Сайт откроется после этого.]]></string>
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Перейти в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Проверьте отмеченные поля.]]></string>
 	<string name="_sys_inst_msg_install_in_progress"><![CDATA[UNA устанавливается из другого браузера: продолжите там. Если та установка брошена, удалите на сервере inc/header.installing.php и inc/install.queue.php, затем обновите эту страницу.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
 	<string name="_sys_inst_msg_module_needs_composer"><![CDATA[Сначала выполните composer install в {0}.]]></string>
 	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Эти пути должны быть доступны для записи или исполняемые, прежде чем продолжить.]]></string>
+	<string name="_sys_inst_msg_permissions_ok"><![CDATA[Всё готово: UNA может записывать во все нужные папки.]]></string>
 	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Некоторым путям нужно внимание. Исправьте их, затем продолжите.]]></string>
 	<string name="_sys_inst_msg_queue_not_empty"><![CDATA[Ещё не все приложения установлены.]]></string>
 	<string name="_sys_inst_msg_queue_not_found"><![CDATA[Эта установка начата не в этом браузере или уже завершена. Начните заново с настройки сайта.]]></string>
-	<string name="_sys_inst_msg_remove_install"><![CDATA[Пожалуйста, удалите директорию INSTALL с сервера и перегрузите страницу, чтобы активировать сайт.<br />После удаления, Вы можете перейти по ссылке <a href="../studio/">в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
+	<string name="_sys_inst_msg_remove_install"><![CDATA[Удалите папку <b>install</b> с сервера и обновите эту страницу. Затем <a href="../studio/">откройте Студию</a>, чтобы добавить приложения и настроить сайт.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Скрипт не установлен]]></string>
 	<string name="_sys_inst_open_site"><![CDATA[Открыть сайт]]></string>
 	<string name="_sys_inst_open_studio"><![CDATA[Открыть Студию]]></string>
 	<string name="_sys_inst_refresh"><![CDATA[Обновить]]></string>
 	<string name="_sys_inst_server_audit"><![CDATA[Аудит сервера]]></string>
 	<string name="_sys_inst_site_config"><![CDATA[Настройка сайта]]></string>
-	<string name="_sys_inst_site_config_lead"><![CDATA[Три коротких шага: база данных, сайт и администратор, затем приложения для начала работы.]]></string>
+	<string name="_sys_inst_site_config_lead"><![CDATA[Шаги 2–4: база данных, сайт и администратор, затем приложения.]]></string>
 	<string name="_sys_inst_start_installation"><![CDATA[Начать установку]]></string>
 	<string name="_sys_inst_step_apps"><![CDATA[Приложения]]></string>
 	<string name="_sys_inst_step_database"><![CDATA[База данных]]></string>
@@ -3759,10 +3761,13 @@
 	<string name="_sys_inst_title"><![CDATA[Установка UNA {0}]]></string>
 	<string name="_sys_inst_title_meta"><![CDATA[Установка]]></string>
 	<string name="_sys_inst_welcome"><![CDATA[Установка UNA]]></string>
-	<string name="_sys_inst_welcome_lead"><![CDATA[Установка UNA на этот сервер: три короткие формы, затем установка приложений, которая занимает пару минут.]]></string>
-	<string name="_sys_inst_welcome_step_config"><![CDATA[Ввод базы данных, названия сайта и учётной записи администратора.]]></string>
-	<string name="_sys_inst_welcome_step_modules"><![CDATA[Выбор приложений для начала работы. Остальные можно добавить позже в Студии.]]></string>
-	<string name="_sys_inst_welcome_step_permissions"><![CDATA[Проверка прав на запись в папки UNA.]]></string>
+	<string name="_sys_inst_welcome_lead"><![CDATA[Установка UNA на этот сервер проходит в шесть шагов и занимает несколько минут.]]></string>
+	<string name="_sys_inst_welcome_step_apps"><![CDATA[Выбор приложений для начала работы.]]></string>
+	<string name="_sys_inst_welcome_step_database"><![CDATA[Подключение к пустой базе данных MySQL или MariaDB.]]></string>
+	<string name="_sys_inst_welcome_step_done"><![CDATA[Настройка заданий по расписанию и переход на сайт.]]></string>
+	<string name="_sys_inst_welcome_step_install"><![CDATA[UNA устанавливает приложения по одному.]]></string>
+	<string name="_sys_inst_welcome_step_server"><![CDATA[Проверка требований к серверу и прав на запись в папки UNA.]]></string>
+	<string name="_sys_inst_welcome_step_site"><![CDATA[Название и адрес сайта, учётная запись администратора.]]></string>
 	<string name="_sys_layout_1_column"><![CDATA[1 столбец]]></string>
         <string name="_sys_layout_1_column_thin"><![CDATA[1 столбец (узкий)]]></string>
         <string name="_sys_layout_1_column_half"><![CDATA[1 столбец (половина)]]></string>

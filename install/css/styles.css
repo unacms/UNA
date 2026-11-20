@@ -119,33 +119,41 @@ body.bx-install-body {
     color: var(--bx-inst-link);
 }
 
-/* Step bar: numbered dots, the current step named; on a phone only the current one */
+/* Step bar: a numbered dot per step with its name under it, so every step is named in any language;
+   on a phone only the current one */
 .bx-install-stepper-nav {
     flex: 1 1 auto;
     min-width: 0;
 }
 .bx-install-stepper {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    gap: 4px;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 .bx-install-stepper li {
+    position: relative;
+    flex: 0 1 76px;
+    min-width: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     color: var(--bx-inst-muted);
-    font-size: 0.8125rem;
-    white-space: nowrap;
+    font-size: 0.6875rem;
+    line-height: 1.15;
+    text-align: center;
 }
+/* the line from the previous dot to this one, at the dots' middle */
 .bx-install-stepper li + li::before {
     content: "";
-    width: 12px;
+    position: absolute;
+    top: 12px;
+    right: calc(50% + 16px);
+    width: calc(100% - 32px);
     height: 1px;
-    margin-right: 2px;
     background: var(--bx-inst-line);
 }
 .bx-install-stepper-dot {
@@ -160,6 +168,13 @@ body.bx-install-body {
     font-weight: 600;
     font-variant-numeric: tabular-nums;
 }
+.bx-install-stepper-title {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+.bx-install-stepper li.is-done {
+    color: var(--bx-inst-text);
+}
 .bx-install-stepper li.is-done .bx-install-stepper-dot {
     background: var(--bx-inst-ok-bg);
     color: var(--bx-inst-ok);
@@ -172,19 +187,17 @@ body.bx-install-body {
     background: var(--bx-inst-accent);
     color: var(--bx-inst-on-accent);
 }
-.bx-install-stepper li:not(.is-current) .bx-install-stepper-title {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-}
 @media (max-width: 639px) {
     .bx-install-brand {
         display: none;
     }
     .bx-install-stepper li:not(.is-current) {
         display: none;
+    }
+    .bx-install-stepper li.is-current {
+        flex-direction: row;
+        flex-basis: auto;
+        font-size: 0.8125rem;
     }
     .bx-install-stepper li.is-current::before {
         display: none;

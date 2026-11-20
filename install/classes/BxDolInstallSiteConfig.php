@@ -61,6 +61,7 @@ class BxDolInstallSiteConfig
 
     protected $_iPasswordMinLength = BX_INSTALL_PASSWORD_MIN_LENGTH;
     protected $_bModulesBatch = false;
+    protected $_sDbEngineFallback = ''; ///< the engine to use when the server can't use the chosen one
 
     protected $_sSqlDb;
     protected $_sSqlMariaDb;
@@ -159,9 +160,9 @@ class BxDolInstallSiteConfig
             'db_engine' => array(
                 'name' => _t('_sys_inst_conf_field_db_engine'),
                 'desc' => _t('_sys_inst_conf_desc_db_engine'),
-                'def' => 'MYISAM',
+                'def' => 'INNODB',
                 'func' => 'rowSelect',
-                'vals' => array('MYISAM' => 'MyISAM', 'INNODB' => 'InnoDB'),
+                'vals' => array('INNODB' => 'InnoDB', 'MYISAM' => 'MyISAM'),
                 'check' => array('checkInList', array('MYISAM', 'INNODB')),
                 'normalize' => 'strtoupper',
             ),
@@ -464,6 +465,12 @@ EOF;
             return $aErrorFields;
         }
 
+        // InnoDB is the default; a server that has it disabled gets MyISAM instead, for every table
+        if ('INNODB' === $sEngine && !$this->isEngineSupported($oDb, 'InnoDB')) {
+            $this->_sDbEngineFallback = 'MYISAM';
+            $oDb->query("SET default_storage_engine = MYISAM");
+        }
+
         $mixedRes = $oDb->executeSQL($this->_sSqlDb);
         if (true !== $mixedRes)
             return $this->dbErrors2ErrorFields($mixedRes);
@@ -518,10 +525,23 @@ EOF;
     }
 
     /**
-     * The engine of the new tables: the UNA_DB_ENGINE environment variable, or the form's choice.
+     * Whether the server can create tables with the engine (information_schema.ENGINES says YES or DEFAULT).
+     */
+    protected function isEngineSupported ($oDb, $sEngine)
+    {
+        $sSupport = strtoupper((string)$oDb->getOne($oDb->prepare("SELECT `SUPPORT` FROM `information_schema`.`ENGINES` WHERE `ENGINE` = ?", $sEngine)));
+        return in_array($sSupport, array('YES', 'DEFAULT'), true);
+    }
+
+    /**
+     * The engine of the new tables: the UNA_DB_ENGINE environment variable, or the form's choice
+     * (unless the server can't use it, see processConfigDataDb).
      */
     protected function getDbEngine ($a)
     {
+        if ($this->_sDbEngineFallback)
+            return $this->_sDbEngineFallback;
+
         $sEngine = getenv('UNA_DB_ENGINE');
         if (!$sEngine && !empty($a['db_engine']))
             $sEngine = $a['db_engine'];
@@ -849,10 +869,20 @@ EOF;
             if (!$oModulesTools->hasDependencies($aConfig))
                 return _t('_sys_inst_msg_module_error', htmlspecialchars($aConfig['title'], ENT_QUOTES, 'UTF-8'), _t('_sys_inst_msg_module_needs_composer', 'modules/' . $aConfig['home_dir']));
 
-            foreach ($aActions as $sAction) {
-                $aResult = BxDolStudioInstallerUtils::getInstance()->perform($aConfig['home_dir'], $sAction);
-                if ((!isset($aResult['code']) || $aResult['code']) && !empty($aResult['message']))
-                    return _t('_sys_inst_msg_module_error', htmlspecialchars($aConfig['title'], ENT_QUOTES, 'UTF-8'), $aResult['message']);
+            // InnoDB commits every statement on its own, and a module adds thousands of language strings:
+            // one commit per module keeps the install as fast as on MyISAM (table changes still commit at once)
+            $oDb = BxDolDb::getInstance();
+            $oDb->query("SET autocommit = 0");
+            try {
+                foreach ($aActions as $sAction) {
+                    $aResult = BxDolStudioInstallerUtils::getInstance()->perform($aConfig['home_dir'], $sAction);
+                    if ((!isset($aResult['code']) || $aResult['code']) && !empty($aResult['message']))
+                        return _t('_sys_inst_msg_module_error', htmlspecialchars($aConfig['title'], ENT_QUOTES, 'UTF-8'), $aResult['message']);
+                }
+            }
+            finally {
+                $oDb->query("COMMIT");
+                $oDb->query("SET autocommit = 1");
             }
         }
 

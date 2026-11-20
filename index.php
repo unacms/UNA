@@ -15,8 +15,13 @@ if (!file_exists("./inc/header.inc.php")) {
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
 
-    $bHasInstaller = file_exists("install/index.php");
-    $sTitle = $bHasInstaller ? 'Initiating Installation' : 'Installation files are missing';
+    // not installed yet: straight to the installer
+    if (file_exists("install/index.php")) {
+        header('Location: install/index.php', true, 302);
+        exit;
+    }
+
+    $sTitle = 'Installation files are missing';
     header('Content-Type: text/html; charset=utf-8');
     ?>
 <!DOCTYPE html>
@@ -25,9 +30,6 @@ if (!file_exists("./inc/header.inc.php")) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?php echo htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8'); ?></title>
-<?php if ($bHasInstaller): ?>
-    <meta http-equiv="refresh" content="2;url=install/index.php" />
-<?php endif; ?>
     <style>
         :root {
             --bx-flash-bg: #f4f5f7;
@@ -78,12 +80,9 @@ if (!file_exists("./inc/header.inc.php")) {
 </head>
 <body>
     <div class="bx-install-flash">
-        <img src="install/img/logo.svg" alt="UNA" />
+        <img src="studio/template/images/dbd_version.svg" alt="UNA" />
         <p class="bx-install-flash-pulse"><?php echo htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8'); ?></p>
     </div>
-<?php if ($bHasInstaller): ?>
-    <script>setTimeout(function () { location.href = 'install/index.php'; }, 1400);</script>
-<?php endif; ?>
 </body>
 </html>
     <?php

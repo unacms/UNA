@@ -200,4 +200,42 @@ class BxDolInstallSiteConfigTest extends \PHPUnit\Framework\TestCase
         if (!file_exists(BX_INSTALL_PATH_QUEUE) && !file_exists(BX_INSTALL_PATH_HEADER_STAGED))
             $this->assertFalse(BxDolInstallSiteConfig::isModulesBatchInProgress());
     }
+
+    public function testInnoDbFallsBackToMyIsamOnlyWhereTheServerHasNoInnoDb(): void
+    {
+        $o = self::config();
+
+        $oDb = new class {
+            public $sSupport = 'DEFAULT';
+            public function prepare($sQuery, ...$aArgs) { return $sQuery; }
+            public function getOne($s) { return $this->sSupport; }
+        };
+
+        $this->assertTrue(self::call($o, 'isEngineSupported', $oDb, 'InnoDB'));
+        $oDb->sSupport = 'YES';
+        $this->assertTrue(self::call($o, 'isEngineSupported', $oDb, 'InnoDB'));
+        $oDb->sSupport = 'DISABLED';
+        $this->assertFalse(self::call($o, 'isEngineSupported', $oDb, 'InnoDB'));
+
+        (new ReflectionProperty($o, '_sDbEngineFallback'))->setValue($o, 'MYISAM');
+        $this->assertSame('MYISAM', self::call($o, 'getDbEngine', array('db_engine' => 'INNODB')));
+    }
+
+    public function testWelcomeListsEveryStepOfTheStepBar(): void
+    {
+        self::load();
+        if (!defined('BX_INSTALL_DIR_PLUGINS'))
+            define('BX_INSTALL_DIR_PLUGINS', dirname(__DIR__, 3) . '/plugins/');
+        if (!defined('BX_INSTALL_DIR_TEMPLATES'))
+            define('BX_INSTALL_DIR_TEMPLATES', dirname(__DIR__, 3) . '/install/templates/');
+        require_once dirname(__DIR__, 3) . '/install/classes/BxDolInstallView.php';
+        $oView = (new ReflectionClass(BxDolInstallView::class))->newInstanceWithoutConstructor();
+        $aSteps = (new ReflectionProperty($oView, '_aSteps'))->getValue($oView);
+
+        $sEn = file_get_contents(dirname(__DIR__, 3) . '/modules/boonex/english/data/langs/system/en.xml');
+        foreach ($aSteps as $sStep) {
+            $this->assertStringContainsString('name="_sys_inst_step_' . $sStep . '"', $sEn);
+            $this->assertStringContainsString('name="_sys_inst_welcome_step_' . $sStep . '"', $sEn);
+        }
+    }
 }

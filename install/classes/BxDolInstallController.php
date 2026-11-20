@@ -65,8 +65,9 @@ class BxDolInstallController
 
         $oAudit->generateStyles();
 
+        $aSteps = $this->_oView->getSteps();
         if (empty($aErrors))
-            $this->_oView->out('initial.php', compact('aLangs', 'aWarnings'));
+            $this->_oView->out('initial.php', compact('aLangs', 'aWarnings', 'aSteps'));
         else
             $this->_oView->out('initial_fail.php', compact('aLangs', 'aErrors'));
 
@@ -249,7 +250,10 @@ class BxDolInstallController
             if (file_exists($sPath))
                 $sPathToPhp = $sPath;
 
-        $this->_oView->out('finish.php', compact('sPathToPhp'));
+        // the Docker setup runs periodic/cron.php in its own cron container (UNA_CRON_RUNNER in docker-compose.yml)
+        $bCronContainer = 'docker' === getenv('UNA_CRON_RUNNER');
+
+        $this->_oView->out('finish.php', compact('sPathToPhp', 'bCronContainer'));
         $this->_oView->setStep('done');
 
         $this->_oView->setToolbarItem('question', 'https://unacms.com/wiki/cron', _t('_sys_inst_help_finish'), '_blank');
