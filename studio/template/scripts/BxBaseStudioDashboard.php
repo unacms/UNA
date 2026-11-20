@@ -122,26 +122,45 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
         return ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
     }
 
+    /**
+     * The count on the launcher's Dashboard tile, worked out on every Studio page (launcher-update-cache), so it asks no
+     * other server: a newer release from the version server's last answer (BxDolUpgrader::getVersionUpdateInfoCached), and a
+     * failed PHP, database or web server row in the last server audit, which the Dashboard keeps (getAuditReport).
+     */
     public function serviceGetWidgetNotices() {
     	$iResult = 0;
 
     	//--- Check Version: a newer release on the channel the site follows
-    	list(, $bNewer) = $this->getVersionChannelInfo(getParam('sys_upgrade_channel') == 'beta' ? 'beta' : 'stable');
-    	if($bNewer)
+    	$oUpgrader = bx_instance('BxDolUpgrader');
+    	$aUpdateInfo = $oUpgrader->getVersionUpdateInfoCached();
+    	if(is_array($aUpdateInfo) && $oUpgrader->isNewVersionAvailable($aUpdateInfo))
     		$iResult += 1;
 
     	//--- Check Host Requirements
-		$oAudit = new BxDolStudioToolsAudit();
-
-    	foreach($this->aItemsHTools as $sTitle => $sFunc) {
-    		$aResult = $oAudit->checkRequirements(BX_DOL_AUDIT_FAIL, $sFunc);
-			if(!empty($aResult)) {
-				$iResult += 1;
-				break;
-			}
-    	}
+    	if($this->hasHostRequirementsFailed(json_decode((string)getParam('sys_audit_report'), true)))
+    		$iResult += 1;
 
     	return $iResult;
+    }
+
+    /**
+     * Whether a server audit report (BxDolStudioToolsAudit::getReport) has a failed row in its PHP, database or web server section.
+     */
+    public function hasHostRequirementsFailed($aReport)
+    {
+        if(empty($aReport['sections']) || !is_array($aReport['sections']))
+            return false;
+
+        foreach($aReport['sections'] as $aSection) {
+            if(!is_array($aSection) || !isset($aSection['name']) || !in_array($aSection['name'], ['php', 'database', 'webserver'], true) || empty($aSection['rows']) || !is_array($aSection['rows']))
+                continue;
+
+            foreach($aSection['rows'] as $aRow)
+                if(is_array($aRow) && isset($aRow['type']) && $aRow['type'] === 'fail')
+                    return true;
+        }
+
+        return false;
     }
 
     /**

@@ -23,3 +23,26 @@ body > #bx-std-login-form-box {
 #bx-std-login-form-box .bx-popup-close-wrapper {
     display: none;
 }
+
+/* One focus ring for every stop in the form: the fields, the password field's frame (its input has no border of its own), the buttons. */
+#bx-std-login-form-box .bx-form-input-text:focus-visible,
+#bx-std-login-form-box .bx-form-input-wrapper-password:has(.bx-form-input-password:focus-visible),
+#bx-std-login-form-box .bx-btn:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+#bx-std-login-form-box .bx-form-input-password:focus-visible {
+    outline: none; /* its frame draws the ring */
+}
+.dark #bx-std-login-form-box .bx-form-input-text:focus-visible,
+.dark #bx-std-login-form-box .bx-form-input-wrapper-password:has(.bx-form-input-password:focus-visible),
+.dark #bx-std-login-form-box .bx-btn:focus-visible {
+    outline-color: #60a5fa;
+}
+@media (forced-colors: active) {
+    #bx-std-login-form-box .bx-form-input-text:focus-visible,
+    #bx-std-login-form-box .bx-form-input-wrapper-password:has(.bx-form-input-password:focus-visible),
+    #bx-std-login-form-box .bx-btn:focus-visible {
+        outline-color: Highlight;
+    }
+}
