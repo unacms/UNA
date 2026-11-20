@@ -29,6 +29,29 @@ class BxBaseMenuProfileAdd extends BxTemplMenu
 
         return parent::getCode ();
     }
+
+    /**
+     * The default profile type (Studio > Settings > Account, sys_account_default_profile_type) comes first: the
+     * templates that pick out one type (the hero card) take the first item.
+     */
+    protected function getMenuItemsRaw ()
+    {
+        $aItems = parent::getMenuItemsRaw ();
+
+        $sDefault = getParam('sys_account_default_profile_type');
+        if (!$sDefault || !is_array($aItems))
+            return $aItems;
+
+        $aFirst = $aRest = [];
+        foreach ($aItems as $mixedKey => $aItem) {
+            if (isset($aItem['module']) && $aItem['module'] == $sDefault)
+                $aFirst[$mixedKey] = $aItem;
+            else
+                $aRest[$mixedKey] = $aItem;
+        }
+
+        return $aFirst + $aRest;
+    }
 }
 
 /** @} */

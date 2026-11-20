@@ -4,13 +4,13 @@ import { Text } from 'app/design/typography';
 import { Sheet } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import { fetcher } from 'app/lib/fetcher';
-import MenuGrid, { type MenuGridItem } from './menu-grid';
+import MenuCards, { type MenuCardItem } from './menu-cards';
 
 /**
  * UNA's "Accounts without a profile" set to "Ask after sign-in" (Studio > Settings > Account): after signing in, an
  * account with no profile of its own gets the "Create your profile" window, as on UNA's site, with UNA's title and
  * text (`profile_prompt` in the viewer's data) and the profile types of its `sys_add_profile` menu (`menu`), drawn as
- * the home menu's tiles. It opens once: NEO tells UNA it was shown (system/account_profile_prompt_seen), so the next
+ * the site draws them: cards with descriptions. It opens once: NEO tells UNA it was shown (system/account_profile_prompt_seen), so the next
  * page doesn't ask again until the next sign-in. Choosing a type opens its form and closes the window (`path`).
  */
 export default function ProfilePrompt({ path }: Readonly<{ path?: string }>) {
@@ -19,7 +19,7 @@ export default function ProfilePrompt({ path }: Readonly<{ path?: string }>) {
     const [openedAt, setOpenedAt] = useState<string | undefined>(undefined);
 
     const due = currentUser ? currentUser.profile_prompt : false;
-    const items: MenuGridItem[] = (currentUser ? currentUser.menu?.items : undefined) ?? [];
+    const items: MenuCardItem[] = (currentUser ? currentUser.menu?.items : undefined) ?? [];
     const show = !!due && items.length > 0 && !(currentUser && currentUser.profile_required);
 
     // Open as soon as UNA asks; a profile type chosen (its form is the next page) closes it.
@@ -44,9 +44,7 @@ export default function ProfilePrompt({ path }: Readonly<{ path?: string }>) {
         <Sheet visible={!!prompt} title={prompt?.title} onClose={() => setPrompt(null)}>
             <View className="gap-4">
                 {prompt?.text ? <Text className="text-base text-muted-foreground">{prompt.text}</Text> : null}
-                <View className="p-2">
-                    <MenuGrid items={items} />
-                </View>
+                <MenuCards items={items} />
             </View>
         </Sheet>
     );

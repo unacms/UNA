@@ -1,38 +1,14 @@
 import { BlockWrapper } from 'app/components/block-wrapper'
-import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { Icon } from 'app/ui/atoms/icon'
-import Link from 'app/ui/atoms/link'
+import { View } from 'app/design/view'
 import { components } from 'app/components/registry';
 import { appSetting, getMenuHub, getMenuSectionListItems, getMenuView } from 'app/lib/util';
 import MenuGrid from './menu-grid';
+import MenuCards from './menu-cards';
 import { useState } from 'react';
 import SettingsMenu from './settings-menu';
 import { hasMenuSections } from 'app/lib/menu-sections';
 
 const conductorTheme = appSetting('theme', 'conductor');
-
-/**
- * A menu item UNA describes with `info` (already translated), shown as a full-width choice:
- * icon, title, the description under it, chevron. E.g. the profile types of `sys_add_profile`.
- */
-function MenuChoiceRow({ item, href }) {
-    const title = item?.title || item?.name
-    return (
-        <Link href={href} mode="plain" haptics="Light" alt={title} className="w-full">
-            <Row className="w-full items-center gap-3 rounded-xl border border-border bg-card p-3 sm:p-4 web:hover:bg-muted/60 web:transition-colors">
-                <View className="size-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                    <Icon icon={item?.icon || 'Circle'} size={20} className="text-primary" />
-                </View>
-                <View className="min-w-0 flex-1 gap-0.5">
-                    <Text className="text-base font-semibold text-card-foreground">{title}</Text>
-                    <Text className="text-sm text-muted-foreground">{item.info}</Text>
-                </View>
-                <Icon icon="ChevronRight" size={18} className="shrink-0 text-muted-foreground" />
-            </Row>
-        </Link>
-    )
-}
 
 // `itemsClassName`: classes for the list of links in place of `w-full`, e.g. the Conductor's left
 // panel lines them up with its own links (`-mx-1`: a fixed `w-full` would cancel the right margin).
@@ -142,20 +118,15 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
         );
     }
 
-    // Flat menus whose items all carry a description render as choices instead of sidebar links.
+    // A menu UNA draws as cards (`"view": "cards"`, the profile types of "Create your profile"), and any flat menu
+    // whose items all carry a description: cards, as UNA's site draws them.
     const isChoiceList = topLevelItems.length > 0 && topLevelItems.every(
         (item) => typeof item?.info === 'string' && item.info.trim() && !(item?.subitems || []).length
     );
-    if (isChoiceList) {
+    if (getMenuView(data?.content) === 'cards' || isChoiceList) {
         return (
             <BlockWrapper {...blockWrapperProps}>
-                <View className="w-full gap-3">
-                    {topLevelItems.map((item, index) => {
-                        const path = String(item?.url || item?.link || '');
-                        const href = !path || /^https?:/.test(path) || path.startsWith('/') ? path : `/${path}`;
-                        return <MenuChoiceRow key={getItemId(item, String(index))} item={item} href={href} />;
-                    })}
-                </View>
+                <MenuCards items={topLevelItems} />
             </BlockWrapper>
         );
     }

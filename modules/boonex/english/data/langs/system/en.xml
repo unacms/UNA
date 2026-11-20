@@ -4226,6 +4226,7 @@
     <string name="_sys_menu_template_title_interactive"><![CDATA[Interactive Horizontal Links]]></string>
     <string name="_sys_menu_template_title_interactive_vertical"><![CDATA[Interactive Vertical Links]]></string>
     <string name="_sys_menu_template_title_list_desc"><![CDATA[List with descriptions]]></string>
+    <string name="_sys_menu_template_title_list_desc_cards"><![CDATA[Cards with descriptions]]></string>
     <string name="_sys_menu_template_title_empty"><![CDATA[Empty Menu]]></string>
     <string name="_sys_menu_template_title_main"><![CDATA[Site Navigation Menu]]></string>
     <string name="_sys_menu_template_title_main_submenu"><![CDATA[Site Navigation Submenu]]></string>

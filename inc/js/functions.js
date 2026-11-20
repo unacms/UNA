@@ -3283,16 +3283,15 @@ function bx_menu_highlight(oContext)
 {
     $(oContext).not('.bx-std *').find('.bx-popup ul').filter(function() {
         var oList = $(this);
-        return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
+        return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-list-desc-cards, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
     }).each(function(iIndex, eList) {
         bx_menu_highlight_list(eList);
     });
 }
 
 $(document).ready(function() {
-    // The header's main menu, the homepage's apps grid, the profile types of "Create your profile" (drawn as that grid)
-    // and the profile menu beside the feed (styled in Artificer's general.css).
-    $('#bx-toolbar ul.bx-menu-main, ul.bx-menu-object-sys_homepage, ul.bx-menu-object-sys_add_profile, ul.bx-menu-object-sys_profile_stats').not('.bx-std *, .bx-popup *, .bx-menu-highlight-list').each(function(iIndex, eList) {
+    // The header's main menu, the homepage's apps grid and the profile menu beside the feed (styled in Artificer's general.css).
+    $('#bx-toolbar ul.bx-menu-main, ul.bx-menu-object-sys_homepage, ul.bx-menu-object-sys_profile_stats').not('.bx-std *, .bx-popup *, .bx-menu-highlight-list').each(function(iIndex, eList) {
         bx_menu_highlight_list(eList);
     });
 });

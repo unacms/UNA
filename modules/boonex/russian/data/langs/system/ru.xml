@@ -4188,6 +4188,7 @@
     <string name="_sys_menu_template_title_interactive"><![CDATA[Интерактивные горизонтальные ссылки]]></string>
     <string name="_sys_menu_template_title_interactive_vertical"><![CDATA[Интерактивные вертикальные ссылки]]></string>
     <string name="_sys_menu_template_title_list_desc"><![CDATA[Список с описаниями]]></string>
+    <string name="_sys_menu_template_title_list_desc_cards"><![CDATA[Карточки с описаниями]]></string>
     <string name="_sys_menu_template_title_empty"><![CDATA[Пустое меню]]></string>
     <string name="_sys_menu_template_title_main"><![CDATA[Навигация по сайту - Меню]]></string>
     <string name="_sys_menu_template_title_main_submenu"><![CDATA[Навигация по сайту - Подменю]]></string>

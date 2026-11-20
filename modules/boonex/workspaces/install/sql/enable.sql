@@ -199,7 +199,7 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 -- MENU: add to site menu
 
 SET @iSiteMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999 ORDER BY `order` DESC LIMIT 1);
-INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `info`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('sys_site', 'bx_workspaces', 'workspaces-home', '_bx_workspaces_menu_item_title_system_entries_home', '_bx_workspaces_menu_item_title_entries_home', 'page.php?i=workspaces-home', '', '', 'user', 'bx_workspaces_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
 
 -- MENU: add to homepage menu
@@ -214,7 +214,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_profile_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_add_profile_links', 'bx_workspaces', 'create-workspaces-profile', '_bx_workspaces_menu_item_title_system_create_profile', '_bx_workspaces_menu_item_title_create_profile', 'page.php?i=create-workspaces-profile', '', '', 'user', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
+('sys_add_profile_links', 'bx_workspaces', 'create-workspaces-profile', '_bx_workspaces_menu_item_title_system_create_profile', '_bx_workspaces_menu_item_title_create_profile', '_bx_workspaces_menu_item_info_create_profile', 'page.php?i=create-workspaces-profile', '', '', 'user', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
 
 -- MENU: view actions
 
