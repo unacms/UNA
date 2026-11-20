@@ -4412,6 +4412,7 @@
     <string name="_sys_page_block_title_confirm_email"><![CDATA[Email Confirmation]]></string>
     <string name="_sys_page_block_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
     <string name="_sys_page_block_title_system_cooperator"><![CDATA[Cooperator (for App only)]]></string>
+    <string name="_sys_page_block_title_system_create_profile"><![CDATA[Create your profile (accounts without a profile)]]></string>
     <string name="_sys_page_block_title_cooperator"><![CDATA[Cooperator]]></string>
     <string name="_sys_page_block_title_create_account"><![CDATA[Sign up]]></string>
     <string name="_sys_page_block_title_sys_author"><![CDATA[Author]]></string>
@@ -4448,7 +4449,7 @@
     <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
     <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
-    <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
+    <string name="_sys_page_block_title_membership_stats"><![CDATA[Your membership]]></string>
     <string name="_sys_page_block_desc_account_profile_create"><![CDATA[Your account doesn’t have a profile yet. Choose a profile type to get started.]]></string>
     <string name="_sys_page_block_desc_create_account"><![CDATA[Create an account to join the community.]]></string>
     <string name="_sys_page_block_desc_login"><![CDATA[Enter your details to continue.]]></string>
@@ -4457,8 +4458,10 @@
     <string name="_sys_page_block_system_title_login_step3"><![CDATA[Log in - step3]]></string>
     <string name="_sys_page_block_system_title_login_only"><![CDATA[Log in]]></string>
     <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - Content]]></string>
+    <string name="_sys_page_block_title_dashboard_profiles"><![CDATA[Your profiles]]></string>
     <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - Audit]]></string>
     <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Dashboard - Administration (for App only)]]></string>
+    <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Your profiles (dashboard)]]></string>
     <string name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string>
     <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
@@ -5294,4 +5297,13 @@
     <string name="_sys_onboarding_state_done"><![CDATA[Done]]></string>
     <string name="_sys_onboarding_state_locked"><![CDATA[Needs an earlier step]]></string>
     <string name="_sys_onboarding_state_todo"><![CDATA[To do]]></string>
+    <string name="_sys_membership_stats_files"><![CDATA[{0} files]]></string>
+    <string name="_sys_membership_stats_files_one"><![CDATA[1 file]]></string>
+    <string name="_sys_membership_stats_max_file_size"><![CDATA[File size limit]]></string>
+    <string name="_sys_membership_stats_no_end"><![CDATA[No end date]]></string>
+    <string name="_sys_membership_stats_of"><![CDATA[{0} of {1}]]></string>
+    <string name="_sys_membership_stats_see_plans"><![CDATA[See memberships]]></string>
+    <string name="_sys_membership_stats_unlimited"><![CDATA[Unlimited]]></string>
+    <string name="_sys_membership_stats_until"><![CDATA[Active until {0}]]></string>
+    <string name="_sys_membership_stats_used"><![CDATA[{0} used]]></string>
 </resources>
