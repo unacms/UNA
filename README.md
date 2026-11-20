@@ -162,6 +162,7 @@ Other local services:
 | `docker compose logs -f php` | PHP errors and the PHP-FPM log |
 | `docker compose exec php bash` | Shell in the PHP container. The site is in `/opt/una`. |
 | `docker compose build --pull` | Rebuild the PHP images, for example after a change to `scripts/docker-compose/*.Dockerfile` |
+| `docker compose up -d --build --force-recreate web php cron` | After a `git pull` that changes `scripts/docker-compose/`. Those files are mounted into the containers or built into the images, and a plain `docker compose up -d` doesn't notice a change in them: nginx and PHP-FPM keep their old configuration until the containers are recreated. |
 | `docker compose down -v` | Reset: delete the containers and the database. Then delete `inc/header.inc.php`, restore the `install` folder and run the installer again. Uploaded files in `storage/` stay. |
 
 ### Debugging with Xdebug
