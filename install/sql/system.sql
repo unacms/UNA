@@ -5419,6 +5419,7 @@ CREATE TABLE IF NOT EXISTS `sys_objects_grid` (
   `visible_for_levels` int(11) NOT NULL DEFAULT '2147483647',
   `responsive` tinyint(4) NOT NULL DEFAULT '1',
   `show_total_count` tinyint(4) NOT NULL DEFAULT '0',
+  `engine` varchar(16) NOT NULL DEFAULT '',
   `override_class_name` varchar(255) NOT NULL,
   `override_class_file` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
