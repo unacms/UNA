@@ -3709,7 +3709,7 @@
 	<string name="_sys_inst_modules_count"><![CDATA[Установлено: {0} из {1}]]></string>
 	<string name="_sys_inst_modules_failed"><![CDATA[Не удалось завершить установку]]></string>
 	<string name="_sys_inst_modules_finishing"><![CDATA[Завершение…]]></string>
-	<string name="_sys_inst_modules_lead"><![CDATA[Не закрывайте эту страницу. Приложения устанавливаются по одному, поэтому это работает на любом сервере.]]></string>
+	<string name="_sys_inst_modules_lead"><![CDATA[Не закрывайте эту вкладку до конца установки. Приложения устанавливаются по одному, поэтому это работает на любом сервере.]]></string>
 	<string name="_sys_inst_modules_network_error"><![CDATA[Сервер не ответил. Проверьте, что он работает, и повторите.]]></string>
 	<string name="_sys_inst_modules_retry"><![CDATA[Повторить]]></string>
 	<string name="_sys_inst_modules_skip"><![CDATA[Пропустить приложение]]></string>

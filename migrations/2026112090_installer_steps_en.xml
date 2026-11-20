@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
-<!-- Installer: welcome steps match the step bar, permissions all set, InnoDB default, finish page wording. -->
+<!-- Installer: welcome steps match the step bar, permissions all set, InnoDB default, finish page wording, keep the tab open. -->
 <resources name="en" flag="gb" title="English">
     <string_add name="_sys_inst_welcome_step_server"><![CDATA[Check that the server meets the requirements and that UNA can write to its folders.]]></string_add>
     <string_add name="_sys_inst_welcome_step_database"><![CDATA[Connect to an empty MySQL or MariaDB database.]]></string_add>
@@ -10,6 +10,7 @@
     <string_add name="_sys_inst_welcome_step_done"><![CDATA[Set up scheduled jobs and open your site.]]></string_add>
     <string_add name="_sys_inst_msg_permissions_ok"><![CDATA[All set: UNA can write to every folder it needs.]]></string_add>
     <string_add name="_sys_inst_msg_finish_cron_docker"><![CDATA[Scheduled jobs already run: the Docker setup's cron service starts periodic/cron.php every minute.]]></string_add>
+    <string_upd name="_sys_inst_modules_lead"><![CDATA[Keep this tab open until it's done. Each app installs on its own, so this works on any server.]]></string_upd>
     <string_upd name="_sys_inst_welcome_lead"><![CDATA[This sets up UNA on this server in six steps. It takes a few minutes.]]></string_upd>
     <string_upd name="_sys_inst_site_config_lead"><![CDATA[Steps 2 to 4: the database, your site and admin account, then the apps.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_db_engine"><![CDATA[Every table of the site uses this engine. InnoDB, the default, keeps your data safe when the server stops unexpectedly.]]></string_upd>

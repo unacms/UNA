@@ -869,10 +869,20 @@ EOF;
             if (!$oModulesTools->hasDependencies($aConfig))
                 return _t('_sys_inst_msg_module_error', htmlspecialchars($aConfig['title'], ENT_QUOTES, 'UTF-8'), _t('_sys_inst_msg_module_needs_composer', 'modules/' . $aConfig['home_dir']));
 
-            foreach ($aActions as $sAction) {
-                $aResult = BxDolStudioInstallerUtils::getInstance()->perform($aConfig['home_dir'], $sAction);
-                if ((!isset($aResult['code']) || $aResult['code']) && !empty($aResult['message']))
-                    return _t('_sys_inst_msg_module_error', htmlspecialchars($aConfig['title'], ENT_QUOTES, 'UTF-8'), $aResult['message']);
+            // InnoDB commits every statement on its own, and a module adds thousands of language strings:
+            // one commit per module keeps the install as fast as on MyISAM (table changes still commit at once)
+            $oDb = BxDolDb::getInstance();
+            $oDb->query("SET autocommit = 0");
+            try {
+                foreach ($aActions as $sAction) {
+                    $aResult = BxDolStudioInstallerUtils::getInstance()->perform($aConfig['home_dir'], $sAction);
+                    if ((!isset($aResult['code']) || $aResult['code']) && !empty($aResult['message']))
+                        return _t('_sys_inst_msg_module_error', htmlspecialchars($aConfig['title'], ENT_QUOTES, 'UTF-8'), $aResult['message']);
+                }
+            }
+            finally {
+                $oDb->query("COMMIT");
+                $oDb->query("SET autocommit = 1");
             }
         }
 

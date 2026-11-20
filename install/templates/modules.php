@@ -57,14 +57,33 @@
         return aItems.length;
     }
 
+    // time since this page started the install, beside the count
+    var iStart = Date.now();
+    function elapsed () {
+        var iSec = Math.round((Date.now() - iStart) / 1000);
+        return Math.floor(iSec / 60) + ':' + ('0' + iSec % 60).slice(-2);
+    }
+
     function progress () {
         var i = current();
         oBar.style.width = (aItems.length ? Math.round(100 * i / aItems.length) : 100) + '%';
         oProgress.setAttribute('aria-valuenow', i);
-        oLabel.textContent = sCount.replace('{0}', i).replace('{1}', aItems.length);
+        oLabel.textContent = sCount.replace('{0}', i).replace('{1}', aItems.length) + ' · ' + elapsed();
     }
+    var iTimer = setInterval(progress, 1000);
+
+    // Chrome freezes or throttles a tab in the background, which held each step back up to a minute;
+    // a page that holds a Web Lock is left running, so the install keeps its pace in a background tab
+    var fReleaseLock = null;
+    if (navigator.locks && navigator.locks.request)
+        navigator.locks.request('bx-install-modules', function () {
+            return new Promise(function (fResolve) { fReleaseLock = fResolve; });
+        }).catch(function () {});
 
     function complete () {
+        clearInterval(iTimer);
+        if (fReleaseLock)
+            fReleaseLock();
         oLabel.textContent = sFinishing;
         oRoot.querySelector('.bx-install-modules-complete').submit();
     }

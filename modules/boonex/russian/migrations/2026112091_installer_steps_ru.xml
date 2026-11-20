@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
-<!-- Installer: welcome steps match the step bar, permissions all set, InnoDB default, finish page wording. -->
+<!-- Installer: welcome steps match the step bar, permissions all set, InnoDB default, finish page wording, keep the tab open. -->
 <resources name="ru" flag="ru" title="Russian" category="System">
     <string_add name="_sys_inst_welcome_step_server"><![CDATA[Проверка требований к серверу и прав на запись в папки UNA.]]></string_add>
     <string_add name="_sys_inst_welcome_step_database"><![CDATA[Подключение к пустой базе данных MySQL или MariaDB.]]></string_add>
@@ -10,6 +10,7 @@
     <string_add name="_sys_inst_welcome_step_done"><![CDATA[Настройка заданий по расписанию и переход на сайт.]]></string_add>
     <string_add name="_sys_inst_msg_permissions_ok"><![CDATA[Всё готово: UNA может записывать во все нужные папки.]]></string_add>
     <string_add name="_sys_inst_msg_finish_cron_docker"><![CDATA[Задания по расписанию уже работают: сервис cron в Docker запускает periodic/cron.php каждую минуту.]]></string_add>
+    <string_upd name="_sys_inst_modules_lead"><![CDATA[Не закрывайте эту вкладку до конца установки. Приложения устанавливаются по одному, поэтому это работает на любом сервере.]]></string_upd>
     <string_upd name="_sys_inst_welcome_lead"><![CDATA[Установка UNA на этот сервер проходит в шесть шагов и занимает несколько минут.]]></string_upd>
     <string_upd name="_sys_inst_site_config_lead"><![CDATA[Шаги 2–4: база данных, сайт и администратор, затем приложения.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_db_engine"><![CDATA[Все таблицы сайта используют этот движок. InnoDB, движок по умолчанию, сохраняет данные при внезапной остановке сервера.]]></string_upd>

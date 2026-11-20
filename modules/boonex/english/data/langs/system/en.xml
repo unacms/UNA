@@ -3739,7 +3739,7 @@
 	<string name="_sys_inst_modules_count"><![CDATA[{0} of {1} installed]]></string>
 	<string name="_sys_inst_modules_failed"><![CDATA[The installation couldn't finish]]></string>
 	<string name="_sys_inst_modules_finishing"><![CDATA[Finishing…]]></string>
-	<string name="_sys_inst_modules_lead"><![CDATA[Keep this page open. Each app installs on its own, so this works on any server.]]></string>
+	<string name="_sys_inst_modules_lead"><![CDATA[Keep this tab open until it's done. Each app installs on its own, so this works on any server.]]></string>
 	<string name="_sys_inst_modules_network_error"><![CDATA[The server didn't answer. Check that it is running, then try again.]]></string>
 	<string name="_sys_inst_modules_retry"><![CDATA[Try again]]></string>
 	<string name="_sys_inst_modules_skip"><![CDATA[Skip this app]]></string>
