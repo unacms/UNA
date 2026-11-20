@@ -459,6 +459,15 @@ table.bx-permissions-table {
     text-align: left;
     background: transparent !important;
 }
+/* the table comes with the site's border classes, light in any scheme: the divider here follows the scheme */
+.bx-permissions-table thead,
+.bx-permissions-table thead tr {
+    border: 0 !important;
+}
+.bx-permissions-table thead td {
+    border: 0 !important;
+    box-shadow: inset 0 -1px 0 var(--bx-inst-line);
+}
 .bx-permissions-table thead td {
     color: var(--bx-inst-muted);
     font-size: 0.8125rem !important;
