@@ -1198,6 +1198,10 @@ class BxBasePage extends BxDolPage
             if(is_array($mixedContent) && !empty($mixedContent['content'])) {
                 $iDesignboxId = isset($mixedContent['designbox_id']) ? $mixedContent['designbox_id'] : $aBlock['designbox_id'];
 
+                // A block can give its own description, as it can in the apps (getPageAPI).
+                if(isset($mixedContent['description']))
+                    $sDescription = $mixedContent['description'];
+
                 if(!empty($mixedContent['markers']) && is_array($mixedContent['markers'])) {
                     $this->addMarkers($mixedContent['markers']);
 

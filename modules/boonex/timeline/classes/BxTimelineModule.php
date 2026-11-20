@@ -1371,6 +1371,34 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
      * @page service Service Calls
      * @section bx_timeline Timeline
      * @subsection bx_timeline-other Other
+     * @subsubsection bx_timeline-get_onboarding_step_state get_onboarding_step_state
+     *
+     * @code bx_srv('bx_timeline', 'get_onboarding_step_state', ['post']); @endcode
+     *
+     * The state of the "Write the first post" step of an onboarding checklist (BxDolTours::STEP_*), the add-on of
+     * its menu item: done once a profile of the account has posted, locked while the account has no profile.
+     *
+     * @param $sStep string, the step: 'post'.
+     * @return string
+     *
+     * @see BxTimelineModule::serviceGetOnboardingStepState
+     */
+    /**
+     * @ref bx_timeline-get_onboarding_step_state "get_onboarding_step_state"
+     */
+    public function serviceGetOnboardingStepState($sStep = 'post')
+    {
+        $aProfileIds = BxDolTours::getInstance()->getProfileIds();
+        if(empty($aProfileIds))
+            return BxDolTours::STEP_LOCKED;
+
+        return $this->_oDb->hasCommonPostsBy(array_map('intval', $aProfileIds)) ? BxDolTours::STEP_DONE : BxDolTours::STEP_TODO;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_timeline Timeline
+     * @subsection bx_timeline-other Other
      * @subsubsection bx_timeline-get_link get_link
      * 
      * @code bx_srv('bx_timeline', 'get_link', [...]); @endcode

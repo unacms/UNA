@@ -1977,8 +1977,8 @@
     <string name="_adm_stg_cpt_option_site_email_html_template_footer"><![CDATA[Email template footer]]></string>
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Community name]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[The default name used to refer to your site in site texts, meta tags, emails and notifications.]]></string>
-    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Setup checklist on the homepage]]></string>
-    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Shows operators the steps a new site needs, until every step is done or the checklist is hidden. You can edit its texts in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string>
+    <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Get started checklist for operators]]></string>
+    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Shows operators the "Get started" block on the homepage until every step is done or they hide it. Edit its steps in Studio > Navigation > "Get started: operators".]]></string>
     <string name="_adm_stg_cpt_option_site_tour_studio"><![CDATA[Studio Tour]]></string>
     <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[You can edit the steps and content of the Studio Tour in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner"><![CDATA[Smart App Banner]]></string>
@@ -3917,6 +3917,10 @@
     <string name="_sys_manage_txt_sent"><![CDATA[Message was sent.]]></string>
     <string name="_sys_manage_err_cannot_perform_action"><![CDATA[Cannot perform the action. Please report.]]></string>
     <string name="_sys_menu_item_info_audit_administration"><![CDATA[For content moderation activity.]]></string>
+    <string name="_sys_menu_item_info_onboarding_cover"><![CDATA[It shows at the top of the homepage, which guests see first.]]></string>
+    <string name="_sys_menu_item_info_onboarding_join"><![CDATA[Anyone can join this site.]]></string>
+    <string name="_sys_menu_item_info_onboarding_logo"><![CDATA[It shows in the site header, in emails and in the apps.]]></string>
+    <string name="_sys_menu_item_info_onboarding_profile"><![CDATA[You post and reply on the site as this profile.]]></string>
     <string name="_sys_menu_item_title_about"><![CDATA[About]]></string>
     <string name="_sys_menu_item_title_copyright"><![CDATA[Copyright]]></string>
     <string name="_sys_menu_item_title_privacy"><![CDATA[Privacy]]></string>
@@ -3971,7 +3975,6 @@
     <string name="_sys_menu_item_title_switch_profile"><![CDATA[Switch profile]]></string>
     <string name="_sys_menu_item_title_set_acl_level"><![CDATA[Set membership]]></string>
     <string name="_sys_menu_item_title_set_badges"><![CDATA[Set badges]]></string>
-    <string name="_sys_menu_item_title_setup"><![CDATA[Set up your site]]></string>
     <string name="_sys_menu_item_title_studio"><![CDATA[Studio]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Subscriptions]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share in Facebook]]></string>
@@ -4100,7 +4103,6 @@
     <string name="_sys_menu_item_title_system_search"><![CDATA[Search]]></string>
     <string name="_sys_menu_item_title_system_set_acl_level"><![CDATA[Set membership]]></string>
     <string name="_sys_menu_item_title_system_set_badges"><![CDATA[Set badges]]></string>
-    <string name="_sys_menu_item_title_system_setup"><![CDATA[Set up your site]]></string>
     <string name="_sys_menu_item_title_system_studio"><![CDATA[Studio]]></string>
     <string name="_sys_menu_item_title_system_subscriptions"><![CDATA[Subscriptions]]></string>
     <string name="_sys_menu_title_view_actions"><![CDATA[View Actions]]></string>
@@ -4214,6 +4216,7 @@
     <string name="_sys_menu_template_title_inline_sbtn"><![CDATA[Inline ('special' buttons)]]></string>
     <string name="_sys_menu_template_title_interactive"><![CDATA[Interactive Horizontal Links]]></string>
     <string name="_sys_menu_template_title_interactive_vertical"><![CDATA[Interactive Vertical Links]]></string>
+    <string name="_sys_menu_template_title_list_desc"><![CDATA[List with descriptions]]></string>
     <string name="_sys_menu_template_title_empty"><![CDATA[Empty Menu]]></string>
     <string name="_sys_menu_template_title_main"><![CDATA[Site Navigation Menu]]></string>
     <string name="_sys_menu_template_title_main_submenu"><![CDATA[Site Navigation Submenu]]></string>
@@ -4337,10 +4340,22 @@
     <string name="_sys_menu_item_title_recom_friends"><![CDATA[Suggestions]]></string>
     <string name="_sys_menu_item_title_recom_subscriptions"><![CDATA[Who to follow]]></string>    
     <string name="_sys_menu_title_ntfs_submenu"><![CDATA[Activity]]></string>
+    <string name="_sys_menu_title_onboarding_operator"><![CDATA[Get started: operators]]></string>
     <string name="_sys_menu_title_public_ntfs_submenu"><![CDATA[Activity]]></string>
     <string name="_sys_menu_set_title_ntfs_submenu"><![CDATA[Notifications]]></string>
+    <string name="_sys_menu_set_title_onboarding_operator"><![CDATA[Get started: operators]]></string>
     <string name="_sys_menu_item_title_system_ntfs_context_invitations"><![CDATA[Notifications: Context Invitations]]></string>
+    <string name="_sys_menu_item_title_system_onboarding"><![CDATA[Get started]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_cover"><![CDATA[Add a cover picture]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_join"><![CDATA[Choose who can join]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_logo"><![CDATA[Add your logo]]></string>
+    <string name="_sys_menu_item_title_system_onboarding_profile"><![CDATA[Create your profile]]></string>
     <string name="_sys_menu_item_title_ntfs_context_invitations"><![CDATA[Invitations]]></string>
+    <string name="_sys_menu_item_title_onboarding"><![CDATA[Get started]]></string>
+    <string name="_sys_menu_item_title_onboarding_cover"><![CDATA[Add a cover picture]]></string>
+    <string name="_sys_menu_item_title_onboarding_join"><![CDATA[Choose who can join]]></string>
+    <string name="_sys_menu_item_title_onboarding_logo"><![CDATA[Add your logo]]></string>
+    <string name="_sys_menu_item_title_onboarding_profile"><![CDATA[Create your profile]]></string>
     <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} mentioned <b class="bx-ntfs-content-entry">{entry_caption}</b> in a {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
     <string name="_sys_mobile_friends"><![CDATA[Friends]]></string>
     <string name="_sys_mobile_info"><![CDATA[Info]]></string>
@@ -4404,6 +4419,7 @@
     <string name="_sys_page_block_title_sys_recom_subscriptions"><![CDATA[Recommended Subscriptions]]></string>
     <string name="_sys_page_block_title_recom_subscriptions"><![CDATA[Who to follow]]></string>
     <string name="_sys_page_block_title_ntfs_context_invitations"><![CDATA[Invitations]]></string>
+    <string name="_sys_page_block_title_onboarding"><![CDATA[Get started]]></string>
     <string name="_sys_page_block_title_sys_invitations"><![CDATA[Invitations]]></string>
     <string name="_sys_page_block_title_invitations"><![CDATA[Invitations]]></string>
     <string name="_sys_page_block_title_sys_create_post"><![CDATA[Create Post]]></string>
@@ -4432,6 +4448,8 @@
     <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - Content]]></string>
     <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - Audit]]></string>
     <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Dashboard - Administration (for App only)]]></string>
+    <string name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string>
+    <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
     <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - Reports]]></string>
     <string name="_sys_page_block_title_system_cmts_view"><![CDATA[View Comment]]></string>
@@ -5251,27 +5269,12 @@
     <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string>
     <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string>
     <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string>
-    <string name="_sys_setup_dismiss"><![CDATA[Hide this checklist]]></string>
-    <string name="_sys_setup_join_action"><![CDATA[Change]]></string>
-    <string name="_sys_setup_join_action_label"><![CDATA[Change who can join]]></string>
-    <string name="_sys_setup_join_closed"><![CDATA[Nobody can join: the sign-up form is off.]]></string>
-    <string name="_sys_setup_join_invite"><![CDATA[Only people you invite can join this site.]]></string>
-    <string name="_sys_setup_join_open"><![CDATA[Anyone can join this site.]]></string>
-    <string name="_sys_setup_progress"><![CDATA[{0} of {1} done]]></string>
-    <string name="_sys_setup_state_done"><![CDATA[, done]]></string>
-    <string name="_sys_setup_state_todo"><![CDATA[, not done yet]]></string>
-    <string name="_sys_setup_step_cover"><![CDATA[Add a cover picture]]></string>
-    <string name="_sys_setup_step_cover_action"><![CDATA[Add cover]]></string>
-    <string name="_sys_setup_step_cover_txt"><![CDATA[It shows at the top of the homepage, which guests see first.]]></string>
-    <string name="_sys_setup_step_logo"><![CDATA[Add your logo]]></string>
-    <string name="_sys_setup_step_logo_action"><![CDATA[Add logo]]></string>
-    <string name="_sys_setup_step_logo_txt"><![CDATA[It shows in the site header, in emails and in the apps.]]></string>
-    <string name="_sys_setup_step_post"><![CDATA[Write the first post]]></string>
-    <string name="_sys_setup_step_post_action"><![CDATA[Write a post]]></string>
-    <string name="_sys_setup_step_post_locked_txt"><![CDATA[Create your profile first, then post as that profile.]]></string>
-    <string name="_sys_setup_step_post_txt"><![CDATA[A post in the feed shows new members what the site is about.]]></string>
-    <string name="_sys_setup_step_profile"><![CDATA[Create your profile]]></string>
-    <string name="_sys_setup_step_profile_action"><![CDATA[Create profile]]></string>
-    <string name="_sys_setup_step_profile_txt"><![CDATA[You post and reply on the site as this profile.]]></string>
-    <string name="_sys_setup_title"><![CDATA[Set up your site]]></string>
+    <string name="_sys_onboarding_hide"><![CDATA[Hide]]></string>
+    <string name="_sys_onboarding_join_closed"><![CDATA[Nobody can join: the sign-up form is off.]]></string>
+    <string name="_sys_onboarding_join_invite"><![CDATA[Only people you invite can join this site.]]></string>
+    <string name="_sys_onboarding_join_open"><![CDATA[Anyone can join this site.]]></string>
+    <string name="_sys_onboarding_progress"><![CDATA[{0} of {1} done]]></string>
+    <string name="_sys_onboarding_state_done"><![CDATA[Done]]></string>
+    <string name="_sys_onboarding_state_locked"><![CDATA[Needs an earlier step]]></string>
+    <string name="_sys_onboarding_state_todo"><![CDATA[To do]]></string>
 </resources>

@@ -615,6 +615,10 @@ INSERT INTO `sys_email_templates` (`Module`, `NameSystem`, `Name`, `Subject`, `B
 ('bx_timeline', '_bx_timeline_et_txt_name_send', 'bx_timeline_send', '_bx_timeline_et_txt_subject_send', '_bx_timeline_et_txt_body_send');
 
 
+-- MENU: the "Write the first post" step of the operators' "Get started" checklist (sys_onboarding_operator)
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `info`, `link`, `onclick`, `target`, `icon`, `addon`, `visible_for_levels`, `visibility_custom`, `active`, `active_api`, `copyable`, `order`) VALUES
+('sys_onboarding_operator', 'bx_timeline', 'post', '_bx_timeline_menu_item_title_system_onboarding_post', '_bx_timeline_menu_item_title_onboarding_post', '_bx_timeline_menu_item_info_onboarding_post', 'index.php', 'return bx_onboarding_post();', '', 'square-pen', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"post";}}', 2147483646, '', 1, 0, 1, 4);
+
 -- CRON
 INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VALUES
 ('bx_timeline_hot', '0 * * * *', 'BxTimelineCronHot', 'modules/boonex/timeline/classes/BxTimelineCronHot.php', ''),

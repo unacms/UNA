@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The "Get started" onboarding checklist replaces the setup checklist: its menu, steps, block and states. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_menu_item_info_onboarding_cover"><![CDATA[Она видна вверху главной страницы, которую гости видят первой.]]></string_add>
+    <string_add name="_sys_menu_item_info_onboarding_join"><![CDATA[Присоединиться к сайту может любой.]]></string_add>
+    <string_add name="_sys_menu_item_info_onboarding_logo"><![CDATA[Он виден в шапке сайта, в письмах и в приложениях.]]></string_add>
+    <string_add name="_sys_menu_item_info_onboarding_profile"><![CDATA[От имени этого профиля вы публикуете и отвечаете на сайте.]]></string_add>
+    <string_add name="_sys_menu_template_title_list_desc"><![CDATA[Список с описаниями]]></string_add>
+    <string_add name="_sys_menu_title_onboarding_operator"><![CDATA[Начало работы: операторы]]></string_add>
+    <string_add name="_sys_menu_set_title_onboarding_operator"><![CDATA[Начало работы: операторы]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding"><![CDATA[Начало работы]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_cover"><![CDATA[Добавьте обложку]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_join"><![CDATA[Выберите, кто может присоединиться]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_logo"><![CDATA[Добавьте логотип]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_profile"><![CDATA[Создайте свой профиль]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding"><![CDATA[Начало работы]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_cover"><![CDATA[Добавьте обложку]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_join"><![CDATA[Выберите, кто может присоединиться]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_logo"><![CDATA[Добавьте логотип]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_profile"><![CDATA[Создайте свой профиль]]></string_add>
+    <string_add name="_sys_page_block_title_onboarding"><![CDATA[Начало работы]]></string_add>
+    <string_add name="_sys_page_block_title_system_onboarding"><![CDATA[Список «Начало работы»]]></string_add>
+    <string_add name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Список «Начало работы» для операторов]]></string_add>
+    <string_add name="_sys_onboarding_hide"><![CDATA[Скрыть]]></string_add>
+    <string_add name="_sys_onboarding_join_closed"><![CDATA[Присоединиться к сайту нельзя: форма регистрации выключена.]]></string_add>
+    <string_add name="_sys_onboarding_join_invite"><![CDATA[Присоединиться к сайту могут только приглашённые.]]></string_add>
+    <string_add name="_sys_onboarding_join_open"><![CDATA[Присоединиться к сайту может любой.]]></string_add>
+    <string_add name="_sys_onboarding_progress"><![CDATA[Готово {0} из {1}]]></string_add>
+    <string_add name="_sys_onboarding_state_done"><![CDATA[Готово]]></string_add>
+    <string_add name="_sys_onboarding_state_locked"><![CDATA[Нужен предыдущий шаг]]></string_add>
+    <string_add name="_sys_onboarding_state_todo"><![CDATA[Нужно сделать]]></string_add>
+    <string_upd name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Список «Начало работы» для операторов]]></string_upd>
+    <string_upd name="_adm_stg_inf_option_site_tour_home"><![CDATA[Показывает операторам блок «Начало работы» на главной странице, пока все шаги не сделаны или блок не скрыт. Шаги редактируются в Студии > Навигация > «Начало работы: операторы».]]></string_upd>
+    <string_del name="_sys_menu_item_title_setup"></string_del>
+    <string_del name="_sys_menu_item_title_system_setup"></string_del>
+    <string_del name="_sys_page_block_title_setup"></string_del>
+    <string_del name="_sys_page_block_title_system_setup"></string_del>
+    <string_del name="_sys_setup_dismiss"></string_del>
+    <string_del name="_sys_setup_join_action"></string_del>
+    <string_del name="_sys_setup_join_action_label"></string_del>
+    <string_del name="_sys_setup_join_closed"></string_del>
+    <string_del name="_sys_setup_join_invite"></string_del>
+    <string_del name="_sys_setup_join_open"></string_del>
+    <string_del name="_sys_setup_progress"></string_del>
+    <string_del name="_sys_setup_state_done"></string_del>
+    <string_del name="_sys_setup_state_todo"></string_del>
+    <string_del name="_sys_setup_step_cover"></string_del>
+    <string_del name="_sys_setup_step_cover_action"></string_del>
+    <string_del name="_sys_setup_step_cover_txt"></string_del>
+    <string_del name="_sys_setup_step_logo"></string_del>
+    <string_del name="_sys_setup_step_logo_action"></string_del>
+    <string_del name="_sys_setup_step_logo_txt"></string_del>
+    <string_del name="_sys_setup_step_post"></string_del>
+    <string_del name="_sys_setup_step_post_action"></string_del>
+    <string_del name="_sys_setup_step_post_locked_txt"></string_del>
+    <string_del name="_sys_setup_step_post_txt"></string_del>
+    <string_del name="_sys_setup_step_profile"></string_del>
+    <string_del name="_sys_setup_step_profile_action"></string_del>
+    <string_del name="_sys_setup_step_profile_txt"></string_del>
+    <string_del name="_sys_setup_title"></string_del>
+</resources>

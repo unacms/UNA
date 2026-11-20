@@ -8,19 +8,30 @@
  */
 
 /**
- * First-run help for operators: the setup checklist on the homepage (template/homepage_setup.html)
- * and the Studio tour (studio/template/launcher_tour.html, run by bx_tour() in inc/js/functions.js).
+ * First-run help: onboarding checklists ("Get started") and the Studio tour.
  *
- * The checklist shows the steps a new site needs, each ticked from the site's real state, until
- * every step is done or the operator dismisses it. The Studio tour starts by itself until its viewer
- * closes or finishes it. Both are kept per account in `sys_accounts_tours` (tour.php writes it), so
- * they hold across browsers and after cookies are cleared. After that the checklist opens from the
- * account menu ("Set up your site", index.php?setup=1) and the tour from the account popup in Studio.
+ * A checklist is a menu object (sys_onboarding_operator for operators; Studio > Navigation) whose items are its
+ * steps: title, Info as the description, icon, link, levels. An item's add-on is a service call that answers the
+ * step's state (STEP_*), and BxBaseMenuOnboarding draws it with the "List with descriptions" template. The
+ * "Get started" block (system:get_block_onboarding, with the menu as its parameter) shows it until every step is
+ * done or the account hides it, so it can be placed on any page in Studio > Pages.
+ *
+ * The Studio tour (studio/template/launcher_tour.html, bx_tour() in inc/js/functions.js) starts by itself until its
+ * viewer closes or finishes it. Hidden checklists and closed tours are kept per account in `sys_accounts_tours`
+ * (tour.php writes it), under the menu's or the tour's name. The account menu's "Get started"
+ * (index.php?onboarding=1) brings the operators' checklist back; the account popup in Studio starts the tour.
  */
 class BxDolTours extends BxDolFactory implements iBxDolSingleton
 {
     const HOME = 'home';
     const STUDIO = 'studio';
+
+    const ONBOARDING_OPERATOR = 'sys_onboarding_operator';
+
+    const STEP_DONE = 'done';
+    const STEP_TODO = 'todo';
+    const STEP_LOCKED = 'locked';
+    const STEP_NOTE = 'note';
 
     const JOIN_OPEN = 'open';
     const JOIN_INVITE = 'invite';
@@ -56,6 +67,9 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
     {
         if(!isAdmin())
             return false;
+
+        if(self::isOnboardingName($sTour))
+            return $this->isOnboardingAvailable($sTour);
 
         switch($sTour) {
             case self::HOME:
@@ -97,46 +111,6 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * The homepage setup checklist's steps for the logged in operator, in order. Each step is
-     * ['done' => bool, 'url' => where it is done, 'locked' => true when it needs a step before it].
-     * A step for something the site doesn't have (covers off, no Timeline) is left out.
-     */
-    public function getSetupSteps()
-    {
-        $oAccount = BxDolAccount::getInstance();
-        $aProfileIds = $oAccount ? $oAccount->getProfilesIds(false) : [];
-
-        $aSteps = [
-            'profile' => [
-                'done' => !empty($aProfileIds),
-                'url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=account-profile-switcher')),
-            ],
-            'logo' => [
-                'done' => (int)getParam('sys_site_logo') || (int)getParam('sys_site_mark') || trim(getParam('sys_site_logo_inline')) !== '' || trim(getParam('sys_site_mark_inline')) !== '',
-                'url' => BX_DOL_URL_STUDIO . 'designer.php?page=logo',
-            ],
-        ];
-
-        if(getParam('sys_site_cover_disabled') != 'on')
-            $aSteps['cover'] = [
-                'done' => (bool)(int)getParam('sys_site_cover_common'),
-                'url' => BX_DOL_URL_STUDIO . 'designer.php?page=cover',
-            ];
-
-        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline'))
-            $aSteps['post'] = [
-                'done' => !empty($aProfileIds) && BxDolService::call('bx_timeline', 'has_posts_by', [$aProfileIds]),
-                'url' => BX_DOL_URL_ROOT, // bx_setup_step() opens the homepage's post form
-                'locked' => empty($aProfileIds),
-            ];
-
-        foreach($aSteps as $sName => $aStep)
-            $aSteps[$sName] = array_merge(['locked' => false], $aStep);
-
-        return $aSteps;
-    }
-
-    /**
      * Who can join the site: anyone (JOIN_OPEN), only people with an invitation (JOIN_INVITE) or nobody,
      * because the sign-up form is off (JOIN_CLOSED).
      */
@@ -163,23 +137,73 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * Whether the homepage shows the setup checklist: it's on in settings, the viewer is an operator and
-     * hasn't dismissed it, and a step is left. With $bForced (index.php?setup=1, the account menu item)
-     * a dismissed checklist shows again.
+     * Whether the onboarding checklist that the menu $sMenu holds is there for the logged in account. The operators'
+     * one (ONBOARDING_OPERATOR) is for operators while "Get started checklist for operators" (site_tour_home) is on;
+     * any other checklist (a member checklist an operator builds in Studio) is for every signed-in account.
      */
-    public function isSetupShown($bForced = false)
+    public function isOnboardingAvailable($sMenu)
     {
-        if(!$this->isAvailable(self::HOME))
+        if(!self::isOnboardingName($sMenu) || !isLogged())
             return false;
 
-        if(!$bForced && $this->isSeen(self::HOME))
-            return false;
+        if($sMenu == self::ONBOARDING_OPERATOR)
+            return $this->isAvailable(self::HOME);
 
-        foreach($this->getSetupSteps() as $aStep)
-            if(!$aStep['done'])
-                return true;
+        return true;
+    }
 
-        return $bForced;
+    /**
+     * Whether the checklist shows: it's available, the account hasn't hidden it, or $bForced (index.php?onboarding=1,
+     * the account menu's "Get started") brings it back.
+     */
+    public function isOnboardingShown($sMenu, $bForced = false)
+    {
+        return $this->isOnboardingAvailable($sMenu) && ($bForced || !$this->isSeen($sMenu));
+    }
+
+    /**
+     * A checklist's name: its menu object, sys_onboarding_* or a module's <module>_onboarding_*.
+     */
+    public static function isOnboardingName($sName)
+    {
+        return is_string($sName) && preg_match('/^[a-z0-9_]{1,64}$/', $sName) && strpos($sName, '_onboarding') !== false;
+    }
+
+    /**
+     * The state of one of the built-in steps of the operators' checklist, for its menu item's add-on: STEP_DONE,
+     * STEP_TODO, STEP_LOCKED (it needs an earlier step) or STEP_NOTE (it tells, it isn't a task: who can join).
+     */
+    public function getStepState($sStep)
+    {
+        switch($sStep) {
+            case 'profile':
+                return $this->hasProfile() ? self::STEP_DONE : self::STEP_TODO;
+
+            case 'logo':
+                return (int)getParam('sys_site_logo') || (int)getParam('sys_site_mark') || trim(getParam('sys_site_logo_inline')) !== '' || trim(getParam('sys_site_mark_inline')) !== '' ? self::STEP_DONE : self::STEP_TODO;
+
+            case 'cover':
+                return (int)getParam('sys_site_cover_common') ? self::STEP_DONE : self::STEP_TODO;
+
+            case 'join':
+                return self::STEP_NOTE;
+        }
+
+        return '';
+    }
+
+    /**
+     * The profiles of the logged in account, without its system profile.
+     */
+    public function getProfileIds()
+    {
+        $oAccount = BxDolAccount::getInstance();
+        return $oAccount ? $oAccount->getProfilesIds(false) : [];
+    }
+
+    public function hasProfile()
+    {
+        return !empty($this->getProfileIds());
     }
 
     /**

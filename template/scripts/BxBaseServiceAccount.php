@@ -34,6 +34,86 @@ class BxBaseServiceAccount extends BxDol
     }
 
     /**
+     * The "Get started" block: the onboarding checklist that the menu $sMenu holds (BxDolTours), drawn by the menu's
+     * template, its progress as the block's description and Hide as the block's button. Nothing once every step is
+     * done or the account hid it; index.php?onboarding=1 (the account menu's "Get started") brings a hidden one back.
+     * The block can go on any page (Studio > Pages, block "Get started checklist"), with another menu as its parameter.
+     * The apps get an `onboarding` element with the menu's items (each with its `state`) and the hide request.
+     */
+    public function serviceGetBlockOnboarding($sMenu = BxDolTours::ONBOARDING_OPERATOR)
+    {
+        $oTours = BxDolTours::getInstance();
+        $bForced = bx_get('onboarding') == 1;
+        if(!$oTours->isOnboardingShown($sMenu, $bForced))
+            return '';
+
+        $oMenu = BxDolMenu::getObjectInstance($sMenu);
+        if(!$oMenu || !($oMenu instanceof BxBaseMenuOnboarding))
+            return '';
+
+        $mixedMenu = bx_is_api() ? $oMenu->getCodeAPI() : $oMenu->getCode();
+
+        list($iDone, $iSteps) = $oMenu->getProgress();
+        if(!$iSteps || ($iDone == $iSteps && !$bForced))
+            return '';
+
+        // "Create your profile" says the same as the "create a profile" message.
+        $aStates = $oMenu->getStates();
+        if(isset($aStates['profile']) && $aStates['profile'] != BxDolTours::STEP_DONE && ($oInformer = BxDolInformer::getInstance(BxDolTemplate::getInstance())))
+            $oInformer->remove('sys-account-profile-system');
+
+        $sDescription = _t('_sys_onboarding_progress', $iDone, $iSteps);
+        $sHide = _t('_sys_onboarding_hide');
+
+        if(bx_is_api())
+            return [
+                'description' => $sDescription,
+                'content' => [bx_api_get_block('onboarding', [
+                    'menu' => $mixedMenu,
+                    'hide' => [
+                        'title' => $sHide,
+                        'request_url' => 'system/onboarding_hide/TemplServiceAccount&params[]=' . $sMenu,
+                    ],
+                ])],
+            ];
+
+        return [
+            'description' => $sDescription,
+            'content' => $mixedMenu,
+            'buttons' => [
+                ['title' => $sHide, 'onclick' => "bx_onboarding_hide(this, '" . $sMenu . "')"],
+            ],
+        ];
+    }
+
+    /**
+     * Hides the onboarding checklist $sMenu for the logged in account, as the block's Hide button does on the site.
+     */
+    public function serviceOnboardingHide($sMenu = BxDolTours::ONBOARDING_OPERATOR)
+    {
+        return ['code' => BxDolTours::getInstance()->setSeen($sMenu) ? 0 : 1];
+    }
+
+    /**
+     * The state of a built-in step of the operators' checklist (BxDolTours::STEP_*): the add-on of its menu item.
+     */
+    public function serviceGetOnboardingStepState($sStep)
+    {
+        return BxDolTours::getInstance()->getStepState($sStep);
+    }
+
+    /**
+     * Whether a built-in step applies to this site: the cover step only while covers are on (Studio > Designer).
+     */
+    public function serviceIsOnboardingStepAvailable($sStep)
+    {
+        if($sStep == 'cover')
+            return getParam('sys_site_cover_disabled') != 'on';
+
+        return true;
+    }
+
+    /**
      * @page service Service Calls
      * @section bx_system_general System Services 
      * @subsection bx_system_general-account Account
