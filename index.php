@@ -30,6 +30,23 @@ if (!file_exists("./inc/header.inc.php")) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?php echo htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8'); ?></title>
+    <!-- The site's default favicon; a dark browser/OS colour scheme gets the white one (template/meta_icons.html). -->
+    <link rel="icon" href="template/images/icons/favicon.svg" type="image/svg+xml" data-bx-icon-light="template/images/icons/favicon.svg" data-bx-icon-dark="template/images/icons/favicon-dark.svg" />
+    <script>
+        (function () {
+            var oMedia = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+            if (!oMedia)
+                return;
+            var fUpdate = function () {
+                document.querySelectorAll('link[data-bx-icon-dark]').forEach(function (oLink) {
+                    oLink.href = oLink.getAttribute(oMedia.matches ? 'data-bx-icon-dark' : 'data-bx-icon-light');
+                });
+            };
+            fUpdate();
+            if (oMedia.addEventListener)
+                oMedia.addEventListener('change', fUpdate);
+        })();
+    </script>
     <style>
         :root {
             --bx-flash-bg: #f4f5f7;

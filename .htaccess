@@ -8,6 +8,8 @@ Options -MultiViews -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine on
+    # The favicon uploaded in Designer, else the default one (favicon.php), before the static file is served.
+    RewriteRule ^favicon\.ico$  favicon.php [L]
     RewriteRule ^api/v2(/(.*))?$  api_v2.php?_q=$2 [QSA,L]
     RewriteRule ^m/(.*)$  modules/index.php?r=$1 [QSA,L]
     RewriteRule ^page/(.*)$  page.php?i=$1 [QSA,L]

@@ -2116,6 +2116,11 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'meta_info':
                 $sRet = $this->getMetaInfo();
                 break;
+            case 'meta_icons':
+                // Page shells without __meta_info__ (sign-in, "Please Wait", popups) still carry the site's icons,
+                // so a browser tab never falls back to /favicon.ico.
+                $sRet = BxTemplFunctions::getInstance()->getMetaIcons();
+                break;
             case 'page_header':
                 if (isset($this->aPage['title']) && !empty($this->aPage['title']))
                     $sRet = bx_process_output(strip_tags($this->aPage['title']));
