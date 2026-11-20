@@ -3690,6 +3690,12 @@
 	<string name="_sys_inst_conf_desc_site_title"><![CDATA[Название Вашего сайта.]]></string>
 	<string name="_sys_inst_conf_desc_site_url"><![CDATA[Адрес сайта, с косой чертой в конце.]]></string>
 	<string name="_sys_inst_conf_desc_template"><![CDATA[Внешний вид сайта. Его можно сменить в Студии.]]></string>
+	<string name="_sys_inst_conf_err_db_connect"><![CDATA[Проверьте хост, а также порт или сокет, если вы их указали.]]></string>
+	<string name="_sys_inst_conf_err_db_host"><![CDATA[Здесь ничего не отвечает. Укажите хост MySQL из панели хостинга, часто это localhost; в Docker — имя сервиса базы данных, например mysql.]]></string>
+	<string name="_sys_inst_conf_err_db_name"><![CDATA[Сначала создайте пустую базу данных с этим именем или укажите имя уже созданной.]]></string>
+	<string name="_sys_inst_conf_err_db_not_allowed"><![CDATA[Проверьте имя. Если база данных есть, дайте этому пользователю все права на неё в панели хостинга; если нет, сначала создайте её пустой.]]></string>
+	<string name="_sys_inst_conf_err_db_password"><![CDATA[Проверьте пароль этого пользователя.]]></string>
+	<string name="_sys_inst_conf_err_db_user"><![CDATA[Проверьте имя пользователя и то, что ему можно подключаться с этого веб-сервера.]]></string>
 	<string name="_sys_inst_conf_err_email"><![CDATA[Введите адрес электронной почты, например name@example.com.]]></string>
 	<string name="_sys_inst_conf_err_length_exact"><![CDATA[Должно быть {0} символов.]]></string>
 	<string name="_sys_inst_conf_err_password"><![CDATA[Используйте не менее {0} символов.]]></string>
@@ -3785,8 +3791,11 @@
 	<string name="_sys_inst_modules_state_skipped"><![CDATA[пропущено]]></string>
 	<string name="_sys_inst_modules_title"><![CDATA[Установка приложений]]></string>
 	<string name="_sys_inst_msg_admin_account_not_found"><![CDATA[Учётная запись оператора не найдена по email: {0}]]></string>
+	<string name="_sys_inst_msg_db_err_access"><![CDATA[Сервер базы данных не принял этого пользователя и пароль.]]></string>
 	<string name="_sys_inst_msg_db_err_connect"><![CDATA[Не удалось подключиться к базе данных. Проверьте хост, пользователя и пароль.]]></string>
-	<string name="_sys_inst_msg_db_err_select"><![CDATA[Такой базы данных нет, или у пользователя нет к ней доступа.]]></string>
+	<string name="_sys_inst_msg_db_err_host"><![CDATA[По этому адресу не отвечает сервер базы данных.]]></string>
+	<string name="_sys_inst_msg_db_err_not_allowed"><![CDATA[У этого пользователя нет доступной ему базы данных с таким именем.]]></string>
+	<string name="_sys_inst_msg_db_err_select"><![CDATA[На сервере нет базы данных с таким именем.]]></string>
 	<string name="_sys_inst_msg_file_read_failed"><![CDATA[Ошибка чтения файла: {0}]]></string>
 	<string name="_sys_inst_msg_file_write_failed"><![CDATA[Ошибка записи файла: {0}]]></string>
 	<string name="_sys_inst_msg_finish"><![CDATA[Что дальше:]]></string>

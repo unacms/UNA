@@ -3720,6 +3720,12 @@
 	<string name="_sys_inst_conf_desc_site_title"><![CDATA[The name of your site.]]></string>
 	<string name="_sys_inst_conf_desc_site_url"><![CDATA[Address of the site, ending with a slash.]]></string>
 	<string name="_sys_inst_conf_desc_template"><![CDATA[How the site looks. You can change it in Studio.]]></string>
+	<string name="_sys_inst_conf_err_db_connect"><![CDATA[Check the host, and the port or socket if you set one.]]></string>
+	<string name="_sys_inst_conf_err_db_host"><![CDATA[Nothing answers here. Use the MySQL host your hosting panel shows, often localhost; with Docker, the database service's name, such as mysql.]]></string>
+	<string name="_sys_inst_conf_err_db_name"><![CDATA[Create an empty database with this name first, or enter the name of one you have created.]]></string>
+	<string name="_sys_inst_conf_err_db_not_allowed"><![CDATA[Check the name. If the database exists, give this user all privileges on it in your hosting panel; if not, create it first, empty.]]></string>
+	<string name="_sys_inst_conf_err_db_password"><![CDATA[Check the password of this user.]]></string>
+	<string name="_sys_inst_conf_err_db_user"><![CDATA[Check the user name, and that this user may connect from this web server.]]></string>
 	<string name="_sys_inst_conf_err_email"><![CDATA[Enter an email address, like name@example.com.]]></string>
 	<string name="_sys_inst_conf_err_length_exact"><![CDATA[It has {0} characters.]]></string>
 	<string name="_sys_inst_conf_err_password"><![CDATA[Use at least {0} characters.]]></string>
@@ -3815,8 +3821,11 @@
 	<string name="_sys_inst_modules_state_skipped"><![CDATA[skipped]]></string>
 	<string name="_sys_inst_modules_title"><![CDATA[Installing apps]]></string>
 	<string name="_sys_inst_msg_admin_account_not_found"><![CDATA[The operator account wasn't found by its email: {0}]]></string>
+	<string name="_sys_inst_msg_db_err_access"><![CDATA[The database server refused this user and password.]]></string>
 	<string name="_sys_inst_msg_db_err_connect"><![CDATA[Couldn't connect to the database. Check the host, user and password.]]></string>
-	<string name="_sys_inst_msg_db_err_select"><![CDATA[This database doesn't exist, or the user can't use it.]]></string>
+	<string name="_sys_inst_msg_db_err_host"><![CDATA[No database server answered at this host.]]></string>
+	<string name="_sys_inst_msg_db_err_not_allowed"><![CDATA[This user has no database with this name it may use.]]></string>
+	<string name="_sys_inst_msg_db_err_select"><![CDATA[There's no database with this name on the server.]]></string>
 	<string name="_sys_inst_msg_file_read_failed"><![CDATA[File read failed: {0}]]></string>
 	<string name="_sys_inst_msg_file_write_failed"><![CDATA[File write failed: {0}]]></string>
 	<string name="_sys_inst_msg_finish"><![CDATA[Next steps:]]></string>

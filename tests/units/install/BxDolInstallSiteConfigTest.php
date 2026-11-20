@@ -185,9 +185,20 @@ class BxDolInstallSiteConfigTest extends \PHPUnit\Framework\TestCase
         $oUnknown = new PDOException('SQLSTATE[HY000] [1049] Unknown database');
         $oNoHost = new PDOException('SQLSTATE[HY000] [2002] No such host');
 
-        $this->assertSame('Database connect failed', self::call($o, 'dbConnectError', $oDenied));
+        $oNotAllowed = new PDOException('SQLSTATE[HY000] [1044] Access denied for user to database');
+        $oOther = new PDOException('SQLSTATE[HY000] [1040] Too many connections');
+
+        $this->assertSame('Database access denied', self::call($o, 'dbConnectError', $oDenied));
         $this->assertSame('Database select failed', self::call($o, 'dbConnectError', $oUnknown));
-        $this->assertSame('Database connect failed', self::call($o, 'dbConnectError', $oNoHost));
+        $this->assertSame('Database host failed', self::call($o, 'dbConnectError', $oNoHost));
+        $this->assertSame('Database not allowed', self::call($o, 'dbConnectError', $oNotAllowed));
+        $this->assertSame('Database connect failed', self::call($o, 'dbConnectError', $oOther));
+
+        // every case has its message on top and one under each field it names, none of them the generic one
+        $sSource = file_get_contents(dirname(__DIR__, 3) . '/install/classes/BxDolInstallSiteConfig.php');
+        foreach (array('Database access denied', 'Database select failed', 'Database host failed', 'Database not allowed', 'Database connect failed') as $sCase)
+            $this->assertStringContainsString("'" . $sCase . "' => array ('msg' =>", $sSource);
+        $this->assertStringNotContainsString("=> true;\n                \$aErrorFields[BX_INSTALL_ERR_GENERAL] = \$this->_aDbErrorMap", $sSource);
     }
 
     public function testQueueNeedsItsToken(): void

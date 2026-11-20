@@ -90,9 +90,24 @@ class BxDolInstallSiteConfig
         $this->_sSqlAddon = BX_INSTALL_DIR . 'sql/addon.sql';
         $this->_sPatternHeader = BX_INSTALL_DIR . 'patterns/header.inc.php';
 
+        // a failed connection: the message on top and one under each field that needs a change
         $this->_aDbErrorMap = array (
-            'Database connect failed' => array ('fields' => array('db_host', 'db_user', 'db_password'), 'msg' => _t('_sys_inst_msg_db_err_connect')),
-            'Database select failed' => array ('fields' => array('db_name'), 'msg' => _t('_sys_inst_msg_db_err_select')),
+            'Database connect failed' => array ('msg' => _t('_sys_inst_msg_db_err_connect'), 'fields' => array(
+                'db_host' => _t('_sys_inst_conf_err_db_connect'),
+            )),
+            'Database host failed' => array ('msg' => _t('_sys_inst_msg_db_err_host'), 'fields' => array(
+                'db_host' => _t('_sys_inst_conf_err_db_host'),
+            )),
+            'Database access denied' => array ('msg' => _t('_sys_inst_msg_db_err_access'), 'fields' => array(
+                'db_user' => _t('_sys_inst_conf_err_db_user'),
+                'db_password' => _t('_sys_inst_conf_err_db_password'),
+            )),
+            'Database select failed' => array ('msg' => _t('_sys_inst_msg_db_err_select'), 'fields' => array(
+                'db_name' => _t('_sys_inst_conf_err_db_name'),
+            )),
+            'Database not allowed' => array ('msg' => _t('_sys_inst_msg_db_err_not_allowed'), 'fields' => array(
+                'db_name' => _t('_sys_inst_conf_err_db_not_allowed'),
+            )),
         );
 
         $aModulesVals = $this->getSelectValues(BX_DOL_MODULE_TYPE_MODULE);
@@ -470,8 +485,8 @@ EOF;
         if (!$oDb) {
             $aErrorFields = array();
             if (isset($this->_aDbErrorMap[$sErrorMessage])) {
-                foreach ($this->_aDbErrorMap[$sErrorMessage]['fields'] as $sField)
-                    $aErrorFields[$sField] = true;
+                foreach ($this->_aDbErrorMap[$sErrorMessage]['fields'] as $sField => $sFieldMessage)
+                    $aErrorFields[$sField] = $sFieldMessage;
                 $aErrorFields[BX_INSTALL_ERR_GENERAL] = $this->_aDbErrorMap[$sErrorMessage]['msg'];
             } else {
                 $aErrorFields[BX_INSTALL_ERR_GENERAL] = htmlspecialchars($sErrorMessage, ENT_QUOTES, 'UTF-8');
@@ -527,15 +542,22 @@ EOF;
     }
 
     /**
-     * Which of the messages of _aDbErrorMap fits a failed connection: a missing database, or the rest.
+     * Which of the messages of _aDbErrorMap fits a failed connection, by the server's error code.
      */
     protected function dbConnectError ($e)
     {
-        // 1044 access denied to the database, 1049 unknown database
         $iCode = isset($e->errorInfo[1]) ? (int)$e->errorInfo[1] : 0;
         if (!$iCode && preg_match('/\[(\d{4})\]/', $e->getMessage(), $m))
             $iCode = (int)$m[1];
-        return in_array($iCode, array(1044, 1049)) ? 'Database select failed' : 'Database connect failed';
+
+        // 2002-2006: no server at this host or socket, or the host name doesn't resolve
+        $aCases = array_fill_keys(array(2002, 2003, 2005, 2006), 'Database host failed') + array(
+            1045 => 'Database access denied', // access denied for this user and password
+            1698 => 'Database access denied', // access denied (auth plugin, e.g. root through a socket only)
+            1044 => 'Database not allowed', // the user may not use this database
+            1049 => 'Database select failed', // no such database
+        );
+        return isset($aCases[$iCode]) ? $aCases[$iCode] : 'Database connect failed';
     }
 
     /**
