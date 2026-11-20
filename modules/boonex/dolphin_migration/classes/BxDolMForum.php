@@ -15,6 +15,7 @@ bx_import('BxDolStorage');
 class BxDolMForum extends BxDolMData
 {	
 	private $_iSystem = 0;
+	protected $_sImageForumFiles = '';
 	
 	public function __construct(&$oMigrationModule, &$oDb)
 	{

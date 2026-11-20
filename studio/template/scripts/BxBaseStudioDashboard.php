@@ -210,7 +210,8 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'apps' => $this->getAppsCountText(),
             'checking' => _t('_adm_dbd_txt_ver_checking'),
             'bx_if:access_active' => ['condition' => $bAccess, 'content' => []],
-            'bx_if:access_inactive' => ['condition' => !$bAccess, 'content' => [
+            // with the Automatic updates switch already on, a button to "enable" them would contradict it
+            'bx_if:access_inactive' => ['condition' => !$bAccess && getParam('sys_autoupdate') != 'on', 'content' => [
                 'access_url' => 'https://unacms.com/start' // a bx_if block only sees its own content
             ]]
         ));

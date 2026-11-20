@@ -379,7 +379,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_cron_time', '_adm_stg_cpt_option_sys_cron_time', '0', 'digit', '', '', '', '', 2),
-(@iCategoryId, 'sys_upgrade_channel', '_adm_stg_cpt_option_sys_upgrade_channel', 'beta', 'select', 'stable,beta,dev', '', '', '', 4),
+(@iCategoryId, 'sys_upgrade_channel', '_adm_stg_cpt_option_sys_upgrade_channel', 'stable', 'select', 'stable,beta,dev', '', '', '', 4),
 (@iCategoryId, 'sys_revision', '_adm_stg_cpt_option_sys_revision', '0', 'digit', '', '', '', '', 5),
 (@iCategoryId, 'sys_eq_time', '_adm_stg_cpt_option_sys_eq_time', '0', 'digit', '', '', '', '', 6),
 (@iCategoryId, 'sys_push_queue_time', '_adm_stg_cpt_option_sys_push_queue_time', '0', 'digit', '', '', '', '', 7),
@@ -5285,7 +5285,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 -- The homepage introduction tour, for operators while it is on (BxDolTours).
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_account_notifications', 'system', 'tour', '_sys_menu_item_title_system_tour', '_sys_menu_item_title_tour', 'index.php?tour=1', 'if(typeof glTour !== ''undefined'') { glTour.start(); return false; }', '', 'compass', '', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"is_tour_available";s:6:"params";a:1:{i:0;s:4:"home";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 9997);
+('sys_account_notifications', 'system', 'tour', '_sys_menu_item_title_system_setup', '_sys_menu_item_title_setup', 'index.php?setup=1', '', '', 'list-checks', '', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"is_tour_available";s:6:"params";a:1:{i:0;s:4:"home";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 9997);
 
 -- account settings menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES

@@ -11,6 +11,8 @@
 
 class BxAnonFollowConfig extends BxDolModuleConfig
 {
+    public $CNF = [];
+
     public function __construct($aModule)
     {
         parent::__construct($aModule);

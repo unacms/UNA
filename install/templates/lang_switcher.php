@@ -23,7 +23,7 @@ $sTranslateSvg = '<svg class="bx-install-lang-icon" width="16" height="16" viewB
         <?php echo $sTranslateSvg; ?>
         <span class="bx-install-lang-current"><?php echo bx_html_attribute($sLangTitle); ?></span>
     </summary>
-    <div class="bx-install-lang-menu" role="menu">
+    <div class="bx-install-lang-menu bx-popup-color-bg bx-popup-border" role="menu">
         <?php foreach ($aLangs as $aLang): ?>
         <a role="menuitem" class="bx-install-lang-item<?php echo ($aLang['code'] === $sLang) ? ' is-selected' : ''; ?>" href="<?php echo bx_html_attribute(bx_install_lang_url($aLang['code'])); ?>">
             <span class="bx-install-lang-badge"><?php echo $sTranslateSvg; ?></span>
@@ -32,17 +32,3 @@ $sTranslateSvg = '<svg class="bx-install-lang-icon" width="16" height="16" viewB
         <?php endforeach; ?>
     </div>
 </details>
-<script>
-(function () {
-    var d = document.querySelector('.bx-install-lang');
-    if (!d) return;
-    document.addEventListener('click', function (e) {
-        if (!d.contains(e.target))
-            d.removeAttribute('open');
-    });
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape')
-            d.removeAttribute('open');
-    });
-})();
-</script>

@@ -1348,6 +1348,29 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
      * @page service Service Calls
      * @section bx_timeline Timeline
      * @subsection bx_timeline-other Other
+     * @subsubsection bx_timeline-has_posts_by has_posts_by
+     *
+     * @code bx_srv('bx_timeline', 'has_posts_by', [[12, 14]]); @endcode
+     *
+     * Whether any of the profiles has written a post. The homepage setup checklist uses it (BxDolTours).
+     *
+     * @param $aProfileIds array of profile IDs.
+     * @return boolean
+     *
+     * @see BxTimelineModule::serviceHasPostsBy
+     */
+    /**
+     * @ref bx_timeline-has_posts_by "has_posts_by"
+     */
+    public function serviceHasPostsBy($aProfileIds)
+    {
+        return $this->_oDb->hasCommonPostsBy(array_map('intval', (array)$aProfileIds));
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_timeline Timeline
+     * @subsection bx_timeline-other Other
      * @subsubsection bx_timeline-get_link get_link
      * 
      * @code bx_srv('bx_timeline', 'get_link', [...]); @endcode

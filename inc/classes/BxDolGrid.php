@@ -283,6 +283,9 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
 
     protected $_bActionCsrfChecking;
 
+    protected $_tmpOrderField;
+    protected $_tmpOrderDir;
+
     /**
      * Constructor
      * @param $aOptions array of grid options

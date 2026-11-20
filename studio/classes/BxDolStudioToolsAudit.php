@@ -23,6 +23,7 @@ class BxDolStudioToolsAudit extends BxDol
     protected $iPhpErrorReporting;
 
     protected $sMinMysqlVer;
+    protected $sMinMariaDbVer;
     protected $aMysqlOptimizationSettings;
 
     protected $aOptimizationSettings;
@@ -47,18 +48,16 @@ class BxDolStudioToolsAudit extends BxDol
             BX_DOL_AUDIT_OK => _t('_sys_audit_title_ok'),
         );
 
-        $this->sMinPhpVer = '8.1.0';
+        // the requirements in AGENTS.md
+        $this->sMinPhpVer = '8.3.0';
         $this->aPhpSettings = array (
             'allow_url_fopen' => array('op' => '=', 'val' => true, 'type' => 'bool'),
             'allow_url_include' => array('op' => '=', 'val' => false, 'type' => 'bool'),
-            'magic_quotes_gpc' => array('op' => '=', 'val' => false, 'type' => 'bool', 'warn' => 1),
             'memory_limit' => array('op' => '>=', 'val' => 128*1024*1024, 'type' => 'bytes', 'unlimited' => -1),
             'post_max_size' => array('op' => '>=', 'val' => 2*1024*1024, 'type' => 'bytes', 'warn' => 1),
             'upload_max_filesize' => array('op' => '>=', 'val' => 2*1024*1024, 'type' => 'bytes', 'warn' => 1),
-            'register_globals' => array('op' => '=', 'val' => false, 'type' => 'bool'),
-            'safe_mode' => array('op' => '=', 'val' => false, 'type' => 'bool'),
-            'short_open_tag' => array('op' => '=', 'val' => true, 'type' => 'bool'),
             'disable_functions' => array('op' => 'without', 'val' => 'shell_exec,eval,assert,phpinfo,getenv,ini_set,fsockopen,chmod,parse_ini_file,readfile,escapeshellcmd,fput,popen'),
+            'php module: pdo_mysql' => array('op' => 'module', 'val' => 'pdo_mysql'),
             'php module: curl' => array('op' => 'module', 'val' => 'curl'),
             'php module: gd' => array('op' => 'module', 'val' => 'gd'),
             'php module: mbstring' => array('op' => 'module', 'val' => 'mbstring'),
@@ -69,12 +68,13 @@ class BxDolStudioToolsAudit extends BxDol
             'php module: exif' => array('op' => 'module', 'val' => 'exif'),
         );
 
-        $this->sMinMysqlVer = '5.5.3';
+        $this->sMinMysqlVer = '5.7.8';
+        $this->sMinMariaDbVer = '10.2.3';
         $this->aMysqlOptimizationSettings = array (
             'key_buffer_size' => array('op' => '>=', 'val' => 128*1024, 'type' => 'bytes'),
             'max_heap_table_size' => array('op' => '>=', 'val' => 16*1024*1024, 'type' => 'bytes'),
             'tmp_table_size' => array('op' => '>=', 'val' => 16*1024*1024, 'type' => 'bytes'),
-            'thread_cache_size ' => array('op' => '>', 'val' => 0),
+            'thread_cache_size' => array('op' => '>', 'val' => 0),
         );
 
         $this->aOptimizationSettings = array (
@@ -263,17 +263,15 @@ class BxDolStudioToolsAudit extends BxDol
         }
         $sLatestPhpVersion = $this->sLatestPhpVersion;
 
-        if (version_compare(phpversion(), "5.4", ">=") == 1)
-            unset($this->aPhpSettings['short_open_tag']);
-
         $aMessages = array ();
 
+        // the minimum doesn't need php.net, so an offline server still fails on an old PHP
         $sPhpVer = PHP_VERSION;
-        if (empty($sLatestPhpVersion))
-            $aVer = array('type' => BX_DOL_AUDIT_UNDEF, 'msg' => _t('_sys_audit_msg_value_checking_failed'), 'params' => array ('real_val' => $sPhpVer));
-        elseif (version_compare($sPhpVer, $this->sMinPhpVer, '<'))
+        if (version_compare($sPhpVer, $this->sMinPhpVer, '<'))
             $aVer = array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_version_is_incompatible', $this->sMinPhpVer), 'params' => array ('real_val' => $sPhpVer));
-        elseif (version_compare($sPhpVer, '5.3.0', '>=') && version_compare($sPhpVer, '5.4.0', '<'))
+        elseif (empty($sLatestPhpVersion))
+            $aVer = array('type' => BX_DOL_AUDIT_UNDEF, 'msg' => _t('_sys_audit_msg_value_checking_failed'), 'params' => array ('real_val' => $sPhpVer));
+        elseif (self::isPhpBranchOutdated($sPhpVer, $sLatestPhpVersion))
             $aVer = array('type' => BX_DOL_AUDIT_WARN, 'msg' => _t('_sys_audit_msg_version_is_outdated', $sLatestPhpVersion), 'params' => array ('real_val' => $sPhpVer));
         else
             $aVer = array('type' => BX_DOL_AUDIT_OK, 'params' => array ('real_val' => $sPhpVer));
@@ -307,11 +305,16 @@ class BxDolStudioToolsAudit extends BxDol
 
     protected function requirementsMySQL($bEcho = true, &$aOutputMessages = null)
     {
-        $sMysqlVer = BxDolDb::getInstance()->getServerInfo();
+        $sServerInfo = BxDolDb::getInstance()->getServerInfo();
+        $sMysqlVer = $sServerInfo;
         if (preg_match ('/^(\d+)\.(\d+)\.(\d+)/', $sMysqlVer, $m)) {
             $sMysqlVer = "{$m[1]}.{$m[2]}.{$m[3]}";
-            if (version_compare($sMysqlVer, $this->sMinMysqlVer, '<'))
-                $aMessage = array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_version_is_incompatible', $this->sMinMysqlVer), 'params' => array('real_val' => $sMysqlVer));
+            $sMinVer = self::getMinDbVersion($sServerInfo, $this->sMinMysqlVer, $this->sMinMariaDbVer);
+            $bOld = version_compare($sMysqlVer, $sMinVer, '<');
+            if (false !== stripos($sServerInfo, 'mariadb'))
+                $sMysqlVer .= ' MariaDB';
+            if ($bOld)
+                $aMessage = array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_version_is_incompatible', $sMinVer), 'params' => array('real_val' => $sMysqlVer));
             else
                 $aMessage = array('type' => BX_DOL_AUDIT_OK, 'params' => array('real_val' => $sMysqlVer));
         } else {
@@ -330,8 +333,14 @@ class BxDolStudioToolsAudit extends BxDol
     protected function requirementsWebServer($bEcho = true, &$aOutputMessages = null)
     {
         $aMessages = array();
-        foreach ($this->aRequiredApacheModules as $sName => $sNameCompiledName)
-            $aMessages[$sName] = $this->checkApacheModule($sName, $sNameCompiledName);
+        if ($this->isApache()) {
+            foreach ($this->aRequiredApacheModules as $sName => $sNameCompiledName)
+                $aMessages[$sName] = $this->checkApacheModule($sName, $sNameCompiledName);
+        }
+        else {
+            // other servers (nginx) have no modules to list: ask the site for a page only a rewrite rule serves
+            $aMessages[_t('_sys_audit_url_rewriting')] = $this->checkRewriteByRequest();
+        }
 
         if (null !== $aOutputMessages)
             $aOutputMessages = $aMessages;
@@ -648,6 +657,25 @@ class BxDolStudioToolsAudit extends BxDol
      */
     protected function getRowsOptimizationWebServer()
     {
+        if (!$this->isApache()) {
+            // other servers (nginx): read the headers of a static file the server sends itself
+            $aResponse = $this->requestOwnUrl('template/css/common.css', array('Accept-Encoding: gzip'));
+            if (!$aResponse) {
+                $sMsg = $this->getMsgRequestFailed();
+                return array(
+                    $this->getRow(_t('_sys_audit_userside_caching'), '', BX_DOL_AUDIT_UNDEF, $sMsg),
+                    $this->getRow(_t('_sys_audit_serverside_compression'), '', BX_DOL_AUDIT_UNDEF, $sMsg),
+                );
+            }
+
+            $bCaching = isset($aResponse['headers']['expires']) || (isset($aResponse['headers']['cache-control']) && preg_match('/max-age=[1-9]/', $aResponse['headers']['cache-control']));
+            $bCompression = isset($aResponse['headers']['content-encoding']) && false !== stripos($aResponse['headers']['content-encoding'], 'gzip');
+            return array(
+                $this->getRow(_t('_sys_audit_userside_caching'), 'Cache-Control', $bCaching ? BX_DOL_AUDIT_OK : BX_DOL_AUDIT_WARN, $bCaching ? '' : _t('_sys_audit_msg_userside_caching', $this->getUrlForGooglePageSpeed('LeverageBrowserCaching'))),
+                $this->getRow(_t('_sys_audit_serverside_compression'), 'gzip', $bCompression ? BX_DOL_AUDIT_OK : BX_DOL_AUDIT_WARN),
+            );
+        }
+
         $aExpires = $this->checkApacheModule('expires_module');
         $aDeflate = $this->checkApacheModule('deflate_module');
 
@@ -655,6 +683,115 @@ class BxDolStudioToolsAudit extends BxDol
             $this->getRow(_t('_sys_audit_userside_caching'), 'mod_expires', $aExpires['type'], _t('_sys_audit_msg_userside_caching', $this->getUrlForGooglePageSpeed('LeverageBrowserCaching'))),
             $this->getRow(_t('_sys_audit_serverside_compression'), 'mod_deflate', $aDeflate['type']),
         );
+    }
+
+    /**
+     * Apache, where the module checks apply; nginx and others are checked by requests to the site.
+     */
+    protected function isApache()
+    {
+        if (function_exists('apache_get_modules'))
+            return true;
+
+        $sSoftware = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
+        return '' === $sSoftware || false !== stripos($sSoftware, 'apache') || false !== stripos($sSoftware, 'litespeed');
+    }
+
+    /**
+     * Why a check that requests the site has no result: before the site is installed it isn't requested at all.
+     */
+    protected function getMsgRequestFailed()
+    {
+        return _t(defined('BX_DOL_URL_ROOT') ? '_sys_audit_msg_webserver_request_failed' : '_sys_audit_msg_webserver_after_install');
+    }
+
+    /**
+     * Rewrite rules route /page/... to page.php; without them the server answers 404.
+     */
+    protected function checkRewriteByRequest()
+    {
+        $aResponse = $this->requestOwnUrl('page/bx-audit-rewrite-check');
+        if (!$aResponse)
+            return array('type' => BX_DOL_AUDIT_UNDEF, 'msg' => $this->getMsgRequestFailed());
+
+        if (404 == $aResponse['code'])
+            return array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_url_rewriting_fail'));
+
+        return array('type' => BX_DOL_AUDIT_OK);
+    }
+
+    /**
+     * Request a path of this site, without following redirects.
+     * @return array 'code' and 'headers' (lower case names), or false when the site can't be reached
+     */
+    protected function requestOwnUrl($sPath, $aHeaders = array())
+    {
+        // only the configured site URL: before the site is installed the host would come from the request
+        if (!function_exists('curl_init') || !defined('BX_DOL_URL_ROOT'))
+            return false;
+
+        $r = curl_init(BX_DOL_URL_ROOT . $sPath);
+        curl_setopt_array($r, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => true,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_TIMEOUT => 5,
+            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_HTTPHEADER => $aHeaders,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+        ));
+        $s = curl_exec($r);
+        $iCode = (int)curl_getinfo($r, CURLINFO_RESPONSE_CODE);
+        $iHeaderSize = (int)curl_getinfo($r, CURLINFO_HEADER_SIZE);
+        curl_close($r);
+        if (false === $s || !$iCode)
+            return false;
+
+        $aResponseHeaders = array();
+        foreach (explode("\n", substr($s, 0, $iHeaderSize)) as $sLine) {
+            $a = explode(':', $sLine, 2);
+            if (2 == count($a))
+                $aResponseHeaders[strtolower(trim($a[0]))] = trim($a[1]);
+        }
+
+        return array('code' => $iCode, 'headers' => $aResponseHeaders);
+    }
+
+    /**
+     * The minimum version of the database server: MariaDB numbers its versions apart from MySQL.
+     */
+    public static function getMinDbVersion($sServerInfo, $sMinMysql, $sMinMariaDb)
+    {
+        return false !== stripos((string)$sServerInfo, 'mariadb') ? $sMinMariaDb : $sMinMysql;
+    }
+
+    /**
+     * A PHP branch two or more minor releases behind the newest one is outdated.
+     */
+    public static function isPhpBranchOutdated($sVersion, $sLatest)
+    {
+        if (!preg_match('/^(\d+)\.(\d+)/', (string)$sVersion, $m) || !preg_match('/^(\d+)\.(\d+)/', (string)$sLatest, $l))
+            return false;
+        if ((int)$m[1] != (int)$l[1])
+            return (int)$m[1] < (int)$l[1];
+        return (int)$l[2] - (int)$m[2] >= 2;
+    }
+
+    /**
+     * A size in bytes the way people read it: 192 MB, not 201326592.
+     */
+    public static function formatBytes($iBytes)
+    {
+        $iBytes = (float)$iBytes;
+        if ($iBytes < 0)
+            return (string)$iBytes;
+        foreach (array('B', 'KB', 'MB', 'GB') as $i => $sUnit) {
+            if ($iBytes < 1024 || 'GB' == $sUnit)
+                return (0 == $i || floor($iBytes) == $iBytes ? (string)(float)round($iBytes) : (string)round($iBytes, 1)) . ' ' . $sUnit;
+            $iBytes /= 1024;
+        }
+        return (string)$iBytes;
     }
 
     protected function getRowsOptimizationScript()
@@ -752,7 +889,7 @@ class BxDolStudioToolsAudit extends BxDol
     protected function format_output ($mixedVal, $a)
     {
         if (isset($a['type']) && 'bytes' == $a['type'])
-            return function_exists('_t_format_size') ? _t_format_size($mixedVal) : $mixedVal;
+            return -1 == $mixedVal ? _t('_sys_audit_unlimited') : self::formatBytes($mixedVal);
         if (isset($a['type']) && 'bool' == $a['type'])
             return $mixedVal ? 'On' : 'Off';
         else
@@ -827,20 +964,23 @@ class BxDolStudioToolsAudit extends BxDol
 
     protected function getUrlForGooglePageSpeed ($sRule)
     {
-        if (defined('BX_DOL_URL_ROOT')) {
-            $sUrl = BX_DOL_URL_ROOT;
-        }
-        else {
-            $sUrl = 'http://';
-            if  (
-                (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) || 
-                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' == strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'])) || 
-                getenv('UNA_HTTPS')
-            )
-                $sUrl = 'https://';
-            $sUrl .= $_SERVER['HTTP_HOST'] . str_replace('/install/index.php', '', $_SERVER['PHP_SELF']);
-        }
+        $sUrl = defined('BX_DOL_URL_ROOT') ? BX_DOL_URL_ROOT : $this->getUrlRootFromRequest();
         return 'https://pagespeed.web.dev/report?url=' . $sUrl;
+    }
+
+    /**
+     * The site URL before the site is installed, from the installer's own request.
+     */
+    protected function getUrlRootFromRequest ()
+    {
+        $sUrl = 'http://';
+        if  (
+            (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) || 
+            (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' == strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'])) || 
+            getenv('UNA_HTTPS')
+        )
+            $sUrl = 'https://';
+        return $sUrl . $_SERVER['HTTP_HOST'] . str_replace('install/index.php', '', $_SERVER['PHP_SELF']);
     }
 
     protected function sendTestEmail ()

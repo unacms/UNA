@@ -11,6 +11,9 @@
 
 class BxSEMigTransfers extends BxTemplGrid
 {
+    protected $MODULE;
+    protected $_oModule;
+
     public function __construct ($aOptions, $oTemplate = false)
     {
     	$this -> MODULE = 'bx_se_migration';

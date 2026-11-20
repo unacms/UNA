@@ -21,7 +21,7 @@ class BxDrupalAlerts extends BxBaseModConnectAlerts
     {
         parent::response($o);
         
-        if ('profile' == $o->sUnit && 'show_login_form' == $o->sAction) {
+        if ('profile' == $o->sUnit && 'show_login_form' == $o->sAction && $this->oModule->isConfigured()) {
             $o->aExtras['sParams'] .= ' no_auth_buttons no_join_text';
             $o->aExtras['oForm'] = BxDolForm::getObjectInstance('bx_drupal_login', 'bx_drupal_login');
         }

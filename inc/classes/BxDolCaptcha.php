@@ -53,6 +53,8 @@ class BxDolCaptcha extends BxDolFactory implements iBxDolFactoryObject
 
     protected $_oTemplate;
 
+    protected $_error;
+
     /**
      * Constructor
      * @param $aObject array of captcha options

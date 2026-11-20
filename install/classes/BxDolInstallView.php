@@ -18,6 +18,12 @@ class BxDolInstallView
 
     protected $_aToolbarItem = array();
 
+    /**
+     * Steps in the header, in order. The site configuration form shows three of them, a page each.
+     */
+    protected $_aSteps = array('server', 'database', 'site', 'apps', 'install', 'done');
+    protected $_sStep = '';
+
     protected $_aFilesCss = array (
         '../../plugins_public/tailwind/css/tailwind.min.css',
         'common.css',
@@ -63,11 +69,27 @@ class BxDolInstallView
         $sLangTitle = (isset($aLangs[$sLang]) && !empty($aLangs[$sLang]['title'])) ? $aLangs[$sLang]['title'] : $sLang;
 
         $aToolbarItem = $this->_aToolbarItem;
+
+        $aSteps = array();
+        foreach ($this->_aSteps as $sStep)
+            $aSteps[$sStep] = _t('_sys_inst_step_' . $sStep);
+        $sStepCurrent = $this->_sStep;
+        $iCurrent = array_search($sStepCurrent, $this->_aSteps);
+        $aStepsDone = false === $iCurrent ? array() : array_slice($this->_aSteps, 0, $iCurrent);
+
         $sInlineCSS = $this->_getInlineCSS();
         $sFilesCSS = $this->_getFilesCSS();
         $sFilesJS = $this->_getFilesJS();
         $sCode = ob_get_clean();
         include($this->_sDirTemplates . '_page.php');
+    }
+
+    /**
+     * The step of the header the page belongs to; none on the welcome page.
+     */
+    public function setStep($sStep)
+    {
+        $this->_sStep = $sStep;
     }
 
     function setToolbarItem($sIcon, $sLink, $sTitle = '', $sTarget = '')

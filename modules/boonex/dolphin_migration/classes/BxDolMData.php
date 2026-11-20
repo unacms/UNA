@@ -22,6 +22,8 @@ class BxDolMData
 	* @var ref $_oMainModule the reference to the main module object
 	*/	
 	protected $_oMainModule;
+
+	protected $_oConfig;
 	
 	/**
 	* @var  ref $_mDb the reference to Dolphin's database connect
