@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Installer: a failed database connection says which field to fix and how. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_inst_msg_db_err_host"><![CDATA[По этому адресу не отвечает сервер базы данных.]]></string_add>
+    <string_add name="_sys_inst_msg_db_err_access"><![CDATA[Сервер базы данных не принял этого пользователя и пароль.]]></string_add>
+    <string_add name="_sys_inst_msg_db_err_not_allowed"><![CDATA[У этого пользователя нет доступной ему базы данных с таким именем.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_connect"><![CDATA[Проверьте хост, а также порт или сокет, если вы их указали.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_host"><![CDATA[Здесь ничего не отвечает. Укажите хост MySQL из панели хостинга, часто это localhost; в Docker — имя сервиса базы данных, например mysql.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_user"><![CDATA[Проверьте имя пользователя и то, что ему можно подключаться с этого веб-сервера.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_password"><![CDATA[Проверьте пароль этого пользователя.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_name"><![CDATA[Сначала создайте пустую базу данных с этим именем или укажите имя уже созданной.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_not_allowed"><![CDATA[Проверьте имя. Если база данных есть, дайте этому пользователю все права на неё в панели хостинга; если нет, сначала создайте её пустой.]]></string_add>
+    <string_upd name="_sys_inst_msg_db_err_select"><![CDATA[На сервере нет базы данных с таким именем.]]></string_upd>
+</resources>
