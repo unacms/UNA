@@ -561,8 +561,8 @@ EOF;
         if (false === file_put_contents($sPath, $sHeader))
             return array(BX_INSTALL_ERR_GENERAL => _t('_sys_inst_msg_file_write_failed', $sPath));
 
-        // writable by the site's own user only: the file holds the database password
-        @chmod($sPath, 0644);
+        // no chmod: the file holds the database password, so it keeps the server's default permissions
+        // instead of being opened up to everyone (Studio's audit warns when others can write it)
 
         if (function_exists('opcache_invalidate')) opcache_invalidate($sPath);
         
@@ -673,16 +673,26 @@ EOF;
         if (!$this->writeModulesQueue($aQueue))
             return array(BX_INSTALL_ERR_GENERAL => _t('_sys_inst_msg_file_write_failed', BX_INSTALL_PATH_QUEUE));
 
-        if (!headers_sent())
-            setcookie(BX_INSTALL_QUEUE_COOKIE, $sToken, array( // NOSONAR php:S2092, Secure is set on https; an http install must still get the cookie
-                'expires' => 0,
-                'path' => rtrim(dirname($this->_sServerPhpSelf), '/\\') . '/',
-                'secure' => 'https://' === $this->proto(),
-                'httponly' => true,
-                'samesite' => 'Strict',
-            ));
+        $this->setQueueCookie($sToken, 0);
 
         return array();
+    }
+
+    /**
+     * The token's cookie: for the installer's folder only, never readable by scripts or sent from other sites.
+     */
+    protected function setQueueCookie ($sValue, $iExpires)
+    {
+        if (headers_sent())
+            return;
+
+        setcookie(BX_INSTALL_QUEUE_COOKIE, $sValue, array( // NOSONAR php:S2092, Secure is set on https; an http install must still get the cookie
+            'expires' => $iExpires,
+            'path' => rtrim(dirname($this->_sServerPhpSelf), '/\\') . '/',
+            'secure' => 'https://' === $this->proto(),
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ));
     }
 
     /**
@@ -806,8 +816,7 @@ EOF;
         if (function_exists('opcache_invalidate')) opcache_invalidate(BX_INSTALL_PATH_HEADER, true);
 
         $this->clearModulesQueue();
-        if (!headers_sent())
-            setcookie(BX_INSTALL_QUEUE_COOKIE, '', time() - 3600, rtrim(dirname($this->_sServerPhpSelf), '/\\') . '/');
+        $this->setQueueCookie('', time() - 3600);
 
         return '';
     }
