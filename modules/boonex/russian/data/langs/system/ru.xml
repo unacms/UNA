@@ -1052,6 +1052,7 @@
 	<string name="_adm_err_modules_cannot_delete_from_cart"><![CDATA[Невозможно удалить товар(ы) из корзины.]]></string>
 	<string name="_adm_err_modules_cannot_remove_package"><![CDATA[Невозможно удалить пакет.]]></string>
 	<string name="_adm_err_modules_cannot_subscribe"><![CDATA[Невозможно инициировать подписку.]]></string>
+	<string name="_adm_err_modules_missing_php_packages"><![CDATA[Этому модулю нужны PHP-библиотеки, которые не установлены: {0}. Выполните "composer install" в папке UNA или установите UNA из релизного пакета, в котором они есть.]]></string>
 	<string name="_adm_err_modules_module_not_found"><![CDATA[Модуль не найден]]></string>
 	<string name="_adm_err_modules_module_not_match"><![CDATA[Обновление не применимо к данному модулю.]]></string>
 	<string name="_adm_err_modules_module_not_installed"><![CDATA[Модуль не установлен]]></string>
@@ -2950,6 +2951,7 @@
 	<string name="_sys_audit_msg_cache_engine_optional"><![CDATA[Необязательный движок в памяти: ускоряет работу, если установлен.]]></string>
 	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0})]]></string>
 	<string name="_sys_audit_msg_ffmpeg"><![CDATA[Не найден по пути {0}: конвертация видео и аудио не будет работать.]]></string>
+	<string name="_sys_audit_msg_ffmpeg_not_runnable"><![CDATA[{0} не запускается на этом сервере ({1}): конвертация видео и аудио работать не будет. Установите ffmpeg для этого сервера и укажите путь к нему в BX_SYSTEM_FFMPEG в inc/header.inc.php или выполните здесь "composer install", чтобы скачать подходящую сборку.]]></string>
 	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Автоматически не проверяется: см. ручной аудит.]]></string>
 	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[Отправка не удалась.]]></string>
 	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">Отправить тестовое письмо</a></span>]]></string>

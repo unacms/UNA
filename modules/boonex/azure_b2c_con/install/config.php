@@ -63,6 +63,13 @@ $aConfig = array(
      * Dependencies Section
      */
     'dependencies' => array(),
+
+    /**
+     * PHP libraries the module needs (class => composer package), installed with UNA's composer.json.
+     */
+    'php_classes' => array(
+        'Alancting\\Microsoft\\JWT\\AzureAd\\AzureAdConfiguration' => 'alancting/php-microsoft-jwt',
+    ),
 );
 
 /** @} */

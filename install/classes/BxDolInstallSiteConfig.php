@@ -543,7 +543,7 @@ EOF;
         $aMarkers['version'] = BX_DOL_VER;
         $aMarkers['time'] = time();
         $aMarkers['secret'] = genRndPwd(11);
-        $aMarkers['ffmpeg_path'] = $aMarkers['root_dir'] . 'plugins/ffmpeg/ffmpeg.exe';
+        $aMarkers['ffmpeg_path'] = self::getFfmpegPath($aMarkers['root_dir']);
 
         $aJava = explode(' ', str_replace('java: ', '', trim(`whereis java`)));
         $aMarkers['java_path'] = isset($aJava[0]) && $aJava[0] && !is_dir($aJava[0]) ? $aJava[0] : '';
@@ -743,6 +743,39 @@ EOF;
             )
             $sProto = 'https://';
         return $sProto;
+    }
+
+    /**
+     * The ffmpeg bundled in plugins/, or, when it can't run here, one installed on the server.
+     * A release package carries the x64 build, which doesn't run on an arm64 server.
+     *
+     * @param string $sRootDir UNA root folder, with a trailing slash
+     * @param callable|null $fRuns check of one path, isFfmpegRunnable by default
+     * @return string path for BX_SYSTEM_FFMPEG; the bundled one when none runs, so that the Studio audit names it
+     */
+    public static function getFfmpegPath($sRootDir, $fRuns = null)
+    {
+        $sBundled = $sRootDir . 'plugins/ffmpeg/ffmpeg.exe';
+        if($fRuns === null)
+            $fRuns = [self::class, 'isFfmpegRunnable'];
+
+        foreach([$sBundled, '/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg', '/opt/homebrew/bin/ffmpeg'] as $sPath)
+            if(call_user_func($fRuns, $sPath))
+                return $sPath;
+
+        return $sBundled;
+    }
+
+    public static function isFfmpegRunnable($sPath)
+    {
+        if(!is_file($sPath) || !is_executable($sPath) || !function_exists('exec'))
+            return false;
+
+        $aOutput = [];
+        $iCode = 1;
+        @exec(escapeshellarg($sPath) . ' -version 2>/dev/null', $aOutput, $iCode);
+
+        return $iCode === 0 && isset($aOutput[0]) && str_starts_with($aOutput[0], 'ffmpeg version');
     }
 }
 
