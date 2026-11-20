@@ -977,8 +977,9 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         // else the default icon, with the template's dark variant unless a dark one was uploaded
         if(empty($sImageUrlFav) && empty($sImageUrlSvg)) {
             $sImageUrlFav = $sImageUrlSvg = $this->_oTemplate->getIconUrl('favicon.svg');
-            if(empty($sImageUrlDark))
+            if(empty($sImageUrlDark)) {
                 $sImageUrlDark = $this->getMetaIconDarkUrl();
+            }
         }
         $bImageDark = !empty($sImageUrlDark);
 
@@ -1038,8 +1039,9 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
             $aUrls['svg'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
 
-        if(($iId = (int)getParam('sys_site_icon_dark')) != 0)
+        if(($iId = (int)getParam('sys_site_icon_dark')) != 0) {
             $aUrls['dark'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+        }
 
         return $aUrls;
     }

@@ -791,10 +791,11 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             'icon_android' => 'android-icon-192.png',
             'icon_android_splash' => 'android-icon-512.png',
         ];
+        $sSizeTab = 'w-8 h-8';
         $aSizes = [
-            'icon' => 'w-8 h-8',
-            'icon_svg' => 'w-8 h-8',
-            'icon_dark' => 'w-8 h-8',
+            'icon' => $sSizeTab,
+            'icon_svg' => $sSizeTab,
+            'icon_dark' => $sSizeTab,
             'icon_apple' => 'w-16 h-16 rounded-2xl',
             'icon_android' => 'w-16 h-16 rounded-2xl',
             'icon_android_splash' => 'w-20 h-20 rounded-2xl',
@@ -811,7 +812,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 $sUrl = $sIcon == 'icon' ? $aUrls['icon_svg'] : $aUrls['icon'];
                 $sInfo = _t('_adm_dsg_txt_icon_src_none_' . $sIcon);
             }
-            else if($sIcon == 'icon_dark' && $bFavicons) {
+            elseif($sIcon == 'icon_dark' && $bFavicons) {
                 // An uploaded favicon without a dark one: dark tabs show the uploaded one as it is.
                 $sUrl = $aUrls['icon_svg'] ?: $aUrls['icon'];
                 $sInfo = _t('_adm_dsg_txt_icon_src_none_icon_dark');
@@ -822,10 +823,13 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             }
 
             $bTab = in_array($sIcon, ['icon', 'icon_svg']);
-            $bDark = $sIcon == 'icon_dark';
+            $sStage = $bTab ? 'adm-dsg-ip-light' : 'adm-dsg-ip-home';
+            if($sIcon == 'icon_dark') {
+                $sStage = 'adm-dsg-ip-dark';
+            }
             $aResult[$sIcon] = [
                 'name' => $sIcon,
-                'stage' => $bDark ? 'adm-dsg-ip-dark' : ($bTab ? 'adm-dsg-ip-light' : 'adm-dsg-ip-home'),
+                'stage' => $sStage,
                 'caption' => _t('_adm_dsg_txt_icon_preview_' . $sIcon),
                 'info' => $sInfo,
                 'bx_if:show_image' => [
