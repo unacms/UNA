@@ -2091,7 +2091,7 @@ function bx_tour(oOptions)
 
                     // Keyboard and screen readers start in the step (Tab, Esc, the arrow keys), not on the inert page.
                     setTimeout(function() {
-                        if(oElement && oElement.isConnected && !oElement.contains(document.activeElement))
+                        if(oElement?.isConnected && !oElement.contains(document.activeElement))
                             oElement.focus({preventScroll: true});
                     }, 0);
                 }
@@ -2155,7 +2155,7 @@ function bx_tour_popup(oElement, oOptions, sProgress)
     var oIcon = oOptions.close_icon ? document.querySelector(oOptions.close_icon) : null;
     if(oClose) {
         oClose.classList.add('bx-popup-element-close');
-        if(oIcon && oIcon.content) {
+        if(oIcon?.content) {
             oClose.textContent = '';
             oClose.appendChild(oIcon.content.cloneNode(true));
         }
