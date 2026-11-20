@@ -3,6 +3,7 @@
 -- PAGES: active_api
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_notifications_view' AND `module`='bx_notifications' AND `title_system`='' AND `title`='_bx_ntfs_page_block_title_view';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_notifications_settings' AND `module`='bx_notifications' AND `title_system`='' AND `title`='_bx_ntfs_page_block_title_settings';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='bx_notifications' AND `title_system`='' AND `title`='_bx_ntfs_page_block_title_view';
 
 
 -- MENUS:

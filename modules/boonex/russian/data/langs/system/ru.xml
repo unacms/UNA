@@ -4368,6 +4368,7 @@
 	<string name="_sys_page_block_title_confirm_email"><![CDATA[Email - Подтверждение]]></string>
 	<string name="_sys_page_block_title_confirm_phone"><![CDATA[Телефон - Подтверждение]]></string>
         <string name="_sys_page_block_title_system_cooperator"><![CDATA[Соавтор (только для App-а)]]></string>
+        <string name="_sys_page_block_title_system_create_profile"><![CDATA[Создать профиль (аккаунты без профиля)]]></string>
         <string name="_sys_page_block_title_cooperator"><![CDATA[Соавтор]]></string>
 	<string name="_sys_page_block_title_create_account"><![CDATA[Присоединиться]]></string>
         <string name="_sys_page_block_title_sys_author"><![CDATA[Автор]]></string>
@@ -4404,7 +4405,7 @@
         <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Результаты поиска]]></string>
         <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI поиск]]></string>
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
-        <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
+        <string name="_sys_page_block_title_membership_stats"><![CDATA[Ваше членство]]></string>
 	<string name="_sys_page_block_desc_account_profile_create"><![CDATA[У вашей учётной записи ещё нет профиля. Выберите тип профиля, чтобы начать.]]></string>
 	<string name="_sys_page_block_desc_create_account"><![CDATA[Создайте аккаунт, чтобы присоединиться к сообществу.]]></string>
 	<string name="_sys_page_block_desc_login"><![CDATA[Введите данные, чтобы продолжить.]]></string>
@@ -4413,9 +4414,11 @@
 	<string name="_sys_page_block_system_title_login_step3"><![CDATA[Вход - шаг 3]]></string>
 	<string name="_sys_page_block_system_title_login_only"><![CDATA[Вход]]></string>
         <string name="_sys_page_block_title_dashboard_content"><![CDATA[Панель - контент]]></string>
+        <string name="_sys_page_block_title_dashboard_profiles"><![CDATA[Ваши профили]]></string>
         <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Панель - аудит]]></string>
 
         <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Панель - Администрирование (только для App-а)]]></string>
+        <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Ваши профили (панель)]]></string>
         <string name="_sys_page_block_title_system_onboarding"><![CDATA[Список «Начало работы»]]></string>
         <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Список «Начало работы» для операторов]]></string>
         <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
@@ -5200,4 +5203,13 @@
   <string name="_sys_onboarding_state_done"><![CDATA[Готово]]></string>
   <string name="_sys_onboarding_state_locked"><![CDATA[Нужен предыдущий шаг]]></string>
   <string name="_sys_onboarding_state_todo"><![CDATA[Нужно сделать]]></string>
+  <string name="_sys_membership_stats_files"><![CDATA[Файлов: {0}]]></string>
+  <string name="_sys_membership_stats_files_one"><![CDATA[1 файл]]></string>
+  <string name="_sys_membership_stats_max_file_size"><![CDATA[Размер файла до]]></string>
+  <string name="_sys_membership_stats_no_end"><![CDATA[Без срока окончания]]></string>
+  <string name="_sys_membership_stats_of"><![CDATA[{0} из {1}]]></string>
+  <string name="_sys_membership_stats_see_plans"><![CDATA[Уровни членства]]></string>
+  <string name="_sys_membership_stats_unlimited"><![CDATA[Без ограничений]]></string>
+  <string name="_sys_membership_stats_until"><![CDATA[Действует до {0}]]></string>
+  <string name="_sys_membership_stats_used"><![CDATA[Занято {0}]]></string>
 </resources>

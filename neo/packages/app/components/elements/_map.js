@@ -66,6 +66,7 @@ const CreditsCheckout = dynamic(() => import('./credits-checkout'), { loading: D
 const PaymentOrderAdd = dynamic(() => import('./payment-order-add'), { loading: DynamicFallback });
 const Bundles = dynamic(() => import('./bundles'), { loading: DynamicFallback });
 const Membership = dynamic(() => import('./membership'), { loading: DynamicFallback });
+const MembershipStats = dynamic(() => import('./membership-stats'), { loading: DynamicFallback });
 const Pricing = dynamic(() => import('./pricing'), { loading: DynamicFallback });
 const CourseStructure = dynamic(() => import('./course-structure'), { loading: DynamicFallback });
 const EditCourseContent = dynamic(() => import('./edit-course-content'), { loading: DynamicFallback });
@@ -120,6 +121,7 @@ export const componentsMapDefault = {
     chart: Chart,
     bundles: Bundles,
     membership: Membership,
+    membership_stats: MembershipStats,
     comment_content:CommentContent,
     browse: Browse,
     browse_simple: BrowseSimple,
