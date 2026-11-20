@@ -1103,6 +1103,22 @@
     body:not(.bx-std) .bx-btn.bx-btn-xlarge :is(i, img, svg) {
         @apply w-7 h-7 leading-7;
     }
+    /* An icon-only button (.bx-btn-icon) is round and as wide as it is tall, as NEO's icon buttons, on the same size scale. */
+    body:not(.bx-std) .bx-btn.bx-btn-icon {
+        @apply w-11 min-w-11 px-0 rounded-full;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-mini {
+        @apply w-7 min-w-7;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-small {
+        @apply w-9 min-w-9;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-large {
+        @apply w-[3.25rem] min-w-[3.25rem];
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-xlarge {
+        @apply w-16 min-w-16;
+    }
 
     /* A menu's button size (Studio > Navigation > a menu > Button size; BxDolMenu::BUTTON_SIZE_*): the menu puts .bx-menu-btn-size-* on each of
        its items, and every button inside takes that size, whatever size class its template gave it. The same scale as the size classes above.
@@ -1275,6 +1291,40 @@
     .bx-artificer .bx-form-input-price:focus-visible {
         @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
         @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+    }
+    /* A plain textarea grows with its text (field-sizing; jquery.webForms.js where a browser has no field-sizing) from four lines to
+       sixteen, then scrolls; its handle resizes it in height only. A limit's counter is under it (form_field_textarea.html). */
+    .bx-std .bx-form-input-textarea:not(.bx-form-input-html, .bx-form-input-code),
+    .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html, .bx-form-input-code) {
+        @apply h-auto min-h-[7.5rem] max-h-[25.5rem] py-3 leading-6 resize-y;
+        field-sizing: content;
+    }
+
+    /* A rich text editor looks like the text inputs: the card's fill, the inset hairline, 12px corners, and the accent focus ring
+       around the whole editor while its text has the focus. Editor (bx_editor) is one box; Quill's toolbar and text are two, and
+       their wrapper draws the box around both, with a hairline between them. */
+    .bx-artificer .bx-form-input-html-editor,
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) {
+        @apply rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200;
+        @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
+        @apply transition-shadow duration-200;
+    }
+    .bx-artificer .bx-form-input-html-editor {
+        @apply min-h-[7.5rem] px-4 py-3 cursor-text;
+    }
+    .bx-artificer .bx-form-input-html-editor:focus-within,
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill):focus-within {
+        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
+        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-toolbar.ql-snow {
+        @apply border-0 border-b border-solid border-black/10 dark:border-white/5 bg-transparent px-3 py-2;
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-container.ql-snow {
+        @apply border-0 bg-transparent rounded-none;
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-editor {
+        @apply min-h-[5.5rem] px-4 py-3 bg-transparent text-base leading-6 text-gray-800 dark:text-gray-200 border-0 outline-none ring-0;
     }
     /* The password field draws the look on its wrapper, so the input inside it is bare and takes the height and the sides. */
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password:focus-visible {
@@ -3244,15 +3294,7 @@
     }
 
 
-    /* 3d Party: Quill */
-    .bx-artificer div.ql-editor {
-        @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-    }
-
-    .bx-artificer div.ql-editor:focus{
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
-    }
-
+    /* 3d Party: Quill (its box in a form is with the text inputs above) */
     .bx-artificer .ql-mention-list li {
         @apply flex items-center px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:text-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 text-sm font-normal;
     }

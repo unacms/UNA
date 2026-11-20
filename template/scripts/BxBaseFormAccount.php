@@ -211,8 +211,13 @@ class BxBaseFormAccount extends BxTemplFormView
         $bValues = $aValues && !empty($aValues['id']);
 
         if(($sField = 'picture') && isset($this->aInputs[$sField])) {
-            if($bValues)
+            if($bValues) {
                 $this->aInputs[$sField]['content_id'] = $aValues['id'];
+
+                // no picture yet: the account's letter avatar, as its units show it
+                if(($oAccount = BxDolAccount::getInstance((int)$aValues['id'])))
+                    $this->aInputs[$sField]['placeholder_image'] = BxDolTemplate::getLetterAvatarUrl($oAccount->getDisplayName(), $oAccount->id());
+            }
 
             $this->aInputs[$sField]['ghost_template'] = $this->oTemplate->parseHtmlByName($this->_sGhostTemplate, $this->_getGhostTmplVars($sField));
         }

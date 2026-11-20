@@ -583,5 +583,7 @@
     "Start timer": "Démarrer le minuteur",
     "Pause timer": "Mettre le minuteur en pause",
     "Total logged": "Total enregistré",
-    "optional": "facultatif"
+    "optional": "facultatif",
+    "Upload a picture": "Téléverser une image",
+    "Change picture": "Changer l'image"
 }
