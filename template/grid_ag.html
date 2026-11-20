@@ -20,22 +20,21 @@
             </div>
         </div>
     </bx_if:display_header>
+    <bx_if:actions_bulk>
+        <div id="__id_bulk__" class="bx-grid-ag-bulk" hidden>
+            <span class="bx-grid-ag-bulk-count"></span>
+            <div class="bx-grid-ag-bulk-actions">
+                __actions_bulk__
+            </div>
+            <button type="button" class="bx-grid-ag-bulk-clear" title="__txt_clear__" aria-label="__txt_clear__">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+    </bx_if:actions_bulk>
     <div id="__id_cont__" class="bx-grid-ag-host">
         <div id="__id_table__" class="bx-grid-ag-selection" hidden></div>
         <div id="__id_grid__" class="bx-grid-ag ag-theme-quartz"></div>
     </div>
-    <bx_if:display_footer>
-        <div class="bx-grid-footer">
-            <hr class="bx-def-hr" />
-            <div class="bx-grid-footer-cnt bx-def-padding-sec-top bx-def-margin-thd-neg bx-clearfix">
-                <bx_if:actions_bulk>
-                    <div style="float:left;">
-                        __actions_bulk__
-                    </div>
-                </bx_if:actions_bulk>
-            </div>
-        </div>
-    </bx_if:display_footer>
 </div>
 <script type="application/json" id="bx-grid-ag-cfg-__object__">__config__</script>
 <script>

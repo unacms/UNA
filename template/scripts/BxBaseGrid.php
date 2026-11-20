@@ -1686,6 +1686,7 @@ class BxBaseGrid extends BxDolGrid
             'per_page' => $iPerPage,
             'show_total_count' => empty($this->_aOptions['show_total_count']) ? 0 : 1,
             'empty' => _t('_Empty'),
+            'text_selected' => _t('_sys_grid_txt_n_selected'),
             'columns' => $aColumns,
             'bx' => [
                 'csrf_token' => (string)BxDolForm::getCsrfToken(),
@@ -1744,15 +1745,12 @@ class BxBaseGrid extends BxDolGrid
                     ],
                 ],
             ],
-            'bx_if:display_footer' => [
+            'bx_if:actions_bulk' => [
                 'condition' => !empty($this->_aOptions['actions_bulk']),
                 'content' => [
-                    'bx_if:actions_bulk' => [
-                        'condition' => !empty($this->_aOptions['actions_bulk']),
-                        'content' => [
-                            'actions_bulk' => $this->_getActions('bulk'),
-                        ],
-                    ],
+                    'id_bulk' => 'bx-grid-ag-bulk-' . $this->_sObject,
+                    'actions_bulk' => $this->_getActions('bulk'),
+                    'txt_clear' => bx_html_attribute(_t('_sys_grid_txt_clear_selection')),
                 ],
             ],
         ];

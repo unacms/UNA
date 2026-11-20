@@ -614,6 +614,7 @@ BxDolGridAg.prototype._syncChecks = function () {
     var eWrap = document.getElementById(this._sWrap);
     if (eWrap)
         eWrap.classList.toggle('bx-grid-ag-has-selection', aRows.length > 0);
+    this._syncBulk(aRows.length);
     e.textContent = '';
     for (var i = 0; i < aRows.length; i++) {
         if (!aRows[i] || aRows[i][sField] == null)
@@ -625,6 +626,38 @@ BxDolGridAg.prototype._syncChecks = function () {
         oInput.value = aRows[i][sField];
         e.appendChild(oInput);
     }
+};
+
+/**
+ * The bulk bar sits between the filters and the rows and shows only while rows are selected:
+ * how many, the bulk actions, and a button that clears the selection.
+ */
+BxDolGridAg.prototype._syncBulk = function (iCount) {
+    var eBar = document.getElementById('bx-grid-ag-bulk-' + this._sObject);
+    if (!eBar)
+        return;
+
+    var eCount = eBar.querySelector('.bx-grid-ag-bulk-count');
+    if (eCount)
+        eCount.textContent = String(this._oCfg.text_selected || '{0}').replace('{0}', iCount);
+
+    var bShow = iCount > 0;
+    if (eBar.hidden === !bShow)
+        return;
+    eBar.hidden = !bShow;
+
+    if (!eBar._bxBound) {
+        eBar._bxBound = true;
+        var self = this;
+        var eClear = eBar.querySelector('.bx-grid-ag-bulk-clear');
+        if (eClear)
+            eClear.addEventListener('click', function () {
+                if (self._oApi && self._oApi.deselectAll)
+                    self._oApi.deselectAll();
+            });
+    }
+
+    this._fitHeight();
 };
 
 BxDolGridAg.prototype._esc = function (s) {

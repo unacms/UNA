@@ -3587,6 +3587,8 @@
 	<string name="_sys_format_size_tb"><![CDATA[{0} ТБ]]></string>
 	<string name="_sys_grid_lbl_actions"><![CDATA[Действия]]></string>
 	<string name="_sys_grid_lbl_apps"><![CDATA[Приложения]]></string>
+	<string name="_sys_grid_txt_n_selected"><![CDATA[Выбрано: {0}]]></string>
+	<string name="_sys_grid_txt_clear_selection"><![CDATA[Снять выделение]]></string>
 	<string name="_sys_grid_lbl_order"><![CDATA[Порядок]]></string>
 	<string name="_sys_grid_lbl_select"><![CDATA[Выбор]]></string>
 	<string name="_sys_grid_lbl_select_all"><![CDATA[Выбрать все]]></string>
