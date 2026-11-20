@@ -107,7 +107,7 @@ class BxDolInstallModulesToolsTest extends \PHPUnit\Framework\TestCase
         // Xero ships its dependencies in plugins/, its composer vendor-dir
         if (file_exists($sRoot . 'boonex/xero/plugins/autoload.php'))
             $this->assertTrue($o->hasDependencies(array('home_dir' => 'boonex/xero/')));
-        // Azure B2C needs `composer install` in its folder
-        $this->assertSame(file_exists($sRoot . 'boonex/azure_b2c_con/vendor/autoload.php'), $o->hasDependencies(array('home_dir' => 'boonex/azure_b2c_con/')));
+        // Azure B2C takes its libraries from the root composer.json; a missing one stops its install with its own message
+        $this->assertTrue($o->hasDependencies(array('home_dir' => 'boonex/azure_b2c_con/')));
     }
 }

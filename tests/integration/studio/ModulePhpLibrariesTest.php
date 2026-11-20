@@ -19,6 +19,9 @@ class ModulePhpLibrariesTest extends BxDolIntegrationTestCase
     {
         parent::setUp();
 
+        // Defines the BX_DOL_STUDIO_IU_* result codes the installer returns.
+        BxDolStudioInstallerUtils::getInstance();
+
         $this->_oDb = bx_instance('BxDolStudioInstallerQuery');
         $this->assertEmpty($this->_oDb->getModuleByUri(self::URI, false), 'The fixture module is not installed.');
     }
