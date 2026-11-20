@@ -1235,20 +1235,24 @@ EOF;
     public static function getFfmpegPath($sRootDir, $fRuns = null)
     {
         $sBundled = $sRootDir . 'plugins/ffmpeg/ffmpeg.exe';
-        if($fRuns === null)
+        if($fRuns === null) {
             $fRuns = [self::class, 'isFfmpegRunnable'];
+        }
 
-        foreach([$sBundled, '/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg', '/opt/homebrew/bin/ffmpeg'] as $sPath)
-            if(call_user_func($fRuns, $sPath))
+        foreach([$sBundled, '/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg', '/opt/homebrew/bin/ffmpeg'] as $sPath) {
+            if(call_user_func($fRuns, $sPath)) {
                 return $sPath;
+            }
+        }
 
         return $sBundled;
     }
 
     public static function isFfmpegRunnable($sPath)
     {
-        if(!is_file($sPath) || !is_executable($sPath) || !function_exists('exec'))
+        if(!is_file($sPath) || !is_executable($sPath) || !function_exists('exec')) {
             return false;
+        }
 
         $aOutput = [];
         $iCode = 1;

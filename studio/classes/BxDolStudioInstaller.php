@@ -186,8 +186,9 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
             );
 
         //--- Check that the PHP libraries the module needs are installed ---//
-        if(($aResult = $this->_checkPhpClasses($bHtmlResponce)) !== true)
+        if(($aResult = $this->_checkPhpClasses($bHtmlResponce)) !== true) {
             return $aResult;
+        }
 
         //--- Check for available translations ---//
         $oFile = $this->_getFileManager();
@@ -395,8 +396,9 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
             );
 
         //--- Check that the PHP libraries the module needs are installed ---//
-        if(($aResult = $this->_checkPhpClasses(isset($aParams['html_response']) && (bool)$aParams['html_response'])) !== true)
+        if(($aResult = $this->_checkPhpClasses(isset($aParams['html_response']) && (bool)$aParams['html_response'])) !== true) {
             return $aResult;
+        }
 
         $aResult = array();
         if(!empty($this->_aConfig['before_enable'])) {
@@ -1155,13 +1157,16 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
      */
     public function getMissingPhpPackages()
     {
-        if(empty($this->_aConfig['php_classes']) || !is_array($this->_aConfig['php_classes']))
+        if(empty($this->_aConfig['php_classes']) || !is_array($this->_aConfig['php_classes'])) {
             return [];
+        }
 
         $aMissing = [];
-        foreach($this->_aConfig['php_classes'] as $sClass => $sPackage)
-            if(!class_exists($sClass) && !interface_exists($sClass))
+        foreach($this->_aConfig['php_classes'] as $sClass => $sPackage) {
+            if(!class_exists($sClass) && !interface_exists($sClass)) {
                 $aMissing[$sPackage] = $sPackage;
+            }
+        }
 
         return array_values($aMissing);
     }
@@ -1174,8 +1179,9 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
     protected function _checkPhpClasses($bHtmlResponce)
     {
         $aMissing = $this->getMissingPhpPackages();
-        if(empty($aMissing))
+        if(empty($aMissing)) {
             return true;
+        }
 
         $sMessage = _t('_adm_err_modules_missing_php_packages', implode(', ', $aMissing));
         return array(
