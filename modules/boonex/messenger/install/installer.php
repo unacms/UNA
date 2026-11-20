@@ -28,8 +28,9 @@ class BxMessengerInstaller extends BxBaseModTextInstaller
 
         $sOption = $this->_aConfig['db_prefix'] . 'server_url';
         $sJotUrl = trim((string)getenv('UNA_JOT_URL'));
-        if ($aResult['result'] && $sJotUrl !== '' && trim((string)getParam($sOption)) === '')
+        if ($aResult['result'] && $sJotUrl !== '' && trim((string)getParam($sOption)) === '') {
             setParam($sOption, $sJotUrl);
+        }
 
         return $aResult;
     }

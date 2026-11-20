@@ -280,8 +280,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
         if (bx_is_api())
             return bx_srv($this->getName(), 'get_block_main', [], 'Services');
 
-        if (($sMsg = $this->getNoProfileMessage()) !== false)
+        if (($sMsg = $this->getNoProfileMessage()) !== false) {
             return MsgBox($sMsg);
+        }
 
         $this->addNoServerInformer();
         $this->initDefaultParams();
@@ -307,8 +308,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
     public function getNoProfileMessage()
     {
         $iViewerId = (int)bx_get_logged_profile_id();
-        if (!$iViewerId || !($oViewer = BxDolProfile::getInstance($iViewerId)) || $oViewer->getModule() != 'system')
+        if (!$iViewerId || !($oViewer = BxDolProfile::getInstance($iViewerId)) || $oViewer->getModule() != 'system') {
             return false;
+        }
 
         $aCheck = checkActionModule($iViewerId, str_replace('_', ' ', BX_MSG_ACTION_SEND_MESSAGE), $this->getName());
         return $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED ? $aCheck[CHECK_ACTION_MESSAGE] : false;
@@ -320,8 +322,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
      */
     protected function addNoServerInformer()
     {
-        if (trim((string)$this->_oConfig->CNF['SERVER_URL']) !== '')
+        if (trim((string)$this->_oConfig->CNF['SERVER_URL']) !== '') {
             return;
+        }
 
         $sMsg = '_bx_messenger_informer_no_server';
         $aParams = ['icon' => 'wifi-off'];
