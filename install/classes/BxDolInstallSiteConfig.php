@@ -550,15 +550,12 @@ EOF;
         if (!$iCode && preg_match('/\[(\d{4})\]/', $e->getMessage(), $m))
             $iCode = (int)$m[1];
 
-        $aCases = array(
+        // 2002-2006: no server at this host or socket, or the host name doesn't resolve
+        $aCases = array_fill_keys(array(2002, 2003, 2005, 2006), 'Database host failed') + array(
             1045 => 'Database access denied', // access denied for this user and password
             1698 => 'Database access denied', // access denied (auth plugin, e.g. root through a socket only)
             1044 => 'Database not allowed', // the user may not use this database
             1049 => 'Database select failed', // no such database
-            2002 => 'Database host failed', // no server at this host or socket, or the host name doesn't resolve
-            2003 => 'Database host failed',
-            2005 => 'Database host failed',
-            2006 => 'Database host failed',
         );
         return isset($aCases[$iCode]) ? $aCases[$iCode] : 'Database connect failed';
     }
