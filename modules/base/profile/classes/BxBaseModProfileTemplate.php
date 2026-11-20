@@ -1020,6 +1020,16 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         if(!$bSubstituteNoImage || $sImageUrl)
             return $sImageUrl;
 
+        // a profile without a picture: its name's first letter on its colour, as its unit shows it (the apps draw their own)
+        $CNF = &$this->_oConfig->CNF;
+        if(!bx_is_api() && !empty($CNF['FIELD_PICTURE']) && $sField == $CNF['FIELD_PICTURE'] && !empty($aData[$CNF['FIELD_ID']])) {
+            $iContentId = (int)$aData[$CNF['FIELD_ID']];
+            $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $this->MODULE);
+            if($oProfile) {
+                return BxDolTemplate::getLetterAvatarUrl($this->getModule()->serviceProfileName($iContentId), $oProfile->id());
+            }
+        }
+
         $sImageUrl = $this->getImageUrl($sNoImage);
         if(!$sImageUrl)
             $sImageUrl = bx_is_api() ? '' : $this->getImageUrl(substr($sNoImage, 0, strrpos($sNoImage, '-')) . '.svg');
