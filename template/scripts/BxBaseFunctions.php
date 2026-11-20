@@ -971,14 +971,14 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     function getMetaIcons()
     {
-        // favicon and svg icon uploaded in Designer
-        ['fav' => $sImageUrlFav, 'svg' => $sImageUrlSvg] = self::getUploadedFaviconUrls();
+        // favicons uploaded in Designer, the dark one for a dark browser/OS colour scheme
+        ['fav' => $sImageUrlFav, 'svg' => $sImageUrlSvg, 'dark' => $sImageUrlDark] = self::getUploadedFaviconUrls();
 
-        // default icon, with a dark variant for a dark browser/OS colour scheme when the template has one
-        $sImageUrlDark = '';
+        // else the default icon, with the template's dark variant unless a dark one was uploaded
         if(empty($sImageUrlFav) && empty($sImageUrlSvg)) {
             $sImageUrlFav = $sImageUrlSvg = $this->_oTemplate->getIconUrl('favicon.svg');
-            $sImageUrlDark = $this->getMetaIconDarkUrl();
+            if(empty($sImageUrlDark))
+                $sImageUrlDark = $this->getMetaIconDarkUrl();
         }
         $bImageDark = !empty($sImageUrlDark);
 
@@ -1014,7 +1014,8 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             'bx_if:icon_dark' => [
                 'condition' => $bImageDark,
                 'content' => [
-                    'url' => bx_html_attribute($sImageUrlSvg),
+                    'url_fav' => bx_html_attribute($sImageUrlFav ?: $sImageUrlSvg),
+                    'url_svg' => bx_html_attribute($sImageUrlSvg ?: $sImageUrlFav),
                     'url_dark' => bx_html_attribute($sImageUrlDark)
                 ]
             ],
@@ -1023,19 +1024,22 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * Favicons uploaded in Designer (Studio > Designer > Icon): any format in 'fav', an SVG in 'svg'.
-     * favicon.php sends /favicon.ico to them too.
-     * @return array ['fav' => URL, 'svg' => URL], '' for each one not uploaded
+     * Favicons uploaded in Designer (Studio > Designer > Icon): any format in 'fav', an SVG in 'svg', and an SVG or PNG
+     * for dark browser tabs in 'dark'. favicon.php sends /favicon.ico to 'fav' or 'svg'.
+     * @return array ['fav' => URL, 'svg' => URL, 'dark' => URL], '' for each one not uploaded
      */
     public static function getUploadedFaviconUrls()
     {
-        $aUrls = ['fav' => '', 'svg' => ''];
+        $aUrls = ['fav' => '', 'svg' => '', 'dark' => ''];
 
         if(($iId = (int)getParam('sys_site_icon')) != 0)
             $aUrls['fav'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_FILES)->getFileUrlById($iId);
 
         if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
             $aUrls['svg'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+
+        if(($iId = (int)getParam('sys_site_icon_dark')) != 0)
+            $aUrls['dark'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
 
         return $aUrls;
     }

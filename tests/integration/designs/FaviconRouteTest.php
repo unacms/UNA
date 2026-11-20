@@ -17,7 +17,7 @@ class FaviconRouteTest extends BxDolIntegrationTestCase
     {
         parent::setUp();
 
-        foreach (['sys_site_icon', 'sys_site_icon_svg'] as $sName) {
+        foreach (['sys_site_icon', 'sys_site_icon_svg', 'sys_site_icon_dark'] as $sName) {
             $this->_aPrior[$sName] = getParam($sName);
             setParam($sName, '0');
         }
@@ -86,6 +86,6 @@ class FaviconRouteTest extends BxDolIntegrationTestCase
 
         $this->assertSame(302, $a['status']);
         $this->assertSame($oStorage->getFileUrlById($iId), BxDolTestPhpServer::header($a, 'location'));
-        $this->assertSame(['fav' => $oStorage->getFileUrlById($iId), 'svg' => ''], BxTemplFunctions::getUploadedFaviconUrls());
+        $this->assertSame(['fav' => $oStorage->getFileUrlById($iId), 'svg' => '', 'dark' => ''], BxTemplFunctions::getUploadedFaviconUrls());
     }
 }

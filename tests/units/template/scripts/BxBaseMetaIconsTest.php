@@ -25,7 +25,7 @@ class BxBaseMetaIconsTest extends BxDolTestCase
 
     private function withDefaultIcons(callable $fTest)
     {
-        return $this->withOptions(['sys_site_icon' => '0', 'sys_site_icon_svg' => '0'], $fTest);
+        return $this->withOptions(['sys_site_icon' => '0', 'sys_site_icon_svg' => '0', 'sys_site_icon_dark' => '0'], $fTest);
     }
 
     public function testDefaultFaviconSwitchesWithTheBrowserScheme(): void
@@ -33,7 +33,7 @@ class BxBaseMetaIconsTest extends BxDolTestCase
         $sHtml = $this->withDefaultIcons(fn() => BxTemplFunctions::getInstance()->getMetaIcons());
 
         $this->assertMatchesRegularExpression('/<link rel="icon" href="[^"]*\/favicon\.svg" sizes="any" data-bx-icon-light="[^"]*\/favicon\.svg" data-bx-icon-dark="[^"]*\/favicon-dark\.svg" \/>/', $sHtml);
-        $this->assertMatchesRegularExpression('/<link rel="icon" href="[^"]*\/favicon\.svg" type="image\/svg\+xml" data-bx-icon-light="[^"]*" data-bx-icon-dark="[^"]*\/favicon-dark\.svg" \/>/', $sHtml);
+        $this->assertMatchesRegularExpression('/<link rel="icon" href="[^"]*\/favicon\.svg" data-bx-icon-light="[^"]*\/favicon\.svg" data-bx-icon-dark="[^"]*\/favicon-dark\.svg" \/>/', $sHtml);
         $this->assertStringContainsString("matchMedia('(prefers-color-scheme: dark)')", $sHtml);
         $this->assertStringContainsString('<link rel="apple-touch-icon" href="', $sHtml);
     }
