@@ -1986,11 +1986,49 @@ if(typeof MutationObserver !== 'undefined')
 document.addEventListener('DOMContentLoaded', bx_sync_theme_color);
 
 /*
- * Introduction tours (BxDolTours): the homepage tour for operators and the Studio tour, both
- * built on Shepherd (plugins_public/shepherd) and styled by template/css/tour.css.
+ * Hides the homepage setup checklist (BxDolTours, template/homepage_setup.html) for the account:
+ * tour.php keeps it, so it shows again only from the account menu ("Set up your site").
+ */
+function bx_setup_dismiss(oButton)
+{
+    $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: 'home'});
+
+    var oSection = oButton.closest('.bx-setup');
+    oSection?.parentNode?.remove();
+
+    // Focus would be lost with the button, so it goes to the page's main content.
+    var oMain = document.querySelector('main');
+    if(oMain) {
+        if(!oMain.hasAttribute('tabindex'))
+            oMain.setAttribute('tabindex', '-1');
+        oMain.focus({preventScroll: true});
+    }
+}
+
+/*
+ * An action of the homepage setup checklist. "Write a post" opens the post form further down the
+ * same page (the "Add new..." block) instead of reloading it; every other action follows its link.
+ */
+function bx_setup_step(oLink)
+{
+    if(oLink.dataset.step != 'post')
+        return true;
+
+    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
+    if(!oForm)
+        return true;
+
+    oForm.scrollIntoView({block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    oForm.click();
+    return false;
+}
+
+/*
+ * Introduction tours (BxDolTours): the Studio tour, built on Shepherd (plugins_public/shepherd)
+ * and styled by template/css/tour.css.
  *
  * bx_tour(oOptions) returns the Shepherd tour:
- *   name       'home' or 'studio', as BxDolTours knows it
+ *   name       'studio', as BxDolTours knows it
  *   steps      [{id, title, text, element, on}]; a step whose element is missing is left out
  *   autostart  start now (the account hasn't closed or finished this tour yet)
  *   inert      selector of the page behind the overlay: inert while a step is open, so Tab
@@ -1999,7 +2037,7 @@ document.addEventListener('DOMContentLoaded', bx_sync_theme_color);
  *
  * Every step can be closed (its X button or Esc). Closing or finishing the tour is kept for
  * the account (tour.php), so it doesn't start by itself again; ?tour=1 in the address and
- * the "Introduction Tour" menu items start it.
+ * the "Introduction Tour" item of the Studio account popup start it.
  *
  * The page is dimmed by the tour's own overlay (bx_tour_spotlight): the step's element shows
  * through a rounded opening with soft edges, a little wider than the element. Shepherd's

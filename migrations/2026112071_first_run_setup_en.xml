@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- First run for operators: the homepage setup checklist replaces the homepage tour, and the Studio tour is down to six steps. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_setup_dismiss"><![CDATA[Hide this checklist]]></string_add>
+    <string_add name="_sys_setup_join_action"><![CDATA[Change]]></string_add>
+    <string_add name="_sys_setup_join_action_label"><![CDATA[Change who can join]]></string_add>
+    <string_add name="_sys_setup_join_closed"><![CDATA[Nobody can join: the sign-up form is off.]]></string_add>
+    <string_add name="_sys_setup_join_invite"><![CDATA[Only people you invite can join this site.]]></string_add>
+    <string_add name="_sys_setup_join_open"><![CDATA[Anyone can join this site.]]></string_add>
+    <string_add name="_sys_setup_progress"><![CDATA[{0} of {1} done]]></string_add>
+    <string_add name="_sys_setup_state_done"><![CDATA[, done]]></string_add>
+    <string_add name="_sys_setup_state_todo"><![CDATA[, not done yet]]></string_add>
+    <string_add name="_sys_setup_step_cover"><![CDATA[Add a cover picture]]></string_add>
+    <string_add name="_sys_setup_step_cover_action"><![CDATA[Add cover]]></string_add>
+    <string_add name="_sys_setup_step_cover_txt"><![CDATA[It shows at the top of the homepage, which guests see first.]]></string_add>
+    <string_add name="_sys_setup_step_logo"><![CDATA[Add your logo]]></string_add>
+    <string_add name="_sys_setup_step_logo_action"><![CDATA[Add logo]]></string_add>
+    <string_add name="_sys_setup_step_logo_txt"><![CDATA[It shows in the site header, in emails and in the apps.]]></string_add>
+    <string_add name="_sys_setup_step_post"><![CDATA[Write the first post]]></string_add>
+    <string_add name="_sys_setup_step_post_action"><![CDATA[Write a post]]></string_add>
+    <string_add name="_sys_setup_step_post_locked_txt"><![CDATA[Create your profile first, then post as that profile.]]></string_add>
+    <string_add name="_sys_setup_step_post_txt"><![CDATA[A post in the feed shows new members what the site is about.]]></string_add>
+    <string_add name="_sys_setup_step_profile"><![CDATA[Create your profile]]></string_add>
+    <string_add name="_sys_setup_step_profile_action"><![CDATA[Create profile]]></string_add>
+    <string_add name="_sys_setup_step_profile_txt"><![CDATA[You post and reply on the site as this profile.]]></string_add>
+    <string_add name="_sys_setup_title"><![CDATA[Set up your site]]></string_add>
+    <string_add name="_sys_menu_item_title_system_setup"><![CDATA[Set up your site]]></string_add>
+    <string_add name="_sys_menu_item_title_setup"><![CDATA[Set up your site]]></string_add>
+    <string_upd name="_sys_tour_launcher_welcome_txt"><![CDATA[Studio is where you set up your site. This short tour shows the apps to start with. You can start it again from your account menu.]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Setup checklist on the homepage]]></string_upd>
+    <string_upd name="_adm_stg_inf_option_site_tour_home"><![CDATA[Shows operators the steps a new site needs, until every step is done or the checklist is hidden. You can edit its texts in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string_upd>
+    <string_del name="_sys_tour_homepage_welcome_title"></string_del>
+    <string_del name="_sys_tour_homepage_welcome_txt"></string_del>
+    <string_del name="_sys_tour_homepage_account_menu_title"></string_del>
+    <string_del name="_sys_tour_homepage_account_menu_txt"></string_del>
+    <string_del name="_sys_menu_item_title_tour"></string_del>
+    <string_del name="_sys_menu_item_title_system_tour"></string_del>
+    <string_del name="_sys_tour_launcher_apps_title"></string_del>
+    <string_del name="_sys_tour_launcher_apps_txt"></string_del>
+    <string_del name="_sys_tour_launcher_dashboard_title"></string_del>
+    <string_del name="_sys_tour_launcher_dashboard_txt"></string_del>
+    <string_del name="_sys_tour_launcher_builder_permissions_title"></string_del>
+    <string_del name="_sys_tour_launcher_builder_permissions_txt"></string_del>
+    <string_del name="_sys_tour_launcher_builder_forms_title"></string_del>
+    <string_del name="_sys_tour_launcher_builder_forms_txt"></string_del>
+    <string_del name="_sys_tour_launcher_polyglot_title"></string_del>
+    <string_del name="_sys_tour_launcher_polyglot_txt"></string_del>
+    <string_del name="_sys_tour_launcher_reorganize_title"></string_del>
+    <string_del name="_sys_tour_launcher_reorganize_txt"></string_del>
+    <string_del name="_sys_tour_launcher_favourites_title"></string_del>
+    <string_del name="_sys_tour_launcher_favourites_txt"></string_del>
+</resources>

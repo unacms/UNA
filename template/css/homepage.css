@@ -1,1 +1,136 @@
+/*
+ * The setup checklist on the homepage, for operators (BxDolTours::isSetupShown, template/homepage_setup.html).
+ * Neutrals follow NEO (gray = NEO neutrals), light and dark (html.dark).
+ */
+.bx-setup-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+.bx-setup-title {
+    margin: 0;
+    color: #0a0a0c;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+}
+.bx-setup-progress {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.bx-setup-dismiss {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.5rem -0.75rem 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    background: none;
+    color: #52525b;
+    cursor: pointer;
+}
+.bx-setup-dismiss:hover {
+    background: rgba(10, 10, 12, 0.06);
+    color: #0a0a0c;
+}
+.bx-setup-dismiss:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+}
+.bx-setup .sys-icon {
+    color: inherit;
+}
+.bx-setup-dismiss svg,
+.bx-setup-step-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
 
+.bx-setup-steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.bx-setup-step,
+.bx-setup-join {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(10, 10, 12, 0.08);
+}
+.bx-setup-join {
+    padding-bottom: 0;
+}
+.bx-setup-step-icon {
+    flex: none;
+    display: inline-flex;
+    color: #71717a;
+}
+.bx-setup-step-done .bx-setup-step-icon {
+    color: #15803d;
+}
+.bx-setup-step-body,
+.bx-setup-join-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.bx-setup-step-title,
+.bx-setup-join-text {
+    color: #0a0a0c;
+    font-weight: 500;
+    line-height: 1.5rem;
+}
+.bx-setup-step-done .bx-setup-step-title {
+    color: #52525b;
+}
+.bx-setup-step-text {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.bx-setup-step-action {
+    flex: none;
+}
+
+html.dark .bx-setup-title,
+html.dark .bx-setup-step-title,
+html.dark .bx-setup-join-text,
+html.dark .bx-setup-dismiss:hover {
+    color: #fafafc;
+}
+html.dark .bx-setup-dismiss,
+html.dark .bx-setup-step-done .bx-setup-step-title {
+    color: #a1a1aa;
+}
+html.dark .bx-setup-dismiss:hover {
+    background: rgba(250, 250, 252, 0.08);
+}
+html.dark .bx-setup-step,
+html.dark .bx-setup-join {
+    border-top-color: rgba(250, 250, 252, 0.1);
+}
+html.dark .bx-setup-step-icon {
+    color: #a1a1aa;
+}
+html.dark .bx-setup-step-done .bx-setup-step-icon {
+    color: #4ade80;
+}
+
+@media (max-width: 639px) {
+    .bx-setup-step,
+    .bx-setup-join {
+        flex-wrap: wrap;
+    }
+    .bx-setup-step-action {
+        margin-left: 2rem;
+    }
+}

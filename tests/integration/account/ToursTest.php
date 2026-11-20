@@ -3,7 +3,8 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * Introduction tours: a tour an operator has closed or finished is remembered for the account.
+ * First-run help for operators: the homepage setup checklist and the Studio tour. A tour closed or finished and
+ * a checklist hidden are remembered for the account; the checklist's steps follow the site's real state.
  */
 #[Group('integration')]
 class ToursTest extends BxDolIntegrationTestCase
@@ -20,6 +21,8 @@ class ToursTest extends BxDolIntegrationTestCase
             $this->_aParamsBefore[$sName] = getParam($sName);
             setParam($sName, 'on');
         }
+        foreach(['sys_site_logo', 'sys_site_mark', 'sys_site_logo_inline', 'sys_site_mark_inline', 'sys_site_cover_common', 'sys_site_cover_disabled', 'sys_account_disable_join_form'] as $sName)
+            $this->_aParamsBefore[$sName] = getParam($sName);
 
         // The admin account's own state is put back afterwards.
         $this->_iAdminId = (int)$this->bxAccount('admin')->id();
@@ -96,5 +99,82 @@ class ToursTest extends BxDolIntegrationTestCase
 
         $oTours->onAccountDelete($this->_iAdminId);
         $this->assertFalse($oTours->isSeen(BxDolTours::STUDIO));
+    }
+
+    public function testSetupStepsFollowTheSiteState(): void
+    {
+        $this->bxLoginAsAdmin();
+        $oTours = BxDolTours::getInstance();
+
+        foreach(['sys_site_logo', 'sys_site_mark', 'sys_site_logo_inline', 'sys_site_mark_inline', 'sys_site_cover_common', 'sys_site_cover_disabled'] as $sName)
+            setParam($sName, '');
+
+        $aSteps = $oTours->getSetupSteps();
+        $this->assertSame(['profile', 'logo', 'cover'], array_slice(array_keys($aSteps), 0, 3));
+        $this->assertFalse($aSteps['logo']['done']);
+        $this->assertFalse($aSteps['cover']['done']);
+        $this->assertStringContainsString('designer.php?page=logo', $aSteps['logo']['url']);
+
+        $bHasProfile = !empty(BxDolAccount::getInstance()->getProfilesIds(false));
+        $this->assertSame($bHasProfile, $aSteps['profile']['done'], 'the profile step is done once the account has a profile of its own');
+
+        setParam('sys_site_logo_inline', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>');
+        setParam('sys_site_cover_common', '5');
+        $aSteps = $oTours->getSetupSteps();
+        $this->assertTrue($aSteps['logo']['done'], 'a logo as SVG code counts');
+        $this->assertTrue($aSteps['cover']['done']);
+
+        setParam('sys_site_cover_disabled', 'on');
+        $this->assertArrayNotHasKey('cover', $oTours->getSetupSteps(), 'no cover step while covers are off');
+
+        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline')) {
+            $aSteps = $oTours->getSetupSteps();
+            $this->assertSame(!$bHasProfile, $aSteps['post']['locked'], 'posting waits for a profile');
+            $this->assertFalse(BxDolService::call('bx_timeline', 'has_posts_by', [[PHP_INT_MAX]]));
+            $this->assertFalse(BxDolService::call('bx_timeline', 'has_posts_by', [[]]));
+        }
+    }
+
+    public function testSetupChecklistShowsUntilHiddenOrDone(): void
+    {
+        $oTours = BxDolTours::getInstance();
+
+        $this->bxBecomeGuest();
+        $this->assertFalse($oTours->isSetupShown());
+        $this->assertFalse($oTours->isSetupShown(true));
+
+        $this->bxLoginAsAdmin();
+        setParam('sys_site_logo', '');
+        setParam('sys_site_mark', '');
+        setParam('sys_site_logo_inline', '');
+        setParam('sys_site_mark_inline', '');
+        $this->assertTrue($oTours->isSetupShown(), 'a step is left: no logo');
+
+        $this->assertTrue($oTours->setSeen(BxDolTours::HOME));
+        $this->assertFalse($oTours->isSetupShown(), 'hidden by the operator');
+        $this->assertTrue($oTours->isSetupShown(true), 'the account menu item brings it back');
+
+        setParam('site_tour_home', '');
+        $this->assertFalse($oTours->isSetupShown(true), 'off in settings');
+    }
+
+    public function testJoinModeAndWhereToChangeIt(): void
+    {
+        $this->bxLoginAsAdmin();
+        $oTours = BxDolTours::getInstance();
+
+        setParam('sys_account_disable_join_form', 'on');
+        $this->assertSame(BxDolTours::JOIN_CLOSED, $oTours->getJoinMode());
+        $this->assertStringContainsString('category=account', $oTours->getJoinSettingsUrl());
+
+        setParam('sys_account_disable_join_form', '');
+        $sMode = $oTours->getJoinMode();
+        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites') && getParam('bx_invites_enable_reg_by_inv') == 'on') {
+            $this->assertSame(BxDolTours::JOIN_INVITE, $sMode);
+            $this->assertStringContainsString('name=bx_invites', $oTours->getJoinSettingsUrl());
+        }
+        else {
+            $this->assertSame(BxDolTours::JOIN_OPEN, $sMode);
+        }
     }
 }
