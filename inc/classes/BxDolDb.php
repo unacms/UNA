@@ -212,8 +212,9 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
             // default_storage_engine exists on every supported server (MySQL 5.5.3+, MariaDB), so the
             // version isn't read for it; PDO's server version wouldn't do anyway, a proxy reports its own.
             $this->pdoExec("SET NAMES 'utf8mb4' COLLATE '" . (defined('BX_DATABASE_COLLATE') ? BX_DATABASE_COLLATE : 'utf8mb4_unicode_ci') . "', sql_mode = '', default_storage_engine = " . $this->_sStorageEngine);
-            if (0 == strcasecmp($this->_sStorageEngine, 'INNODB'))
-                $this->pdoExec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE");
+            // No isolation level is set: the server's own (transaction_isolation) applies. UNA runs its
+            // queries in autocommit, where a statement is atomic at any level, and SERIALIZABLE would turn
+            // every read inside a transaction into a shared lock that writers wait for.
 
 			$this->cleanMemoryAll();
     	}
