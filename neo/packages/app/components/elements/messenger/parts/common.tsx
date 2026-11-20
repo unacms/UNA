@@ -169,6 +169,20 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         if (dynamicData?.data?.jot_id > 0)
             scrolTo();
 
+        // The sent message itself: UNA's reply carries only its id, and the message reaches the list through the
+        // conversation's socket event. Without sockets (none configured, or the connection is down) it would show only
+        // after a reload, so load the latest messages and merge them as that event would (rows already listed are
+        // skipped, so the event arriving as well adds nothing twice). The saved section lists saved messages only.
+        const sentConvoId = selectedConvo?.id;
+        if (dynamicData?.data?.jot_id > 0 && sentConvoId && selectedMenuRef.current !== 'saved') {
+            fetcher('/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: sentConvoId, jot: 0, start: 0 }))
+                .then((response) => {
+                    const latest: Jot[] = Array.isArray(response?.data?.jots) ? response.data.jots : [];
+                    if (latest.length) setJotUpdated({ action: 'added', id: sentConvoId, data: { jots: latest } });
+                })
+                .catch(() => undefined);
+        }
+
         if (dynamicData?.data?.data) {
             setJotUpdated(dynamicData?.data?.data);
         }
