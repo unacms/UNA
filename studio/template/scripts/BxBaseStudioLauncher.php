@@ -30,7 +30,6 @@ class BxBaseStudioLauncher extends BxDolStudioLauncher
         $aCss = array(
             'launcher.css',
             BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'flag-icon-css/css/|flag-icon.min.css',
-            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'shepherd/css/|shepherd.css',
             BX_DIRECTORY_PATH_BASE . 'css/|tour.css',
         );
         foreach($this->aIncludes as $sName => $oInclude)
