@@ -186,17 +186,25 @@ BxDolGridAg.prototype._columns = function () {
     if (bExpand) {
         aCols.push({
             colId: '_bx_expand',
+            field: '_bx_expand',
             headerName: '',
-            width: 44,
-            maxWidth: 48,
+            width: 46,
+            minWidth: 46,
+            maxWidth: 46,
             flex: 0,
             pinned: 'left',
+            lockPosition: 'left',
             sortable: false,
             resizable: false,
             suppressHeaderMenuButton: true,
+            cellDataType: false,
+            cellClass: 'bx-grid-ag-expand',
+            cellStyle: { paddingLeft: '0px', paddingRight: '0px' },
+            valueGetter: function () {
+                return '';
+            },
             cellRenderer: BxDolGridAgCell,
-            bxExpand: true,
-            cellStyle: { paddingLeft: '4px', paddingRight: '4px' }
+            bxExpand: true
         });
     }
 
@@ -577,13 +585,14 @@ BxDolGridAgCell.prototype.init = function (params) {
     if ((cell == null || cell === '') && params.data)
         cell = params.data[params.colDef.field];
 
-    if (params.colDef && params.colDef.bxExpand)
-        this._chevron(params, oAg);
-
+    // The name cell is an HTML link. Drawing it replaces the cell contents, so the arrow goes last,
+    // and the expand column has nothing else to draw.
     this._draw(this.eGui, cell, params, oAg);
 
-    if (params.colDef && params.colDef.bxExpand)
+    if (params.colDef && params.colDef.bxExpand) {
+        this._chevron(params, oAg);
         this._childItems(params, oAg);
+    }
 };
 
 BxDolGridAgCell.prototype.destroy = function () {
@@ -596,8 +605,7 @@ BxDolGridAgCell.prototype.destroy = function () {
 };
 
 BxDolGridAgCell.prototype._chevron = function (params, oAg) {
-    var oMeta = params.data && params.data._meta;
-    if (!oAg._oExpand || !oMeta || !oMeta[oAg._oExpand.set])
+    if (!oAg._oExpand || !params.data)
         return;
 
     var sId = String(params.data[oAg._sFieldId]);
@@ -606,15 +614,17 @@ BxDolGridAgCell.prototype._chevron = function (params, oAg) {
     eBtn.type = 'button';
     eBtn.className = 'bx-grid-ag-chevron' + (bOpen ? ' is-open' : '');
     eBtn.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
-    var eIcon = document.createElement('i');
-    eIcon.className = 'sys-icon chevron-right';
-    eBtn.appendChild(eIcon);
+    eBtn.setAttribute('aria-label', 'Expand');
+    eBtn.innerHTML = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M7 4.5 L13.5 10 L7 15.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     eBtn.addEventListener('click', function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
         oAg.toggleExpand(sId, params.node);
     });
-    this.eGui.appendChild(eBtn);
+    if (this.eGui.firstChild)
+        this.eGui.insertBefore(eBtn, this.eGui.firstChild);
+    else
+        this.eGui.appendChild(eBtn);
 };
 
 BxDolGridAgCell.prototype._childItems = function (params, oAg) {
@@ -841,16 +851,20 @@ BxDolGridAgCell.prototype._draw = function (eGui, cell, params, oAg) {
 
 BxDolGridAgCell.prototype._text = function (eGui, mixed, oAg) {
     var s = mixed == null ? '' : String(mixed);
+    var e = document.createElement('span');
+    e.className = 'bx-grid-ag-text';
     if (/<[a-z!/]/i.test(s)) {
-        eGui.innerHTML = s;
+        e.innerHTML = s;
+        eGui.appendChild(e);
         if (window.jQuery) {
             if (jQuery.fn.bxProcessHtml)
-                jQuery(eGui).bxProcessHtml();
+                jQuery(e).bxProcessHtml();
             if (oAg._oBx && oAg._oBx._bindActionsSingle)
-                oAg._oBx._bindActionsSingle(jQuery(eGui));
+                oAg._oBx._bindActionsSingle(jQuery(e));
         }
     } else {
-        eGui.textContent = s;
+        e.textContent = s;
+        eGui.appendChild(e);
     }
 };
 
