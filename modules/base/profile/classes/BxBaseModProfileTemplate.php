@@ -1025,8 +1025,9 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         if(!bx_is_api() && !empty($CNF['FIELD_PICTURE']) && $sField == $CNF['FIELD_PICTURE'] && !empty($aData[$CNF['FIELD_ID']])) {
             $iContentId = (int)$aData[$CNF['FIELD_ID']];
             $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $this->MODULE);
-            if($oProfile)
+            if($oProfile) {
                 return BxDolTemplate::getLetterAvatarUrl($this->getModule()->serviceProfileName($iContentId), $oProfile->id());
+            }
         }
 
         $sImageUrl = $this->getImageUrl($sNoImage);

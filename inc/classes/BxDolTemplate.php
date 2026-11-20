@@ -651,8 +651,9 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     {
         $sName = trim(html_entity_decode((string)$sName, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         $sLetter = mb_strtoupper(get_mb_substr($sName, 0, 1), 'UTF-8');
-        if($sLetter === '')
+        if($sLetter === '') {
             $sLetter = '?';
+        }
 
         $sSvg = self::getInstance()->parseHtmlByName('letter_avatar_svg.html', [
             'color' => implode(', ', array_slice(self::getColorCode($mixedColor), 0, 3)),
