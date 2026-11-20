@@ -5172,10 +5172,10 @@ write-file-atomic@^8.0.0:
   dependencies:
     signal-exit "^4.0.1"
 
-xymbols@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/xymbols/-/xymbols-0.6.0.tgz#59123ffa3d96e159f5b2275fddc22cbac150503c"
-  integrity sha512-g2lh6mU9y5qWCVUssIIfv0sgDXrEbmB+OmXFm6+AsWF4tN+mRc3ejtMdZ6VhugqXA6NpREmmrra8YR3rPGFM6A==
+xymbols@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/xymbols/-/xymbols-0.7.0.tgz#f358fbb1b768060d9a738e3e1814f6d1265193a2"
+  integrity sha512-anAWtzVnGQ2xwVnYOXp0wu7tq1YcTTEeCdgZs/mOZ7JjWk+rE/E6yWNIwjISswwaSlMX3+Gu6jfuEWUP5VWQ2Q==
 
 yallist@^4.0.0:
   version "4.0.0"
