@@ -3619,7 +3619,7 @@
 	<string name="_sys_inst_conf_desc_language"><![CDATA[Первый язык сайта.]]></string>
 	<string name="_sys_inst_conf_desc_modules"><![CDATA[Выбраны приложения для начала работы. Добавлять и удалять приложения можно в любой момент в Студии.]]></string>
 	<string name="_sys_inst_conf_desc_profiles"><![CDATA[Модуль профилей для установки по умолчанию.]]></string>
-	<string name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Связывает сайт с вашей учётной записью UNA для приложений и обновлений из UNA Market. Можно добавить позже в Студии. <a target="_blank" rel="noopener" href="https://unacms.com/page/kands-manage">Получить ключ и секрет UNA</a>]]></string>
+	<string name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Связывает сайт с вашей учётной записью UNA для приложений и обновлений из UNA Market. Можно добавить позже в Студии. Чтобы получить ключ и секрет, <a target="_blank" rel="noopener" href="https://unacms.com/login">войдите на unacms.com</a>, создайте проект для этого сайта (или откройте существующий) и скопируйте ключ и секрет проекта.]]></string>
 	<string name="_sys_inst_conf_desc_path_to_binary"><![CDATA[Если '{0}' программа не существует, нужно установить <a target="_blank" href="http://www.imagemagick.org/">ImageMagick</a>.]]></string>
 	<string name="_sys_inst_conf_desc_root_dir"><![CDATA[Папка на сервере с файлами UNA, с косой чертой в конце.]]></string>
 	<string name="_sys_inst_conf_desc_site_email"><![CDATA[Адрес, с которого сайт отправляет письма.]]></string>

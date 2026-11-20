@@ -90,7 +90,7 @@
     <string_upd name="_sys_inst_conf_desc_db_sock"><![CDATA[Оставьте пустым, если подключение идёт не через файл сокета.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_db_user"><![CDATA[Пользователь, который может создавать и менять таблицы в этой базе.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_db_engine"><![CDATA[Все таблицы сайта используют этот движок. InnoDB надёжнее при внезапной остановке сервера.]]></string_upd>
-    <string_upd name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Связывает сайт с вашей учётной записью UNA для приложений и обновлений из UNA Market. Можно добавить позже в Студии. <a target="_blank" rel="noopener" href="https://unacms.com/page/kands-manage">Получить ключ и секрет UNA</a>]]></string_upd>
+    <string_upd name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Связывает сайт с вашей учётной записью UNA для приложений и обновлений из UNA Market. Можно добавить позже в Студии. Чтобы получить ключ и секрет, <a target="_blank" rel="noopener" href="https://unacms.com/login">войдите на unacms.com</a>, создайте проект для этого сайта (или откройте существующий) и скопируйте ключ и секрет проекта.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_root_dir"><![CDATA[Папка на сервере с файлами UNA, с косой чертой в конце.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_site_email"><![CDATA[Адрес, с которого сайт отправляет письма.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_site_url"><![CDATA[Адрес сайта, с косой чертой в конце.]]></string_upd>

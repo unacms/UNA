@@ -90,7 +90,7 @@
     <string_upd name="_sys_inst_conf_desc_db_sock"><![CDATA[Leave empty unless the server is reached through a socket file.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_db_user"><![CDATA[A user that can create and change tables in this database.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_db_engine"><![CDATA[Every table of the site uses this engine. InnoDB is safer when the server stops unexpectedly.]]></string_upd>
-    <string_upd name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Connects the site to your UNA account for apps and updates from the UNA Market. You can add it later in Studio. <a target="_blank" rel="noopener" href="https://unacms.com/page/kands-manage">Get a UNA key and secret</a>]]></string_upd>
+    <string_upd name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Connects the site to your UNA account for apps and updates from the UNA Market. You can add it later in Studio. To get a key and secret, <a target="_blank" rel="noopener" href="https://unacms.com/login">sign in to unacms.com</a>, create a project for this site (or open one you already have) and copy the project's key and secret.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_root_dir"><![CDATA[Folder on the server with the UNA files, ending with a slash.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_site_email"><![CDATA[Address the site sends email from.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_site_url"><![CDATA[Address of the site, ending with a slash.]]></string_upd>

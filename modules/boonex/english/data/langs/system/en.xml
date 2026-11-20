@@ -3649,7 +3649,7 @@
 	<string name="_sys_inst_conf_desc_language"><![CDATA[The site's first language.]]></string>
 	<string name="_sys_inst_conf_desc_modules"><![CDATA[The starter apps are selected. Add or remove apps in Studio at any time.]]></string>
 	<string name="_sys_inst_conf_desc_profiles"><![CDATA[Profiles module to install by default.]]></string>
-	<string name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Connects the site to your UNA account for apps and updates from the UNA Market. You can add it later in Studio. <a target="_blank" rel="noopener" href="https://unacms.com/page/kands-manage">Get a UNA key and secret</a>]]></string>
+	<string name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Connects the site to your UNA account for apps and updates from the UNA Market. You can add it later in Studio. To get a key and secret, <a target="_blank" rel="noopener" href="https://unacms.com/login">sign in to unacms.com</a>, create a project for this site (or open one you already have) and copy the project's key and secret.]]></string>
 	<string name="_sys_inst_conf_desc_path_to_binary"><![CDATA[If '{0}' binary doesn't exist, you need to install <a target="_blank" href="http://www.imagemagick.org/">ImageMagick</a>.]]></string>
 	<string name="_sys_inst_conf_desc_root_dir"><![CDATA[Folder on the server with the UNA files, ending with a slash.]]></string>
 	<string name="_sys_inst_conf_desc_site_email"><![CDATA[Address the site sends email from.]]></string>
