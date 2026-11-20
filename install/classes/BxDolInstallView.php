@@ -87,7 +87,7 @@ class BxDolInstallView
     /**
      * The step of the header the page belongs to; none on the welcome page.
      */
-    function setStep($sStep)
+    public function setStep($sStep)
     {
         $this->_sStep = $sStep;
     }

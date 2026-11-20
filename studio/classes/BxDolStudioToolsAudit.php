@@ -657,7 +657,7 @@ class BxDolStudioToolsAudit extends BxDol
             // other servers (nginx): read the headers of a static file the server sends itself
             $aResponse = $this->requestOwnUrl('template/css/common.css', array('Accept-Encoding: gzip'));
             if (!$aResponse) {
-                $sMsg = _t('_sys_audit_msg_webserver_request_failed');
+                $sMsg = $this->getMsgRequestFailed();
                 return array(
                     $this->getRow(_t('_sys_audit_userside_caching'), '', BX_DOL_AUDIT_UNDEF, $sMsg),
                     $this->getRow(_t('_sys_audit_serverside_compression'), '', BX_DOL_AUDIT_UNDEF, $sMsg),
@@ -694,13 +694,21 @@ class BxDolStudioToolsAudit extends BxDol
     }
 
     /**
+     * Why a check that requests the site has no result: before the site is installed it isn't requested at all.
+     */
+    protected function getMsgRequestFailed()
+    {
+        return _t(defined('BX_DOL_URL_ROOT') ? '_sys_audit_msg_webserver_request_failed' : '_sys_audit_msg_webserver_after_install');
+    }
+
+    /**
      * Rewrite rules route /page/... to page.php; without them the server answers 404.
      */
     protected function checkRewriteByRequest()
     {
         $aResponse = $this->requestOwnUrl('page/bx-audit-rewrite-check');
         if (!$aResponse)
-            return array('type' => BX_DOL_AUDIT_UNDEF, 'msg' => _t('_sys_audit_msg_webserver_request_failed'));
+            return array('type' => BX_DOL_AUDIT_UNDEF, 'msg' => $this->getMsgRequestFailed());
 
         if (404 == $aResponse['code'])
             return array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_url_rewriting_fail'));
@@ -714,11 +722,11 @@ class BxDolStudioToolsAudit extends BxDol
      */
     protected function requestOwnUrl($sPath, $aHeaders = array())
     {
-        if (!function_exists('curl_init'))
+        // only the configured site URL: before the site is installed the host would come from the request
+        if (!function_exists('curl_init') || !defined('BX_DOL_URL_ROOT'))
             return false;
 
-        $sUrl = defined('BX_DOL_URL_ROOT') ? BX_DOL_URL_ROOT : $this->getUrlRootFromRequest();
-        $r = curl_init($sUrl . $sPath);
+        $r = curl_init(BX_DOL_URL_ROOT . $sPath);
         curl_setopt_array($r, array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HEADER => true,

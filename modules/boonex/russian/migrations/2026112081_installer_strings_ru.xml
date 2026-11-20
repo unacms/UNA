@@ -79,6 +79,7 @@
     <string_add name="_sys_inst_conf_submit_apps"><![CDATA[Установить UNA с приложениями: {0}]]></string_add>
     <string_add name="_sys_inst_in_progress"><![CDATA[Идёт установка]]></string_add>
     <string_add name="_sys_inst_msg_install_in_progress"><![CDATA[UNA устанавливается из другого браузера: продолжите там. Если та установка брошена, удалите на сервере inc/header.installing.php и inc/install.queue.php, затем обновите эту страницу.]]></string_add>
+    <string_add name="_sys_audit_msg_webserver_after_install"><![CDATA[Проверяется в аудите сервера в Студии после установки UNA.]]></string_add>
     <string_upd name="_sys_inst_conf_desc_admin_email"><![CDATA[Ваш адрес электронной почты. С ним вы входите на сайт.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_admin_pwd"><![CDATA[Не менее {0} символов.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_admin_username"><![CDATA[Ваше имя на сайте.]]></string_upd>

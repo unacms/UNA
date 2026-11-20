@@ -2965,6 +2965,7 @@
 	<string name="_sys_audit_msg_value_checking_failed"><![CDATA[Не удалось проверить.]]></string>
 	<string name="_sys_audit_msg_version_is_incompatible"><![CDATA[Не поддерживается: UNA требует {0} или новее.]]></string>
 	<string name="_sys_audit_msg_version_is_outdated"><![CDATA[Устарела: последняя версия {0}.]]></string>
+	<string name="_sys_audit_msg_webserver_after_install"><![CDATA[Проверяется в аудите сервера в Студии после установки UNA.]]></string>
 	<string name="_sys_audit_msg_webserver_request_failed"><![CDATA[Сервер не смог открыть адрес своего сайта, поэтому проверка не выполнена.]]></string>
 	<string name="_sys_audit_permissions"><![CDATA[Права на файлы]]></string>
 	<string name="_sys_audit_https"><![CDATA[HTTPS]]></string>

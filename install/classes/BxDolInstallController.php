@@ -113,7 +113,7 @@ class BxDolInstallController
     /**
      * The progress of the batched install: the page asks for one module after another (modules_step).
      */
-    function actionModules ()
+    public function actionModules ()
     {
         $aQueue = BxDolInstallSiteConfig::getModulesQueue($this->_getQueueToken());
         if (!$aQueue) {
@@ -145,7 +145,7 @@ class BxDolInstallController
     /**
      * Install the next module of the batched install, the answer is JSON.
      */
-    function actionModulesStep ()
+    public function actionModulesStep ()
     {
         header('Content-Type: application/json; charset=utf-8');
         header('Cache-Control: no-store');
@@ -190,7 +190,7 @@ class BxDolInstallController
     /**
      * The last step of the batched install: put the site in place and show what is left to do.
      */
-    function actionModulesComplete ()
+    public function actionModulesComplete ()
     {
         if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? '')) {
             header('Location: index.php?action=modules');

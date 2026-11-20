@@ -561,7 +561,8 @@ EOF;
         if (false === file_put_contents($sPath, $sHeader))
             return array(BX_INSTALL_ERR_GENERAL => _t('_sys_inst_msg_file_write_failed', $sPath));
 
-        @chmod($sPath, 0666);
+        // writable by the site's own user only: the file holds the database password
+        @chmod($sPath, 0644);
 
         if (function_exists('opcache_invalidate')) opcache_invalidate($sPath);
         
@@ -673,7 +674,7 @@ EOF;
             return array(BX_INSTALL_ERR_GENERAL => _t('_sys_inst_msg_file_write_failed', BX_INSTALL_PATH_QUEUE));
 
         if (!headers_sent())
-            setcookie(BX_INSTALL_QUEUE_COOKIE, $sToken, array(
+            setcookie(BX_INSTALL_QUEUE_COOKIE, $sToken, array( // NOSONAR php:S2092, Secure is set on https; an http install must still get the cookie
                 'expires' => 0,
                 'path' => rtrim(dirname($this->_sServerPhpSelf), '/\\') . '/',
                 'secure' => 'https://' === $this->proto(),

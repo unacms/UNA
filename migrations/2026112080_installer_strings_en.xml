@@ -79,6 +79,7 @@
     <string_add name="_sys_inst_conf_submit_apps"><![CDATA[Install UNA with {0} apps]]></string_add>
     <string_add name="_sys_inst_in_progress"><![CDATA[Installation in progress]]></string_add>
     <string_add name="_sys_inst_msg_install_in_progress"><![CDATA[UNA is being installed from another browser: continue there. If that installation was abandoned, delete inc/header.installing.php and inc/install.queue.php on the server, then reload this page.]]></string_add>
+    <string_add name="_sys_audit_msg_webserver_after_install"><![CDATA[Checked in Studio's server audit once UNA is installed.]]></string_add>
     <string_upd name="_sys_inst_conf_desc_admin_email"><![CDATA[Your email address. You sign in with it.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_admin_pwd"><![CDATA[At least {0} characters.]]></string_upd>
     <string_upd name="_sys_inst_conf_desc_admin_username"><![CDATA[Your name on the site.]]></string_upd>
