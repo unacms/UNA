@@ -540,6 +540,13 @@ html {
 
     max-width: 75%;
 }
+/* The header's buttons and tabs sit at its top padding, so a button is as far from the block's top edge as from its right
+   one. Beside a one-line title the header is as tall as the button and the title is centred on it; over a description
+   the title runs down from the same top line. */
+.bx-db-header > .bx-db-menu {
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
+}
 
 .bx-media-phone .bx-db-menu {
     max-width: 65%;
