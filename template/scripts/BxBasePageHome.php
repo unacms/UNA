@@ -186,27 +186,11 @@ class BxBasePageHome extends BxTemplPage
         $bNext = true; // the first step left to do gets the primary button
         $aTmplSteps = [];
         foreach ($aSteps as $sName => $aStep) {
+            $bAction = !$aStep['done'] && !$aStep['locked'];
+            $aTmplSteps[] = $this->_getSetupStepVars($sName, $aStep, $bAction && $bNext, $fIcon);
+
             if ($aStep['done'])
                 $iDone++;
-
-            $bAction = !$aStep['done'] && !$aStep['locked'];
-            $aTmplSteps[] = [
-                'class' => 'bx-setup-step-' . ($aStep['done'] ? 'done' : 'todo'),
-                'icon' => $fIcon($aStep['done'] ? 'circle-check' : ($aStep['locked'] ? 'lock' : 'circle')),
-                'title' => _t('_sys_setup_step_' . $sName),
-                'state' => _t($aStep['done'] ? '_sys_setup_state_done' : '_sys_setup_state_todo'),
-                'text' => _t('_sys_setup_step_' . $sName . ($aStep['locked'] ? '_locked' : '') . '_txt'),
-                'bx_if:action' => [
-                    'condition' => $bAction,
-                    'content' => [
-                        'name' => $sName,
-                        'primary' => $bAction && $bNext ? ' bx-btn-primary' : '',
-                        'url' => bx_html_attribute($aStep['url']),
-                        'action' => _t('_sys_setup_step_' . $sName . '_action'),
-                    ],
-                ],
-            ];
-
             if ($bAction)
                 $bNext = false;
         }
@@ -224,6 +208,35 @@ class BxBasePageHome extends BxTemplPage
             'join_url' => bx_html_attribute($oTours->getJoinSettingsUrl()),
             'join_action_label' => bx_html_attribute(_t('_sys_setup_join_action_label')),
         ]);
+    }
+
+    /**
+     * Template variables of one step of the setup checklist.
+     */
+    protected function _getSetupStepVars($sName, $aStep, $bPrimary, $fIcon)
+    {
+        $sIcon = 'circle';
+        if ($aStep['done'])
+            $sIcon = 'circle-check';
+        else if ($aStep['locked'])
+            $sIcon = 'lock';
+
+        return [
+            'class' => 'bx-setup-step-' . ($aStep['done'] ? 'done' : 'todo'),
+            'icon' => $fIcon($sIcon),
+            'title' => _t('_sys_setup_step_' . $sName),
+            'state' => _t($aStep['done'] ? '_sys_setup_state_done' : '_sys_setup_state_todo'),
+            'text' => _t('_sys_setup_step_' . $sName . ($aStep['locked'] ? '_locked' : '') . '_txt'),
+            'bx_if:action' => [
+                'condition' => !$aStep['done'] && !$aStep['locked'],
+                'content' => [
+                    'name' => $sName,
+                    'primary' => $bPrimary ? ' bx-btn-primary' : '',
+                    'url' => bx_html_attribute($aStep['url']),
+                    'action' => _t('_sys_setup_step_' . $sName . '_action'),
+                ],
+            ],
+        ];
     }
 }
 

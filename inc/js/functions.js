@@ -1994,8 +1994,7 @@ function bx_setup_dismiss(oButton)
     $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: 'home'});
 
     var oSection = oButton.closest('.bx-setup');
-    if(oSection && oSection.parentNode)
-        oSection.parentNode.remove();
+    oSection?.parentNode?.remove();
 
     // Focus would be lost with the button, so it goes to the page's main content.
     var oMain = document.querySelector('main');
@@ -2012,7 +2011,7 @@ function bx_setup_dismiss(oButton)
  */
 function bx_setup_step(oLink)
 {
-    if(oLink.getAttribute('data-step') != 'post')
+    if(oLink.dataset.step != 'post')
         return true;
 
     var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
