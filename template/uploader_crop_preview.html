@@ -1,5 +1,6 @@
 <div id="__preview_id__" class="bx-uploader-crop-preview bx-uploader-crop-preview-__shape__ m-2" data-shape="__shape__">
-    <label class="hidden" aria-hidden="true">__title_choose__<input type="file" accept="image/jpeg,image/png,image/gif,image/webp" tabindex="-1" onchange="__uploader_instance_name__.onPictureChosen(this)" /></label>
+    <label for="__preview_id__-file" class="hidden">__title_choose__</label>
+    <input type="file" id="__preview_id__-file" class="hidden" accept="image/jpeg,image/png,image/gif,image/webp" tabindex="-1" aria-hidden="true" onchange="__uploader_instance_name__.onPictureChosen(this)" />
     <div class="relative __frame_class__">
         <button type="button" class="bx-uploader-crop-choose group relative block w-full h-full overflow-hidden __frame_class__ bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors duration-200 ring-1 ring-inset ring-black/10 dark:ring-white/5 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-default" title="__title_choose__" aria-label="__title_choose__" onclick="__uploader_instance_name__.choosePicture();" __disabled__>
             <bx_if:placeholder_image><img src="__src__" alt="" class="w-full h-full object-cover" /></bx_if:placeholder_image>
