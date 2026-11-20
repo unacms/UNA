@@ -1,6 +1,6 @@
 /*
  * AG Grid Quartz, drawn like the Studio list: a white card, a quiet header,
- * horizontal rules only, green switches, blue links and a solid action button.
+ * horizontal rules only. Switches, links and buttons keep the Studio styles.
  * Tailwind 3 does not publish its palette as variables, so the colours are that palette.
  */
 .bx-grid-ag-wrap {
@@ -54,27 +54,6 @@
 
 .bx-grid-ag-wrap .bx-grid-header-controls-independent {
     margin-left: auto;
-}
-
-.bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn {
-    height: 2.25rem;
-    padding: 0 0.9rem;
-    border: 0;
-    border-radius: 0.7rem;
-    background: #2563eb;
-    color: #fff;
-    font-weight: 600;
-    box-shadow: none;
-}
-
-.bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn:hover {
-    background: #1d4ed8;
-    color: #fff;
-}
-
-.bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn u {
-    color: inherit;
-    text-decoration: none;
 }
 
 .bx-grid-ag.ag-theme-quartz {
@@ -155,7 +134,6 @@
 
 .bx-grid-ag .bx-grid-ag-cell a {
     color: #2563eb;
-    font-weight: 500;
     text-decoration: none;
 }
 
@@ -163,32 +141,95 @@
     color: #1d4ed8;
 }
 
-.bx-grid-ag .bx-switcher-cont button {
-    width: 2.25rem;
-    height: 1.25rem;
+.bx-grid-ag-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0;
+    padding: 0;
     border: 0;
-    background: #e5e7eb;
-    box-shadow: none;
+    border-radius: 0.35rem;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
 }
 
-.bx-grid-ag .bx-switcher-cont button span {
-    width: 1rem;
-    height: 1rem;
-    background: #fff;
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.16);
-    transform: translateX(0.125rem);
+.bx-grid-ag-chevron i {
+    display: inline-block;
+    transition: transform 0.15s ease;
 }
 
-.bx-grid-ag .bx-switcher-cont.on button {
-    background: #22c55e;
+.bx-grid-ag-chevron.is-open i {
+    transform: rotate(90deg);
 }
 
-.bx-grid-ag .bx-switcher-cont.on button span {
-    transform: translateX(1.05rem);
+.bx-grid-ag .ag-row.bx-grid-ag-row-open {
+    align-items: flex-start;
+    overflow: visible;
 }
 
-.bx-grid-ag .bx-switcher-cont.off button {
-    background: #e5e7eb;
+.bx-grid-ag .ag-row.bx-grid-ag-row-open .ag-cell {
+    height: 52px !important;
+    min-height: 0 !important;
+    max-height: 52px !important;
+    top: 0 !important;
+}
+
+.bx-grid-ag-items {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.bx-grid-ag-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 44px;
+    padding: 0 0.85rem 0 2.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    background: #f8fafc;
+}
+
+.bx-grid-ag-item-empty {
+    color: #6b7280;
+}
+
+.bx-grid-ag-item-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-item-actions {
+    margin-left: auto;
+}
+
+.bx-grid-ag .bx-grid-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.5rem;
+    color: #6b7280;
+    cursor: move;
+}
+
+.bx-grid-ag .ag-drag-handle {
+    color: #6b7280;
+    cursor: move;
+}
+
+.bx-grid-ag-item.is-dragging {
+    opacity: 0.55;
 }
 
 .bx-grid-ag .bx-grid-ag-actions {
@@ -196,34 +237,8 @@
     align-items: center;
     justify-content: flex-end;
     flex-wrap: nowrap;
-    gap: 0.15rem;
+    gap: 0.35rem;
     width: 100%;
-}
-
-.bx-grid-ag .bx-grid-ag-actions .bx-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
-    margin: 0;
-    padding: 0 0.35rem;
-    border: 0;
-    border-radius: 0.55rem;
-    background: transparent;
-    color: #6b7280;
-    box-shadow: none;
-}
-
-.bx-grid-ag .bx-grid-ag-actions .bx-btn:hover {
-    background: #f3f4f6;
-    color: #111827;
-}
-
-.bx-grid-ag .bx-grid-ag-actions .bx-btn u {
-    color: inherit;
-    text-decoration: none;
-    font-size: 13px;
 }
 
 .bx-grid-ag .bx-grid-ag-profile {
@@ -232,7 +247,6 @@
     gap: 0.5rem;
     min-width: 0;
     color: #111827;
-    font-weight: 500;
 }
 
 .bx-grid-ag .bx-grid-ag-profile img {
@@ -305,18 +319,10 @@ html.dark .bx-grid-ag .bx-grid-ag-cell a,
     color: #60a5fa;
 }
 
-html.dark .bx-grid-ag .bx-switcher-cont.off button,
-.dark .bx-grid-ag .bx-switcher-cont.off button {
-    background: #4b5563;
-}
-
-html.dark .bx-grid-ag .bx-grid-ag-actions .bx-btn:hover,
-.dark .bx-grid-ag .bx-grid-ag-actions .bx-btn:hover {
-    background: #374151;
-    color: #f9fafb;
-}
-
-html.dark .bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn,
-.dark .bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn {
-    background: #2563eb;
+html.dark .bx-grid-ag-items,
+.dark .bx-grid-ag-items,
+html.dark .bx-grid-ag-item,
+.dark .bx-grid-ag-item {
+    background: #111827;
+    border-color: #374151;
 }

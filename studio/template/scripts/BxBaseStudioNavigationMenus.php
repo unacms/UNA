@@ -170,6 +170,26 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
         ));
     }
 
+    protected function _agRowMeta($aRow)
+    {
+        return array(
+            'set_name' => isset($aRow['set_name']) ? (string)$aRow['set_name'] : '',
+            'module' => isset($aRow['module']) ? (string)$aRow['module'] : '',
+        );
+    }
+
+    protected function _agExtraConfig()
+    {
+        return array(
+            'expand' => array(
+                'object' => 'sys_studio_nav_items',
+                'field_id' => 'id',
+                'set' => 'set_name',
+                'module' => 'module',
+            ),
+        );
+    }
+
     protected function _addJsCss()
     {
         parent::_addJsCss();

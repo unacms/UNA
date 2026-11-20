@@ -6,8 +6,9 @@
  * Quartz is the legacy CSS theme: template/css/grid_ag.css restyles it.
  *
  * Every engine=ag grid uses the infinite row model: blocks load as the grid is
- * scrolled, there is no pager. Community managed row dragging needs the client
- * row model, so an order column is not a drag handle here.
+ * scrolled, there is no pager. Managed row dragging needs the client row model,
+ * so an order column is an unmanaged drag handle: the drop posts the same
+ * reorder action the classic grid posts.
  *
  * Actions, bulk selection and the secret eye go through the BxDolGrid instance
  * kept in glGrids, so Studio scripts that call reload() and processJson()
@@ -33,6 +34,12 @@ function BxDolGridAg(oCfg, oBx) {
     this._sFilterGet = oBxOpts.filter_get || 'filter';
     this._sOrderGetField = oBxOpts.order_get_field || 'order_field';
     this._sOrderGetDir = oBxOpts.order_get_dir || 'order_dir';
+    this._oExpand = oCfg.expand || null;
+    this._oExpanded = {};
+    this._oChildren = {};
+    this._oItemsBx = null;
+    this._iRowHeight = 52;
+    this._iItemHeight = 44;
 
     this._adoptBx();
     this._mount();
@@ -79,6 +86,8 @@ BxDolGridAg.prototype._adoptBx = function () {
         // enable/disable have no `grid` key, so onReload does not run for them.
         if (oData.enable !== undefined || oData.disable !== undefined || oData.enable_api !== undefined || oData.disable_api !== undefined)
             self.refresh();
+        if (sAction === 'reorder')
+            self.refresh();
     };
 };
 
@@ -104,6 +113,7 @@ BxDolGridAg.prototype._mount = function () {
         rowModelType: 'infinite',
         cacheBlockSize: this._iPerPage,
         infiniteInitialRowCount: this._iPerPage,
+        rowDragManaged: false,
         overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">' + this._esc(this._oCfg.empty || '') + '</span>',
         datasource: {
             getRows: function (params) {
@@ -117,6 +127,18 @@ BxDolGridAg.prototype._mount = function () {
             self._syncChecks();
         }
     };
+
+    if (this._oExpand) {
+        oOptions.getRowHeight = function (p) {
+            return self._rowHeight(p && p.data);
+        };
+    }
+
+    if (this._hasOrder()) {
+        oOptions.onRowDragEnd = function (e) {
+            self._onRowDragEnd(e);
+        };
+    }
 
     if (this._hasCheckbox()) {
         oOptions.rowSelection = {
@@ -147,16 +169,46 @@ BxDolGridAg.prototype._hasCheckbox = function () {
     return false;
 };
 
+BxDolGridAg.prototype._hasOrder = function () {
+    var a = this._oCfg.columns || [];
+    for (var i = 0; i < a.length; i++) {
+        if (a[i].kind === 'order')
+            return true;
+    }
+    return false;
+};
+
 BxDolGridAg.prototype._columns = function () {
     var aCfg = this._oCfg.columns || [];
     var sSortField = this._oCfg.sorting_field || '';
     var sSortDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'desc' : 'asc';
+    var bExpand = !!this._oExpand;
+    var bExpandPlaced = false;
     var aCols = [];
 
     for (var i = 0; i < aCfg.length; i++) {
         var col = aCfg[i];
-        if (col.kind === 'checkbox' || col.kind === 'order')
+        if (col.kind === 'checkbox')
             continue;
+
+        if (col.kind === 'order') {
+            aCols.push({
+                colId: col.name,
+                field: col.name,
+                headerName: '',
+                width: 52,
+                maxWidth: 64,
+                flex: 0,
+                pinned: 'left',
+                sortable: false,
+                resizable: false,
+                suppressHeaderMenuButton: true,
+                cellDataType: false,
+                rowDrag: true,
+                cellRenderer: BxDolGridAgCell
+            });
+            continue;
+        }
 
         var oCol = {
             colId: col.name,
@@ -189,6 +241,11 @@ BxDolGridAg.prototype._columns = function () {
             for (var sKey in oSize)
                 oCol[sKey] = oSize[sKey];
             oCol.cellRenderer = BxDolGridAgCell;
+        }
+
+        if (bExpand && !bExpandPlaced && !col.controls) {
+            oCol.bxExpand = true;
+            bExpandPlaced = true;
         }
 
         aCols.push(oCol);
@@ -293,6 +350,181 @@ BxDolGridAg.prototype._setTotal = function (o) {
         e.textContent = o.total_f;
 };
 
+BxDolGridAg.prototype._rowHeight = function (oData) {
+    if (!this._oExpand || !oData)
+        return this._iRowHeight;
+    var sId = String(oData[this._sFieldId]);
+    if (!this._oExpanded[sId])
+        return this._iRowHeight;
+    var a = this._oChildren[sId] || [];
+    var n = a.length || 1;
+    return this._iRowHeight + n * this._iItemHeight + 8;
+};
+
+BxDolGridAg.prototype._layoutRow = function (node) {
+    if (!node)
+        return;
+    if (node.setRowHeight)
+        node.setRowHeight(this._rowHeight(node.data));
+    if (!this._oApi)
+        return;
+    this._oApi.onRowHeightChanged();
+    this._oApi.redrawRows({ rowNodes: [node] });
+};
+
+BxDolGridAg.prototype.toggleExpand = function (sId, node) {
+    if (!this._oExpand || !node || !node.data)
+        return;
+
+    if (this._oExpanded[sId]) {
+        delete this._oExpanded[sId];
+        this._layoutRow(node);
+        return;
+    }
+
+    var oMeta = node.data._meta || {};
+    if (!oMeta[this._oExpand.set])
+        return;
+
+    var self = this;
+    if (this._oChildren[sId]) {
+        this._oExpanded[sId] = true;
+        this._layoutRow(node);
+        return;
+    }
+
+    this._fetchItems(oMeta, function (aRows) {
+        self._oChildren[sId] = aRows || [];
+        self._oExpanded[sId] = true;
+        self._layoutRow(node);
+    });
+};
+
+BxDolGridAg.prototype._fetchItems = function (oMeta, fDone) {
+    var self = this;
+    var fLoad = function (iPer, bAgain) {
+        jQuery.getJSON(sUrlRoot + 'grid.php', self._itemsQuery(oMeta, iPer))
+            .done(function (o) {
+                o = o || {};
+                var a = o.data || [];
+                var n = parseInt(o.total, 10) || a.length;
+                if (bAgain && a.length && a.length < n) {
+                    fLoad(n, false);
+                    return;
+                }
+                fDone(a);
+            })
+            .fail(function () {
+                fDone([]);
+            });
+    };
+    fLoad(500, true);
+};
+
+BxDolGridAg.prototype._itemsQuery = function (oMeta, iPer) {
+    var oCfg = this._oExpand;
+    var o = { o: oCfg.object, a: 'data_ag' };
+    o.set = oMeta[oCfg.set] || '';
+    o.module = oMeta[oCfg.module] || '';
+    o.start = 0;
+    o.per_page = iPer;
+    if (this._oBx && this._oBx._sCsrfToken)
+        o.csrf_token = this._oBx._sCsrfToken;
+    o._r = Math.random();
+    return o;
+};
+
+BxDolGridAg.prototype._itemsBx = function (oMeta) {
+    var oCfg = this._oExpand;
+    if (!this._oItemsBx) {
+        var oBxOpts = this._oCfg.bx || {};
+        this._oItemsBx = new BxDolGrid(oCfg.object, {
+            csrf_token: oBxOpts.csrf_token || '',
+            sortable: 0,
+            sorting: 0,
+            filter: '',
+            filter_get: 'filter',
+            order_field: '',
+            order_dir: 'ASC',
+            order_get_field: 'order_field',
+            order_get_dir: 'order_dir',
+            query_append: {},
+            popup_options: oBxOpts.popup_options || {},
+            confirm_messages: {},
+            text_search_input: '',
+            columns: 1
+        });
+        var self = this;
+        this._oItemsBx.setOnReload(function () {
+            self._reloadExpanded();
+        });
+    }
+    this._oItemsBx._oQueryAppend = {
+        set: oMeta[oCfg.set] || '',
+        module: oMeta[oCfg.module] || ''
+    };
+    return this._oItemsBx;
+};
+
+BxDolGridAg.prototype._reloadExpanded = function () {
+    var self = this;
+    if (!this._oApi)
+        return;
+    this._oApi.forEachNode(function (n) {
+        if (!n.data)
+            return;
+        var sId = String(n.data[self._sFieldId]);
+        if (!self._oExpanded[sId])
+            return;
+        self._fetchItems(n.data._meta || {}, function (aRows) {
+            self._oChildren[sId] = aRows || [];
+            self._layoutRow(n);
+        });
+    });
+};
+
+BxDolGridAg.prototype._onRowDragEnd = function (e) {
+    if (!this._oBx || !this._oApi || !e || !e.node || e.node.rowIndex == null || e.overIndex == null || e.overIndex < 0)
+        return;
+    if (e.node.rowIndex === e.overIndex)
+        return;
+
+    var sField = this._sFieldId;
+    var a = [];
+    this._oApi.forEachNode(function (n) {
+        if (n.data && n.data[sField] != null && n.rowIndex != null)
+            a.push({ i: n.rowIndex, id: String(n.data[sField]) });
+    });
+    a.sort(function (x, y) {
+        return x.i - y.i;
+    });
+    if (!a.length || a[0].i !== 0)
+        return;
+    for (var k = 1; k < a.length; k++) {
+        if (a[k].i !== a[k - 1].i + 1)
+            return;
+    }
+
+    var aIds = [];
+    for (var i = 0; i < a.length; i++)
+        aIds.push(a[i].id);
+
+    var iFrom = e.node.rowIndex;
+    var iTo = e.overIndex;
+    if (iFrom < 0 || iFrom >= aIds.length || iTo < 0 || iTo >= aIds.length)
+        return;
+
+    var sId = aIds.splice(iFrom, 1)[0];
+    aIds.splice(iTo, 0, sId);
+
+    var sKey = encodeURIComponent(this._sObject + '_row[]');
+    var s = '';
+    for (var j = 0; j < aIds.length; j++)
+        s += (s ? '&' : '') + sKey + '=' + encodeURIComponent(aIds[j]);
+
+    this._oBx.action('reorder', {}, s, true);
+};
+
 BxDolGridAg.prototype._syncChecks = function () {
     var e = document.getElementById('bx-grid-table-' + this._sObject);
     if (!e || !this._oApi || !this._oApi.getSelectedRows)
@@ -325,6 +557,8 @@ function BxDolGridAgCell() {}
 BxDolGridAgCell.prototype.init = function (params) {
     this.eGui = document.createElement('div');
     this.eGui.className = 'bx-grid-ag-cell';
+    this._eItems = null;
+    this._eRow = null;
 
     var oAg = params.context && params.context.ag;
     if (!oAg)
@@ -334,7 +568,206 @@ BxDolGridAgCell.prototype.init = function (params) {
     if ((cell == null || cell === '') && params.data)
         cell = params.data[params.colDef.field];
 
+    if (params.colDef && params.colDef.bxExpand)
+        this._chevron(params, oAg);
+
     this._draw(this.eGui, cell, params, oAg);
+
+    if (params.colDef && params.colDef.bxExpand)
+        this._childItems(params, oAg);
+};
+
+BxDolGridAgCell.prototype.destroy = function () {
+    if (this._eItems && this._eItems.parentNode)
+        this._eItems.parentNode.removeChild(this._eItems);
+    if (this._eRow)
+        this._eRow.classList.remove('bx-grid-ag-row-open');
+    this._eItems = null;
+    this._eRow = null;
+};
+
+BxDolGridAgCell.prototype._chevron = function (params, oAg) {
+    var oMeta = params.data && params.data._meta;
+    if (!oAg._oExpand || !oMeta || !oMeta[oAg._oExpand.set])
+        return;
+
+    var sId = String(params.data[oAg._sFieldId]);
+    var bOpen = !!oAg._oExpanded[sId];
+    var eBtn = document.createElement('button');
+    eBtn.type = 'button';
+    eBtn.className = 'bx-grid-ag-chevron' + (bOpen ? ' is-open' : '');
+    eBtn.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
+    var eIcon = document.createElement('i');
+    eIcon.className = 'sys-icon chevron-right';
+    eBtn.appendChild(eIcon);
+    eBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        oAg.toggleExpand(sId, params.node);
+    });
+    this.eGui.appendChild(eBtn);
+};
+
+BxDolGridAgCell.prototype._childItems = function (params, oAg) {
+    if (!params.data || !params.eGridCell)
+        return;
+    var sId = String(params.data[oAg._sFieldId]);
+    if (!oAg._oExpanded[sId])
+        return;
+
+    var eRow = params.eGridCell.closest ? params.eGridCell.closest('.ag-row') : null;
+    if (!eRow)
+        return;
+
+    var aItems = oAg._oChildren[sId] || [];
+    var oMeta = params.data._meta || {};
+    var ePanel = document.createElement('div');
+    ePanel.className = 'bx-grid-ag-items';
+    ePanel.style.top = oAg._iRowHeight + 'px';
+
+    if (!aItems.length) {
+        var eEmpty = document.createElement('div');
+        eEmpty.className = 'bx-grid-ag-item bx-grid-ag-item-empty';
+        eEmpty.textContent = oAg._oCfg.empty || '';
+        ePanel.appendChild(eEmpty);
+    } else {
+        for (var i = 0; i < aItems.length; i++)
+            ePanel.appendChild(this._childRow(aItems[i], oAg, oMeta));
+    }
+
+    eRow.classList.add('bx-grid-ag-row-open');
+    eRow.appendChild(ePanel);
+    this._eItems = ePanel;
+    this._eRow = eRow;
+    this._bindChildDrag(ePanel, oAg, oMeta, sId);
+};
+
+BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
+    var sField = oAg._oExpand.field_id || 'id';
+    var sId = oItem && oItem[sField] != null ? String(oItem[sField]) : '';
+    var eRow = document.createElement('div');
+    eRow.className = 'bx-grid-ag-item';
+    eRow.setAttribute('data-id', sId);
+
+    var eHandle = document.createElement('div');
+    eHandle.className = 'bx-grid-drag-handle';
+    var eGrip = document.createElement('i');
+    eGrip.className = 'sys-icon grip-vertical';
+    eHandle.appendChild(eGrip);
+    eRow.appendChild(eHandle);
+
+    var oReal = oAg._itemsBx(oMeta);
+    var oQuery = {};
+    oQuery[oAg._oExpand.set] = oMeta[oAg._oExpand.set] || '';
+    oQuery[oAg._oExpand.module] = oMeta[oAg._oExpand.module] || '';
+    var oBx = {
+        actionWithId: function () {
+            oReal._oQueryAppend = {
+                set: oQuery[oAg._oExpand.set],
+                module: oQuery[oAg._oExpand.module]
+            };
+            return oReal.actionWithId.apply(oReal, arguments);
+        }
+    };
+    var oChild = { _oBx: oBx, _sFieldId: sField };
+    if (oItem.switcher && oItem.switcher.type === 'switcher')
+        this._switch(eRow, oItem.switcher, { data: oItem, colDef: {} }, oChild);
+    if (oItem.switcher_api && oItem.switcher_api.type === 'switcher')
+        this._switch(eRow, oItem.switcher_api, { data: oItem, colDef: {} }, oChild);
+
+    var eTitle = document.createElement('span');
+    eTitle.className = 'bx-grid-ag-item-title';
+    var oTitle = oItem.title_system || {};
+    this._text(eTitle, oTitle.value == null ? '' : oTitle.value, oAg);
+    eRow.appendChild(eTitle);
+
+    if (oItem.actions && oItem.actions.type === 'actions') {
+        var eActs = document.createElement('span');
+        eActs.className = 'bx-grid-ag-item-actions';
+        this._actions(eActs, oItem.actions.data, { data: oItem }, oChild);
+        eRow.appendChild(eActs);
+    }
+
+    return eRow;
+};
+
+BxDolGridAgCell.prototype._bindChildDrag = function (ePanel, oAg, oMeta, sMenuId) {
+    var eDrag = null;
+    var aRows = ePanel.querySelectorAll('.bx-grid-ag-item');
+    for (var i = 0; i < aRows.length; i++) {
+        (function (eRow) {
+            var eHandle = eRow.querySelector('.bx-grid-drag-handle');
+            if (!eHandle)
+                return;
+            eHandle.addEventListener('mousedown', function () {
+                eRow.setAttribute('draggable', 'true');
+            });
+            eRow.addEventListener('dragstart', function (ev) {
+                eDrag = eRow;
+                eRow.classList.add('is-dragging');
+                if (ev.dataTransfer) {
+                    ev.dataTransfer.effectAllowed = 'move';
+                    ev.dataTransfer.setData('text/plain', eRow.getAttribute('data-id') || '');
+                }
+                ev.stopPropagation();
+            });
+            eRow.addEventListener('dragover', function (ev) {
+                if (!eDrag || eDrag === eRow)
+                    return;
+                ev.preventDefault();
+                var r = eRow.getBoundingClientRect();
+                var bAfter = ev.clientY > r.top + r.height / 2;
+                if (bAfter)
+                    eRow.parentNode.insertBefore(eDrag, eRow.nextSibling);
+                else
+                    eRow.parentNode.insertBefore(eDrag, eRow);
+            });
+            eRow.addEventListener('dragend', function () {
+                eRow.classList.remove('is-dragging');
+                eRow.removeAttribute('draggable');
+                if (eDrag) {
+                    eDrag = null;
+                    oAg._saveChildOrder(ePanel, oMeta, sMenuId);
+                }
+            });
+        })(aRows[i]);
+    }
+};
+
+BxDolGridAg.prototype._saveChildOrder = function (ePanel, oMeta, sMenuId) {
+    var oCfg = this._oExpand;
+    if (!oCfg)
+        return;
+    var sField = oCfg.field_id || 'id';
+    var aIds = [];
+    var aRows = ePanel.querySelectorAll('.bx-grid-ag-item');
+    for (var i = 0; i < aRows.length; i++) {
+        var sId = aRows[i].getAttribute('data-id');
+        if (sId)
+            aIds.push(sId);
+    }
+    if (aIds.length < 2)
+        return;
+
+    var aOld = this._oChildren[sMenuId] || [];
+    var m = {};
+    for (var j = 0; j < aOld.length; j++) {
+        if (aOld[j] && aOld[j][sField] != null)
+            m[String(aOld[j][sField])] = aOld[j];
+    }
+    var aNew = [];
+    for (var k = 0; k < aIds.length; k++) {
+        if (m[aIds[k]])
+            aNew.push(m[aIds[k]]);
+    }
+    this._oChildren[sMenuId] = aNew;
+
+    var sKey = encodeURIComponent(oCfg.object + '_row[]');
+    var s = '';
+    for (var n = 0; n < aIds.length; n++)
+        s += (s ? '&' : '') + sKey + '=' + encodeURIComponent(aIds[n]);
+
+    this._itemsBx(oMeta).action('reorder', {}, s, true);
 };
 
 BxDolGridAgCell.prototype.getGui = function () {

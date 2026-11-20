@@ -1601,8 +1601,16 @@ class BxBaseGrid extends BxDolGrid
             if (!is_array($aData))
                 $aData = [];
 
+            $aDecoded = array_values($this->decodeDataAPI($aData));
+            $aSource = array_values($aData);
+            foreach ($aDecoded as $iIndex => $aOut) {
+                $aMeta = $this->_agRowMeta(isset($aSource[$iIndex]) && is_array($aSource[$iIndex]) ? $aSource[$iIndex] : []);
+                if ($aMeta)
+                    $aDecoded[$iIndex]['_meta'] = $aMeta;
+            }
+
             $aResult = [
-                'data' => array_values($this->decodeDataAPI($aData)),
+                'data' => $aDecoded,
                 'total' => (int)$this->_iTotalCount,
             ];
             if ((int)$iShowTotal === 1)
@@ -1640,23 +1648,21 @@ class BxBaseGrid extends BxDolGrid
             if ($sTitle === '')
                 $sTitle = $this->_getCellHeaderFallbackTitle($sKey);
 
-            $sKind = '';
-            if ($sKey === 'checkbox')
-                $sKind = 'checkbox';
-            else if (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey)
-                $sKind = 'order';
-
             $aColumns[] = [
                 'name' => $sKey,
                 'title' => $sTitle,
                 'width' => isset($aField['width']) ? $aField['width'] : '',
                 'sortable' => in_array($sKey, $aOrderFields) ? 1 : 0,
                 'controls' => $this->_isControlsColumn($sKey) ? 1 : 0,
-                'kind' => $sKind,
+                'kind' => $this->_agCellKind($sKey, $aField),
             ];
         }
 
-        $bReorder = !empty($this->_aOptions['field_order']);
+        $bReorder = false;
+        foreach ($aColumns as $aColumn) {
+            if ($aColumn['kind'] === 'order')
+                $bReorder = true;
+        }
         $sClassHeader = empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '';
 
         $aConfig = [
@@ -1692,6 +1698,10 @@ class BxBaseGrid extends BxDolGrid
                 'columns' => count($aFields),
             ],
         ];
+
+        $aExtra = $this->_agExtraConfig();
+        if ($aExtra)
+            $aConfig = array_merge($aConfig, $aExtra);
 
         $aVars = [
             'object' => $this->_sObject,
@@ -1742,6 +1752,45 @@ class BxBaseGrid extends BxDolGrid
         $this->_addJsCssAg();
 
         return $this->_oTemplate->parseHtmlByName('grid_ag.html', $aVars);
+    }
+
+    /**
+     * checkbox and the drag handle are not data columns. A field that shares its name with
+     * field_order but has its own cell method (a date, for one) stays a data column.
+     */
+    protected function _agCellKind($sKey, $aField)
+    {
+        if ($sKey === 'checkbox')
+            return 'checkbox';
+
+        $sMethod = '_getCellDefault';
+        if (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey)
+            $sMethod = '_getCellOrder';
+
+        $sCustomMethod = '_getCell' . $this->_genMethodName($sKey);
+        if (method_exists($this, $sCustomMethod))
+            $sMethod = $sCustomMethod;
+        else if (!empty($aField['secret']))
+            $sMethod = '_getCellSecret';
+
+        return $sMethod === '_getCellOrder' ? 'order' : '';
+    }
+
+    /**
+     * Values the row needs that are not grid columns. A menu row carries its set, so the
+     * expanded line can ask the items grid for that set.
+     */
+    protected function _agRowMeta($aRow)
+    {
+        return [];
+    }
+
+    /**
+     * Extra keys merged into the AG config. A grid that expands its rows returns `expand`.
+     */
+    protected function _agExtraConfig()
+    {
+        return [];
     }
 
     /**

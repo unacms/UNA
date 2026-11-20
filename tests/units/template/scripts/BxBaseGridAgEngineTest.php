@@ -94,6 +94,7 @@ class BxBaseGridAgEngineTest extends BxDolTestCase
         $this->assertStringContainsString('BxDolGridAg', $s);
         $this->assertStringNotContainsString('class="bx-grid-table"', $s);
         $this->assertStringNotContainsString('bx-grid-ag-pager', $s);
+        $this->assertStringContainsString('\u0022kind\u0022:\u0022order\u0022', $s);
         $this->assertFalse($this->bxGetProtected($oGrid, '_bIsApi', BxDolGrid::class));
     }
 
