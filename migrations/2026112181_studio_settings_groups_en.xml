@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Settings groups: captions of the new groups and categories, and the renamed ones. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_stg_cpt_category_sys_updates"><![CDATA[Updates and maintenance]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_app_banner"><![CDATA[Mobile app banner]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_members"><![CDATA[Members]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_relations"><![CDATA[Relationships]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_security"><![CDATA[Security and privacy]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_sign_in_protection"><![CDATA[Sign-in protection]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_sessions"><![CDATA[Sessions, cookies and headers]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_privacy"><![CDATA[Privacy]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_content"><![CDATA[Content]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_posting"><![CDATA[Posting]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_moderation"><![CDATA[Moderation]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_hashtags"><![CDATA[Hashtags and mentions]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_search"><![CDATA[Search and browsing]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_embeds"><![CDATA[Embeds]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_editor"><![CDATA[Editor and player]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_files"><![CDATA[Files and storage]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_uploads"><![CDATA[Uploads]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_messaging"><![CDATA[Notifications and messaging]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_payments"><![CDATA[Payments]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_payments"><![CDATA[Payments]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_store_account"><![CDATA[UNA Store account]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_performance"><![CDATA[Performance]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_bg_jobs"><![CDATA[Background jobs]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_connections"><![CDATA[Outgoing connections]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_advanced"><![CDATA[Advanced]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_logs"><![CDATA[Logs]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_interface"><![CDATA[Interface]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_studio"><![CDATA[Studio]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_ftp"><![CDATA[FTP]]></string_add>
+    <string_upd name="_adm_stg_cpt_type_system"><![CDATA[General]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_site_settings"><![CDATA[Site]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_permalinks"><![CDATA[Links and SEO]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_account"><![CDATA[Accounts]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_acl"><![CDATA[Memberships]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_security"><![CDATA[Request protection]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_social_settings"><![CDATA[Sharing]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_notifications"><![CDATA[Email]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_sockets"><![CDATA[Real-time updates]]></string_upd>
+</resources>

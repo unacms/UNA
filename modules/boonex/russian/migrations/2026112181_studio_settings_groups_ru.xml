@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Settings groups: captions of the new groups and categories, and the renamed ones. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_stg_cpt_category_sys_updates"><![CDATA[Обновления и обслуживание]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_app_banner"><![CDATA[Баннер мобильного приложения]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_members"><![CDATA[Участники]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_relations"><![CDATA[Отношения]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_security"><![CDATA[Безопасность и приватность]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_sign_in_protection"><![CDATA[Защита входа]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_sessions"><![CDATA[Сессии, cookie и заголовки]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_privacy"><![CDATA[Приватность]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_content"><![CDATA[Контент]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_posting"><![CDATA[Публикация]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_moderation"><![CDATA[Модерация]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_hashtags"><![CDATA[Хештеги и упоминания]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_search"><![CDATA[Поиск и просмотр]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_embeds"><![CDATA[Встраивание]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_editor"><![CDATA[Редактор и плеер]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_files"><![CDATA[Файлы и хранилище]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_uploads"><![CDATA[Загрузки]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_messaging"><![CDATA[Уведомления и сообщения]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_payments"><![CDATA[Платежи]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_payments"><![CDATA[Платежи]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_store_account"><![CDATA[Аккаунт UNA Store]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_performance"><![CDATA[Производительность]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_bg_jobs"><![CDATA[Фоновые задачи]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_connections"><![CDATA[Исходящие соединения]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_advanced"><![CDATA[Расширенные]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_logs"><![CDATA[Журналы]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_interface"><![CDATA[Интерфейс]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_studio"><![CDATA[Студия]]></string_add>
+    <string_add name="_adm_stg_cpt_category_sys_ftp"><![CDATA[FTP]]></string_add>
+    <string_upd name="_adm_stg_cpt_type_system"><![CDATA[Общие]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_site_settings"><![CDATA[Сайт]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_permalinks"><![CDATA[Ссылки и SEO]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_account"><![CDATA[Аккаунты]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_acl"><![CDATA[Членство]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_security"><![CDATA[Защита запросов]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_social_settings"><![CDATA[Поделиться]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_notifications"><![CDATA[Электронная почта]]></string_upd>
+    <string_upd name="_adm_stg_cpt_category_sockets"><![CDATA[Обновления в реальном времени]]></string_upd>
+</resources>

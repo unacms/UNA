@@ -133,7 +133,7 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
         if($this->getJoinMode() == self::JOIN_INVITE)
             return BX_DOL_URL_STUDIO . 'module.php?name=bx_invites&page=settings';
 
-        return BX_DOL_URL_STUDIO . 'settings.php?page=system&category=account';
+        return BX_DOL_URL_STUDIO . 'settings.php?page=system_members&category=account';
     }
 
     /**
