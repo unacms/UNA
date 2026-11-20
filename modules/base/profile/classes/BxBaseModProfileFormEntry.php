@@ -206,8 +206,13 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
         
         foreach ($this->_aImageFields as $sField => $aParams) {
 
-            if ($aValues && !empty($aValues[$CNF['FIELD_ID']]))
+            if ($aValues && !empty($aValues[$CNF['FIELD_ID']])) {
                 $this->aInputs[$sField]['content_id'] = $aValues[$CNF['FIELD_ID']];
+
+                // no picture yet: the profile's letter avatar, as its units show it
+                if (!empty($CNF['FIELD_PICTURE']) && $sField == $CNF['FIELD_PICTURE'] && ($oProfile = BxDolProfile::getInstanceByContentAndType((int)$aValues[$CNF['FIELD_ID']], $this->_oModule->_oConfig->getName())))
+                    $this->aInputs[$sField]['placeholder_image'] = BxDolTemplate::getLetterAvatarUrl($oProfile->getDisplayName(), $oProfile->id());
+            }
 
             $this->aInputs[$sField]['ghost_template'] = $this->_oModule->_oTemplate->parseHtmlByName('form_ghost_template.html', $this->_getProfilePhotoGhostTmplVars($sField, $aContentInfo));
         }

@@ -907,7 +907,7 @@ function clear_xss($val)
         ));
    
 	    $oConfig->set('HTML.DefinitionID', 'html5-definitions');
-		$oConfig->set('HTML.DefinitionRev', 1);
+		$oConfig->set('HTML.DefinitionRev', 2);
       
 		if ($def = $oConfig->maybeGetRawHTMLDefinition()) {
 		    $def->addElement('section', 'Block', 'Flow', 'Common');
@@ -929,6 +929,7 @@ function clear_xss($val)
 		        'src' => 'URI',
 		        'type' => 'Text',
             ));
+            $def->addElement('mark', 'Inline', 'Inline', 'Common'); // the editor's Marker
             $def->addAttribute('a', 'data-profile-id', 'Text');
             $def->addAttribute('a', 'dchar', 'Text');
             $def->addAttribute('div', 'source', 'Text');

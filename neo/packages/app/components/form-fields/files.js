@@ -931,14 +931,23 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         const isImage = img?.file_type?.includes('image/');
         const isPreload = img?.preload;
 
+        // A picture or a cover shows a camera in the empty tile, as UNA's site does (uploader_crop_preview.html); other files the drop caption.
+        const isCameraTile = isPictureField || getImageCropKind(props.name, props.image_type) != null;
+
         button = (
-            <Pressable onPress={() => selectImage(props.source ?? 'library')} >
+            <Pressable
+                onPress={() => selectImage(props.source ?? 'library')}
+                accessibilityRole="button"
+                accessibilityLabel={img?.file_url ? t('Change picture') : t('Upload a picture')}
+            >
                 <View className={`qq ${w} native:max-w-full items-center justify-center bg-card `}>
-                      {(!img || !img?.file_url) && (<View ref={drop} className={`ss ${w} text-muted-foreground/50 text-lg flex-auto w-full border-border  justify-center flex-col border border-dashed text-center`}>
+                      {(!img || !img?.file_url) && (isCameraTile ? (<View ref={drop} className={`ss ${w} flex-auto w-full items-center justify-center bg-button shadow-input-outline dark:shadow-input-outline-deep`}>
+                        <Icon icon="Camera" size={32} className="text-secondary-foreground" />
+                    </View>) : (<View ref={drop} className={`ss ${w} text-muted-foreground/50 text-lg flex-auto w-full border-border  justify-center flex-col border border-dashed text-center`}>
                         <Text className='text-muted-foreground/50 text-lg justify-center flex-col text-center'>
                             {props?.placeholder || CaptionForFileInput(props)}
                         </Text>
-                    </View>)}
+                    </View>))}
                     {img != null && (<>
                         {(isImage && (img.uri || img.file_url)) && <ImageRN
                             source={{ uri: img.uri || img.file_url }}
@@ -954,7 +963,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                                 controlSize="mini"
                                 borderShape="circle"
                                 image="X"
-                                accessibilityLabel={t('Close')}
+                                accessibilityLabel={t('Remove')}
                                 onPress={() => handleDelete(img)}
                             />
                         </View>

@@ -2030,6 +2030,15 @@ BLAH;
             ]);
         }
 
+        // a plain text field with a length limit counts its characters under it
+        $iCounterMax = !$bHtmlEditor && !$bCodeEditor ? $this->_getInputTextareaMaxLength($aInput) : 0;
+        $sCounterId = '';
+        if($iCounterMax > 0) {
+            $sCounterId = 'bx-form-input-counter-' . $sUniq;
+            $aAttrs['data-bx-counter'] = $sCounterId;
+            $aAttrs['aria-describedby'] = trim(($aAttrs['aria-describedby'] ?? '') . ' ' . $sCounterId);
+        }
+
         return $this->oTemplate->parseHtmlByName('form_field_textarea.html', [
             'attrs' => bx_convert_array2attrs($aAttrs, $sClassAdd),
             'value' => $sValue,
@@ -2038,7 +2047,34 @@ BLAH;
                 'content' => $aTmplVarsSwitcher
             ],
             'agent_button' => $sAgentButton,
+            'bx_if:counter' => [
+                'condition' => $iCounterMax > 0,
+                'content' => [
+                    'id' => $sCounterId,
+                    'max' => $iCounterMax,
+                    'count' => get_mb_len(isset($aInput['value']) ? strip_tags((string)$aInput['value']) : ''),
+                    'limit_text' => bx_html_attribute(_t('_sys_form_input_counter_limit', $iCounterMax)),
+                ]
+            ],
         ]);
+    }
+
+    /**
+     * The most characters a textarea takes: its maxlength attribute, or the maximum of its Length checker.
+     * @return int 0 when there is no limit
+     */
+    protected function _getInputTextareaMaxLength($aInput)
+    {
+        if(!empty($aInput['attrs']['maxlength']) && (int)$aInput['attrs']['maxlength'] > 0)
+            return (int)$aInput['attrs']['maxlength'];
+
+        if(isset($aInput['checker']['func']) && strtolower($aInput['checker']['func']) == 'length' && !empty($aInput['checker']['params']) && is_array($aInput['checker']['params'])) {
+            $aParams = array_values($aInput['checker']['params']);
+            if(isset($aParams[1]) && (int)$aParams[1] > 0)
+                return (int)$aParams[1];
+        }
+
+        return 0;
     }
 
     protected function _genInputTextareaAttrs(&$aInput)
@@ -2207,6 +2243,8 @@ BLAH;
                 'attrs' => bx_convert_array2attrs($aAttrs),
                 'btn_class' => !empty($aInput['attrs']['disabled']) ? 'bx-btn-disabled' : '',
                 'button_title' => bx_js_string($oUploader->getUploaderButtonTitle(isset($aInput['upload_buttons_titles']) ? $aInput['upload_buttons_titles'] : false)),
+                // what a picture field shows before a picture is set, as the letter avatar of a profile whose name is known
+                'placeholder_image' => $aInput['placeholder_image'] ?? '',
             ];
 
             $sUploadersButtons .= $oUploader->getUploaderButton($aParamsButtons);
@@ -2242,6 +2280,7 @@ BLAH;
             'error' => $sError,
             'id_container_errors' => $oUploader ? $oUploader->getIdContainerErrors() : '',
             'id_container_result' => $oUploader ? $oUploader->getIdContainerResult() : '',
+            'class_container_result' => $oUploader ? $oUploader->getResultContainerClass() : '',
             'uploader_instance_name' => $oUploader ? $oUploader->getNameJsInstanceUploader() : '',
             'uploaders_js' => $sUploadersJs,
         ));

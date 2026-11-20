@@ -3383,6 +3383,7 @@
 	<string name="_sys_form_checkbox_value_off"><![CDATA[No]]></string>
 	<string name="_sys_form_checkbox_value_on"><![CDATA[Yes]]></string>
         <string name="_sys_form_input_caption_author"><![CDATA[Author]]></string>
+	<string name="_sys_form_input_counter_limit"><![CDATA[You have reached the limit of {0} characters.]]></string>
 	<string name="_sys_form_comment"><![CDATA[Comment]]></string>
 	<string name="_sys_form_comment_input_caption_cmt_author_id"><![CDATA[Author]]></string>
 	<string name="_sys_form_comment_input_caption_cmt_text"><![CDATA[Text]]></string>
@@ -5117,11 +5118,17 @@
 	<string name="_sys_uploader_confirm_close_popup"><![CDATA[Oh no! Are you sure? This may discard uploading files, seriously.]]></string>
     <string name="_sys_uploader_confirm_leaving_page"><![CDATA[Upload is in progress! Stay cool and don't close this page, or it will cut off half-way.]]></string>
     <string name="_sys_uploader_crop_button_name"><![CDATA[Upload and Crop]]></string>
+    <string name="_sys_uploader_crop_change_picture"><![CDATA[Change picture]]></string>
+    <string name="_sys_uploader_crop_choose_cover"><![CDATA[Upload a cover picture]]></string>
+    <string name="_sys_uploader_crop_choose_picture"><![CDATA[Upload a picture]]></string>
+    <string name="_sys_uploader_crop_edit_cover"><![CDATA[Edit cover picture]]></string>
+    <string name="_sys_uploader_crop_edit_picture"><![CDATA[Edit picture]]></string>
     <string name="_sys_uploader_crop_rotate_left"><![CDATA[Rotate Left]]></string>
 	<string name="_sys_uploader_crop_rotate_right"><![CDATA[Rotate Right]]></string>
 	<string name="_sys_uploader_crop_submit_button"><![CDATA[Upload]]></string>
     <string name="_sys_uploader_crop_title"><![CDATA[Crop Image]]></string>
     <string name="_sys_uploader_crop_err_upload"><![CDATA[Error Uploading.]]></string>
+    <string name="_sys_uploader_crop_remove_picture"><![CDATA[Remove]]></string>
     <string name="_sys_uploader_crop_wrong_ext"><![CDATA[Wrong file extension, only images with the following extensions are allowed: jpg, jpeg, png, gif.]]></string>
 	<string name="_sys_uploader_err_msg"><![CDATA[Oops! An error occurred with {0} file: {1}]]></string>
 	<string name="_sys_uploader_html5_button_name"><![CDATA[Multiple Upload]]></string>

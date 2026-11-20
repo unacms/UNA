@@ -7,13 +7,36 @@ div.bx-tl-post-cnt {
 }
 
 /*--- Post Form Styles ---*/
+/* A plain text field starts at about two and a half lines and grows as text is typed (field-sizing, see tailwind.css). */
 #bx_timeline_post textarea.bx-form-input-textarea {
-    height: 2.2rem;
+    min-height: 5.25rem;
 }
 
+/* Visibility and Show location share one row under the buttons, and wrap on a narrow screen; the other rows keep the full width. */
+#bx_timeline_post .bx-form-section-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    column-gap: 1rem;
+}
+#bx_timeline_post .bx-form-section-content > .bx-form-element-wrapper {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+#bx_timeline_post .bx-form-section-content > #bx-form-element-object_privacy_view {
+    flex: 1 1 16rem;
+}
+#bx_timeline_post .bx-form-section-content > #bx-form-element-location {
+    flex: 0 1 auto;
+    padding-bottom: 0.75rem; /* the switch sits on the middle of the 52px select beside it */
+}
+
+/* The uploaders and the poll form are empty until something is added, so they take no room under the buttons. */
 #bx_timeline_post div#bx-form-element-link,
 #bx_timeline_post div#bx-form-element-photo,
 #bx_timeline_post div#bx-form-element-video,
+#bx_timeline_post div#bx-form-element-file,
+#bx_timeline_post div#bx-form-element-polls,
 #bx_timeline_post .bx-form-input-files-uploaders {
     margin-top: 0px;
 }
