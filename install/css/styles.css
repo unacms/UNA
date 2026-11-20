@@ -1,160 +1,211 @@
-/* Install wizard — modern minimal shell (una-g). Same flow; visual refresh only. */
+/*
+ * Installer. The page is drawn with Studio's classes from the shared Tailwind build (body.bx-std, .bx-std-block,
+ * .bx-btn, .bx-form-input-*, the "dark" class on <html>), so it follows Studio when those change. This file only
+ * lays out what is the installer's own: the shell, the step bar, the module list, the progress list and the reports.
+ */
 
 :root {
-    --bx-inst-bg: #f4f5f7;
-    --bx-inst-surface: #ffffff;
-    --bx-inst-text: #111827;
-    --bx-inst-muted: #6b7280;
-    --bx-inst-border: #e5e7eb;
-    --bx-inst-accent: #2563eb;
-    --bx-inst-accent-hover: #1d4ed8;
-    --bx-inst-ok: #059669;
-    --bx-inst-ok-bg: #ecfdf5;
-    --bx-inst-bad: #dc2626;
-    --bx-inst-bad-bg: #fef2f2;
-    --bx-inst-warn: #d97706;
-    --bx-inst-warn-bg: #fffbeb;
-    --bx-inst-radius: 12px;
-    --bx-inst-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.06);
-    --bx-inst-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --bx-inst-text: rgb(24 24 27);
+    --bx-inst-muted: rgb(82 82 91);
+    --bx-inst-line: rgb(0 0 0 / 0.08);
+    --bx-inst-subtle: rgb(0 0 0 / 0.05);
+    --bx-inst-accent: rgb(63 63 70); /* Studio's primary button */
+    --bx-inst-on-accent: #fff;
+    --bx-inst-link: rgb(37 99 235);
+    --bx-inst-ok: rgb(4 120 87);
+    --bx-inst-ok-bg: rgb(16 185 129 / 0.12);
+    --bx-inst-warn: rgb(161 98 7);
+    --bx-inst-warn-bg: rgb(245 158 11 / 0.14);
+    --bx-inst-bad: rgb(185 28 28);
+    --bx-inst-bad-bg: rgb(239 68 68 / 0.1);
+    --bx-inst-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.dark {
+    color-scheme: dark;
+    --bx-inst-text: rgb(244 244 245);
+    --bx-inst-muted: rgb(161 161 170);
+    --bx-inst-line: rgb(255 255 255 / 0.08);
+    --bx-inst-subtle: rgb(255 255 255 / 0.06);
+    --bx-inst-accent: rgb(228 228 231);
+    --bx-inst-on-accent: rgb(24 24 27);
+    --bx-inst-link: rgb(96 165 250);
+    --bx-inst-ok: rgb(52 211 153);
+    --bx-inst-ok-bg: rgb(16 185 129 / 0.16);
+    --bx-inst-warn: rgb(251 191 36);
+    --bx-inst-warn-bg: rgb(245 158 11 / 0.16);
+    --bx-inst-bad: rgb(248 113 113);
+    --bx-inst-bad-bg: rgb(239 68 68 / 0.16);
 }
 
-html, body {
+body.bx-install-body {
     margin: 0;
-    min-height: 100%;
-}
-
-body.bx-install-body,
-.bx-install-body {
-    font-family: var(--bx-inst-font) !important;
     color: var(--bx-inst-text);
-    background: var(--bx-inst-bg) !important;
-    -webkit-font-smoothing: antialiased;
 }
 
+/* Shell: the header bar and one block, as a Studio page with a single block */
 .bx-install-shell {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-}
-
-.bx-install-topbar {
-    background: var(--bx-inst-surface);
-    border-bottom: 1px solid var(--bx-inst-border);
-    position: sticky;
-    top: 0;
-    z-index: 20;
-}
-
-.bx-install-topbar-inner {
-    position: relative;
-    max-width: 720px;
+    gap: 12px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 10px 20px;
+    padding: 12px 16px 0;
+    box-sizing: border-box;
+}
+.bx-install-topbar {
+    position: relative;
+    z-index: 20;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    min-height: 52px;
+    gap: 12px;
+    min-height: 68px;
+    padding: 16px;
     box-sizing: border-box;
+    backdrop-filter: blur(24px);
 }
 .bx-install-header-logo {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
-    z-index: 1;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--bx-radius-lg, 8px);
 }
-
 .bx-install-brand-title {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 14px;
+    flex: none;
+    font-size: 1rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--bx-inst-text);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: calc(100% - 160px);
-    text-align: center;
-    pointer-events: none;
 }
-
 .bx-install-help {
-    position: relative;
-    z-index: 1;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--bx-inst-accent);
-    text-decoration: none;
+    flex: none;
+    margin-left: auto;
 }
-.bx-install-help:hover {
-    text-decoration: underline;
-}
-
 .bx-install-main {
     flex: 1 0 auto;
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 32px 20px 48px;
-    box-sizing: border-box;
 }
-
 .bx-install-card {
-    background: var(--bx-inst-surface);
-    border: 1px solid var(--bx-inst-border);
-    border-radius: var(--bx-inst-radius);
-    box-shadow: var(--bx-inst-shadow);
-    padding: 28px 28px 32px;
+    padding: 24px;
 }
-
-.bx-install-footer {
-    flex: 0 0 auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    font-size: 12px;
+.bx-install-card h1,
+.bx-install-brand-title {
+    color: var(--bx-inst-text);
+}
+.bx-install-card h1 {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+}
+.bx-install-step-lead {
+    margin: 0 0 24px;
     color: var(--bx-inst-muted);
 }
-.bx-install-footer-lang {
-    justify-self: start;
-    position: relative;
+.bx-install-card p,
+.bx-install-card li {
+    line-height: 1.5;
 }
-.bx-install-footer-links {
-    justify-self: center;
+.bx-install-card a:not(.bx-btn) {
+    color: var(--bx-inst-link);
+}
+
+/* Step bar: numbered dots, the current step named; on a phone only the current one */
+.bx-install-stepper-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.bx-install-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.bx-install-stepper li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--bx-inst-muted);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+}
+.bx-install-stepper li + li::before {
+    content: "";
+    width: 12px;
+    height: 1px;
+    margin-right: 2px;
+    background: var(--bx-inst-line);
+}
+.bx-install-stepper-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bx-inst-subtle);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.bx-install-stepper li.is-done .bx-install-stepper-dot {
+    background: var(--bx-inst-ok-bg);
+    color: var(--bx-inst-ok);
+}
+.bx-install-stepper li.is-current {
+    color: var(--bx-inst-text);
+    font-weight: 600;
+}
+.bx-install-stepper li.is-current .bx-install-stepper-dot {
+    background: var(--bx-inst-accent);
+    color: var(--bx-inst-on-accent);
+}
+.bx-install-stepper li:not(.is-current) .bx-install-stepper-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+@media (max-width: 639px) {
+    .bx-install-brand-title {
+        display: none;
+    }
+    .bx-install-stepper li:not(.is-current) {
+        display: none;
+    }
+    .bx-install-stepper li.is-current::before {
+        display: none;
+    }
+}
+
+/* Footer: language and links, quiet */
+.bx-install-footer {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 16px 4px 20px;
+    font-size: 0.8125rem;
+    color: var(--bx-inst-muted);
 }
-.bx-install-footer-spacer {
-    justify-self: end;
+.bx-install-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
 }
 .bx-install-footer-links a {
-    color: var(--bx-inst-muted);
+    color: inherit;
     text-decoration: none;
 }
 .bx-install-footer-links a:hover {
     color: var(--bx-inst-text);
     text-decoration: underline;
 }
-.bx-install-footer-sep {
-    display: inline-block;
-    width: 1px;
-    height: 12px;
-    margin: 0 10px;
-    background: var(--bx-inst-border);
-    vertical-align: middle;
-}
 
+/* Language switcher: a menu like Studio's popups */
 .bx-install-lang {
     position: relative;
 }
@@ -163,293 +214,109 @@ body.bx-install-body,
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 2px;
+    min-height: 36px;
+    padding: 0 8px;
+    border-radius: var(--bx-radius-lg, 8px);
     cursor: pointer;
-    color: var(--bx-inst-muted);
-    font-size: 13px;
-    font-weight: 500;
     user-select: none;
 }
 .bx-install-lang-trigger::-webkit-details-marker {
     display: none;
 }
-.bx-install-lang-trigger::marker {
-    content: "";
-}
-.bx-install-lang[open] .bx-install-lang-trigger,
-.bx-install-lang-trigger:hover {
-    color: var(--bx-inst-accent);
-    text-decoration: underline;
-}
-.bx-install-lang-current {
-    line-height: 1.2;
+.bx-install-lang-trigger:hover,
+.bx-install-lang[open] .bx-install-lang-trigger {
+    background: var(--bx-inst-subtle);
+    color: var(--bx-inst-text);
 }
 .bx-install-lang-icon {
     display: block;
-    flex: 0 0 auto;
+    flex: none;
 }
 .bx-install-lang-menu {
     position: absolute;
     left: 0;
     bottom: calc(100% + 8px);
-    min-width: 220px;
+    min-width: 200px;
     padding: 6px;
-    background: #fff;
-    border: 1px solid var(--bx-inst-border);
-    border-radius: 12px;
-    box-shadow: var(--bx-inst-shadow);
     z-index: 30;
 }
 .bx-install-lang-item {
-    display: flex !important;
+    display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    color: var(--bx-inst-text) !important;
-    font-size: 13px;
-    text-decoration: none !important;
+    min-height: 40px;
+    padding: 0 10px;
+    border-radius: 12px;
+    color: var(--bx-inst-text);
+    text-decoration: none;
 }
 .bx-install-lang-item:hover {
-    background: #f3f4f6;
+    background: var(--bx-inst-subtle);
 }
 .bx-install-lang-item.is-selected {
-    background: #eff6ff;
-    color: var(--bx-inst-accent) !important;
+    font-weight: 600;
 }
 .bx-install-lang-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
-    background: #f3f4f6;
-    color: var(--bx-inst-text);
-    flex: 0 0 auto;
-}
-.bx-install-lang-item.is-selected .bx-install-lang-badge {
-    background: #dbeafe;
-    color: var(--bx-inst-accent);
+    display: none;
 }
 
-/* Kill the old teal header if any leftover classes still render */
-.bx-header.bx-def-color-bg-header,
-#bx-toolbar {
-    background: transparent !important;
-    box-shadow: none !important;
+/* Buttons in a row; Studio draws the buttons themselves */
+.bx-install-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+}
+.bx-install-actions-end,
+.bx-install-form-nav {
+    justify-content: flex-end;
+}
+.bx-install-form-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+}
+[hidden] {
+    display: none !important;
 }
 
-h1.bx-def-font-h1,
-.bx-install-card h1 {
-    font-family: var(--bx-inst-font) !important;
-    font-size: 22px !important;
-    font-weight: 650 !important;
-    letter-spacing: -0.02em;
-    margin: 0 0 20px !important;
-    color: var(--bx-inst-text) !important;
+/* Welcome */
+.bx-install-steps {
+    margin: 0;
+    padding-left: 20px;
+}
+.bx-install-steps li + li {
+    margin-top: 4px;
 }
 
-.bx-install-card p,
-.bx-install-card li,
-.bx-install-card .bx-def-font-large {
-    font-family: var(--bx-inst-font) !important;
-    color: var(--bx-inst-text);
-    line-height: 1.55;
-}
-
-/* Buttons */
-.bx-btn,
-a.bx-btn,
-button.bx-btn,
-.bx-install-site-config .bx-form-input-wrapper-submit button,
-.bx-install-site-config .bx-form-input-wrapper-submit input[type="submit"] {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    float: none !important;
-    margin: 0 8px 8px 0 !important;
-    padding: 0 20px !important;
-    height: 48px !important;
-    min-height: 48px !important;
-    max-height: 48px !important;
-    box-sizing: border-box !important;
-    border-radius: 12px !important;
-    border: 1px solid var(--bx-inst-border) !important;
-    background: var(--bx-inst-surface) !important;
-    color: var(--bx-inst-text) !important;
-    font-family: var(--bx-inst-font) !important;
-    font-size: 14px !important;
-    font-weight: 550 !important;
-    line-height: 1.2 !important;
-    text-decoration: none !important;
-    box-shadow: none !important;
-    cursor: pointer;
-    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
-}
-
-.bx-btn:hover,
-a.bx-btn:hover,
-button.bx-btn:hover {
-    background: #f9fafb !important;
-    border-color: #d1d5db !important;
-}
-
-.bx-btn-primary,
-a.bx-btn-primary,
-button.bx-btn-primary,
-.bx-btn.bx-btn-primary {
-    background: var(--bx-inst-accent) !important;
-    border-color: var(--bx-inst-accent) !important;
-    color: #fff !important;
-}
-
-.bx-btn-primary:hover,
-a.bx-btn-primary:hover {
-    background: var(--bx-inst-accent-hover) !important;
-    border-color: var(--bx-inst-accent-hover) !important;
-    color: #fff !important;
-}
-
-.bx-btn-disabled,
-a.bx-btn-disabled,
-.bx-btn.bx-btn-disabled {
-    opacity: 0.45 !important;
-    pointer-events: none !important;
-    cursor: not-allowed !important;
-}
-
-.bx-install-permissions-buttons,
-.bx-install-initial,
-.bx-install-initial-langs,
-.bx-install-site-config .bx-form-input-wrapper-submit {
-    text-align: center;
-}
-
-.bx-install-initial > a,
-.bx-install-initial-langs > a,
-.bx-install-permissions-buttons > a,
-.bx-install-site-config .bx-form-input-wrapper-submit > a {
-    display: inline-flex;
-}
-
-/* Initial / welcome */
-.bx-install-initial img.bx-install-img {
-    display: block;
-    margin: 8px auto 24px;
-    width: 64px;
-    height: 64px;
-    max-width: 64px;
-    border-radius: 16px;
-}
-
-.bx-install-initial-langs {
-    margin-bottom: 20px !important;
-}
-.bx-install-initial-langs img {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    border: 1px solid var(--bx-inst-border);
-}
-.bx-install-initial-langs a {
-    margin: 0 4px;
-}
-
+/* Notes and errors */
 .bx-install-initial-waring,
-.bx-install-initial-fail {
-    margin-top: 20px;
+.bx-install-initial-fail,
+.bx-install-note {
+    margin-top: 16px;
     padding: 12px 14px;
-    border-radius: 8px;
+    border-radius: 12px;
     background: var(--bx-inst-warn-bg);
-    border: 1px solid #fde68a;
-    color: #92400e;
-    font-size: 14px;
-    text-align: left;
 }
-
-.bx-install-error-message,
-.bx-install-initial-fail ul {
-    border: 1px solid #fecaca;
-    background: var(--bx-inst-bad-bg);
-    color: #991b1b;
-    border-radius: 8px;
+.bx-install-error-message {
+    margin-bottom: 16px;
     padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--bx-inst-bad-bg);
+    color: var(--bx-inst-bad);
     font-weight: 500;
 }
-
-/* Permissions table → modern list */
-.bx-install-permissions-table-wrap {
-    overflow-x: auto;
-}
-.bx-permissions-table {
-    width: 100% !important;
-    table-layout: auto;
-    border-collapse: separate !important;
-    border-spacing: 0 !important;
-    border: 1px solid var(--bx-inst-border);
-    border-radius: 10px;
-    overflow: hidden;
-    font-size: 13px;
-}
-
-.bx-permissions-table thead td,
-.bx-permissions-table thead th {
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--bx-inst-muted) !important;
-    background: #fafafa;
-    border-bottom: 1px solid var(--bx-inst-border);
-    text-align: left !important;
-    padding: 10px 12px !important;
-}
-
-.bx-permissions-table td {
-    padding: 10px 12px !important;
-    border-bottom: 1px solid var(--bx-inst-border);
-    vertical-align: middle;
-    font-family: var(--bx-inst-font) !important;
-}
-td.bx-permissions-ok,
-td.bx-permissions-wrong {
-    display: table-cell !important;
-    background: transparent !important;
-    border-radius: 0 !important;
-    padding: 10px 12px !important;
-    font-size: inherit !important;
-    font-weight: inherit !important;
-    line-height: inherit !important;
-}
-
-.bx-permissions-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.bx-permissions-table tbody tr.bx-def-color-bg-hl-even,
-.bx-permissions-table tbody tr {
-    background: #fff !important;
-}
-
-.bx-permissions-table td:first-child {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
-    font-size: 12px;
-    color: #374151;
-    overflow-wrap: anywhere;
+.bx-install-error-message code {
+    display: block;
+    margin: 4px 0 8px;
+    white-space: pre-wrap;
     word-break: break-word;
-}
-.bx-permissions-table td:nth-child(2),
-.bx-permissions-table td:nth-child(3) {
-    white-space: nowrap;
-    width: 1%;
+    font-family: var(--bx-inst-mono);
+    font-size: 0.75rem;
 }
 
-.bx-permissions-table td:not(:first-child) {
-    text-align: left !important;
-}
-
+/* Status chips: "Found" beside a field, the audit's results, the permissions */
 .bx-install-chip,
 span.bx-permissions-ok,
 span.bx-permissions-wrong,
@@ -457,186 +324,75 @@ span.bx-permissions-wrong,
 .bx-install-audit b.fail,
 .bx-install-audit b.warn,
 .bx-install-audit b.undef {
-    display: inline-flex !important;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0;
-    padding: 2px 8px !important;
-    border-radius: 999px !important;
-    font-size: 11px !important;
-    font-weight: 500 !important;
-    line-height: 16px !important;
-    font-style: normal !important;
-    white-space: nowrap;
+    min-height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    vertical-align: middle;
 }
-
 span.bx-permissions-ok,
 .bx-install-chip-ok,
 .bx-install-audit b.ok {
-    color: var(--bx-inst-ok) !important;
-    background: var(--bx-inst-ok-bg) !important;
+    background: var(--bx-inst-ok-bg);
+    color: var(--bx-inst-ok);
 }
-
 span.bx-permissions-wrong,
 .bx-install-chip-bad,
 .bx-install-audit b.fail {
-    color: var(--bx-inst-bad) !important;
-    background: var(--bx-inst-bad-bg) !important;
+    background: var(--bx-inst-bad-bg);
+    color: var(--bx-inst-bad);
 }
-
 .bx-install-chip-warn,
 .bx-install-audit b.warn {
-    color: var(--bx-inst-warn) !important;
-    background: var(--bx-inst-warn-bg) !important;
-}
-
-.bx-install-audit b.undef {
-    color: var(--bx-inst-muted) !important;
-    background: #f3f4f6 !important;
-}
-
-.bx-install-permissions-buttons {
-    margin-top: 24px !important;
-}
-
-.bx-install-permissions-buttons .bx-def-margin-bottom {
-    margin-bottom: 16px !important;
-    padding: 12px 14px;
-    border-radius: 8px;
     background: var(--bx-inst-warn-bg);
-    border: 1px solid #fde68a;
-    color: #92400e;
-    font-size: 14px;
-    text-align: left;
+    color: var(--bx-inst-warn);
 }
-
-/* Forms (site config) */
-.bx-install-site-config fieldset.bx-form-section {
-    background: transparent !important;
-    border: none !important;
-    border-radius: 0 !important;
-    margin: 0 0 18px !important;
-    padding: 0 !important;
-}
-
-.bx-install-site-config fieldset.bx-form-section .bx-form-section-content {
-    background: transparent !important;
-}
-
-.bx-install-site-config .bx-form-section-title,
-.bx-install-site-config legend {
-    font-size: 13px !important;
-    font-weight: 650 !important;
-    color: var(--bx-inst-muted) !important;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 10px !important;
-}
-
-.bx-install-site-config input[type="text"],
-.bx-install-site-config input[type="password"],
-.bx-install-site-config input[type="email"],
-.bx-install-site-config select,
-.bx-install-site-config textarea,
-.bx-install-finish textarea,
-.bx-form-input-text,
-.bx-form-input-password,
-.bx-form-input-select,
-.bx-form-input-textarea {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    border: 1px solid var(--bx-inst-border) !important;
-    border-radius: 8px !important;
-    padding: 10px 12px !important;
-    font-family: var(--bx-inst-font) !important;
-    font-size: 14px !important;
-    background: #fff !important;
-    color: var(--bx-inst-text) !important;
-    box-shadow: none !important;
-}
-
-.bx-install-site-config input:focus,
-.bx-install-site-config select:focus,
-.bx-install-site-config textarea:focus,
-.bx-install-finish textarea:focus {
-    outline: none !important;
-    border-color: var(--bx-inst-accent) !important;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
-}
-
-.bx-install-finish textarea {
-    display: block;
-    width: 100% !important;
-    height: 88px;
-    margin-top: 8px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
-    font-size: 12px !important;
-}
-
-.bx-install-finish ol {
-    padding-left: 20px;
-    margin: 0;
-}
-
-.bx-install-finish li {
-    margin-bottom: 16px;
-}
-
-/* Audit report card */
-.bx-install-audit {
-    font-size: 13px;
+.bx-install-audit b.undef {
+    background: var(--bx-inst-subtle);
+    color: var(--bx-inst-muted);
 }
 .bx-install-audit-summary {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
 }
-.bx-install-audit-body {
-    overflow-x: auto;
-}
+
+/* Lists of rows: the audit and the permissions */
 .bx-install-audit-body > h1 {
-    font-family: var(--bx-inst-font) !important;
-    font-size: 13px !important;
-    font-weight: 650 !important;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--bx-inst-muted) !important;
-    margin: 22px 0 10px !important;
+    margin: 24px 0 8px;
+    font-size: 1rem;
+    font-weight: 600;
 }
 .bx-install-audit-body > h1:first-child {
-    margin-top: 0 !important;
+    margin-top: 0;
 }
 .bx-install-audit-body .bx-audit-section-head {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: none;
-    color: var(--bx-inst-text);
     margin: 16px 0 8px;
+    font-size: 0.875rem;
+    color: var(--bx-inst-muted);
 }
 .bx-install-audit-body .bx-audit-section-head b {
-    display: inline;
+    color: var(--bx-inst-text);
     font-weight: 600;
 }
 .bx-install-audit-body ul {
-    list-style: none;
-    margin: 0 0 8px;
+    margin: 0;
     padding: 0;
-    border: 1px solid var(--bx-inst-border);
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fff;
+    list-style: none;
+    border-radius: 16px;
+    background: var(--bx-inst-subtle);
 }
 .bx-install-audit-body li {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--bx-inst-border);
-    line-height: 1.45;
-    color: #374151;
+    padding: 10px 14px;
+    font-size: 0.875rem;
 }
-.bx-install-audit-body li:last-child {
-    border-bottom: none;
+.bx-install-audit-body li + li {
+    box-shadow: inset 0 1px 0 var(--bx-inst-line);
 }
 .bx-install-audit-body li b.ok,
 .bx-install-audit-body li b.fail,
@@ -645,37 +401,276 @@ span.bx-permissions-wrong,
     float: right;
     margin-left: 8px;
 }
-.bx-install-audit-body table {
+.bx-install-permissions-table-wrap {
+    overflow-x: auto;
+    border-radius: 16px;
+    background: var(--bx-inst-subtle);
+}
+table.bx-permissions-table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid var(--bx-inst-border);
-    border-radius: 10px;
-    overflow: hidden;
+    font-size: 0.875rem;
 }
-.bx-install-audit-body td,
-.bx-install-audit-body th {
-    padding: 8px 10px;
-    border-bottom: 1px solid var(--bx-inst-border);
+.bx-permissions-table td,
+.bx-permissions-table th {
+    padding: 10px 14px;
     text-align: left;
+    background: transparent !important;
+}
+.bx-permissions-table thead td {
+    color: var(--bx-inst-muted);
+    font-size: 0.8125rem !important;
+    font-weight: 600;
+    font-family: inherit !important;
+}
+.bx-permissions-table tbody tr {
+    box-shadow: inset 0 1px 0 var(--bx-inst-line);
+}
+.bx-permissions-table td:first-child {
+    font-family: var(--bx-inst-mono);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+}
+.bx-permissions-table td:not(:first-child) {
+    width: 1%;
+    white-space: nowrap;
 }
 
-@media (max-width: 640px) {
-    .bx-install-card {
-        padding: 20px 16px 24px;
-    }
-    .bx-install-main {
-        padding: 20px 12px 36px;
-    }
+/* Site configuration: Studio's form, a step at a time */
+.bx-install-site-config .bx-form-section-wrapper {
+    margin-top: 0;
 }
-
-.bx-install-step-lead {
-    margin: -8px 0 20px !important;
-    color: var(--bx-inst-muted) !important;
-    font-size: 14px !important;
+.bx-install-site-config .bx-form-section-wrapper + .bx-form-section-wrapper:not([hidden]) {
+    margin-top: 24px;
 }
-.bx-install-actions {
+.bx-install-site-config fieldset.bx-form-section > .bx-form-section-content {
+    clear: both;
+}
+.bx-install-site-config fieldset.bx-form-section {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+.bx-install-site-config fieldset.bx-form-section > legend {
+    float: left; /* out of the fieldset's border, above Studio's section box */
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 16px 0;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bx-inst-text);
+}
+.bx-install-section-desc {
+    clear: both;
+    margin: 0;
+    padding: 4px 16px 0;
+    color: var(--bx-inst-muted);
+    font-size: 0.875rem;
+}
+.bx-install-site-config .bx-form-element-wrapper {
+    margin-top: 16px;
+}
+.bx-install-site-config .bx-form-caption {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.bx-install-site-config .bx-form-required {
+    margin-left: 2px;
+    color: var(--bx-inst-bad);
+}
+.bx-install-site-config .bx-form-info {
+    margin-top: 6px;
+    font-size: 0.8125rem;
+    color: var(--bx-inst-muted);
+}
+.bx-install-site-config .bx-form-warn {
+    margin-top: 6px;
+    font-size: 0.8125rem;
+    color: var(--bx-inst-bad);
+}
+.bx-install-site-config [aria-invalid="true"] {
+    box-shadow: 0 0 0 2px var(--bx-inst-bad);
+}
+
+/* Module list, grouped by purpose */
+.bx-install-modules-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+.bx-install-modules-count {
+    margin-left: auto;
+    color: var(--bx-inst-muted);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+}
+.bx-install-site-config fieldset.bx-install-modules-group {
+    margin: 12px 0 0;
+    padding: 12px 14px 6px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--bx-inst-subtle);
+    min-width: 0;
+}
+.bx-install-site-config fieldset.bx-install-modules-group legend {
+    float: left;
+    width: 100%;
+    padding: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+.bx-install-modules-group-desc {
+    clear: both;
+    margin: 2px 0 8px;
+    color: var(--bx-inst-muted);
+    font-size: 0.8125rem;
+}
+.bx-install-modules-group ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.bx-install-module {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-height: 36px;
+    font-size: 0.875rem;
+}
+.bx-install-module input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    accent-color: var(--bx-inst-accent);
+}
+.bx-install-module label {
+    flex: 1 1 auto;
+    line-height: 1.5;
+    cursor: pointer;
+}
+.bx-install-module-unavailable label {
+    color: var(--bx-inst-muted);
+    cursor: default;
+}
+.bx-install-module-note {
+    display: block;
+    font-size: 0.75rem;
+}
+
+/* Batched install: a bar and a row per app */
+.bx-install-progress {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--bx-inst-subtle);
+    overflow: hidden;
+}
+.bx-install-progress-bar {
+    width: 0;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--bx-inst-accent);
+    transition: width 0.3s ease;
+}
+.bx-install-progress-label {
+    margin: 8px 0 16px;
+    color: var(--bx-inst-muted);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+}
+.bx-install-modules-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+}
+.bx-install-modules-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+    color: var(--bx-inst-muted);
+}
+.bx-install-modules-list li[data-state="done"],
+.bx-install-modules-list li[data-state="active"] {
+    color: var(--bx-inst-text);
+}
+.bx-install-module-state {
+    flex: none;
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--bx-inst-line);
+    border-radius: 50%;
+}
+li[data-state="done"] .bx-install-module-state {
+    border-color: var(--bx-inst-ok);
+    background: radial-gradient(circle, var(--bx-inst-ok) 0 3px, transparent 3.5px);
+}
+li[data-state="active"] .bx-install-module-state {
+    border-color: var(--bx-inst-accent);
+    border-right-color: transparent;
+    animation: bx-install-spin 0.8s linear infinite;
+}
+li[data-state="failed"] {
+    color: var(--bx-inst-bad);
+}
+li[data-state="failed"] .bx-install-module-state {
+    border-color: var(--bx-inst-bad);
+    background: var(--bx-inst-bad);
+}
+li[data-state="skipped"] {
+    text-decoration: line-through;
+}
+@keyframes bx-install-spin {
+    to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    li[data-state="active"] .bx-install-module-state {
+        animation: none;
+        border-right-color: var(--bx-inst-accent);
+    }
+    .bx-install-progress-bar {
+        transition: none;
+    }
+}
+
+/* Finish */
+.bx-install-finish ol {
+    margin: 0;
+    padding-left: 20px;
+}
+.bx-install-finish li + li {
+    margin-top: 16px;
+}
+.bx-install-finish textarea {
+    display: block;
+    width: 100%;
+    height: 72px;
+    margin-top: 8px;
+    box-sizing: border-box;
+    font-family: var(--bx-inst-mono);
+    font-size: 0.75rem;
+}
+
+.bx-install-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }

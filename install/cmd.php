@@ -48,7 +48,7 @@ class BxDolInstallCmd
             'admin_username' => 'admin',
             'admin_password' => 'unauna',
             'language' => 'en',
-            'modules' => 'persons', // comma separated module URIs, the web installer preselects all modules instead
+            'modules' => 'persons', // comma separated module URIs, the web installer preselects a starter set instead
             'oauth_key' => '',
             'oauth_secret' => '',
         );
@@ -157,6 +157,9 @@ class BxDolInstallCmd
     public function createSiteConfig()
     {
         $oSiteConfig = new BxDolInstallSiteConfig($this->_aSiteConfig['server_http_host'], $this->_aSiteConfig['server_php_self'], $this->_aSiteConfig['server_doc_root'], false);
+
+        // scripts and CI pass short passwords, the web form asks for BX_INSTALL_PASSWORD_MIN_LENGTH characters
+        $oSiteConfig->setPasswordMinLength(1);
 
         $sFormData = $this->_aSiteConfig;
         unset($sFormData['server_http_host']);
