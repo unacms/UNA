@@ -4,7 +4,7 @@
 	<string name="_bx_cas"><![CDATA[CAS Connect]]></string>
 	<string name="_bx_cas_settings"><![CDATA[CAS Connect]]></string>
 	<string name="_bx_cas_information_block"><![CDATA[
-        <p>This module can be used to login to the site using SAML Identity Provider.</p>
+        <p>This module can be used to log in to the site using SAML Identity Provider.</p>
         <p>
           This plugin uses SimpleSAMLphp library, which need to be installed and configured separately.
           Refer to <a target="_blank" href="https://simplesamlphp.org/docs/stable/">SimpleSAMLphp documentation</a> to setup it as SAML Service Provider.

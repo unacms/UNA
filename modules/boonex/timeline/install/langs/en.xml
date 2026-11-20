@@ -58,7 +58,7 @@
     <string name="_bx_timeline_option_hot_threshold_comment"><![CDATA[Minimum number of comments for content to appear in Hot feed]]></string>
     <string name="_bx_timeline_option_hot_threshold_vote"><![CDATA[Minimum number of votes for content to appear in Hot feed]]></string>
     <string name="_bx_timeline_option_hot_interval"><![CDATA[Interval of time (in hours) to get Hot events (0 - no limit)]]></string>
-    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Adjustment coefficient  related  to content age (0 - no adjustment)]]></string>
+    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Adjustment coefficient related to content age (0 - no adjustment)]]></string>
     <string name="_bx_timeline_option_enable_cache_item"><![CDATA[Enable item cache]]></string>
     <string name="_bx_timeline_option_cache_item_engine"><![CDATA[Item cache engine (other than File option may require custom server setup)]]></string>
     <string name="_bx_timeline_option_cache_item_lifetime"><![CDATA[Item cache lifetime]]></string>
@@ -137,7 +137,7 @@
     <string name="_bx_timeline_form_attach_link_input_sys_event_id"><![CDATA[Event ID]]></string>
     <string name="_bx_timeline_form_attach_link_input_sys_url"><![CDATA[Url]]></string>
     <string name="_bx_timeline_form_attach_link_input_url"><![CDATA[Add Link]]></string>
-    <string name="_bx_timeline_form_attach_link_input_url_err"><![CDATA[Correct Link is essential. Please, fill in this field.]]></string>
+    <string name="_bx_timeline_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string>
     <string name="_bx_timeline_form_attach_link_input_sys_do_submit"><![CDATA[Add]]></string>
     <string name="_bx_timeline_form_attach_link_input_do_submit"><![CDATA[Add]]></string>
     <string name="_bx_timeline_form_attach_link_input_do_cancel"><![CDATA[Close]]></string>
@@ -146,7 +146,7 @@
     <string name="_bx_timeline_form_poll_display_add"><![CDATA[Add Poll]]></string>
     <string name="_bx_timeline_form_poll_input_sys_text"><![CDATA[Question]]></string>
     <string name="_bx_timeline_form_poll_input_text"><![CDATA[Question]]></string>
-    <string name="_bx_timeline_form_poll_input_text_err"><![CDATA[Question is essential. Please, fill in this field]]></string>
+    <string name="_bx_timeline_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string>
     <string name="_bx_timeline_form_poll_input_sys_answers"><![CDATA[Answers]]></string>
     <string name="_bx_timeline_form_poll_input_answers"><![CDATA[Answers]]></string>
     <string name="_bx_timeline_form_poll_input_answers_err"><![CDATA[Poll should have at least 2 non-empty answers.]]></string>

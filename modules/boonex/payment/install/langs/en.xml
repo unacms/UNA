@@ -244,7 +244,7 @@
     <string name="_bx_payment_form_commissions_display_edit"><![CDATA[Edit Commission Display]]></string>
     <string name="_bx_payment_form_commissions_input_caption_sys"><![CDATA[Caption]]></string>
     <string name="_bx_payment_form_commissions_input_caption"><![CDATA[Caption]]></string>
-    <string name="_bx_payment_form_commissions_input_caption_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_commissions_input_caption_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_commissions_input_description_sys"><![CDATA[Description]]></string>
     <string name="_bx_payment_form_commissions_input_description"><![CDATA[Description]]></string>
     <string name="_bx_payment_form_commissions_input_acl_id_sys"><![CDATA[Membership Level]]></string>
@@ -262,10 +262,10 @@
     <string name="_bx_payment_form_invoices_display_edit"><![CDATA[Edit Invoice Display]]></string>
     <string name="_bx_payment_form_invoices_input_amount_sys"><![CDATA[Amount]]></string>
     <string name="_bx_payment_form_invoices_input_amount"><![CDATA[Amount]]></string>
-    <string name="_bx_payment_form_invoices_input_amount_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_invoices_input_amount_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_invoices_input_date_due_sys"><![CDATA[Due date]]></string>
     <string name="_bx_payment_form_invoices_input_date_due"><![CDATA[Due date]]></string>
-    <string name="_bx_payment_form_invoices_input_date_due_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_invoices_input_date_due_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_invoices_input_status_sys"><![CDATA[Status]]></string>
     <string name="_bx_payment_form_invoices_input_status"><![CDATA[Status]]></string>
     <string name="_bx_payment_form_invoices_input_submit_sys"><![CDATA[Submit]]></string>
@@ -278,7 +278,7 @@
     <string name="_bx_payment_form_cs_input_submit"><![CDATA[Submit]]></string>
     <string name="_bx_payment_form_cs_input_cancel"><![CDATA[Cancel]]></string>
 
-    <string name="_bx_payment_form_input_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_input_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_input_email_err_cor_or_emp"><![CDATA[Use correct email address or leave empty.]]></string>
 
     <!-- Predefined Values -->
@@ -390,7 +390,7 @@
     <string name="_bx_payment_err_not_accept_payments"><![CDATA[The vendor does not accept payments.]]></string>
     <string name="_bx_payment_err_nothing_selected"><![CDATA[You need to select at least one item.]]></string>
     <string name="_bx_payment_err_self_purchase"><![CDATA[Buying from your own store is not permitted.]]></string>
-    <string name="_bx_payment_err_required_login"><![CDATA[You need to login.]]></string>
+    <string name="_bx_payment_err_required_login"><![CDATA[You need to log in.]]></string>
     <string name="_bx_payment_err_unknown_vendor"><![CDATA[Unknown vendor.]]></string>
     <string name="_bx_payment_err_wrong_vendor"><![CDATA[Incorrect vendor.]]></string>
     <string name="_bx_payment_err_wrong_data"><![CDATA[Incorrect input data.]]></string>
@@ -483,7 +483,7 @@
     <string name="_bx_payment_cdt_active_cpt"><![CDATA[Active]]></string>
     <string name="_bx_payment_cdt_active_dsc"><![CDATA[Activate(Deactivate) provider]]></string>
     <string name="_bx_payment_cdt_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_cdt_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_cdt_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_cdt_err_not_available"><![CDATA[Checkout with Credits isn't available now.]]></string>
     <string name="_bx_payment_cdt_err_wrong_balance"><![CDATA[Insufficient funds to write off.]]></string>
     <string name="_bx_payment_cdt_err_wrong_transaction"><![CDATA[Transaction verification failed.]]></string>
@@ -556,7 +556,7 @@
     <string name="_bx_payment_pp_api_err_subscription_not_confirmed"><![CDATA[Subscription wasn't confirmed.]]></string>
     <string name="_bx_payment_pp_api_msg_authorized"><![CDATA[The order was successfully authorized.]]></string>
     <string name="_bx_payment_pp_api_msg_captured"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_pp_api_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_pp_api_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_txt_name_paypal_api"><![CDATA[PayPal]]></string>
     <string name="_bx_payment_txt_cart_paypal_api"><![CDATA[PayPal]]></string>
     <string name="_bx_payment_txt_subscribe_paypal_api"><![CDATA[PayPal]]></string>
@@ -591,7 +591,7 @@
     <string name="_bx_payment_cbee_return_data_url_cpt"><![CDATA[Data return URL]]></string>
     <string name="_bx_payment_cbee_notify_url_cpt"><![CDATA[Webhooks URL]]></string>
     <string name="_bx_payment_cbee_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_cbee_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_cbee_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_cbee_txt_checkout_with_single"><![CDATA[Checkout with {0}]]></string>
     <string name="_bx_payment_cbee_txt_checkout_with_recurring"><![CDATA[Checkout with {0}]]></string>
     <string name="_bx_payment_cbee_menu_item_title_manager"><![CDATA[Self-serve Portal]]></string>
@@ -630,7 +630,7 @@
     <string name="_bx_payment_strp_expiration_email_cpt"><![CDATA[Expiration Email]]></string>
     <string name="_bx_payment_strp_msg_authorized"><![CDATA[The order was successfully authorized.]]></string>
     <string name="_bx_payment_strp_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_strp_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_strp_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_strp_msg_details_changed"><![CDATA[Subscription details were changed.]]></string>
     <string name="_bx_payment_strp_err_details_changed"><![CDATA[Cannot change subscription details. Recheck provided data and try again.]]></string>
     <string name="_bx_payment_strp_msg_billing_changed"><![CDATA[Billing information was changed.]]></string>
@@ -717,7 +717,7 @@
     <string name="_bx_payment_aina_notify_url_cpt"><![CDATA[URL for App Store Server Notifications]]></string>
     <string name="_bx_payment_aina_menu_item_title_cancel"><![CDATA[Cancel]]></string>
     <string name="_bx_payment_aina_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_aina_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_aina_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_txt_name_apple_in_app"><![CDATA[Apple In-App]]></string>
     <string name="_bx_payment_txt_cart_apple_in_app"><![CDATA[Apple In-App]]></string>
     <string name="_bx_payment_queue_pending"><![CDATA[Pending payments]]></string>

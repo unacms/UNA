@@ -27,7 +27,7 @@
     <string name="_bx_photos_form_entry_input_do_publish"><![CDATA[Publish]]></string>
     <string name="_bx_photos_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_photos_form_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_photos_form_entry_input_title_err"><![CDATA[Title is essential. Please, fill in this field]]></string>
+    <string name="_bx_photos_form_entry_input_title_err"><![CDATA[Title is required. Please fill in this field]]></string>
     <string name="_bx_photos_form_entry_input_sys_cat"><![CDATA[Category]]></string>
     <string name="_bx_photos_form_entry_input_cat"><![CDATA[Category]]></string>
     <string name="_bx_photos_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
@@ -35,15 +35,15 @@
     <string name="_bx_photos_form_entry_input_text"><![CDATA[Text]]></string>
     <string name="_bx_photos_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_photos_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this photo]]></string>
-    <string name="_bx_photos_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_photos_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_photos_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the photo]]></string>
     <string name="_bx_photos_form_entry_input_sys_pictures"><![CDATA[Photos]]></string>
     <string name="_bx_photos_form_entry_input_pictures"><![CDATA[Photos]]></string>
-    <string name="_bx_photos_form_entry_input_pictures_err"><![CDATA[Photo is essential. Please, upload some photo(s).]]></string>
+    <string name="_bx_photos_form_entry_input_pictures_err"><![CDATA[Photo is required. Please upload some photo(s).]]></string>
     <string name="_bx_photos_form_entry_input_pictures_upload"><![CDATA[Upload]]></string>
     <string name="_bx_photos_form_entry_input_sys_picture"><![CDATA[Photo]]></string>
     <string name="_bx_photos_form_entry_input_picture"><![CDATA[Photo]]></string>
-    <string name="_bx_photos_form_entry_input_picture_err"><![CDATA[Photo is essential. Please, upload a photo.]]></string>
+    <string name="_bx_photos_form_entry_input_picture_err"><![CDATA[Photo is required. Please upload a photo.]]></string>
     <string name="_bx_photos_form_entry_input_sys_allow_view_to"><![CDATA[Visibility]]></string>
     <string name="_bx_photos_form_entry_input_allow_view_to"><![CDATA[Visibility]]></string>
     <string name="_bx_photos_form_entry_input_allow_view_favorite_list"><![CDATA[Visibility]]></string>

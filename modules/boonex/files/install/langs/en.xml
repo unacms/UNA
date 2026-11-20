@@ -27,7 +27,7 @@
     <string name="_bx_files_form_entry_input_do_publish"><![CDATA[Publish]]></string>
     <string name="_bx_files_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_files_form_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_files_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_files_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
     <string name="_bx_files_form_entry_input_sys_cat"><![CDATA[Category]]></string>
     <string name="_bx_files_form_entry_input_cat"><![CDATA[Category]]></string>
     <string name="_bx_files_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
@@ -37,14 +37,14 @@
     <string name="_bx_files_form_entry_input_data"><![CDATA[File data]]></string>
     <string name="_bx_files_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_files_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this file]]></string>
-    <string name="_bx_files_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_files_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_files_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the file]]></string>
     <string name="_bx_files_form_entry_input_sys_attachment"><![CDATA[File]]></string>
     <string name="_bx_files_form_entry_input_attachment"><![CDATA[File]]></string>
-    <string name="_bx_files_form_entry_input_attachment_err"><![CDATA[File is essential. Please, upload a file.]]></string>
+    <string name="_bx_files_form_entry_input_attachment_err"><![CDATA[File is required. Please upload a file.]]></string>
     <string name="_bx_files_form_entry_input_sys_attachments"><![CDATA[Files]]></string>
     <string name="_bx_files_form_entry_input_attachments"><![CDATA[Files]]></string>
-    <string name="_bx_files_form_entry_input_attachments_err"><![CDATA[File is essential. Please, upload some file(s).]]></string>    
+    <string name="_bx_files_form_entry_input_attachments_err"><![CDATA[File is required. Please upload some file(s).]]></string>    
     <string name="_bx_files_form_entry_input_sys_allow_view_to"><![CDATA[Visibility]]></string>
     <string name="_bx_files_form_entry_input_allow_view_to"><![CDATA[Visibility]]></string>
     <string name="_bx_files_form_entry_input_allow_view_favorite_list"><![CDATA[Visibility]]></string>

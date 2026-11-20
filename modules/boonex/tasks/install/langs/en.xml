@@ -54,7 +54,7 @@
     <string name="_bx_tasks_form_entry_input_sys_controls_edit_popup"><![CDATA[Controls (Edit form in popup)]]></string>
     <string name="_bx_tasks_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_tasks_form_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_tasks_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_tasks_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
     <string name="_bx_tasks_form_entry_input_sys_stickers"><![CDATA[Labels]]></string>
     <string name="_bx_tasks_form_entry_input_stickers"><![CDATA[Labels]]></string>
     <string name="_bx_tasks_form_entry_input_sys_type"><![CDATA[Type]]></string>
@@ -74,7 +74,7 @@
     <string name="_bx_tasks_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
     <string name="_bx_tasks_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_tasks_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this task]]></string>
-    <string name="_bx_tasks_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_tasks_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_tasks_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the task]]></string>
     <string name="_bx_tasks_form_entry_input_sys_covers"><![CDATA[Header Image]]></string>
     <string name="_bx_tasks_form_entry_input_covers"><![CDATA[Header Image]]></string>
@@ -116,7 +116,7 @@
     <string name="_bx_tasks_form_list_entry_input_sys_do_submit"><![CDATA[Submit]]></string>
     <string name="_bx_tasks_form_list_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_tasks_form_list_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_tasks_form_list_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_tasks_form_list_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
 
     <string name="_bx_tasks_form_context"><![CDATA[Context]]></string>
     <string name="_bx_tasks_form_display_context_edit"><![CDATA[Edit Context]]></string>
@@ -138,7 +138,7 @@
     <string name="_bx_tasks_form_time_input_sys_sys"><![CDATA[System]]></string>
     <string name="_bx_tasks_form_time_input_sys_object_id"><![CDATA[Object ID]]></string>
     <string name="_bx_tasks_form_time_input_object_id"><![CDATA[Task]]></string>
-    <string name="_bx_tasks_form_time_input_object_id_err"><![CDATA[This field in essential. Please, fill it in.]]></string>
+    <string name="_bx_tasks_form_time_input_object_id_err"><![CDATA[This field in essential. Please fill it in.]]></string>
     <string name="_bx_tasks_form_time_input_sys_action"><![CDATA[Action]]></string>
     <string name="_bx_tasks_form_time_input_sys_submit"><![CDATA[Submit]]></string>
     <string name="_bx_tasks_form_time_input_submit"><![CDATA[Submit]]></string>
@@ -182,7 +182,7 @@
     <string name="_bx_tasks_form_pv_input_color"><![CDATA[Color]]></string>
     <string name="_bx_tasks_form_pv_input_submit"><![CDATA[Submit]]></string>
     <string name="_bx_tasks_form_pv_input_cancel"><![CDATA[Cancel]]></string>
-    <string name="_bx_tasks_form_pv_input_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_tasks_form_pv_input_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_tasks_popup_pv_title_add"><![CDATA[Add Value]]></string>
     <string name="_bx_tasks_popup_pv_title_edit"><![CDATA[Edit Value]]></string>
 
@@ -191,14 +191,14 @@
     <string name="_bx_tasks_form_import_input_destination"><![CDATA[Destination]]></string>
     <string name="_bx_tasks_form_import_input_params"><![CDATA[Params]]></string>
     <string name="_bx_tasks_form_import_input_submit"><![CDATA[Import]]></string>
-    <string name="_bx_tasks_form_import_input_err"><![CDATA[This field in essential. Please, fill it in.]]></string>
+    <string name="_bx_tasks_form_import_input_err"><![CDATA[This field in essential. Please fill it in.]]></string>
 
     <string name="_bx_tasks_category_form_entry"><![CDATA[Categories Form]]></string>
     <string name="_bx_tasks_category_display_add"><![CDATA[Add category]]></string>
     <string name="_bx_tasks_category_display_edit"><![CDATA[Edit category]]></string>
     <string name="_bx_tasks_category_form_entry_input_sys_value"><![CDATA[Value]]></string>
     <string name="_bx_tasks_category_form_entry_input_value"><![CDATA[Value]]></string>>
-    <string name="_bx_tasks_category_form_entry_input_value_err"><![CDATA[Value is essential. Please, fill in this field]]></string>
+    <string name="_bx_tasks_category_form_entry_input_value_err"><![CDATA[Value is required. Please fill in this field]]></string>
     <string name="_bx_tasks_lmi_cpt_categories"><![CDATA[Categories]]></string>
 
     <string name="_bx_tasks_form_f_input_author"><![CDATA[Author]]></string>

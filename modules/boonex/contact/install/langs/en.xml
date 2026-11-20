@@ -19,7 +19,7 @@
 	<string name="_bx_contact_form_contact_input_body_err"><![CDATA[You need to type message's body here.]]></string>
 	<string name="_bx_contact_form_contact_input_sys_captcha"><![CDATA[Captcha]]></string>
 	<string name="_bx_contact_form_contact_input_captcha"><![CDATA[Security Image]]></string>
-	<string name="_bx_contact_form_contact_input_captcha_err"><![CDATA[Security image input failed. Please, try again.]]></string>
+	<string name="_bx_contact_form_contact_input_captcha_err"><![CDATA[Security image input failed. Please try again.]]></string>
 	<string name="_bx_contact_form_contact_input_sys_do_submit"><![CDATA[Send]]></string>
 	<string name="_bx_contact_form_contact_input_do_submit"><![CDATA[Send]]></string>
 

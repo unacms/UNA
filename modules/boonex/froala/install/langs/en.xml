@@ -6,5 +6,5 @@
     <string name="_bx_froala_setting"><![CDATA[Froala Setting]]></string>
 
     <string name="_bx_froala_information"><![CDATA[Information]]></string>
-    <string name="_bx_froala_information_block"><![CDATA[The Froala editor isn't supported anymore. UNA default editor is free and has all Froala features and even more. <b>Froala module has to be remain installed to preserve files uploaded directly into  the editor</b> if you used Froala before.]]></string>
+    <string name="_bx_froala_information_block"><![CDATA[The Froala editor isn't supported anymore. UNA default editor is free and has all Froala features and even more. <b>Froala module has to be remain installed to preserve files uploaded directly into the editor</b> if you used Froala before.]]></string>
 </resources>

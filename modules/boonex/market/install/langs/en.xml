@@ -31,11 +31,11 @@
     <string name="_bx_market_form_entry_input_do_publish"><![CDATA[Publish]]></string>
     <string name="_bx_market_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_market_form_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_market_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_market_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
     <string name="_bx_market_form_entry_input_sys_name"><![CDATA[Identifier]]></string>
     <string name="_bx_market_form_entry_input_name"><![CDATA[Identifier]]></string>
     <string name="_bx_market_form_entry_input_name_inf"><![CDATA[Unique name for payment identification.]]></string>
-    <string name="_bx_market_form_entry_input_name_err"><![CDATA[Identifier should be unique and is needed for internal usage. Please, fill in this field]]></string>
+    <string name="_bx_market_form_entry_input_name_err"><![CDATA[Identifier should be unique and is needed for internal usage. Please fill in this field]]></string>
     <string name="_bx_market_form_entry_input_sys_cat"><![CDATA[Category]]></string>
     <string name="_bx_market_form_entry_input_cat"><![CDATA[Category]]></string>
     <string name="_bx_market_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
@@ -76,7 +76,7 @@
     <string name="_bx_market_form_entry_input_notes_purchased_inf"><![CDATA[Will be attached to email message which is sent to buyer after purchase.]]></string>
     <string name="_bx_market_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_market_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this product]]></string>
-    <string name="_bx_market_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_market_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_market_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the product]]></string>
     <string name="_bx_market_form_entry_input_sys_cover_raw"><![CDATA[Header Image RAW]]></string>
     <string name="_bx_market_form_entry_input_cover_raw"><![CDATA[Header Image RAW]]></string>
@@ -124,10 +124,10 @@
     <string name="_bx_market_form_license_display_edit"><![CDATA[Edit License]]></string>
     <string name="_bx_market_form_license_input_sys_order"><![CDATA[Order]]></string>
     <string name="_bx_market_form_license_input_order"><![CDATA[Order]]></string>
-    <string name="_bx_market_form_license_input_order_err"><![CDATA[Order is essential. Please, fill in this field.]]></string>
+    <string name="_bx_market_form_license_input_order_err"><![CDATA[Order is required. Please fill in this field.]]></string>
     <string name="_bx_market_form_license_input_sys_license"><![CDATA[License]]></string>
     <string name="_bx_market_form_license_input_license"><![CDATA[License]]></string>
-    <string name="_bx_market_form_license_input_license_err"><![CDATA[License should be unique and is needed for internal usage. Please, fill in this field.]]></string>
+    <string name="_bx_market_form_license_input_license_err"><![CDATA[License should be unique and is needed for internal usage. Please fill in this field.]]></string>
     <string name="_bx_market_form_license_input_sys_domain"><![CDATA[Domain]]></string>
     <string name="_bx_market_form_license_input_domain"><![CDATA[Domain]]></string>
     <string name="_bx_market_form_license_input_sys_added"><![CDATA[Added]]></string>

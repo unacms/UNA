@@ -41,7 +41,7 @@
     <string name="_bx_courses_form_profile_input_initial_members"><![CDATA[Invite Students]]></string>
     <string name="_bx_courses_form_profile_input_sys_name"><![CDATA[Name]]></string>
     <string name="_bx_courses_form_profile_input_name"><![CDATA[Name]]></string>
-    <string name="_bx_courses_form_profile_input_name_err"><![CDATA[This information is essential. Please, fill in this field.]]></string>
+    <string name="_bx_courses_form_profile_input_name_err"><![CDATA[This information is required. Please fill in this field.]]></string>
     <string name="_bx_courses_form_profile_input_sys_desc"><![CDATA[Description]]></string>
     <string name="_bx_courses_form_profile_input_desc"><![CDATA[Description]]></string>
     <string name="_bx_courses_form_profile_input_sys_cat"><![CDATA[Category]]></string>
@@ -54,7 +54,7 @@
     <string name="_bx_courses_form_profile_input_cover"><![CDATA[Upload New Cover Picture]]></string>
     <string name="_bx_courses_form_profile_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_courses_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this course]]></string>
-    <string name="_bx_courses_form_profile_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+    <string name="_bx_courses_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
     <string name="_bx_courses_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete course.]]></string>
 
     <string name="_bx_courses_form_price"><![CDATA[Price]]></string>
@@ -94,7 +94,7 @@
     <string name="_bx_courses_form_content_node_display_edit"><![CDATA[Edit Node]]></string>
     <string name="_bx_courses_form_content_node_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_courses_form_content_node_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_courses_form_content_node_input_title_err"><![CDATA[Title is essential. Please, fill in this field.]]></string>
+    <string name="_bx_courses_form_content_node_input_title_err"><![CDATA[Title is required. Please fill in this field.]]></string>
     <string name="_bx_courses_form_content_node_input_sys_text"><![CDATA[Description]]></string>
     <string name="_bx_courses_form_content_node_input_text"><![CDATA[Description]]></string>
     <string name="_bx_courses_form_content_node_input_sys_passing"><![CDATA[Passing]]></string>
@@ -161,7 +161,7 @@
     <string name="_bx_courses_page_title_manage"><![CDATA[Manage Courses]]></string>
     <string name="_bx_courses_page_title_sys_top"><![CDATA[Top Courses]]></string>
     <string name="_bx_courses_page_title_top"><![CDATA[Top Courses]]></string>
-    <string name="_bx_courses_page_title_sys_joined"><![CDATA[Attended  Courses]]></string>
+    <string name="_bx_courses_page_title_sys_joined"><![CDATA[Attended Courses]]></string>
     <string name="_bx_courses_page_title_joined"><![CDATA[Attended Courses]]></string>
     <string name="_bx_courses_page_title_sys_invite_to_course"><![CDATA[Invite Students to the Course]]></string>
     <string name="_bx_courses_page_title_invite_to_course"><![CDATA[Invite Students to the Course]]></string>
@@ -462,8 +462,8 @@
     <string name="_bx_courses_txt_invite_popup_title"><![CDATA[Invitation to a course]]></string>
     <string name="_bx_courses_txt_invite_popup_button_accept"><![CDATA[Accept]]></string>
     <string name="_bx_courses_txt_invite_popup_button_decline"><![CDATA[Decline]]></string>
-    <string name="_bx_courses_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You can not join this course. The invitation is expired or deleted.]]></string>
-    <string name="_bx_courses_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You can not join this course. This invitation cannot be used by you.]]></string>
+    <string name="_bx_courses_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this course. The invitation is expired or deleted.]]></string>
+    <string name="_bx_courses_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this course. This invitation cannot be used by you.]]></string>
     <string name="_bx_courses_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_courses_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_courses_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    

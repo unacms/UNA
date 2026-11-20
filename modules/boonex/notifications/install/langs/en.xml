@@ -19,8 +19,8 @@
     <string name="_bx_ntfs_form_etemplate_input_subject"><![CDATA[Subject]]></string>
     <string name="_bx_ntfs_form_etemplate_input_sys_body"><![CDATA[Body]]></string>
     <string name="_bx_ntfs_form_etemplate_input_body"><![CDATA[Body]]></string>
-    <string name="_bx_ntfs_form_etemplate_input_err_select"><![CDATA[This field is essential. Please select a value.]]></string>
-    <string name="_bx_ntfs_form_etemplate_input_err_enter"><![CDATA[This field is essential. Please fill it in.]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_err_select"><![CDATA[This field is required. Please select a value.]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_err_enter"><![CDATA[This field is required. Please fill it in.]]></string>
 
     <string name="_bx_ntfs_page_title_system_view"><![CDATA[Notifications]]></string>
     <string name="_bx_ntfs_page_title_view"><![CDATA[Notifications]]></string>

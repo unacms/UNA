@@ -65,7 +65,7 @@
     <string name="_bx_persons_form_profile_input_badge_link_select"><![CDATA[Badge Link]]></string>
     <string name="_bx_persons_form_profile_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_persons_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this profile]]></string>
-    <string name="_bx_persons_form_profile_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+    <string name="_bx_persons_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
     <string name="_bx_persons_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete your profile.]]></string>
     <string name="_bx_persons_form_profile_input_sys_birthday"><![CDATA[Birthday]]></string>
     <string name="_bx_persons_form_profile_input_birthday_err"><![CDATA[Age between 18 and 99]]></string>
@@ -96,7 +96,7 @@
     <string name="_bx_persons_skills_form_profile_display_view"><![CDATA[View Skill]]></string>
     <string name="_bx_persons_skills_form_profile_input_sys_skill_name"><![CDATA[Name]]></string>
     <string name="_bx_persons_skills_form_profile_input_skill_name"><![CDATA[Name]]></string>
-    <string name="_bx_persons_skills_form_profile_input_skill_name_err"><![CDATA[This information is essential. Please, fill in this field.]]></string>
+    <string name="_bx_persons_skills_form_profile_input_skill_name_err"><![CDATA[This information is required. Please fill in this field.]]></string>
 
     <string name="_bx_persons_acl_action_create_profile"><![CDATA[Create Person's Profile]]></string>
     <string name="_bx_persons_acl_action_delete_profile"><![CDATA[Delete Person's Profile]]></string>

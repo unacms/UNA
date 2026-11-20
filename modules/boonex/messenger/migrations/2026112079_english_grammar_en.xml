@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_messenger_save_part_failed"><![CDATA[Participant list cannot be empty!]]></string_upd>
+    <string_upd name="_bx_messenger_can_not_delete"><![CDATA[You cannot delete this lot!]]></string_upd>
+    <string_upd name="_bx_messenger_cant_leave"><![CDATA[You cannot leave your own talk!]]></string_upd>
+    <string_upd name="_bx_messenger_post_file_can_not_be_delete"><![CDATA[You cannot remove the file!]]></string_upd>
+    <string_upd name="_bx_messenger_jitsi_err_can_join_conference"><![CDATA[Sorry, you cannot participate in video conference]]></string_upd>
+    <string_upd name="_bx_messenger_jitsi_err_can_not_be_created"><![CDATA[Video Conference cannot be create.]]></string_upd>
+    <string_upd name="_bx_messenger_jisti_connection_error"><![CDATA[Cannot connect to video conference server. Please check your internet connection or try again later.]]></string_upd>
+    <string_upd name="_bx_messenger_lot_can_change_settings"><![CDATA[You cannot change settings of the talk]]></string_upd>
+    <string_upd name="_bx_messenger_check_toxic"><![CDATA[Block messages with toxic content. This option cannot work without Antispam module.]]></string_upd>
+    <string_upd name="_bx_messenger_toxic_message"><![CDATA[This message cannot be PUBLISHED because doesn't meet our community standards. Please use kinder, gentler words if you want to try again.]]></string_upd>
+    <string_upd name="_bx_messenger_files_can_not_be_uploaded"><![CDATA[Files cannot be uploaded to the conversation!]]></string_upd>
+    <string_upd name="_bx_messenger_not_allowed_to_read"><![CDATA[You cannot read this message, because you are not a participant of the talk!]]></string_upd>
+</resources>

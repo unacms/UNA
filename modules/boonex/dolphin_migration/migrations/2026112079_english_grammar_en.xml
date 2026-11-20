@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_dolphin_migration_started_migration_profile_field_can_not_be_transferred"><![CDATA[Custom Fields cannot be transferred]]></string_upd>
+    <string_upd name="_bx_dolphin_migration_started_migration_photos_album_error"><![CDATA[Database Error. Albums cannot be created!]]></string_upd>
+    <string_upd name="_bx_dolphin_migration_friends_exports_error"><![CDATA[Database error: Friends cannot be transferred]]></string_upd>
+</resources>

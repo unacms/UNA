@@ -22,10 +22,10 @@
     <string name="_bx_stripe_connect_form_commissions_display_edit"><![CDATA[Edit Commission Display]]></string>
     <string name="_bx_stripe_connect_form_commissions_input_sys_name"><![CDATA[Name]]></string>
     <string name="_bx_stripe_connect_form_commissions_input_name"><![CDATA[Name]]></string>
-    <string name="_bx_stripe_connect_form_commissions_input_name_err"><![CDATA[This field is essential. Please, fill it in with unique value.]]></string>
+    <string name="_bx_stripe_connect_form_commissions_input_name_err"><![CDATA[This field is required. Please fill it in with unique value.]]></string>
     <string name="_bx_stripe_connect_form_commissions_input_sys_acl_id"><![CDATA[Membership Level]]></string>
     <string name="_bx_stripe_connect_form_commissions_input_acl_id"><![CDATA[Membership Level]]></string>
-    <string name="_bx_stripe_connect_form_commissions_input_acl_id_err"><![CDATA[This field is essential. Please, select a value.]]></string>
+    <string name="_bx_stripe_connect_form_commissions_input_acl_id_err"><![CDATA[This field is required. Please select a value.]]></string>
     <string name="_bx_stripe_connect_form_commissions_input_sys_fee_single"><![CDATA[One-time fee]]></string>
     <string name="_bx_stripe_connect_form_commissions_input_fee_single"><![CDATA[One-time fee (fixed amount, percent)]]></string>
     <string name="_bx_stripe_connect_form_commissions_input_sys_fee_recurring"><![CDATA[Subscription fee]]></string>

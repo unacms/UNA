@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_courses_form_profile_input_name_err"><![CDATA[This information is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_bx_courses_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string_upd>
+    <string_upd name="_bx_courses_form_content_node_input_title_err"><![CDATA[Title is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_bx_courses_page_title_sys_joined"><![CDATA[Attended Courses]]></string_upd>
+    <string_upd name="_bx_courses_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this course. The invitation is expired or deleted.]]></string_upd>
+    <string_upd name="_bx_courses_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this course. This invitation cannot be used by you.]]></string_upd>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_ads_form_category_input_title_err"><![CDATA[Title is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_bx_ads_form_category_input_type_err"><![CDATA[Type is required. Please select a value for this field.]]></string_upd>
+    <string_upd name="_bx_ads_form_category_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+    <string_upd name="_bx_ads_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+    <string_upd name="_bx_ads_form_entry_input_name_err"><![CDATA[Name should be unique and is needed for internal usage. Please fill in this field]]></string_upd>
+    <string_upd name="_bx_ads_form_entry_input_quantity_err"><![CDATA[Quantity is required. Please fill in this field]]></string_upd>
+    <string_upd name="_bx_ads_form_entry_input_category_select_err"><![CDATA[Category field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_ads_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+    <string_upd name="_bx_ads_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string_upd>
+    <string_upd name="_bx_ads_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_bx_ads_form_offer_input_amount_err"><![CDATA[Amount is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_bx_ads_form_offer_input_quantity_err"><![CDATA[Quantity is required. Please fill in this field.]]></string_upd>
+</resources>

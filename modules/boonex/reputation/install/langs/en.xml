@@ -56,7 +56,7 @@
     <string name="_bx_reputation_form_filters_input_do_apply"><![CDATA[Apply]]></string>
     <string name="_bx_reputation_form_filters_input_do_reset"><![CDATA[Reset]]></string>
 
-    <string name="_bx_reputation_form_input_err"><![CDATA[The field is essential. Please, fill it in.]]></string>
+    <string name="_bx_reputation_form_input_err"><![CDATA[The field is required. Please fill it in.]]></string>
 
     <!-- ACL -->
     <string name="_bx_reputation_acl_action_edit_any_entry"><![CDATA[Manage Any Leaderboard]]></string>

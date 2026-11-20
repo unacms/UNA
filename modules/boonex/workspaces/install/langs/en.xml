@@ -57,7 +57,7 @@
     <string name="_bx_workspaces_form_profile_input_cover"><![CDATA[Upload New Cover Picture]]></string>
     <string name="_bx_workspaces_form_profile_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_workspaces_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this profile]]></string>
-    <string name="_bx_workspaces_form_profile_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+    <string name="_bx_workspaces_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
     <string name="_bx_workspaces_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete your profile.]]></string>
     <string name="_bx_workspaces_form_profile_input_sys_profile_email"><![CDATA[Email]]></string>
     <string name="_bx_workspaces_form_profile_input_profile_email"><![CDATA[Email]]></string>
