@@ -77,8 +77,9 @@ class BxFaceBookConnectModule extends BxBaseModConnectModule
         require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
         bx_import('BxDolLanguages');
 
-        if (!$this->isConfigured())
+        if (!$this->isConfigured()) {
             $this->_setLastError(_t('_bx_facebook_profile_error_api_keys'));
+        }
 
         if ($sError = $this->_setAccessToken())
             $this->_setLastError($sError);

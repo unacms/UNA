@@ -32,8 +32,9 @@ class BxCASModule extends BxBaseModConnectModule
 	 */
 	public function serviceLogout()
 	{
-		if (!$this->isConfigured())
+		if (!$this->isConfigured()) {
 			return;
+		}
 		if (!isLogged())
 			return;
 

@@ -12,21 +12,21 @@
 define ('BX_PROFILER', true);
 define ('BX_PROFILER_DISPLAY', 1);
 
-// The config is read with include, not require_once: this file is also loaded after the config was included
-// elsewhere (the installer's last pages), and then require_once would leave $aConfig undefined.
+// The module as it is installed: the profiler is started by its own alert handler, so it is installed. Its
+// install/config.php is not read here: the installer's last pages include it first, and a require_once of it
+// then left $aConfig undefined.
 $GLOBALS['bx_profiler_module'] = (function () {
-    $aConfig = [];
-    include(BX_DIRECTORY_PATH_MODULES . 'boonex/profiler/install/config.php');
+    $aModule = BxDolModuleQuery::getInstance()->getModuleByName('bx_profiler');
 
     return [
         'type' => BX_DOL_MODULE_TYPE_MODULE,
         'name' => 'bx_profiler',
-        'title' => $aConfig['title'],
-        'vendor' => $aConfig['vendor'],
-        'path' => $aConfig['home_dir'],
-        'uri' => $aConfig['home_uri'],
-        'class_prefix' => $aConfig['class_prefix'],
-        'db_prefix' => $aConfig['db_prefix'],
+        'title' => $aModule['title'] ?? 'Profiler',
+        'vendor' => $aModule['vendor'] ?? '',
+        'path' => $aModule['path'] ?? 'boonex/profiler/',
+        'uri' => $aModule['uri'] ?? 'profiler',
+        'class_prefix' => $aModule['class_prefix'] ?? 'BxProfiler',
+        'db_prefix' => $aModule['db_prefix'] ?? 'bx_profiler_',
     ];
 })();
 
