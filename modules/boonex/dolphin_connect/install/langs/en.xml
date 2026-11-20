@@ -4,7 +4,7 @@
 	<string name="_bx_dolcon"><![CDATA[Dolphin Connect]]></string>
 	<string name="_bx_dolcon_settings"><![CDATA[Dolphin Connect]]></string>
 	<string name="_bx_dolcon_information_block"><![CDATA[
-This module can be used to log in to this site using Dolphin site (master site) credentials. <br />
+This module can be used to sign in to this site using Dolphin site (master site) credentials. <br />
 To make it work, go to the master site, install "OAuth2 Server" module and add new client site, specify the desired title and the following URL:<br />
 <strong>{0}</strong><br />
 Then enter generated on the master site the Key & Server pair in this module settings.]]></string>

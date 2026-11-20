@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_dolphin_migration_started_migration_groups_finished"><![CDATA[{0} groups with members were transferred]]></string_upd>
+    <string_upd name="_bx_dolphin_migration_started_migration_events_finished"><![CDATA[{0} events with members were transferred]]></string_upd>
+    <string_upd name="_bx_dolphin_migration_cpt_overwrite"><![CDATA[If account with the same NickName or Email already exists, then to overwrite its info.
+	<br/><b>This option is useful if you already have account on current version with the same Nickname as in Dolphin. If you enable this option all existed on UNA accounts will be updated using profiles' info from Dolphin and don't forget that info of your current signed-in member may be also updated and you can be signed out.</b>]]></string_upd>
+</resources>

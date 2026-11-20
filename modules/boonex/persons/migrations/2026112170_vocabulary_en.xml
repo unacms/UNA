@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_persons"><![CDATA[People]]></string_upd>
+    <string_upd name="_bx_persons_cmts"><![CDATA[People's comments]]></string_upd>
+    <string_upd name="_bx_persons_reactions"><![CDATA[People's reactions]]></string_upd>
+    <string_upd name="_bx_persons_option_autoapproval"><![CDATA[Activate all people automatically]]></string_upd>
+    <string_upd name="_bx_persons_form_profile"><![CDATA[People]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_profile_favorites"><![CDATA[Favorite people]]></string_upd>
+    <string_upd name="_bx_persons_page_title_profile_favorites"><![CDATA[Favorite people]]></string_upd>
+    <string_upd name="_bx_persons_page_block_title_profile_favorites"><![CDATA[Favorite people]]></string_upd>
+    <string_upd name="_bx_persons_page_block_title_system_profile_favorites"><![CDATA[Favorite people]]></string_upd>
+    <string_upd name="_bx_persons_menu_title_submenu"><![CDATA[People submenu]]></string_upd>
+    <string_upd name="_bx_persons_menu_title_public_submenu"><![CDATA[People]]></string_upd>
+    <string_upd name="_bx_persons_menu_set_title_submenu"><![CDATA[People submenu]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_favorites"><![CDATA[Favorite people]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_favorites"><![CDATA[Favorite people]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_followings"><![CDATA[People]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_followings"><![CDATA[People]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_entries_home"><![CDATA[People]]></string_upd>
+    <string_upd name="_bx_persons_grid_column_title_adm_last_online"><![CDATA[Last sign-in]]></string_upd>
+    <string_upd name="_bx_persons_chart_growth"><![CDATA[People: growth]]></string_upd>
+    <string_upd name="_bx_persons_chart_growth_speed"><![CDATA[People: growth speed]]></string_upd>
+    <string_upd name="_bx_persons_search_extended"><![CDATA[People search]]></string_upd>
+    <string_upd name="_bx_persons_search_extended_cmts"><![CDATA[People comments search]]></string_upd>
+</resources>

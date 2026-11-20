@@ -4,7 +4,7 @@
 
     <string name="_bx_github_option_authorize"><![CDATA[Authorize using]]></string>
     <string name="_bx_github_option_authorize_pat"><![CDATA[Personal access token (PAT)]]></string>
-    <string name="_bx_github_option_authorize_app"><![CDATA[Login with GitHub (APP)]]></string>
+    <string name="_bx_github_option_authorize_app"><![CDATA[Sign in with GitHub (APP)]]></string>
 
     <string name="_bx_github_form_apps"><![CDATA[Apps]]></string>
     <string name="_bx_github_form_apps_display_add"><![CDATA[Add apps]]></string>
@@ -63,7 +63,7 @@
     <string name="_bx_github_err_app_already_exists"><![CDATA[The app with identical credentials already exists.]]></string>
     <string name="_bx_github_err_cannot_perform_action"><![CDATA[An error appeared. Please report.]]></string>
 
-    <string name="_bx_github_txt_login"><![CDATA[Login with GitHub]]></string>
+    <string name="_bx_github_txt_login"><![CDATA[Sign in with GitHub]]></string>
     <string name="_bx_github_txt_authorized"><![CDATA[Authorized]]></string>
     <string name="_bx_github_txt_manage_here"><![CDATA[Manage your authorizations here:]]></string>
     <string name="_bx_github_txt_settings"><![CDATA[GitHub settings]]></string>

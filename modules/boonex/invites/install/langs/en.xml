@@ -60,7 +60,7 @@
     <string name="_bx_invites_grid_invites_column_title_date"><![CDATA[Date]]></string>
     <string name="_bx_invites_grid_invites_column_title_who_sent"><![CDATA[Who sent]]></string>
     <string name="_bx_invites_grid_invites_column_title_multi"><![CDATA[Reusable]]></string>
-    <string name="_bx_invites_grid_invites_column_title_aj"><![CDATA[After Join]]></string>
+    <string name="_bx_invites_grid_invites_column_title_aj"><![CDATA[After sign-up]]></string>
     <string name="_bx_invites_grid_invites_column_title_date_seen"><![CDATA[Date seen]]></string>
     <string name="_bx_invites_grid_invites_column_title_joined_account"><![CDATA[Joined account]]></string>
     <string name="_bx_invites_grid_invites_column_title_date_joined"><![CDATA[Date joined]]></string>
@@ -218,7 +218,7 @@
 
     <string name="_bx_invites_title_date_invite_sent"><![CDATA[Date sent]]></string>
     <string name="_bx_invites_title_date_invite_seen"><![CDATA[Date seen]]></string>
-    <string name="_bx_invites_txt_email_use"><![CDATA[Mandatory use during join.]]></string>
+    <string name="_bx_invites_txt_email_use"><![CDATA[Required at sign-up]]></string>
 
     <string name="_bx_invites_reports_for_analytics_invited_total"><![CDATA[Invited - Total numbers]]></string>
     <string name="_bx_invites_reports_for_analytics_invited_speed_grows"><![CDATA[Invited - Grows speed]]></string>

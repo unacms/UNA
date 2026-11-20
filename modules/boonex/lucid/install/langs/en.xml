@@ -296,8 +296,8 @@
 	<string name="_bx_lucid_menu_title_dropdown_site"><![CDATA[Site Dropdown Navigation]]></string>
 
 	<string name="_bx_lucid_menu_item_title_system_search"><![CDATA[Search]]></string>
-	<string name="_bx_lucid_menu_item_title_system_login"><![CDATA[Login]]></string>
-	<string name="_bx_lucid_menu_item_title_login"><![CDATA[Login]]></string>
-	<string name="_bx_lucid_menu_item_title_system_join"><![CDATA[Join]]></string>
-	<string name="_bx_lucid_menu_item_title_join"><![CDATA[Join]]></string>
+	<string name="_bx_lucid_menu_item_title_system_login"><![CDATA[Sign in]]></string>
+	<string name="_bx_lucid_menu_item_title_login"><![CDATA[Sign in]]></string>
+	<string name="_bx_lucid_menu_item_title_system_join"><![CDATA[Sign up]]></string>
+	<string name="_bx_lucid_menu_item_title_join"><![CDATA[Sign up]]></string>
 </resources>

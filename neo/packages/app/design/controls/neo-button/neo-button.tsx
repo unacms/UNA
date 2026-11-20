@@ -122,8 +122,8 @@ const ICON_ACCESSIBLE_MAP: Record<string, string> = {
     MoreHorizontal: 'More options', Heart: 'Like', Star: 'Favorite',
     Share: 'Share', Share2: 'Share', MessageCircle: 'Comment',
     MessageSquare: 'Messages', Send: 'Send', Bell: 'Notifications',
-    Settings: 'Settings', Home: 'Home', User: 'Profile', UserRound: 'Login',
-    LogIn: 'Login', LogOut: 'Logout',
+    Settings: 'Settings', Home: 'Home', User: 'Profile', UserRound: 'Sign in',
+    LogIn: 'Sign in', LogOut: 'Sign out',
 };
 
 const getAccessibleName = (accessibilityLabel: string | undefined, tooltip: unknown, label: unknown, image: unknown): string | undefined => {

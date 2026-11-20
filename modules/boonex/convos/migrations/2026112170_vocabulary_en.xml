@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_cnv"><![CDATA[Private messages]]></string_upd>
+    <string_upd name="_bx_convos"><![CDATA[Private messages]]></string_upd>
+    <string_upd name="_bx_cnv_form_entry"><![CDATA[Private messages]]></string_upd>
+    <string_upd name="_bx_cnv_page_block_title_convos"><![CDATA[Private messages]]></string_upd>
+    <string_upd name="_bx_cnv_menu_title_submenu"><![CDATA[Private messages submenu]]></string_upd>
+    <string_upd name="_bx_cnv_menu_item_title_system_convos"><![CDATA[Private messages]]></string_upd>
+    <string_upd name="_bx_cnv_menu_item_title_convos"><![CDATA[Private messages]]></string_upd>
+</resources>
