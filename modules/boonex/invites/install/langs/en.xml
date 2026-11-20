@@ -226,5 +226,6 @@
     <string name="_bx_invites_reports_for_analytics_invitation_speed_grows"><![CDATA[Invitation - Grows speed]]></string>
 
     <string name="_bx_invites_alert_action_request"><![CDATA[<b class="bx-ntfs-content-profile">{entry_sample}</b> request invitation - <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_invites_alert_action_request_notify_personal"><![CDATA[New requests]]></string>
+    <string name="_bx_invites_alert_action_request_notify_personal"><![CDATA[New invitation requests]]></string>
+    <string name="_bx_invites_alert_action_info_request_notify_personal"><![CDATA[Someone asked for an invitation to join the site.]]></string>
 </resources>
