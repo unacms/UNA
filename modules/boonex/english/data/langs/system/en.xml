@@ -3645,7 +3645,7 @@
 	<string name="_sys_inst_conf_desc_db_pwd"><![CDATA[That user's password.]]></string>
 	<string name="_sys_inst_conf_desc_db_sock"><![CDATA[Leave empty unless the server is reached through a socket file.]]></string>
 	<string name="_sys_inst_conf_desc_db_user"><![CDATA[A user that can create and change tables in this database.]]></string>
-	<string name="_sys_inst_conf_desc_db_engine"><![CDATA[Every table of the site uses this engine. InnoDB is safer when the server stops unexpectedly.]]></string>
+	<string name="_sys_inst_conf_desc_db_engine"><![CDATA[Every table of the site uses this engine. InnoDB, the default, keeps your data safe when the server stops unexpectedly.]]></string>
 	<string name="_sys_inst_conf_desc_language"><![CDATA[The site's first language.]]></string>
 	<string name="_sys_inst_conf_desc_modules"><![CDATA[The starter apps are selected. Add or remove apps in Studio at any time.]]></string>
 	<string name="_sys_inst_conf_desc_profiles"><![CDATA[Profiles module to install by default.]]></string>
@@ -3754,25 +3754,27 @@
 	<string name="_sys_inst_msg_file_read_failed"><![CDATA[File read failed: {0}]]></string>
 	<string name="_sys_inst_msg_file_write_failed"><![CDATA[File write failed: {0}]]></string>
 	<string name="_sys_inst_msg_finish"><![CDATA[Next steps:]]></string>
+	<string name="_sys_inst_msg_finish_cron_docker"><![CDATA[Scheduled jobs already run: the Docker setup's cron service starts periodic/cron.php every minute.]]></string>
 	<string name="_sys_inst_msg_finish_cron_jobs"><![CDATA[Add this line to the server's crontab:]]></string>
-	<string name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Remove <b>/install/</b> folder from the script root folder.]]></string>
+	<string name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Delete the <b>install</b> folder from the server. The site opens once it's gone.]]></string>
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Go to Studio</a> to add additional modules and customize the site.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Some fields need attention.]]></string>
 	<string name="_sys_inst_msg_install_in_progress"><![CDATA[UNA is being installed from another browser: continue there. If that installation was abandoned, delete inc/header.installing.php and inc/install.queue.php on the server, then reload this page.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
 	<string name="_sys_inst_msg_module_needs_composer"><![CDATA[Run composer install in {0} first.]]></string>
 	<string name="_sys_inst_msg_permissions_lead"><![CDATA[These paths need to be writable, or executable, before you continue.]]></string>
+	<string name="_sys_inst_msg_permissions_ok"><![CDATA[All set: UNA can write to every folder it needs.]]></string>
 	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Some paths need attention. Fix them, then continue.]]></string>
 	<string name="_sys_inst_msg_queue_not_empty"><![CDATA[Some apps aren't installed yet.]]></string>
 	<string name="_sys_inst_msg_queue_not_found"><![CDATA[This installation was not started in this browser, or it is already finished. Start again from the site configuration.]]></string>
-	<string name="_sys_inst_msg_remove_install"><![CDATA[Please, remove INSTALL directory from your server and reload this page to activate your site.<br />After deletion you can safely go <a href="../studio/">to the site Studio</a> to add additional modules and customize the site.]]></string>
+	<string name="_sys_inst_msg_remove_install"><![CDATA[Delete the <b>install</b> folder from the server, then reload this page. After that, <a href="../studio/">open Studio</a> to add apps and set up the site.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Script isn't installed]]></string>
 	<string name="_sys_inst_open_site"><![CDATA[Open the site]]></string>
 	<string name="_sys_inst_open_studio"><![CDATA[Open Studio]]></string>
 	<string name="_sys_inst_refresh"><![CDATA[Refresh]]></string>
 	<string name="_sys_inst_server_audit"><![CDATA[Server audit]]></string>
 	<string name="_sys_inst_site_config"><![CDATA[Set up your site]]></string>
-	<string name="_sys_inst_site_config_lead"><![CDATA[Three short steps: the database, your site and admin account, then the apps to start with.]]></string>
+	<string name="_sys_inst_site_config_lead"><![CDATA[Steps 2 to 4: the database, your site and admin account, then the apps.]]></string>
 	<string name="_sys_inst_start_installation"><![CDATA[Start installation]]></string>
 	<string name="_sys_inst_step_apps"><![CDATA[Apps]]></string>
 	<string name="_sys_inst_step_database"><![CDATA[Database]]></string>
@@ -3784,10 +3786,13 @@
 	<string name="_sys_inst_title"><![CDATA[Install UNA {0}]]></string>
 	<string name="_sys_inst_title_meta"><![CDATA[Installation]]></string>
 	<string name="_sys_inst_welcome"><![CDATA[Install UNA]]></string>
-	<string name="_sys_inst_welcome_lead"><![CDATA[This sets up UNA on this server. You fill in three short forms, then the apps install, which takes a minute or two.]]></string>
-	<string name="_sys_inst_welcome_step_config"><![CDATA[Enter the database, the site name and your admin account.]]></string>
-	<string name="_sys_inst_welcome_step_modules"><![CDATA[Choose the apps to start with. You can add more in Studio later.]]></string>
-	<string name="_sys_inst_welcome_step_permissions"><![CDATA[Check that UNA can write to its folders.]]></string>
+	<string name="_sys_inst_welcome_lead"><![CDATA[This sets up UNA on this server in six steps. It takes a few minutes.]]></string>
+	<string name="_sys_inst_welcome_step_apps"><![CDATA[Choose the apps to start with.]]></string>
+	<string name="_sys_inst_welcome_step_database"><![CDATA[Connect to an empty MySQL or MariaDB database.]]></string>
+	<string name="_sys_inst_welcome_step_done"><![CDATA[Set up scheduled jobs and open your site.]]></string>
+	<string name="_sys_inst_welcome_step_install"><![CDATA[UNA installs the apps one at a time.]]></string>
+	<string name="_sys_inst_welcome_step_server"><![CDATA[Check that the server meets the requirements and that UNA can write to its folders.]]></string>
+	<string name="_sys_inst_welcome_step_site"><![CDATA[Name the site, check its address and create your admin account.]]></string>
 	<string name="_sys_layout_1_column"><![CDATA[1 column]]></string>
         <string name="_sys_layout_1_column_thin"><![CDATA[1 column (thin)]]></string>
         <string name="_sys_layout_1_column_half"><![CDATA[1 column (half)]]></string>

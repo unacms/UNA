@@ -70,9 +70,7 @@ class BxDolInstallView
 
         $aToolbarItem = $this->_aToolbarItem;
 
-        $aSteps = array();
-        foreach ($this->_aSteps as $sStep)
-            $aSteps[$sStep] = _t('_sys_inst_step_' . $sStep);
+        $aSteps = $this->getSteps();
         $sStepCurrent = $this->_sStep;
         $iCurrent = array_search($sStepCurrent, $this->_aSteps);
         $aStepsDone = false === $iCurrent ? array() : array_slice($this->_aSteps, 0, $iCurrent);
@@ -87,6 +85,17 @@ class BxDolInstallView
     /**
      * The step of the header the page belongs to; none on the welcome page.
      */
+    /**
+     * The steps of the header in order, with their names: the welcome page lists the same ones.
+     */
+    public function getSteps()
+    {
+        $a = array();
+        foreach ($this->_aSteps as $sStep)
+            $a[$sStep] = _t('_sys_inst_step_' . $sStep);
+        return $a;
+    }
+
     public function setStep($sStep)
     {
         $this->_sStep = $sStep;

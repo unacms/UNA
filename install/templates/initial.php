@@ -4,9 +4,9 @@
     <p class="bx-install-step-lead"><?php echo _t('_sys_inst_welcome_lead'); ?></p>
 
     <ol class="bx-install-steps">
-        <li><?php echo _t('_sys_inst_welcome_step_permissions'); ?></li>
-        <li><?php echo _t('_sys_inst_welcome_step_config'); ?></li>
-        <li><?php echo _t('_sys_inst_welcome_step_modules'); ?></li>
+        <?php foreach ($aSteps as $sStep => $sTitle): ?>
+        <li><b><?php echo $sTitle; ?></b> · <?php echo _t('_sys_inst_welcome_step_' . $sStep); ?></li>
+        <?php endforeach; ?>
     </ol>
 
     <?php if ($aWarnings): ?>
