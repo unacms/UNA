@@ -679,7 +679,7 @@ BxDolGridAgCell.prototype._chevron = function (params, oAg) {
     eBtn.className = 'bx-grid-ag-chevron' + (bOpen ? ' is-open' : '');
     eBtn.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
     eBtn.setAttribute('aria-label', 'Expand');
-    eBtn.innerHTML = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M7 4.5 L13.5 10 L7 15.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    eBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
     eBtn.addEventListener('click', function (ev) {
         ev.preventDefault();
         ev.stopPropagation();

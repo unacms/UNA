@@ -26,8 +26,20 @@
     align-items: center;
 }
 
+.bx-grid-ag-wrap .bx-grid-header-controls-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-form-element-wrapper:has(.select2-container) {
+    width: auto;
+    margin: 0;
+}
+
 .bx-grid-ag-wrap .bx-grid-header-controls-filter .select2-container {
-    min-width: 12rem;
+    width: 12rem !important;
 }
 
 .bx-grid-ag-wrap .bx-grid-header-controls-counter {
@@ -143,15 +155,37 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    width: 2rem;
-    height: 2rem;
+    width: 1.75rem;
+    height: 1.75rem;
     margin: 0 auto;
     padding: 0;
     border: 0;
-    border-radius: 0.35rem;
+    border-radius: 0.5rem;
     background: transparent;
-    color: inherit;
+    color: #9ca3af;
     cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.bx-grid-ag-chevron:hover,
+.bx-grid-ag-chevron.is-open {
+    color: #374151;
+}
+
+.bx-grid-ag-chevron:hover {
+    background-color: rgb(0 0 0 / 0.05);
+}
+
+html.dark .bx-grid-ag-chevron:hover,
+html.dark .bx-grid-ag-chevron.is-open,
+.dark .bx-grid-ag-chevron:hover,
+.dark .bx-grid-ag-chevron.is-open {
+    color: #e5e7eb;
+}
+
+html.dark .bx-grid-ag-chevron:hover,
+.dark .bx-grid-ag-chevron:hover {
+    background-color: rgb(255 255 255 / 0.08);
 }
 
 .bx-grid-ag .ag-cell.bx-grid-ag-expand .bx-grid-ag-cell {
@@ -170,24 +204,6 @@
     line-height: 0;
 }
 
-.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont button {
-    overflow: hidden;
-    width: 2rem;
-    height: 1.125rem;
-}
-
-.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont button span {
-    width: 0.875rem;
-    height: 0.875rem;
-}
-
-.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont.off button span {
-    transform: translateX(0.1rem);
-}
-
-.bx-grid-ag-wrap .bx-grid-ag .bx-switcher-cont.on button span {
-    transform: translateX(0.95rem);
-}
 
 .bx-grid-ag .bx-item-icon,
 .bx-grid-ag img.bx-item-icon,
@@ -247,8 +263,11 @@
     white-space: nowrap;
 }
 
-.bx-grid-ag-item-actions {
+.bx-grid-ag-item .bx-grid-ag-item-actions {
+    flex: 0 0 5.5rem;
+    width: 5.5rem;
     margin-left: auto;
+    justify-content: flex-start;
 }
 
 .bx-grid-ag .bx-grid-drag-handle {
