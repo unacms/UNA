@@ -1829,10 +1829,12 @@ class BxBaseGrid extends BxDolGrid
         $this->_oTemplate->addCss([
             BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'ag-grid/|ag-grid.min.css',
             BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'ag-grid/|ag-theme-quartz.min.css',
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'select2/css/|select2.min.css',
             'grid_ag.css',
         ]);
         $this->_oTemplate->addJs([
             'ag-grid/ag-grid.min.js',
+            'select2/js/select2.min.js',
             'BxDolGridAg.js',
         ]);
     }

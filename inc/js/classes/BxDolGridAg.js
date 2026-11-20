@@ -43,6 +43,7 @@ function BxDolGridAg(oCfg, oBx) {
 
     this._adoptBx();
     this._mount();
+    this._select2Filters();
 }
 
 BxDolGridAg.prototype._adoptBx = function () {
@@ -87,6 +88,28 @@ BxDolGridAg.prototype._adoptBx = function () {
         if (sAction === 'reorder')
             self.refresh();
     };
+};
+
+/**
+ * The header's filter selects are select2 fields, as Studio's other selects (the page builder's
+ * page picker). select2 fires the select's own change, so the filter's onchange still runs.
+ */
+BxDolGridAg.prototype._select2Filters = function () {
+    if (typeof jQuery === 'undefined' || typeof jQuery.fn.select2 !== 'function')
+        return;
+
+    jQuery('#' + this._sWrap + ' .bx-grid-header-controls-filter select').each(function () {
+        var $s = jQuery(this);
+        if ($s.hasClass('select2-hidden-accessible'))
+            return;
+        $s.select2({
+            width: 'resolve',
+            minimumResultsForSearch: 10,
+            templateSelection: function (d) {
+                return d.text;
+            }
+        });
+    });
 };
 
 BxDolGridAg.prototype._mount = function () {
