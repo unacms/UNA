@@ -14,7 +14,7 @@
  *
  *
  * Example of usage:
- * refer to any BoonEx module
+ * refer to any bundled UNA module
  *
  *
  * Memberships/ACL:

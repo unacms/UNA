@@ -4,7 +4,7 @@
 	<string name="_bx_azrb2c"><![CDATA[Azure AD B2C Connect]]></string>
 	<string name="_bx_azrb2c_settings"><![CDATA[Azure AD B2C Connect]]></string>
 	<string name="_bx_azrb2c_information_block"><![CDATA[
-        <p>This module can be used to login to this site using Azure AD B2C accounts.</p>
+        <p>This module can be used to log in to this site using Azure AD B2C accounts.</p>
         <p>To make it work make new registration in <a target="_blank" href="https://portal.azure.com/">Azure portal</a> then goto Azure AD B2C service. <br />
         When asked specify the following Redirect URI:<br />
             <ul>

@@ -4,7 +4,7 @@
 	<string name="_bx_googlecon"><![CDATA[Google Connect]]></string>
 	<string name="_bx_googlecon_settings"><![CDATA[Google Connect]]></string>
 	<string name="_bx_googlecon_information_block"><![CDATA[
-        <p>This module can be used to login to this site using your Google account credentials.</p>
+        <p>This module can be used to log in to this site using your Google account credentials.</p>
         <p>To make it work, follow these instructions on <a target="_blank" href="https://developers.google.com/identity/sign-in/web/devconsole-project">how to create Google Project</a>, when creating a project specify the following info:<br />
             <ul>
                 <li>Redirect URL: <strong>{0}</strong></li>

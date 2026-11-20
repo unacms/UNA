@@ -25,7 +25,7 @@
 	<string name="_bx_snipcart_form_entry_input_do_publish"><![CDATA[Publish]]></string>
 	<string name="_bx_snipcart_form_entry_input_sys_title"><![CDATA[Title]]></string>
 	<string name="_bx_snipcart_form_entry_input_title"><![CDATA[Title]]></string>
-	<string name="_bx_snipcart_form_entry_input_title_err"><![CDATA[Title is essential. Please, fill in this field]]></string>
+	<string name="_bx_snipcart_form_entry_input_title_err"><![CDATA[Title is required. Please fill in this field]]></string>
 	<string name="_bx_snipcart_form_entry_input_sys_cat"><![CDATA[Category]]></string>
 	<string name="_bx_snipcart_form_entry_input_cat"><![CDATA[Category]]></string>
     <string name="_bx_snipcart_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
@@ -43,7 +43,7 @@
     <string name="_bx_snipcart_form_entry_input_weight_value"><![CDATA[{0} Kg]]></string>
 	<string name="_bx_snipcart_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
 	<string name="_bx_snipcart_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this product]]></string>
-	<string name="_bx_snipcart_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+	<string name="_bx_snipcart_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
 	<string name="_bx_snipcart_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the product]]></string>
 	<string name="_bx_snipcart_form_entry_input_sys_pictures"><![CDATA[Pictures]]></string>
 	<string name="_bx_snipcart_form_entry_input_pictures"><![CDATA[Pictures]]></string>
@@ -59,7 +59,7 @@
     <string name="_bx_snipcart_form_settings_display_edit"><![CDATA[Edit Settings]]></string>
     <string name="_bx_snipcart_form_settings_input_sys_mode"><![CDATA[Mode]]></string>
     <string name="_bx_snipcart_form_settings_input_mode"><![CDATA[Mode]]></string>
-    <string name="_bx_snipcart_form_settings_input_mode_err"><![CDATA[Mode is essential. Please, fill in this field.]]></string>
+    <string name="_bx_snipcart_form_settings_input_mode_err"><![CDATA[Mode is required. Please fill in this field.]]></string>
     <string name="_bx_snipcart_form_settings_input_sys_api_key_test"><![CDATA[API Key (test)]]></string>
     <string name="_bx_snipcart_form_settings_input_api_key_test"><![CDATA[API Key (test)]]></string>
     <string name="_bx_snipcart_form_settings_input_sys_api_key_live"><![CDATA[API Key (live)]]></string>
@@ -67,7 +67,7 @@
     <string name="_bx_snipcart_form_settings_input_sys_currency"><![CDATA[Currency]]></string>
     <string name="_bx_snipcart_form_settings_input_currency"><![CDATA[Currency]]></string>
     <string name="_bx_snipcart_form_settings_input_currency_inf"><![CDATA[Select the default Currency from your Snipcart account.]]></string>
-    <string name="_bx_snipcart_form_settings_input_currency_err"><![CDATA[Currency is essential. Please, fill in this field.]]></string>    
+    <string name="_bx_snipcart_form_settings_input_currency_err"><![CDATA[Currency is required. Please fill in this field.]]></string>    
     <string name="_bx_snipcart_form_settings_input_sys_do_submit"><![CDATA[Submit]]></string>
     <string name="_bx_snipcart_form_settings_input_do_submit"><![CDATA[Submit]]></string>
 

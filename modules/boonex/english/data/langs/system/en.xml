@@ -6,7 +6,7 @@
     <string name="_ATT_APPROVAL_E"><![CDATA[Your profile activation is in progress. Usually it takes up to 24 hours. Thank you for your patience.]]></string>
     <string name="_ATT_REJECTED_E"><![CDATA[Your profile was rejected by the system administrator because it contains illegal information or is missing some information. If you have any questions, please, <a target=_blank href="contact.php">contact us</a>, and don't forget to specify your profile ID.]]></string>
     <string name="_ATT_SUSPENDED_E"><![CDATA[Your profile is temporarily out of {0} system services. You can activate it <a target=_blank href="change_status.php">here</a>. If you have any questions, please <a target=_blank href="contact.php">contact the administrators</a>.]]></string>
-    <string name="_ATT_UNCONFIRMED_E"><![CDATA[You will need to follow the link supplied in the e-mail to get your account submitted for approval. <br />Send me <a target=_blank href="activation_email.php">confirmation e-mail</a>.]]></string>
+    <string name="_ATT_UNCONFIRMED_E"><![CDATA[You will need to follow the link supplied in the email to get your account submitted for approval. <br />Send me <a target=_blank href="activation_email.php">confirmation email</a>.]]></string>
     <string name="_Access denied"><![CDATA[Access denied]]></string>
     <string name="_access_denied_page_title"><![CDATA[Page Not Available]]></string>
     <string name="_access_denied_page_content"><![CDATA[Sorry, this content is no longer available. It may have been removed or is not accessible due to violation of our terms of service.]]></string>
@@ -42,7 +42,7 @@
 	<string name="_Email"><![CDATA[Email]]></string>
 	<string name="_Email sent failed"><![CDATA[Email send failed]]></string>
 	<string name="_Empty"><![CDATA[Nothing here yet]]></string>
-	<string name="_Enter_value_here"><![CDATA[Please, enter a value here]]></string>
+	<string name="_Enter_value_here"><![CDATA[Please enter a value here]]></string>
 	<string name="_Error"><![CDATA[Error]]></string>
 	<string name="_Failed"><![CDATA[Failed]]></string>
 	<string name="_favorite_counter"><![CDATA[{0}]]></string>
@@ -51,12 +51,12 @@
 	<string name="_favorite_do_favorite_by"><![CDATA[Favorited by]]></string>
 	<string name="_favorite_err_cannot_perform_action"><![CDATA[Cannot perform the action.]]></string>
 	<string name="_favorite_err_duplicate_favorite"><![CDATA[You already favorited this item.]]></string>
-	<string name="_favorite_err_not_enabled"><![CDATA[The feature is not available right now. Please, try again later.]]></string>
+	<string name="_favorite_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string>
 	<string name="_feature_do_feature"><![CDATA[Feature]]></string>
         <string name="_feature_do_unfeature"><![CDATA[Unfeature]]></string>
         <string name="_feature_err_cannot_perform_action"><![CDATA[Cannot perform the action.]]></string>
         <string name="_feature_err_duplicate_feature"><![CDATA[The item was already added in featured list.]]></string>
-        <string name="_feature_err_not_enabled"><![CDATA[The feature is not available right now. Please, try again later.]]></string>
+        <string name="_feature_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string>
 	<string name="_Female"><![CDATA[Woman]]></string>
         <string name="_free"><![CDATA[free]]></string>
 	<string name="_From"><![CDATA[From]]></string>
@@ -119,7 +119,7 @@
 	<string name="_report_do_report_by"><![CDATA[Reported by]]></string>
 	<string name="_report_err_cannot_perform_action"><![CDATA[Cannot perform action.]]></string>
 	<string name="_report_err_duplicate_report"><![CDATA[You already reported this item.]]></string>
-	<string name="_report_err_not_enabled"><![CDATA[The feature is not available right now. Please, try again later.]]></string>
+	<string name="_report_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string>
 	<string name="_report_err_wrong_type"><![CDATA[Wrong report type.]]></string>
 	<string name="_report_reported_as"><![CDATA[Reported as ]]></string>
         <string name="_report_reported_by"><![CDATA[Reported by ]]></string>
@@ -545,7 +545,7 @@
 	<string name="_adm_bp_dsc_page_meta_robots"><![CDATA[Standard commands for search engine robots. Example: noindex, nofollow.]]></string>
 	<string name="_adm_bp_dsc_page_title"><![CDATA[This name is displayed in page header. Use at least 3 characters.]]></string>
 	<string name="_adm_bp_dsc_page_title_system"><![CDATA[This name is displayed in Studio only.]]></string>
-	<string name="_adm_bp_dsc_page_uri"><![CDATA[Page address used after 'youdomain.com/page/'. It must be unique and it can not be changed later.]]></string>
+	<string name="_adm_bp_dsc_page_uri"><![CDATA[Page address used after 'youdomain.com/page/'. It must be unique and it cannot be changed later.]]></string>
 	<string name="_adm_bp_dsc_page_url"><![CDATA[Page link to access the page.]]></string>
 	<string name="_adm_bp_dsc_page_visible_for_levels"><![CDATA[Select user levels that can see this page]]></string>
 	<string name="_adm_bp_err_block_added"><![CDATA[Cannot add block(s)]]></string>
@@ -559,7 +559,7 @@
 	<string name="_adm_bp_err_nothing_changed"><![CDATA[Nothing was changed or an error occurred.]]></string>
 	<string name="_adm_bp_err_page_create"><![CDATA[Cannot create the page.]]></string>
 	<string name="_adm_bp_err_page_delete"><![CDATA[Cannot delete the page.]]></string>
-	<string name="_adm_bp_err_page_layout"><![CDATA[Please, select a page layout.]]></string>
+	<string name="_adm_bp_err_page_layout"><![CDATA[Please select a page layout.]]></string>
         <string name="_adm_bp_err_page_not_deletable"><![CDATA[The requested page cannot be deleted.]]></string>
 	<string name="_adm_bp_err_page_title"><![CDATA[A title with at least 3 characters is required.]]></string>
 	<string name="_adm_bp_err_page_title_system"><![CDATA[A name with at least 3 characters is required.]]></string>
@@ -1199,7 +1199,7 @@
     <string name="_adm_form_err_pre_values_delete"><![CDATA[Cannot delete item]]></string>
     <string name="_adm_form_err_pre_values_edit"><![CDATA[Cannot update item]]></string>
     <string name="_adm_form_err_pre_values_lkey"><![CDATA[Enter title, more than one character]]></string>
-    <string name="_adm_form_err_search_forms_essential"><![CDATA[The field is essential. Please fill in.]]></string>
+    <string name="_adm_form_err_search_forms_essential"><![CDATA[The field is required. Please fill in.]]></string>
     <string name="_adm_form_err_search_forms_fields_edit"><![CDATA[Cannot update the search form field.]]></string>
     <string name="_adm_from_err_search_forms_fields_reset"><![CDATA[Cannot reset the search form.]]></string>
     <string name="_adm_from_err_search_forms_sortable_fields_reset"><![CDATA[Cannot reset the search form.]]></string>
@@ -1278,7 +1278,7 @@
 	<string name="_adm_form_txt_field_checker_date"><![CDATA[Date (check for correct date format)]]></string>
         <string name="_adm_form_txt_field_checker_date_range"><![CDATA[Age's range]]></string>
 	<string name="_adm_form_txt_field_checker_date_time"><![CDATA[Date and Time (check for correct date and time format)]]></string>
-	<string name="_adm_form_txt_field_checker_email"><![CDATA[E-mail (correct email address format)]]></string>
+	<string name="_adm_form_txt_field_checker_email"><![CDATA[Email (correct email address format)]]></string>
 	<string name="_adm_form_txt_field_checker_empty"><![CDATA[Select...]]></string>
 	<string name="_adm_form_txt_field_checker_error"><![CDATA[Error message if check failed]]></string>
 	<string name="_adm_form_txt_field_checker_func"><![CDATA[Check for]]></string>
@@ -1311,7 +1311,7 @@
         <string name="_adm_form_txt_field_rateable_value_non"><![CDATA[Non-rateable]]></string>
         <string name="_adm_form_txt_field_rateable_value_votes"><![CDATA[Use votes]]></string>
         <string name="_adm_form_txt_field_rateable_value_reactions"><![CDATA[Use reactions]]></string>
-        <string name="_adm_form_txt_field_required"><![CDATA[Mandatory]]></string>
+        <string name="_adm_form_txt_field_required"><![CDATA[Required]]></string>
         <string name="_adm_form_txt_field_select_nested_form"><![CDATA[Select nested form]]></string>
 	<string name="_adm_form_txt_field_show_to_popup"><![CDATA[Show "{0}" form field to: ]]></string>
         <string name="_adm_form_txt_field_type_block_end"><![CDATA[block end]]></string>
@@ -1591,9 +1591,9 @@
 	<string name="_adm_nav_err_menus_create"><![CDATA[Cannot create menu]]></string>
 	<string name="_adm_nav_err_menus_delete"><![CDATA[Cannot delete menu]]></string>
 	<string name="_adm_nav_err_menus_edit"><![CDATA[Cannot update menu]]></string>
-	<string name="_adm_nav_err_menus_set_name"><![CDATA[Please, assign a Set.]]></string>
+	<string name="_adm_nav_err_menus_set_name"><![CDATA[Please assign a Set.]]></string>
 	<string name="_adm_nav_err_menus_set_title"><![CDATA[A unique title with at least 3 characters is required.]]></string>
-	<string name="_adm_nav_err_menus_style"><![CDATA[Please, select a presentation style.]]></string>
+	<string name="_adm_nav_err_menus_style"><![CDATA[Please select a presentation style.]]></string>
 	<string name="_adm_nav_err_menus_title"><![CDATA[A title with at least 3 characters is required.]]></string>
 	<string name="_adm_nav_err_missing_params"><![CDATA[The required parameters are missing.]]></string>
 	<string name="_adm_nav_err_sets_create"><![CDATA[Cannot create set]]></string>
@@ -1806,7 +1806,7 @@
 	<string name="_adm_prm_dsc_level_icon_image"><![CDATA[or upload an image.]]></string>
 	<string name="_adm_prm_dsc_level_name"><![CDATA[Short name for the membership level (i.e Premium, Gold, Newcomer, etc.)]]></string>
 	<string name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Limit max file size for user with this level across all modules (0 - unlimited, other system limits may apply).]]></string>
-	<string name="_adm_prm_dsc_level_quota_number"><![CDATA[Limit  amount of files a user with this level can upload (0 - unlimited).]]></string>
+	<string name="_adm_prm_dsc_level_quota_number"><![CDATA[Limit amount of files a user with this level can upload (0 - unlimited).]]></string>
         <string name="_adm_prm_dsc_level_password_expired"><![CDATA[Period after which the password must be changed, in days (0 - unlimited).]]></string>
         <string name="_adm_prm_dsc_level_password_expired_notify"><![CDATA[The period for which the notification of an expired password will be sent, in days (0 - unlimited).]]></string>    
 	<string name="_adm_prm_dsc_level_quota_size"><![CDATA[Limit how much space can be used by user with this level across all modules (0 - unlimited).]]></string>
@@ -2004,7 +2004,7 @@
     <string name="_adm_stg_cpt_option_sys_allow_plus_in_email"><![CDATA[Allow to use plus sign ("+") in email address]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning"><![CDATA[Accounts pruning]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning_interval"><![CDATA[Accounts pruning period (in days)]]></string>
-    <string name="_adm_stg_cpt_option_sys_accounts_password_log_count"><![CDATA[Number of stored old passwords  (0 = do not store)]]></string>
+    <string name="_adm_stg_cpt_option_sys_accounts_password_log_count"><![CDATA[Number of stored old passwords (0 = do not store)]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_force_password_change_after_expiration"><![CDATA[Force password change after password expiration]]></string>
     
     <string name="_adm_stg_cpt_option_sys_lock_from_unauthenticated"><![CDATA[Lock site from unauthenticated users]]></string>
@@ -2036,7 +2036,7 @@
     <string name="_adm_stg_cpt_option_sys_autoupdate_force_modified_files"><![CDATA[Force Automatic Updates]]></string>
     <string name="_adm_stg_inf_option_sys_autoupdate_force_modified_files"><![CDATA[Update core system and modules even if modified files are detected.]]></string>
     <string name="_adm_stg_cpt_option_sys_autoupdate"><![CDATA[Automatic System Updates]]></string>
-    <string name="_adm_stg_inf_option_sys_autoupdate"><![CDATA[Try to update core  system and modules automatically.]]></string>
+    <string name="_adm_stg_inf_option_sys_autoupdate"><![CDATA[Try to update core system and modules automatically.]]></string>
     <string name="_adm_stg_cpt_option_sys_cache_memcache_host"><![CDATA[Memcached server host]]></string>
     <string name="_adm_stg_cpt_option_sys_cache_memcache_port"><![CDATA[Memcached server port]]></string>
     <string name="_adm_stg_cpt_option_sys_cache_redis_connection_string"><![CDATA[Redis server connection string]]></string>
@@ -2163,7 +2163,7 @@
     <string name="_adm_stg_cpt_option_sys_storage_s3_endpoint"><![CDATA[Endpoint (specify if other than Amazon, such as storage.googleapis.com, s3.wasabisys.com)]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_s3_sig_ver"><![CDATA[Signature version (only S3v4alt storage supports both v2 and v4)]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_s3_region"><![CDATA[Region (for signature v4 only)]]></string>
-    <string name="_adm_stg_cpt_option_sys_storage_s3_amz_iam_role"><![CDATA[Authenticate using Amazon  IAM Role (S3v4alt storage only)]]></string>
+    <string name="_adm_stg_cpt_option_sys_storage_s3_amz_iam_role"><![CDATA[Authenticate using Amazon IAM Role (S3v4alt storage only)]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_s3_acl_enable"><![CDATA[Enable ACLs (S3v4alt storage only)]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_s3_force_auth_urls"><![CDATA[Force authenticated URLs for specific storages]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_ghost_lifetime"><![CDATA[Lifetime for unused ghosts, which they will be automatically deleted after (in minutes, use 0 to disable).]]></string>
@@ -2383,7 +2383,7 @@
 	<string name="_adm_stg_txt_mix_duplicate_inf"><![CDATA[Use 'None' to duplicate System values]]></string>
 	<string name="_adm_stg_txt_mix_title"><![CDATA[Mix Title]]></string>
         <string name="_adm_stg_txt_mix_title_inf"><![CDATA[Create a <b>_sys_template_mixed_[template_name]_[mix_name]</b> language key in Polyglot to customise the publicly-displayed name. <b>[template_name]</b> and <b>[mix_name]</b> are in lowercase, underscore instead of space.]]></string>
-	<string name="_adm_stg_txt_mix_title_err"><![CDATA[Title is essential. Please, fill in this field.]]></string>
+	<string name="_adm_stg_txt_mix_title_err"><![CDATA[Title is required. Please fill in this field.]]></string>
 	<string name="_adm_stg_txt_mix_system"><![CDATA[System]]></string>
 	<string name="_adm_stg_err_remove_old_image"><![CDATA[Cannot remove current image.]]></string>
 	<string name="_adm_str_cpt_files_file"><![CDATA[File]]></string>
@@ -2455,9 +2455,9 @@
 	<string name="_adm_strg_txt_images_resize_result"><![CDATA[Resized image]]></string>
 	<string name="_adm_strg_txt_size_mime_type"><![CDATA[{0}x{1}, {2}]]></string>
 	<string name="_adm_strg_txt_width"><![CDATA[Width]]></string>
-	<string name="_adm_strg_err_width"><![CDATA[Width is essential. Please, fill in this field.]]></string>
+	<string name="_adm_strg_err_width"><![CDATA[Width is required. Please fill in this field.]]></string>
 	<string name="_adm_strg_txt_height"><![CDATA[Height]]></string>
-	<string name="_adm_strg_err_height"><![CDATA[Height is essential. Please, fill in this field.]]></string>
+	<string name="_adm_strg_err_height"><![CDATA[Height is required. Please fill in this field.]]></string>
         <string name="_adm_tmi_cpt_account"><![CDATA[Menu]]></string>
         <string name="_adm_tmi_cpt_assistant"><![CDATA[Assistant]]></string>
 	<string name="_adm_tmi_cpt_site"><![CDATA[Go To Site]]></string>
@@ -2487,7 +2487,7 @@
 	<string name="_adm_txt_login_email"><![CDATA[Email address]]></string>
         <string name="_adm_txt_login_email_placeholder"><![CDATA[operator@example.com]]></string>
         <string name="_adm_txt_login_title"><![CDATA[Login]]></string>
-        <string name="_adm_txt_login_subtitle"><![CDATA[Enter your email and password to login to Studio.]]></string>
+        <string name="_adm_txt_login_subtitle"><![CDATA[Enter your email and password to log in to Studio.]]></string>
 	<string name="_adm_txt_module_custom"><![CDATA[Custom]]></string>
 	<string name="_adm_txt_module_skeletons"><![CDATA[Skeletons]]></string>
 	<string name="_adm_txt_module_system"><![CDATA[System]]></string>
@@ -2566,7 +2566,7 @@
 	<string name="_adm_wgt_cpt_settings"><![CDATA[Settings]]></string>
 	<string name="_adm_wgt_cpt_storages"><![CDATA[Storage]]></string>
 	<string name="_adm_wgt_cpt_store"><![CDATA[App Store]]></string>
-        <string name="_cmt_err_not_enabled"><![CDATA[The feature is not available right now. Please, try again later.]]></string>
+        <string name="_cmt_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string>
 	<string name="_cmt_block_comments_title"><![CDATA[Comments ({0})]]></string>
 	<string name="_cmt_browse_all"><![CDATA[All]]></string>
 	<string name="_cmt_browse_friends"><![CDATA[Friends]]></string>
@@ -2698,7 +2698,7 @@
 	<string name="_sys_acl_action_not_allowed"><![CDATA[Your membership ({2}) doesn't include “{1}”.]]></string>
 	<string name="_sys_acl_action_not_allowed_after"><![CDATA[Your current membership ({2}) stopped to allow you to '{1}' {5}.]]></string>
 	<string name="_sys_acl_action_not_allowed_before"><![CDATA[Your current membership ({2}) will allow you to '{1}' {6}.]]></string>
-        <string name="_sys_acl_action_pending"><![CDATA[You are currently not an active member. Please, ask the site <a href="mailto:{7}">administrator</a> to make you an active member so you would be able to <b>{1}</b>.]]></string>
+        <string name="_sys_acl_action_pending"><![CDATA[You are currently not an active member. Please ask the site <a href="mailto:{7}">administrator</a> to make you an active member so you would be able to <b>{1}</b>.]]></string>
 	<string name="_sys_acl_action_post_links"><![CDATA[Post links]]></string>
 	<string name="_sys_acl_action_post_links_desc"><![CDATA[Post links in text and textarea form fields]]></string>
 	<string name="_sys_acl_action_use_macros"><![CDATA[Use Macros]]></string>
@@ -2745,8 +2745,8 @@
     <string name="_sys_acl_state_unconfirmed_title"><![CDATA[Confirm your email]]></string>
     <string name="_sys_acl_downgrade"><![CDATA[Downgrade]]></string>
 
-    <string name="_sys_agents_form_field_err_enter"><![CDATA[This field is essential. Please enter something here.]]></string>
-    <string name="_sys_agents_form_field_err_select"><![CDATA[This field is essential. Please select something here.]]></string>
+    <string name="_sys_agents_form_field_err_enter"><![CDATA[This field is required. Please enter something here.]]></string>
+    <string name="_sys_agents_form_field_err_select"><![CDATA[This field is required. Please select something here.]]></string>
     <string name="_sys_agents_form_field_err_profile_has_agent"><![CDATA[This profile is already used in another agent({0}) with the same 'message' trigger.]]></string>
     <string name="_sys_agents_form_object"><![CDATA[Form object]]></string>
     <string name="_sys_agents_form_object_info"><![CDATA[Form object that contains the required field, for custom forms enter form id here]]></string>
@@ -3254,7 +3254,7 @@
 {email_footer}]]></string>
      <string name="_sys_et_txt_body_account_password_expired"><![CDATA[{email_header}
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your password will expire {expired_date}</p>
-<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please, sign-in and change password</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please sign-in and change password</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_pruning"><![CDATA[{email_header}
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{pruning_output}</p>
@@ -3289,7 +3289,7 @@
 	<string name="_sys_et_txt_name_system_admin_email"><![CDATA[Message sending from the Admin Panel]]></string>
 	<string name="_sys_et_txt_name_system_comment_replied"><![CDATA[The letter is sent to members whose comment was replied]]></string>
 	<string name="_sys_et_txt_name_system_reported"><![CDATA[New report notification]]></string>
-	<string name="_sys_et_txt_name_system_confirmation"><![CDATA[Profile e-mail confirmation message]]></string>
+	<string name="_sys_et_txt_name_system_confirmation"><![CDATA[Profile email confirmation message]]></string>
         <string name="_sys_et_txt_name_system_welcome"><![CDATA[Welcome message]]></string>
 	<string name="_sys_et_txt_name_system_delayed_module_uninstall"><![CDATA[Delayed module uninstall notification]]></string>
 	<string name="_sys_et_txt_name_system_forgot"><![CDATA[Reset password message]]></string>
@@ -3345,7 +3345,7 @@
 	<string name="_sys_form_account_input_agreement"><![CDATA[]]></string>
 	<string name="_sys_form_account_input_agreement_value"><![CDATA[By signing up, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
 	<string name="_sys_form_account_input_captcha"><![CDATA[Security Image]]></string>
-	<string name="_sys_form_account_input_captcha_error"><![CDATA[Security image input failed. Please, try again.]]></string>
+	<string name="_sys_form_account_input_captcha_error"><![CDATA[Security image input failed. Please try again.]]></string>
 	<string name="_sys_form_account_input_captcha_label_text_image"><![CDATA[Type the text:]]></string>
 	<string name="_sys_form_account_input_captcha_label_text_audio"><![CDATA[Type the text you hear:]]></string>
 	<string name="_sys_form_account_input_captcha_action_refresh"><![CDATA[refresh]]></string>
@@ -3359,10 +3359,10 @@
 	<string name="_sys_form_account_input_delete_confirm"><![CDATA[I'm sure that I want to delete the account and data.]]></string>
         <string name="_sys_form_account_input_delete_confirm_wo_content"><![CDATA[I'm sure that I want to delete the account.]]></string>
 	<string name="_sys_form_account_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete account.]]></string>
-	<string name="_sys_form_account_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+	<string name="_sys_form_account_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
 	<string name="_sys_form_account_input_email"><![CDATA[Email]]></string>
 	<string name="_sys_form_account_input_email_error"><![CDATA[Email is not valid]]></string>
-	<string name="_sys_form_account_input_email_uniq_error"><![CDATA[This email address is already registered. Please, use <a href="{0}">Forgot password</a> to restore access to your account.]]></string>
+	<string name="_sys_form_account_input_email_uniq_error"><![CDATA[This email address is already registered. Please use <a href="{0}">Forgot password</a> to restore access to your account.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[This email is already used by someone.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[This phone number is already used by someone.]]></string>
 	<string name="_sys_form_account_input_name"><![CDATA[Account name]]></string>
@@ -3372,7 +3372,7 @@
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Password confirmation failed]]></string>
 	<string name="_sys_form_account_input_password_current"><![CDATA[Current Password]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[This password has already been used before, use a different one]]></string>
-	<string name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to login to this site.]]></string>
+	<string name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to log in to this site.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[The password must at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter and 1 digit.]]></string>
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Email me news and announcements]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
@@ -3417,7 +3417,7 @@
 	<string name="_sys_form_confirm_phone_input_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_confirm_phone_input_caption_system_do_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_empty"><![CDATA[Cannot be empty.]]></string>
-	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please, repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
+	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Phone is not valid]]></string>
 	<string name="_sys_form_display_account_create"><![CDATA[Create Account]]></string>
 	<string name="_sys_form_display_account_settings_delete"><![CDATA[Delete Account]]></string>
@@ -3441,7 +3441,7 @@
 	<string name="_sys_form_forgot_password_email_not_recognized"><![CDATA[This email doesn't belong to any account. Please make sure that it is typed correctly.]]></string>
 	<string name="_sys_form_forgot_password_phone_not_recognized"><![CDATA[This phone doesn't belong to any account. Please make sure that it is typed correctly.]]></string>
 	<string name="_sys_form_forgot_password_phone_error_format"><![CDATA[Wrong phone number, allowed digits only and start from '+']]></string>
-	<string name="_sys_form_forgot_password_phone_and_email_empty_error"><![CDATA[Please, fill phone or email field]]></string>
+	<string name="_sys_form_forgot_password_phone_and_email_empty_error"><![CDATA[Please fill phone or email field]]></string>
 	<string name="_sys_form_forgot_password_input_caption_system_do_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_forgot_password_input_caption_system_email"><![CDATA[Email]]></string>
         <string name="_sys_form_forgot_password_input_caption_system_key"><![CDATA[Key]]></string>
@@ -3525,7 +3525,7 @@
 	<string name="_sys_form_login_input_code_error_expired"><![CDATA[The verification code has expired. <a href="{0}">Send a new code</a>.]]></string>
 	<string name="_sys_form_login_input_phone_error_format"><![CDATA[Wrong phone number, allowed digits only and start from '+']]></string>
 	<string name="_sys_form_login_input_phone_error_not_unique"><![CDATA[This phone is already used by someone.]]></string>
-	<string name="_sys_form_login_input_code_error_invalid"><![CDATA[Wrong verification code. Please, repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
+	<string name="_sys_form_login_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
         <string name="_sys_form_login_input_code_error_restart"><![CDATA[This sign-in has expired. <a href="{0}">Sign in again</a>.]]></string>
         <string name="_sys_form_login_input_code_error_wrong"><![CDATA[Wrong verification code. Try again or <a href="{0}">send a new code</a>.]]></string>
         <string name="_sys_form_manage"><![CDATA[Manage form]]></string>
@@ -3986,14 +3986,14 @@
     <string name="_sys_menu_item_title_set_badges"><![CDATA[Set badges]]></string>
     <string name="_sys_menu_item_title_studio"><![CDATA[Studio]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Subscriptions]]></string>
-    <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share in Facebook]]></string>
-    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share in Twitter]]></string>
-    <string name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Share in Pinterest]]></string>
-    <string name="_sys_menu_item_title_social_sharing_linked_in"><![CDATA[Share in LinkedIn]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_linked_in"><![CDATA[Share in LinkedIn]]></string>
-    <string name="_sys_menu_item_title_social_sharing_whatsapp"><![CDATA[Share in Whatsapp]]></string>
+    <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share on Facebook]]></string>
+    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on Twitter]]></string>
+    <string name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string>
+    <string name="_sys_menu_item_title_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string>
+    <string name="_sys_menu_item_title_social_sharing_whatsapp"><![CDATA[Share on WhatsApp]]></string>
     <string name="_sys_menu_item_title_sounds"><![CDATA[Sounds]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_whatsapp"><![CDATA[Share in Whatsapp]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_whatsapp"><![CDATA[Share on WhatsApp]]></string>
     <string name="_sys_menu_item_title_system_sounds"><![CDATA[Sounds]]></string>
     
     <string name="_sys_menu_item_title_sm_in_reply_to"><![CDATA[In reply to]]></string>
@@ -4139,9 +4139,9 @@
     <string name="_sys_menu_item_title_va_more_auto_empty"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_social_sharing"><![CDATA[Share]]></string>
     <string name="_sys_menu_item_title_system_social_sharing"><![CDATA[Share]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Share in Facebook]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share in Twitter]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Share in Pinterest]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Share on Facebook]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on Twitter]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string>
     <string name="_sys_menu_item_title_system_sm_in_reply_to"><![CDATA[In reply to]]></string>
     <string name="_sys_menu_item_title_system_sm_author"><![CDATA[Author]]></string>
     <string name="_sys_menu_item_title_system_sm_date"><![CDATA[Date]]></string>
@@ -4857,7 +4857,7 @@
     <string name="_sys_score_do_up"><![CDATA[Up]]></string>
     <string name="_sys_score_do_down"><![CDATA[Down]]></string>
     <string name="_sys_score_do_by"><![CDATA[Voted by]]></string>
-    <string name="_sys_score_err_not_enabled"><![CDATA[The feature is not available right now. Please, try again later.]]></string>
+    <string name="_sys_score_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string>
     <string name="_sys_score_err_duplicate_vote"><![CDATA[Duplicate vote]]></string>
     <string name="_sys_search_main_title"><![CDATA[Search Home]]></string>
     <string name="_sys_select"><![CDATA[Select]]></string>
@@ -4870,7 +4870,7 @@
     <string name="_sys_spam_detected"><![CDATA[Your activity triggered automated block]]></string>
     <string name="_sys_spam_detected_contact"><![CDATA[Your activity triggered automated block, please contact us to investigate: {0}]]></string>
     <string name="_sys_splash_btn_start"><![CDATA[Start]]></string>
-    <string name="_sys_splash_err_domain_incorrect"><![CDATA[Domain is essential. Please, fill in this field, for example, my-first-site.]]></string>
+    <string name="_sys_splash_err_domain_incorrect"><![CDATA[Domain is required. Please fill in this field, for example, my-first-site.]]></string>
     <string name="_sys_splash_err_domain_is_used"><![CDATA[The domain name is already used. Try to select another one.]]></string>
     <string name="_sys_splash_err_service_not_available"><![CDATA[The service is currently not available. Try it later, please.]]></string>
     <string name="_sys_splash_inp_placeholder"><![CDATA[site address]]></string>
@@ -4899,7 +4899,7 @@
     <string name="_sys_storage_invalid_file"><![CDATA[file is invalid]]></string>
     <string name="_sys_storage_restriction_ext_all_allowed"><![CDATA[Wow, files of all types are allowed!]]></string>
     <string name="_sys_storage_restriction_ext_all_denied"><![CDATA[Sorry, adding all file types is currently restricted.]]></string>
-    <string name="_sys_storage_restriction_ext_allowed"><![CDATA[Please, upload only files of these types: {0}]]></string>
+    <string name="_sys_storage_restriction_ext_allowed"><![CDATA[Please upload only files of these types: {0}]]></string>
     <string name="_sys_storage_restriction_ext_denied"><![CDATA[You may upload any types of files except for {0}]]></string>
     <string name="_sys_storage_restriction_size"><![CDATA[Maximum file size limit is {0}]]></string>
     <string name="_sys_switch_profile"><![CDATA[Switch profile]]></string>
@@ -4934,8 +4934,8 @@
     <string name="_sys_txt_account_profile_context_change_to_another_suggestion"><![CDATA[You can <a href="{0}">change your current profile</a> to this profile]]></string>
     <string name="_sys_txt_account_profile_context_changed_success"><![CDATA[Current profile has been successfully changed to: <b>{0}</b>]]></string>
     <string name="_sys_txt_account_suspended"><![CDATA[Your account is suspended.]]></string>
-    <string name="_sys_txt_account_unconfirmed_email"><![CDATA[Your email address is unconfirmed. Please, check your email ({1}) for a confirmation letter and click email confirmation link or use confirmation code (6 digit) to <a href="{2}">confirm your email</a>. Can't find the letter? Check your SPAM folder or <a href="{0}">send the verification letter again</a>.]]></string>
-    <string name="_sys_txt_account_unconfirmed_phone"><![CDATA[Your phone is unconfirmed. Please, confirm it on <a href="{0}">verification page</a>.]]></string>
+    <string name="_sys_txt_account_unconfirmed_email"><![CDATA[Your email address is unconfirmed. Please check your email ({1}) for a confirmation letter and click email confirmation link or use confirmation code (6 digit) to <a href="{2}">confirm your email</a>. Can't find the letter? Check your SPAM folder or <a href="{0}">send the verification letter again</a>.]]></string>
+    <string name="_sys_txt_account_unconfirmed_phone"><![CDATA[Your phone is unconfirmed. Please confirm it on <a href="{0}">verification page</a>.]]></string>
     <string name="_sys_txt_account_profile_system"><![CDATA[You don't have a profile yet.]]></string>
     <string name="_sys_txt_account_profile_system_action"><![CDATA[Create profile]]></string>
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Your password has been expired. Please <a href="{0}">change your password</a>.]]></string>
@@ -4950,13 +4950,13 @@
     <string name="_sys_txt_cmt_loading"><![CDATA[Loading...]]></string>
     <string name="_sys_txt_confirm_email_already_confirmed"><![CDATA[Your email address is already confirmed.]]></string>
     <string name="_sys_txt_confirm_email_desc"><![CDATA[Please enter confirmation code which was sent to your email address, or just click confirmation link in the same email message.]]></string>
-    <string name="_sys_txt_confirm_email_error_occured"><![CDATA[Error occurred, please try to login to your account and resend verification email.]]></string>
+    <string name="_sys_txt_confirm_email_error_occured"><![CDATA[Error occurred, please try to log in to your account and resend verification email.]]></string>
     <string name="_sys_txt_confirm_email_sent"><![CDATA[Email verification letter was sent, please check your inbox.]]></string>
     <string name="_sys_txt_confirm_email_sent_failed"><![CDATA[Error occurred, please report error to site administrator.]]></string>
     <string name="_sys_txt_confirm_email_success"><![CDATA[You email address was successfully confirmed.]]></string>
 
     <string name="_sys_txt_confirm_phone_already_confirmed"><![CDATA[Your phone is already confirmed.]]></string>
-    <string name="_sys_txt_confirm_phone_set_phone_error_occured"><![CDATA[Error occurred, please try to login to your account and repeat verification.]]></string>
+    <string name="_sys_txt_confirm_phone_set_phone_error_occured"><![CDATA[Error occurred, please try to log in to your account and repeat verification.]]></string>
     <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Error occurred, please report error to site administrator.]]></string>
     <string name="_sys_txt_confirm_phone_sms_text"><![CDATA[Your phone's verification code is {0}.]]></string>
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Your phone number has been confirmed.]]></string>
@@ -5015,7 +5015,7 @@
     <string name="_sys_txt_form_entry_input_picture_insert"><![CDATA[Insert to Post]]></string>
     <string name="_sys_txt_form_entry_input_picture_pic_url"><![CDATA[Attachment URL:]]></string>
     <string name="_sys_txt_form_entry_input_picture_use_as_thumb"><![CDATA[Use as Thumbnail]]></string>
-    <string name="_sys_txt_form_submission_error"><![CDATA[Incorrect info. Please, check your inputs and try to submit again.]]></string>
+    <string name="_sys_txt_form_submission_error"><![CDATA[Incorrect info. Please check your inputs and try to submit again.]]></string>
     <string name="_sys_txt_form_submission_error_csrf_expired"><![CDATA[Token expired. Please try again.]]></string> 
 
     <string name="_sys_txt_homepage_cover"><![CDATA[Unity is strength... when there is teamwork and collaboration, wonderful things can be achieved.<br /><button class="bx-btn bx-hide-when-logged-in bx-def-margin-top" onclick="document.location='{0}'">Join Now!</button>]]></string>
@@ -5057,7 +5057,7 @@
   <string name="_sys_txt_report_status_1"><![CDATA[In-process]]></string>
   <string name="_sys_txt_report_status_2"><![CDATA[Processed]]></string>
   <string name="_sys_txt_report_status_3"><![CDATA[Hided]]></string>
-	<string name="_sys_txt_reset_pasword_success"><![CDATA[Your password was reset. You are welcome to login to your account.]]></string>
+	<string name="_sys_txt_reset_pasword_success"><![CDATA[Your password was reset. You are welcome to log in to your account.]]></string>
         <string name="_sys_txt_reset_pasword_error_invalid_key"><![CDATA[Reset password link was expired or already used. Please <a href="{0}">try again</a>.]]></string>
         <string name="_sys_txt_reset_pasword_error_not_found"><![CDATA[Account with specified email wasn't found. Please <a href="{0}">try again</a>.]]></string>
 	<string name="_sys_txt_reset_pasword_error_occured"><![CDATA[Error occurred, please <a href="{0}">try again</a>.]]></string>
@@ -5129,7 +5129,7 @@
     <string name="_sys_uploader_html5_title"><![CDATA[Multiple Upload]]></string>
     <string name="_sys_uploader_html5_default_message"><![CDATA[Drop files here to upload or click here to select files]]></string>
     <string name="_sys_uploader_html5_file_is_too_big"><![CDATA[File is too big - {{filesize}} MB, max filesize is {{maxFilesize}} MB.]]></string>
-    <string name="_sys_uploader_html5_number_of_files_exceeded"><![CDATA[You can not upload any more files.]]></string>
+    <string name="_sys_uploader_html5_number_of_files_exceeded"><![CDATA[You cannot upload any more files.]]></string>
     <string name="_sys_uploader_html5_invalid_file_type"><![CDATA[You can't upload files of this type.]]></string>
 	<string name="_sys_uploader_simple_attach_one_more_file"><![CDATA[+ Add more files]]></string>
 	<string name="_sys_uploader_simple_button_name"><![CDATA[Simple Upload]]></string>
@@ -5169,7 +5169,7 @@
         <string name="_vote_do_by_reactions"><![CDATA[Reacted by]]></string>
         <string name="_vote_do_by_x_reaction"><![CDATA["{0}" by]]></string>
         <string name="_vote_do_by_summary"><![CDATA[All]]></string>
-	<string name="_vote_err_not_enabled"><![CDATA[The feature is not available right now. Please, try again later.]]></string>
+	<string name="_vote_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string>
 	<string name="_vote_err_reaction_not_available"><![CDATA[This reaction is not available.]]></string>
 	<string name="_vote_err_reactions_limit"><![CDATA[You can give up to {0} reactions.]]></string>
 	<string name="_vote_err_duplicate_vote"><![CDATA[Duplicate vote]]></string>
@@ -5184,7 +5184,7 @@
 	<string name="_sys_option_labels"><![CDATA[Labels]]></string>
 	<string name="_sys_option_per_page_browse_showcase"><![CDATA[Number of items in showcase view]]></string>
 	<string name="_sys_option_per_page_browse_recommended"><![CDATA[Number of items in recommended view]]></string>
-	<string name="_sys_javascript_requred"><![CDATA[This site requires JavaScript! Please, enable it in the browser!]]></string>
+	<string name="_sys_javascript_requred"><![CDATA[This site requires JavaScript! Please enable it in the browser!]]></string>
 	<string name="_sys_wiki_system_title"><![CDATA[System WIKI]]></string>
 	<string name="_sys_wiki_error_page_exists"><![CDATA[Page with such name({0}) already exists]]></string>
 	<string name="_sys_wiki_error_no_rev"><![CDATA[There is no {0} revision exist for {1} language]]></string>
@@ -5193,7 +5193,7 @@
     <string name="_sys_wiki_error_action_not_allowed"><![CDATA[Wiki object ({1}) action ({0}) isn't allowed]]></string>
     <string name="_sys_wiki_error_incorrect_page_uri"><![CDATA["{0}" isn't correct page URI]]></string>
     <string name="_sys_wiki_error_no_such_lang"><![CDATA[No sucn language]]></string>
-    <string name="_sys_wiki_error_occured"><![CDATA[Error occured (code:{0})]]></string>
+    <string name="_sys_wiki_error_occured"><![CDATA[Error occurred (code:{0})]]></string>
     <string name="_sys_wiki_view_rev"><![CDATA[Version <b>{0}</b> by <a href="{1}">{2}</a>, {3}]]></string>
     <string name="_sys_wiki_lang_mask"><![CDATA[{0} {1} <span class="bx-def-font-grayed bx-def-font-small">{2}</span>]]></string>
     <string name="_sys_wiki_lang_mask_warn"><![CDATA[{0} {1} <span class="bx-def-font-small" style="color:red;">{2}</span>]]></string>
@@ -5203,7 +5203,7 @@
     <string name="_sys_wiki_block_deleted"><![CDATA[Block was successfully deleted]]></string>
     <string name="_sys_wiki_add_block"><![CDATA[Add Block]]></string>
 	<string name="_sys_wiki_add_page"><![CDATA[Add Page]]></string>
-	<string name="_sys_wiki_add_page_text"><![CDATA[Such wiki page doesn't exists.]]></string>
+	<string name="_sys_wiki_add_page_text"><![CDATA[Such wiki page doesn't exist.]]></string>
 	<string name="_sys_wiki_no_missing_translations"><![CDATA[No missing translations for {0} language.]]></string>
 	<string name="_sys_wiki_all_translations_up_to_date"><![CDATA[All translations are up to date for {0} language.]]></string>
     <string name="_sys_wiki_title_title"><![CDATA[Page]]></string>

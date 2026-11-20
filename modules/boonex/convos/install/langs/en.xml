@@ -18,13 +18,13 @@
 	<string name="_bx_cnv_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
 	<string name="_bx_cnv_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
 	<string name="_bx_cnv_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this conversation]]></string>
-	<string name="_bx_cnv_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+	<string name="_bx_cnv_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
 	<string name="_bx_cnv_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the conversation]]></string>
 	<string name="_bx_cnv_form_entry_input_sys_attachments"><![CDATA[Attachments]]></string>
 	<string name="_bx_cnv_form_entry_input_attachments"><![CDATA[Attachments]]></string>
     <string name="_bx_cnv_form_entry_input_recipients"><![CDATA[Recipients]]></string>
     <string name="_bx_cnv_form_entry_input_sys_recipients"><![CDATA[Recipients]]></string>
-    <string name="_bx_cnv_form_entry_input_recipients_err"><![CDATA[Mandatory field. Please, fill it in with profile(s) you are allowed to contact.]]></string>
+    <string name="_bx_cnv_form_entry_input_recipients_err"><![CDATA[Required field. Please fill it in with profile(s) you are allowed to contact.]]></string>
     <string name="_bx_cnv_form_entry_input_sys_submit_text"><![CDATA[Draft status]]></string>
     <string name="_bx_cnv_form_entry_input_sys_submit_block"><![CDATA[Submit block]]></string>
     <string name="_bx_cnv_form_entry_input_sys_draft_id"><![CDATA[Draft ID]]></string>

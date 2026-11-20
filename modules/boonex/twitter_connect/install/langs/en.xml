@@ -4,7 +4,7 @@
 	<string name="_bx_twitter"><![CDATA[Twitter Connect]]></string>
 	<string name="_bx_twitter_settings"><![CDATA[Twitter Connect]]></string>
 	<string name="_bx_twitter_information_block"><![CDATA[
-        <p>This module can be used to login to this site using Twitter credentials.</p>
+        <p>This module can be used to log in to this site using Twitter credentials.</p>
         <p>To make it work, <a target="_blank" href="https://apps.twitter.com">create Twitter app</a> and specify all the details, particularly:
             <ul>
                 <li>Callback URL: <strong>{0}</strong></li>

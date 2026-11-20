@@ -44,7 +44,7 @@ define('BX_DOL_SCORE_DO_DOWN', 'down');
  * - ClassName - your custom class name, if you overrride default class
  * - ClassFile - your custom class path
  *
- * You can refer to BoonEx modules for sample record in this table.
+ * You can refer to the bundled UNA modules for a sample record in this table.
  *
  *
  *

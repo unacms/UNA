@@ -24,7 +24,7 @@
     <string name="_bx_github_form_settings_input_pat"><![CDATA[Access token]]></string>
     <string name="_bx_github_form_settings_input_sys_do_submit"><![CDATA[Submit]]></string>
     <string name="_bx_github_form_settings_input_do_submit"><![CDATA[Submit]]></string>
-    <string name="_bx_github_form_input_err_enter"><![CDATA[This field is essential. Please, enter a value.]]></string>
+    <string name="_bx_github_form_input_err_enter"><![CDATA[This field is required. Please enter a value.]]></string>
 
     <string name="_bx_github_page_title_sys_settings"><![CDATA[Settings]]></string>
     <string name="_bx_github_page_title_settings"><![CDATA[GitHub Settings]]></string>

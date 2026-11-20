@@ -33,7 +33,7 @@
     <string name="_bx_resources_form_entry_input_sys_controls_edit_popup"><![CDATA[Controls (Edit form in popup)]]></string>
     <string name="_bx_resources_form_entry_input_sys_link"><![CDATA[Link]]></string>
     <string name="_bx_resources_form_entry_input_link"><![CDATA[Link]]></string>
-    <string name="_bx_resources_form_entry_input_link_err"><![CDATA[Link is essential. Please, fill in this field.]]></string>
+    <string name="_bx_resources_form_entry_input_link_err"><![CDATA[Link is required. Please fill in this field.]]></string>
     <string name="_bx_resources_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_resources_form_entry_input_title"><![CDATA[Title]]></string>
     <string name="_bx_resources_form_entry_input_title_inf"><![CDATA[Leave empty to use Link as Title.]]></string>
@@ -44,7 +44,7 @@
     <string name="_bx_resources_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
     <string name="_bx_resources_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_resources_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this resource]]></string>
-    <string name="_bx_resources_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_resources_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_resources_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the resource]]></string>
     <string name="_bx_resources_form_entry_input_sys_covers"><![CDATA[Image]]></string>
     <string name="_bx_resources_form_entry_input_covers"><![CDATA[Image]]></string>
@@ -68,7 +68,7 @@
     <string name="_bx_resources_form_list_entry_input_sys_do_submit"><![CDATA[Submit]]></string>
     <string name="_bx_resources_form_list_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_resources_form_list_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_resources_form_list_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_resources_form_list_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
 
     <!-- ACL -->
     <string name="_bx_resources_acl_action_create_entry"><![CDATA[Create Resource]]></string>

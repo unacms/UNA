@@ -28,12 +28,12 @@
     <string name="_bx_albums_form_entry_input_do_submit"><![CDATA[Submit]]></string>
     <string name="_bx_albums_form_entry_input_sys_title"><![CDATA[Caption]]></string>
     <string name="_bx_albums_form_entry_input_title"><![CDATA[Caption]]></string>
-    <string name="_bx_albums_form_entry_input_title_err"><![CDATA[Caption is essential min 3 max 160.]]></string>
+    <string name="_bx_albums_form_entry_input_title_err"><![CDATA[Caption is required min 3 max 160.]]></string>
     <string name="_bx_albums_form_entry_input_sys_text"><![CDATA[Album Description]]></string>
     <string name="_bx_albums_form_entry_input_text"><![CDATA[Album Description]]></string>
     <string name="_bx_albums_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_albums_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this album]]></string>
-    <string name="_bx_albums_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_albums_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_albums_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the album]]></string>
     <string name="_bx_albums_form_entry_input_sys_pictures"><![CDATA[Pictures]]></string>
     <string name="_bx_albums_form_entry_input_pictures"><![CDATA[Pictures]]></string>
@@ -52,7 +52,7 @@
     <string name="_bx_albums_form_media_display_delete"><![CDATA[Delete Media]]></string>
     <string name="_bx_albums_form_media_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_albums_form_media_input_delete_confirm"><![CDATA[I am sure I want to delete this media]]></string>
-    <string name="_bx_albums_form_media_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_albums_form_media_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_albums_form_media_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the media]]></string>
     <string name="_bx_albums_form_media_input_sys_title"><![CDATA[Caption]]></string>
     <string name="_bx_albums_form_media_input_title"><![CDATA[Caption]]></string>

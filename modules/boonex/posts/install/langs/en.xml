@@ -28,7 +28,7 @@
     <string name="_bx_posts_form_entry_input_do_publish"><![CDATA[Publish]]></string>
     <string name="_bx_posts_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_posts_form_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_posts_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_posts_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
     <string name="_bx_posts_form_entry_input_sys_cat"><![CDATA[Category]]></string>
     <string name="_bx_posts_form_entry_input_cat"><![CDATA[Category]]></string>
     <string name="_bx_posts_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
@@ -42,7 +42,7 @@
     <string name="_bx_posts_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
     <string name="_bx_posts_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_posts_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this post]]></string>
-    <string name="_bx_posts_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_posts_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_posts_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the post]]></string>
     <string name="_bx_posts_form_entry_input_sys_covers"><![CDATA[Header Image]]></string>
     <string name="_bx_posts_form_entry_input_covers"><![CDATA[Header Image]]></string>
@@ -75,7 +75,7 @@
     <string name="_bx_posts_form_poll_display_add"><![CDATA[Add Poll]]></string>
     <string name="_bx_posts_form_poll_input_sys_text"><![CDATA[Question]]></string>
     <string name="_bx_posts_form_poll_input_text"><![CDATA[Question]]></string>
-    <string name="_bx_posts_form_poll_input_text_err"><![CDATA[Question is essential. Please, fill in this field]]></string>
+    <string name="_bx_posts_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string>
     <string name="_bx_posts_form_poll_input_sys_answers"><![CDATA[Answers]]></string>
     <string name="_bx_posts_form_poll_input_answers"><![CDATA[Answers]]></string>
     <string name="_bx_posts_form_poll_input_answers_err"><![CDATA[Poll should have at least 2 non-empty answers.]]></string>
@@ -89,7 +89,7 @@
     <string name="_bx_posts_category_display_edit"><![CDATA[Edit category]]></string>
     <string name="_bx_posts_category_form_entry_input_sys_value"><![CDATA[Value]]></string>
     <string name="_bx_posts_category_form_entry_input_value"><![CDATA[Value]]></string>>
-    <string name="_bx_posts_category_form_entry_input_value_err"><![CDATA[Value is essential. Please, fill in this field]]></string>
+    <string name="_bx_posts_category_form_entry_input_value_err"><![CDATA[Value is required. Please fill in this field]]></string>
     <string name="_bx_posts_lmi_cpt_categories"><![CDATA[Categories]]></string>
 
     <string name="_bx_posts_acl_action_create_entry"><![CDATA[Create Post]]></string>
@@ -232,7 +232,7 @@
     <string name="_bx_posts_form_attach_link_display_add"><![CDATA[Attach Link]]></string>
     <string name="_bx_posts_form_attach_link_input_sys_content_id"><![CDATA[Content Id]]></string>
     <string name="_bx_posts_form_attach_link_input_sys_url"><![CDATA[Add Link]]></string>
-    <string name="_bx_posts_form_attach_link_input_url_err"><![CDATA[Correct Link is essential. Please, fill in this field.]]></string>
+    <string name="_bx_posts_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string>
     <string name="_bx_posts_form_attach_link_input_url"><![CDATA[Add Link]]></string>
     <string name="_bx_posts_form_attach_link_input_do_submit"><![CDATA[Add]]></string>
     <string name="_bx_posts_form_attach_link_input_sys_do_submit"><![CDATA[Add]]></string>

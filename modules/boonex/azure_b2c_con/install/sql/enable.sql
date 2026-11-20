@@ -43,5 +43,5 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_azrb2c_privacy', '3', @iCategId, '_sys_connect_option_privacy', 'select', '', '', 54, 'a:2:{s:6:"module";s:9:"bx_azrb2c";s:6:"method";s:18:"get_privacy_groups";}'),
 ('bx_azrb2c_confirm_email', 'on', @iCategId, '_sys_connect_option_confirm_email', 'checkbox', '', '', 70, ''),
 ('bx_azrb2c_approve', '', @iCategId, '_sys_connect_option_approve', 'checkbox', '', '', 80, ''),
-('bx_azrb2c_group', '', @iCategId, 'bx_azrb2c_option_group', 'digit', '', '', 90, '');
+('bx_azrb2c_group', '', @iCategId, '_bx_azrb2c_option_group', 'digit', '', '', 90, '');
 

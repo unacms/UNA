@@ -180,7 +180,7 @@ This antispam method scan submitted content for the URLs and check them if any o
 	<string name="_bx_antispam_option_toxicity_report"><![CDATA[Send report to admin if toxic content discovered]]></string>
 	<string name="_bx_antispam_option_toxicity_filter_api_key"><![CDATA[Perspective API key (see <a href="https://developers.perspectiveapi.com/s/docs-get-started">this</a> page on how obtain it)]]></string>
 	<string name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Toxicity threshold to consider a text as toxic (0 - 100)]]></string>
-	<string name="_bx_antispam_form_submission_error"><![CDATA[Incorrect info. The form seems to contain some toxic content. Please, check your inputs and try to submit again.]]></string>
+	<string name="_bx_antispam_form_submission_error"><![CDATA[Incorrect info. The form seems to contain some toxic content. Please check your inputs and try to submit again.]]></string>
 
 	<string name="_bx_antispam_toxicity_blocked_report_name"><![CDATA[Toxicity blocked report message]]></string>
     <string name="_bx_antispam_toxicity_blocked_report_subject"><![CDATA[Toxic content has been blocked]]></string>

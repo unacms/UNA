@@ -47,12 +47,12 @@
     <string name="_bx_ads_form_category_input_parent_id_empty"><![CDATA[No parent]]></string>
     <string name="_bx_ads_form_category_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_ads_form_category_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_ads_form_category_input_title_err"><![CDATA[Title is essential. Please, fill in this field.]]></string>
+    <string name="_bx_ads_form_category_input_title_err"><![CDATA[Title is required. Please fill in this field.]]></string>
     <string name="_bx_ads_form_category_input_sys_text"><![CDATA[Text]]></string>
     <string name="_bx_ads_form_category_input_text"><![CDATA[Text]]></string>
     <string name="_bx_ads_form_category_input_sys_type"><![CDATA[Type]]></string>
     <string name="_bx_ads_form_category_input_type"><![CDATA[Type]]></string>
-    <string name="_bx_ads_form_category_input_type_err"><![CDATA[Type is essential. Please, select a value for this field.]]></string>
+    <string name="_bx_ads_form_category_input_type_err"><![CDATA[Type is required. Please select a value for this field.]]></string>
     <string name="_bx_ads_form_category_input_type_info"><![CDATA[Type determines a set of fields for entries in this category.]]></string>
     <string name="_bx_ads_form_category_input_sys_type_clone"><![CDATA[Clone type]]></string>
     <string name="_bx_ads_form_category_input_type_clone"><![CDATA[Clone type]]></string>
@@ -62,7 +62,7 @@
     <string name="_bx_ads_form_category_input_icon"><![CDATA[Icon]]></string>
     <string name="_bx_ads_form_category_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_ads_form_category_input_delete_confirm"><![CDATA[I am sure I want to delete this category]]></string>
-    <string name="_bx_ads_form_category_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_ads_form_category_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_ads_form_category_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the category]]></string>
 
     <string name="_bx_ads_form_entry"><![CDATA[Ads]]></string>
@@ -85,10 +85,10 @@
     <string name="_bx_ads_form_entry_input_do_submit"><![CDATA[Submit]]></string>
     <string name="_bx_ads_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_ads_form_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_ads_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_ads_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
     <string name="_bx_ads_form_entry_input_sys_name"><![CDATA[Name]]></string>
     <string name="_bx_ads_form_entry_input_name"><![CDATA[Name]]></string>
-    <string name="_bx_ads_form_entry_input_name_err"><![CDATA[Name should be unique and is needed for internal usage. Please, fill in this field]]></string>
+    <string name="_bx_ads_form_entry_input_name_err"><![CDATA[Name should be unique and is needed for internal usage. Please fill in this field]]></string>
     <string name="_bx_ads_form_entry_input_sys_price"><![CDATA[Price]]></string>
     <string name="_bx_ads_form_entry_input_price"><![CDATA[Price]]></string>
     <string name="_bx_ads_form_entry_input_sys_auction"><![CDATA[Auction]]></string>
@@ -96,7 +96,7 @@
     <string name="_bx_ads_form_entry_input_auction_info"><![CDATA[Allow buyers not only to pay a defined price but to make offers too.]]></string>
     <string name="_bx_ads_form_entry_input_sys_quantity"><![CDATA[Quantity]]></string>
     <string name="_bx_ads_form_entry_input_quantity"><![CDATA[Quantity]]></string>
-    <string name="_bx_ads_form_entry_input_quantity_err"><![CDATA[Quantity is essential. Please, fill in this field]]></string>
+    <string name="_bx_ads_form_entry_input_quantity_err"><![CDATA[Quantity is required. Please fill in this field]]></string>
     <string name="_bx_ads_form_entry_input_sys_year"><![CDATA[Year]]></string>
     <string name="_bx_ads_form_entry_input_year"><![CDATA[Year]]></string>
     <string name="_bx_ads_form_entry_input_sys_category"><![CDATA[Category]]></string>
@@ -104,7 +104,7 @@
     <string name="_bx_ads_form_entry_input_category_view"><![CDATA[Category]]></string>
     <string name="_bx_ads_form_entry_input_sys_category_select"><![CDATA[Category]]></string>
     <string name="_bx_ads_form_entry_input_category_select"><![CDATA[Category]]></string>
-    <string name="_bx_ads_form_entry_input_category_select_err"><![CDATA[Category field is essential. Please, fill it in.]]></string>
+    <string name="_bx_ads_form_entry_input_category_select_err"><![CDATA[Category field is required. Please fill it in.]]></string>
     <string name="_bx_ads_form_entry_input_sys_text"><![CDATA[Text]]></string>
     <string name="_bx_ads_form_entry_input_text"><![CDATA[Text]]></string>
     <string name="_bx_ads_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
@@ -113,7 +113,7 @@
     <string name="_bx_ads_form_entry_input_notes_purchased_inf"><![CDATA[Will be attached to email message which is sent to buyer after purchase.]]></string>
     <string name="_bx_ads_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_ads_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this ad]]></string>
-    <string name="_bx_ads_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_ads_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_ads_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the ad]]></string>
     <string name="_bx_ads_form_entry_input_sys_covers"><![CDATA[Header Image]]></string>
     <string name="_bx_ads_form_entry_input_covers"><![CDATA[Header Image]]></string>
@@ -164,7 +164,7 @@
     <string name="_bx_ads_form_poll_display_add"><![CDATA[Add Poll]]></string>
     <string name="_bx_ads_form_poll_input_sys_text"><![CDATA[Question]]></string>
     <string name="_bx_ads_form_poll_input_text"><![CDATA[Question]]></string>
-    <string name="_bx_ads_form_poll_input_text_err"><![CDATA[Question is essential. Please, fill in this field]]></string>
+    <string name="_bx_ads_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string>
     <string name="_bx_ads_form_poll_input_sys_answers"><![CDATA[Answers]]></string>
     <string name="_bx_ads_form_poll_input_answers"><![CDATA[Answers]]></string>
     <string name="_bx_ads_form_poll_input_answers_err"><![CDATA[Poll should have at least 2 non-empty answers.]]></string>
@@ -177,7 +177,7 @@
     <string name="_bx_ads_form_attach_link_display_add"><![CDATA[Attach Link]]></string>
     <string name="_bx_ads_form_attach_link_input_sys_content_id"><![CDATA[Content Id]]></string>
     <string name="_bx_ads_form_attach_link_input_sys_url"><![CDATA[Add Link]]></string>
-    <string name="_bx_ads_form_attach_link_input_url_err"><![CDATA[Correct Link is essential. Please, fill in this field.]]></string>
+    <string name="_bx_ads_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string>
     <string name="_bx_ads_form_attach_link_input_url"><![CDATA[Add Link]]></string>
     <string name="_bx_ads_form_attach_link_input_do_submit"><![CDATA[Add]]></string>
     <string name="_bx_ads_form_attach_link_input_sys_do_submit"><![CDATA[Add]]></string>
@@ -188,10 +188,10 @@
     <string name="_bx_ads_form_offer_display_view"><![CDATA[View Offer]]></string>
     <string name="_bx_ads_form_offer_input_sys_amount"><![CDATA[Amount]]></string>
     <string name="_bx_ads_form_offer_input_amount"><![CDATA[Amount]]></string>
-    <string name="_bx_ads_form_offer_input_amount_err"><![CDATA[Amount is essential. Please, fill in this field.]]></string>
+    <string name="_bx_ads_form_offer_input_amount_err"><![CDATA[Amount is required. Please fill in this field.]]></string>
     <string name="_bx_ads_form_offer_input_sys_quantity"><![CDATA[Quantity]]></string>
     <string name="_bx_ads_form_offer_input_quantity"><![CDATA[Quantity]]></string>
-    <string name="_bx_ads_form_offer_input_quantity_err"><![CDATA[Quantity is essential. Please, fill in this field.]]></string>
+    <string name="_bx_ads_form_offer_input_quantity_err"><![CDATA[Quantity is required. Please fill in this field.]]></string>
     <string name="_bx_ads_form_offer_input_sys_total"><![CDATA[Total]]></string>
     <string name="_bx_ads_form_offer_input_total"><![CDATA[Total]]></string>
     <string name="_bx_ads_form_offer_input_sys_message"><![CDATA[Message]]></string>

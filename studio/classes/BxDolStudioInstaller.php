@@ -19,7 +19,7 @@ define("BX_DOL_STUDIO_INSTALLER_FAILED", 1);
  *
  *
  * Example of usage:
- * refer to the BoonEx modules
+ * refer to the bundled UNA modules
  *
  *
  * Memberships/ACL:
