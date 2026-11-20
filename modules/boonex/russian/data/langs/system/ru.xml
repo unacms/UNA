@@ -3752,6 +3752,7 @@
 	<string name="_sys_inst_step_site"><![CDATA[Сайт]]></string>
 	<string name="_sys_inst_steps"><![CDATA[Шаги установки]]></string>
 	<string name="_sys_inst_title"><![CDATA[Установка UNA {0}]]></string>
+	<string name="_sys_inst_title_meta"><![CDATA[Установка]]></string>
 	<string name="_sys_inst_welcome"><![CDATA[Установка UNA]]></string>
 	<string name="_sys_inst_welcome_lead"><![CDATA[Установка UNA на этот сервер: три короткие формы, затем установка приложений, которая занимает пару минут.]]></string>
 	<string name="_sys_inst_welcome_step_config"><![CDATA[Ввод базы данных, названия сайта и учётной записи администратора.]]></string>

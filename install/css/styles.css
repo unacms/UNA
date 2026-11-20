@@ -70,10 +70,21 @@ body.bx-install-body {
     height: 36px;
     border-radius: var(--bx-radius-lg, 8px);
 }
-.bx-install-brand-title {
+/* "UNA <version>" over a small "Installation", so a long step name still fits beside it */
+.bx-install-brand {
     flex: none;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+.bx-install-brand-title {
     font-size: 1rem;
     font-weight: 600;
+    white-space: nowrap;
+}
+.bx-install-brand-meta {
+    font-size: 0.75rem;
+    color: var(--bx-inst-muted);
     white-space: nowrap;
 }
 .bx-install-help {
@@ -169,7 +180,7 @@ body.bx-install-body {
     clip: rect(0 0 0 0);
 }
 @media (max-width: 639px) {
-    .bx-install-brand-title {
+    .bx-install-brand {
         display: none;
     }
     .bx-install-stepper li:not(.is-current) {

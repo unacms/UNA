@@ -27,7 +27,10 @@
 <div class="bx-install-shell">
     <header class="bx-install-topbar bx-std-block cnt-bg">
         <img class="bx-install-header-logo" src="<?=BX_INSTALL_URL_ROOT; ?>studio/template/images/dbd_version.svg" alt="" />
-        <span class="bx-install-brand-title"><?=$sTitle; ?></span>
+        <span class="bx-install-brand">
+            <span class="bx-install-brand-title">UNA <?=BX_DOL_VER; ?></span>
+            <span class="bx-install-brand-meta"><?php echo _t('_sys_inst_title_meta'); ?></span>
+        </span>
         <?php if (!empty($aSteps)): ?>
         <nav class="bx-install-stepper-nav" aria-label="<?=bx_html_attribute(_t('_sys_inst_steps')); ?>">
             <ol class="bx-install-stepper">

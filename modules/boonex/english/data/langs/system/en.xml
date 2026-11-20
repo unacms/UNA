@@ -3782,6 +3782,7 @@
 	<string name="_sys_inst_step_site"><![CDATA[Site]]></string>
 	<string name="_sys_inst_steps"><![CDATA[Installation steps]]></string>
 	<string name="_sys_inst_title"><![CDATA[Install UNA {0}]]></string>
+	<string name="_sys_inst_title_meta"><![CDATA[Installation]]></string>
 	<string name="_sys_inst_welcome"><![CDATA[Install UNA]]></string>
 	<string name="_sys_inst_welcome_lead"><![CDATA[This sets up UNA on this server. You fill in three short forms, then the apps install, which takes a minute or two.]]></string>
 	<string name="_sys_inst_welcome_step_config"><![CDATA[Enter the database, the site name and your admin account.]]></string>
