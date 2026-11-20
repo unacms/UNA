@@ -6213,8 +6213,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             $iProfileId = bx_get_logged_profile_id();
 
         // An account without a profile has no feed of its own: the post block above asks it to create a profile.
-        if($this->_isViewerWithoutProfile($iProfileId))
+        if($this->isViewerWithoutProfile($iProfileId)) {
             return [];
+        }
 
         $aBrowseParams['owner_id'] = $iProfileId;
 
@@ -6306,8 +6307,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
     protected function _getBlockPost($iProfileId, $aParams = array())
     {
-        if(($sMsg = $this->_getNoProfileMessage($iProfileId)) !== false)
+        if(($sMsg = $this->getNoProfileMessage($iProfileId)) !== false) {
             return $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['content' => MsgBox($sMsg)];
+        }
 
         $this->_iOwnerId = $iProfileId;
 
@@ -6327,11 +6329,12 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
      * Whether the profile is the viewer's own system profile: an account without a profile of its own acts as it,
      * and it has no feed (viewing it is denied) and can't post.
      */
-    protected function _isViewerWithoutProfile($iProfileId)
+    protected function isViewerWithoutProfile($iProfileId)
     {
         $iViewerId = (int)$this->getUserId();
-        if(!$iViewerId || (int)$iProfileId != $iViewerId)
+        if(!$iViewerId || (int)$iProfileId != $iViewerId) {
             return false;
+        }
 
         $oViewer = BxDolProfile::getInstance($iViewerId);
         return $oViewer && $oViewer->getModule() == 'system';
@@ -6341,10 +6344,11 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
      * What an account without a profile sees in place of the post form of its own feed: posting needs a profile,
      * and the message offers to create one (BxDolAcl::getDenialState). False for anyone else.
      */
-    protected function _getNoProfileMessage($iProfileId)
+    protected function getNoProfileMessage($iProfileId)
     {
-        if(!$this->_isViewerWithoutProfile($iProfileId))
+        if(!$this->isViewerWithoutProfile($iProfileId)) {
             return false;
+        }
 
         $aCheck = checkActionModule($this->getUserId(), 'post', $this->getName());
         return $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED ? $aCheck[CHECK_ACTION_MESSAGE] : false;

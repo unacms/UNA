@@ -113,7 +113,7 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      * Titles and icons of the states that say why an action was denied (getDenialState), by the level that denied it.
      * A level that isn't here is a membership that doesn't include the action.
      */
-    protected $_aLevel2State = array (
+    protected $aLevel2State = array (
         MEMBERSHIP_ID_NON_MEMBER => ['title' => '_sys_acl_state_unauthenticated_title', 'icon' => 'sign-in-alt'],
         MEMBERSHIP_ID_ACCOUNT => ['title' => '_sys_acl_state_account_title', 'icon' => 'user-plus'],
         MEMBERSHIP_ID_UNCONFIRMED => ['title' => '_sys_acl_state_unconfirmed_title', 'icon' => 'envelope'],
@@ -125,7 +125,7 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      * The denials of this request, message => level id: checkAction's callers pass on only the message, and the
      * message box that shows it (MsgBox, bx_api_get_msg) asks getDenialState what the viewer can do about it.
      */
-    protected static $_aDenials = array();
+    protected static $aDenials = array();
 
     protected function __construct()
     {
@@ -170,23 +170,26 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      */
     public static function getDenialState($sMessage)
     {
-        if(!is_string($sMessage) || !isset(self::$_aDenials[$sMessage]))
+        if(!is_string($sMessage) || !isset(self::$aDenials[$sMessage])) {
             return null;
+        }
 
-        $iLevel = self::$_aDenials[$sMessage];
+        $iLevel = self::$aDenials[$sMessage];
         $oAcl = self::getInstance();
-        $aState = $oAcl->_aLevel2State[$iLevel] ?? ['title' => '_sys_acl_state_not_allowed_title', 'icon' => 'lock'];
+        $aState = $oAcl->aLevel2State[$iLevel] ?? ['title' => '_sys_acl_state_not_allowed_title', 'icon' => 'lock'];
 
         $aButtons = [];
-        if($iLevel == MEMBERSHIP_ID_NON_MEMBER)
+        if($iLevel == MEMBERSHIP_ID_NON_MEMBER) {
             $aButtons = [
                 ['title' => '_sys_menu_item_title_login', 'link' => 'page.php?i=login'],
                 ['title' => '_sys_menu_item_title_join', 'link' => 'page.php?i=create-account'],
             ];
-        else if($iLevel == MEMBERSHIP_ID_ACCOUNT && isLogged())
+        }
+        elseif($iLevel == MEMBERSHIP_ID_ACCOUNT && isLogged()) {
             $aButtons = [
                 ['title' => '_sys_txt_account_profile_system_action', 'link' => BxDolPage::getProfileRequiredUrl()],
             ];
+        }
 
         return [
             'icon' => $aState['icon'],
@@ -424,7 +427,7 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
 
             $aResult[CHECK_ACTION_RESULT] = CHECK_ACTION_RESULT_NOT_ALLOWED;
             $aResult[CHECK_ACTION_MESSAGE] = _t_ext($sLangKey, $aLangFileParams);
-            self::$_aDenials[$aResult[CHECK_ACTION_MESSAGE]] = (int)$aMembership['id'];
+            self::$aDenials[$aResult[CHECK_ACTION_MESSAGE]] = (int)$aMembership['id'];
             return $aResult;
         }
 

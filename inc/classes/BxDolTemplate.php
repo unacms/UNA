@@ -4010,12 +4010,14 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         header('Status: 403 Forbidden');
 
         // An expected permission state, not an error: titled by its reason (BxDolAcl::getDenialState), else "No access".
-        if (!$sMsg || $sMsg == _t('_Access denied') || $sMsg == _t('_sys_txt_access_denied'))
+        if (!$sMsg || $sMsg == _t('_Access denied') || $sMsg == _t('_sys_txt_access_denied')) {
             $sMsg = _t('_sys_txt_access_denied_text');
+        }
 
         $aState = BxDolAcl::getDenialState($sMsg);
-        if (!$aState)
+        if (!$aState) {
             $aState = ['icon' => 'lock', 'title' => _t('_sys_txt_access_denied_title'), 'text' => $sMsg];
+        }
 
         $this->displayMsg([
             'title' => $aState['title'],

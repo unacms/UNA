@@ -155,27 +155,36 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      *
      * @param string|array $mixedText translated message, or a state
      */
-    function msgBox($mixedText, $iTimer = 0, $sOnClose = "")
+    public function msgBox($mixedText, $iTimer = 0, $sOnClose = "")
     {
         $iId = time() . mt_rand(1, 1000);
 
-        $aState = is_array($mixedText) ? $mixedText : ($iTimer > 0 ? null : BxDolAcl::getDenialState($mixedText));
-        if($aState)
-            return $this->_msgBoxState($iId, $aState);
+        // A timed message is a notice that fades out, never a denial.
+        $aState = null;
+        if(is_array($mixedText)) {
+            $aState = $mixedText;
+        }
+        elseif($iTimer <= 0) {
+            $aState = BxDolAcl::getDenialState($mixedText);
+        }
+        if($aState) {
+            return $this->msgBoxState($iId, $aState);
+        }
 
-        if($iTimer > 0)
+        if($iTimer > 0) {
             BxDolTemplate::getInstance()->addJs(array('jquery.anim.js'));
+        }
 
         return $this->_oTemplate->parseHtmlByName('messageBox.html', array(
+            'id' => $iId,
             'bx_if:plain' => array(
                 'condition' => true,
                 'content' => array(
-                    'id' => $iId,
                     'msgText' => $mixedText,
                     'bx_if:timer' => array(
                         'condition' => $iTimer > 0,
                         'content' => array(
-                            'id' => $iId,
+                            'timer_id' => $iId,
                             'time' => 1000 * $iTimer,
                             'on_close' => $sOnClose,
                         )
@@ -189,20 +198,22 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     /**
      * The state version of msgBox: icon, title, text and buttons, centred, as the apps show an empty state.
      */
-    protected function _msgBoxState($iId, $aState)
+    protected function msgBoxState($iId, $aState)
     {
         $sIconHtml = '';
         if(!empty($aState['icon']) && is_string($aState['icon'])) {
             $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
             $sIconHtml = $oIconset ? $oIconset->getIconHtml($aState['icon']) : false;
-            if($sIconHtml === false)
+            if($sIconHtml === false) {
                 $sIconHtml = '<i class="sys-icon ' . bx_html_attribute($aState['icon']) . '"></i>';
+            }
         }
 
         $aButtons = [];
         foreach(is_array($aState['buttons'] ?? null) ? $aState['buttons'] : [] as $aButton) {
-            if(empty($aButton['title']) || empty($aButton['link']))
+            if(empty($aButton['title']) || empty($aButton['link'])) {
                 continue;
+            }
 
             $aButtons[] = [
                 'class' => empty($aButtons) ? 'bx-btn-primary' : '',
@@ -214,19 +225,19 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         $sTitle = isset($aState['title']) && is_string($aState['title']) ? $aState['title'] : '';
 
         return $this->_oTemplate->parseHtmlByName('messageBox.html', [
+            'id' => $iId,
             'bx_if:plain' => ['condition' => false, 'content' => []],
             'bx_if:state' => [
                 'condition' => true,
                 'content' => [
-                    'id' => $iId,
-                    'msgText' => $aState['text'] ?? '',
+                    'state_text' => $aState['text'] ?? '',
                     'bx_if:icon' => [
                         'condition' => $sIconHtml !== '',
                         'content' => ['icon_html' => $sIconHtml],
                     ],
                     'bx_if:title' => [
                         'condition' => $sTitle !== '',
-                        'content' => ['title' => bx_process_output($sTitle)],
+                        'content' => ['state_title' => bx_process_output($sTitle)],
                     ],
                     'bx_if:buttons' => [
                         'condition' => !empty($aButtons),
