@@ -1261,15 +1261,19 @@ BLAH;
          * the caption on the edge, so the two never overlap.
          */
         if ($bAdaptive) {
-            if (!isset($aInput['attrs']) || !is_array($aInput['attrs']))
-                $aInput['attrs'] = [];
-            $aInput['attrs']['id'] = $this->getInputId($aInput);
-
             $sClassWrapper .= ' bx-form-element-adaptive';
             if (isset($aInput['attrs']['placeholder']) && trim((string)$aInput['attrs']['placeholder']) !== '')
                 $sClassWrapper .= ' bx-form-element-adaptive-floated';
             else
                 $aInput['attrs']['placeholder'] = ' ';
+        }
+
+        // a caption above a text or password field is its label: clicking it focuses the field, and the field gets its name from it
+        if ($bAdaptive || (!$isOneLine && !$this->_bGenFormApi && $sCaption && in_array($aInput['type'] ?? '', ['text', 'password']) && empty($aInput['html']) && !empty($aInput['name']))) {
+            if (!isset($aInput['attrs']) || !is_array($aInput['attrs']))
+                $aInput['attrs'] = [];
+            if (empty($aInput['attrs']['id']))
+                $aInput['attrs']['id'] = $this->getInputId($aInput);
 
             $sCaption = $this->oTemplate->parseHtmlByName('form_row_label.html', [
                 'for' => bx_html_attribute($aInput['attrs']['id']),

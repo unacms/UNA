@@ -176,8 +176,8 @@
     <string name="_bx_snipcart_menu_item_title_system_delete_entry"><![CDATA[Удалить товар]]></string>
     <string name="_bx_snipcart_menu_item_title_delete_entry"><![CDATA[Удалить товар]]></string>
     <string name="_bx_snipcart_menu_item_title_system_view_entry"><![CDATA[Просмотреть товар]]></string>
-    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Покупки]]></string>
-    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Покупки]]></string>
+    <string name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Snipcart]]></string>
+    <string name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Snipcart]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_public"><![CDATA[Новые]]></string>
     <string name="_bx_snipcart_menu_item_title_entries_public"><![CDATA[Новые]]></string>
     <string name="_bx_snipcart_menu_item_title_system_entries_search"><![CDATA[Поиск]]></string>

@@ -12,6 +12,7 @@ class BxDolUpgrader extends BxDol
     protected $_sUrlVersionCheck = 'https://v.unacms.com/';
     protected $_sError = false;
     protected $oDb = null;
+    protected $_sCacheKeyVersionInfo = 'sys_version_update_info_';
 
     /**
      * Prepare for system upgrade.
@@ -127,21 +128,59 @@ class BxDolUpgrader extends BxDol
     /**
      * @param string $sChannel 'stable' or 'beta' ('dev' checks stable); empty for the channel set in the sys_upgrade_channel option
      */
-    public function getVersionUpdateInfo ($sChannel = '')
+    /**
+     * Ask the version server about the newest release on a channel. A good answer is also kept (see getVersionUpdateInfoCached),
+     * so pages that only show a notice read it without asking the server.
+     * @param $sChannel 'stable' or 'beta', the site's channel when empty
+     * @param $iTimeout seconds to wait for the server
+     * @return array the server's answer, or null when there is none
+     */
+    public function getVersionUpdateInfo ($sChannel = '', $iTimeout = 10)
     {
-        if(!$sChannel)
-            $sChannel = getParam('sys_upgrade_channel');
+        $sChannel = $this->getVersionChannel($sChannel);
 
         $sUrlVersionCheck = $this->_sUrlVersionCheck . ('beta' == $sChannel ? 'beta/' : '');
-        $s = bx_file_get_contents($sUrlVersionCheck, array ('v' => bx_get_ver()));
+        $sHttpCode = null;
+        $s = bx_file_get_contents($sUrlVersionCheck, array ('v' => bx_get_ver()), 'get', array(), $sHttpCode, array(), (int)$iTimeout);
         if (!$s)
             return null;
 
         $a = json_decode($s, true);
-        if (!isset($a['latest_version']))
+        if (!is_array($a) || !isset($a['latest_version']) || !is_string($a['latest_version']))
             return null;
 
+        $oDb = BxDolDb::getInstance();
+        $oDb->getDbCacheObject()->setData($oDb->genDbCacheKey($this->_sCacheKeyVersionInfo . $sChannel), array('time' => time(), 'info' => $a));
+
         return $a;
+    }
+
+    /**
+     * The last good answer of getVersionUpdateInfo for a channel, without asking the server. Studio's Dashboard check and
+     * the daily sys_upgrade cron job ask the server and keep the answer.
+     * @param $sChannel 'stable' or 'beta', the site's channel when empty
+     * @param $iMaxAge seconds an answer is used for
+     * @return array the server's answer, or null when there is none younger than $iMaxAge
+     */
+    public function getVersionUpdateInfoCached ($sChannel = '', $iMaxAge = 172800)
+    {
+        $oDb = BxDolDb::getInstance();
+        $a = $oDb->getDbCacheObject()->getData($oDb->genDbCacheKey($this->_sCacheKeyVersionInfo . $this->getVersionChannel($sChannel)));
+        if (!is_array($a) || empty($a['info']['latest_version']) || !isset($a['time']) || time() - (int)$a['time'] > $iMaxAge)
+            return null;
+
+        return $a['info'];
+    }
+
+    /**
+     * The channel the version server knows: 'beta', or 'stable' for any other (a dev site checks against stable).
+     */
+    protected function getVersionChannel ($sChannel)
+    {
+        if (!$sChannel)
+            $sChannel = getParam('sys_upgrade_channel');
+
+        return 'beta' == $sChannel ? 'beta' : 'stable';
     }
 
     public function isNewVersionAvailable ($a)

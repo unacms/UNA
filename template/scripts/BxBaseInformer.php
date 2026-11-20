@@ -53,8 +53,14 @@ class BxBaseInformer extends BxDolInformer
     	if(!$this->_bEnabled)
             return '';
 
+        // "Accounts without a profile" set to "Ask after sign-in": the first page after sign-in opens the "Create your
+        // profile" window, and the informer leaves out its own "create a profile" message under it.
+        $sProfilePrompt = !bx_is_api() ? $this->_getProfilePrompt() : '';
+        if ($sProfilePrompt)
+            $this->remove('sys-account-profile-system');
+
         if (!$this->_aMessages)
-            return '';
+            return $sProfilePrompt;
 
         $oIconset = BxDolIconset::getObjectInstance($this->_sIconset, $this->_oTemplate);
 
@@ -102,6 +108,43 @@ class BxBaseInformer extends BxDolInformer
                 ]);
             }, $aMessages),
         ]);
+    }
+
+    /**
+     * The "Create your profile" window: the profile types of the `sys_add_profile` menu, as on the account's profile
+     * switcher, in a popup that opens with the page. Not on the account's own pages or a profile creation page, where
+     * the account already is, nor on a page that isn't shown as one (the "Please wait" page that sign-in relocates
+     * through, a popup, an embed), nor in an answer the browser didn't ask as a page (a missing favicon or image is
+     * answered with the "not found" page): it is shown on the next page instead.
+     */
+    protected function _getProfilePrompt()
+    {
+        if (in_array($this->_oTemplate->getPageNameIndex(), [BX_PAGE_TRANSITION, BX_PAGE_POPUP, BX_PAGE_EMBED, BX_PAGE_CLEAR]))
+            return '';
+
+        if (isset($_SERVER['HTTP_ACCEPT']) && bx_mb_strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false)
+            return '';
+
+        if (!BxDolAccount::isProfilePromptDue())
+            return '';
+
+        $sPageUri = (string)bx_get('i');
+        if (strncmp($sPageUri, 'account-', 8) === 0 || in_array($sPageUri, BxDolPage::getProfileCreationPages(), true))
+            return '';
+
+        BxDolAccount::setProfilePromptSeen();
+
+        $oMenu = BxDolMenu::getObjectInstance('sys_add_profile', $this->_oTemplate);
+        $sMenu = $oMenu ? $oMenu->getCode() : '';
+        if (!$sMenu)
+            return '';
+
+        $sPopupId = 'sys-account-profile-prompt';
+        return BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->popupBox($sPopupId, _t('_sys_page_block_title_account_profile_create'), $this->_oTemplate->parseHtmlByName('account_profile_prompt.html', [
+            'popup_id' => $sPopupId,
+            'text' => _t('_sys_page_block_desc_account_profile_create'),
+            'menu' => $sMenu,
+        ]), true);
     }
 
     /**

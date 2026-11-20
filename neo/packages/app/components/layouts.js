@@ -24,6 +24,7 @@ import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/system/version-notice';
 import { applySoundConfig } from 'app/lib/sound';
+import ProfilePrompt from 'app/components/elements/profile-prompt';
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -98,6 +99,7 @@ export default function Layouts({ path, data }) {
             <WindowSizeSync />
             <UnsavedFormConfirmHost />
             <FormModalHost />
+            <ProfilePrompt path={path} />
             {isVersionInfo ? <VersionWarning serverVersion={data.version} /> : null}
         </Layout>
     )

@@ -213,6 +213,13 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
 
             // The apps show profile creation in place of every page while this is true, as the site does.
             $aRv['profile_required'] = BxDolAccount::isProfileRequired();
+            // "Ask after sign-in": the apps show the "Create your profile" window once, with these title and text and
+            // the profile types of `menu`, then call system/account_profile_prompt_seen, as the site shows it on the
+            // first page after sign-in. False when it isn't due.
+            $aRv['profile_prompt'] = BxDolAccount::isProfilePromptDue() ? [
+                'title' => _t('_sys_page_block_title_account_profile_create'),
+                'text' => _t('_sys_page_block_desc_account_profile_create'),
+            ] : false;
 
             // The items of the site's member toolbar the apps get, so their header shows the same tools: no Messages
             // or Notifications button without its module.

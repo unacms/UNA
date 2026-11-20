@@ -3236,8 +3236,9 @@ function bx_menu_highlight(oContext)
 }
 
 $(document).ready(function() {
-    // The header's main menu, the homepage's apps grid and the profile menu beside the feed (styled in Artificer's general.css).
-    $('#bx-toolbar ul.bx-menu-main, ul.bx-menu-object-sys_homepage, ul.bx-menu-object-sys_profile_stats').not('.bx-std *, .bx-popup *, .bx-menu-highlight-list').each(function(iIndex, eList) {
+    // The header's main menu, the homepage's apps grid, the profile types of "Create your profile" (drawn as that grid)
+    // and the profile menu beside the feed (styled in Artificer's general.css).
+    $('#bx-toolbar ul.bx-menu-main, ul.bx-menu-object-sys_homepage, ul.bx-menu-object-sys_add_profile, ul.bx-menu-object-sys_profile_stats').not('.bx-std *, .bx-popup *, .bx-menu-highlight-list').each(function(iIndex, eList) {
         bx_menu_highlight_list(eList);
     });
 });

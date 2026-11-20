@@ -30,10 +30,15 @@ export type CurrentUser = {
     current_context?: number | string;
     informer?: any[];
     /**
-     * UNA's "Require a profile" (Studio > Settings > Account, `sys_account_require_profile`) is on and this
+     * UNA's "Accounts without a profile" (Studio > Settings > Account, `sys_account_require_profile`) is "Required" and this
      * account has no profile of its own yet: every page shows profile creation instead (components/layouts.js).
      */
     profile_required?: boolean;
+    /**
+     * UNA's "Accounts without a profile" is "Ask after sign-in", this account has no profile of its own and hasn't been
+     * asked since it signed in: the "Create your profile" window's title and text (components/elements/profile-prompt).
+     */
+    profile_prompt?: { title?: string; text?: string } | false;
     /**
      * The items of UNA's member toolbar (`sys_toolbar_member`) this viewer gets in the apps, by name: the header
      * shows Notifications and Messages only while it has them (ui/molecules/header/header-element.js).
