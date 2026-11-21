@@ -22,7 +22,7 @@
     <string name="_bx_events_option_enable_subscribe_wo_join"><![CDATA[Allow to mark as Interested without joining (marking as Going)]]></string>
     <string name="_bx_events_option_internal_notifications"><![CDATA[Use internal notifications]]></string>
     <string name="_bx_events_option_enable_subscribe_for_past_events"><![CDATA[Enable join for past events]]></string>
-    <string name="_bx_events_option_rm_from_timeline_after"><![CDATA[Delete past events from Timeline after N hours (0 - don't delete)]]></string>
+    <string name="_bx_events_option_rm_from_timeline_after"><![CDATA[Remove past events from Timeline after this many hours (0 = never)]]></string>
 
     <string name="_bx_events_form_profile"><![CDATA[Events]]></string>
     <string name="_bx_events_form_profile_display_add"><![CDATA[Add Event]]></string>
@@ -63,8 +63,8 @@
     <string name="_bx_events_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this event]]></string>
     <string name="_bx_events_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
     <string name="_bx_events_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete event.]]></string>
-    <string name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Reoccurring]]></string>
-    <string name="_bx_events_form_profile_input_reoccurring"><![CDATA[Reoccurring]]></string>
+    <string name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Repeats]]></string>
+    <string name="_bx_events_form_profile_input_reoccurring"><![CDATA[Repeats]]></string>
     <string name="_bx_events_form_profile_input_reoccurring_add_interval"><![CDATA[Add repeating interval]]></string>
     <string name="_bx_events_form_profile_input_sys_date_added"><![CDATA[Created]]></string>
     <string name="_bx_events_form_profile_input_date_added"><![CDATA[Created]]></string>
@@ -86,8 +86,8 @@
     <string name="_bx_events_form_profile_input_time"><![CDATA[Time]]></string>
     <string name="_bx_events_form_profile_input_sys_reminder"><![CDATA[Reminder (part of Internal Notifications)]]></string>
     <string name="_bx_events_form_profile_input_reminder"><![CDATA[Reminder]]></string>
-    <string name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Threshold radius]]></string>
-    <string name="_bx_events_form_profile_input_threshold"><![CDATA[Threshold radius (in meters)]]></string>
+    <string name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Radius around the location]]></string>
+    <string name="_bx_events_form_profile_input_threshold"><![CDATA[Radius around the location, meters]]></string>
     <string name="_bx_events_form_input_repeat_year"><![CDATA[Repeat year]]></string>
     <string name="_bx_events_form_input_repeat_month"><![CDATA[Repeat month]]></string>
     <string name="_bx_events_form_input_repeat_week_of_month"><![CDATA[Repeat week of month]]></string>
@@ -564,7 +564,7 @@
 
     <string name="_bx_events_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_events_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
-    <string name="_bx_events_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_events_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_events_alert_action_fan_added"><![CDATA[member joined]]></string>
     <string name="_bx_events_txt_ntfs_fan_added"><![CDATA[Event <b class="bx-ntfs-content-profile">{owner_name}</b> has got a member <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

@@ -8,14 +8,14 @@
   <string name="_bx_charts_adm_stg_cpt_category_chart_most_followed_profiles"><![CDATA[Most followed profiles]]></string>
   <string name="_bx_charts_adm_stg_cpt_category_chart_growth"><![CDATA[Content growth]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_top_contents_by_likes_modules_enabled"><![CDATA[Enabled for modules]]></string>
-  <string name="_bx_charts_adm_stg_cpt_chart_top_contents_by_likes_count"><![CDATA[Max number of items in the chart ]]></string>
+  <string name="_bx_charts_adm_stg_cpt_chart_top_contents_by_likes_count"><![CDATA[Maximum items in the chart]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_top_contents_by_likes_interval_day"><![CDATA[Interval in days (0 for all data)]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_most_active_profiles_modules_enabled"><![CDATA[Profiles modules]]></string>
-  <string name="_bx_charts_adm_stg_cpt_chart_most_active_profiles_count"><![CDATA[Max number of items in the chart]]></string>
+  <string name="_bx_charts_adm_stg_cpt_chart_most_active_profiles_count"><![CDATA[Maximum items in the chart]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_most_active_profiles_interval_day"><![CDATA[Interval in days (0 for all data)]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_most_active_profiles_posts_for_module"><![CDATA[Modules to count content in]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_most_followed_profiles_modules_enabled"><![CDATA[Most followed profiles]]></string>
-  <string name="_bx_charts_adm_stg_cpt_chart_most_followed_profiles_count"><![CDATA[Max number of items in the chart ]]></string>
+  <string name="_bx_charts_adm_stg_cpt_chart_most_followed_profiles_count"><![CDATA[Maximum items in the chart]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_most_followed_profiles_interval_day"><![CDATA[Interval in days (0 for all data)]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_growth_modules_enabled"><![CDATA[Enabled for]]></string>
   <string name="_bx_charts_adm_stg_cpt_chart_growth_interval_day"><![CDATA[Interval in days (0 for all data)]]></string>

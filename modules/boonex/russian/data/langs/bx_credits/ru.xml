@@ -311,10 +311,10 @@
     <string name="_bx_credits_err_withdraw_minimum"><![CDATA[Вывод менее {0} кредитов недоступен.]]></string>
     <string name="_bx_credits_err_withdraw_remaining"><![CDATA[Минимальный остаток на счете после вывода должен быть более {0} кредитов.]]></string>
     <string name="_bx_credits_err_cannot_update_balance"><![CDATA[Невозможно обновить баланс.]]></string>
-    <string name="_bx_credits_err_cannot_send"><![CDATA[Невозможно отправить сообщение. Пожалуйста, оповестите нас об этой проблеме.]]></string>
-    <string name="_bx_credits_err_cannot_cancel_withdrawal"><![CDATA[Невозможно отменить запрос на вывод средств. Пожалуйста, оповестите нас об этой проблеме.]]></string>
-    <string name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Невозможно подтвердить запрос на вывод средств. Пожалуйста, оповестите нас об этой проблеме.]]></string>
-    <string name="_bx_credits_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_credits_err_cannot_send"><![CDATA[Не удалось отправить сообщение. Попробуйте ещё раз.]]></string>
+    <string name="_bx_credits_err_cannot_cancel_withdrawal"><![CDATA[Не удалось отменить запрос на вывод средств. Попробуйте ещё раз.]]></string>
+    <string name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Не удалось подтвердить запрос на вывод средств. Попробуйте ещё раз.]]></string>
+    <string name="_bx_credits_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
 
     <!-- Checkout process -->
@@ -350,5 +350,5 @@
 
     <string name="_bx_credits_err_unknown_buyer"><![CDATA[Необходимо войти.]]></string>
     <string name="_bx_credits_err_unknown_seller"><![CDATA[Неизвестный продавец.]]></string>
-    <string name="_bx_credits_err_incorrect_data"><![CDATA[Неверные входные данные. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_credits_err_incorrect_data"><![CDATA[Некоторые данные неверны. Проверьте их и попробуйте ещё раз.]]></string>
 </resources>

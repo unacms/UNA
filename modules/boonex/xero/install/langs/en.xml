@@ -35,7 +35,7 @@
     <string name="_bx_xero_txt_err_wrong_data"><![CDATA[Something went wrong, no authorization code found.]]></string>
     <string name="_bx_xero_txt_err_invalid_state"><![CDATA[Invalid state.]]></string>
     <string name="_bx_xero_txt_err_api_call"><![CDATA[Error during API call. Check log for more info.]]></string>
-    <string name="_bx_xero_txt_err_unknown"><![CDATA[Unknown error. Please report.]]></string>
+    <string name="_bx_xero_txt_err_unknown"><![CDATA[Something went wrong. Please try again.]]></string>
 
     <string name="_bx_xero_txt_authorize"><![CDATA[Authorize]]></string>
     <string name="_bx_xero_txt_organization"><![CDATA[Organization: <b>{0}</b>]]></string>
