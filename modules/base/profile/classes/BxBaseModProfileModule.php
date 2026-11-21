@@ -1204,9 +1204,7 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             $aContentInfo['cover'] = $this->serviceGetCover($iContentId);
             $aContentInfo['image'] = $this->serviceGetThumb($iContentId);
 
-            // The template's own art the site shows on a profile without a cover picture, light and dark.
-            list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri(BxDolTemplate::getInstance()->getCode()));
-            $aContentInfo['cover_default'] = ['light' => $sArtLight, 'dark' => $sArtDark ? $sArtDark : $sArtLight];
+            $aContentInfo['cover_default'] = $this->getCoverDefaultAPI();
 
             $sKey = 'OBJECT_MENU_VIEW_ENTRY_META';
             if(!empty($CNF[$sKey]) && ($oMetaMenu = BxTemplMenu::getObjectInstance($CNF[$sKey])) !== false)
@@ -2584,6 +2582,16 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
      * Cover block of an API profile page (@see BxBasePage::getPageAPI) and of the profile_cover system service.
      * The meta and actions menus must already have the entry, as BxBaseModProfileTemplate::prepareCoverApi gives it to them.
      */
+    /**
+     * The template's own art the site shows on a profile without a cover picture, light and dark, for the apps.
+     */
+    public function getCoverDefaultAPI()
+    {
+        list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri(BxDolTemplate::getInstance()->getCode()));
+
+        return ['light' => $sArtLight, 'dark' => $sArtDark ? $sArtDark : $sArtLight];
+    }
+
     public function getCoverBlockAPI($aContentInfo)
     {
         $CNF = &$this->_oConfig->CNF;
@@ -2611,6 +2619,7 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             'meta_menu' => '',
             'badges' => $oProfile->getBadges(),
             'cover' => $this->serviceGetCover($iContentId),
+            'cover_default' => $this->getCoverDefaultAPI(),
             'allow_edit' => $this->checkAllowedChangeCover($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED
         ];
 
