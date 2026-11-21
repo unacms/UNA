@@ -345,7 +345,7 @@ class BxBaseVote extends BxDolVote
 
     protected function _getCounterLabel($iCount, $aParams = array())
     {
-        return _t(isset($aParams['caption']) ? $aParams['caption'] : '_vote_counter', $iCount);
+        return _tn(isset($aParams['caption']) ? $aParams['caption'] : '_vote_counter', $iCount);
     }
 
     protected function _getVotedBy($aParams = array())
