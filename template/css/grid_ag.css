@@ -1,0 +1,544 @@
+/*
+ * AG Grid Quartz, drawn like the Studio list: a white card, a quiet header,
+ * horizontal rules only. Switches, links and buttons keep the Studio styles.
+ * Tailwind 3 does not publish its palette as variables, so the colours are that palette.
+ */
+.bx-grid-ag-wrap {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    overflow: clip;
+}
+
+.bx-grid-ag-wrap .bx-grid-header {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-cnt {
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter,
+.bx-grid-ag-wrap .bx-grid-header-controls-independent {
+    align-items: center;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-form-element-wrapper:has(.select2-container) {
+    width: auto;
+    margin: 0;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .select2-container {
+    width: 12rem !important;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-counter {
+    flex-grow: 0;
+    color: #6b7280;
+    font-size: 0.8125rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-independent {
+    margin-left: auto;
+}
+
+.bx-grid-ag.ag-theme-quartz {
+    --bx-grid-ag-bg: #fff;
+    --bx-grid-ag-fg: #111827;
+    --bx-grid-ag-muted: #6b7280;
+    --bx-grid-ag-header: #fff;
+    --bx-grid-ag-border: #f1f5f9;
+    --bx-grid-ag-accent: #2563eb;
+    --bx-grid-ag-selected: #eff6ff;
+    --bx-grid-ag-hover: #f8fafc;
+    --bx-grid-ag-radius: 0;
+
+    --ag-active-color: var(--bx-grid-ag-accent);
+    --ag-background-color: var(--bx-grid-ag-bg);
+    --ag-foreground-color: var(--bx-grid-ag-fg);
+    --ag-header-foreground-color: var(--bx-grid-ag-muted);
+    --ag-secondary-foreground-color: var(--bx-grid-ag-muted);
+    --ag-border-color: var(--bx-grid-ag-border);
+    --ag-header-background-color: var(--bx-grid-ag-header);
+    --ag-odd-row-background-color: transparent;
+    --ag-row-hover-color: var(--bx-grid-ag-hover);
+    --ag-selected-row-background-color: var(--bx-grid-ag-selected);
+    --ag-font-family: inherit;
+    --ag-font-size: 14px;
+    --ag-cell-horizontal-padding: 14px;
+    --ag-header-column-separator-display: none;
+    --ag-header-column-resize-handle-display: none;
+    --ag-borders: none;
+    --ag-row-border-style: solid;
+    --ag-row-border-width: 1px;
+    --ag-row-border-color: #f1f5f9;
+    --ag-checkbox-border-radius: 4px;
+    --ag-border-radius: 0;
+    --ag-wrapper-border-radius: 0;
+    color-scheme: light;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-root-wrapper {
+    border: 0;
+    border-radius: 0;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell,
+.bx-grid-ag.ag-theme-quartz .ag-cell {
+    border-right: 0;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
+    border-color: transparent;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag {
+    width: 100%;
+    height: 16rem;
+    min-height: 9rem;
+    max-height: min(40rem, calc(100vh - 14rem));
+}
+
+.bx-grid-ag .bx-grid-ag-cell {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+    gap: 0.35rem;
+    color: #111827;
+}
+
+.bx-grid-ag .bx-grid-ag-cell a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.bx-grid-ag .bx-grid-ag-cell a:hover {
+    color: #1d4ed8;
+}
+
+.bx-grid-ag-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-expand {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.bx-grid-ag-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.bx-grid-ag-chevron:hover,
+.bx-grid-ag-chevron.is-open {
+    color: #374151;
+}
+
+.bx-grid-ag-chevron:hover {
+    background-color: rgb(0 0 0 / 0.05);
+}
+
+html.dark .bx-grid-ag-chevron:hover,
+html.dark .bx-grid-ag-chevron.is-open,
+.dark .bx-grid-ag-chevron:hover,
+.dark .bx-grid-ag-chevron.is-open {
+    color: #e5e7eb;
+}
+
+html.dark .bx-grid-ag-chevron:hover,
+.dark .bx-grid-ag-chevron:hover {
+    background-color: rgb(255 255 255 / 0.08);
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-expand .bx-grid-ag-cell {
+    justify-content: center;
+    overflow: visible;
+}
+
+.bx-grid-ag-chevron svg {
+    display: block;
+    transition: transform 0.15s ease;
+}
+
+.bx-grid-ag .bx-switcher-cont {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+
+.bx-grid-ag .bx-item-icon,
+.bx-grid-ag img.bx-item-icon,
+.bx-grid-ag svg.bx-item-icon {
+    width: 21px;
+    height: 21px;
+    max-width: 21px;
+    max-height: 21px;
+    font-size: 21px;
+    line-height: 1;
+}
+
+.bx-grid-ag-chevron.is-open svg {
+    transform: rotate(90deg);
+}
+
+.bx-grid-ag .ag-row.bx-grid-ag-row-open {
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.bx-grid-ag .ag-row.bx-grid-ag-row-open .ag-cell {
+    height: 52px !important;
+    min-height: 0 !important;
+    max-height: 52px !important;
+    top: 0 !important;
+}
+
+.bx-grid-ag-items {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.bx-grid-ag-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 44px;
+    padding: 0 0.85rem 0 2.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    background: #f8fafc;
+}
+
+.bx-grid-ag-item-empty {
+    color: #6b7280;
+}
+
+.bx-grid-ag-item-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-actions {
+    flex: 0 0 5.5rem;
+    width: 5.5rem;
+    margin-left: auto;
+    justify-content: flex-start;
+}
+
+.bx-grid-ag .bx-grid-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.5rem;
+    color: #6b7280;
+    cursor: move;
+}
+
+.bx-grid-ag .ag-drag-handle {
+    color: #6b7280;
+    cursor: move;
+}
+
+.bx-grid-ag-item.is-dragging {
+    opacity: 0.55;
+}
+
+.bx-grid-ag .bx-grid-ag-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    width: 100%;
+}
+
+.bx-grid-ag .bx-grid-ag-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    color: #111827;
+}
+
+.bx-grid-ag .bx-grid-ag-profile img {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    object-fit: cover;
+}
+
+.bx-grid-ag-wrap .bx-grid-footer .bx-def-hr {
+    display: none;
+}
+
+.bx-grid-ag-wrap .bx-grid-footer-cnt {
+    padding: 0.65rem 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+
+html.dark .bx-grid-ag-wrap,
+.dark .bx-grid-ag-wrap {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: none;
+}
+
+html.dark .bx-grid-ag-wrap .bx-grid-header,
+.dark .bx-grid-ag-wrap .bx-grid-header,
+html.dark .bx-grid-ag-wrap .bx-grid-footer-cnt,
+.dark .bx-grid-ag-wrap .bx-grid-footer-cnt {
+    border-color: #374151;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz,
+.dark .bx-grid-ag.ag-theme-quartz {
+    --bx-grid-ag-bg: #1f2937;
+    --bx-grid-ag-fg: #e5e7eb;
+    --bx-grid-ag-muted: #9ca3af;
+    --bx-grid-ag-header: #1f2937;
+    --bx-grid-ag-border: #374151;
+    --bx-grid-ag-accent: #60a5fa;
+    --bx-grid-ag-selected: #1e3a5f;
+    --bx-grid-ag-hover: rgb(255 255 255 / 0.04);
+    color-scheme: dark;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz .ag-header,
+.dark .bx-grid-ag.ag-theme-quartz .ag-header {
+    border-bottom-color: #374151;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text,
+.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    color: #9ca3af;
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-cell,
+.dark .bx-grid-ag .bx-grid-ag-cell {
+    color: #e5e7eb;
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-cell a,
+.dark .bx-grid-ag .bx-grid-ag-cell a {
+    color: #60a5fa;
+}
+
+html.dark .bx-grid-ag-items,
+.dark .bx-grid-ag-items,
+html.dark .bx-grid-ag-item,
+.dark .bx-grid-ag-item {
+    background: #111827;
+    border-color: #374151;
+}
+
+/* Card rows (from tablets up, set by the script): every row is a card 4px inside its slot, so two
+   cards sit 8px apart. The card is the row's ::before, which the theme also uses for hover and
+   selection, so those states recolour the card. No column is pinned, so a card is one piece. */
+.bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
+    --bx-grid-ag-bg: #f9fafb;
+    --bx-grid-ag-card: #fff;
+    --bx-grid-ag-card-border: #e5e7eb;
+    --bx-grid-ag-card-border-hover: #d1d5db;
+    --bx-grid-ag-card-border-selected: #bfdbfe;
+    --ag-row-border-width: 0;
+    --ag-cell-horizontal-padding: 16px;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row {
+    background-color: transparent;
+    border: 0;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row::before,
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-hover:not(.ag-full-width-row)::before,
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-selected::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: auto;
+    height: auto;
+    border: 1px solid var(--bx-grid-ag-card-border);
+    border-radius: 12px;
+    background-color: var(--bx-grid-ag-card);
+    background-image: none;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-hover:not(.ag-full-width-row)::before {
+    background-color: var(--bx-grid-ag-hover);
+    border-color: var(--bx-grid-ag-card-border-hover);
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-selected::before {
+    background-color: var(--bx-grid-ag-selected);
+    border-color: var(--bx-grid-ag-card-border-selected);
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row .ag-cell {
+    z-index: 1;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-row.bx-grid-ag-row-open .ag-cell {
+    top: 4px !important;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .bx-grid-ag-items {
+    left: 4px;
+    right: 4px;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+}
+
+html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
+.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
+    --bx-grid-ag-bg: #18212f;
+    --bx-grid-ag-card: #1f2937;
+    --bx-grid-ag-card-border: #374151;
+    --bx-grid-ag-card-border-hover: #4b5563;
+    --bx-grid-ag-card-border-selected: #1d4ed8;
+}
+
+/* Bulk bar: between the filters and the rows, only while rows are selected. The count, the bulk
+   actions (destructive ones last, in red), and a button that clears the selection. */
+.bx-grid-ag-bulk {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 1rem;
+    padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+    border: 1px solid #bfdbfe;
+    border-radius: 0.75rem;
+    background: #eff6ff;
+}
+
+.bx-grid-ag-bulk[hidden] {
+    display: none;
+}
+
+.bx-grid-ag-bulk-count {
+    flex: 0 0 auto;
+    padding-right: 0.5rem;
+    border-right: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-bulk-actions {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 0;
+}
+
+.bx-grid-ag-bulk-actions .bx-btn {
+    margin: 0;
+}
+
+.bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"] {
+    order: 1;
+    color: #dc2626;
+}
+
+.bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"]:first-of-type,
+.bx-grid-ag-bulk-actions :not([bx_grid_action_bulk*="delete"]) + [bx_grid_action_bulk*="delete"] {
+    margin-left: auto;
+}
+
+.bx-grid-ag-bulk-clear {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.bx-grid-ag-bulk-clear:hover {
+    background: rgb(0 0 0 / 0.05);
+    color: #111827;
+}
+
+html.dark .bx-grid-ag-bulk,
+.dark .bx-grid-ag-bulk {
+    border-color: #1e40af;
+    background: rgb(30 58 138 / 0.35);
+}
+
+html.dark .bx-grid-ag-bulk-count,
+.dark .bx-grid-ag-bulk-count {
+    border-color: #1e40af;
+    color: #93c5fd;
+}
+
+html.dark .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"],
+.dark .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"] {
+    color: #f87171;
+}
+
+html.dark .bx-grid-ag-bulk-clear:hover,
+.dark .bx-grid-ag-bulk-clear:hover {
+    background: rgb(255 255 255 / 0.08);
+    color: #e5e7eb;
+}

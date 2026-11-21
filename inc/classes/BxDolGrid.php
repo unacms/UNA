@@ -70,6 +70,7 @@
  *      - user level id = 2 -> 2^(2-1) = 2
  *      - user level id = 3 -> 2^(3-1) = 4
  *      - user level id = 4 -> 2^(4-1) = 8
+ * - engine: the client that renders the grid: empty for the classic HTML grid, 'ag' for AG Grid.
  * - override_class_name: user defined class name which is derived from BxTemplGrid.
  * - override_class_file: the location of the user defined class, leave it empty if class is located in system folders.
  *

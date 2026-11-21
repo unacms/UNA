@@ -5446,6 +5446,7 @@ CREATE TABLE IF NOT EXISTS `sys_objects_grid` (
   `visible_for_levels` int(11) NOT NULL DEFAULT '2147483647',
   `responsive` tinyint(4) NOT NULL DEFAULT '1',
   `show_total_count` tinyint(4) NOT NULL DEFAULT '0',
+  `engine` varchar(16) NOT NULL DEFAULT '',
   `override_class_name` varchar(255) NOT NULL,
   `override_class_file` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -5490,8 +5491,11 @@ INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `fie
 ('sys_reports_administration', 'Sql', 'WHERE 1 ', '', 'id', 'date', '', '', 20, NULL, 'start', '', 'text,type', '', 'like', '', '', 'BxTemplReportsGrid', '');
 
 -- GRIDS: studio navigation items, with the switches for the site and for the apps
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `field_active_api`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_nav_items', 'Sql', 'SELECT * FROM `sys_menu_items` WHERE 1 ', 'sys_menu_items', 'id', 'order', 'active', 'active_api', '', 100, NULL, 'start_it', '', 'link', 'title_system', 'like', '', '', 'BxTemplStudioNavigationItems', '');
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `field_active_api`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `engine`, `override_class_name`, `override_class_file`) VALUES
+('sys_studio_nav_items', 'Sql', 'SELECT * FROM `sys_menu_items` WHERE 1 ', 'sys_menu_items', 'id', 'order', 'active', 'active_api', '', 100, NULL, 'start_it', '', 'link', 'title_system', 'like', '', '', 'ag', 'BxTemplStudioNavigationItems', '');
+
+-- GRIDS: studio navigation menus
+UPDATE `sys_objects_grid` SET `engine` = 'ag' WHERE `object` = 'sys_studio_nav_menus' AND `engine` = '';
 
 CREATE TABLE IF NOT EXISTS `sys_grid_fields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
