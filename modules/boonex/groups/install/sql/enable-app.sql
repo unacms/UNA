@@ -81,3 +81,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_snippet_m
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_snippet_meta' AND `module`='bx_groups' AND `name`='ignore-join';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_menu_manage_tools' AND `module`='bx_groups' AND `name`='clear-reports';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_menu_manage_tools' AND `module`='bx_groups' AND `name`='delete';
+
+-- PAGE: explore
+UPDATE `sys_pages_blocks` SET `active_api` = 1, `config_api` = '{"content_type":"browse_simple","header_more_url":"/groups-home","view":"row"}' WHERE `object` = 'sys_explore' AND `module` = 'bx_groups' AND `title` = '_bx_groups_page_block_title_latest_profiles';

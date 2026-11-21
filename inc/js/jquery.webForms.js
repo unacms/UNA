@@ -6,6 +6,9 @@
  * @{
  */
 
+/** Ids of form error messages that fields name as their description (processWebForms). */
+var glBxFormWarnId = 0;
+
 /**
  * A plain textarea grows with its text between its CSS min-height and max-height, then scrolls. Browsers with
  * field-sizing: content (see tailwind.css) do it themselves; elsewhere it is done here, until the member drags the
@@ -77,12 +80,38 @@ function bx_form_textarea_init(e) {
     }
     
     $.fn.processWebForms = function() {
-        // move to the first error
+        // Fields with an error: marked invalid, with the message as their description, and the first one gets the
+        // focus (WCAG 3.3.1), after the page scrolls to it.
         var aErrors = $('.bx-form-warn:visible', this);
+        var eFirstField = null;
+        aErrors.each(function() {
+            var eWarn = $(this);
+            var eField = eWarn.closest('.bx-form-element-wrapper').find('input, select, textarea').not('[type="hidden"], [type="submit"], [type="button"]').first();
+            if(!eField.length)
+                return;
+
+            var sId = eWarn.attr('id');
+            if(!sId) {
+                sId = 'bx-form-warn-' + (++glBxFormWarnId);
+                eWarn.attr('id', sId);
+            }
+
+            var sDescribedBy = eField.attr('aria-describedby') || '';
+            if((' ' + sDescribedBy + ' ').indexOf(' ' + sId + ' ') == -1)
+                eField.attr('aria-describedby', $.trim(sDescribedBy + ' ' + sId));
+            eField.attr('aria-invalid', 'true');
+
+            if(!eFirstField)
+                eFirstField = eField;
+        });
+
         if(aErrors.length > 0)
             $([document.documentElement, document.body]).animate({
                 scrollTop: aErrors.first().closest('.bx-form-element-wrapper').offset().top - 50
-            }, 200);
+            }, 200, function() {
+                if(eFirstField && eFirstField.is(':visible'))
+                    eFirstField.get(0).focus({preventScroll: true});
+            });
 
         // plain textareas
         $('textarea.bx-form-input-textarea:not(.bx-form-input-html, .bx-form-input-code)', this).each(function() {

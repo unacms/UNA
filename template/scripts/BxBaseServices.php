@@ -1838,7 +1838,37 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceHomeRedirect()
     {
         header("Location:" . BX_DOL_URL_ROOT, true, 301);
-        exit;        
+        exit;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-seo SEO
+     * @subsubsection bx_system_general-robots_txt robots_txt
+     *
+     * The default `/robots.txt` (a `sys_rewrite_rules` route), @see BxDolSitemap::getRobotsTxt
+     */
+    public function serviceRobotsTxt()
+    {
+        header('Content-Type: text/plain; charset=utf-8');
+        echo BxDolSitemap::getInstance()->getRobotsTxt();
+        exit;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-seo SEO
+     * @subsubsection bx_system_general-sitemap_xml sitemap_xml
+     *
+     * `/sitemap.xml` (a `sys_rewrite_rules` route): the public pages and content, @see BxDolSitemap
+     */
+    public function serviceSitemapXml()
+    {
+        header('Content-Type: application/xml; charset=utf-8');
+        echo BxDolSitemap::getInstance()->getSitemapXml();
+        exit;
     }
 
     public function serviceProcessEmbed()

@@ -103,3 +103,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_snippet_m
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_snippet_meta' AND `module`='bx_events' AND `name`='unsubscribe';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_menu_manage_tools' AND `module`='bx_events' AND `name`='clear-reports';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_menu_manage_tools' AND `module`='bx_events' AND `name`='delete';
+
+-- PAGE: explore
+UPDATE `sys_pages_blocks` SET `active_api` = 1, `config_api` = '{"content_type":"browse_simple","header_more_url":"/events-home","view":"row"}' WHERE `object` = 'sys_explore' AND `module` = 'bx_events' AND `title` = '_bx_events_page_block_title_latest_profiles';

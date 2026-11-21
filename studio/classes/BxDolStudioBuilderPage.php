@@ -150,6 +150,9 @@ class BxDolStudioBuilderPage extends BxTemplStudioWidget
             $sContentKey = $aBlock['content'];
             $oLanguage->updateLanguageString($sContentKey, $sContentValue);
         }
+
+        // Saved once by the operator: no more note to review the default text.
+        BxDolPage::setLangBlockReviewed($sContentKey);
         BxDolForm::setSubmittedValue('content', $sContentKey, $oForm->aFormAttrs['method']);
     }
 
