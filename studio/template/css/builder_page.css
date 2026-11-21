@@ -333,20 +333,24 @@ div.adm-bp-epf-left {
 div.adm-bp-epf-left-cnt {}
 /* The modals' sidebars (page settings, Add blocks) keep the desktop row layout at every viewport: its column is 14rem wide, unlike the app pages' side menu that
    turns into a strip of square tiles under 1024px and a row of tabs under 768px (general.css). */
-:is(div.adm-bp-epf-left, div.adm-bp-cbf-left) div.bx-std-pmen-item {
+div.adm-bp-cbf-left div.bx-std-pmen-item,
+div.adm-bp-epf-left div.bx-std-pmen-item {
     flex: none;
     height: 3.25rem; /* the 36px tile with 8px above and below, as in the app pages' side menu */
     min-width: 0;
     margin-top: 0.125rem;
 }
-:is(div.adm-bp-epf-left, div.adm-bp-cbf-left) div.bx-std-pmen-item:first-child {
+div.adm-bp-cbf-left div.bx-std-pmen-item:first-child,
+div.adm-bp-epf-left div.bx-std-pmen-item:first-child {
     margin-top: 0;
 }
-:is(div.adm-bp-epf-left, div.adm-bp-cbf-left) div.bx-std-pmen-item > a {
+div.adm-bp-cbf-left div.bx-std-pmen-item > a,
+div.adm-bp-epf-left div.bx-std-pmen-item > a {
     display: block;
     height: auto;
 }
-:is(div.adm-bp-epf-left, div.adm-bp-cbf-left) div.bx-std-pmen-item-cnt {
+div.adm-bp-cbf-left div.bx-std-pmen-item-cnt,
+div.adm-bp-epf-left div.bx-std-pmen-item-cnt {
     -webkit-flex-direction: row;
     flex-direction: row;
     -webkit-justify-content: flex-start;
@@ -354,16 +358,19 @@ div.adm-bp-epf-left-cnt {}
     height: auto;
     padding: 0.5rem;
 }
-:is(div.adm-bp-epf-left, div.adm-bp-cbf-left) div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon,
+div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     display: block;
     width: 2.25rem;
     height: 2.25rem;
     margin: 0 0.75rem 0 0;
 }
-.bx-dir-rtl :is(div.adm-bp-epf-left, div.adm-bp-cbf-left) div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+.bx-dir-rtl div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon,
+.bx-dir-rtl div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     margin: 0 0 0 0.75rem;
 }
-:is(div.adm-bp-epf-left, div.adm-bp-cbf-left) div.bx-std-pmen-item .bx-std-pmen-ic-title {
+div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-title,
+div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-title {
     display: block;
     -webkit-line-clamp: unset;
     max-width: none;
