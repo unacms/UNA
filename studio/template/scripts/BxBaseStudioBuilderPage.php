@@ -2200,7 +2200,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     {
         $aResult = [];
         foreach($aBlocks as $aBlock) {
-            $sKey = md5($aBlock['module'] . "\n" . $aBlock['type'] . "\n" . $aBlock['content']);
+            $sKey = hash('sha256', $aBlock['module'] . "\n" . $aBlock['type'] . "\n" . $aBlock['content']);
             if(!isset($aResult[$sKey]) || ($aResult[$sKey]['object'] !== '' && $aBlock['object'] === ''))
                 $aResult[$sKey] = $aBlock;
         }
