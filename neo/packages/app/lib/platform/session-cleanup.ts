@@ -7,7 +7,7 @@ import { getTabListFor } from 'app/lib/navigation/tab-bar-menu'
 import { usePrefsStore } from 'app/context/prefs'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
-import { logoutOneSignal } from 'app/lib/platform/one-signal'
+import { logoutPush } from 'app/lib/push'
 
 /**
  * Wipe in-memory client state that can leak across accounts on native
@@ -37,7 +37,7 @@ export function clearClientSessionState() {
     emitter.emit(EVENTS.dynamicMenu, { action: 'hide' })
     emitter.emit(EVENTS.editor, { action: 'blur' })
 
-    void logoutOneSignal()
+    void logoutPush()
 }
 
 /**

@@ -30,6 +30,7 @@ const ProfileLink = dynamic(() => import('./profile/profile-link'), { loading: D
 const NoContent = dynamic(() => import('./misc/no-content'), { loading: DynamicFallback });
 const TaskTimer = dynamic(() => import('./misc/task-timer').then((m) => m.TaskTimer), { loading: DynamicFallback });
 // AI chat pulls @tanstack/ai* — never on pages without an agent.
+const PushPrompt = dynamic(() => import('./system/push-prompt'), { loading: DynamicFallback });
 const AiAgent = dynamic(() => import('./ai-agent/agent'), { loading: DynamicFallback });
 
 export const componentsMapDefault = {
@@ -57,4 +58,6 @@ export const componentsMapDefault = {
     no_content: NoContent,
     task_timer: TaskTimer,
     ai_agent: AiAgent,
+    // NEO's dialog asking a member to turn on push notifications (app/lib/push).
+    push_prompt: PushPrompt,
 };

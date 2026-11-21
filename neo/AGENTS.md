@@ -323,6 +323,15 @@ Sounds are [Cuelume](https://cuelume.dev/agents.md)'s cues, one per interface jo
 - Users pick their own level, full, quiet (40%) or off (`useSoundsLevel`, in the footer and the dashboard settings), stored as `layoutSettings.sounds`; unset follows UNA's starting level. `layout.sounds` turns sounds off for the whole build. Native interface sounds follow the iOS silent switch.
 - `useSound` / `playSound` with the old names still work; they play the cue for that job.
 
+### Push notifications
+
+Push goes through a provider in `app/lib/push`: an object with `permission`, `prepare`, `requestPermission`, `login` and `logout` (`types.ts`). OneSignal (`onesignal.ts` / `.web.ts`, app id from `config.api_keys.onesignal`) is the only one so far; `notifications.push_provider` picks one by its key in `pushProviders`, and `''` turns push off.
+
+- NEO asks with its own dialog, the `push_prompt` molecule (`ui/molecules/system/push-prompt.tsx`, mounted by `push-prompt-host.tsx` in both layouts), never a provider's UI: OneSignal's slidedown and welcome notification are off, because they show the icon and wording from OneSignal's dashboard.
+- The dialog shows `notifications.push_prompt_delay_ms` after a member's first page, once per app run, only while the system can still ask (`permission()` is `default`). "Turn on" calls `requestPermission()` straight from the press (browsers drop a request that isn't part of a gesture, so `prepare()` loads the SDK before the dialog opens), then `login()`. "Not now" keeps it away for `push_prompt_snooze_days`. A member who already allowed notifications is linked quietly. `push_prompt: false` never asks.
+- A new provider implements `PushProvider`, is added to `pushProviders` and named in `notifications.push_provider`. A fork can replace the dialog through `push_prompt` in `customization/molecules/_map.js`.
+- Sign-out calls `logoutPush()` (`lib/platform/session-cleanup.ts`), so the next account isn't sent the previous one's notifications.
+
 ### Page header
 
 The page header is mounted once per `Layout` (`ui/molecules/header/page-header.js` / `.web.js`). A page never writes header state from an effect; it declares what it needs in its render tree with `PageHeaderOptions` from `app/ui/molecules/header/options`:
