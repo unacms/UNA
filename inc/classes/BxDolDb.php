@@ -793,6 +793,10 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
     public function cacheParamsClear($sCacheName = '')
     {
         if(empty($sCacheName)) {
+            // The cache engine is one of the params: take the cache object while they are still loaded. Asked for
+            // after this, with nothing made it earlier (a command line run), it had no engine to go by.
+            $this->getDbCacheObject();
+
             self::$_aParams = [];
             $sCacheName = self::$_sParamsCacheName;
         }
@@ -909,6 +913,12 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 			return $this->_oDbCacheObject;
 
 		$sEngine = $this->getParam('sys_db_cache_engine');
+		// No engine: the params are not loaded (they are being reloaded). The file engine serves this call, and the
+		// next one picks the real engine: the base BxDolCache kept here cleared nothing and reported a failure.
+		if(empty($sEngine)) {
+			return bx_instance('BxDolCacheFile');
+		}
+
 		$this->_oDbCacheObject = bx_instance('BxDolCache'.$sEngine);
 		if(!$this->_oDbCacheObject->isAvailable())
 			$this->_oDbCacheObject = bx_instance('BxDolCacheFile');

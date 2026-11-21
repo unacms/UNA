@@ -1682,7 +1682,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'content' => $this->getSettingsLayouts('sys_pt_default_' . $sWho, _t('_adm_dsg_txt_settings_layout_' . $sWho)),
             ];
 
-        // The header per layout: the site's templates and the apps follow it (BxDolTemplate::getHeaderLayout).
+        // The header and the footer per layout: the site's templates and the apps follow them (BxDolTemplate::getHeaderLayout, getFooterLayout).
         $aForm['inputs'] += [
             'header_section' => [
                 'type' => 'block_header',
@@ -1811,9 +1811,10 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     }
 
     /**
-     * The page and header settings as a table: a row per layout (Standard, Application), a column per audience
-     * (visitors, members), and in each cell a sketch of that page over three segmented controls: the page's width
-     * (with its pixels), the header's width and the main menu's place. The sketch follows the controls (designer.css, :has).
+     * The page, header and footer settings as a table: a row per layout (Standard, Application), a column per audience
+     * (visitors, members), and in each cell a sketch of that page over four segmented controls: the page's width
+     * (with its pixels), the header's width, the main menu's place and the footer's width. The sketch follows the
+     * controls (designer.css, :has).
      */
     protected function getSettingsHeader()
     {
@@ -1850,6 +1851,12 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     $sControls .= $this->getSettingsHeaderControl('sys_header_' . $sKind . '_' . $sSuffix, $sKind, _t('_adm_dsg_txt_settings_header_' . $sKind), $aChoices, $aCurrent[$sKind]);
                 }
 
+                // The footer's width, as the header's: the page's or the window's.
+                $aChoices = [];
+                foreach(BxDolTemplate::FOOTER_WIDTHS as $sValue)
+                    $aChoices[$sValue] = _t('_adm_dsg_txt_settings_footer_width_' . $sValue);
+                $sControls .= $this->getSettingsHeaderControl('sys_footer_width_' . $sSuffix, 'footer', _t('_adm_dsg_txt_settings_footer_width'), $aChoices, BxDolTemplate::getFooterLayout($iType, $sWho == 'member')['width']);
+
                 $aCells[] = [
                     'layout' => $sLayout,
                     'audience' => $sWho,
@@ -1874,7 +1881,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     /**
      * One segmented control of the page and header table.
      * @param string $sName the radios' name
-     * @param string $sKind what it sets, for the sketch: 'page', 'width' or 'align'
+     * @param string $sKind what it sets, for the sketch: 'page', 'width', 'align' or 'footer'
      * @param array $aChoices value => title
      * @param string $sCurrent the chosen value
      * @param string $sExtra HTML after the control (the page's pixels)

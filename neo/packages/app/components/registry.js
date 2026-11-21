@@ -33,6 +33,13 @@ export const components = Object.fromEntries(TYPES.map((type) => [type, {}]));
  */
 export const coreFormFields = {};
 
+/**
+ * Core page layouts (`page-layout/_map` as shipped, before fork overrides), filled by that map.
+ * getLayoutName (lib/util/layout.ts) compares the registered `create-account` layout with core's
+ * to tell a project's own Sign up page from it, without importing the map into lib/util.
+ */
+export const coreLayouts = {};
+
 export function registerComponent(type, name, component) {
     (components[type] ||= {})[name] = component;
 }

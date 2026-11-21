@@ -216,6 +216,9 @@ class ToursTest extends BxDolIntegrationTestCase
         $this->assertMatchesRegularExpression('/^\d+ of \d+ done$/', $mBlock['description']);
         $this->assertStringContainsString('bx-menu-list-desc', $mBlock['content'], 'drawn by the "List with descriptions" menu template');
         $this->assertStringContainsString('bx_onboarding_hide', $mBlock['buttons'][0]['onclick'], 'Hide is the block\'s own button');
+        $this->assertSame('x', $mBlock['buttons'][0]['icon'], 'Hide is an icon-only close button');
+        $this->assertSame('_sys_onboarding_hide', $mBlock['buttons'][0]['area_label'], 'named Hide for screen readers');
+        $this->assertEmpty($mBlock['buttons'][0]['title'] ?? '');
 
         $this->assertTrue(BxDolService::call('system', 'is_safe_service', ['onboarding_hide'], 'TemplServices'));
         $this->assertSame(['code' => 0], BxDolService::call('system', 'onboarding_hide', [BxDolTours::ONBOARDING_OPERATOR], 'TemplServiceAccount', true));
@@ -225,6 +228,29 @@ class ToursTest extends BxDolIntegrationTestCase
         $this->bxBecomeGuest();
         $this->assertSame('', BxDolService::call('system', 'get_block_onboarding', [BxDolTours::ONBOARDING_OPERATOR], 'TemplServiceAccount', true));
         $this->assertSame(['code' => 1], BxDolService::call('system', 'onboarding_hide', [BxDolTours::ONBOARDING_OPERATOR], 'TemplServiceAccount', true));
+    }
+
+    /**
+     * The checklist's steps are set in Studio, which the mobile apps don't have: every "Get started" block (home,
+     * dashboard, the block library) is hidden on the mobile app (BX_DB_HIDDEN_MOBILE), and the page API says so, so the
+     * apps leave it out while the site and the web app keep it.
+     */
+    public function testOnboardingBlocksAreHiddenInTheMobileApps(): void
+    {
+        $iMobileApp = pow(2, BX_DB_HIDDEN_MOBILE - 1);
+        $aBlocks = BxDolDb::getInstance()->getAll("SELECT `object`, `hidden_on` FROM `sys_pages_blocks` WHERE `module` = 'system' AND `title_system` IN ('_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_system_onboarding')");
+        $this->assertNotEmpty($aBlocks);
+
+        $aObjects = [];
+        foreach($aBlocks as $aBlock) {
+            $aObjects[] = $aBlock['object'];
+            $this->assertSame($iMobileApp, (int)$aBlock['hidden_on'] & $iMobileApp, 'hidden on the mobile app: ' . ($aBlock['object'] ?: 'block library'));
+            $this->assertSame(0, (int)$aBlock['hidden_on'] & ~$iMobileApp, 'shown on every screen size: ' . ($aBlock['object'] ?: 'block library'));
+        }
+        foreach(['sys_home', 'sys_dashboard', ''] as $sObject)
+            $this->assertContains($sObject, $aObjects);
+
+        $this->assertSame(['mobile-app'], BxBasePage::getHiddenOnNamesAPI($iMobileApp));
     }
 
     public function testEveryRowCountsAndDoneSaysSetUp(): void

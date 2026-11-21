@@ -17,7 +17,7 @@ import {
     FeedEditForm,
 } from 'app/components/elements/feed-item-parts'
 
-import { CardList, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
+import { CardFeed, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { components } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/page/scroll'
@@ -33,7 +33,7 @@ function TimelineRecommendations({ data }) {
 
     return (
         <AnimatedBlock>
-            <CardList className="mb-0.5 sm:mb-4" padding="py-2 overflow-hidden">
+            <CardFeed className="mb-0.5 sm:mb-4" padding="py-2 overflow-hidden">
                 <CardHeader className=" px-3 lg:px-4 pt-2 sm:pt-3 flex-row items-center justify-between">
                     <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
                 </CardHeader>
@@ -58,7 +58,7 @@ function TimelineRecommendations({ data }) {
                         haptics="Medium"
                     />
                 </View>
-            </CardList>
+            </CardFeed>
         </AnimatedBlock>
     )
 }
@@ -145,7 +145,7 @@ function DefaultFeedUnit({ data, compact = false }) {
                     viewState={viewState}
                 />
             )}
-            <CardList
+            <CardFeed
                 border="border-y border-x-none sm:border-x"
                 className="mb-0.5 sm:mb-3"
                 padding="px-0"
@@ -199,7 +199,7 @@ function DefaultFeedUnit({ data, compact = false }) {
                         />
                     </View>
                 )}
-            </CardList>
+            </CardFeed>
         </AnimatedBlock>
     )
 }

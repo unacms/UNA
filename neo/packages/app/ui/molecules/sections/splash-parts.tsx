@@ -67,7 +67,9 @@ export function SplashLoginForm({ data }: Readonly<SplashPartProps>) {
 
 export function SplashIllustration() {
     return (
-        <View className="h-48 w-48">
+        // 12rem grows with the reader's text size: never wider than its column, and square (as the
+        // site's `.bx-landing-art`).
+        <View className="aspect-square w-48 max-w-full">
             <Illustration name="splash" />
         </View>
     )

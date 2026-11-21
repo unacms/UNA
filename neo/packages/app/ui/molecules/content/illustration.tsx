@@ -15,14 +15,16 @@ function useToneColors(): Record<IllustrationTone, string | undefined> {
 }
 
 /** Decorative shape art in the theme's colours; drawn inline, so nothing is fetched. */
-export default function Illustration({ name, className = '' }: Readonly<IllustrationProps>) {
+export default function Illustration({ name, picture, className = '' }: Readonly<IllustrationProps>) {
     const colors = useToneColors();
+    const shapes = picture?.shapes ?? (name ? ILLUSTRATIONS[name] : []);
     return (
         <View className={`w-full h-full ${className}`} accessible={false} importantForAccessibility="no-hide-descendants">
-            <Svg width="100%" height="100%" viewBox={ILLUSTRATION_VIEWBOX}>
-                {ILLUSTRATIONS[name].map((shape) => (
+            <Svg width="100%" height="100%" viewBox={picture?.viewBox ?? ILLUSTRATION_VIEWBOX}>
+                {shapes.map((shape, index) => (
                     <Path
-                        key={shape.d}
+                        // Two shapes of a picture UNA sends may share a path.
+                        key={`${index}:${shape.d}`}
                         d={shape.d}
                         fill={colors[shape.tone] ?? 'transparent'}
                         fillRule={shape.evenOdd ? 'evenodd' : 'nonzero'}

@@ -317,17 +317,41 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("SET `config_api`='{\"button\":true}' WHERE `set_name`='sys_site' AND `module`='system' AND `name` IN ('login', 'create-account');", $sApp, 'Log in and Sign up show as buttons.');
     }
 
-    public function testSignUpUsesTheLogInLayout(): void
+    public function testAuthPagesLayouts(): void
     {
-        // Sign up, Log in and Forgot password share the thin one-column layout (id 18), one card width on the site and in the apps.
+        // Log in and Forgot password share the thin one-column layout (id 18), one card width on the site and in the
+        // apps. Sign up is two equal columns (id 4): the picture and the words beside the form.
         $sSql = self::systemSql();
-        foreach (['sys_create_account', 'sys_login', 'sys_forgot_password'] as $sObject) {
+        foreach (['sys_create_account' => 4, 'sys_login' => 18, 'sys_forgot_password' => 18] as $sObject => $iLayout) {
             $bFound = preg_match("/\\('" . $sObject . "', '[^']+', '[^']+', '[^']+', 'system', \\d+, (\\d+),/", $sSql, $aMatch);
             $this->assertSame(1, $bFound, $sObject);
-            $this->assertSame(18, (int)$aMatch[1], $sObject);
+            $this->assertSame($iLayout, (int)$aMatch[1], $sObject);
         }
 
         $this->assertStringContainsString('w-full max-w-md mx-auto', (string)file_get_contents(__DIR__ . '/../../../template/_row_1_column_thin.html'), 'The thin column is 448px (max-w-md), as NEO\'s.');
+        $this->assertMatchesRegularExpression("/\\(4, '2_columns', [^)]*'layout_2_columns.html', 2\\)/", $sSql, 'Layout 4 is the two columns.');
+    }
+
+    public function testSignUpPageHasItsIntroBesideTheForm(): void
+    {
+        $sSql = str_replace('\\"', '"', self::systemSql());
+
+        // The picture and the words in the first column (cell 1), in a design box without a title, background or
+        // padding; the form in the second (cell 2).
+        $this->assertStringContainsString("('sys_create_account', 1, 'system', '', '_sys_page_block_title_create_account_intro', 0, 0, 0, 2147483647, 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:20:\"create_account_intro\";s:5:\"class\";s:19:\"TemplServiceAccount\";}', 0, 1, 1, 1)", $sSql);
+        $this->assertStringContainsString("('sys_create_account', 2, 'system', '', '_sys_page_block_title_create_account', 11,", $sSql);
+
+        // Both reach the apps, which draw the page from its blocks: the page names no layout of the apps' own.
+        $sApp = (string)file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-pages.sql');
+        foreach (['_sys_page_block_title_create_account_intro', '_sys_page_block_title_create_account'] as $sTitle)
+            $this->assertMatchesRegularExpression("/SET `active_api`=1[^;]* WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='" . $sTitle . "';/", $sApp, $sTitle);
+        $this->assertDoesNotMatchRegularExpression("/UPDATE `sys_objects_page` SET `config_api`=[^;]*WHERE `object`='sys_create_account'/", $sApp);
+    }
+
+    public function testAuthBlocksHaveLargePadding(): void
+    {
+        // The sign-in and sign-up blocks, on their pages and on the home page (the guest splash draws those rows).
+        $this->assertStringContainsString("UPDATE `sys_pages_blocks` SET `padding_size`='large' WHERE `object` IN ('sys_login', 'sys_create_account', 'sys_home') AND `module`='system' AND `title` IN ('_sys_page_block_title_login', '_sys_page_block_title_create_account');", self::systemSql());
     }
 
     public function testScreenSizeColumns(): void
