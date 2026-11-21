@@ -30,6 +30,20 @@ function getItemTier(className) {
     return 'both'
 }
 
+// A toolbar slot: its button, a placeholder while its data loads, or no slot at all.
+const SLOT = { shown: 'shown', loading: 'loading', hidden: 'hidden' }
+
+// The header's control height (44px), round as its buttons; a labelled button (Log In, Sign Up) is a capsule.
+const PLACEHOLDER = {
+    round: 'h-11 w-11 rounded-full bg-muted animate-pulse',
+    labelled: 'h-11 w-20 rounded-full bg-muted animate-pulse',
+}
+
+/** Holds a toolbar slot while its data loads. */
+function ToolbarPlaceholder({ labelled = false }) {
+    return <View aria-hidden data-neo-toolbar-placeholder className={labelled ? PLACEHOLDER.labelled : PLACEHOLDER.round} />
+}
+
 export default function HeaderElement({ url, uri }) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
@@ -61,45 +75,61 @@ export default function HeaderElement({ url, uri }) {
     // server HTML and doesn't pop in on hydration. A member is an object here and never reaches this.
     // Log In and Sign Up (`una: <item name>`) follow it the same way: the site's guest header is that menu.
     const followsGuestToolbar = has('search') || itemsToRender.some((item) => !!item.una)
-    const { menuData: guestToolbar } = useMenuData(
+    const { menuData: guestToolbar, isFetched: guestToolbarFetched } = useMenuData(
         !currentUser && followsGuestToolbar ? appSetting('menu_items', 'objects', 'toolbar') : null
     )
     const inGuestToolbar = (name) => Array.isArray(guestToolbar?.items) && guestToolbar.items.some((item) => item?.name === name)
+    // The page brings a visitor's toolbar along; it loads here only after a change of viewer without a page load.
+    const guestToolbarLoading = !currentUser && followsGuestToolbar && !guestToolbar && !guestToolbarFetched
+    const guestSlot = (name) => {
+        if (guestToolbarLoading) return SLOT.loading
+        return inGuestToolbar(name) ? SLOT.shown : SLOT.hidden
+    }
     const addMenu = useMenuAddItems(has('add'))
     const launcherMenu = useMenuLauncherItems(has('launcher'))
+    const menuSlot = (menu) => {
+        if (menu.loading) return SLOT.loading
+        return menu.empty ? SLOT.hidden : SLOT.shown
+    }
+    const shownIf = (condition) => (condition ? SLOT.shown : SLOT.hidden)
 
-    // A tool with nothing to show gets no slot: an empty one would still take the row's gap.
-    const isShown = (item) => {
+    // A tool with nothing to show gets no slot: an empty one would still take the row's gap. One whose data is
+    // still loading keeps its slot with a placeholder the size of its button, so the toolbar is as wide from its
+    // first paint as it will be (the main menu beside it fits its tabs in the room the toolbar leaves) and gives the
+    // slot up only when the data says it is empty.
+    const slotOf = (item) => {
         switch (item.component) {
             case "search":
-                return bSearch && (currentUser ? inUnaToolbar('search') : inGuestToolbar('search'))
+                if (!bSearch) return SLOT.hidden
+                return currentUser ? shownIf(inUnaToolbar('search')) : guestSlot('search')
             case "launcher":
-                return !launcherMenu.empty
+                return menuSlot(launcherMenu)
             case "add":
-                return !addMenu.empty
+                return menuSlot(addMenu)
             case "notifications":
-                return bNotifs && inUnaToolbar('notifications-preview')
+                return shownIf(bNotifs && inUnaToolbar('notifications-preview'))
             case "link":
-                if (item.una && !currentUser) return inGuestToolbar(item.una)
-                return item.href !== '{messenger}' || inUnaToolbar('notifications-messenger')
+                if (item.una && !currentUser) return guestSlot(item.una)
+                return shownIf(item.href !== '{messenger}' || inUnaToolbar('notifications-messenger'))
             case "account":
-                return true
+                return SLOT.shown
             case "menu_navigation":
                 // Native: the drawer has the menu's place (Log In, Sign Up and the links), opened from the header's start.
-                return isWeb || !hasAppDrawer(currentUser)
+                return shownIf(isWeb || !hasAppDrawer(currentUser))
             default:
-                return false
+                return SLOT.hidden
         }
     }
     const shownItems = itemsToRender
-        .map((item, index) => ({ item, index }))
-        .filter(({ item }) => ((isWeb ? item.web : item.native) ?? true) && isShown(item))
+        .map((item, index) => ({ item, index, slot: ((isWeb ? item.web : item.native) ?? true) ? slotOf(item) : SLOT.hidden }))
+        .filter(({ slot }) => slot !== SLOT.hidden)
 
     return (
         <Row className="justify-end gap-3 items-center">
-            {shownItems.map(({ item, index }) => (
+            {shownItems.map(({ item, index, slot }) => (
                 <View key={index} className={item.className}>
                     {(() => {
+                        if (slot === SLOT.loading) return <ToolbarPlaceholder labelled={!!item.props?.title} />
                         switch (item.component) {
                             case "search":
                                 return <Search />

@@ -4,19 +4,34 @@ import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDro
 import { useTranslation } from 'react-i18next'
 import { components } from 'app/components/registry';
 import { useMenuData } from 'app/context/menu-data';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { MENU_HIGHLIGHT_BAR_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
 import { Text } from 'app/design/typography';
-import { navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit } from 'app/lib/navbar-fit';
+import { navbarBoxWidth, navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit, navbarUnfittedTabSide } from 'app/lib/navbar-fit';
+import { menuViewerKey } from 'app/lib/menu-remember';
 
 // The bar's spacing (the Row's `gap-2`) and More's width (a 44px circle): the fit counts with them.
 const TAB_GAP = 8;
 const MORE_WIDTH = 44;
-// The last fit, so a page that mounts the bar again (client navigation) shows the same row at once.
-let __menuTopFit = { signature: '', available: 0, count: -1 };
-// Where the last centred row started in its bar, so a page that mounts the bar again starts it there before it measures.
-let __menuTopRowStart = null;
+// The last fit and the bar's own width (`box`), so a page that mounts the bar again (client navigation) shows the same
+// row in the same bar at once.
+let __menuTopFit = { signature: '', available: 0, count: -1, box: 0 };
+
+// Before the fit is measured (the server's HTML, the placeholders) every tab is in the row, which wraps and shows its
+// first line only. Each tab keeps More's room after it (TAB_GAP + MORE_WIDTH: 52px, `me-13`) and the next takes it
+// back (`-ms-13`), so the line breaks where the fit puts More (`navbarUnfittedTabSide`, lib/navbar-fit.ts, with the
+// test that the two agree): the same tabs in the same place, and only More is missing until the bar is measured.
+const UNFITTED_BAR = 'flex-wrap web:overflow-y-clip';
+const UNFITTED_TAB = { none: '', reserve: 'me-13', takeBack: '-ms-13', both: '-ms-13 me-13' };
+function unfittedTabClass(index, count, moreAlways) {
+    const { takeBack, reserve } = navbarUnfittedTabSide(index, count, moreAlways);
+    if (takeBack) return reserve ? UNFITTED_TAB.both : UNFITTED_TAB.takeBack;
+    return reserve ? UNFITTED_TAB.reserve : UNFITTED_TAB.none;
+}
+// Placeholders while a member's menu loads for the first time on this device: more than any bar holds, the row
+// shows the ones that fit.
+const SKELETON_TABS = 12;
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
@@ -53,9 +68,8 @@ function startIndicatorSettle() {
 
 /**
  * @param align where the tabs sit in the bar: `start`, `center` or `end` (UNA's Designer, lib/header-layout.ts)
- * @param headerBox the header row's place in the window ({x, width}): centred tabs are centred on it
  */
-export default function MenuTop({ url, uri, align = 'center', headerBox = null }) {
+export default function MenuTop({ url, uri, align = 'center' }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
     // Web: one hover highlight slides from tab to tab, as in the dropdown menus.
@@ -79,8 +93,11 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
     // No `menu_navbar` setting: the navbar comes from UNA's site menu.
     const staticNavbar = appSetting('menu_items', 'menu_navbar');
     const useSiteMenu = !Array.isArray(staticNavbar) || !staticNavbar.length;
+    // A member's menu is kept on the device (lib/menu-remember.ts): a page that loads again draws its tabs at once and
+    // UNA's answer replaces them, so placeholders show only the first time.
     const { menuData: siteMenuData, isFetched: siteMenuFetched } = useMenuData(
-        useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null
+        useSiteMenu ? appSetting('menu_items', 'objects', 'site') : null,
+        { rememberFor: menuViewerKey(currentUser) }
     );
     // Optional upper limit on tabs after Home; 0 or unset: as many as fit, the rest go under More.
     const siteTabs = appSetting('menu_items', 'menu_navbar_site_tabs') ?? 0;
@@ -118,28 +135,41 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
     // from the first that doesn't, the rest go to the top of More.
     const tabs = useMemo(() => menu_navbar_items.filter((item) => item?.name !== 'more'), [menu_navbar_items]);
     const moreItem = menu_navbar_items.find((item) => item?.name === 'more');
-    const { fitCount, ready, tabWidths, handleTabWidth } = useNavbarFit(tabs, moreItem, containerLayout, persistent);
-    const shownItems = useMemo(() => navbarShownItems(tabs, fitCount, moreItem), [tabs, fitCount, moreItem]);
+    const moreAlways = !!moreItem?.items?.length;
+    const { fitCount, fitted, boxWidth, tabWidths, handleTabWidth, signature } = useNavbarFit(tabs, moreAlways, containerLayout, persistent);
+    const shownItems = useMemo(
+        () => (fitted ? navbarShownItems(tabs, fitCount, moreItem) : tabs),
+        [fitted, tabs, fitCount, moreItem]
+    );
     const activeIndex = useMemo(() => navbarActiveIndex(shownItems, tabs.length - fitCount, url, uri), [shownItems, tabs.length, fitCount, url, uri]);
 
-    // The indicator is a pure function of the measured widths: the tabs sit in a centred row, so the active tab's place
-    // follows from the widths before it (navbarTabBox). Deriving it in render (instead of mirroring it into state from
-    // an effect) avoids a setState-in-effect cascade during idle hydration of the page Suspense boundary.
+    // The bar and the hidden copy of its tabs are measured before the first paint, so the row the server sent (or
+    // the one drawn from the kept menu) and the fitted one are never both seen: `onLayout` answers a frame late.
+    // After that `onLayout` follows every change (the window, a font that loads).
+    const barRef = useRef(null);
+    const setBarRef = useCallback((node) => {
+        barRef.current = node;
+        highlightRef?.(node);
+    }, [highlightRef]);
+    const measureBar = () => {
+        const bar = barRef.current;
+        if (!bar?.getBoundingClientRect) return;
+        const rect = bar.getBoundingClientRect();
+        handleContainerLayout({ x: rect.left, width: rect.width });
+        bar.querySelectorAll?.('[data-menu-top-probe]').forEach((probe) => {
+            handleTabWidth(probe.getAttribute('data-menu-top-probe'), probe.getBoundingClientRect().width);
+        });
+    };
+    useLayoutEffect(measureBar, [signature]);
+
+    // The indicator is a pure function of the measured widths: the tabs sit in a row the bar places (`justify-*`), so
+    // the active tab's place follows from the widths before it (navbarTabBox). Deriving it in render (instead of
+    // mirroring it into state from an effect) avoids a setState-in-effect cascade during idle hydration of the page
+    // Suspense boundary.
     const shownWidths = shownItems.map((item) => tabWidths[tabKey(item)] || (item?.name === 'more' ? MORE_WIDTH : 0));
-    // Where the row starts in the bar. In the middle it is centred on the header, not in the bar between the logo and
-    // the actions, which are not as wide: the bar's padding moves it there, as far as the bar leaves room (its width
-    // stays, so the fit doesn't change). Until both are measured a remounted bar starts it where it last did.
-    const rowWidth = navbarRowWidth(shownWidths, TAB_GAP);
-    const headerCentre = headerBox && headerBox.width > 0 ? headerBox.x + headerBox.width / 2 - containerLayout.x : null;
-    const isCentred = align === 'center';
-    const rowStart = containerLayout.measured ? navbarRowStart(align, containerLayout.width, rowWidth, headerCentre) : null;
-    const isRowPlaced = isCentred && rowStart !== null && headerCentre !== null && rowStart >= 0;
-    const barPadding = isRowPlaced ? rowStart : (isCentred && !containerLayout.measured ? __menuTopRowStart : null);
-    useEffect(() => {
-        if (isRowPlaced) __menuTopRowStart = rowStart;
-    }, [isRowPlaced, rowStart]);
-    const target = ready && containerLayout.measured && activeIndex >= 0 && shownWidths[activeIndex] > 0
-        ? navbarTabBox(shownWidths, activeIndex, containerLayout.width, TAB_GAP, rowStart ?? undefined)
+    const isMeasured = fitted && containerLayout.measured;
+    const target = isMeasured && activeIndex >= 0 && shownWidths[activeIndex] > 0
+        ? navbarTabBox(shownWidths, activeIndex, containerLayout.width, TAB_GAP, navbarRowStart(align, containerLayout.width, navbarRowWidth(shownWidths, TAB_GAP)))
         : null;
     const { indicatorStyle, isIndicatorShown, isIndicatorRevealed } = useNavbarIndicator(target, activeIndex);
     const indicatorTransitions = __menuTopIndicatorTransitions;
@@ -147,13 +177,20 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
 
     const MenuTopItem = components['menu-item']['topmenu'];
 
-    // Like the footer: placeholders until the site menu arrives, so the bar
-    // doesn't grow from Home alone to every tab. Home, the tabs and More.
-    if (useSiteMenu && !siteMenuFetched) {
+    // The bar: as wide as all its tabs (`boxWidth`, so its width never depends on the fit), up to
+    // `layout.header.menu_max_width` and to the room the header leaves; its row is placed by `justify-*`.
+    const maxWidth = appSetting('layout', 'header', 'menu_max_width') || undefined;
+    const barClassName = `${appSetting('layout', 'header', 'content_center')} ${appSetting('layout', 'header', 'content_center_align')?.[align] ?? ''} relative`;
+
+    // Placeholders until the menu arrives, in the bar the tabs will have: the same width limit, the same place in
+    // the header and the same row, clipped to the bar (a menu's own width is not known yet, so the bar is as wide as
+    // the limit allows).
+    if (useSiteMenu && !siteMenuData && !siteMenuFetched) {
+        const count = siteTabs ? siteTabs + 1 : SKELETON_TABS;
         return (
-            <Row className={`${appSetting('layout', 'header', 'content_center')} ${appSetting('layout', 'header', 'content_center_align')?.[align] ?? ''} relative`} role="navigation" aria-label="Primary" aria-busy>
-                {Array.from({ length: (siteTabs || 5) + 2 }, (_, index) => (
-                    <View key={`menu-top-skeleton-${index}`} className="flex-none relative z-10">
+            <Row className={`${barClassName} ${UNFITTED_BAR}`} style={{ maxWidth, width: maxWidth ?? '100%' }} role="navigation" aria-label="Primary" aria-busy>
+                {Array.from({ length: count }, (_, index) => (
+                    <View key={`menu-top-skeleton-${index}`} className={`flex-none relative z-10 ${unfittedTabClass(index, count, true)}`}>
                         <Row className="items-center justify-center gap-2 ps-3 pe-4 h-11 min-w-11">
                             <View className="h-6 w-6 rounded-full bg-muted animate-pulse" />
                             <View className="h-4 w-12 rounded-full bg-muted animate-pulse" />
@@ -166,14 +203,11 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
 
     return (
         <Row
-            ref={highlightRef}
-            className={`${appSetting('layout', 'header', 'content_center')} ${typeof barPadding === 'number' ? 'justify-start' : (appSetting('layout', 'header', 'content_center_align')?.[align] ?? '')} relative ${MENU_HIGHLIGHT_BAR_CLASS}`}
+            ref={setBarRef}
+            className={`${barClassName} ${fitted ? '' : UNFITTED_BAR} ${MENU_HIGHLIGHT_BAR_CLASS}`}
             role="navigation"
             aria-label="Primary"
-            style={{
-                ...(ready ? null : { opacity: 0 }),
-                ...(typeof barPadding === 'number' ? { paddingLeft: barPadding } : null),
-            }}
+            style={{ maxWidth, ...(boxWidth > 0 ? { width: boxWidth } : null) }}
             onLayout={(e) => handleContainerLayout(e?.nativeEvent?.layout)}
         >
             <View
@@ -210,7 +244,7 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
             {shownItems.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
-                    <View key={`wrap-${tabKey(item)}`} className="flex-none relative z-10">
+                    <View key={`wrap-${tabKey(item)}`} className={`flex-none relative z-10 ${fitted ? '' : unfittedTabClass(index, shownItems.length, moreAlways)}`}>
                         <MenuTopItem
                             index={index}
                             link={item.link}
@@ -297,33 +331,30 @@ function nextContainerLayout(prev, layout) {
 
 /**
  * How many tabs stay in the bar: every tab's natural width from the hidden copy (MenuTopProbe), the bar's width and
- * the menu's persistent items, through navbarTabsThatFit. Until both are measured on a fresh load the bar is not
- * `ready` (it stays invisible rather than show tabs that move); a later mount reuses the last fit.
+ * the menu's persistent items, through navbarTabsThatFit. Until both are measured the bar is not `fitted` and shows
+ * every tab in a row that wraps (the first line is what the fit will keep); a later mount reuses the last fit.
+ * `boxWidth` is the bar's own width, all its tabs: 0 until they are measured or remembered.
  */
-function useNavbarFit(tabs, moreItem, containerLayout, persistent) {
+function useNavbarFit(tabs, moreAlways, containerLayout, persistent) {
     const [tabWidths, setTabWidths] = useState({});
     const handleTabWidth = (key, width) => setTabWidths((prev) => (prev[key] === width ? prev : { ...prev, [key]: width }));
     const signature = tabs.map(tabKey).join('|');
     const widthsKnown = tabs.length > 0 && tabs.every((item) => tabWidths[tabKey(item)] > 0);
     const measured = containerLayout.measured && widthsKnown;
     const remembered = __menuTopFit.signature === signature ? __menuTopFit : null;
+    const widths = widthsKnown ? tabs.map((item) => tabWidths[tabKey(item)]) : null;
+    const more = tabWidths.more || MORE_WIDTH;
     let fitCount = tabs.length;
     if (measured) {
-        fitCount = navbarTabsThatFit({
-            widths: tabs.map((item) => tabWidths[tabKey(item)]),
-            available: containerLayout.width,
-            gap: TAB_GAP,
-            more: tabWidths.more || MORE_WIDTH,
-            persistent,
-            moreAlways: !!moreItem?.items?.length,
-        });
+        fitCount = navbarTabsThatFit({ widths, available: containerLayout.width, gap: TAB_GAP, more, persistent, moreAlways });
     } else if (remembered) {
         fitCount = remembered.count;
     }
+    const boxWidth = widths ? navbarBoxWidth({ widths, gap: TAB_GAP, more, moreAlways }) : (remembered?.box || 0);
     useEffect(() => {
-        if (measured) __menuTopFit = { signature, available: containerLayout.width, count: fitCount };
-    }, [measured, signature, containerLayout.width, fitCount]);
-    return { fitCount, ready: measured || !!remembered || Platform.OS !== 'web', tabWidths, handleTabWidth };
+        if (measured) __menuTopFit = { signature, available: containerLayout.width, count: fitCount, box: boxWidth };
+    }, [measured, signature, containerLayout.width, fitCount, boxWidth]);
+    return { fitCount, fitted: measured || !!remembered || Platform.OS !== 'web', boxWidth, tabWidths, handleTabWidth, signature };
 }
 
 /** The bar's items: the tabs that fit, then More with the rest of the tabs first and its own items after them. */
@@ -372,7 +403,8 @@ function MenuTopProbe({ items, t, onWidth }) {
                     <Row
                         key={tabKey(item)}
                         className={`items-center justify-center gap-2 h-11 min-w-11 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-4' : 'px-2.5'}`}
-                        onLayout={(e) => onWidth(tabKey(item), Math.ceil(e?.nativeEvent?.layout?.width || 0))}
+                        data-menu-top-probe={tabKey(item)}
+                        onLayout={(e) => onWidth(tabKey(item), e?.nativeEvent?.layout?.width || 0)}
                     >
                         {item.icon ? <View className="h-6 w-6 shrink-0" /> : null}
                         {item.showTitle ? (
