@@ -51,7 +51,7 @@
 }
 .bx-agents-popup-chat-thread:hover,
 .bx-agents-popup-chat-thread-active {
-    background: rgba(37, 99, 235, .08);
+    background: rgb(var(--bx-accent-600) / .08);
 }
 .bx-agents-popup-chat-thread-title {
     display: block;

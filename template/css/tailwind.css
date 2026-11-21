@@ -31,6 +31,20 @@
         --bx-radius-xl: calc(0.75rem * var(--bx-radius-scale));
         --bx-radius-2xl: min(calc(0.875rem * var(--bx-radius-scale)), var(--bx-radius-max-row));
         --bx-radius-3xl: min(calc(1.375rem * var(--bx-radius-scale)), var(--bx-radius-max));
+
+        /* The accent: Tailwind's blue as "r g b", which every blue-* class reads (tailwind.config.js). Studio > Designer >
+           Settings > Accent color puts another preset's scale here (design_accent.html, BxDolDesigns::getAccentPresets). */
+        --bx-accent-50: 239 246 255;
+        --bx-accent-100: 219 234 254;
+        --bx-accent-200: 191 219 254;
+        --bx-accent-300: 147 197 253;
+        --bx-accent-400: 96 165 250;
+        --bx-accent-500: 59 130 246;
+        --bx-accent-600: 37 99 235;
+        --bx-accent-700: 29 78 216;
+        --bx-accent-800: 30 64 175;
+        --bx-accent-900: 30 58 138;
+        --bx-accent-950: 23 37 84;
     }
 }
 

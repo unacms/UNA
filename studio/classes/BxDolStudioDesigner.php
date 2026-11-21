@@ -605,6 +605,10 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             $aValues['sys_design_radius_smooth_factor'] = (string)min(2, max(1, round((float)$sFactor, 2)));
         }
 
+        $sAccent = bx_process_input(bx_get('sys_design_accent'));
+        if(array_key_exists($sAccent, $this->getSettingsAccentList()))
+            $aValues['sys_design_accent'] = $sAccent;
+
         // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
         $aCategory = [];
         BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
@@ -648,6 +652,18 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'small' => _t('_adm_dsg_txt_settings_radius_small'),
             'none' => _t('_adm_dsg_txt_settings_radius_none'),
         ];
+    }
+
+    /**
+     * The accent presets by name (BxDolDesigns::getAccentPresets), with their titles.
+     */
+    public function getSettingsAccentList()
+    {
+        $aResult = [];
+        foreach(array_keys(BxDolDesigns::getAccentPresets()) as $sName)
+            $aResult[$sName] = _t('_adm_dsg_txt_settings_accent_' . $sName);
+
+        return $aResult;
     }
 
     public function getSettingsRadius()
