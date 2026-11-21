@@ -10,17 +10,6 @@
 
     __service_worker__
 
-    (function(w) {
-        var dpr = (w.devicePixelRatio === undefined ? 1 : Math.round(w.devicePixelRatio));
-        if ($.cookie('devicePixelRatio') == dpr || dpr < 2 || (typeof(bIgnorePixelRatio) != "undefined" && bIgnorePixelRatio) || !navigator.cookieEnabled) 
-            return;
-        $.cookie('devicePixelRatio', dpr, {expires: 365, path: '/'});
-        if (1 != localStorage.getItem("dpr")) {
-            localStorage.setItem("dpr", 1);
-            window.location.reload();
-        }
-    })(window);
-
     var oMediaPhone = window.matchMedia('__css_media_phone__');
     var oMediaPhone2 = window.matchMedia('__css_media_phone2__');
     var oMediaTablet = window.matchMedia('__css_media_tablet__');
