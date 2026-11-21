@@ -81,17 +81,13 @@ class BxBaseApiV2System
 
         $sDescription = BxDolApiV2Map::text((string)$aPwa['description']['used']);
 
-        // the logos' proportions, measured from the uploaded files (BxDolDesigns::getLogoFileAspectRatio)
+        // the logos' proportions, as the template measured them from the uploaded files (once per upload,
+        // BxBaseModTemplateConfig::getLogoValues), so the site's header and the apps draw them alike
         $aAspect = [];
         foreach (['logo', 'logo_dark'] as $sType) {
-            $aAspect[$sType] = null;
-            if (in_array($aSources[$sType]['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true)) {
-                $fRatio = $oDesigns->getSiteLogoAspectRatio($sType);
-                if ($fRatio <= 0)
-                    $fRatio = BxDolDesigns::getLogoFileAspectRatio($aSources[$sType]['file_id']);
-                if ($fRatio > 0)
-                    $aAspect[$sType] = round($fRatio, 4);
-            }
+            $fRatio = $oDesigns->getSiteLogoAspectRatio($sType);
+            $bUploaded = in_array($aSources[$sType]['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true);
+            $aAspect[$sType] = $bUploaded && $fRatio > 0 ? round($fRatio, 4) : null;
         }
 
         // the 180x180 home screen icon, as BxBaseFunctions::getMetaIcons picks it

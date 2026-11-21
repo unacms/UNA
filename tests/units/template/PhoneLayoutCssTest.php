@@ -38,4 +38,14 @@ class PhoneLayoutCssTest extends BxDolTestCase
     {
         $this->assertStringContainsString('position:relative;', self::rule(self::read('template/css/grid.css'), '.bx-grid-table-wrapper'));
     }
+
+    public function testGridScrollFadeIsAMask(): void
+    {
+        // a white gradient over the table glared on dark blocks: the table's edge fades out instead
+        foreach (['template/css/media-phone.css', 'modules/boonex/artificer/data/template/system/css/media-phone.css'] as $sFile) {
+            $sCss = self::read($sFile);
+            $this->assertStringContainsString('mask-image: linear-gradient(to right, transparent, #000 var(--bx-grid-fade-before)', $sCss, $sFile);
+            $this->assertStringNotContainsString('.bx-grid-table-wrapper2:after {' . "\n" . '    display:block;', $sCss, $sFile);
+        }
+    }
 }
