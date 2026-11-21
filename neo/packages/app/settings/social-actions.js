@@ -95,6 +95,15 @@ export const settingsSocialActions = {
             show_action_as_button: false,
             show_action_label: true,
             haptics_type: 'Medium',
+            // Where the browser has no share sheet (a computer), Share opens a menu: Copy link, then these services,
+            // as UNA's Share popup lists them (sys_social_sharing). `{url}` is the page's link, URL-encoded.
+            services: [
+                { name: 'facebook', title: 'Facebook', icon: 'BrandFacebook', link: 'https://www.facebook.com/sharer/sharer.php?u={url}' },
+                { name: 'x', title: 'X', icon: 'BrandX', link: 'https://x.com/intent/post?url={url}' },
+                { name: 'pinterest', title: 'Pinterest', icon: 'BrandPinterest', link: 'https://pinterest.com/pin/create/button/?url={url}' },
+                { name: 'linkedin', title: 'LinkedIn', icon: 'BrandLinkedin', link: 'https://www.linkedin.com/shareArticle?mini=true&url={url}' },
+                { name: 'whatsapp', title: 'WhatsApp', icon: 'BrandWhatsapp', link: 'https://wa.me/?text={url}' },
+            ],
         },
         // Connection icons are UNA's (BxBaseConnectionFriend / BxBaseConnectionSubscription /
         // BxBaseModGroupsConnectionFans / BxEventsConnectionFans): change both together.

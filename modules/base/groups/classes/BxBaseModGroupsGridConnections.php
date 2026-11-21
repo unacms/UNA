@@ -121,7 +121,7 @@ class BxBaseModGroupsGridConnections extends BxDolGridConnections
             return [bx_api_get_block('simple_list',  $sPopupContent)];
 
         $oFunctions = BxTemplFunctions::getInstance();
-        return $this->_getActionResult(['popup' => $oFunctions->transBox(str_replace('_', '-', $this->_sContentModule) . '-questionnaire-popup', $oFunctions->simpleBoxContent($sPopupContent))]);
+        return $this->_getActionResult(['popup' => $oFunctions->popupBox(str_replace('_', '-', $this->_sContentModule) . '-questionnaire-popup', $this->_getActionTitle('questionnaire'), $sPopupContent)]);
     }
 
     public function performActionSetRole()
@@ -187,7 +187,15 @@ class BxBaseModGroupsGridConnections extends BxDolGridConnections
         }
 
         $oFunctions = BxTemplFunctions::getInstance();
-        return $this->_getActionResult(['popup' => $oFunctions->transBox(str_replace('_', '-', $this->_sContentModule) . '-set-role-popup', $oFunctions->simpleBoxContent($sPopupContent))]);
+        return $this->_getActionResult(['popup' => $oFunctions->popupBox(str_replace('_', '-', $this->_sContentModule) . '-set-role-popup', $this->_getActionTitle('set_role'), $sPopupContent)]);
+    }
+
+    /**
+     * A row action's title, for the title of the dialog it opens.
+     */
+    protected function _getActionTitle($sAction)
+    {
+        return $this->_aOptions['actions_single'][$sAction]['title'] ?? '';
     }
 
     public function performActionSetRoleSubmit()

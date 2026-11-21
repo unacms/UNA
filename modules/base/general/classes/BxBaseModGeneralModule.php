@@ -177,7 +177,7 @@ class BxBaseModGeneralModule extends BxDolModule
         if($oForm->getCleanValue('do_send')) {
             $aResult = [];
             if($this->_sendApproveMessage($iContentId, $aContentInfo, $oForm))
-                $aResult = ['msg' => _t('_sys_manage_txt_sent')];
+                $aResult = ['toast' => _t('_sys_manage_txt_sent')];
             else
                 $aResult = ['msg' => _t('_sys_manage_err_cannot_perform_action')];
 
@@ -199,7 +199,7 @@ class BxBaseModGeneralModule extends BxDolModule
                  */
                 $this->processMetasAdd($iContentId);
 
-                $aResult = ['msg' => _t('_sys_manage_txt_approved'), 'reload' => 1];
+                $aResult = ['toast' => _t('_sys_manage_txt_approved'), 'reload' => 1];
             }
             else
                 $aResult = ['msg' => _t('_sys_manage_err_cannot_perform_action')];

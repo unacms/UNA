@@ -462,7 +462,9 @@ BxDolStudioDashboard.prototype.clearChartItem = function(sBlock, sAction, sType,
         function(oData) {
             $this.loading(sDivId, false, oButton);
 
-            if(oData.message != undefined && oData.message.length > 0)
+            if(oData.toast != undefined && oData.toast.length > 0)
+                bx_toast(oData.toast);
+            else if(oData.message != undefined && oData.message.length > 0)
                 $this.popup(oData.message, function() {
                     // the control that was used is redrawn with the chart: hand focus to the block's first control
                     return $('#' + sDivId).find('button, a[href]').first().get(0);

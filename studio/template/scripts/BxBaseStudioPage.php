@@ -297,6 +297,18 @@ class BxBaseStudioPage extends BxDolStudioPage
         ));
     }
 
+    /**
+     * A success reply: a toast that doesn't block, shown on the next page when it redirects.
+     */
+    protected function getJsToast($sMessage, $sRedirect = '')
+    {
+        return bx_get_js_result([
+            'toast' => $sMessage,
+            'redirect' => !empty($sRedirect) ? $sRedirect : false,
+            'cue' => ['cue' => 'success', 'emphasis' => 'subtle'],
+        ]);
+    }
+
     protected function getJsResultBy($aParams)
     {
         return bx_get_js_result($aParams);

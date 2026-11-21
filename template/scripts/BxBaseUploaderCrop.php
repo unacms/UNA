@@ -165,7 +165,8 @@ class BxBaseUploaderCrop extends BxDolUploader
     	$oForm = new BxTemplFormView(array());
     	$aFormInput = array('type' => 'file', 'name' => 'f');
 
-        return $this->_oTemplate->parseHtmlByName($this->_sUploaderFormTemplate, array(
+        // a titled popup with the standard close button; the picture is chosen before it opens (BxDolUploaderCrop.showUploaderForm)
+        return BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->popupBox($this->_sPopupContainerId, _t('_sys_uploader_crop_popup_title'), $this->_oTemplate->parseHtmlByName($this->_sUploaderFormTemplate, array(
             'form_container_id' => $this->_sFormContainerId,
         	'file_field' => $oForm->genRow($aFormInput),
             'errors_container_id' => $this->_sErrorsContainerId,
@@ -179,7 +180,7 @@ class BxBaseUploaderCrop extends BxDolUploader
             'storage_private' => $isPrivate,
             // a round picture is cropped in a round frame, so the member sees what the avatar will show
             'viewport_type' => !$isMultiple && !empty($this->_sPreviewTemplate) && $this->_sPreviewShape == self::PREVIEW_CIRCLE ? 'circle' : 'square',
-        ));
+        )));
     }
 
     public function handleUploads ($iProfileId, $mixedFiles, $isMultiple = true, $iContentId = false, $bPrivate = true)

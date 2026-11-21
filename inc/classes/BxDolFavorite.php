@@ -356,7 +356,7 @@ class BxDolFavorite extends BxDolObject
 
     protected function _getIconDoFavorite($bPerformed)
     {
-    	return $bPerformed && $this->isUndo() ?  'far fa-bookmark' : 'fas fa-bookmark';
+    	return $bPerformed ? 'bookmark sys-icon-filled' : 'bookmark'; // filled while it is saved
     }
 
     protected function _getTitleDoFavorite($bPerformed)

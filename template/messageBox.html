@@ -19,7 +19,8 @@
         <bx_if:buttons>
             <div class="flex flex-wrap justify-center gap-2 pt-1">
                 <bx_repeat:buttons>
-                    <a class="bx-btn __class__" href="__link__"__attrs__>__title__</a>
+                    <bx_if:link><a class="bx-btn __class__" href="__link__"__attrs__>__title__</a></bx_if:link>
+                    <bx_if:button><button type="button" class="bx-btn __class__"__attrs__>__title__</button></bx_if:button>
                 </bx_repeat:buttons>
             </div>
         </bx_if:buttons>

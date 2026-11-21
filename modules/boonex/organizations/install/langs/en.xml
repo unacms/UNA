@@ -560,7 +560,7 @@
     <string name="_bx_orgs_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_orgs_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    
 
-    <string name="_bx_orgs_msg_performed"><![CDATA[The action was successfully performed.]]></string>
+    <string name="_bx_orgs_msg_performed"><![CDATA[Done.]]></string>
     <string name="_bx_orgs_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
     <string name="_bx_orgs_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 

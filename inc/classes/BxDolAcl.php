@@ -174,7 +174,20 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
             return null;
         }
 
-        $iLevel = self::$aDenials[$sMessage];
+        return self::getDenialStateByLevel(self::$aDenials[$sMessage], $sMessage);
+    }
+
+    /**
+     * The state of a denial for a viewer at the membership level: a guest is asked to sign in or sign up, an account
+     * without a profile to create one.
+     *
+     * @param int $iLevel membership level id (MEMBERSHIP_ID_*)
+     * @param string $sMessage translated text of the state
+     * @return array as getDenialState
+     */
+    public static function getDenialStateByLevel($iLevel, $sMessage)
+    {
+        $iLevel = (int)$iLevel;
         $oAcl = self::getInstance();
         $aState = $oAcl->aLevel2State[$iLevel] ?? ['title' => '_sys_acl_state_not_allowed_title', 'icon' => 'lock'];
 

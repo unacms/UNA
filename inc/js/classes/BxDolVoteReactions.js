@@ -93,13 +93,13 @@ BxDolVoteReactions.prototype.onVote = function (oLink, oData, onComplete)
             switch(oData.label_use) {
                 case 'icon':
                     if($(this).find('.sys-action-do-icon .sys-icon').length && !$(oData.label_icon).hasClass('sys-icon'))
-                        $(this).find('.sys-action-do-icon .sys-icon').attr('class', 'sys-icon ' + oData.label_icon).html('');
+                        bx_set_icon($(this).find('.sys-action-do-icon .sys-icon'), oData.label_icon);
                     else
                         $(this).find('.sys-action-do-icon').html(oData.label_icon);
                     break;
 
                 case 'emoji':
-                    $(this).find('.sys-action-do-icon .sys-icon').attr('class', 'sys-icon sys-icon-emoji').html(oData.label_emoji);
+                    bx_set_icon($(this).find('.sys-action-do-icon .sys-icon'), 'sys-icon-emoji', oData.label_emoji);
                     break;
 
                 case 'image':
@@ -126,13 +126,13 @@ BxDolVoteReactions.prototype.onVote = function (oLink, oData, onComplete)
     var oCounter = this._getCounter(oLink);
     if(oCounter && oCounter.length > 0) {
         oCounter.filter('.' + oData.reaction).each(function() {
-            $(this).html(oData.countf).toggleClass('bx-vc-hidden', !oData.count);            
+            $(this).html(oData.countf).bxProcessHtml().toggleClass('bx-vc-hidden', !oData.count);            
         });
 
         //--- Update Total.
         if(oData.total)
             oCounter.filter('.total-count').each(function() {
-                $(this).html(oData.total.countf).toggleClass('bx-vc-hidden', !oData.total.count);
+                $(this).html(oData.total.countf).bxProcessHtml().toggleClass('bx-vc-hidden', !oData.total.count);
             });
 
         //--- Show counter.
