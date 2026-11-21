@@ -79,17 +79,16 @@ class ApplicationShellHeaderTest extends BxDolTestCase
 
     public function testProfileSwitcherButtonHasAnIcon(): void
     {
-        $this->assertStringContainsString("'arrows-alt-v' => 'chevrons-up-down',", self::read('template/scripts/BxBaseIconsetLucide.php'));
         $this->assertFileExists(__DIR__ . '/../../../plugins_public/lucide/icons/chevrons-up-down.svg');
 
         foreach (['template/profile_avatar.html', 'modules/boonex/artificer/data/template/system/profile_avatar.html'] as $sPath)
-            $this->assertStringContainsString('arrows-alt-v', self::read($sPath), $sPath);
+            $this->assertStringContainsString('<bx_image_auto:chevrons-up-down />', self::read($sPath), $sPath);
     }
 
     public function testHeaderMenuIconsTakeTheTabsColour(): void
     {
         // the Application menu's items carry icon colours that are unreadable on the dark header
-        $this->assertStringContainsString("'home col-gray-dark'", self::read('install/sql/system.sql'));
+        $this->assertStringContainsString("'house col-gray-dark'", self::read('install/sql/system.sql'));
 
         $this->assertMatchesRegularExpression('/\n#bx-toolbar \.bx-menu-main \.bx-stl-mii \.sys-icon \{\n    color: inherit;\n\}/', self::read('modules/boonex/artificer/data/template/system/css/menu.css'));
     }

@@ -55,7 +55,7 @@ define('BX_DOL_STORAGE_ERR_NOT_IMPLEMENTED', 5005); ///< this feature isn't impl
 define('BX_DOL_STORAGE_DEFAULT_MIME_TYPE', 'octet/stream'); ///< default mime type if it is not find by extension
 
 define('BX_DOL_STORAGE_DEFAULT_ICON', 'mime-type-any.svg'); ///< default icon if no other icon can be determined by file extension
-define('BX_DOL_STORAGE_DEFAULT_ICON_FONT', 'far file'); ///< default font icon if no other icon can be determined by file extension
+define('BX_DOL_STORAGE_DEFAULT_ICON_FONT', 'file'); ///< default font icon if no other icon can be determined by file extension
 
 define('BX_DOL_STORAGE_QUEUED_DELETIONS_PER_RUN', 200); ///< max number of file deletions per one cron run, @see BxDolStorage::pruneDeletions
 
@@ -1106,17 +1106,16 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
 
         */
 
+        // Lucide icons; a match is a list of extensions and mime type prefixes (`text/`)
         $aIconsFont = array (
-            'far file-pdf' => array('pdf'),
-            'far file-word' => array('doc', 'docx'),
-            'far file-excel' => array('xls', 'xlt', 'xlsx', 'sxc', 'stc', 'ods', 'ots', 'sdc', 'csv', 'dif', 'slk', 'pxl'),
-            'far file-powerpoint' => array('ppt', 'pptx', 'sxi', 'sti', 'odp', 'sdp', 'sdd'),
-            'far file-code' => array('1st', 'aspx', 'asp', 'json', 'js', 'jsp', 'java', 'php', 'xml', 'html', 'xhtml', 'htm', 'rdf', 'xsd', 'xsl', 'xslt', 'sax', 'rss', 'dtd', 'cfm', 'js', 'asm', 'pl', 'prl', 'bas', 'b', 'fs', 'src', 'cs', 'ws', 'cgi', 'bat', 'py', 'c', 'cpp', 'cc', 'cp', 'h', 'hh', 'cxx', 'hxx', 'c++', 'm', 'lua', 'swift', 'sh', 'as', 'cob', 'tpl', 'lsp', 'x', 'cmd', 'rb', 'cbl', 'pas', 'pp', 'vb', 'vbs', 'f', 'perl', 'jl', 'lol', 'bal', 'pli', 'css', 'less', 'sass', 'saas', 'scss', 'bcc', 'coffee', 'jade', 'j', 'tea', 'c#', 'sas', 'diff', 'pro', 'for', 'sh', 'bsh', 'bash', 'twig', 'csh', 'lisp', 'lsp', 'cobol', 'pl', 'd', 'git', 'rb', 'hrl', 'cr', 'inp', 'a', 'go', 'as3', 'm', 'sql', 'md', 'mbox', 'nginx', 'pgp', 'asc', 'sig', 'ps1', 'rq', 'ttl', 'vue', 'xquery', 'xq'),
-            'far file-image' => 'image/', 
-            'far file-video' => 'video/',
-            'far file-audio' => 'audio/',
-            'far file-alt' => 'text/',
-            'far file-archive' => array('7z', '7zip', 'aar', 'ace', 'alz', 'arj', 'bz2', 'bza', 'bzip2', 'bzp', 'bzp2', 'cab', 'czip', 'gnutar', 'gz', 'gza', 'gzi', 'gzip', 'ha', 'lhz', 'lzma', 'pzip', 'rar', 'roo', 's7z', 'tar', 'tar-gz', 'tar-lzma', 'tar-z', 'taz', 'tbz', 'tbz2', 'tgz', 'tz', 'z', 'zip', 'zipx', 'zix', 'zoo'),
+            'file-spreadsheet' => array('xls', 'xlt', 'xlsx', 'sxc', 'stc', 'ods', 'ots', 'sdc', 'csv', 'dif', 'slk', 'pxl'),
+            'file-chart-pie' => array('ppt', 'pptx', 'sxi', 'sti', 'odp', 'sdp', 'sdd'),
+            'file-code' => array('1st', 'aspx', 'asp', 'json', 'js', 'jsp', 'java', 'php', 'xml', 'html', 'xhtml', 'htm', 'rdf', 'xsd', 'xsl', 'xslt', 'sax', 'rss', 'dtd', 'cfm', 'js', 'asm', 'pl', 'prl', 'bas', 'b', 'fs', 'src', 'cs', 'ws', 'cgi', 'bat', 'py', 'c', 'cpp', 'cc', 'cp', 'h', 'hh', 'cxx', 'hxx', 'c++', 'm', 'lua', 'swift', 'sh', 'as', 'cob', 'tpl', 'lsp', 'x', 'cmd', 'rb', 'cbl', 'pas', 'pp', 'vb', 'vbs', 'f', 'perl', 'jl', 'lol', 'bal', 'pli', 'css', 'less', 'sass', 'saas', 'scss', 'bcc', 'coffee', 'jade', 'j', 'tea', 'c#', 'sas', 'diff', 'pro', 'for', 'sh', 'bsh', 'bash', 'twig', 'csh', 'lisp', 'lsp', 'cobol', 'pl', 'd', 'git', 'rb', 'hrl', 'cr', 'inp', 'a', 'go', 'as3', 'm', 'sql', 'md', 'mbox', 'nginx', 'pgp', 'asc', 'sig', 'ps1', 'rq', 'ttl', 'vue', 'xquery', 'xq'),
+            'file-image' => 'image/',
+            'file-play' => 'video/',
+            'file-headphone' => 'audio/',
+            'file-text' => array('pdf', 'doc', 'docx', 'text/'),
+            'file-archive' => array('7z', '7zip', 'aar', 'ace', 'alz', 'arj', 'bz2', 'bza', 'bzip2', 'bzp', 'bzp2', 'cab', 'czip', 'gnutar', 'gz', 'gza', 'gzi', 'gzip', 'ha', 'lhz', 'lzma', 'pzip', 'rar', 'roo', 's7z', 'tar', 'tar-gz', 'tar-lzma', 'tar-z', 'taz', 'tbz', 'tbz2', 'tgz', 'tz', 'z', 'zip', 'zipx', 'zix', 'zoo'),
         );
         
         $aIcons = array (
@@ -1170,9 +1169,9 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
     protected function determineIcon($aIcons, $sExt, $sMimeType)
     {
         foreach ($aIcons as $sIc => $if) {
-            if (!(is_array($if) && in_array($sExt, $if)) && !(is_string($if) && 0 === strncmp($if, $sMimeType, strlen($if))))
-                continue;
-            return $sIc;
+            foreach ((array)$if as $sMatch)
+                if (substr($sMatch, -1) == '/' ? 0 === strncmp($sMatch, $sMimeType, strlen($sMatch)) : $sMatch === $sExt)
+                    return $sIc;
         }
         return false;
     }

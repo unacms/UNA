@@ -49,7 +49,7 @@ class BxBaseMenuTagsCloud extends BxTemplMenu
                 ),
                 'bx_if:icon' => array (
                     'condition' => true,
-                    'content' => array('icon' => 'hashtag'),
+                    'content' => array('icon' => 'hash'),
                 ),
                 'bx_if:icon-a' => array (
                     'condition' => false,
