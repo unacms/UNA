@@ -350,9 +350,12 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
     protected function init()
     {
         /**
-         * Trying to initialize default language.
+         * Trying to initialize default language. The language is the main instance's: this may be a subclass's own
+         * instance (BxDolStudioLanguagesUtils::compileLanguage() calls init() again to load what it compiled), and in
+         * a command line run (periodic/migration.php) nothing has made the main instance yet, so it is made here.
          */
-        $GLOBALS['sCurrentLanguage'] = $GLOBALS['bxDolClasses'][__CLASS__]->getCurrentLangName(false);
+        $oLanguages = self::getInstance();
+        $GLOBALS['sCurrentLanguage'] = $oLanguages->getCurrentLangName(false);
         if($GLOBALS['sCurrentLanguage'] != '') {
             $sPath = BX_DIRECTORY_PATH_CACHE . 'lang-' . $GLOBALS['sCurrentLanguage'] . '.php';
             if(!file_exists($sPath))
@@ -369,7 +372,7 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
          * then it saves that language to the cookie. Otherwise it finds the same language again.
          */
         if(!empty($_GET['lang']) || !empty($_POST['lang']))
-            $GLOBALS['bxDolClasses'][__CLASS__]->getCurrentLangName(true);
+            $oLanguages->getCurrentLangName(true);
 
         if(isset($_GET['lang'])) {
             if(BxDolPermalinks::getInstance()->redirectIfNecessary(array('lang')))

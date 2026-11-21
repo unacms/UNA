@@ -463,6 +463,57 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
     }
 
     /**
+     * The rebuild compiles the languages, which loads the compiled file through BxDolLanguages::init(). A command
+     * line run (periodic/migration.php) has not made the main BxDolLanguages instance by then: init() makes it, where
+     * it used to fail with "Call to a member function getCurrentLangName() on null" after every run.
+     */
+    public function testRebuildCompilesLanguagesWithoutTheMainLanguagesInstance(): void
+    {
+        $oBefore = $GLOBALS['bxDolClasses']['BxDolLanguages'] ?? null;
+        unset($GLOBALS['bxDolClasses']['BxDolLanguages']);
+
+        try {
+            $this->assertTrue(BxDolStudioLanguagesUtils::getInstance()->compileLanguage());
+            $this->assertInstanceOf(BxDolLanguages::class, $GLOBALS['bxDolClasses']['BxDolLanguages'] ?? null);
+            $this->assertNotSame('', (string)$GLOBALS['sCurrentLanguage']);
+            $this->assertNotEmpty($GLOBALS['LANG']);
+        }
+        finally {
+            if ($oBefore !== null)
+                $GLOBALS['bxDolClasses']['BxDolLanguages'] = $oBefore;
+        }
+    }
+
+    /**
+     * The rebuild reloads the params first. In a command line run nothing has asked for the database cache object
+     * before that, and the params name its engine: asked for while they were empty, it was the base BxDolCache, which
+     * clears nothing, and "clearing the db cache" failed after every run.
+     */
+    public function testRebuildClearsTheDbCacheWhenParamsAreReloadedFirst(): void
+    {
+        $oDb = BxDolDb::getInstance();
+        $oProperty = new ReflectionProperty(BxDolDb::class, '_oDbCacheObject');
+        $oBefore = $oProperty->getValue($oDb);
+        $oProperty->setValue($oDb, null);
+
+        try {
+            $oDb->cleanMemoryAll();
+            $oDb->cacheParams(true, true);
+
+            $oCache = $oDb->getDbCacheObject();
+            $this->assertNotSame(BxDolCache::class, get_class($oCache), 'an engine, not the base class');
+            $this->assertTrue($oCache->removeAllByPrefix('db_zz_no_such_entry_'));
+
+            $mixedResult = BxDolCacheUtilities::getInstance()->clear('db');
+            $this->assertTrue($mixedResult === false || (int)$mixedResult['code'] === 0, 'cleared, or the cache is off');
+        }
+        finally {
+            $oProperty->setValue($oDb, $oBefore);
+            $oDb->cacheParams(true, true);
+        }
+    }
+
+    /**
      * Every shipped migration (migrations/ and the installed modules' folders) runs on this
      * database without an error (on CI a fresh install of the same commit, which already has
      * every change), and a second run changes no table.
