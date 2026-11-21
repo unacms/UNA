@@ -19,7 +19,7 @@ const handleDo = async (url, event) => {
 
     // No share sheet (a computer's browser): copy the link instead.
     if (Platform.OS === 'web' && (typeof navigator === 'undefined' || typeof navigator.share !== 'function')) {
-        setClipboard(APP_URL + url);
+        await setClipboard(APP_URL + url).catch(() => {});
         return;
     }
 
@@ -117,9 +117,9 @@ export default function ElementShares(props) {
                     items={shareMenuItems(url, settings.services, t('Copy link'))}
                     onSelect={(item) => {
                         if (item.name === 'copy')
-                            setClipboard(url);
+                            void setClipboard(url).catch(() => {});
                         else if (item.link)
-                            openExternalLink(item.link);
+                            void openExternalLink(item.link).catch(() => {});
                     }}
                     triggerAccessibilityLabel={title}
                     buttonProps={{
