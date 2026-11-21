@@ -8,6 +8,7 @@
  */
 
 define('BX_DOL_LINK_CLASS', 'bx-link'); ///< class to add to every link in user content
+define('BX_DOL_FILE_TRANSFER_TIMEOUT', 300); ///< timeout in seconds for requests that download files or packages, sys_default_curl_timeout is for everything else
 
 define('BX_DATA_TEXT', 1); ///< regular text data type
 define('BX_DATA_TEXT_MULTILINE', 2); ///< regular multiline text data type

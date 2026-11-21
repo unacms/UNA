@@ -61,9 +61,21 @@ class BxDolSounds extends BxDolFactory implements iBxDolSingleton
         return in_array($sPlatform, $this->getPlatforms(), true);
     }
 
+    /**
+     * Platforms where this visitor hears sounds. Guests hear none unless the operator turns them on for guests, and
+     * then their pages don't load Cuelume either.
+     */
     public function getPlatforms()
     {
+        if(!$this->isForCurrentVisitor())
+            return [];
+
         return array_values(array_intersect(self::PLATFORMS, explode(',', (string)getParam('sys_sounds_platforms'))));
+    }
+
+    public function isForCurrentVisitor()
+    {
+        return isLogged() || getParam('sys_sounds_guests') == 'on';
     }
 
     /**

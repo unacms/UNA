@@ -158,8 +158,10 @@
 
     vertical-align:middle;
 
-    border:2px solid #79bd9a;
-    border:0.125rem solid #79bd9a;
+    /* A field's outline is NEO's control border, gray-500. In dark it is gray-400 (the :where(.dark) rule below), which keeps 3:1
+       on the dark card at the 0.9 opacity below. Focus turns it to the focus ring's blue: blue-600, blue-400 in dark. */
+    border:2px solid #71717a;
+    border:0.125rem solid #71717a;
 	
     -webkit-border-radius:0.3rem;
     -moz-border-radius:0.3rem;	
@@ -173,6 +175,23 @@
     -khtml-opacity: 0.9;
     opacity: 0.9;    
 }
+:where(.dark) .bx-form-input-slider,
+:where(.dark) .bx-form-input-doublerange,
+:where(.dark) .bx-form-input-select_multiple,
+:where(.dark) .bx-form-input-select,
+:where(.dark) .bx-form-input-radio_set,
+:where(.dark) .bx-form-input-checkbox_set,
+:where(.dark) .bx-form-input-number,
+:where(.dark) .bx-form-input-time,
+:where(.dark) .bx-form-input-datepicker,
+:where(.dark) .bx-form-input-datetime,
+:where(.dark) .bx-form-input-textarea,
+:where(.dark) .bx-form-input-wrapper-password,
+:where(.dark) .bx-form-input-text,
+:where(.dark) .bx-form-input-price,
+:where(.dark) .bx-form-input-wrapper-price span {
+    border-color: #a1a1aa;
+}
 
 .bx-form-input-slider:focus,
 .bx-form-input-doublerange:focus,
@@ -184,7 +203,7 @@
 .bx-form-input-text:focus,
 .bx-form-input-price:focus,
 .bx-form-input-wrapper-password.bx-form-input-focus {
-    border-color:#6caa8a;
+    border-color:#2563eb;
 
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; 
     filter: alpha(opacity=100); 
@@ -196,6 +215,18 @@
     -moz-transition: all 0.2s linear;
     -o-transition: all 0.2s linear;
     transition: all 0.2s linear;
+}
+:where(.dark) .bx-form-input-slider:focus,
+:where(.dark) .bx-form-input-doublerange:focus,
+:where(.dark) .bx-form-input-number:focus,
+:where(.dark) .bx-form-input-time:focus,
+:where(.dark) .bx-form-input-datepicker:focus,
+:where(.dark) .bx-form-input-datetime:focus,
+:where(.dark) .bx-form-input-textarea:focus,
+:where(.dark) .bx-form-input-text:focus,
+:where(.dark) .bx-form-input-price:focus,
+:where(.dark) .bx-form-input-wrapper-password.bx-form-input-focus {
+    border-color: #60a5fa;
 }
 .bx-form-input-wrapper-password {
     padding: 0;
@@ -346,7 +377,10 @@
     border-bottom-right-radius: 0;
 }
 .bx-form-input-wrapper-price span {
-    background-color: rgba(249, 250, 251, 1.0);
+    background-color: #fafafc;
+}
+:where(.dark) .bx-form-input-wrapper-price span {
+    background-color: #27272a;
 }
 .bx-form-element .bx-form-value .bx-form-input-price:not(:first-child) {
     border-top-left-radius: 0;
@@ -478,98 +512,6 @@
 
 
 /****************************************
-*		Custom reCaptcha Theme
-****************************************/
-.bx-form-input-captcha-custom {
-	background-color: #b71800;
-	padding: 0.5em;
-	border-radius: 1em;
-	position: relative;
-	overflow: auto;
-	max-width: 480px;
-	font: 0.75em/1em Helvetica, Arial, sans-serif;
-	color: #ffffff;
-}
-.bx-form-input-captcha-custom a {
-	color: #ffffff;
-	text-decoration: none;
-}
-.bx-form-input-captcha-custom img,
-.bx-form-input-captcha-custom #recaptcha_image {
-	width: 100% !important;
-	height: auto !important;
-	-webkit-border-radius: 0.5em;
-	-moz-border-radius: 0.5em;
-	border-radius: 0.5em;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
-	background-clip: padding-box;
-}
-.bx-form-input-captcha-custom .solution {
-	position: relative;
-	float: left;
-	width: 75%;
-}
-.bx-form-input-captcha-custom .solution-cnt {
-	margin-top: 0.5em;
-	padding: 1.2em 1em;
-	-webkit-border-radius: 0.5em;
-	-moz-border-radius: 0.5em;
-	border-radius: 0.5em;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
-	background-clip: padding-box;
-	background-color: #fbe098;
-	color: #000000;
-	display: block;
-}
-.bx-form-input-captcha-custom .solution-cnt input {
-	display: block;
-	width: calc(90% - 2px);
-	margin: 0.35em auto;
-	-webkit-appereance: none;
-	border: 1px solid #f7c236;
-	font: inherit;
-	font-size: 150%;
-	outline: none;
-}
-.bx-form-input-captcha-custom .solution-cnt input:focus {
-	border-color: #b71800;
-}
-.bx-form-input-captcha-custom .options {
-	position: relative;
-	float: right;
-	width: 25%;
-	
-}
-.bx-form-input-captcha-custom .options-cnt {
-	margin-top: 0.5em;
-	padding-left: 0.5em;
-	-webkit-border-radius: 0.5em;
-	-moz-border-radius: 0.5em;
-	border-radius: 0.5em;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
-	background-clip: padding-box;
-}
-.bx-form-input-captcha-custom .options-cnt a {
-	background-color: #c5523d;
-	display: block;
-	padding: 0.5em 1.0em;
-	border-top: 1px solid #000000;
-	border-left: 1px solid #000000;
-	border-right: 1px solid #000000;
-}
-.bx-form-input-captcha-custom .options-cnt a:first-child {
-	border-radius: 0.5em 0.5em 0 0;
-}
-.bx-form-input-captcha-custom .options-cnt a:last-child {
-	border-radius: 0 0 0.5em 0.5em;
-	border-bottom: 1px solid #000000;
-}
-
-
-/****************************************
 * Overwrite 3d Party MiniColors plug-in
 ****************************************/
 /* A round swatch centred in the field, whatever its height. */
@@ -591,6 +533,9 @@
 }
 .bx-form-input-wrapper.bx-form-input-wrapper-text .minicolors-theme-bootstrap .minicolors-swatch::after {
 	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+:where(.dark) .bx-form-input-wrapper.bx-form-input-wrapper-text .minicolors-theme-bootstrap .minicolors-swatch::after {
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 .bx-form-input-wrapper.bx-form-input-wrapper-text .minicolors-theme-bootstrap .minicolors-input {
 	padding-left: 2.25rem;

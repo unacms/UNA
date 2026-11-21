@@ -404,7 +404,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 
 (@iCategoryId, 'sys_editor_default', '_adm_stg_cpt_option_sys_editor_default', 'sys_quill', 'digit', '', '', '', '', 50),
 (@iCategoryId, 'sys_player_default', '_adm_stg_cpt_option_sys_player_default', 'sys_html5', 'digit', '', '', '', '', 55),
-(@iCategoryId, 'sys_player_default_format', '_adm_stg_cpt_option_sys_player_default_quality', 'sd', 'select', 'sd,hd', '', '', '', 56),
+(@iCategoryId, 'sys_player_default_format', '_adm_stg_cpt_option_sys_player_default_quality', 'hd', 'select', 'sd,hd', '', '', '', 56),
 
 (@iCategoryId, 'sys_live_updates_interval', '_adm_stg_cpt_option_sys_live_updates_interval', '10000', 'digit', '', '', '', '', 60),
 
@@ -429,10 +429,10 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_session_auth', '_adm_stg_cpt_option_sys_session_auth', 'on', 'checkbox', '', '', '', '', 112),
 
 (@iCategoryId, 'sys_logs_storage_default', '_adm_stg_cpt_option_sys_logs_storage_default', 'Folder', 'select', 'Folder,PHPLog,STDErr', '', '', '', 130),
-(@iCategoryId, 'sys_logs_level', '_adm_stg_cpt_option_sys_logs_level', 'DEBUG', 'select', 'ERROR,WARNING,INFO,DEBUG', '', '', '', 132),
+(@iCategoryId, 'sys_logs_level', '_adm_stg_cpt_option_sys_logs_level', 'ERROR', 'select', 'ERROR,WARNING,INFO,DEBUG', '', '', '', 132),
 
 (@iCategoryId, 'sys_default_socket_timeout', '_adm_stg_cpt_option_sys_default_socket_timeout', '30', 'digit', '', '', '', '', 140),
-(@iCategoryId, 'sys_default_curl_timeout', '_adm_stg_cpt_option_sys_default_curl_timeout', '300', 'digit', '', '', '', '', 141),
+(@iCategoryId, 'sys_default_curl_timeout', '_adm_stg_cpt_option_sys_default_curl_timeout', '30', 'digit', '', '', '', '', 141),
 (@iCategoryId, 'sys_curl_ssl_allow_untrusted', '_adm_stg_cpt_option_sys_ssl_allow_untrusted', '', 'checkbox', '', '', '', '', 145),
 
 (@iCategoryId, 'sys_csp_frame_ancestors', '_adm_stg_cpt_option_sys_csp_frame_ancestors', '*', 'digit', '', '', '', '', 150),
@@ -471,7 +471,6 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_bg_jobs_workers_limit', '_adm_stg_cpt_option_sys_bg_jobs_workers_limit', '3', 'digit', '', '', '', '', 304),
 (@iCategoryId, 'sys_bg_jobs_cleanup_timeout', '_adm_stg_cpt_option_sys_bg_jobs_cleanup_timeout', '30', 'digit', '', '', '', '', 306),
 
-(@iCategoryId, 'sys_alerts_logger', '_adm_stg_cpt_option_sys_alerts_logger', 'on', 'checkbox', '', '', '', '', 310),
 (@iCategoryId, 'sys_alerts_stats', '_adm_stg_cpt_option_sys_alerts_stats', '', 'checkbox', '', '', '', '', 312),
 
 (@iCategoryId, 'sys_maintenance_mode', '_adm_stg_cpt_option_sys_maintenance_mode', '', 'checkbox', '', '', '', '', 400),
@@ -532,9 +531,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'lang_default', '_adm_stg_cpt_option_lang_default', '', 'select', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"get_languages";s:6:"params";a:2:{i:0;b:0;i:1;b:1;}s:5:"class";s:22:"TemplLanguagesServices";}', '', '', 1),
 (@iCategoryId, 'lang_subst_from_en', '_adm_stg_cpt_option_lang_subst_from_en', 'on', 'checkbox', '', '', '', 2),
 
-(@iCategoryId, 'sys_format_date', '_adm_stg_cpt_option_sys_format_date', 'D MMM YYYY', 'digit', '', '', '', 3),
-(@iCategoryId, 'sys_format_time', '_adm_stg_cpt_option_sys_format_time', 'HH:mm', 'digit', '', '', '', 4),
-(@iCategoryId, 'sys_format_datetime', '_adm_stg_cpt_option_sys_format_datetime', 'D MMM YYYY h:mm:ss a', 'digit', '', '', '', 5),
+(@iCategoryId, 'sys_format_date', '_adm_stg_cpt_option_sys_format_date', 'll', 'digit', '', '', '', 3),
+(@iCategoryId, 'sys_format_time', '_adm_stg_cpt_option_sys_format_time', 'LT', 'digit', '', '', '', 4),
+(@iCategoryId, 'sys_format_datetime', '_adm_stg_cpt_option_sys_format_datetime', 'lll', 'digit', '', '', '', 5),
 (@iCategoryId, 'sys_format_timeago', '_adm_stg_cpt_option_sys_format_timeago', 432000, 'digit', '', '', '', 6),
 (@iCategoryId, 'sys_format_input_24h', '_adm_stg_cpt_option_sys_format_input_24h', 'on', 'checkbox', '', '', '', 24);
 
@@ -739,10 +738,10 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_storage_s3_bucket', '_adm_stg_cpt_option_sys_storage_s3_bucket', '', 'digit', '', '', '', 4),
 (@iCategoryId, 'sys_storage_s3_domain', '_adm_stg_cpt_option_sys_storage_s3_domain', '', 'digit', '', '', '', 5),
 (@iCategoryId, 'sys_storage_s3_endpoint', '_adm_stg_cpt_option_sys_storage_s3_endpoint', '', 'digit', '', '', '', 6),
-(@iCategoryId, 'sys_storage_s3_sig_ver', '_adm_stg_cpt_option_sys_storage_s3_sig_ver', 'v2', 'select', 'v2,v4', '', '', 7),
+(@iCategoryId, 'sys_storage_s3_sig_ver', '_adm_stg_cpt_option_sys_storage_s3_sig_ver', 'v4', 'select', 'v2,v4', '', '', 7),
 (@iCategoryId, 'sys_storage_s3_region', '_adm_stg_cpt_option_sys_storage_s3_region', '', 'digit', '', '', '', 8),
 (@iCategoryId, 'sys_storage_s3_amz_iam_role', '_adm_stg_cpt_option_sys_storage_s3_amz_iam_role', '', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'sys_storage_s3_acl_enable', '_adm_stg_cpt_option_sys_storage_s3_acl_enable', 'on', 'checkbox', '', '', '', 12),
+(@iCategoryId, 'sys_storage_s3_acl_enable', '_adm_stg_cpt_option_sys_storage_s3_acl_enable', '', 'checkbox', '', '', '', 12),
 (@iCategoryId, 'sys_storage_s3_force_auth_urls', '_adm_stg_cpt_option_sys_storage_s3_force_auth_urls', '', 'digit', '', '', '', 14), 
 (@iCategoryId, 'sys_storage_ghost_lifetime', '_adm_stg_cpt_option_sys_storage_ghost_lifetime', '60', 'digit', '', '', '', 20);
 
@@ -914,6 +913,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'sys_sounds_level', '_adm_stg_cpt_option_sys_sounds_level', '_adm_stg_inf_option_sys_sounds_level', 'full', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_level";s:5:"class";s:13:"TemplServices";}', '', '', 2),
 (@iCategoryId, 'sys_sounds_set', '_adm_stg_cpt_option_sys_sounds_set', '_adm_stg_inf_option_sys_sounds_set', 'default', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:22:"get_options_sounds_set";s:5:"class";s:13:"TemplServices";}', '', '', 3),
 (@iCategoryId, 'sys_sounds_volume', '_adm_stg_cpt_option_sys_sounds_volume', '_adm_stg_inf_option_sys_sounds_volume', '100', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_options_sounds_volume";s:5:"class";s:13:"TemplServices";}', '', '', 4),
+(@iCategoryId, 'sys_sounds_guests', '_adm_stg_cpt_option_sys_sounds_guests', '_adm_stg_inf_option_sys_sounds_guests', '', 'checkbox', '', '', '', 5),
 (@iCategoryId, 'sys_sounds_buttons', '_adm_stg_cpt_option_sys_sounds_buttons', '_adm_stg_inf_option_sys_sounds_buttons', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 10),
 (@iCategoryId, 'sys_sounds_choices', '_adm_stg_cpt_option_sys_sounds_choices', '_adm_stg_inf_option_sys_sounds_choices', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 11),
 (@iCategoryId, 'sys_sounds_reactions', '_adm_stg_cpt_option_sys_sounds_reactions', '_adm_stg_inf_option_sys_sounds_reactions', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 12),
@@ -1702,9 +1702,7 @@ CREATE TABLE `sys_objects_rss` (
 );
 
 INSERT INTO `sys_objects_rss` (`object`, `class_name`, `class_file`) VALUES
-('sys_page_block', 'BxDolRssPageBlock', ''),
-('sys_studio_page_help', 'BxDolStudioRssPageHelp', ''),
-('sys_studio_module_help', 'BxDolStudioRssModuleHelp', '');
+('sys_page_block', 'BxDolRssPageBlock', '');
 
 
 -- --------------------------------------------------------

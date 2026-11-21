@@ -57,8 +57,8 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `extra`, `order`) VALUES
-('bx_messenger_jitsi_enable', 'on', @iCategId, '_bx_messenger_allow_to_use_jitsi', 'checkbox', '', '', '', 1),
-('bx_messenger_jitsi_server', 'meet.jit.si', @iCategId, '_bx_messenger_jitsi_server', 'digit', '', '', '', 2),
+('bx_messenger_jitsi_enable', '', @iCategId, '_bx_messenger_allow_to_use_jitsi', 'checkbox', '', '', '', 1),
+('bx_messenger_jitsi_server', '', @iCategId, '_bx_messenger_jitsi_server', 'digit', '', '', '', 2),
 ('bx_messenger_jitsi_chat', '', @iCategId, '_bx_messenger_jitsi_chat_enable', 'checkbox', '', '', '', 3),
 ('bx_messenger_jitsi_sync', '', @iCategId, '_bx_messenger_jitsi_chat_sync', 'checkbox', '', '', '', 4),
 ('bx_messenger_jitsi_hide_info', '', @iCategId, '_bx_messenger_jitsi_hide_info', 'checkbox', '', '', '', 5),

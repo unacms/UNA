@@ -19,7 +19,7 @@ $aConfig = array(
     'note' => 'Google login, join with a Google account',
     'version' => '15.0.3.DEV',
     'vendor' => 'UNA INC',
-    'help_url' => 'http://feed.una.io/?section={module_name}',
+    'help_url' => '',
 
     'compatible_with' => array(
         '15.0.x'
