@@ -601,7 +601,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         // add button width popup
         $sId = 'bx-str-limit-' . rand(1, PHP_INT_MAX);
         $sTitle = bx_html_attribute(_t('_sys_str_limit_show'));
-        $sPopup = '<button type="button" class="bx-str-limit pl-2" title="' . $sTitle . '" aria-label="' . $sTitle . '" onclick="$(\'#' . $sId . '\').dolPopup({pointer:{el:$(this), offset:\'10 1\'}})"><i class="sys-icon ellipsis-h"></i></button>';
+        $sPopup = '<button type="button" class="bx-str-limit pl-2" title="' . $sTitle . '" aria-label="' . $sTitle . '" onclick="$(\'#' . $sId . '\').dolPopup({pointer:{el:$(this), offset:\'10 1\'}})"><i class="sys-icon ellipsis"></i></button>';
         $sPopup .= BxTemplFunctions::getInstance()->transBox($sId, '<div class="bx-def-padding">' . ($sPopupString ?? $sStrOriginal) . '</div>', true);
 
         return $bReturnString ? $sResult . $sPopup : [$sResult, $sPopup];

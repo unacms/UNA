@@ -333,7 +333,7 @@
 
     <string name="_bx_reviews_txt_msg_status_hidden"><![CDATA[This review was hidden.]]></string>
     <string name="_bx_reviews_txt_msg_status_pending"><![CDATA[This review is pending approval.]]></string>
-    <string name="_bx_reviews_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+    <string name="_bx_reviews_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_reviews_txt_poll_view_answers"><![CDATA[poll]]></string>
     <string name="_bx_reviews_txt_poll_view_results"><![CDATA[results]]></string>
@@ -342,7 +342,7 @@
     <string name="_bx_reviews_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string>
     <string name="_bx_reviews_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
-    <string name="_bx_reviews_option_voting_max_stars"><![CDATA[Max number of stars for a voting option]]></string>
+    <string name="_bx_reviews_option_voting_max_stars"><![CDATA[Maximum stars per voting option]]></string>
     <string name="_bx_reviews_option_custom_context_chooser_enable"><![CDATA[Enable custom field for choosing content for a review]]></string>
     <string name="_bx_reviews_option_custom_context_chooser_options"><![CDATA[Type of content available for a review]]></string>
     <string name="_bx_reviews_txt_settings"><![CDATA[Settings]]></string>

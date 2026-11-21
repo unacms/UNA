@@ -56,7 +56,7 @@
     <string name="_bx_orgs_form_profile_input_initial_members"><![CDATA[Invite Members]]></string>
     <string name="_bx_orgs_form_profile_input_sys_org_name"><![CDATA[Organization Name]]></string>
     <string name="_bx_orgs_form_profile_input_org_name"><![CDATA[Organization Name]]></string>
-    <string name="_bx_orgs_form_profile_input_org_name_err"><![CDATA[Profile name is mandatory and and cannot start with @]]></string>
+    <string name="_bx_orgs_form_profile_input_org_name_err"><![CDATA[Name is required and cannot start with @.]]></string>
     <string name="_bx_orgs_form_profile_input_sys_org_desc"><![CDATA[Description]]></string>
     <string name="_bx_orgs_form_profile_input_org_desc"><![CDATA[Description]]></string>
     <string name="_bx_orgs_form_profile_input_sys_org_cat"><![CDATA[Category]]></string>
@@ -562,7 +562,7 @@
 
     <string name="_bx_orgs_msg_performed"><![CDATA[Done.]]></string>
     <string name="_bx_orgs_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
-    <string name="_bx_orgs_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_orgs_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_orgs_email_friend_request"><![CDATA[Friend request]]></string>
     <string name="_bx_orgs_email_friend_request_subject"><![CDATA[Friendship Request]]></string>

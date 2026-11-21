@@ -125,7 +125,7 @@
     <string name="_bx_reputation_grid_action_err_perform"><![CDATA[Cannot perform the action for selected items(s).]]></string>
 
     <!-- Errors, Warnings, Messages -->
-    <string name="_bx_reputation_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_reputation_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_reputation_msg_assign_levels"><![CDATA[Reputation levels ware successfully assigned to {0} profiles.]]></string>
 
     <!-- Other -->

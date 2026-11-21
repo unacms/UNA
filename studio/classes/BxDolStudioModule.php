@@ -104,7 +104,7 @@ class BxDolStudioModule extends BxTemplStudioWidget
                 'type' => 'button',
                 'name' => 'uninstall',
                 'caption' => '_adm_txt_uninstall',
-                'icon' => 'trash-2',
+                'icon' => 'trash',
                 'danger' => true,
                 'context_only' => true,
                 'onclick' => "javascript:" . $this->getPageJsObject() . ".uninstall('" . $this->aPage['name'] . "', " . (int)$this->aPage['wid_id'] . ", 0)"
