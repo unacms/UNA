@@ -694,7 +694,7 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      * @param  boolean $bStartsNow if true, the membership will start immediately if false, the membership will start after the current membership expires
      * @return boolean true in case of success, false in case of failure
      */
-    function setMembership($iProfileId, $iLevelId, $mixedPeriod = 0, $bStartsNow = false, $sTransactionId = '')
+    public function setMembership($iProfileId, $iLevelId, $mixedPeriod = 0, $bStartsNow = false, $sTransactionId = '')
     {
         $iProfileId = (int)$iProfileId;
         $iLevelId = (int)$iLevelId;
