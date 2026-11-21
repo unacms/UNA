@@ -62,7 +62,12 @@ function processJsonData(oData) {
 			fContinue(oData);
 		});
     else if(oData && oData.toast != undefined && oData.toast.length != 0) {
-        bx_toast(oData.toast);
+        // A success doesn't block: it shows as a toast, on the next page when the reply reloads or redirects.
+        if((oData.reload != undefined && Number.parseInt(oData.reload) == 1) || (oData.redirect != undefined && oData.redirect.length != 0))
+            bx_toast_next_page(oData.toast);
+        else
+            bx_toast(oData.toast);
+
         fContinue(oData);
     }
 	else
@@ -1912,6 +1917,34 @@ function bx_toast(sMessage, oParams)
     }, 1000 * (oParams && oParams.autoHide !== undefined ? parseInt(oParams.autoHide) : 3));
 };
 
+/**
+ * Show a toast on the next page this tab opens: for a success that reloads or redirects.
+ */
+function bx_toast_next_page(sMessage)
+{
+    try {
+        sessionStorage.setItem('bx-toast-next-page', sMessage);
+    }
+    catch(e) {
+        // no storage (private window, blocked site data): the toast is skipped, the page still works
+    }
+}
+
+$(document).ready(function() {
+    var sMessage = null;
+    try {
+        sMessage = sessionStorage.getItem('bx-toast-next-page');
+        if(sMessage)
+            sessionStorage.removeItem('bx-toast-next-page');
+    }
+    catch(e) {
+        // no storage: nothing to show
+    }
+
+    if(sMessage)
+        bx_toast(sMessage);
+});
+
 function bx_is_color_scheme_dark()
 {
     return localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2506,7 +2539,7 @@ function bx_sound_form_reply(oData)
     var mixedPopup = oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup;
     if((oData.code != undefined && Number.parseInt(oData.code) != 0) || bx_sound_has_field_error(oData.form) || bx_sound_has_field_error(mixedPopup))
         bx_sound('error');
-    else if(oData.code != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
+    else if(oData.code != undefined || oData.toast != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
         bx_sound('success', {emphasis: 'subtle'});
 }
 
@@ -2892,6 +2925,26 @@ function bx_is_selector_in_stylesheet(sSel)
            a.push(ruleList[rule].selectorText);
     }
     return -1 !== a.indexOf(sSel);
+}
+
+/**
+ * Show another icon in place of one: a new `<i class="sys-icon ...">` (with an emoji inside, if given) replaces it,
+ * and the icon set draws it. The Lucide set has replaced each <i> with an <svg>, so changing the classes of what
+ * is there now changes nothing on screen.
+ * @param oIcons - the icon elements (a jQuery set, an element or a selector)
+ * @param sClasses - the icon's classes after sys-icon: its name and its own classes (`thumbs-up sys-icon-filled`)
+ * @param sHtml - an emoji to show instead of a drawing
+ */
+function bx_set_icon(oIcons, sClasses, sHtml)
+{
+    var bChanged = false;
+    $(oIcons).each(function() {
+        $(this).replaceWith($('<i>').attr('class', 'sys-icon ' + sClasses).html(sHtml || ''));
+        bChanged = true;
+    });
+
+    if(bChanged && typeof window.bx_iconset_init_lucide === 'function')
+        bx_iconset_init_lucide();
 }
 
 function bx_copy_to_clipboard(s, onSuccess, onFail)

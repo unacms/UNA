@@ -489,6 +489,8 @@
         <string name="_adm_api_msg_removed"><![CDATA[Настройки были удалены.]]></string>
         <string name="_adm_api_msg_removed_for"><![CDATA[Настройки всех приложений были удалены.]]></string>
         <string name="_adm_api_popup_import"><![CDATA[Импортировать настройки]]></string>
+        <string name="_adm_api_popup_title_add_key"><![CDATA[Добавить ключ API]]></string>
+        <string name="_adm_api_popup_title_add_origin"><![CDATA[Добавить источник]]></string>
         <string name="_adm_api_ttl_module"><![CDATA[Приложение]]></string>
         <string name="_adm_api_ttl_sync_api"><![CDATA[Синхр.]]></string>
 	<string name="_adm_block_cpt_categories"><![CDATA[Категории]]></string>
@@ -1229,6 +1231,8 @@
   <string name="_adm_form_txt_badges_module"><![CDATA[Модуль]]></string>
   <string name="_adm_form_txt_badges_add_popup"><![CDATA[Добавить новый бейдж]]></string>
   <string name="_adm_form_txt_badges_edit_popup"><![CDATA[Изменить "{0}" бейдж]]></string>
+  <string name="_adm_form_txt_badges_empty"><![CDATA[Значков пока нет]]></string>
+  <string name="_adm_form_txt_badges_empty_select_module"><![CDATA[Значков пока нет. Выберите модуль, чтобы добавить значок.]]></string>
   <string name="_adm_pgt_txt_badges_text"><![CDATA[Текст]]></string>
   <string name="_adm_pgt_txt_badges_icon"><![CDATA[Иконка]]></string>
 
@@ -2688,7 +2692,7 @@
   <string name="_sys_acl_action_comments_remove_in_group_context"><![CDATA[Комментарии - Удалять в контексте для администраторов контекста]]></string>
 	<string name="_sys_acl_action_comments_remove_own"><![CDATA[Комментарии - Удалить Собственные]]></string>
 	<string name="_sys_acl_action_connect"><![CDATA[Установить связь (подружиться, следить и т.п.)]]></string>
-	<string name="_sys_acl_action_create_account"><![CDATA[Создать Аккаунт]]></string>
+	<string name="_sys_acl_action_create_account"><![CDATA[Создать аккаунт]]></string>
 	<string name="_sys_acl_action_create_account_desc"><![CDATA[Это имеет смысл только для гостей. Например, Вы можете временно отключить или задать лимит по времени для этого пункта.]]></string>
 	<string name="_sys_acl_action_delete_account"><![CDATA[Удалить Аккаунт]]></string>
 	<string name="_sys_acl_action_delete_account_desc"><![CDATA[Удалить аккаунт, также удалить содержимое аккаунта.]]></string>
@@ -3382,7 +3386,7 @@
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Отправить]]></string>
-        <string name="_sys_form_account_input_publish"><![CDATA[Создать аккаунт]]></string>
+        <string name="_sys_form_account_input_publish"><![CDATA[Зарегистрироваться]]></string>
         <string name="_sys_form_account_input_caption_system_picture"><![CDATA[Изображение аккаунта]]></string>
         <string name="_sys_form_account_input_picture"><![CDATA[Загрузить изображение аккаунта]]></string>
 	<string name="_sys_form_checkbox_value_off"><![CDATA[Нет]]></string>
@@ -4295,10 +4299,12 @@
     <string name="_sys_menu_title_switch_language_popup"><![CDATA[Переключатель языка (попап)]]></string>
     <string name="_sys_menu_title_switch_language_inline"><![CDATA[Переключатель языка (встроенный)]]></string>
     <string name="_sys_menu_title_switch_template"><![CDATA[Переключить тему]]></string>
+    <string name="_sys_menu_title_tabbar"><![CDATA[Панель вкладок]]></string>
     <string name="_sys_menu_title_snippet_meta"><![CDATA[Мета информация в карточке]]></string>
     <string name="_sys_menu_title_vote_reactions_do"><![CDATA[Отреагировать - Меню]]></string>
     <string name="_sys_menu_title_wiki"><![CDATA[Вики]]></string>
     <string name="_sys_menu_set_title_sys_wiki"><![CDATA[Вики]]></string>
+    <string name="_sys_menu_set_title_tabbar"><![CDATA[Панель вкладок]]></string>
     <string name="_sys_menu_item_title_wiki_edit"><![CDATA[Редактировать]]></string>
     <string name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Удалить версию]]></string>
     <string name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Удалить блок]]></string>
@@ -4896,6 +4902,7 @@
     <string name="_sys_txt_api_key"><![CDATA[Ключ API]]></string>
     <string name="_sys_txt_auth_or"><![CDATA[или]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Доступ запрещён]]></string>
+    <string name="_sys_txt_access_denied_guest_page"><![CDATA[Войдите или зарегистрируйтесь, чтобы открыть эту страницу.]]></string>
     <string name="_sys_txt_access_denied_text"><![CDATA[У вас нет доступа к этому.]]></string>
     <string name="_sys_txt_access_denied_title"><![CDATA[Нет доступа]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Ваш аккаунт ожидает одобрения, пожалуйста, дождитесь его активации.]]></string>
@@ -5086,6 +5093,7 @@
 	<string name="_sys_uploader_crop_submit_button"><![CDATA[Загрузить]]></string>    
     <string name="_sys_uploader_crop_title"><![CDATA[Обрезка картинки]]></string>
     <string name="_sys_uploader_crop_err_upload"><![CDATA[Ошибка загрузки.]]></string>
+    <string name="_sys_uploader_crop_popup_title"><![CDATA[Обрезка изображения]]></string>
     <string name="_sys_uploader_crop_remove_picture"><![CDATA[Удалить]]></string>
     <string name="_sys_uploader_crop_wrong_ext"><![CDATA[Неправильное расширение файла, можно обрезать только изображения в формате: jpg, jpeg, png, gif.]]></string>
 	<string name="_sys_uploader_err_msg"><![CDATA[Ой! Случилась проблема с файлом {0}: {1}]]></string>
@@ -5258,4 +5266,6 @@
   <string name="_sys_membership_stats_unlimited"><![CDATA[Без ограничений]]></string>
   <string name="_sys_membership_stats_until"><![CDATA[Действует до {0}]]></string>
   <string name="_sys_membership_stats_used"><![CDATA[Занято {0}]]></string>
+  <string name="_favorite_popup_title_do"><![CDATA[Добавить в избранное]]></string>
+  <string name="_favorite_popup_title_edit_list"><![CDATA[Изменить список]]></string>
 </resources>

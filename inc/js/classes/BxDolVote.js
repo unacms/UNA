@@ -108,7 +108,7 @@ BxDolVote.prototype.onVote = function(oLink, oData, onComplete)
 
     var oCounter = this._getCounter(oLink);
     if(oCounter && oCounter.length > 0) {
-        oCounter.html(oData.countf);
+        oCounter.html(oData.countf).bxProcessHtml();
 
         oCounter.parents('.' + this._sSP + '-counter-holder:first').bx_anim(oData.count > 0 ? 'show' : 'hide');
     }

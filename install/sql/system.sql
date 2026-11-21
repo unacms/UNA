@@ -5530,7 +5530,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- social sharing menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_social_sharing', 'system', 'social-sharing-facebook', '_sys_menu_item_title_system_social_sharing_facebook', '_sys_menu_item_title_social_sharing_facebook', 'https://www.facebook.com/sharer/sharer.php?u={url_encoded}', '', '_blank', 'brand-facebook', '', 2147483647, 1, 1, 1),
-('sys_social_sharing', 'system', 'social-sharing-twitter', '_sys_menu_item_title_system_social_sharing_twitter', '_sys_menu_item_title_social_sharing_twitter', 'https://twitter.com/share?url={url_encoded}', '', '_blank', 'brand-x', '', 2147483647, 1, 1, 2),
+('sys_social_sharing', 'system', 'social-sharing-twitter', '_sys_menu_item_title_system_social_sharing_twitter', '_sys_menu_item_title_social_sharing_twitter', 'https://x.com/intent/post?url={url_encoded}', '', '_blank', 'brand-x', '', 2147483647, 1, 1, 2),
 ('sys_social_sharing', 'system', 'social-sharing-pinterest', '_sys_menu_item_title_system_social_sharing_pinterest', '_sys_menu_item_title_social_sharing_pinterest', 'http://pinterest.com/pin/create/button/?url={url_encoded}&media={img_url_encoded}&description={title_encoded}', '', '_blank', 'brand-pinterest', '', 2147483647, 1, 1, 3),
 ('sys_social_sharing', 'system', 'social-sharing-linked_in', '_sys_menu_item_title_system_social_sharing_linked_in', '_sys_menu_item_title_social_sharing_linked_in',  'https://www.linkedin.com/shareArticle?mini=true&url={url_encoded}', '', '_blank', 'brand-linkedin', '', 2147483647, 1, 1, 4),
 ('sys_social_sharing', 'system', 'social-sharing-whatsapp', '_sys_menu_item_title_system_social_sharing_whatsapp', '_sys_menu_item_title_social_sharing_whatsapp', 'https://wa.me/?text={url_encoded}', '', '_blank', 'brand-whatsapp', '', 2147483647, 1, 1, 5);
@@ -7753,7 +7753,7 @@ CREATE TABLE IF NOT EXISTS `sys_preloader` (
 
 INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALUES
 ('system', 'css_system', '{dir_plugins_public}marka/|marka.min.css', 1, 1),
-('system', 'css_system', '{dir_plugins_public}at.js/css/|jquery.atwho.min.css', 1, 2),
+('system', 'css_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:9:"atwho_css";}s:5:"class";s:12:"BaseServices";}', 1, 2),
 ('system', 'css_system', '{dir_plugins_public}prism/|prism.css', 1, 3),
 ('system', 'css_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:8:"tailwind";}s:5:"class";s:12:"BaseServices";}', 1, 4),
 ('system', 'css_system', 'common.css', 1, 10),
@@ -7775,7 +7775,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'css_system', 'vote.css', 1, 36),
 ('system', 'css_system', '{dir_plugins_public}spin.js/|spin.css', 1, 37),
 
-('system', 'js_system', 'pusher/pusher.min.js', 1, 0),
+('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:9:"pusher_js";}s:5:"class";s:12:"BaseServices";}', 1, 0),
 ('system', 'js_system', 'jquery/jquery.min.js', 1, 1),
 ('system', 'js_system', 'jquery/jquery-migrate.min.js', 1, 2),
 ('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:12:"jquery_ui_js";}s:5:"class";s:12:"BaseServices";}', 1, 3),
@@ -7786,7 +7786,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:11:"datetime_js";}s:5:"class";s:12:"BaseServices";}', 1, 8),
 ('system', 'js_system', 'marka/marka.min.js', 1, 9),
 ('system', 'js_system', 'headroom.min.js', 1, 10),
-('system', 'js_system', 'at.js/js/jquery.atwho.min.js', 1, 11),
+('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:8:"atwho_js";}s:5:"class";s:12:"BaseServices";}', 1, 11),
 ('system', 'js_system', 'prism/prism.js', 1, 12),
 ('system', 'js_system', 'htmx/htmx.min.js', 1, 13),
 ('system', 'js_system', 'htmx/head-support.min.js', 1, 14),

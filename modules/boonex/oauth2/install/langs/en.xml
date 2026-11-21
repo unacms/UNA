@@ -27,7 +27,7 @@ Specify the following "Main UNA Site URL" on the client sites:<br />
     <string name="_bx_oauth_authorize_can_profiles"><![CDATA[Act as whichever of your profiles you are using on the site. Switching profiles in the app switches them on the site too]]></string>
     <string name="_bx_oauth_authorize_choose"><![CDATA[Connect as:]]></string>
     <string name="_bx_oauth_connect_as"><![CDATA[Connect as {0}]]></string>
-    <string name="_bx_oauth_authorize_agreement"><![CDATA[By connecting, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
+    <string name="_bx_oauth_authorize_agreement"><![CDATA[By connecting, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string>
 
     <string name="_bx_oauth_lmi_cpt_keys"><![CDATA[Keys]]></string>
 
