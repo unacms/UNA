@@ -260,6 +260,7 @@
     <string name="_bx_polls_txt_sample_score_down_single"><![CDATA[score down vote to poll]]></string>
     <string name="_bx_polls_txt_subentry_vote_do_by"><![CDATA[Voted for]]></string>
     <string name="_bx_polls_txt_subentry_vote_counter"><![CDATA[{0} votes]]></string>
+    <string name="_bx_polls_txt_subentry_vote_counter_one"><![CDATA[{0} vote]]></string>
     <string name="_bx_polls_txt_subentry_vote_percent"><![CDATA[({0}%)]]></string>
     <string name="_bx_polls_msg_public_voting"><![CDATA[This voting is public, your choice will be displayed for others.]]></string>
     

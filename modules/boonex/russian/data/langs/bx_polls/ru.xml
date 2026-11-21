@@ -258,6 +258,8 @@
     <string name="_bx_polls_txt_sample_score_down_single"><![CDATA[голос против голосования]]></string>
     <string name="_bx_polls_txt_subentry_vote_do_by"><![CDATA[Проголосовали за]]></string>
     <string name="_bx_polls_txt_subentry_vote_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_polls_txt_subentry_vote_counter_few"><![CDATA[{0} голоса]]></string>
+    <string name="_bx_polls_txt_subentry_vote_counter_one"><![CDATA[{0} голос]]></string>
     <string name="_bx_polls_txt_subentry_vote_percent"><![CDATA[({0}%)]]></string>
     <string name="_bx_polls_msg_public_voting"><![CDATA[Это публичное голосование, ваш выбор будет виден другим.]]></string>
 

@@ -213,7 +213,8 @@ class BxBaseModProfileFormsEntryHelper extends BxBaseModGeneralFormsEntryHelper
         else
             $iAclLevel = MEMBERSHIP_ID_STANDARD;
 
-        BxDolAcl::getInstance()->setMembership($iProfileId, $iAclLevel, 0, true);
+        // the level a new profile starts with is not a change, so no "level changed" email
+        BxDolAcl::getInstance()->setMembership($iProfileId, $iAclLevel, 0, true, '', false);
         
         // process uploaded files
         $oForm = $this->getObjectFormAdd();
