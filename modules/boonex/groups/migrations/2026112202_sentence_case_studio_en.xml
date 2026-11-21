@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_groups_page_title_sys_joined_entries"><![CDATA[Profile groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_create_profile"><![CDATA[Create group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_edit_profile"><![CDATA[Edit group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_edit_profile_settings"><![CDATA[Edit group settings]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_delete_profile"><![CDATA[Delete group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_join_profile"><![CDATA[Join group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_view_profile_closed"><![CDATA[View closed group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_view_profile"><![CDATA[View group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_profile_info"><![CDATA[Group info]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_recent"><![CDATA[New groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_manage"><![CDATA[Manage own groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_manage_administration"><![CDATA[Manage all groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_top"><![CDATA[Top groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_joined"><![CDATA[Joined groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_invite_to_group"><![CDATA[Invite members to the group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_sys_entries_favorites"><![CDATA[Favorite groups]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_edit_pricing"><![CDATA[Edit pricing]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_edit_profile"><![CDATA[Edit group]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_edit_settings"><![CDATA[Edit settings]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_delete_profile"><![CDATA[Delete group]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_add_content"><![CDATA[Add content]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_become_fan"><![CDATA[Join group]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_leave_group"><![CDATA[Leave group]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_pay_and_join"><![CDATA[Pay & join]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_system_more_actions"><![CDATA[More actions]]></string_upd>
+</resources>
