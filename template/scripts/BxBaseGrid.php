@@ -837,14 +837,16 @@ class BxBaseGrid extends BxDolGrid
     protected function _getEmptyStateButton()
     {
         $a = $this->_aOptions['actions_independent']['add'] ?? null;
-        if(empty($a) || !is_array($a) || empty($a['active']) || empty($a['title']))
+        if(empty($a) || !is_array($a) || empty($a['active']) || empty($a['title'])) {
             return [];
+        }
 
         // a grid that hides its Add action (no permission) or disables it (a filter to choose first) leaves it out here too
         if(method_exists($this, '_getActionAdd')) {
             $sAction = $this->_getActionAdd('independent', 'add', $a);
-            if($sAction === '' || str_contains($sAction, 'bx-btn-disabled'))
+            if($sAction === '' || str_contains($sAction, 'bx-btn-disabled')) {
                 return [];
+            }
         }
 
         return [

@@ -18,7 +18,7 @@ class FeedbackTemplatesTest extends \PHPUnit\Framework\TestCase
     public function testToastsAreAnnouncedAboveDialogs(): void
     {
         $s = self::read('template/popup_trans_toast_holder.html');
-        $this->assertStringContainsString('role="status"', $s);
+        $this->assertStringContainsString('<output id="__html_id__"', $s, 'An <output> is a status live region.');
         $this->assertStringContainsString('aria-live="polite"', $s);
         $this->assertStringContainsString('bx-def-z-index-modal', $s, 'A toast is not hidden behind Studio or a popup.');
     }

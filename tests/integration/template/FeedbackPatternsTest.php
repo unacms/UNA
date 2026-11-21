@@ -74,9 +74,8 @@ class FeedbackPatternsTest extends BxDolIntegrationTestCase
 
     public function testCellWithoutDataIsEmpty(): void
     {
-        $oGrid = BxDolGrid::getObjectInstance('bx_antispam_grid_ip_table');
-        if (!$oGrid)
-            $this->markTestSkipped('No grid object to test with.');
+        // the cell reads only its arguments: no grid object or permission is needed
+        $oGrid = (new ReflectionClass('BxTemplGrid'))->newInstanceWithoutConstructor();
 
         $oMethod = new ReflectionMethod($oGrid, '_getCellData');
         $this->assertSame('', $oMethod->invoke($oGrid, 'no_such_field', [], []));

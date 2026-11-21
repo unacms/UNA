@@ -209,7 +209,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox')
     {
-        return $this->msgBoxState(time() . mt_rand(1, 1000), [
+        return $this->msgBoxState('bx-empty-' . bin2hex(random_bytes(4)), [
             'icon' => $sIcon,
             'text' => $sText !== '' ? $sText : _t('_Empty'),
             'buttons' => !empty($aButton) ? [$aButton] : [],
@@ -221,8 +221,9 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     protected function isEmptyText($mixedText)
     {
-        if(!is_string($mixedText) || ($mixedText = trim($mixedText)) === '')
+        if(!is_string($mixedText) || ($mixedText = trim($mixedText)) === '') {
             return false;
+        }
 
         return in_array($mixedText, [_t('_Empty'), _t('_sys_txt_empty')], true);
     }

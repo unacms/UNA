@@ -63,7 +63,7 @@ function processJsonData(oData) {
 		});
     else if(oData && oData.toast != undefined && oData.toast.length != 0) {
         // A success doesn't block: it shows as a toast, on the next page when the reply reloads or redirects.
-        if((oData.reload != undefined && parseInt(oData.reload) == 1) || (oData.redirect != undefined && oData.redirect.length != 0))
+        if((oData.reload != undefined && Number.parseInt(oData.reload) == 1) || (oData.redirect != undefined && oData.redirect.length != 0))
             bx_toast_next_page(oData.toast);
         else
             bx_toast(oData.toast);
@@ -1925,7 +1925,9 @@ function bx_toast_next_page(sMessage)
     try {
         sessionStorage.setItem('bx-toast-next-page', sMessage);
     }
-    catch(e) {}
+    catch(e) {
+        // no storage (private window, blocked site data): the toast is skipped, the page still works
+    }
 }
 
 $(document).ready(function() {
@@ -1935,7 +1937,9 @@ $(document).ready(function() {
         if(sMessage)
             sessionStorage.removeItem('bx-toast-next-page');
     }
-    catch(e) {}
+    catch(e) {
+        // no storage: nothing to show
+    }
 
     if(sMessage)
         bx_toast(sMessage);

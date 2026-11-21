@@ -15,8 +15,9 @@ function bx_get_js_result($aParams)
 
     // 'message' opens a dialog, for an error or a question; 'toast' shows a success without blocking
     foreach(['message', 'toast'] as $sKey) {
-        if(empty($aParams[$sKey]))
+        if(empty($aParams[$sKey])) {
             continue;
+        }
 
         $aResult[$sKey] = $aParams[$sKey];
 
