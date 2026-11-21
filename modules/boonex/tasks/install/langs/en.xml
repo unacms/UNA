@@ -663,7 +663,7 @@
     <string name="_bx_tasks_txt_budget_remains"><![CDATA[Remains:]]></string>
     <string name="_bx_tasks_txt_budget_remains_value"><![CDATA[{0} ({1}%)]]></string>
 
-    <string name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+    <string name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_tasks_txt_err_empty_pre_list"><![CDATA[Please select a list to add items to.]]></string>
     <string name="_bx_tasks_txt_err_delete_list"><![CDATA[Cannot delete the list.]]></string>
     <string name="_bx_tasks_txt_err_timer_not_found"><![CDATA[Timer wasn't found or empty.]]></string>

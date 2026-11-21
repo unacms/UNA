@@ -111,7 +111,7 @@
     <string name="_bx_invites_option_requests_email"><![CDATA[Emails to send invitation requests to (comma separated)]]></string>
     <string name="_bx_invites_option_enable_reg_by_inv"><![CDATA[Enable registration by invitation only]]></string>
     <string name="_bx_invites_option_context_auto_join"><![CDATA[Enable auto join when 'Invite to Context' feature is used]]></string>
-    <string name="_bx_invites_option_context_key_length"><![CDATA[Key length for 'Invite to Context' feature (0 - default length)]]></string>
+    <string name="_bx_invites_option_context_key_length"><![CDATA[Key length for invitations to communities (0 = default length)]]></string>
 
 
     <!-- ACL -->
@@ -187,7 +187,7 @@
     <string name="_bx_invites_msg_invitation"><![CDATA[Hello! This site might be interesting for you.]]></string>
     <string name="_bx_invites_msg_invitation_sent"><![CDATA[Invitation message was queued to send to {0} email addresses from the list.]]></string>
     <string name="_bx_invites_msg_request_sent"><![CDATA[Invitation request received. We'll send an invite when it's your turn.]]></string>
-    <string name="_bx_invites_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_invites_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_invites_err_limit_reached"><![CDATA[The number of invitations sent by you reached the limit.]]></string>
     <string name="_bx_invites_err_not_available"><![CDATA[The feature is not available now. Please try again later.]]></string>
     <string name="_bx_invites_err_invite"><![CDATA[Cannot send an invitation on request.]]></string>

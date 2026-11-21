@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_events_option_rm_from_timeline_after"><![CDATA[Remove past events from Timeline after this many hours (0 = never)]]></string_upd>
+    <string_upd name="_bx_events_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+    <string_upd name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Repeats]]></string_upd>
+    <string_upd name="_bx_events_form_profile_input_reoccurring"><![CDATA[Repeats]]></string_upd>
+    <string_upd name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Radius around the location]]></string_upd>
+    <string_upd name="_bx_events_form_profile_input_threshold"><![CDATA[Radius around the location, meters]]></string_upd>
+</resources>
