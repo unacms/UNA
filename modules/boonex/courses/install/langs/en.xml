@@ -366,6 +366,7 @@
     <string name="_bx_courses_menu_item_title_sm_privacy"><![CDATA[Privacy]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_members"><![CDATA[Students]]></string>
     <string name="_bx_courses_menu_item_title_sm_members"><![CDATA[{0} students]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members_one"><![CDATA[{0} student]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_join"><![CDATA[Attend]]></string>
     <string name="_bx_courses_menu_item_title_sm_join"><![CDATA[Attend]]></string>
     <string name="_bx_courses_menu_item_title_sm_join_paid"><![CDATA[Pay & Attend]]></string>

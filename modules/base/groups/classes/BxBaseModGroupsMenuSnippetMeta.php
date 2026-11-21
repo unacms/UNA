@@ -179,7 +179,7 @@ class BxBaseModGroupsMenuSnippetMeta extends BxBaseModProfileMenuSnippetMeta
         
         if($this->_bIsApi)
             return $this->_getMenuItemAPI($aItem, 'text', [
-                'title' => _t($sTitle, $iMembers)
+                'title' => _tn($sTitle, $iMembers)
             ]);
 
         // the count's text, after the one group of avatars the card's counts share

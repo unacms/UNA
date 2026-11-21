@@ -315,13 +315,13 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 (CONCAT(@sName, '_nav_menu'), @sName, '_bx_messenger_nav_menu_title_view', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-(CONCAT(@sName, '_nav_menu'), @sName, 'inbox', '_bx_messenger_nav_menu_item_title_inbox', '_bx_messenger_nav_menu_item_title_inbox', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''inbox''})', '_self', 'inbox col-red3', '', 2147483647, 1, 0, 0),
-(CONCAT(@sName, '_nav_menu'), @sName, 'direct', '_bx_messenger_nav_menu_item_title_direct', '_bx_messenger_nav_menu_item_title_direct', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''direct''})', '_self', 'message-circle col-blue1', '', 2147483647, 1, 0, 1),
-(CONCAT(@sName, '_nav_menu'), @sName, 'threads', '_bx_messenger_nav_menu_item_title_threads', '_bx_messenger_nav_menu_item_title_threads', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''threads''});', '_self', 'messages-square col-blue2', '', 2147483647, 1, 0, 2),
+(CONCAT(@sName, '_nav_menu'), @sName, 'inbox', '_bx_messenger_nav_menu_item_title_inbox', '_bx_messenger_nav_menu_item_title_inbox', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''inbox''})', '_self', 'inbox', '', 2147483647, 1, 0, 0),
+(CONCAT(@sName, '_nav_menu'), @sName, 'direct', '_bx_messenger_nav_menu_item_title_direct', '_bx_messenger_nav_menu_item_title_direct', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''direct''})', '_self', 'message-circle', '', 2147483647, 1, 0, 1),
+(CONCAT(@sName, '_nav_menu'), @sName, 'threads', '_bx_messenger_nav_menu_item_title_threads', '_bx_messenger_nav_menu_item_title_threads', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''threads''});', '_self', 'messages-square', '', 2147483647, 1, 0, 2),
 (CONCAT(@sName, '_nav_menu'), @sName, 'reply', '_bx_messenger_nav_menu_item_title_replies', '_bx_messenger_nav_menu_item_title_replies', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''replies''});', '_self', 'reply', '', 2147483647, 1, 0, 3),
-(CONCAT(@sName, '_nav_menu'), @sName, 'mentions_reactions', '_bx_messenger_nav_menu_item_title_mr', '_bx_messenger_nav_menu_item_title_mr', 'javascript:void(0)', 'oMessenger.loadTalksList(this, {group : ''mr''});', '_self', 'at-sign col-green2', '', 2147483647, 1, 0, 4),
-(CONCAT(@sName, '_nav_menu'), @sName, 'saved', '_bx_messenger_nav_menu_item_title_saved', '_bx_messenger_nav_menu_item_title_saved', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''saved''});', '_self', 'bookmark col-red1', '', 2147483647, 1, 0, 5),
-(CONCAT(@sName, '_nav_menu'), @sName, 'favorites', '_bx_messenger_nav_menu_item_title_favorites', '_bx_messenger_nav_menu_item_title_favorites', 'javascript:void(0);', '', '_self', 'star col-red2', '', 2147483647, 0, 0, 6);
+(CONCAT(@sName, '_nav_menu'), @sName, 'mentions_reactions', '_bx_messenger_nav_menu_item_title_mr', '_bx_messenger_nav_menu_item_title_mr', 'javascript:void(0)', 'oMessenger.loadTalksList(this, {group : ''mr''});', '_self', 'at-sign', '', 2147483647, 1, 0, 4),
+(CONCAT(@sName, '_nav_menu'), @sName, 'saved', '_bx_messenger_nav_menu_item_title_saved', '_bx_messenger_nav_menu_item_title_saved', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''saved''});', '_self', 'bookmark', '', 2147483647, 1, 0, 5),
+(CONCAT(@sName, '_nav_menu'), @sName, 'favorites', '_bx_messenger_nav_menu_item_title_favorites', '_bx_messenger_nav_menu_item_title_favorites', 'javascript:void(0);', '', '_self', 'star', '', 2147483647, 0, 0, 6);
 
 -- MENU: Groups Menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES

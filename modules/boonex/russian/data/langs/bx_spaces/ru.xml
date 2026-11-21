@@ -410,7 +410,9 @@
     <string name="_bx_spaces_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_spaces_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (пожизненно)]]></string>
     <string name="_bx_spaces_txt_empty_title"><![CDATA[Пространств пока нет]]></string>
-    <string name="_bx_spaces_txt_vote_starts_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_spaces_txt_vote_starts_counter"><![CDATA[{0} оценок]]></string>
+    <string name="_bx_spaces_txt_vote_starts_counter_few"><![CDATA[{0} оценки]]></string>
+    <string name="_bx_spaces_txt_vote_starts_counter_one"><![CDATA[{0} оценка]]></string>
 
     <string name="_bx_spaces_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_spaces_err_price_duplicate"><![CDATA[Аналогичный ценовой план уже существует.]]></string>

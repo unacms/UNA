@@ -457,6 +457,7 @@
     <string name="_bx_market_cat_duration_year"><![CDATA[yearly]]></string>
 
     <string name="_bx_market_vote_counter"><![CDATA[{0} ratings]]></string>
+    <string name="_bx_market_vote_counter_one"><![CDATA[{0} rating]]></string>
 
     <string name="_bx_market_txt_msg_status_hidden"><![CDATA[This product was hidden.]]></string>
     <string name="_bx_market_txt_msg_status_pending"><![CDATA[This product is pending approval.]]></string>

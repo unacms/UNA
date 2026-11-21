@@ -622,6 +622,14 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         return $aResult;
     }
 
+    /**
+     * A name's colour: the background of its letter avatar (a profile or account without a picture), by an id or a palette key.
+     * The palette's colour is darkened, when it has to be, until the white letter on it passes WCAG AA for any text size
+     * (4.5:1): the palette's lime and yellow are only about 1.6:1 with white.
+     * @param $mixedName an id, a palette key, or false for a random colour
+     * @param $fOpacity the alpha to add as the fourth value, or false for none
+     * @return array [r, g, b] or [r, g, b, a]
+     */
     public static function getColorCode($mixedName = false, $fOpacity = false)
     {
         $aPalette = self::getColorPalette();
@@ -632,11 +640,43 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         else if(is_numeric($mixedName))
             $mixedName = $aClasses[(int)$mixedName % count($aClasses)];
 
-        $aColor = $aPalette[$mixedName];
+        $aColor = self::getColorForWhiteText($aPalette[$mixedName]);
         if($fOpacity !== false && is_numeric($fOpacity))
             $aColor[] = $fOpacity;
 
         return $aColor;
+    }
+
+    /**
+     * The colour, darkened in small steps when it has to be, on which white text has at least the given contrast.
+     * @param $aRgb [r, g, b], 0-255
+     * @param $fRatio the contrast to reach, 4.5 by default (WCAG AA for text of any size)
+     * @return array [r, g, b]
+     */
+    public static function getColorForWhiteText($aRgb, $fRatio = 4.5)
+    {
+        $aRgb = array_map('intval', array_slice(array_values($aRgb), 0, 3));
+
+        for($i = 0; $i < 60 && self::getContrastWithWhite($aRgb) < $fRatio; $i++)
+            $aRgb = array_map(function($iChannel) {
+                return (int)floor($iChannel * 0.96);
+            }, $aRgb);
+
+        return $aRgb;
+    }
+
+    /**
+     * The contrast ratio of white with a colour (WCAG 2 relative luminance).
+     * @param $aRgb [r, g, b], 0-255
+     */
+    public static function getContrastWithWhite($aRgb)
+    {
+        $aLinear = array_map(function($iChannel) {
+            $f = $iChannel / 255;
+            return $f <= 0.04045 ? $f / 12.92 : pow(($f + 0.055) / 1.055, 2.4);
+        }, array_slice(array_values($aRgb), 0, 3));
+
+        return 1.05 / (0.2126 * $aLinear[0] + 0.7152 * $aLinear[1] + 0.0722 * $aLinear[2] + 0.05);
     }
 
     /**
@@ -2321,9 +2361,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 $sRet = $aData[$sKey];
                 break;
             case 'service_worker':
-                if(getParam('sys_pwa_sw_enable') != 'on')
-                    break;
-                $sRet = "if(navigator && navigator.serviceWorker) navigator.serviceWorker.register('sw.js.php');";
+                // a JS boolean: _header_js.html registers the PWA's service worker when it is true
+                $sRet = getParam('sys_pwa_sw_enable') == 'on' ? 'true' : 'false';
                 break;
             case 'socket_engine':
                 $sRet = BxDolSockets::getInstance()->getJsCode();
