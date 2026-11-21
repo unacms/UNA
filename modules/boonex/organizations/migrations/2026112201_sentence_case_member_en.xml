@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_orgs_form_profile_input_initial_members"><![CDATA[Invite members]]></string_upd>
+    <string_upd name="_bx_orgs_form_profile_input_org_name"><![CDATA[Organization name]]></string_upd>
+    <string_upd name="_bx_orgs_form_profile_input_cover"><![CDATA[Upload new cover picture]]></string_upd>
+    <string_upd name="_bx_orgs_form_profile_input_badge"><![CDATA[Upload new badge image]]></string_upd>
+    <string_upd name="_bx_orgs_form_profile_input_badge_link_select"><![CDATA[Badge link]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_create_profile"><![CDATA[Create a profile - organization]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_edit_profile"><![CDATA[Edit profile]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_edit_profile_badge"><![CDATA[Edit badge]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_delete_profile"><![CDATA[Delete profile]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_join_profile"><![CDATA[Join organization]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_profile_favorites"><![CDATA[Favorite organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_friend_requests"><![CDATA[Friend requests]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_profile_subscriptions"><![CDATA[Following & followers]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_recent"><![CDATA[New organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_manage"><![CDATA[Manage organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_active"><![CDATA[Active organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_online"><![CDATA[Online organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_invite_to_organization"><![CDATA[Invite members to the organization]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_entries_favorites"><![CDATA[Favorite organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_title_joined_entries"><![CDATA[Joined organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_create_profile"><![CDATA[Create a profile - organization]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_edit_profile"><![CDATA[Edit profile]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_edit_profile_badge"><![CDATA[Edit badge]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_delete_profile"><![CDATA[Delete profile]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_join_profile"><![CDATA[Join organization]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_profile_favorites"><![CDATA[Favorite organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_profile_friends_mutual"><![CDATA[Mutual friends]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_profile_related_me"><![CDATA[Relationships with me]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_featured_profiles"><![CDATA[Featured organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_latest_profiles"><![CDATA[New organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_manage"><![CDATA[Manage organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_active_profiles"><![CDATA[Active organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_online_profiles"><![CDATA[Online organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_invite_to_organization"><![CDATA[Invite members to the organization]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_favorites_of_author"><![CDATA[Favorite organizations]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+    <string_upd name="_bx_orgs_page_block_title_joined_entries"><![CDATA[Joined organizations]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_delete_with_content"><![CDATA[Delete with data]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_edit_pricing"><![CDATA[Edit pricing]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_edit_profile"><![CDATA[Edit profile]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_edit_badge"><![CDATA[Edit badge]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_delete_profile"><![CDATA[Delete profile and data]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_delete_account"><![CDATA[Delete account]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_delete_account_content"><![CDATA[Delete account and data]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_new_profile"><![CDATA[New organization]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_relation_add"><![CDATA[Add relationship]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_relation_delete"><![CDATA[Remove relationship]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_related_me"><![CDATA[Relationships with me]]></string_upd>
+    <string_upd name="_bx_orgs_grid_action_title_adm_delete_with_content"><![CDATA[Delete with content]]></string_upd>
+    <string_upd name="_bx_orgs_grid_action_title_adm_set_acl_level"><![CDATA[Set membership]]></string_upd>
+    <string_upd name="_bx_orgs_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+    <string_upd name="_bx_orgs_txt_set_role"><![CDATA[Set role]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_system_entries_home"><![CDATA[Organizations]]></string_upd>
+    <string_upd name="_bx_orgs_menu_item_title_entries_home"><![CDATA[Organizations]]></string_upd>
+</resources>

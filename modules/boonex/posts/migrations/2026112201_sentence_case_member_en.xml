@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_posts_form_entry_input_covers"><![CDATA[Header image]]></string_upd>
+    <string_upd name="_bx_posts_page_title_create_entry"><![CDATA[New post]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_create_entry"><![CDATA[New post]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_entry_text"><![CDATA[Post text]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_featured_entries_view_extended"><![CDATA[Featured posts]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_recent_entries_view_extended"><![CDATA[Latest posts]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_entry_all_actions"><![CDATA[All actions]]></string_upd>
+    <string_upd name="_bx_posts_page_title_entries_popular"><![CDATA[Popular posts]]></string_upd>
+    <string_upd name="_bx_posts_page_title_entries_top"><![CDATA[Top posts]]></string_upd>
+    <string_upd name="_bx_posts_page_title_entries_updated"><![CDATA[Updated posts]]></string_upd>
+    <string_upd name="_bx_posts_page_title_entries_favorites"><![CDATA[Favorite posts]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_popular_entries"><![CDATA[Popular posts]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_top_entries"><![CDATA[Top posts]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_updated_entries"><![CDATA[Updated posts]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_popular_keywords"><![CDATA[Popular hashtags]]></string_upd>
+    <string_upd name="_bx_posts_page_block_title_cats"><![CDATA[Post categories]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_cpa_photo_html5"><![CDATA[Add photos]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_cpa_video_record_video"><![CDATA[Record video]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_cpa_video_html5"><![CDATA[Add videos]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_cpa_sound_html5"><![CDATA[Add sound]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_cpa_file_html5"><![CDATA[Add files]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_cpa_poll"><![CDATA[Add poll]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_add_link"><![CDATA[Add link]]></string_upd>
+    <string_upd name="_bx_posts_form_attach_link_input_url"><![CDATA[Add link]]></string_upd>
+    <string_upd name="_bx_posts_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+</resources>
