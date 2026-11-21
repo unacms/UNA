@@ -46,6 +46,7 @@ class BxBaseChartServices extends BxDol
         if($mixedResult !== CHECK_ACTION_RESULT_ALLOWED)
             return '';
 
+        // the last 30 days up to today; BxDolChartGrowth.js moves both to the viewer's own today when it differs
         $sDateFrom = date('Y-m-d', time() - 30*24*60*60);
         $sDateTo = date('Y-m-d', time());
 
@@ -156,8 +157,7 @@ class BxBaseChartServices extends BxDol
             
             $aTmplVarsDataLabels[] = $sTitleAttr . ' - ' . $iValue;
 
-            $aTmplVarsDataSet['data'][] = $iValue;
-            $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', random_int(0x000000, 0xFFFFFF));
+            $aTmplVarsDataSet['data'][] = $iValue; // colours: the chart series of the palette (chart_stats.html)
         }
 
         $oTemplate = BxDolTemplate::getInstance();

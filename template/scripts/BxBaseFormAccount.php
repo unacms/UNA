@@ -140,6 +140,12 @@ class BxBaseFormAccount extends BxTemplFormView
 
         $this->_setAutocomplete(['email' => 'email', 'name' => 'name', 'password' => 'new-password', 'password_confirm' => 'new-password', 'password_current' => 'current-password', 'phone' => 'tel']);
 
+        // changing a password asks for the new one, where signing up asks to create one
+        if($this->aParams['display'] == 'sys_account_settings_pwd')
+            foreach(['password' => '_sys_form_account_input_password_new', 'password_confirm' => '_sys_form_account_input_password_new_confirm'] as $sField => $sCaption)
+                if(isset($this->aInputs[$sField]))
+                    $this->aInputs[$sField] = array_merge($this->aInputs[$sField], ['caption_src' => $sCaption, 'caption' => _t($sCaption)]);
+
         if(($sField = 'picture') && isset($this->aInputs[$sField])) {
             /**
              * Note. For now Account Picture is available in edit form only. 

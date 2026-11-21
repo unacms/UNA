@@ -209,10 +209,10 @@
 	<string name="_bx_messenger_jitsi_vc_into_title"><![CDATA[Message was sent in video conference created by {0} at {1}]]></string>
 	<string name="_bx_messenger_jitsi_vc_join"><![CDATA[Join]]></string>
 	<string name="_bx_messenger_are_you_sure_close_jisti"><![CDATA[Are you sure you want to leave the conference?]]></string>
-	<string name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Allow to use Jitsi]]></string>
+	<string name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Video calls]]></string>
 	<string name="_bx_messenger_jisti_connection_error"><![CDATA[Cannot connect to video conference server. Please check your internet connection or try again later.]]></string>
 	<string name="_bx_messenger_jisti_not_active_conference"><![CDATA[Active conference is not found. Please reload the chat or try to create your own conference.]]></string>
-	<string name="_bx_messenger_jitsi_server"><![CDATA[Use defined domain as Jitsi server]]></string>
+	<string name="_bx_messenger_jitsi_server"><![CDATA[Jitsi server domain, such as meet.example.com. Video calls stay off until you set one.]]></string>
 	<string name="_bx_messenger_jitsi_chat_enable"><![CDATA[Enable Jitsi chat inside of Jitsi conference]]></string>
 	<string name="_bx_messenger_jitsi_chat_sync"><![CDATA[Synchronize Jitsi chat with Messenger history (in this case all messages from Jitsi chat will be duplicated in Messenger history also)]]></string>
 	<string name="_bx_messenger_jitsi_hide_info"><![CDATA[Show chat info (members will be able to see chat room link and share it with non-members)]]></string>

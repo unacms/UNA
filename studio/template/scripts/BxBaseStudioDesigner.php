@@ -357,6 +357,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'type' => 'custom',
                     'name' => $sSection . '_preview',
                     'content' => $oTemplate->parseHtmlByName('dsr_logo_preview.html', [
+                        'js_object' => $this->getPageJsObject(),
+                        'low_contrast' => bx_html_attribute(_t('_adm_dsg_txt_logo_low_contrast_dark')),
                         'bx_repeat:previews' => array_values(array_filter($aPreviews, function($aPreview) use ($aLogos) {
                             return in_array($aPreview['name'], $aLogos);
                         }))

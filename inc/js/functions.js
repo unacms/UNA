@@ -1727,28 +1727,6 @@ function bx_search (n, sFormSel, sResultsContSel, sLoadingContSel, bSortResults,
     return false;
 }
 
-function on_filter_apply(e, sInputId, sFilterName)
-{
-	var oRegExp = new RegExp("[&]{0,1}" + sFilterName + "=.*");
-    var s = ('' + document.location).replace(oRegExp, ''); // remove filter
-    s = s.replace(/page=\d+/, 'page=1'); // goto 1st page
-    if (e.checked && $('#' + sInputId).val().length > 2)
-        s += (-1 == s.indexOf('?') ? '?' : '&') + sFilterName + '=' + $('#' + sInputId).val(); // append filter
-    document.location = s;
-}
-
-function on_filter_key_up (e, sCheckboxId)
-{
-    if (13 == e.keyCode) {
-        $('#' + sCheckboxId).click();
-        return false;
-    }
-    else {
-        $('#' + sCheckboxId).removeAttr('checked');
-        return true;
-    }
-}
-
 function on_copyright_click()
 {
 	oDate = new Date();
@@ -2035,6 +2013,39 @@ function bx_onboarding_hide(oButton, sMenu)
             oMain.setAttribute('tabindex', '-1');
         oMain.focus({preventScroll: true});
     }
+}
+
+/*
+ * Chart.js text and grid lines in the page's colours, light or dark: the body's text colour, and gray lines.
+ */
+function bx_chart_theme_defaults()
+{
+    if(typeof Chart == 'undefined')
+        return;
+
+    var bDark = document.documentElement.classList.contains('dark');
+    Chart.defaults.color = getComputedStyle(document.body).color;
+    Chart.defaults.borderColor = bDark ? 'rgb(255 255 255 / 0.1)' : 'rgb(0 0 0 / 0.08)';
+}
+
+/*
+ * Colours of chart series, as NEO's --chart-* (palette-schemes.css): the site's accent (--bx-accent-*, Designer's
+ * Accent color), then cyan, amber, pink, green, violet and a few more, the light or the dark scheme's set; each has
+ * 3:1 against cards. Returns iCount colours, repeating the set when there are more series.
+ */
+function bx_chart_series_colors(iCount, fAlpha)
+{
+    var bDark = document.documentElement.classList.contains('dark');
+    var sAccent = (getComputedStyle(document.documentElement).getPropertyValue(bDark ? '--bx-accent-400' : '--bx-accent-600') || '').trim() || (bDark ? '96 165 250' : '37 99 235');
+    var aSet = bDark
+        ? [sAccent, '103 232 249', '252 211 77', '249 168 212', '134 239 172', '196 181 253', '253 186 116', '94 234 212', '165 180 252', '203 213 225', '253 164 175']
+        : [sAccent, '8 145 178', '217 119 6', '219 39 119', '22 163 74', '124 58 237', '234 88 12', '13 148 136', '79 70 229', '100 116 139', '225 29 72'];
+
+    var aResult = [];
+    for(var i = 0; i < iCount; i++)
+        aResult.push('rgb(' + aSet[i % aSet.length] + (fAlpha !== undefined ? ' / ' + fAlpha : '') + ')');
+
+    return aResult;
 }
 
 /*

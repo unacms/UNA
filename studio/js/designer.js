@@ -570,6 +570,79 @@ BxDolStudioDesigner.prototype.deleteCover = function(sType, oButton) {
 };
 
 /**
+ * Designer > Logo: a dark preview whose image hardly shows on the dark page (a dark logo that dark mode would show,
+ * as uploaded for light mode) says so under it. Its opaque pixels are drawn on a canvas: when more than a third of
+ * them are under 1.5:1 against the preview's background, the warning shows.
+ */
+BxDolStudioDesigner.prototype.checkLogoContrast = function() {
+    var fLuminance = function(r, g, b) {
+        var f = function(c) {
+            c /= 255;
+            return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        };
+        return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+
+    var fCheck = function(oPreview, oImage) {
+        var oStage = oPreview.find('.adm-dsg-lp-stage').get(0);
+        var aBg = (getComputedStyle(oStage).backgroundColor.match(/\d+(\.\d+)?/g) || [24, 24, 27]).map(Number);
+        var fBg = fLuminance(aBg[0], aBg[1], aBg[2]);
+
+        var iW = 160, iH = Math.max(1, Math.round(160 * (oImage.naturalHeight || 1) / (oImage.naturalWidth || 1)));
+        var oCanvas = document.createElement('canvas');
+        oCanvas.width = iW;
+        oCanvas.height = iH;
+        var oCtx = oCanvas.getContext('2d', {willReadFrequently: true});
+
+        var aData;
+        try {
+            oCtx.drawImage(oImage, 0, 0, iW, iH);
+            aData = oCtx.getImageData(0, 0, iW, iH).data;
+        }
+        catch(e) {
+            return; // an image from another site can't be read
+        }
+
+        var iOpaque = 0, iFaint = 0;
+        for(var i = 0; i < aData.length; i += 4) {
+            if(aData[i + 3] < 128)
+                continue;
+
+            iOpaque++;
+            var fL = fLuminance(aData[i], aData[i + 1], aData[i + 2]);
+            if((Math.max(fL, fBg) + 0.05) / (Math.min(fL, fBg) + 0.05) < 1.5)
+                iFaint++;
+        }
+
+        if(iOpaque > 0 && iFaint / iOpaque > 0.33)
+            oPreview.find('.adm-dsg-lp-warning').text(oPreview.parents('.adm-dsg-logo-previews:first').attr('data-low-contrast')).prop('hidden', false);
+    };
+
+    $('.adm-dsg-logo-previews .adm-dsg-logo-preview').each(function() {
+        var oPreview = $(this);
+        if(!oPreview.find('.adm-dsg-lp-stage').hasClass('adm-dsg-lp-dark'))
+            return;
+
+        var oImage = new Image();
+        oImage.onload = function() {
+            fCheck(oPreview, oImage);
+        };
+
+        var oImg = oPreview.find('.adm-dsg-lp-stage img').get(0);
+        var oSvg = oPreview.find('.adm-dsg-lp-code svg').get(0);
+        if(oImg)
+            oImage.src = oImg.currentSrc || oImg.src;
+        else if(oSvg) {
+            // SVG code may paint with currentColor, the preview's text colour
+            var oCopy = oSvg.cloneNode(true);
+            oCopy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            oCopy.style.color = getComputedStyle(oSvg).color;
+            oImage.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(oCopy));
+        }
+    });
+};
+
+/**
  * Designer > Settings > Accent color: Studio takes the picked preset at once (its --bx-accent-* variables, which every
  * blue-* class reads), so the choice can be seen before it is saved. The select carries the presets in data-presets.
  */

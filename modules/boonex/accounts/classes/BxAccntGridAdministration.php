@@ -582,6 +582,9 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
     protected function _enable($mixedId, $isChecked)
     {
+        if((int)$mixedId == (int)getLoggedId())
+            return false; // not one's own account
+
     	$oProfile = BxDolProfile::getInstanceAccountProfile($mixedId);
     	if(!$oProfile)
     	    return false;
@@ -695,7 +698,15 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     
     protected function _isCheckboxDisabled($aRow)
     {
-        return false;
+        return $this->_isOwnRow($aRow);
+    }
+
+    /**
+     * The operator's own account: no checkbox, no switch, and it isn't suspended or deleted from here.
+     */
+    protected function _isOwnRow($aRow)
+    {
+        return isset($aRow['id']) && (int)$aRow['id'] == (int)getLoggedId();
     }
 
     protected function _getContentInfo($iId)
@@ -705,6 +716,9 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
     protected function _doDelete($iId, $aParams = [])
     {
+        if((int)$iId == (int)getLoggedId())
+            return false; // not one's own account
+
         return ($oAccount = BxDolAccount::getInstance($iId)) !== false && $oAccount->delete(isset($aParams['with_content']) && $aParams['with_content'] === true, true);
     }
 

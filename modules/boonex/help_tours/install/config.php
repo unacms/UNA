@@ -19,7 +19,7 @@ $aConfig = array(
     'note' => 'Help tours, guided tours, onboarding',
     'version' => '14.0.1.DEV',
     'vendor' => 'UNA INC',
-    'help_url' => 'http://feed.una.io/?section={module_name}',
+    'help_url' => '',
 
     'compatible_with' => array(
         '14.0.x'

@@ -441,7 +441,7 @@
 	<string name="_bx_analytics_txt_not_available"><![CDATA[н/д]]></string>
 	<string name="_bx_analytics_txt_not_enough_data"><![CDATA[Мало данных]]></string>
 	<string name="_bx_analytics_txt_now"><![CDATA[сейчас]]></string>
-	<string name="_bx_analytics_txt_online_now"><![CDATA[онлайн за последние {0} мин.]]></string>
+	<string name="_bx_analytics_txt_online_now"><![CDATA[посетителей за последние {0} мин.]]></string>
 	<string name="_bx_analytics_txt_open_analytics"><![CDATA[Открыть аналитику]]></string>
 	<string name="_bx_analytics_txt_p75"><![CDATA[75-й перцентиль]]></string>
 	<string name="_bx_analytics_txt_page_of"><![CDATA[Страница {0} из {1}]]></string>

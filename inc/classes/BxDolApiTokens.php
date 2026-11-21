@@ -31,6 +31,32 @@ class BxDolApiTokens
 
     const HINT_LENGTH = 4;
 
+    /** The membership action (Studio > Memberships) that lets an account make and use tokens. */
+    const ACL_ACTION = 'use connectors';
+
+    /**
+     * Whether the profile's membership level lets it make and use tokens.
+     * @param int $iProfileId profile, the signed-in one by default
+     */
+    public static function isAllowed($iProfileId = 0)
+    {
+        $iProfileId = (int)$iProfileId ? (int)$iProfileId : (int)bx_get_logged_profile_id();
+        $aCheck = checkActionModule($iProfileId, self::ACL_ACTION, 'system');
+        return $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED;
+    }
+
+    /**
+     * Whether account settings show Connectors: to a level which may use tokens, while the MCP server is on,
+     * or while the account still has tokens to revoke.
+     */
+    public static function isAvailable()
+    {
+        if (!isLogged() || !self::isAllowed())
+            return false;
+
+        return BxDolMcpServer::isEnabled() || count(BxDolApiQuery::getInstance()->getTokensByAccount(getLoggedId())) > 0;
+    }
+
     /**
      * Whether a bearer credential is a personal access token (and not an OAuth access token).
      */
@@ -121,6 +147,9 @@ class BxDolApiTokens
     {
         if (!isLogged())
             return '';
+
+        if (!self::isAllowed())
+            return bx_is_api() ? [bx_api_get_msg(_t('_sys_txt_access_denied'))] : MsgBox(_t('_sys_txt_access_denied'));
 
         $oGrid = BxDolGrid::getObjectInstance('sys_grid_api_tokens', $oTemplate);
         if (!$oGrid)

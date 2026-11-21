@@ -73,7 +73,8 @@ class BxBaseAcl extends BxDolAcl
 
         $aTmplVarsActions = [];
         if($bOwner) {
-            $aDowngradable = $this->getMemberships(false, true, true, true);
+            // a member may leave a level they bought, not the one the site gave them (Operator, Moderator)
+            $aDowngradable = $this->getMemberships(true, true, true, true);
             unset($aDowngradable[MEMBERSHIP_ID_STANDARD]);
 
             if(in_array($aLevel['id'], array_keys($aDowngradable)))

@@ -14,6 +14,10 @@
  */
 class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
 {
+    /** Where the browser goes after an entry is saved when nothing else says, '' for the entry's page */
+    protected $_sRedirectAfterEdit = '';
+    protected $_sRequestUriEdit = '';
+
     protected $_oModule;
 
     protected $_bIsApi;
@@ -421,7 +425,7 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
 
         $oForm->initChecker($aContentInfo, $aSpecificValues);
         if (!$oForm->isSubmittedAndValid())
-            return $this->_bIsApi ? $this->prepareResponseAPI('form', $oForm->getCodeAPI(), ['request_uri' => 'entity_edit', 'request_params' => ['params' => [$iContentId, $oForm->aParams['display']]]]) : $oForm->getCode();
+            return $this->_bIsApi ? $this->prepareResponseAPI('form', $oForm->getCodeAPI(), $this->_getEditRequestApi($iContentId, $oForm->aParams['display'])) : $oForm->getCode();
 
         // update data in the DB
         $aTrackTextFieldsChanges = null;
@@ -430,7 +434,7 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
 
         if (!$oForm->update ($aContentInfo[$CNF['FIELD_ID']], array(), $aTrackTextFieldsChanges)) {
             if (!$oForm->isValid())
-                return $this->_bIsApi ? $this->prepareResponseAPI('form', $oForm->getCodeAPI(), ['request_uri' => 'entity_edit', 'request_params' => ['params' => [$iContentId, $oForm->aParams['display']]]]) : $oForm->getCode();
+                return $this->_bIsApi ? $this->prepareResponseAPI('form', $oForm->getCodeAPI(), $this->_getEditRequestApi($iContentId, $oForm->aParams['display'])) : $oForm->getCode();
             else
                 return ($sMsg = '_sys_txt_error_entry_update') && $this->_bIsApi ? $this->prepareResponseAPI('msg', $sMsg) : MsgBox(_t($sMsg));
         }
@@ -558,10 +562,30 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
         return '';
     }
 
+    /**
+     * @param string $sUrl where the browser goes after the entry is saved
+     * @param string $sRequestUri the service the apps post the edit form to, which comes back to the same place
+     */
+    public function setRedirectAfterEdit($sUrl, $sRequestUri = '')
+    {
+        $this->_sRedirectAfterEdit = $sUrl;
+        $this->_sRequestUriEdit = $sRequestUri;
+    }
+
+    protected function _getEditRequestApi($iContentId, $sDisplay)
+    {
+        if($this->_sRequestUriEdit != '')
+            return ['request_uri' => $this->_sRequestUriEdit, 'request_params' => ['params' => [$iContentId]]];
+
+        return ['request_uri' => 'entity_edit', 'request_params' => ['params' => [$iContentId, $sDisplay]]];
+    }
+
     protected function redirectAfterEdit($aContentInfo, $sUrl = '')
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
+        if ($sUrl == '' && $this->_sRedirectAfterEdit != '')
+            $sUrl = $this->_sRedirectAfterEdit;
         if ($sUrl == '')
             $sUrl = 'page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . $aContentInfo[$CNF['FIELD_ID']];
 

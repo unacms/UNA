@@ -25,8 +25,6 @@ class BxDolStudioWidget extends BxTemplStudioPage
             return;
 
         if(!$this->bPageMultiple) {
-            $this->sPageRssHelpId = $this->aPage['name'];
-
             $this->aPage['featured'] = $this->oDb->isFeatured($this->aPage);
             $this->aPage['bookmark'] = $this->oDb->isBookmarked($this->aPage, bx_get_logged_profile_id());
 
