@@ -6,7 +6,7 @@
     <string_add name="_adm_stg_cpt_category_sys_app_banner"><![CDATA[Баннер мобильного приложения]]></string_add>
     <string_add name="_adm_stg_cpt_type_system_members"><![CDATA[Участники]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_relations"><![CDATA[Отношения]]></string_add>
-    <string_add name="_adm_stg_cpt_type_system_security"><![CDATA[Безопасность и приватность]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_security"><![CDATA[Безопасность]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_sign_in_protection"><![CDATA[Защита входа]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_sessions"><![CDATA[Сессии, cookie и заголовки]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_privacy"><![CDATA[Приватность]]></string_add>
@@ -17,9 +17,9 @@
     <string_add name="_adm_stg_cpt_category_sys_search"><![CDATA[Поиск и просмотр]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_embeds"><![CDATA[Встраивание]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_editor"><![CDATA[Редактор и плеер]]></string_add>
-    <string_add name="_adm_stg_cpt_type_system_files"><![CDATA[Файлы и хранилище]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_files"><![CDATA[Хранилище]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_uploads"><![CDATA[Загрузки]]></string_add>
-    <string_add name="_adm_stg_cpt_type_system_messaging"><![CDATA[Уведомления и сообщения]]></string_add>
+    <string_add name="_adm_stg_cpt_type_system_messaging"><![CDATA[Сообщения]]></string_add>
     <string_add name="_adm_stg_cpt_type_system_payments"><![CDATA[Платежи]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_payments"><![CDATA[Платежи]]></string_add>
     <string_add name="_adm_stg_cpt_category_sys_store_account"><![CDATA[Аккаунт UNA Store]]></string_add>

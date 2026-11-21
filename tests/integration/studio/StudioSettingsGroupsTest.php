@@ -69,6 +69,15 @@ class StudioSettingsGroupsTest extends BxDolIntegrationTestCase
         $this->assertSame($sType, $this->typeOfCategory($sCategory));
     }
 
+    public function testGroupNamesAreShort(): void
+    {
+        // Group names in the Settings menu are one or two words.
+        $aTypes = BxDolDb::getInstance()->getColumn("SELECT `caption` FROM `sys_options_types` WHERE `group` = 'system'");
+        $this->assertNotEmpty($aTypes);
+        foreach ($aTypes as $sCaption)
+            $this->assertLessThanOrEqual(2, count(preg_split('/\s+/u', trim(_t($sCaption)))), $sCaption);
+    }
+
     public function testHardCodedCategoriesStayInSystem(): void
     {
         foreach (['languages', 'audit', 'hidden', 'system', 'templates'] as $sCategory)

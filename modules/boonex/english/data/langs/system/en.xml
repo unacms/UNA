@@ -2373,7 +2373,7 @@
 	<string name="_adm_stg_cpt_category_sys_app_banner"><![CDATA[Mobile app banner]]></string>
 	<string name="_adm_stg_cpt_type_system_members"><![CDATA[Members]]></string>
 	<string name="_adm_stg_cpt_category_sys_relations"><![CDATA[Relationships]]></string>
-	<string name="_adm_stg_cpt_type_system_security"><![CDATA[Security and privacy]]></string>
+	<string name="_adm_stg_cpt_type_system_security"><![CDATA[Security]]></string>
 	<string name="_adm_stg_cpt_category_sys_sign_in_protection"><![CDATA[Sign-in protection]]></string>
 	<string name="_adm_stg_cpt_category_sys_sessions"><![CDATA[Sessions, cookies and headers]]></string>
 	<string name="_adm_stg_cpt_category_sys_privacy"><![CDATA[Privacy]]></string>
@@ -2384,9 +2384,9 @@
 	<string name="_adm_stg_cpt_category_sys_search"><![CDATA[Search and browsing]]></string>
 	<string name="_adm_stg_cpt_category_sys_embeds"><![CDATA[Embeds]]></string>
 	<string name="_adm_stg_cpt_category_sys_editor"><![CDATA[Editor and player]]></string>
-	<string name="_adm_stg_cpt_type_system_files"><![CDATA[Files and storage]]></string>
+	<string name="_adm_stg_cpt_type_system_files"><![CDATA[Storage]]></string>
 	<string name="_adm_stg_cpt_category_sys_uploads"><![CDATA[Uploads]]></string>
-	<string name="_adm_stg_cpt_type_system_messaging"><![CDATA[Notifications and messaging]]></string>
+	<string name="_adm_stg_cpt_type_system_messaging"><![CDATA[Messaging]]></string>
 	<string name="_adm_stg_cpt_type_system_payments"><![CDATA[Payments]]></string>
 	<string name="_adm_stg_cpt_category_sys_payments"><![CDATA[Payments]]></string>
 	<string name="_adm_stg_cpt_category_sys_store_account"><![CDATA[UNA Store account]]></string>
