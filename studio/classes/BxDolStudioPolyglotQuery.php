@@ -19,7 +19,7 @@ class BxDolStudioPolyglotQuery extends BxDolStudioLanguagesUtilsQuery
         $sSql = $this->prepare("SELECT
                 `tlk`.`ID` AS `id`,
                 `tlk`.`Key` AS `key`,
-                `tlc`.`Name` AS `module`
+                IFNULL((SELECT `tm`.`title` FROM `sys_modules` AS `tm` WHERE `tm`.`lang_category`=`tlc`.`Name` LIMIT 1), `tlc`.`Name`) AS `module`
             FROM `sys_localization_keys` AS `tlk`
             LEFT JOIN `sys_localization_categories` AS `tlc` ON `tlk`.`IDCategory`=`tlc`.`ID`
             WHERE `tlk`.`ID`=? LIMIT 1", $iId);
@@ -38,6 +38,20 @@ class BxDolStudioPolyglotQuery extends BxDolStudioLanguagesUtilsQuery
         $aResult['strings'] = $this->getAllWithKey($sSql, 'lang_name');
 
         return $aResult;
+    }
+
+    /**
+     * Language categories as Polyglot shows them: by the title of the module they belong to ("English", not the
+     * category's name "BoonEx English"), by name when no module has them (System, Custom).
+     * @return array category ID => title, ordered by title
+     */
+    function getCategoryTitles()
+    {
+        return $this->getPairs("SELECT
+                `tlc`.`ID` AS `id`,
+                IFNULL((SELECT `tm`.`title` FROM `sys_modules` AS `tm` WHERE `tm`.`lang_category`=`tlc`.`Name` LIMIT 1), `tlc`.`Name`) AS `title`
+            FROM `sys_localization_categories` AS `tlc`
+            ORDER BY `title`", 'id', 'title');
     }
 
     function getEtemplates($aParams, &$aItems, $bReturnCount = true)

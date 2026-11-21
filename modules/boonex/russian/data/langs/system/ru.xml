@@ -1078,7 +1078,7 @@
 	<string name="_adm_err_modules_wrong_version_script_update"><![CDATA[Новая версия модуля {0} несовместима с Вашей версией UNA. Пожалуйста, сначала обновите UNA (Студия &gt; Панель &gt; Версия) и затем попробуйте обновить модуль.]]></string>
 	<string name="_adm_err_oauth_cannot_get_token"><![CDATA[Невозможно соединиться с <b>UNA</b>. Пожалуйста, попробуйте позднее.]]></string>
 	<string name="_adm_err_oauth_cannot_read_answer"><![CDATA[Невозможно получить отклик от <b>UNA</b>. Пожалуйста, попробуйте позднее.]]></string>
-	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[Нужно ввести Key и Secret, предоставленные <b>UNA</b> в Настройки -> Общие.]]></string>
+	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[Чтобы открыть магазин, введите ключ и секрет аккаунта UNA в <a href="{0}">настройках</a>.]]></string>
 	<string name="_adm_err_operation_failed"><![CDATA[Операция не удалась. Пожалуйста, оповестите нас.]]></string>
 	<string name="_adm_form_btn_displays_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_form_btn_displays_edit"><![CDATA[Редактировать дисплей]]></string>
@@ -1229,6 +1229,7 @@
   <string name="_adm_form_txt_badges_edit_popup"><![CDATA[Изменить "{0}" бейдж]]></string>
   <string name="_adm_pgt_txt_badges_text"><![CDATA[Текст]]></string>
   <string name="_adm_pgt_txt_badges_icon"><![CDATA[Иконка]]></string>
+  <string name="_adm_pgt_txt_code"><![CDATA[Код]]></string>
 
   <string name="_adm_form_txt_reports_object"><![CDATA[Объект]]></string>
   <string name="_adm_form_txt_reports_author"><![CDATA[Автор]]></string>
@@ -1479,6 +1480,7 @@
         <string name="_adm_lmi_cpt_keys"><![CDATA[Ключи]]></string>
         <string name="_adm_lmi_cpt_pgt_settings"><![CDATA[Настройки (i18n)]]></string>
 	<string name="_adm_lmi_cpt_pgt_keys"><![CDATA[Текстовые ключи]]></string>
+        <string name="_adm_lmi_cpt_pgt_languages"><![CDATA[Языки]]></string>
         <string name="_adm_lmi_cpt_labels"><![CDATA[Метки]]></string>
 	<string name="_adm_lmi_cpt_latest"><![CDATA[Новые]]></string>
 	<string name="_adm_lmi_cpt_levels"><![CDATA[Уровни]]></string>
@@ -1717,6 +1719,7 @@
 	<string name="_adm_pgt_btn_etemplates_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_pgt_btn_etemplates_gl_edit_title"><![CDATA[Редактировать тему]]></string>
 	<string name="_adm_pgt_btn_etemplates_save"><![CDATA[Сохранить]]></string>
+	<string name="_adm_pgt_btn_get_more"><![CDATA[Найти ещё]]></string>
 	<string name="_adm_pgt_btn_nkp_close"><![CDATA[Закрыть]]></string>
 	<string name="_adm_pgt_btn_nkp_create"><![CDATA[Создать]]></string>
 	<string name="_adm_pgt_btn_nkp_save"><![CDATA[Сохранить]]></string>
@@ -1746,12 +1749,17 @@
 	<string name="_adm_pgt_txt_etemplates_subject"><![CDATA[Тема]]></string>
 	<string name="_adm_pgt_txt_key"><![CDATA[Ключ]]></string>
 	<string name="_adm_pgt_txt_keyword"><![CDATA[Ключевое слово...]]></string>
+	<string name="_adm_pgt_txt_language"><![CDATA[Язык]]></string>
 	<string name="_adm_pgt_txt_languages"><![CDATA[Языки]]></string>
 	<string name="_adm_pgt_txt_module"><![CDATA[Модуль]]></string>
 	<string name="_adm_pgt_txt_nkp_add_popup"><![CDATA[Создать новый ключ]]></string>
 	<string name="_adm_pgt_txt_nkp_edit_popup"><![CDATA[Редактировать "{0}" ключ]]></string>
 	<string name="_adm_pgt_txt_nkp_key_name"><![CDATA[Имя ключа]]></string>
 	<string name="_adm_pgt_txt_nkp_module"><![CDATA[Модуль]]></string>
+	<string name="_adm_pgt_txt_status"><![CDATA[Состояние]]></string>
+	<string name="_adm_pgt_txt_status_default"><![CDATA[По умолчанию]]></string>
+	<string name="_adm_pgt_txt_status_off"><![CDATA[Выкл.]]></string>
+	<string name="_adm_pgt_txt_status_on"><![CDATA[Вкл.]]></string>
 	<string name="_adm_pgt_txt_text"><![CDATA[Текст]]></string>
         <string name="_adm_pgt_txt_et_c_content"><![CDATA[Само сообщение будет здесь.]]></string>
         <string name="_adm_pgt_txt_et_hf_inf"><![CDATA[Внимание. Неправильное применение HTML может повредить дизайн email сообщения. Также убедитесь в том, что маркер {unsubscribe} присутствует хотя бы в одном из темплейтов (заголовок и/или основание).]]></string>
@@ -2375,6 +2383,7 @@
     <string name="_adm_str_msg_download_and_install_successfully"><![CDATA[Закачка и последующая установка удачно завершены.]]></string>
     <string name="_adm_str_txt_discount_csign"><![CDATA[({0}{1} для Премиум)]]></string>
     <string name="_adm_str_txt_items_by"><![CDATA[элементов от]]></string>
+    <string name="_adm_str_txt_more_actions"><![CDATA[Другие действия: {0}]]></string>
     <string name="_adm_str_txt_or"><![CDATA[или]]></string>
     <string name="_adm_str_txt_per_week"><![CDATA[неделю]]></string>
     <string name="_adm_str_txt_per_week_short"><![CDATA[нед]]></string>

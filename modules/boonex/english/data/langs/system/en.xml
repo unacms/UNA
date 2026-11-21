@@ -1084,7 +1084,7 @@
 	<string name="_adm_err_modules_wrong_version_script_update"><![CDATA[The new version of {0} module isn't compatible with your version of UNA. Please upgrade UNA first (Studio &gt; Dashboard &gt; Version) and then try to upgrade the module.]]></string>
 	<string name="_adm_err_oauth_cannot_get_token"><![CDATA[Cannot connect to <b>UNA</b>. Please try again later.]]></string>
 	<string name="_adm_err_oauth_cannot_read_answer"><![CDATA[Cannot get a valid answer from <b>UNA</b>. Please try again later.]]></string>
-	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[You need to enter Key and Secret provided by <b>UNA</b> in Settings -> General.]]></string>
+	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[To browse the store, enter your UNA account key and secret in <a href="{0}">Settings</a>.]]></string>
 	<string name="_adm_err_operation_failed"><![CDATA[Operation failed. Please report.]]></string>
 	<string name="_adm_form_btn_displays_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_form_btn_displays_edit"><![CDATA[Edit display]]></string>
@@ -1241,6 +1241,7 @@
   <string name="_adm_form_txt_badges_edit_popup"><![CDATA[Edit "{0}" badge]]></string>
   <string name="_adm_pgt_txt_badges_text"><![CDATA[Text]]></string>
   <string name="_adm_pgt_txt_badges_icon"><![CDATA[Icon]]></string>
+  <string name="_adm_pgt_txt_code"><![CDATA[Code]]></string>
 
   <string name="_adm_form_txt_reports_object"><![CDATA[Object]]></string>
   <string name="_adm_form_txt_reports_author"><![CDATA[Author]]></string>
@@ -1499,6 +1500,7 @@
     <string name="_adm_lmi_cpt_keys"><![CDATA[Keys]]></string>
     <string name="_adm_lmi_cpt_pgt_settings"><![CDATA[i18n Settings]]></string>
     <string name="_adm_lmi_cpt_pgt_keys"><![CDATA[Text Keys]]></string>
+    <string name="_adm_lmi_cpt_pgt_languages"><![CDATA[Languages]]></string>
     <string name="_adm_lmi_cpt_labels"><![CDATA[Labels]]></string>
     <string name="_adm_lmi_cpt_latest"><![CDATA[Latest]]></string>
     <string name="_adm_lmi_cpt_levels"><![CDATA[Levels]]></string>
@@ -1739,6 +1741,7 @@
 	<string name="_adm_pgt_btn_etemplates_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_pgt_btn_etemplates_gl_edit_title"><![CDATA[Edit template]]></string>
 	<string name="_adm_pgt_btn_etemplates_save"><![CDATA[Save]]></string>
+	<string name="_adm_pgt_btn_get_more"><![CDATA[Get more]]></string>
 	<string name="_adm_pgt_btn_nkp_close"><![CDATA[Close]]></string>
 	<string name="_adm_pgt_btn_nkp_create"><![CDATA[Create]]></string>
 	<string name="_adm_pgt_btn_nkp_save"><![CDATA[Save]]></string>
@@ -1768,12 +1771,17 @@
 	<string name="_adm_pgt_txt_etemplates_subject"><![CDATA[Subject]]></string>
 	<string name="_adm_pgt_txt_key"><![CDATA[Key]]></string>
 	<string name="_adm_pgt_txt_keyword"><![CDATA[Keyword...]]></string>
+	<string name="_adm_pgt_txt_language"><![CDATA[Language]]></string>
 	<string name="_adm_pgt_txt_languages"><![CDATA[Languages]]></string>
 	<string name="_adm_pgt_txt_module"><![CDATA[Module]]></string>
 	<string name="_adm_pgt_txt_nkp_add_popup"><![CDATA[Create New Key]]></string>
 	<string name="_adm_pgt_txt_nkp_edit_popup"><![CDATA[Edit "{0}" Key]]></string>
 	<string name="_adm_pgt_txt_nkp_key_name"><![CDATA[Key Name]]></string>
 	<string name="_adm_pgt_txt_nkp_module"><![CDATA[Module]]></string>
+	<string name="_adm_pgt_txt_status"><![CDATA[Status]]></string>
+	<string name="_adm_pgt_txt_status_default"><![CDATA[Default]]></string>
+	<string name="_adm_pgt_txt_status_off"><![CDATA[Off]]></string>
+	<string name="_adm_pgt_txt_status_on"><![CDATA[On]]></string>
 	<string name="_adm_pgt_txt_text"><![CDATA[Text]]></string>
         <string name="_adm_pgt_txt_et_c_content"><![CDATA[Message itself will be here.]]></string>
 	<string name="_adm_pgt_txt_et_hf_inf"><![CDATA[Note, that improper use of HTML may break the email message's layout. Also make sure that {unsubscribe} marker presents in at least one of the templates (header and/or footer).]]></string>
@@ -2404,6 +2412,7 @@
 	<string name="_adm_str_msg_download_and_install_successfully"><![CDATA[Download and subsequent installation were successfully finished]]></string>
 	<string name="_adm_str_txt_discount_csign"><![CDATA[({0}{1} for Premium)]]></string>
 	<string name="_adm_str_txt_items_by"><![CDATA[item(s) by]]></string>
+	<string name="_adm_str_txt_more_actions"><![CDATA[More actions for {0}]]></string>
 	<string name="_adm_str_txt_or"><![CDATA[or]]></string>
 	<string name="_adm_str_txt_per_week"><![CDATA[week]]></string>
     <string name="_adm_str_txt_per_week_short"><![CDATA[wk]]></string>

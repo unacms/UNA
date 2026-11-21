@@ -63,7 +63,7 @@ class BxDolStudioOAuth extends BxDolFactory
     public function loadItems($aParams = array())
     {
         if(empty($this->sKey) || empty($this->sSecret))
-            return MsgBox(_t('_adm_err_oauth_empty_key_secret'));
+            return MsgBox($this->getEmptyKeySecretMessage());
 
         $mixedResult = $this->authorize();
         if($mixedResult !== true)
@@ -78,26 +78,39 @@ class BxDolStudioOAuth extends BxDolFactory
         return $aItems;
     }
 
-    public function doAuthorize()
+    /**
+     * Sign in to the UNA market. Without a session the browser is sent to the market's sign-in page, or with $bRedirect
+     * false it gets a message that links there, so a page that only might need the market still opens when it is offline.
+     * @return true when signed in, otherwise the message to show
+     */
+    public function doAuthorize($bRedirect = true)
     {
         if(empty($this->sKey) || empty($this->sSecret))
-            return MsgBox(_t('_adm_err_oauth_empty_key_secret'));
+            return MsgBox($this->getEmptyKeySecretMessage());
 
         $mixedResult = $this->authorize();
         if($mixedResult !== true)
-            return $this->onAuthorizeFailed($mixedResult);
+            return $this->onAuthorizeFailed($mixedResult, $bRedirect);
 
         BxDolStudioInstallerUtils::getInstance()->checkModules(true);
         return $mixedResult;
     }
 
-    protected function onAuthorizeFailed($mixedResult)
+    /**
+     * No UNA account key and secret yet: where to enter them (Settings > System > General).
+     */
+    protected function getEmptyKeySecretMessage()
+    {
+        return _t('_adm_err_oauth_empty_key_secret', BX_DOL_URL_STUDIO . 'settings.php?page=system&category=general');
+    }
+
+    protected function onAuthorizeFailed($mixedResult, $bRedirect = true)
     {
         if(is_string($mixedResult))
             return MsgBox($mixedResult);
 
         $bArray = is_array($mixedResult);
-        if($bArray && !empty($mixedResult['redirect'])) {
+        if($bRedirect && $bArray && !empty($mixedResult['redirect'])) {
             header('Location: ' . $mixedResult['redirect']);
             exit;
         }
