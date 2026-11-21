@@ -158,11 +158,31 @@ class BxDolSitemap extends BxDolFactory implements iBxDolSingleton
         return $aResult;
     }
 
+    /** The sitemap is made at most this often (seconds): it costs a query per module and a link per entry. */
+    public const CACHE_TTL = 21600;
+
     /**
-     * The sitemap in the sitemaps.org format.
+     * The sitemap in the sitemaps.org format, from the cache while it is fresh.
+     * @param boolean $bCache false to make it now
      * @return string XML
      */
-    public function getSitemapXml()
+    public function getSitemapXml($bCache = true)
+    {
+        $oDb = BxDolDb::getInstance();
+        $oCache = $oDb->getDbCacheObject();
+        $sKey = $oDb->genDbCacheKey('sys_sitemap');
+
+        if($bCache && ($sXml = $oCache->getData($sKey, self::CACHE_TTL)) && is_string($sXml))
+            return $sXml;
+
+        $sXml = $this->_makeSitemapXml();
+        if($bCache)
+            $oCache->setData($sKey, $sXml, self::CACHE_TTL);
+
+        return $sXml;
+    }
+
+    protected function _makeSitemapXml()
     {
         $oXml = new XMLWriter();
         $oXml->openMemory();

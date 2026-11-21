@@ -76,7 +76,7 @@ class SitemapTest extends BxDolIntegrationTestCase
 
     public function testSitemapXmlIsValid(): void
     {
-        $sXml = BxDolSitemap::getInstance()->getSitemapXml();
+        $sXml = BxDolSitemap::getInstance()->getSitemapXml(false);
 
         $oXml = simplexml_load_string($sXml);
         $this->assertNotFalse($oXml);
