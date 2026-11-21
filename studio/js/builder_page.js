@@ -34,25 +34,49 @@ function BxDolStudioBuilderPage(oOptions) {
 
     var $this = this;
     $(document).ready(function() {
-    	$($this.aSortingConf.parent).sortable({
-            handle: $($this.aSortingConf.item + ' .adm-bpb-drag-handle'),
-            items: $this.aSortingConf.item, 
-            placeholder: $this.aSortingConf.placeholder,
-            connectWith: $this.aSortingConf.parent,
-            start: function(oEvent, oUi) {
-                oUi.item.addClass('adm-bp-block-dragging').width(300);
-
-                bx_sound('select'); // picked up
-            },
-            stop: function(oEvent, oUi) {
-                oUi.item.removeClass('adm-bp-block-dragging');
-
-                bx_sound('tap', {emphasis: 'strong'}); // dropped
-                $this.reorder(oUi.item);
-            }
-    	});
+        $this.initSorting();
     });
 }
+
+/**
+ * Blocks are dragged between the layout's cells by their icons.
+ */
+BxDolStudioBuilderPage.prototype.initSorting = function() {
+    var $this = this;
+
+    $($this.aSortingConf.parent).sortable({
+        handle: $($this.aSortingConf.item + ' .adm-bpb-drag-handle'),
+        items: $this.aSortingConf.item, 
+        placeholder: $this.aSortingConf.placeholder,
+        connectWith: $this.aSortingConf.parent,
+        start: function(oEvent, oUi) {
+            oUi.item.addClass('adm-bp-block-dragging').width(300);
+
+            bx_sound('select'); // picked up
+        },
+        stop: function(oEvent, oUi) {
+            oUi.item.removeClass('adm-bp-block-dragging');
+
+            bx_sound('tap', {emphasis: 'strong'}); // dropped
+            $this.reorder(oUi.item);
+        }
+    });
+};
+
+/**
+ * Show the page's layout as the server sent it after blocks were added or edited, without reloading the page.
+ */
+BxDolStudioBuilderPage.prototype.updateLayout = function(oData) {
+    var oContent = $(this.aSortingConf.parent + ':first').parents('.bx-std-block-content:first');
+    if(!oData || typeof(oData.layout) != 'string' || oContent.length == 0) {
+        window.location.href = this.parsePageUrl({page: this.sPage});
+        return;
+    }
+
+    oContent.html(oData.layout);
+    this.initSorting();
+    oContent.bxProcessHtml();
+};
 
 BxDolStudioBuilderPage.prototype.formatItemPage = function(oItem) {
     if(!oItem.id) 
@@ -204,7 +228,9 @@ BxDolStudioBuilderPage.prototype.onSelectBlock = function(oCheckbox) {
 };
 
 BxDolStudioBuilderPage.prototype.onCreateBlock = function(oData) {
-    window.location.href = this.parsePageUrl({page: this.sPage});
+    $('#' + this.oHtmlIds['create_block_popup_id']).remove();
+
+    this.updateLayout(oData);
 };
 
 BxDolStudioBuilderPage.prototype.onChangeVisibleFor = function(oSelect) {
@@ -235,7 +261,12 @@ BxDolStudioBuilderPage.prototype.onEditBlockBeforeShow = function(oPopup) {
 };
 
 BxDolStudioBuilderPage.prototype.onEditBlock = function(oData) {
-    window.location.href = this.parsePageUrl({page: this.sPage});
+    if ('undefined' !== typeof(bx_editor_remove_all))
+        bx_editor_remove_all($('#' + this.oHtmlIds['edit_block_popup_id']));
+
+    $('#' + this.oHtmlIds['edit_block_popup_id']).remove();
+
+    this.updateLayout(oData);
 };
 
 BxDolStudioBuilderPage.prototype.onEditBlockCancel = function(oButton) {

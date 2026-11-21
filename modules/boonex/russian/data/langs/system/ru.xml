@@ -577,6 +577,7 @@
 	<string name="_adm_bp_scs_save"><![CDATA[Изменения успешно сохранены]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Показывать на сайте]]></string>
         <string name="_adm_bp_txt_block_active_api"><![CDATA[Показывать в приложениях]]></string>
+        <string name="_adm_bp_txt_block_advanced"><![CDATA[Дополнительно]]></string>
         <string name="_adm_bp_txt_block_async"><![CDATA[Асинхронный режим]]></string>
         <string name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Фон скрыт на]]></string>
         <string name="_adm_bp_txt_block_cache_lifetime"><![CDATA[Кэш для блока (в секундах)]]></string>
@@ -1862,7 +1863,7 @@
 	<string name="_adm_prm_txt_level_quota_size"><![CDATA[Лимит дискового пространства (Mb)]]></string>
 	<string name="_adm_prm_txt_level_standard"><![CDATA[Стандарт]]></string>
 	<string name="_adm_prm_txt_level_suspended"><![CDATA[Заблокирпованный]]></string>
-	<string name="_adm_prm_txt_level_unauthenticated"><![CDATA[Неавторизованный]]></string>
+	<string name="_adm_prm_txt_level_unauthenticated"><![CDATA[Гости]]></string>
 	<string name="_adm_prm_txt_level_unconfirmed"><![CDATA[Неподтверждённый]]></string>
 	<string name="_adm_prm_txt_manage_actions"><![CDATA[Управление действиями]]></string>
 	<string name="_adm_prm_txt_max_file_size"><![CDATA[Макс. размер файла]]></string>
@@ -4515,6 +4516,7 @@
         <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Ваши профили (панель)]]></string>
         <string name="_sys_page_block_title_system_onboarding"><![CDATA[Список «Начало работы»]]></string>
         <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Список «Начало работы» для операторов]]></string>
+        <string name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Меню профиля (приложения)]]></string>
         <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
         <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Панель - жалобы]]></string>
         <string name="_sys_page_block_title_system_cmts_view"><![CDATA[Просмотр комментария]]></string>

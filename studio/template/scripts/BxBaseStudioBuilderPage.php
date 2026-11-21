@@ -67,6 +67,11 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
      */
     protected $aBlockSwitchFields = array('active', 'active_api');
 
+    /**
+     * Fields of the block form shown under "Advanced" (getBlockInputsWithAdvanced).
+     */
+    protected $aBlockInputsAdvanced = array('service_method', 'async', 'class', 'cache_lifetime');
+
     function __construct($sType = '', $sPage = '')
     {
         parent::__construct($sType, $sPage);
@@ -154,6 +159,39 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         if($sResult === false)
             return false;
 
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $sJsObject = $this->getPageJsObject();
+        $sContent = $this->getPageLayout();
+
+        $aLanguages = BxDolStudioLanguagesUtils::getInstance()->getLanguages();
+
+        $aTmplVars = array(
+            'js_object' => $sJsObject,
+            'action_url' => $this->sBaseUrl,
+            'page_url' => sprintf($this->sPageUrl, '{0}', '{1}'),
+            'type' => $this->sType,
+            'page' => $this->sPage,
+            'html_ids' => json_encode($this->aHtmlIds),
+            'languages' => json_encode($aLanguages),
+            'content' => $this->getBlockCode(array(
+                'items' => $sContent
+            ))
+        );
+
+        $oTemplate->addJsTranslation([
+            '_sys_not_available',
+            '_adm_bp_wrn_page_delete',
+            '_adm_bp_wrn_page_block_delete'
+        ]);
+        return $sResult . $oTemplate->parseHtmlByName('builder_page.html', $aTmplVars);
+    }
+
+    /**
+     * The page's layout with its blocks in their cells, as the builder shows it. Also sent after blocks are added or
+     * edited, so the layout shows them at once.
+     */
+    public function getPageLayout()
+    {
         $oPage = BxTemplPage::getObjectInstance($this->sPage);
 
         $oTemplate = BxDolStudioTemplate::getInstance();
@@ -161,7 +199,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         $sTxtEmpty = _t('_sys_txt_empty');
 
         $sContent = "";
-        if(($bPage = $this->sPage != '') === true) {
+        if($this->sPage != '' && !empty($this->aPageRebuild)) {
             /**
              * Reset (move to hidden sell) blocks which cannot be seen, 
              * because of unsuitable cell number to currently selected layout.
@@ -238,27 +276,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
             $sContent = $oTemplate->parseHtmlByName($this->aPageRebuild['layout_template'], $aTmplVars);
         }
 
-        $aLanguages = BxDolStudioLanguagesUtils::getInstance()->getLanguages();
-
-        $aTmplVars = array(
-            'js_object' => $sJsObject,
-            'action_url' => $this->sBaseUrl,
-            'page_url' => sprintf($this->sPageUrl, '{0}', '{1}'),
-            'type' => $this->sType,
-            'page' => $this->sPage,
-            'html_ids' => json_encode($this->aHtmlIds),
-            'languages' => json_encode($aLanguages),
-            'content' => $this->getBlockCode(array(
-                'items' => $sContent
-            ))
-        );
-
-        $oTemplate->addJsTranslation([
-            '_sys_not_available',
-            '_adm_bp_wrn_page_delete',
-            '_adm_bp_wrn_page_block_delete'
-        ]);
-        return $sResult . $oTemplate->parseHtmlByName('builder_page.html', $aTmplVars);
+        return $sContent;
     }
 
     /**
@@ -439,7 +457,8 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         $sJsObject = $this->getPageJsObject();
         $oTemplate = BxDolStudioTemplate::getInstance();
 
-        $sSelected = BX_DOL_STUDIO_BP_SKELETONS;
+        // The popup opens on the system blocks, the ones a site owner adds most; the empty skeletons come after them.
+        $sSelected = BX_DOL_STUDIO_MODULE_SYSTEM;
 
         $aForm = array(
             'form_attrs' => array(
@@ -469,19 +488,19 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         );
 
         $aMenu = [
-            BX_DOL_STUDIO_BP_SKELETONS => [
-                'name' => BX_DOL_STUDIO_BP_SKELETONS,
-                'icon' => 'mi-qrcode.svg',
-                'icon_bg' => true,
-                'title' => '_sys_block_types_skeletons',
-                'selected' => $sSelected == BX_DOL_STUDIO_BP_SKELETONS,
-            ],
             BX_DOL_STUDIO_MODULE_SYSTEM => [
                 'name' => BX_DOL_STUDIO_MODULE_SYSTEM,
                 'icon' => 'mi-cog.svg',
                 'icon_bg' => true,
                 'title' => '_sys_block_types_system',
                 'selected' => $sSelected == BX_DOL_STUDIO_MODULE_SYSTEM,
+            ],
+            BX_DOL_STUDIO_BP_SKELETONS => [
+                'name' => BX_DOL_STUDIO_BP_SKELETONS,
+                'icon' => 'mi-qrcode.svg',
+                'icon_bg' => true,
+                'title' => '_sys_block_types_skeletons',
+                'selected' => $sSelected == BX_DOL_STUDIO_BP_SKELETONS,
             ],
             BX_DOL_STUDIO_MODULE_CUSTOM => [
                 'name' => BX_DOL_STUDIO_MODULE_CUSTOM,
@@ -552,7 +571,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     $sContentValue = _t($aBlock['content']);
 
                     $aBlock['content'] = $sContentKey;
-                    $oLanguage->addLanguageString($sContentKey, $sContentValue);
+                    $oLanguage->addLanguageString($sContentKey, $sContentValue, 0, 0, false);
                 }
 
                 //--- Process Image copy
@@ -581,11 +600,14 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
                 //--- Process Title copy
                 foreach($aTitleValues as $iLangId => $aTitleValue)
-                	$oLanguage->addLanguageString($sTitleKey, $aTitleValue['string'], $iLangId);
+                	$oLanguage->addLanguageString($sTitleKey, $aTitleValue['string'], $iLangId, 0, false);
             }
 
+            // the new titles are compiled once for all the blocks, not once for each string
+            $oLanguage->compileLanguage();
+
             if($bResult)
-                return array('eval' => $sJsObject . '.onCreateBlock(oData)');
+                return array('eval' => $sJsObject . '.onCreateBlock(oData)', 'layout' => $this->getPageLayout());
             else
                 return array('msg' => _t('_adm_bp_err_block_added'));
         }
@@ -955,6 +977,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         BxDolStudioUtils::getVisibilityValues($aBlock['visible_for_levels'], $aForm['inputs']['visible_for_levels']['values'], $aForm['inputs']['visible_for_levels']['value']);
 
         $aForm['inputs'] = $this->addInArray($aForm['inputs'], 'visible_for_levels', $this->getBlockContent($aBlock));
+        $aForm['inputs'] = $this->getBlockInputsWithAdvanced($aForm['inputs']);
 
         if((int)$aBlock['deletable'] != 0)
             $aForm['inputs']['controls'][] = array (
@@ -977,7 +1000,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
             $aBlockAddon = $this->getIndexingDataForBlock($aBlock['type'], $oForm->getCleanValue('content'));
 
             if($oForm->update($iId, $aBlockAddon) !== false)
-                return array('eval' => $sJsObject . '.onEditBlock(oData)');
+                return array('eval' => $sJsObject . '.onEditBlock(oData)', 'layout' => $this->getPageLayout());
             else
                 return array('msg' => _t('_adm_bp_err_block_edit'));
         }
@@ -989,6 +1012,44 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         )));
 
         return array('popup' => array('html' => $sContent, 'options' => array('onBeforeShow' => $sJsObject . '.onEditBlockBeforeShow($el)')));
+    }
+
+    /**
+     * The block form's technical fields (the service method, asynchronous loading, CSS class and cache lifetime) in a
+     * collapsed "Advanced" section after the others, above the buttons.
+     */
+    protected function getBlockInputsWithAdvanced($aInputs)
+    {
+        $aAdvanced = [];
+        foreach($this->aBlockInputsAdvanced as $sName) {
+            if(!isset($aInputs[$sName]))
+                continue;
+
+            $aAdvanced[$sName] = $aInputs[$sName];
+            unset($aInputs[$sName]);
+        }
+
+        if(empty($aAdvanced))
+            return $aInputs;
+
+        $aAdvanced = array_merge([
+            'advanced' => [
+                'type' => 'block_header',
+                'name' => 'advanced',
+                'caption' => _t('_adm_bp_txt_block_advanced'),
+                'collapsable' => true,
+                'collapsed' => true,
+            ]
+        ], $aAdvanced, [
+            'advanced_end' => [
+                'type' => 'block_end'
+            ]
+        ]);
+
+        $aControls = isset($aInputs['controls']) ? ['controls' => $aInputs['controls']] : [];
+        unset($aInputs['controls']);
+
+        return array_merge($aInputs, $aAdvanced, $aControls);
     }
 
     /**
@@ -2040,11 +2101,29 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
             'bx_repeat:blocks' => []
         ];
 
-        $aBlocks = $this->getBlocks($sModule);
-        foreach($aBlocks as $aBlock) {
+        $aBlocks = $this->getDistinctBlocks($this->getBlocks($sModule));
+
+        // Different blocks with the same name: each says which page it comes from.
+        $aTitles = [];
+        foreach($aBlocks as $iIndex => $aBlock)
+            $aTitles[$iIndex] = $this->getBlockTitleForStudio($aBlock);
+        $aTitlesCount = array_count_values($aTitles);
+
+        foreach($aBlocks as $iIndex => $aBlock) {
         	list($sIcon, $sIconUrl) = $this->getBlockIcon($aBlock);
 
+            $sTitle = $aTitles[$iIndex];
+
+            $sModuleTitle = $this->getModuleTitle($aBlock['module']);
+            $sLabel = $sTitle;
+            if($aTitlesCount[$sTitle] > 1 && ($sPageTitle = $this->getPageTitleForStudio($aBlock['object'])) !== '') {
+                $sModuleTitle .= ' &bull; ' . bx_process_output($sPageTitle);
+                $sLabel .= ', ' . $sPageTitle;
+            }
+
             $aInputCheckbox['value'] = $aBlock['id'];
+            // the checkbox is named by the block it adds
+            $aInputCheckbox['attrs']['aria-label'] = $sLabel;
 
             $aTmplParams['bx_repeat:blocks'][] = [
                 'js_object' => $sJsObject,
@@ -2060,7 +2139,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                 'bx_if:show_text' => [
                     'condition' => true,
                     'content' => [
-                        'title' => _t(!empty($aBlock['title_system']) ? $aBlock['title_system'] : $aBlock['title']),
+                        'title' => $sTitle,
                     ]
                 ],
                 'bx_if:show_switchers' => [
@@ -2075,7 +2154,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     'condition' => (bool)$sIcon,
                     'content' => ['icon' => $sIcon],
                 ],
-                'module' => $this->getModuleTitle($aBlock['module']),
+                'module' => $sModuleTitle,
                 'visible_for' => _t('_adm_bp_txt_visible_for', BxDolStudioUtils::getVisibilityTitle($aBlock['visible_for_levels'])),
                 'bx_if:show_checkbox' => [
                     'condition' => true,
@@ -2091,6 +2170,42 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         }
 
         return $oTemplate->parseHtmlByName('bp_blocks_list.html', $aTmplParams);
+    }
+
+    /**
+     * A page's name in Studio, as the page selector shows it: its system title, else its title. Empty for no page.
+     */
+    protected function getPageTitleForStudio($sObject)
+    {
+        if($sObject === '')
+            return '';
+
+        $aPage = $this->oDb->getPages(['type' => 'by_object_full', 'value' => $sObject]);
+        if(empty($aPage) || !is_array($aPage))
+            return '';
+
+        $sTitle = !empty($aPage['title_system']) ? _t($aPage['title_system']) : '';
+        if($sTitle === '' && !empty($aPage['title']))
+            $sTitle = _t($aPage['title']);
+
+        return trim(strip_tags($sTitle));
+    }
+
+    /**
+     * The blocks to offer in the "Add blocks" popup, each once. The same block placed on several pages (the operators'
+     * Get started checklist on the Homepage and the Dashboard) is one entry: blocks of the same module and type with
+     * the same content show the same thing. The page-less copy is kept when there is one, else the first.
+     */
+    public function getDistinctBlocks($aBlocks)
+    {
+        $aResult = [];
+        foreach($aBlocks as $aBlock) {
+            $sKey = hash('sha256', $aBlock['module'] . "\n" . $aBlock['type'] . "\n" . $aBlock['content']);
+            if(!isset($aResult[$sKey]) || ($aResult[$sKey]['object'] !== '' && $aBlock['object'] === ''))
+                $aResult[$sKey] = $aBlock;
+        }
+
+        return array_values($aResult);
     }
 
     protected function onBlockDelete($aBlock)
