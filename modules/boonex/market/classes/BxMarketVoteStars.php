@@ -38,7 +38,7 @@ class BxMarketVoteStars extends BxTemplVoteStars
 
     protected function _getCounterLabel($iCount, $aParams = array())
     {
-        return _t('_bx_market_vote_counter', $iCount);
+        return _tn('_bx_market_vote_counter', $iCount);
     }
 }
 

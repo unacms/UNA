@@ -582,12 +582,16 @@ class BxBaseServiceConnections extends BxDol
             return array();
 
         $sLangKey = '_sys_profile_friendship_added';
-        if(isset($aEvent['content']['request']) && (int)$aEvent['content']['request'] == 1)
+        $sEntryUrl = $oOwner->getUrl();
+        if(isset($aEvent['content']['request']) && (int)$aEvent['content']['request'] == 1) {
+            // a request is answered on the requests list, which has Accept and Ignore for each one
             $sLangKey = '_sys_profile_friend_request_added';
+            $sEntryUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=friend-requests'));
+        }
 
         return array(
             'entry_sample' => '_sys_profile_sample_single',
-            'entry_url' => str_replace(BX_DOL_URL_ROOT, '{bx_url_root}', $oOwner->getUrl()),
+            'entry_url' => str_replace(BX_DOL_URL_ROOT, '{bx_url_root}', $sEntryUrl),
             'entry_caption' => $oProfile->getDisplayName(),
             'entry_author' => $oProfile->id(),
             'lang_key' => $sLangKey,

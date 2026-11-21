@@ -339,6 +339,7 @@
     <string name="_bx_reviews_txt_poll_view_results"><![CDATA[results]]></string>
     <string name="_bx_reviews_txt_poll_answer_vote_do_by"><![CDATA[Voted for]]></string>
     <string name="_bx_reviews_txt_poll_answer_vote_counter"><![CDATA[{0} votes]]></string>
+    <string name="_bx_reviews_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string>
     <string name="_bx_reviews_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <string name="_bx_reviews_option_voting_max_stars"><![CDATA[Max number of stars for a voting option]]></string>
