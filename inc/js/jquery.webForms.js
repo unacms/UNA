@@ -6,6 +6,57 @@
  * @{
  */
 
+/** Ids of form error messages that fields name as their description (processWebForms). */
+var glBxFormWarnId = 0;
+
+/**
+ * A plain textarea grows with its text between its CSS min-height and max-height, then scrolls. Browsers with
+ * field-sizing: content (see tailwind.css) do it themselves; elsewhere it is done here, until the member drags the
+ * resize handle, whose height then stays. With a length limit (data-bx-counter) the counter under it follows the text,
+ * turns red over the limit, and says so to screen readers when the limit is reached.
+ */
+function bx_form_textarea_init(e) {
+    var eTextarea = $(e);
+    if (eTextarea.hasClass('bx-form-textarea-processed'))
+        return;
+    eTextarea.addClass('bx-form-textarea-processed');
+
+    if (!(window.CSS && CSS.supports && CSS.supports('field-sizing', 'content'))) {
+        var sHeight = '';
+        var fGrow = function () {
+            if (e.style.height && e.style.height != sHeight)
+                return; // resized by hand
+
+            e.style.height = 'auto';
+            sHeight = (e.scrollHeight + e.offsetHeight - e.clientHeight) + 'px';
+            e.style.height = sHeight;
+        };
+        eTextarea.on('input.bx-textarea', fGrow);
+        if (eTextarea.is(':visible'))
+            fGrow();
+    }
+
+    var eCounter = eTextarea.attr('data-bx-counter') ? $('#' + eTextarea.attr('data-bx-counter')) : $();
+    if (eCounter.length) {
+        var iMax = parseInt(eCounter.attr('data-bx-max'));
+        var bReached = false;
+        var fCount = function () {
+            var iLen = Array.from(e.value).length;
+
+            eCounter.find('.bx-form-input-counter-value').text(iLen + ' / ' + iMax);
+            eCounter.toggleClass('text-red-700 dark:text-red-400', iLen > iMax).toggleClass('text-gray-600 dark:text-gray-400', iLen <= iMax);
+
+            if (iLen >= iMax && !bReached)
+                eCounter.find('[role=status]').text(eCounter.attr('data-bx-limit-text'));
+            else if (iLen < iMax && bReached)
+                eCounter.find('[role=status]').text('');
+            bReached = iLen >= iMax;
+        };
+        eTextarea.on('input.bx-textarea', fCount);
+        fCount();
+    }
+}
+
 (function($) {
 
     $.fn.addWebForms = function(onLoad) {
@@ -29,12 +80,43 @@
     }
     
     $.fn.processWebForms = function() {
-        // move to the first error
+        // Fields with an error: marked invalid, with the message as their description, and the first one gets the
+        // focus (WCAG 3.3.1), after the page scrolls to it.
         var aErrors = $('.bx-form-warn:visible', this);
+        var eFirstField = null;
+        aErrors.each(function() {
+            var eWarn = $(this);
+            var eField = eWarn.closest('.bx-form-element-wrapper').find('input, select, textarea').not('[type="hidden"], [type="submit"], [type="button"]').first();
+            if(!eField.length)
+                return;
+
+            var sId = eWarn.attr('id');
+            if(!sId) {
+                sId = 'bx-form-warn-' + (++glBxFormWarnId);
+                eWarn.attr('id', sId);
+            }
+
+            var sDescribedBy = eField.attr('aria-describedby') || '';
+            if((' ' + sDescribedBy + ' ').indexOf(' ' + sId + ' ') == -1)
+                eField.attr('aria-describedby', $.trim(sDescribedBy + ' ' + sId));
+            eField.attr('aria-invalid', 'true');
+
+            if(!eFirstField)
+                eFirstField = eField;
+        });
+
         if(aErrors.length > 0)
             $([document.documentElement, document.body]).animate({
                 scrollTop: aErrors.first().closest('.bx-form-element-wrapper').offset().top - 50
-            }, 200);
+            }, 200, function() {
+                if(eFirstField && eFirstField.is(':visible'))
+                    eFirstField.get(0).focus({preventScroll: true});
+            });
+
+        // plain textareas
+        $('textarea.bx-form-input-textarea:not(.bx-form-input-html, .bx-form-input-code)', this).each(function() {
+            bx_form_textarea_init(this);
+        });
 
         // switchers
         $('.bx-switcher-cont', this).each(function() {
@@ -185,7 +267,7 @@
                 oLink.toggleClass('password-show password-hide');
                 // Markup with one icon swaps it; with both (form_field_password.html) the button's class shows the right one.
                 if(!oLink.find('.bx-pw-eye').length)
-                    oLink.find('i').toggleClass('eye eye-slash');
+                    oLink.find('i').toggleClass('eye eye-closed');
             });
 
             $(this).addClass(sClassInited);

@@ -104,6 +104,21 @@ module.exports = {
   ],
   darkMode: 'class', // false or 'media' or 'class'
   theme: {
+    // Corner radii: Tailwind's own steps, each a variable from template/css/tailwind.css (--bx-radius-*), which is the
+    // step's default size times the site's scale (Studio > Designer > Settings > Corners: none, small, large; and the
+    // smooth corners' multiplier). So rounded-lg is 8px, rounded-2xl 16px and rounded-3xl 24px by default and all of
+    // them follow the setting. rounded-full is not on the scale: a pill or a circle stays one.
+    borderRadius: {
+        'none': '0px',
+        'sm': 'var(--bx-radius-sm)',
+        DEFAULT: 'var(--bx-radius)',
+        'md': 'var(--bx-radius-md)',
+        'lg': 'var(--bx-radius-lg)',
+        'xl': 'var(--bx-radius-xl)',
+        '2xl': 'var(--bx-radius-2xl)',
+        '3xl': 'var(--bx-radius-3xl)',
+        'full': '9999px',
+    },
     fontFamily: {
         'inter': ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
     },
@@ -123,6 +138,22 @@ module.exports = {
                 800: '#27272a',
                 900: '#18181b',
                 950: '#0a0a0c',
+            },
+            // UNA's blue is the site's accent: Tailwind blue by default (template/css/tailwind.css), one of the
+            // presets of Studio > Designer > Settings > Accent color otherwise (BxDolDesigns::getAccentPresets), the
+            // same scale NEO's --accent-* gets. So links, primary buttons, switches and focus rings follow it.
+            blue: {
+                50: 'rgb(var(--bx-accent-50) / <alpha-value>)',
+                100: 'rgb(var(--bx-accent-100) / <alpha-value>)',
+                200: 'rgb(var(--bx-accent-200) / <alpha-value>)',
+                300: 'rgb(var(--bx-accent-300) / <alpha-value>)',
+                400: 'rgb(var(--bx-accent-400) / <alpha-value>)',
+                500: 'rgb(var(--bx-accent-500) / <alpha-value>)',
+                600: 'rgb(var(--bx-accent-600) / <alpha-value>)',
+                700: 'rgb(var(--bx-accent-700) / <alpha-value>)',
+                800: 'rgb(var(--bx-accent-800) / <alpha-value>)',
+                900: 'rgb(var(--bx-accent-900) / <alpha-value>)',
+                950: 'rgb(var(--bx-accent-950) / <alpha-value>)',
             },
         },
         width: {
@@ -232,6 +263,8 @@ module.exports = {
     aspectRatio: true,
   },
   plugins: [
+    // A pill or a circle keeps round corners where the page's corners are smooth (corner-shape, tailwind.css).
+    function ({ addUtilities }) { addUtilities({ '.rounded-full': { 'corner-shape': 'round' } }); },
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/container-queries'),

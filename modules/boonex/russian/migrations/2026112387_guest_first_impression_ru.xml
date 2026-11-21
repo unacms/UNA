@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Guest first impression: page titles name the site, entry descriptions, the review note on Terms and Privacy, the password rule and "Your name" on Sign up. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_page_title_with_site"><![CDATA[{0} · {1}]]></string_add>
+    <string_add name="_sys_page_meta_description_entry"><![CDATA[{0} на сайте {1}.]]></string_add>
+    <string_add name="_sys_txt_page_lang_block_review"><![CDATA[Эту заметку видите только вы. На странице всё ещё текст, который идёт с UNA. Проверьте его, измените то, что не подходит вашему сайту, и сохраните в Студии, чтобы скрыть заметку.]]></string_add>
+    <string_add name="_sys_txt_page_lang_block_review_action"><![CDATA[Проверить в Студии]]></string_add>
+    <string_add name="_sys_form_account_input_password_info"><![CDATA[Не меньше 8 символов, с заглавной и строчной латинскими буквами и цифрой.]]></string_add>
+    <string_upd name="_sys_form_account_input_name"><![CDATA[Ваше имя]]></string_upd>
+    <string_upd name="_sys_form_account_input_name_error"><![CDATA[Введите ваше имя. Оно не может начинаться с @.]]></string_upd>
+</resources>

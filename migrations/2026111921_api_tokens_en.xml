@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Connectors: personal access tokens for AI assistants (the MCP server) in account settings and Studio > Agents. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_lmi_cpt_connectors"><![CDATA[Connectors]]></string_add>
+    <string_add name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+    <string_add name="_sys_menu_item_title_system_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+    <string_add name="_sys_page_block_title_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+    <string_add name="_sys_page_title_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+    <string_add name="_sys_page_title_system_account_settings_connectors"><![CDATA[Account - Connectors]]></string_add>
+    <string_add name="_sys_api_tokens_txt_info"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account. They work with your own content the way you can on the site. Make a token for each assistant, and revoke one to cut it off.]]></string_add>
+    <string_add name="_sys_api_tokens_txt_info_operator"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account. As an operator, your tokens also give them the tools of the operator agent (Studio > Agents), which can change anything on the site. Make a token for each assistant, and revoke one to cut it off.]]></string_add>
+    <string_add name="_sys_api_tokens_txt_mcp_url"><![CDATA[MCP server URL]]></string_add>
+    <string_add name="_sys_api_tokens_txt_title"><![CDATA[Name]]></string_add>
+    <string_add name="_sys_api_tokens_txt_title_info"><![CDATA[What the token is for, such as the assistant that uses it]]></string_add>
+    <string_add name="_sys_api_tokens_txt_hint"><![CDATA[Token]]></string_add>
+    <string_add name="_sys_api_tokens_txt_added"><![CDATA[Created]]></string_add>
+    <string_add name="_sys_api_tokens_txt_last_used"><![CDATA[Last used]]></string_add>
+    <string_add name="_sys_api_tokens_txt_expires"><![CDATA[Expires]]></string_add>
+    <string_add name="_sys_api_tokens_txt_days"><![CDATA[In {0} days]]></string_add>
+    <string_add name="_sys_api_tokens_txt_never"><![CDATA[Never]]></string_add>
+    <string_add name="_sys_api_tokens_txt_never_used"><![CDATA[Not used yet]]></string_add>
+    <string_add name="_sys_api_tokens_txt_expired"><![CDATA[Expired]]></string_add>
+    <string_add name="_sys_api_tokens_txt_token"><![CDATA[Access token]]></string_add>
+    <string_add name="_sys_api_tokens_txt_once"><![CDATA[Copy the token now: it is shown only once. Anyone who has it can act as you, so keep it private, and revoke it here when you no longer need it.]]></string_add>
+    <string_add name="_sys_api_tokens_txt_created"><![CDATA[Your new access token, shown only once: {0} Copy it now and keep it private. MCP server URL: {1}]]></string_add>
+    <string_add name="_sys_api_tokens_txt_header"><![CDATA[In your AI assistant, add an MCP server with this URL and the header "Authorization: Bearer" followed by the token.]]></string_add>
+    <string_add name="_sys_api_tokens_btn_add"><![CDATA[New token]]></string_add>
+    <string_add name="_sys_api_tokens_btn_create"><![CDATA[Create]]></string_add>
+    <string_add name="_sys_api_tokens_btn_revoke"><![CDATA[Revoke]]></string_add>
+    <string_add name="_sys_api_tokens_btn_copy"><![CDATA[Copy]]></string_add>
+    <string_add name="_sys_api_tokens_popup_add"><![CDATA[New access token]]></string_add>
+    <string_add name="_sys_api_tokens_popup_created"><![CDATA[Your new access token]]></string_add>
+    <string_add name="_sys_api_tokens_err_title"><![CDATA[The name must be 1 to {0} characters long]]></string_add>
+    <string_add name="_sys_api_tokens_err_expires"><![CDATA[Choose when the token expires]]></string_add>
+    <string_add name="_sys_api_tokens_err_too_many"><![CDATA[You can have at most {0} tokens. Revoke one you no longer use first.]]></string_add>
+</resources>

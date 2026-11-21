@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sign up instead of Create account and Join for creating an account. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_upd name="_sys_form_account_input_publish"><![CDATA[Зарегистрироваться]]></string_upd>
+    <string_upd name="_sys_acl_action_create_account"><![CDATA[Создать аккаунт]]></string_upd>
+</resources>

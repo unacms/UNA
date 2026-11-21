@@ -38,7 +38,6 @@ import { useConductorRoutes } from './use-conductor-routes'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
-import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useWindowHeight, useBreakpointName, useScreenTier, useHydrated } from 'app/context/measure'
 import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
 import { PageFooter } from 'app/components/nav/menu-footer'
@@ -109,7 +108,6 @@ export function Conductor({
     // Setter only: subscribing to the sheet data would re-render the whole
     // conductor on every sheet open/close.
     const setBottomSheetData = useBottomSheetStore((state) => state.setBottomSheetData)
-    const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
     const breakpointName = useBreakpointName()
     const tier = useScreenTier()
@@ -490,7 +488,7 @@ export function Conductor({
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
                 // column line reach the page bottom on a short or empty tab, as on wiki pages.
-                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}${sectionRootHidden}`}
+                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}${sectionRootHidden}`}
             >
                 <TabSceneHeader
                     route={activeRoute}

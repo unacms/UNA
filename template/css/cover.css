@@ -41,8 +41,12 @@
     position: relative;
     z-index: 99;
 }
+/* The picture fills the cover once: as wide as the cover where it is tall enough (the position set with Reposition
+   moves it up and down), else as tall, so a wide picture on a phone isn't tiled under itself. */
 .bg-cover{
-    background-size: 100% auto !important;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+    background-position: 50% 0;
 }
 .bx-image-edit-move-info{
     display: flex;

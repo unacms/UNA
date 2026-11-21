@@ -51,7 +51,7 @@ define('BX_DOL_PG_DEFAULT', BX_DOL_PG_ALL);
  *    }
  * @endcode
  *
- *    @see an example of integration in BoonEx modules, for example: Posts
+ *    @see an example of integration in the bundled UNA modules, for example: Posts
  *
  *
  * Memberships/ACL:

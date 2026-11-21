@@ -2188,5 +2188,12 @@
     "{{site}} has its API turned off": "{{site}} tiene la API desactivada",
     "Not a network the app is signed in to": "La aplicación no ha iniciado sesión en esta red",
     "Pictures can’t be added while the text is being sent.": "No se pueden añadir imágenes mientras se envía el texto.",
-    "The discussion was not started: {{reason}}": "No se inició la discusión: {{reason}}"
+    "The discussion was not started: {{reason}}": "No se inició la discusión: {{reason}}",
+    "Suggestions": "Sugerencias",
+    "People you may know, best match first": "Personas que quizá conozcas, las más afines primero",
+    "No suggestions right now": "No hay sugerencias por ahora",
+    "People with friends in common, in your groups or nearby show up here.": "Aquí aparecen personas con amigos en común, de tus grupos o cercanas.",
+    "Profiles you may want to follow, best match first": "Perfiles que quizá quieras seguir, los más afines primero",
+    "Profiles followed by those you follow, or in your groups, show up here.": "Aquí aparecen perfiles que siguen las personas a las que sigues y miembros de tus grupos.",
+    "Connections: Suggestions": "Conexiones: Sugerencias"
 }

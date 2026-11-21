@@ -78,7 +78,7 @@
     "theia-sticky-sidebar": "^2.0.1",
     "thinking-orbs": "^0.3.2",
     "urijs": "^1.19.11",
-    "xymbols": "0.6.0"
+    "xymbols": "0.7.0"
   },
   "scripts": {
     "install-bower-components": "bower install",
@@ -146,6 +146,7 @@
     "build:jekyll-toc": "cp node_modules/jekyll-toc/toc.js plugins_public; patch -p1 < patches/plugins_public_toc-js.txt",
     "build:urijs": "cp node_modules/urijs/src/URI.min.js plugins_public",
     "build:stripe": "mkdir -p plugins_public/stripe; cp -r node_modules/@stripe/connect-js/dist/ plugins_public/stripe",
+    "build:messenger": "cd modules/boonex/messenger && if [ -f package.json ]; then yarn install --no-lockfile --non-interactive && yarn build; fi",
     "build:bundle": "mkdir -p plugins_public tmp/ts-out && tsc -p tsconfig.build.json && rollup -c rollup.config.js",
     "build": "mkdir -p plugins_public; rm -rf plugins_public/*; npm run install-bower-components; npm run; npm-run-all --parallel build:*",
     "postinstall": "npm run build"
@@ -177,7 +178,7 @@
     "react-markdown": "^10.1.0",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
-    "rollup": "^4.68.3",
+    "rollup": "^4.68.4",
     "tailwindcss": "^3.4.17",
     "tslib": "^2.9.1",
     "typescript": "7.0.2",

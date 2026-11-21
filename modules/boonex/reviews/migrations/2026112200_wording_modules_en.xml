@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_reviews_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+    <string_upd name="_bx_reviews_option_voting_max_stars"><![CDATA[Maximum stars per voting option]]></string_upd>
+</resources>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
-  <string name="_bx_massmailer"><![CDATA[Mass Mailer]]></string>
+  <string name="_bx_massmailer"><![CDATA[Email campaigns]]></string>
   <string name="_bx_massmailer_acl_action_use_massmailer"><![CDATA[Use Massmailer]]></string>
-  <string name="_bx_massmailer_adm_stg_cpt_type"><![CDATA[Mass Mailer]]></string>
+  <string name="_bx_massmailer_adm_stg_cpt_type"><![CDATA[Email campaigns]]></string>
   <string name="_bx_massmailer_adm_stg_cpt_category_general"><![CDATA[General]]></string>
   <string name="_bx_massmailer_delete_sent_email_in_days"><![CDATA[Delete sent email campaigns older than (days)]]></string>
   <string name="_bx_massmailer_page_title_sys_manage_campaigns"><![CDATA[Campaigns]]></string>
@@ -34,11 +34,11 @@
   <string name="_bx_massmailer_page_block_title_system_viewsubscribers"><![CDATA[Subscribers]]></string>
   <string name="_bx_massmailer_page_block_title_viewsubscribers"><![CDATA[Subscribers]]></string>
   <string name="_bx_massmailer_page_block_title_attributes"><![CDATA[Attributes]]></string>
-  <string name="_bx_massmailer_menu_item_title_system_admt_mailer"><![CDATA[Mass Mailer]]></string>
-  <string name="_bx_massmailer_menu_item_title_admt_mailer"><![CDATA[Mass Mailer]]></string>
+  <string name="_bx_massmailer_menu_item_title_system_admt_mailer"><![CDATA[Email campaigns]]></string>
+  <string name="_bx_massmailer_menu_item_title_admt_mailer"><![CDATA[Email campaigns]]></string>
   <string name="_bx_massmailer_menu_item_title_manage_campaigns"><![CDATA[Campaigns]]></string>
-  <string name="_bx_massmailer_menu_title_submenu"><![CDATA[Mass Mailer  Submenu]]></string>
-  <string name="_bx_massmailer_menu_set_title_submenu"><![CDATA[Mass Mailer Submenu]]></string>
+  <string name="_bx_massmailer_menu_title_submenu"><![CDATA[Email campaigns submenu]]></string>
+  <string name="_bx_massmailer_menu_set_title_submenu"><![CDATA[Email campaigns submenu]]></string>
   <string name="_bx_massmailer_menu_item_title_system_campaigns"><![CDATA[Campaigns]]></string>
   <string name="_bx_massmailer_menu_item_title_campaigns"><![CDATA[Campaigns]]></string>
   <string name="_bx_massmailer_menu_item_title_system_segments"><![CDATA[Segments]]></string>
@@ -152,8 +152,8 @@
   <string name="_bx_massmailer_txt_unsubscribed"><![CDATA[Unsubscribed]]></string>
   <string name="_bx_massmailer_txt_send_test_error"><![CDATA[Error occurred]]></string>
   <string name="_bx_massmailer_segments_all"><![CDATA[All subscribers]]></string>
-  <string name="_bx_massmailer_email_name"><![CDATA[Mass Mailer message]]></string>
-  <string name="_bx_massmailer_email_subject"><![CDATA[Mass Mailer message]]></string>
+  <string name="_bx_massmailer_email_name"><![CDATA[Email campaign message]]></string>
+  <string name="_bx_massmailer_email_subject"><![CDATA[Email campaign message]]></string>
   <string name="_bx_massmailer_email_body">
     <![CDATA[
   <br />{content} <br />

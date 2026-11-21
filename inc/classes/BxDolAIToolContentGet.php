@@ -12,6 +12,11 @@ use NeuronAI\Tools\ToolProperty;
 
 class BxDolAIToolContentGet extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
     public function __construct()
     {
         parent::__construct(
@@ -40,6 +45,9 @@ class BxDolAIToolContentGet extends BxDolAITool
 
     public function __invoke(string $module, int $content_id): array
     {
+        if (($aError = $this->memberContentError($module, $content_id, 'view')))
+            return $aError;
+
         $a = bx_srv('system', 'get_info', [$module, $content_id], 'TemplServiceContent');
         if (!$a)
             return ["error" => "Content item was not found"];

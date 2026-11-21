@@ -13,4 +13,11 @@
    <?=$sAuditOutput; ?>
     </div>
 
+    <div class="bx-install-actions bx-install-actions-end">
+        <a href="index.php" class="bx-btn"><?php echo _t('_sys_inst_back'); ?></a>
+        <?php if (!$iAuditFailed): ?>
+        <a href="?action=permissions" class="bx-btn bx-btn-primary"><?php echo _t('_sys_inst_start_installation'); ?></a>
+        <?php endif; ?>
+    </div>
+
 </div>

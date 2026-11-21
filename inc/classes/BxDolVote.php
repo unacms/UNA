@@ -45,7 +45,7 @@ define('BX_DOL_VOTE_USAGE_DEFAULT', BX_DOL_VOTE_USAGE_BLOCK);
  * - ClassName - your custom class name, if you overrride default class
  * - ClassFile - your custom class path
  *
- * You can refer to BoonEx modules for sample record in this table.
+ * You can refer to the bundled UNA modules for a sample record in this table.
  *
  *
  *

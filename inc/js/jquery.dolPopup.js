@@ -130,7 +130,8 @@
             return;
 
         if (!$el) {
-            if ($('.bx-popup-wrapper[aria-modal="true"]').length)
+            // only a shown one counts: a popup in the page's markup can carry aria-modal while hidden (the site search)
+            if ($('.bx-popup-wrapper[aria-modal="true"]').filter(':visible').length)
                 return;
 
             $('[data-bx-popup-inert]').each(function () {
@@ -214,6 +215,10 @@
 
             if (o.cssClass && o.cssClass != '' && !$el.hasClass(o.cssClass))
                 $el.addClass(o.cssClass);
+
+            // Studio: a dropdown menu stays a menu under its trigger on phones too, not a full screen sheet (media-phone.css).
+            if ($el.hasClass('bx-popup-menu') && $el.closest('.bx-std').length)
+                $el.removeClass('bx-popup-responsive');
 
             // default style for correct positioning
             $el.css({
@@ -932,8 +937,21 @@
         });
 
         var fOnShow = options.onShow;
+        // The field takes the focus, with its value selected, and Enter in it is OK.
+        var oInput = oPPopup.find('[name="bx-popup-prompt-value"]');
+        oInput.off('keydown.prompt').on('keydown.prompt', function(oEvent) {
+            if(oEvent.key != 'Enter' || oEvent.isComposing)
+                return;
+
+            oEvent.preventDefault();
+            oBtnOk.trigger('click');
+        });
+
         options.onShow = function(oPopup) {
-            oBtnOk.focus();
+            if(oInput.length)
+                oInput.trigger('focus').trigger('select');
+            else
+                oBtnOk.focus();
 
             if(typeof(fOnShow) == 'function')
                 fOnShow(oPPopup);

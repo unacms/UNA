@@ -22,6 +22,7 @@ import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { BottomSheetScrollView } from 'app/ui/atoms/bottomsheet-scroll-view'
 import { useIsDesktop } from 'app/context/measure';
+import { Block, BlockContent } from 'app/ui/molecules/page/page-block';
 
 export default function ElementSearch(oProps) {
     const { t } = useTranslation()
@@ -99,43 +100,39 @@ export default function ElementSearch(oProps) {
     )
 }
 
+/**
+ * The search page's field, in a block as UNA's search form is: the keyword and Search, which opens the results for it
+ * in the section shown.
+ */
 export function SearchPanel(props) {
     const { t } = useTranslation()
     const [inputValue, setInputValue] = useState(props.value)
+    const href = '/search-keyword?keyword=' + encodeURIComponent(inputValue || '') + (props.section ? '&section=' + encodeURIComponent(props.section) : '')
     return (
-        <View className=" backdrop-blur bg-card ">
-            <View
-                className={
-                    appSetting('layout', 'max_width') +
-                    '  mx-auto w-full px-3 sm:px-4 pb-3 pt-1'
-                }
-            >
-                <Row className="gap-x-2 justify-center items-center">
-                    <Input
-                        className="w-full flex-1 min-w-0"
-                        name="search"
-                        placeholder={t('Search') + '...'}
-                        defaultValue={inputValue}
-                        role="textbox"
-                        aria-label={t('Search')}
-                        onChangeText={(value) => {
-                            setInputValue(value)
-                        }}
-                    />
-                    <NeoButtonLink
-                        href={
-                            '/search-keyword?keyword=' +
-                            inputValue +
-                            '&section=' +
-                            props.section
-                        }
-                        controlSize="small"
-                        image="Search"
-                        accessibilityLabel={t('Search')}
-                        classNames={{ root: 'self-center' }}
-                    />
-                </Row>
-            </View>
+        <View className={appSetting('layout', 'max_width_block') + ' mx-auto w-full px-3 sm:px-4 pb-3'}>
+            <Block>
+                <BlockContent>
+                    <Row className="gap-x-2 items-center">
+                        <Input
+                            className="w-full flex-1 min-w-0"
+                            name="search"
+                            placeholder={t('Search') + '...'}
+                            defaultValue={inputValue}
+                            role="searchbox"
+                            aria-label={t('Search')}
+                            onChangeText={(value) => {
+                                setInputValue(value)
+                            }}
+                        />
+                        <NeoButtonLink
+                            href={href}
+                            style="borderedProminent"
+                            image="Search"
+                            label={t('Search')}
+                        />
+                    </Row>
+                </BlockContent>
+            </Block>
         </View>
     )
 }
@@ -270,6 +267,7 @@ export function ElementSearchData(oProps) {
                             className="w-full"
                             rounded="full"
                             name="search"
+                            accessibilityLabel={t('Search')}
                             placeholder={t('Search') + '...'}
                             onKeyPress={(event) => handleKeyPress(event)}
                             value={inputValue}
@@ -301,6 +299,7 @@ export function ElementSearchData(oProps) {
                     <Input
                         className="w-full"
                         name="search"
+                        accessibilityLabel={t('Search')}
                         autoFocus={true}
                         placeholder={t('Start typing to search...')}
                         onKeyPress={(event) => handleKeyPress(event)}
@@ -357,6 +356,7 @@ export function ElementSearchData(oProps) {
                 <Input
                     className="w-full"
                     name="search"
+                    accessibilityLabel={t('Search')}
                     autoFocus={true}
                     placeholder={t('Start typing to search...')}
                     onKeyPress={(event) => handleKeyPress(event)}

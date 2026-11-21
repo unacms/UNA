@@ -93,7 +93,10 @@ BxArtificerUtils.prototype.setColorSchemeHtml = function()
 
 BxArtificerUtils.prototype.setColorSchemeIcon = function() 
 {
-    $('.bx-sb-theme-current').html('<i class="sys-icon ' + (this.isColorSchemeDark() ? 'moon' : 'sun') + '"></i>').bxProcessHtml();
+    // Pages without the switch (the "Please wait" page after signing in) have none of the page scripts bxProcessHtml needs.
+    var oCurrent = $('.bx-sb-theme-current');
+    if(oCurrent.length)
+        oCurrent.html('<i class="sys-icon ' + (this.isColorSchemeDark() ? 'moon' : 'sun') + '"></i>').bxProcessHtml();
 
     this.markColorSchemeSwitches();
 };
@@ -116,15 +119,15 @@ BxArtificerUtils.prototype.getColorSchemeCode = function()
 BxArtificerUtils.prototype.markColorSchemeSwitches = function()
 {
     var iCode = this.getColorSchemeCode();
-    var sIcon = ['adjust', 'sun', 'moon'][iCode];
+    var sIcon = ['eclipse', 'sun', 'moon'][iCode];
     var bRedraw = false;
 
-    $('[data-bx-color-scheme-switch]').find('.sys-icon.adjust, .sys-icon.sun, .sys-icon.moon').each(function() {
+    $('[data-bx-color-scheme-switch]').find('.sys-icon.eclipse, .sys-icon.sun, .sys-icon.moon').each(function() {
         if($(this).hasClass(sIcon))
             return;
 
         if(this.tagName.toLowerCase() == 'i')
-            $(this).removeClass('adjust sun moon').addClass(sIcon);
+            $(this).removeClass('eclipse sun moon').addClass(sIcon);
         else {
             $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
             bRedraw = true;
@@ -166,19 +169,22 @@ BxArtificerUtils.prototype.getColorSchemeMenu = function() {
 BxArtificerUtils.prototype.getAddContentMenu = function(sMenu, e, sPosition) {
     $('.bx-popup-applied:visible').dolPopupHide();
 
-    var sSidebar = 'account';
-    if(bx_sidebar_active(sSidebar))
-        bx_sidebar_toggle(sSidebar);
-
     bx_menu_popup_inline(sMenu, e, {});
+};
+
+/**
+ * The account menu: a popup under the member's avatar, at the header's end (sys_account_popup, menu_account_popup.html),
+ * as the apps have it. Opening it closes the other header popups, and its button closes it again.
+ */
+BxArtificerUtils.prototype.getAccountMenu = function(sMenu, e, oPointer) {
+    $('.bx-popup-applied:visible').not(sMenu).dolPopupHide();
+
+    // the header's avatar opens it under itself, at its end; the Application sidebar's account, at the sidebar's foot, above itself
+    bx_menu_popup_inline(sMenu, e, {pointer: $.extend({align: 'right'}, oPointer || {})});
 };
 
 BxArtificerUtils.prototype.getNotificationsMenu = function(sMenu, e, sPosition, oOptions) {
     $('.bx-popup-applied:visible').dolPopupHide();
-
-    var sSidebar = 'account';
-    if(bx_sidebar_active(sSidebar))
-        bx_sidebar_toggle(sSidebar);
 
     oOptions = $.extend({}, {pointer: {align:'right'}, cssClass: ''}, oOptions);
 

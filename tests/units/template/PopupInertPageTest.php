@@ -45,7 +45,9 @@ class PopupInertPageTest extends BxDolTestCase
     {
         $s = self::inertFunction();
 
-        $this->assertMatchesRegularExpression('/if \(\$\(\'\.bx-popup-wrapper\[aria-modal="true"\]\'\)\.length\)\s*return;/', $s);
+        // a shown one: the site search popup is in the page's markup with aria-modal while hidden, and counting it
+        // left the page inert after every modal popup closed
+        $this->assertMatchesRegularExpression('/if \(\$\(\'\.bx-popup-wrapper\[aria-modal="true"\]\'\)\.filter\(\':visible\'\)\.length\)\s*return;/', $s);
         $this->assertStringContainsString("this.inert = false;", $s);
         $this->assertStringContainsString("this.removeAttribute('data-bx-popup-inert');", $s, 'Only what the popup made inert is given back.');
     }

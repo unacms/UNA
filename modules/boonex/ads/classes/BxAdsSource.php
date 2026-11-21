@@ -13,6 +13,7 @@ class BxAdsSource extends BxDol
 {
     protected $_oModule;
     protected $_iProfile;
+    protected $_iProfileId;
 
     protected $_iId;
     protected $_sName;

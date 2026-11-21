@@ -24,7 +24,7 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
     }
 
     /**
-     * The signed-in name is rendered as a label, the theme and sounds items as segmented controls, and Manage Apps (it
+     * The signed-in name links to the profile and shows its picture (the account glyph without one), the theme and sounds items as segmented controls, and Manage Apps (it
      * switches edit mode on the launcher) as a toggle button; everything else stays a link.
      * The tour item follows the 'site_tour_studio' setting, like the launcher tour itself.
      */
@@ -51,6 +51,9 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
             'onclick_attr' => !empty($aItem['onclick']) ? 'onclick="' . bx_html_attribute($aItem['onclick']) . '"' : '',
             'icon_html' => $aItem['bx_if:image_inline']['condition'] ? $aItem['bx_if:image_inline']['content']['image'] : $this->getMenuIconHtml($aItem['icon']),
         ];
+        if($sName == 'account' && ($sPicture = $this->getProfilePicture()) != '') {
+            $aContent['icon_html'] = $sPicture;
+        }
         if($sName == 'scheme')
             $aContent = array_merge($aContent, [
                 'js_object' => BxTemplStudioMenuTop::getInstance()->getJsObject(),
@@ -80,6 +83,27 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
             ];
 
         return $aItem;
+    }
+
+    /**
+     * The signed-in profile's avatar for the name row, as the site's header shows it (BxBaseMenuToolbar): the picture, or the
+     * name's first letter on its colour when there is none. An operator without a profile gets the account's.
+     */
+    protected function getProfilePicture()
+    {
+        $oProfile = isLogged() ? BxDolProfile::getInstance() : false;
+        if(!$oProfile) {
+            return '';
+        }
+
+        $sUnit = $oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info_links', 'size' => 'icon']]);
+        if(empty($sUnit) || !is_string($sUnit)) {
+            return '';
+        }
+
+        return $this->_oTemplate->parseHtmlByName('menu_account_popup_picture.html', [
+            'unit' => $sUnit
+        ]);
     }
 }
 

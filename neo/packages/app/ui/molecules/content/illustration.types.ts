@@ -10,7 +10,16 @@ export type IllustrationShape = {
 
 export type IllustrationName = 'splash' | 'join';
 
+/** A picture that is not one of the app's own: UNA sends its shapes with a block (`unaPicture`, lib/intro-block.ts). */
+export type IllustrationPicture = {
+    viewBox: string;
+    shapes: IllustrationShape[];
+};
+
 export type IllustrationProps = {
-    name: IllustrationName;
+    /** One of the app's own pictures. */
+    name?: IllustrationName;
+    /** A picture given as shapes; wins over `name`. */
+    picture?: IllustrationPicture | null;
     className?: string;
 };

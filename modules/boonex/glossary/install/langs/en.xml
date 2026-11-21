@@ -26,7 +26,7 @@
 	<string name="_bx_glossary_form_entry_input_do_publish"><![CDATA[Publish]]></string>
 	<string name="_bx_glossary_form_entry_input_sys_title"><![CDATA[Title]]></string>
 	<string name="_bx_glossary_form_entry_input_title"><![CDATA[Title]]></string>
-	<string name="_bx_glossary_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+	<string name="_bx_glossary_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string>
 	<string name="_bx_glossary_form_entry_input_sys_cat"><![CDATA[Category]]></string>
 	<string name="_bx_glossary_form_entry_input_cat"><![CDATA[Category]]></string>
   <string name="_bx_glossary_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
@@ -36,7 +36,7 @@
 	<string name="_bx_glossary_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
 	<string name="_bx_glossary_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
 	<string name="_bx_glossary_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this term]]></string>
-	<string name="_bx_glossary_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+	<string name="_bx_glossary_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
 	<string name="_bx_glossary_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the term]]></string>
 	<string name="_bx_glossary_form_entry_input_sys_pictures"><![CDATA[Pictures]]></string>
 	<string name="_bx_glossary_form_entry_input_pictures"><![CDATA[Pictures]]></string>

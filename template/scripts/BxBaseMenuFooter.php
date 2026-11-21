@@ -53,7 +53,7 @@ class BxBaseMenuFooter extends BxTemplMenu
 
     public function getSoundsMenu()
     {
-        $aIcons = ['full' => 'volume-up', 'quiet' => 'volume-down', 'off' => 'volume-mute'];
+        $aIcons = ['full' => 'volume-2', 'quiet' => 'volume-1', 'off' => 'volume-x'];
 
         $aItems = [];
         foreach(BxDolSounds::LEVELS as $sLevel)

@@ -6,6 +6,7 @@ import {
     menuItemsByName,
     menuItemsByNameNew,
     getHeaderToolbarNeoButtonDefaults,
+    decodeText,
 } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
@@ -81,11 +82,13 @@ export default function MenuAccount({ buttonProps, children }) {
         )
     }
 
+    // The button shows the viewer's avatar, so it is named after them, as on UNA's site.
+    const accountName = currentUser?.display_name ? decodeText(String(currentUser.display_name)) : t('Dashboard')
     const defaultButtonProps = {
         ...getHeaderToolbarNeoButtonDefaults(isDesktop),
-        tooltip: t('Dashboard'),
+        tooltip: accountName,
         borderShape: 'circle',
-        accessibilityLabel: t('Dashboard'),
+        accessibilityLabel: accountName,
         children: profile,
     }
 
@@ -103,6 +106,7 @@ export default function MenuAccount({ buttonProps, children }) {
             }))
             .slice(0, 3) || []
 
+    // "See all profiles" only when there is another profile to see: with one profile it would open a list of one.
     if (data?.profiles?.length > 3) {
         profileList = [
             ...profileList,
@@ -110,8 +114,8 @@ export default function MenuAccount({ buttonProps, children }) {
             { link: '{switch_profile_selector}' },
         ]
     }
-    else{
-         profileList = [
+    else if (profileList.length > 0) {
+        profileList = [
             ...profileList,
             { link: '{switch_profile_selector}' },
         ]
@@ -119,14 +123,11 @@ export default function MenuAccount({ buttonProps, children }) {
 
     const updatedMenu = menu_account_items.flatMap((item) =>
         item.link === '{switch_profile}'
-            ? profileList
-                ? [
-                    { ...currentUser, link: '{switch_profile}' },
-                    { link: '{separator}' },
-                    ...profileList,
-                    { link: '{separator}' },
-                ]
-                : []
+            ? [
+                { ...currentUser, link: '{switch_profile}' },
+                { link: '{separator}' },
+                ...(profileList.length ? [...profileList, { link: '{separator}' }] : []),
+            ]
             : item
     )
 
@@ -155,6 +156,7 @@ export default function MenuAccount({ buttonProps, children }) {
         <>
             <Redirect ref={redirectdRef} />
             <DropdownMenu
+                align="auto"
                 onOpenChange={setMenuOpen}
                 items={updatedMenu.map((item, index) => {
                     let sTitle = t(item.title)

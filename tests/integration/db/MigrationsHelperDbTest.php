@@ -42,6 +42,20 @@ class MigrationsHelperDbTest extends BxDolIntegrationTestCase
         $this->assertSame(['id', 'a', 'b'], $this->_oPdo->query("SHOW COLUMNS FROM `{$this->_sTable}`")->fetchAll(PDO::FETCH_COLUMN));
     }
 
+    public function testDropColumnOnce(): void
+    {
+        $this->assertTrue(BxDolMigrationsHelper::dropColumn($this->_sTable, 'a'));
+        $this->assertFalse(BxDolMigrationsHelper::dropColumn($this->_sTable, 'a'));
+
+        $this->assertSame(['id'], $this->_oPdo->query("SHOW COLUMNS FROM `{$this->_sTable}`")->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    public function testDropColumnBadNameIsRefused(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        BxDolMigrationsHelper::dropColumn($this->_sTable, 'a`, DROP `id');
+    }
+
     public function testAddIndexOnce(): void
     {
         $this->assertTrue(BxDolMigrationsHelper::addIndex($this->_sTable, 'a_id', ['a', 'id']));

@@ -13,6 +13,8 @@
  * - `Authorization: Bearer <token>`: an OAuth 2 access token from the OAuth2 server module
  *   (bx_oauth) with the `api` scope. The request acts as the token's profile, for this request
  *   only: no session is started and the session cookie is ignored.
+ * - `Authorization: Bearer una_pat_...`: a personal access token the account made for itself
+ *   (BxDolApiTokens), with the same reach as an OAuth token: it acts as the account's current profile.
  * - No Bearer token: the site's own session cookie, for pages of the site itself. A request
  *   that changes something must then come from the site's origin (same scheme, host and port)
  *   or an allowed one (sys_api_origins), so another site can't post a form with the visitor's
@@ -100,7 +102,23 @@ class BxDolApiV2Auth
             throw new BxDolApiV2Problem(401, 'invalid_token', 'Send an access token as "Authorization: Bearer <token>"', [], $aUnauthorized);
 
         $aToken = false;
-        if (BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth'))
+        if (BxDolApiTokens::isToken($m[1])) {
+            // a personal access token (account settings > Connectors): its account's, no scopes
+            $aPersonal = BxDolApiTokens::find($m[1]);
+            if (empty($aPersonal))
+                throw new BxDolApiV2Problem(401, 'invalid_token', 'The access token is unknown, revoked or has expired', [], $aUnauthorized);
+
+            $oAccount = BxDolAccount::getInstance((int)$aPersonal['account_id']);
+            $iProfileId = $oAccount ? (int)BxDolProfileQuery::getInstance()->getCurrentProfileByAccount($oAccount->id()) : 0;
+            // an account that never chose one acts as its first profile, as at sign-in
+            if (!$iProfileId && $oAccount && ($oFirst = BxDolProfile::getInstanceByAccount($oAccount->id())))
+                $iProfileId = (int)$oFirst->id();
+            // a membership level without Connectors (Studio > Memberships) doesn't use its tokens either
+            if ($iProfileId && !BxDolApiTokens::isAllowed($iProfileId))
+                throw new BxDolApiV2Problem(403, 'access_denied', 'The membership level of this account does not use access tokens');
+            $aToken = ['profile_id' => $iProfileId, 'scopes' => [self::SCOPE], 'client_id' => null, 'personal_id' => (int)$aPersonal['id']];
+        }
+        elseif (BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth'))
             $aToken = bx_srv('bx_oauth', 'get_access_token_data', [$m[1]]);
 
         if (empty($aToken) || !is_array($aToken))
@@ -112,6 +130,9 @@ class BxDolApiV2Auth
         $oProfile = BxDolProfile::getInstance($aToken['profile_id']);
         $oAccount = $oProfile ? $oProfile->getAccountObject() : false;
         if (!$oProfile || !$oAccount || $oAccount->isLocked())
+            throw new BxDolApiV2Problem(401, 'invalid_token', 'The account of this token is not available', [], $aUnauthorized);
+        // a personal token belongs to its account, never to the one its profile might have moved to
+        if (isset($aToken['personal_id']) && (int)$oAccount->id() !== (int)$aPersonal['account_id'])
             throw new BxDolApiV2Problem(401, 'invalid_token', 'The account of this token is not available', [], $aUnauthorized);
 
         // The token belongs to the account; like a site session it acts as the account's current

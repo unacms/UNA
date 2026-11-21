@@ -104,7 +104,10 @@ class BxBaseConfig extends BxDol implements iBxDolSingleton
         if(!class_exists('BxDolDb') || !BxDolDb::getInstance() || empty($sParamName)) 
             return;
 
+        // Empty: the template follows Designer's widths (--bx-page-width) and keeps its own as the fallback.
         $mixedWidth = getParam($sParamName);
+        if($mixedWidth === '' || $mixedWidth === false)
+            return;
         if(is_numeric($mixedWidth))
             $mixedWidth .= 'px';
 

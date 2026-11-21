@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Success messages show as a toast and say what happened, without "successfully". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_timeline_txt_msg_performed_action"><![CDATA[Done.]]></string_upd>
+    <string_upd name="_bx_timeline_txt_msg_posted"><![CDATA[Posted.]]></string_upd>
+    <string_upd name="_bx_timeline_txt_msg_success_repost"><![CDATA[Reposted.]]></string_upd>
+</resources>

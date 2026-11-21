@@ -14,6 +14,11 @@ use NeuronAI\Tools\ObjectProperty;
 
 class BxDolAIToolContentDelete extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
     public function __construct()
     {
         parent::__construct(
@@ -42,6 +47,9 @@ class BxDolAIToolContentDelete extends BxDolAITool
 
     public function __invoke(string $module, int $content_id = 0): array
     {        
+        if (($aError = $this->memberContentError($module, $content_id, 'delete')))
+            return $aError;
+
         $a = bx_srv('system', 'delete', [$module, $content_id], 'TemplServiceContent');
         return $a;
     }

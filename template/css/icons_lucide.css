@@ -1,7 +1,7 @@
-/* Lucide icons are drawn by a script that loads beside the page (BxBaseIconsetLucide::getCodeHead). Until it has
-   drawn an icon, its placeholder takes the room the icon will: Lucide's 24px square, which the rules for .sys-icon
-   size as they size the icon itself. So nothing moves when the icons arrive. A placeholder the script has been to
-   (data-lucide) and left, for a name the set does not have, takes no room, as before. */
+/* Lucide icons are drawn by the page's code (BxBaseIconsetLucide::getCode), from the drawings the page carries or from
+   an icon's file. Until it has drawn an icon, its placeholder takes the room the icon will: Lucide's 24px square,
+   which the rules for .sys-icon size as they size the icon itself. So nothing moves when the icons arrive. A
+   placeholder the script has been to (data-lucide) and left, for a name the set does not have, takes no room. */
 i.sys-icon:empty:not([data-lucide]) {
     display: inline-block;
     width: 24px;
@@ -26,4 +26,9 @@ i.sys-icon:empty:not([data-lucide]) {
 #bx-menu-footer > li > a > i.sys-icon:empty:not([data-lucide]) {
     width: 1rem;
     height: 1rem;
+}
+
+/* An action that is on (liked, saved, featured) fills its icon: `sys-icon-filled` with the icon's name. */
+.sys-icon.sys-icon-filled {
+    fill: currentColor;
 }

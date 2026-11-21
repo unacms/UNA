@@ -83,7 +83,7 @@ define('BX_CMT_STATUS_PENDING', 'pending');
  * - ClassName - your custom class name if you need to override default class, this class must have the same constructor arguments
  * - ClassFile - file where your ClassName is stored.
  *
- * You can refer to BoonEx modules for sample record in this table.
+ * You can refer to the bundled UNA modules for a sample record in this table.
  *
  *
  *
@@ -2604,7 +2604,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
     protected function _getIconDo()
     {
-    	return 'far comment';
+    	return 'message-circle';
     }
 
     protected function _getTitleDo()

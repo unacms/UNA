@@ -136,6 +136,7 @@
     --radius-full: var(--neo-radius-full);
     --radius-popover: var(--neo-radius-popover);
     --radius-block: var(--neo-radius-block);
+    --radius-card: var(--neo-radius-card);
     --radius-control-sm: var(--neo-radius-control-sm);
     --radius-default: var(--neo-radius-default);
     --radius: var(--neo-radius-default);
@@ -215,8 +216,10 @@
         /* Menus and dropdowns (`theme.dropdown.cnt`): their rows' 12px corners (rounded-xl) plus the 8px around
            them (p-2), so the corners are concentric. */
         --neo-radius-popover: 1.25rem;
-        /* Blocks and cards (`rounded-block`): the same 20px as menus today, set apart so either can change alone. */
-        --neo-radius-block: 1.25rem;
+        /* Blocks (`rounded-block`): UNA Studio's 22px (--bx-radius-3xl), as UNA's blocks. */
+        --neo-radius-block: 1.375rem;
+        /* Cards (`rounded-card`): the menus' 20px, set apart so either can change alone. */
+        --neo-radius-card: 1.25rem;
         /* Small (36px) controls, `rounded-control-sm`: a small NeoButton and a small input. 10px: 8 (rounded-lg) reads
            square at that height, 12 is the regular control's. */
         --neo-radius-control-sm: 0.625rem;
@@ -236,8 +239,10 @@
         --neo-shadow-popover:        0 0 0 1px rgb(0 0 0 / 0.06), 0 4px 6px -2px rgb(0 0 0 / 0.05), 0 12px 24px -4px rgb(0 0 0 / 0.1);
         --neo-shadow-popover-deep:   inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 12px 24px -4px rgb(0 0 0 / 0.5);
         
-        --neo-shadow-block-outline:        inset 0 0 0 1px rgb(255 255 255 / 1), 0 1px 8px -1px rgb(0 0 0 / 0.1);
-        --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 1px 8px -1px rgb(0 0 0 / 0.5);
+        /* Blocks: UNA Studio's (.bx-std-block, smooth-shadow-sm), as UNA's blocks (.bx-def-border-block): a light hairline inside
+           (white/50, white/2.5 in dark) and a soft six-layer drop. */
+        --neo-shadow-block-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 18px 47px rgb(0 0 0 / 0.03), 0 7.5px 19px rgb(0 0 0 / 0.02), 0 4px 10.5px rgb(0 0 0 / 0.02), 0 2.3px 5.8px rgb(0 0 0 / 0.01), 0 1.2px 3.1px rgb(0 0 0 / 0.01), 0 0.5px 1.3px rgb(0 0 0 / 0.01);
+        --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 18px 47px rgb(0 0 0 / 0.03), 0 7.5px 19px rgb(0 0 0 / 0.02), 0 4px 10.5px rgb(0 0 0 / 0.02), 0 2.3px 5.8px rgb(0 0 0 / 0.01), 0 1.2px 3.1px rgb(0 0 0 / 0.01), 0 0.5px 1.3px rgb(0 0 0 / 0.01);
 
 
         --neo-shadow-input-outline:      inset 0 0 0 1px rgb(0 0 0 / 0.1);

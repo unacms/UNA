@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The account settings menu's sections (items without a link) replace the items' group, Studio > Navigation > an item > "Group in the apps". -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Account (section)]]></string_add>
+    <string_add name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Account]]></string_add>
+    <string_add name="_sys_menu_item_title_system_account_settings_section_profile"><![CDATA[Current profile (section)]]></string_add>
+    <string_add name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string_add>
+    <string_del name="_adm_nav_txt_items_group"></string_del>
+    <string_del name="_adm_nav_dsc_items_group"></string_del>
+    <string_del name="_adm_nav_txt_items_group_none"></string_del>
+    <string_del name="_adm_nav_txt_items_group_account"></string_del>
+    <string_del name="_adm_nav_txt_items_group_profile"></string_del>
+    <string_del name="_adm_nav_txt_items_group_danger"></string_del>
+</resources>

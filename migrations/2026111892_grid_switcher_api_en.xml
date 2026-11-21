@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation > items and Studio > Pages: a Site and an Apps switch for each item or block, and the edit forms say the same. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_grid_lbl_site"><![CDATA[Site]]></string_add>
+    <string_add name="_sys_grid_lbl_apps"><![CDATA[Apps]]></string_add>
+    <string_add name="_sys_grid_lbl_show_on_site"><![CDATA[Show on the site]]></string_add>
+    <string_add name="_sys_grid_lbl_show_in_apps"><![CDATA[Show in the apps (web app, iOS, Android)]]></string_add>
+    <string_upd name="_adm_bp_txt_block_active"><![CDATA[Show on the site]]></string_upd>
+    <string_upd name="_adm_bp_txt_block_active_api"><![CDATA[Show in the apps]]></string_upd>
+    <string_upd name="_adm_nav_txt_items_active_api"><![CDATA[Show in the apps]]></string_upd>
+</resources>

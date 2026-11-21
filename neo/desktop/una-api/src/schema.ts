@@ -2908,8 +2908,10 @@ export interface components {
             logo: string | null;
             /** Format: uri */
             logo_dark: string | null;
-            /** @description Width / height of an uploaded logo, when Designer has its size */
+            /** @description Width / height of an uploaded logo, measured from the file; null when it is not an uploaded image or has no size */
             logo_aspect: number | null;
+            /** @description Width / height of `logo_dark`, as `logo_aspect` */
+            logo_dark_aspect: number | null;
             /**
              * Format: uri
              * @description The 180x180 home screen icon (the site's, else the template's). Until the site has made the icon's size, this is a transcoder link that changes with every call, so it is no stable cache key then

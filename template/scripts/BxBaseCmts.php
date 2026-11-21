@@ -991,7 +991,7 @@ class BxBaseCmts extends BxDolCmts
 
         $sResult = '';
         if((int)$iCount != 0)
-            $sResult = _t(isset($aParams['caption']) ? $aParams['caption'] : '_cmt_txt_counter', $iCount);
+            $sResult = _tn(isset($aParams['caption']) ? $aParams['caption'] : '_cmt_txt_counter', $iCount);
         else
             $sResult = _t(isset($aParams['caption_empty']) ? $aParams['caption_empty'] : '_cmt_txt_counter_empty');
         

@@ -121,11 +121,19 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'condition' => $sUri == $sDefault,
                     'content' => [],
                 ],
+                // The site's template is set here only: Designer > Settings links to this page.
+                'bx_if:make_default' => [
+                    'condition' => $sUri != $sDefault,
+                    'content' => [
+                        'js_object' => $sJsObject,
+                        'uri' => $sUri,
+                        'title_attr' => bx_html_attribute($aModule['title']),
+                        'confirm' => bx_html_attribute(_t('_adm_dsg_txt_tmpl_make_default_confirm', $aModule['title'])),
+                    ],
+                ],
             ];
         }
 
-        $sDesignerUrl = BX_DOL_URL_STUDIO . 'designer.php?page=';
-        $sDefaultTitle = isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault;
         $aForm = [
             'form_attrs' => [
                 'id' => $this->sTemplatesFormId,
@@ -176,15 +184,14 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'name' => 'preview',
                     'content' => $this->getTemplateViewer($sDefault, isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault),
                 ],
-                'header_footer' => [ // the last section is the block's pinned footer (page.css): where the default is chosen
+                'header_footer' => [ // the last section is the block's pinned footer (page.css): which template everyone sees
                     'type' => 'block_header',
                 ],
                 'footer' => [
                     'type' => 'custom',
                     'name' => 'footer',
-                    'content' => $oTemplate->parseHtmlByName('dsr_templates_footer.html', [
-                        'text' => _t('_adm_dsg_txt_tmpl_footer', htmlspecialchars_adv($sDefaultTitle)),
-                        'settings_url' => $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_SETTINGS,
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                        'text' => _t('_adm_dsg_txt_tmpl_footer', bx_process_output(isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault)),
                     ]),
                 ],
             ]
@@ -291,8 +298,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         ];
 
         // A section per image: the previews of what the header shows, then the uploads and the SVG code.
-        $aPreviews = $this->getLogoPreviews($sTemplate);
-        foreach(['logo' => ['logo', 'logo_dark', 'logo_inline'], 'mark' => ['mark', 'mark_dark', 'mark_inline']] as $sSection => $aLogos) {
+        $aPreviews = array_merge($this->getLogoPreviews($sTemplate), $this->getLogoEmailPreviews());
+        foreach(['logo' => ['logo', 'logo_dark', 'logo_inline'], 'mark' => ['mark', 'mark_dark', 'mark_inline'], 'email' => ['logo_email', 'logo_email_dark']] as $sSection => $aLogos) {
             $aInputs = [];
             foreach($aLogos as $sLogo) {
                 $aLogo = $this->aLogos[$sLogo];
@@ -350,6 +357,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'type' => 'custom',
                     'name' => $sSection . '_preview',
                     'content' => $oTemplate->parseHtmlByName('dsr_logo_preview.html', [
+                        'js_object' => $this->getPageJsObject(),
+                        'low_contrast' => bx_html_attribute(_t('_adm_dsg_txt_logo_low_contrast_dark')),
                         'bx_repeat:previews' => array_values(array_filter($aPreviews, function($aPreview) use ($aLogos) {
                             return in_array($aPreview['name'], $aLogos);
                         }))
@@ -431,7 +440,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             if(!empty($sTemplate))
                 $sText .= ' ' . _t('_adm_dsg_txt_logo_note_previews', $sTemplate);
             $sLink = $sUrl = '';
-            if(!empty($aTemplate) && $this->getLogoTemplateParams()) {
+            // The template's own logo page is a note pointing here, unless it has a logo of its own to change or remove.
+            if(!empty($aTemplate) && $this->isLogoTemplateSet()) {
                 $sLink = _t('_adm_dsg_lnk_logo_template', $sTemplate);
                 $sUrl = bx_append_url_params(BX_DOL_URL_STUDIO . 'design.php', ['name' => $aTemplate['name'], 'page' => BX_DOL_STUDIO_DSG_TYPE_LOGO]);
             }
@@ -499,6 +509,83 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 ],
                 'bx_if:show_remove' => [
                     'condition' => (int)getParam($this->{$this->aLogos[$sType]['param']}) != 0,
+                    'content' => [
+                        'js_object' => $this->getPageJsObject(),
+                        'name' => $sType,
+                        'label' => bx_html_attribute(_t('_adm_dsg_btn_logo_remove_' . $sType)),
+                        'confirm' => bx_html_attribute(_t('_adm_dsg_cnf_logo_remove')),
+                    ]
+                ],
+            ];
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * A preview per email logo: what the email header shows (BxBaseFunctions::getEmailLogoSources), and where that comes from.
+     */
+    protected function getLogoEmailPreviews()
+    {
+        if(empty($this->sParamLogoEmail) && empty($this->sParamLogoEmailDark))
+            return [];
+
+        $aSources = BxTemplFunctions::getInstance()->getEmailLogoSources();
+
+        $sAlt = getParam($this->sParamLogoAlt);
+        if(empty($sAlt))
+            $sAlt = getParam('site_title');
+
+        $aResult = [];
+        foreach(['logo_email' => 'logo', 'logo_email_dark' => 'logo_dark'] as $sType => $sSource) {
+            $sParam = $this->{$this->aLogos[$sType]['param']};
+            if(empty($sParam))
+                continue;
+
+            $bDark = $sSource == 'logo_dark';
+            $bSet = (int)getParam($sParam) != 0;
+
+            // The dark mode one shows what emails show in dark mode: its own, else the light one.
+            $aShow = $aSources[$sSource];
+            if($bDark && $aShow['source'] == 'none')
+                $aShow = $aSources['logo'];
+            $bImage = !empty($aShow['url']);
+
+            if($aSources[$sSource]['source'] == 'email')
+                $sInfo = _t('_adm_dsg_txt_logo_src_here');
+            else if($bSet)
+                $sInfo = _t('_adm_dsg_txt_email_src_unusable');
+            else if($aSources[$sSource]['source'] == 'site')
+                $sInfo = _t($bDark ? '_adm_dsg_txt_email_dark_src_site' : '_adm_dsg_txt_email_src_site');
+            else
+                $sInfo = _t($bDark && $aSources['logo']['source'] != 'none' ? '_adm_dsg_txt_email_dark_src_none' : '_adm_dsg_txt_email_src_none');
+
+            $aResult[] = [
+                'name' => $sType,
+                'scheme' => $bDark ? 'dark' : 'light',
+                'caption' => _t($bDark ? '_adm_dsg_txt_logo_upload_dark' : '_adm_dsg_txt_logo_upload_light'),
+                'info' => $sInfo,
+                'bx_if:show_image' => [
+                    'condition' => $bImage,
+                    'content' => [
+                        'url' => $bImage ? bx_html_attribute($aShow['url']) : '',
+                        'alt' => bx_html_attribute($sAlt),
+                    ]
+                ],
+                'bx_if:show_code' => [
+                    'condition' => false,
+                    'content' => [
+                        'code' => '',
+                    ]
+                ],
+                'bx_if:show_text' => [
+                    'condition' => !$bImage,
+                    'content' => [
+                        'text' => bx_process_output(getParam('site_title')),
+                    ]
+                ],
+                'bx_if:show_remove' => [
+                    'condition' => $bSet,
                     'content' => [
                         'js_object' => $this->getPageJsObject(),
                         'name' => $sType,
@@ -617,8 +704,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
         // A section per place the icons show: previews of what the site uses, then the uploads, each with a hint.
         $aPreviews = $this->getIconPreviews();
-        $aAccept = ['icon' => '.ico', 'icon_svg' => '.svg'];
-        foreach(['tab' => ['icon_svg', 'icon'], 'home' => ['icon_apple', 'icon_android', 'icon_android_splash']] as $sSection => $aIcons) {
+        $aAccept = ['icon' => '.ico', 'icon_svg' => '.svg', 'icon_dark' => '.svg,.png'];
+        foreach(['tab' => ['icon_svg', 'icon', 'icon_dark'], 'home' => ['icon_apple', 'icon_android', 'icon_android_splash']] as $sSection => $aIcons) {
             $aForm['inputs'] = array_merge($aForm['inputs'], [
                 $sSection . '_section' => [
                     'type' => 'block_header',
@@ -709,13 +796,16 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $aDefaults = [
             'icon' => 'favicon.svg',
             'icon_svg' => 'favicon.svg',
+            'icon_dark' => 'favicon-dark.svg',
             'icon_apple' => 'apple-touch-icon.png',
             'icon_android' => 'android-icon-192.png',
             'icon_android_splash' => 'android-icon-512.png',
         ];
+        $sSizeTab = 'w-8 h-8';
         $aSizes = [
-            'icon' => 'w-8 h-8',
-            'icon_svg' => 'w-8 h-8',
+            'icon' => $sSizeTab,
+            'icon_svg' => $sSizeTab,
+            'icon_dark' => $sSizeTab,
             'icon_apple' => 'w-16 h-16 rounded-2xl',
             'icon_android' => 'w-16 h-16 rounded-2xl',
             'icon_android_splash' => 'w-20 h-20 rounded-2xl',
@@ -732,15 +822,24 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 $sUrl = $sIcon == 'icon' ? $aUrls['icon_svg'] : $aUrls['icon'];
                 $sInfo = _t('_adm_dsg_txt_icon_src_none_' . $sIcon);
             }
+            elseif($sIcon == 'icon_dark' && $bFavicons) {
+                // An uploaded favicon without a dark one: dark tabs show the uploaded one as it is.
+                $sUrl = $aUrls['icon_svg'] ?: $aUrls['icon'];
+                $sInfo = _t('_adm_dsg_txt_icon_src_none_icon_dark');
+            }
             else {
                 $sUrl = $this->getIconDefaultUrl($aDefaults[$sIcon]);
                 $sInfo = _t(in_array($sIcon, ['icon', 'icon_svg']) ? '_adm_dsg_txt_icon_src_default_svg' : '_adm_dsg_txt_icon_src_default');
             }
 
             $bTab = in_array($sIcon, ['icon', 'icon_svg']);
+            $sStage = $bTab ? 'adm-dsg-ip-light' : 'adm-dsg-ip-home';
+            if($sIcon == 'icon_dark') {
+                $sStage = 'adm-dsg-ip-dark';
+            }
             $aResult[$sIcon] = [
                 'name' => $sIcon,
-                'stage' => $bTab ? 'adm-dsg-ip-light' : 'adm-dsg-ip-home',
+                'stage' => $sStage,
                 'caption' => _t('_adm_dsg_txt_icon_preview_' . $sIcon),
                 'info' => $sInfo,
                 'bx_if:show_image' => [
@@ -751,8 +850,9 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     ]
                 ],
                 // Browser tab icons on both: an SVG icon can switch colours itself (prefers-color-scheme, see designer.css).
+                // An uploaded dark mode icon has its own preview, and dark tabs show it instead.
                 'bx_if:show_dark' => [
-                    'condition' => !empty($sUrl) && $bTab,
+                    'condition' => !empty($sUrl) && $bTab && empty($aUrls['icon_dark']),
                     'content' => [
                         'url' => $sUrl,
                         'size' => $aSizes[$sIcon],
@@ -1445,6 +1545,83 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         ]);
     }
 
+    /**
+     * Designer > Settings > Corners: the corner radii of the site and Studio
+     * (template/css/tailwind.css, BxBaseFunctions::getInjHeadDesignRadius).
+     */
+    protected function getSettingsCornersInputs($oTemplate)
+    {
+        return [
+            'corners_section' => [
+                'type' => 'block_header',
+                'name' => 'corners_section',
+                'caption' => _t('_adm_dsg_txt_settings_section_corners'),
+            ],
+            'corners_info' => [
+                'type' => 'custom',
+                'name' => 'corners_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                    'text' => _t('_adm_dsg_inf_settings_section_corners')
+                ]),
+            ],
+            'sys_design_radius' => [
+                'type' => 'select',
+                'name' => 'sys_design_radius',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_radius'),
+                'values' => $this->getSettingsRadiusList(),
+                'value' => $this->getSettingsRadius(),
+            ],
+            'sys_design_radius_smooth' => [
+                'type' => 'switcher',
+                'name' => 'sys_design_radius_smooth',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_radius_smooth'),
+                'info' => _t('_adm_dsg_inf_settings_radius_smooth'),
+                'value' => 'on',
+                'checked' => getParam('sys_design_radius_smooth') == 'on',
+            ],
+            'sys_design_radius_smooth_factor' => [
+                'type' => 'text',
+                'name' => 'sys_design_radius_smooth_factor',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_radius_smooth_factor'),
+                'info' => _t('_adm_dsg_inf_settings_radius_smooth_factor'),
+                'value' => $this->getSettingsRadiusSmoothFactor(),
+            ],
+        ];
+    }
+
+    /**
+     * Designer > Settings > Accent color: a preset for links, buttons, switches and focus rings of the site, Studio
+     * and NEO (BxDolDesigns::getAccentPresets, BxBaseFunctions::getInjHeadDesignAccent).
+     */
+    protected function getSettingsAccentInputs($oTemplate)
+    {
+        return [
+            'accent_section' => [
+                'type' => 'block_header',
+                'name' => 'accent_section',
+                'caption' => _t('_adm_dsg_txt_settings_section_accent'),
+            ],
+            'accent_info' => [
+                'type' => 'custom',
+                'name' => 'accent_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                    'text' => _t('_adm_dsg_inf_settings_section_accent')
+                ]),
+            ],
+            'sys_design_accent' => [
+                'type' => 'select',
+                'name' => 'sys_design_accent',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_accent'),
+                'values' => $this->getSettingsAccentList(),
+                'value' => BxDolDesigns::getAccent(),
+                'attrs' => [
+                    'onchange' => $this->getPageJsObject() . '.previewAccent(this)',
+                    'data-presets' => json_encode(BxDolDesigns::getAccentPresets()),
+                ],
+            ],
+        ];
+    }
+
     protected function getSettings()
     {
         $oTemplate = BxDolStudioTemplate::getInstance();
@@ -1478,15 +1655,10 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'name' => 'template_section',
                     'caption' => _t('_adm_dsg_txt_settings_section_template'),
                 ],
-                'template_info' => [
-                    'type' => 'custom',
-                    'name' => 'template_info',
-                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_settings_section_template')]),
-                ],
                 'template' => [
                     'type' => 'custom',
                     'name' => 'template',
-                    'content' => $this->getSettingsTemplates(),
+                    'content' => $this->getSettingsTemplateNote(),
                 ],
                 'layout_section' => [
                     'type' => 'block_header',
@@ -1510,6 +1682,25 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'content' => $this->getSettingsLayouts('sys_pt_default_' . $sWho, _t('_adm_dsg_txt_settings_layout_' . $sWho)),
             ];
 
+        // The header and the footer per layout: the site's templates and the apps follow them (BxDolTemplate::getHeaderLayout, getFooterLayout).
+        $aForm['inputs'] += [
+            'header_section' => [
+                'type' => 'block_header',
+                'name' => 'header_section',
+                'caption' => _t('_adm_dsg_txt_settings_section_header'),
+            ],
+            'header_info' => [
+                'type' => 'custom',
+                'name' => 'header_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_settings_section_header')]),
+            ],
+        ];
+        $aForm['inputs']['header_table'] = [
+            'type' => 'custom',
+            'name' => 'header_table',
+            'content' => $this->getSettingsHeader(),
+        ];
+
         // One style for the site's forms and the apps', which read it from the form API (BxBaseFormView::getLabelStyle).
         $aForm['inputs'] += [
             'forms_section' => [
@@ -1532,6 +1723,9 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'value' => $this->getSettingsLabelStyle(),
             ],
         ];
+
+        $aForm['inputs'] += $this->getSettingsCornersInputs($oTemplate);
+        $aForm['inputs'] += $this->getSettingsAccentInputs($oTemplate);
 
         $aForm['inputs'] += [
             'header_note' => [ // the note under the sections, in a section of its own
@@ -1572,39 +1766,23 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     }
 
     /**
-     * The site template as a choice of cards: each enabled template with its Studio icon, the one in use checked.
+     * The site template is chosen in Designer > Template (makeDefault): here a note with the one in use and a link there.
      */
-    protected function getSettingsTemplates()
+    protected function getSettingsTemplateNote()
     {
-        $sCurrent = getParam('template');
+        $sTemplate = getParam('template');
+        $aTemplates = $this->getSettingsTemplateList();
+        $sTitle = isset($aTemplates[$sTemplate]) ? $aTemplates[$sTemplate]['title'] : $sTemplate;
 
-        $aCards = [];
-        foreach($this->getSettingsTemplateList() as $sUri => $aModule) {
-            $sIcon = 'template/images/icons/std-icon.svg';
-            $bIcon = file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . $sIcon);
-
-            $aCards[] = [
-                'uri' => bx_html_attribute($sUri),
-                'title' => bx_process_output($aModule['title']),
-                'version' => bx_process_output($aModule['version']),
-                'checked' => $sUri == $sCurrent ? 'checked="checked"' : '',
-                'bx_if:show_icon' => [
-                    'condition' => $bIcon,
-                    'content' => ['icon_url' => BX_DOL_URL_MODULES . $aModule['path'] . $sIcon]
-                ],
-                'bx_if:show_letter' => [
-                    'condition' => !$bIcon,
-                    'content' => ['letter' => bx_process_output(get_mb_substr($aModule['title'], 0, 1))]
-                ],
-                'bx_if:show_current' => [
-                    'condition' => $sUri == $sCurrent,
-                    'content' => []
-                ],
-            ];
-        }
-
-        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_templates.html', [
-            'bx_repeat:templates' => $aCards
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_logo_note.html', [
+            'text' => _t('_adm_dsg_txt_tmpl_footer', bx_process_output($sTitle)) . ' ' . _t('_adm_dsg_txt_settings_template_note'),
+            'bx_if:show_link' => [
+                'condition' => true,
+                'content' => [
+                    'url' => BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_GENERAL,
+                    'link' => _t('_adm_dsg_lnk_tmpl_page'),
+                ]
+            ],
         ]);
     }
 
@@ -1629,6 +1807,102 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_layouts.html', [
             'caption' => $sCaption,
             'bx_repeat:layouts' => $aCards
+        ]);
+    }
+
+    /**
+     * The page, header and footer settings as a table: a row per layout (Standard, Application), a column per audience
+     * (visitors, members), and in each cell a sketch of that page over four segmented controls: the page's width
+     * (with its pixels), the header's width, the main menu's place and the footer's width. The sketch follows the
+     * controls (designer.css, :has).
+     */
+    protected function getSettingsHeader()
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $aAudiences = [];
+        foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho)
+            $aAudiences[] = ['audience' => $sWho, 'caption' => _t('_adm_dsg_txt_settings_layout_' . $sWho)];
+
+        $sRows = '';
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout) {
+            $aCells = [];
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $iType = $sLayout == 'application' ? BX_PAGE_TYPE_APPLICATION : BX_PAGE_TYPE_STANDARD;
+                $sSuffix = $sLayout . '_' . $sWho;
+                $aCurrent = BxDolTemplate::getHeaderLayout($iType, $sWho == 'member');
+                $mixedPageWidth = BxDolTemplate::getPageWidth($iType, $sWho == 'member');
+
+                // The page's width: Limited, with its pixels next to it, or Full width.
+                $sControls = $this->getSettingsHeaderControl('sys_page_width_kind_' . $sSuffix, 'page', _t('_adm_dsg_txt_settings_page_width'), [
+                    'limited' => _t('_adm_dsg_txt_settings_page_width_limited'),
+                    'full' => _t('_adm_dsg_txt_settings_page_width_full'),
+                ], $mixedPageWidth == 'full' ? 'full' : 'limited', $oTemplate->parseHtmlByName('dsr_settings_header_page_width.html', [
+                    'name' => 'sys_page_width_' . $sSuffix,
+                    'value' => $mixedPageWidth == 'full' ? BxDolTemplate::PAGE_WIDTH_DEFAULT : (int)$mixedPageWidth,
+                    'title' => bx_html_attribute(_t('_adm_dsg_txt_settings_page_width_px')),
+                ]));
+
+                foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aValues) {
+                    $aChoices = [];
+                    foreach($aValues as $sValue)
+                        $aChoices[$sValue] = _t('_adm_dsg_txt_settings_header_' . $sKind . '_' . $sValue);
+
+                    $sControls .= $this->getSettingsHeaderControl('sys_header_' . $sKind . '_' . $sSuffix, $sKind, _t('_adm_dsg_txt_settings_header_' . $sKind), $aChoices, $aCurrent[$sKind]);
+                }
+
+                // The footer's width, as the header's: the page's or the window's.
+                $aChoices = [];
+                foreach(BxDolTemplate::FOOTER_WIDTHS as $sValue)
+                    $aChoices[$sValue] = _t('_adm_dsg_txt_settings_footer_width_' . $sValue);
+                $sControls .= $this->getSettingsHeaderControl('sys_footer_width_' . $sSuffix, 'footer', _t('_adm_dsg_txt_settings_footer_width'), $aChoices, BxDolTemplate::getFooterLayout($iType, $sWho == 'member')['width']);
+
+                $aCells[] = [
+                    'layout' => $sLayout,
+                    'audience' => $sWho,
+                    'audience_caption' => _t('_adm_dsg_txt_settings_layout_' . $sWho),
+                    'controls' => $sControls,
+                ];
+            }
+
+            $sRows .= $oTemplate->parseHtmlByName('dsr_settings_header_row.html', [
+                'layout' => $sLayout,
+                'caption' => _t('_adm_dsg_txt_settings_header_' . $sLayout),
+                'bx_repeat:cells' => $aCells,
+            ]);
+        }
+
+        return $oTemplate->parseHtmlByName('dsr_settings_header.html', [
+            'bx_repeat:audiences' => $aAudiences,
+            'rows' => $sRows,
+        ]);
+    }
+
+    /**
+     * One segmented control of the page and header table.
+     * @param string $sName the radios' name
+     * @param string $sKind what it sets, for the sketch: 'page', 'width', 'align' or 'footer'
+     * @param array $aChoices value => title
+     * @param string $sCurrent the chosen value
+     * @param string $sExtra HTML after the control (the page's pixels)
+     */
+    protected function getSettingsHeaderControl($sName, $sKind, $sCaption, $aChoices, $sCurrent, $sExtra = '')
+    {
+        $aRepeat = [];
+        foreach($aChoices as $sValue => $sTitle)
+            $aRepeat[] = [
+                'name' => $sName,
+                'value' => $sValue,
+                'kind' => $sKind,
+                'title' => $sTitle,
+                'checked' => $sCurrent == $sValue ? 'checked="checked"' : '',
+            ];
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_header_control.html', [
+            'id' => 'adm-dsg-ht-' . $sName,
+            'caption' => $sCaption,
+            'bx_repeat:choices' => $aRepeat,
+            'extra' => $sExtra,
         ]);
     }
 

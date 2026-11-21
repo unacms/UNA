@@ -954,6 +954,38 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     }
 
     /**
+     * Whether a text block (`lang` type, by its language key) still has the default text UNA ships, which the operator
+     * hasn't saved yet: Terms and Privacy. The keys are in `sys_page_lang_blocks_review`; saving the block in Studio
+     * removes its key (setLangBlockReviewed). The page shows the operator a note to review the text.
+     * @param string $sKey language key of the block's text
+     * @return boolean
+     */
+    public static function isLangBlockToReview($sKey)
+    {
+        $sKey = trim((string)$sKey);
+        return $sKey !== '' && in_array($sKey, self::_getLangBlocksToReview(), true);
+    }
+
+    /**
+     * The operator saved a text block: stop asking to review its text.
+     * @param string $sKey language key of the block's text
+     */
+    public static function setLangBlockReviewed($sKey)
+    {
+        $aKeys = self::_getLangBlocksToReview();
+        if(($iIndex = array_search(trim((string)$sKey), $aKeys, true)) === false)
+            return;
+
+        unset($aKeys[$iIndex]);
+        setParam('sys_page_lang_blocks_review', implode(',', $aKeys));
+    }
+
+    protected static function _getLangBlocksToReview()
+    {
+        return array_values(array_filter(array_map('trim', explode(',', (string)getParam('sys_page_lang_blocks_review')))));
+    }
+
+    /**
      * The meta description of a page by its object name, without making the page: the page's own description, else
      * the site's default one (`_sys_page_meta_description_default`), with the site's title in place of its marker.
      * For a script that stands in for a page (splash.php for the home page). Empty when both are.

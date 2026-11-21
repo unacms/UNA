@@ -185,6 +185,7 @@ class BxDolMigrationsQuery extends BxDolDb
     public function isColumn(string $sTable, string $sColumn): bool
     {
         self::_checkName($sTable);
+        self::_checkName($sColumn);
         $oStatement = $this->_pdo()->prepare("SHOW COLUMNS FROM `$sTable` WHERE `Field` = ?");
         $oStatement->execute([$sColumn]);
         $bResult = $oStatement->fetchColumn() !== false;
@@ -213,6 +214,14 @@ class BxDolMigrationsQuery extends BxDolDb
             throw new InvalidArgumentException('Bad column definition');
 
         $this->runStatement("ALTER TABLE `$sTable` ADD COLUMN `$sColumn` $sDefinition");
+    }
+
+    public function dropColumn(string $sTable, string $sColumn): void
+    {
+        self::_checkName($sTable);
+        self::_checkName($sColumn);
+
+        $this->runStatement("ALTER TABLE `$sTable` DROP COLUMN `$sColumn`");
     }
 
     /**

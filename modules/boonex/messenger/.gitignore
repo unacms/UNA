@@ -11,6 +11,9 @@ Thumbs.db
 template/css/tailwind/node_modules
 template/css/tailwind/yarn.lock
 template/css/tailwind/yarn-error.log
+template/css/tailwind/package-lock.json
+template/css/tailwind/parent.config.js
+template/css/tailwind/tailwind.smooth-shadow.js
 js/emoji
 
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Designer > Logo: a dark preview whose logo hardly shows on the dark page says so. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_dsg_txt_logo_low_contrast_dark"><![CDATA[This logo is hard to see on a dark background. Upload a light version for dark mode.]]></string_add>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_feedback_form_question_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string_upd>
+    <string_upd name="_bx_feedback_form_question_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+    <string_upd name="_bx_feedback_err_login_required"><![CDATA[You need to log in first.]]></string_upd>
+</resources>

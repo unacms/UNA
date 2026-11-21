@@ -1,0 +1,14 @@
+<div class="bx-oauth-connected-apps bx-def-margin-top">
+    <div class="bx-def-font-h3 bx-def-margin-sec-bottom">__title__</div>
+    <div class="bx-def-font-grayed bx-def-margin-sec-bottom">__info__</div>
+    <ul class="bx-oauth-connected-apps-list">
+<bx_repeat:apps>        <li class="flex items-center justify-between gap-2 py-2 bx-def-border-bottom">
+            <span class="min-w-0 truncate">__app_title__</span>
+            <form method="post" action="__url__" onsubmit="return confirm('__confirm__');">
+                <input type="hidden" name="client_id" value="__client_id__" />
+                <input type="hidden" name="csrf_token" value="__csrf_token__" />
+                <button type="submit" class="bx-btn bx-btn-small">__disconnect__</button>
+            </form>
+        </li>
+</bx_repeat:apps>    </ul>
+</div>

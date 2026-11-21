@@ -268,6 +268,18 @@ blockquote {
 
     max-width: 75%;
 }
+/* The header's buttons and tabs sit at its top padding, so a button is as far from the block's top edge as from its right
+   one. Beside a one-line title the header is as tall as the button and the title is centred on it; over a description
+   the title runs down from the same top line. The tabs' 1px padding (it keeps focus rings inside their scroll box) is
+   taken back by the margin, so it moves nothing. */
+.bx-db-header > .bx-db-menu {
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
+}
+.bx-db-header > .bx-db-menu > .bx-db-menu-tab {
+    margin-top: -1px;
+    margin-bottom: -1px;
+}
 
 .bx-media-phone .bx-db-menu {
     max-width: 65%;
@@ -777,7 +789,6 @@ div.bx-popup-chain-item .bx-loading-ajax {
     text-align:center;
     font-size:1rem;
     padding:10px;
-    text-transform:uppercase;
 }
 
 /* --------------- loading indicator */
@@ -845,20 +856,34 @@ button.bx-btn:focus:not(:focus-visible) .bx-loading-ajax-btn {
     display: inline-flex;
 }
 
-/* Its ink is the theme's neutral foreground (gray-950 / gray-50); far dots fade towards the page. */
+/* Its ink is the theme's neutral foreground (gray-950 / gray-50); far dots fade towards the page.
+   The default orb sits on a round plate: half-transparent, blurring what is behind it, so the orb reads over any
+   content. The plate is padding that the margin takes back, so the orb's box keeps its size. An orb in a button
+   has no plate: the button is its background. */
 .bx-loading-orb {
     display: block;
     flex: none;
+    box-sizing: content-box;
     width: 64px;
     height: 64px;
+    padding: 12px;
+    margin: -12px;
+    border-radius: 9999px;
+    corner-shape: round;
     color: #0a0a0c;
+    background-color: rgb(255 255 255 / 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
 }
 html.dark .bx-loading-orb {
     color: #fafafc;
+    background-color: rgb(38 38 42 / 0.5);
 }
 .bx-loading-orb[data-bx-orb-size="32"] {
     width: 32px;
     height: 32px;
+    padding: 6px;
+    margin: -6px;
 }
 .bx-loading-orb[data-bx-orb-size="20"] {
     width: 20px;
@@ -868,11 +893,16 @@ html.dark .bx-loading-orb {
 /* In a button the orb takes the button's text colour, so it shows on primary buttons too. */
 .bx-loading-ajax-btn .bx-loading-orb,
 html.dark .bx-loading-ajax-btn .bx-loading-orb {
+    padding: 0;
+    margin: 0;
     color: inherit;
+    background-color: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 }
 
 /* Transition pages: the orb in the middle of the screen with the page's message under it. A plain "Please wait"
-   (transition_wait.html, after signing in) is for screen readers only: the orb says it. */
+   (transition_wait.html, after signing in or out) is for screen readers only: the orb says it. */
 .bx-transition {
     position: fixed;
     inset: 0;

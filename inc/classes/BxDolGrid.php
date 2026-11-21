@@ -43,6 +43,10 @@
  *      - '_enable': for custom behavior upon activation/deactivation
  *      - '_isRowDisabled' and '_isCheckboxDisabled': for displaying disabled rows which is not related to 'field_active' field.
  *      - '_isSwitcherOn': to display rows which are active/disabled by default.
+ * - field_active_api: name of the field which determines if the row is shown in the apps (NEO web, iOS, Android), usually `active_api`;
+ *      empty when the grid has no such field. With it, the 'switcher_api' column toggles this field (action 'enable_api'),
+ *      and a row is displayed as disabled only when both 'field_active' and 'field_active_api' are off.
+ *      Override '_enableApi' for custom behavior upon showing/hiding the row in the apps.
  * - paginate_url: URL of the page for the grid, set it empty for AJAX paginate, or specify the url for regular page reloading in paginate, with the following markers:
  *      - {start}: starting record to show data from.
  *      - {per_page}: number of records per one page.
@@ -92,6 +96,8 @@
  *          you need to specify 'field_id' field, so every checkbox have unique row id;
  *          you need to specify bulk actions separately in 'sys_grid_actions' table;
  *          you can override '_isCheckboxSelected' function to display checkbox as checked by default.
+ * - switcher: display column with switches which turn 'field_active' on and off (action 'enable').
+ * - switcher_api: display column with switches which turn 'field_active_api' on and off (action 'enable_api').
  * - actions: display column with single actions, displayed as buttons; you need to specify field_id field,
  *          so every action is provided with unique row id; you need to specify single actions separately in sys_grid_actions table.
  *
@@ -276,6 +282,9 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     protected $_iTotalCount = 0;
 
     protected $_bActionCsrfChecking;
+
+    protected $_tmpOrderField;
+    protected $_tmpOrderDir;
 
     /**
      * Constructor
@@ -781,9 +790,10 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             } else {
                 return bx_process_output($aRow[$sKey]);
             }
-        } else {
-            return _t('_undefined');
         }
+
+        // a row without this field (a menu with no set) shows an empty cell
+        return '';
     }
 
     protected function _cmp ($r1, $r2)

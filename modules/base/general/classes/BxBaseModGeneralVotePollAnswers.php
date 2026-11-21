@@ -145,7 +145,7 @@ class BxBaseModGeneralVotePollAnswers extends BxTemplVoteLikes
 
     protected function _getIconDo($bVoted)
     {
-    	return $bVoted ?  'far dot-circle' : 'far circle';
+    	return $bVoted ? 'circle-dot' : 'circle';
     }
 
     protected function _getTitleDo($bVoted)
@@ -164,7 +164,7 @@ class BxBaseModGeneralVotePollAnswers extends BxTemplVoteLikes
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        return _t($CNF['T']['txt_poll_answer_vote_counter'], $iCount);
+        return _tn($CNF['T']['txt_poll_answer_vote_counter'], $iCount);
     }
 
     protected function _isShowDoVote($aParams, $isAllowedVote, $bCount)

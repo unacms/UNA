@@ -9,9 +9,6 @@
  * @{
  */
 
-$aPathInfo = pathinfo(__FILE__);
-require_once ($aPathInfo['dirname'] . '/../vendor/autoload.php');
-
 use Alancting\Microsoft\JWT\AzureAd\AzureAdConfiguration;
 use Alancting\Microsoft\JWT\AzureAd\AzureAdAccessTokenJWT;
 use Alancting\Microsoft\JWT\AzureAd\AzureAdIdTokenJWT;
@@ -40,6 +37,14 @@ class BxAzrB2CModule extends BxBaseModConnectModule
     }
 
     /**
+     * The settings the module needs to sign people in are filled in.
+     */
+    public function isConfigured()
+    {
+        return (bool)($this->_oConfig->sClientID && $this->_oConfig->sSecret);
+    }
+
+    /**
      * Redirect to remote site login form
      *
      * @return n/a - redirect or HTML page in case of error
@@ -55,7 +60,7 @@ class BxAzrB2CModule extends BxBaseModConnectModule
             $this->_redirect ($this -> _oConfig -> sDefaultRedirectUrl);
         }
 
-        if (!$this->_oConfig->sClientID || !$this->_oConfig->sSecret) {
+        if (!$this->isConfigured()) {
             require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
             bx_import('BxDolLanguages');
             $sCode =  MsgBox( _t('_bx_azrb2c_profile_error_api_keys') );

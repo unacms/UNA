@@ -5,6 +5,7 @@ use PHPUnit\Framework\Attributes\Group;
 /**
  * BxDolDb::connect sets the session up in one statement: utf8mb4 with the site's collation,
  * an empty sql_mode and the site's storage engine, without asking the server for its version.
+ * It sets no transaction isolation level: transactions run at the server's own.
  */
 #[Group('integration')]
 class DbConnectSessionTest extends BxDolIntegrationTestCase
@@ -73,12 +74,67 @@ class DbConnectSessionTest extends BxDolIntegrationTestCase
     public function testConnectSendsOneSetAndNoSelect(): void
     {
         $oDb = BxDolDb::getInstance();
-        $sEngine = (new ReflectionProperty(BxDolDb::class, '_sStorageEngine'))->getValue($oDb);
 
         $aSent = $this->reconnect($oDb);
 
-        // InnoDB adds SET TRANSACTION, which applies to the next transaction only, so it stays apart.
-        $this->assertSame(0 == strcasecmp($sEngine, 'INNODB') ? 2 : 1, $aSent['Com_set_option'], 'One SET for the session.');
+        $this->assertSame(1, $aSent['Com_set_option'], 'One SET for the session, whatever the storage engine.');
         $this->assertSame(0, $aSent['Com_select'], 'No SELECT VERSION().');
+    }
+
+    /**
+     * A second, non-persistent connection to the site's database that waits at most a second for a lock.
+     */
+    protected function otherConnection(): PDO
+    {
+        $sDsn = 'mysql:' . (BX_DATABASE_SOCK ? 'unix_socket=' . BX_DATABASE_SOCK : 'host=' . BX_DATABASE_HOST . (BX_DATABASE_PORT ? ';port=' . BX_DATABASE_PORT : '')) . ';dbname=' . BX_DATABASE_NAME;
+        $oPdo = new PDO($sDsn, BX_DATABASE_USER, BX_DATABASE_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $oPdo->exec("SET SESSION innodb_lock_wait_timeout = 1");
+        return $oPdo;
+    }
+
+    /**
+     * Whether a plain read in a transaction of this session locks the row it reads, which InnoDB does
+     * only at SERIALIZABLE: another connection then can't lock the row for update until the transaction ends.
+     */
+    protected function readLocksRow(BxDolDb $oDb, PDO $oOther): bool
+    {
+        $oDb->pdoExec("START TRANSACTION");
+        try {
+            $oDb->getOne("SELECT `name` FROM `sys_options` WHERE `name` = 'site_title'");
+
+            $oOther->beginTransaction();
+            try {
+                $oOther->query("SELECT `name` FROM `sys_options` WHERE `name` = 'site_title' FOR UPDATE")->fetchAll();
+                return false;
+            }
+            catch (PDOException $e) {
+                if (1205 != ($e->errorInfo[1] ?? 0))
+                    throw $e;
+                return true;
+            }
+            finally {
+                $oOther->rollBack();
+            }
+        }
+        finally {
+            $oDb->pdoExec("COMMIT");
+        }
+    }
+
+    public function testTransactionsDoNotRunSerializable(): void
+    {
+        $oDb = BxDolDb::getInstance();
+        if (!$oDb->getOne("SELECT 1 FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = 'sys_options' AND `ENGINE` = 'InnoDB'"))
+            $this->markTestSkipped('sys_options is not an InnoDB table.');
+
+        $oOther = $this->otherConnection();
+        if ($this->readLocksRow($oDb, $oOther))
+            $this->markTestSkipped('The server itself runs transactions at SERIALIZABLE.');
+
+        // The first transaction after connecting, which a one-shot SET TRANSACTION would cover, and a later one.
+        $oDb->disconnect();
+        $oDb->connect();
+        $this->assertFalse($this->readLocksRow($oDb, $oOther), 'The first transaction after connecting runs at the server\'s level.');
+        $this->assertFalse($this->readLocksRow($oDb, $oOther), 'A later transaction runs at the server\'s level.');
     }
 }

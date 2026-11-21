@@ -3,7 +3,7 @@ import { Text, headingProps } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import { SidebarTitle } from 'app/ui/molecules/sidebar-title'
-import { getMenuItemGroup, groupMenuEntries, hasMenuGroups } from 'app/lib/menu-groups'
+import { buildMenuSections, hasMenuSections } from 'app/lib/menu-sections'
 import {
     appSetting,
     decodeTextNode,
@@ -55,7 +55,6 @@ import {
     PanelHandler,
     resolvePanelProps,
 } from 'app/ui/molecules/page/resizable-panels'
-import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpointName } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useHeaderHeight } from 'app/context/jotai/layout'
@@ -924,10 +923,10 @@ function NavigatorMenuLink({ item, index, setIndex, danger = false }) {
     )
 }
 
-/** The flat sidebar links: in sections where the menu's items have groups, else one list. */
+/** The flat sidebar links: in sections where the menu has them (Settings, `lib/menu-sections.ts`), else one list. */
 function SidebarNavLinks({ routes, index, setIndex }) {
     const shown = routes.filter((aItem) => aItem.hideInTop != true)
-    if (hasMenuGroups(shown.map((route) => route.item))) {
+    if (hasMenuSections(shown.map((route) => route.item))) {
         return <SidebarNavSections routes={shown} index={index} setIndex={setIndex} />
     }
     return shown.map((item) => (
@@ -941,32 +940,32 @@ function SidebarNavLinks({ routes, index, setIndex }) {
 }
 
 /**
- * The flat sidebar links of a menu whose items have groups (Settings), in the sections the phone list shows
- * (`lib/menu-groups.ts`, `settings-menu.tsx`): the account's under "Account", the current profile's under its name,
- * then the rest, and the dangerous ones last in the destructive colour.
+ * The flat sidebar links of a menu in sections (Settings), as the phone list shows them (`lib/menu-sections.ts`,
+ * `settings-menu.tsx`): under the titles UNA gives its items without a link ("Account", the current profile's name),
+ * the items outside them, and the dangerous ones in the destructive colour.
  */
 function SidebarNavSections({ routes, index, setIndex }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    const headings = { account: t('Account'), profile: currentUser?.display_name || '' }
-    const sections = groupMenuEntries(routes, (route) => getMenuItemGroup(route.item))
+    // An older UNA's groups have no titles of their own.
+    const sections = buildMenuSections(routes, (route) => route.item, { account: t('Account'), profile: currentUser?.display_name || '' })
 
     return (
         <View className="w-full gap-3">
-            {sections.map(({ group, entries }) => (
-                <View key={group} className="w-full gap-0.5">
-                    {headings[group] ? (
+            {sections.map((section) => (
+                <View key={section.key} className="w-full gap-0.5">
+                    {section.title ? (
                         <Text className="px-2 pt-1 pb-0.5 text-sm font-semibold text-muted-foreground" numberOfLines={1}>
-                            {headings[group]}
+                            {section.title}
                         </Text>
                     ) : null}
-                    {entries.map((item) => (
+                    {section.entries.map((item) => (
                         <NavigatorMenuLink
                             key={`lmenu-${item.index}`}
                             item={item}
                             index={index}
                             setIndex={setIndex}
-                            danger={group === 'danger'}
+                            danger={section.danger}
                         />
                     ))}
                 </View>
@@ -1241,7 +1240,6 @@ export function TopSidebar({
     children,
     title,
     icon,
-    layout,
     layoutName,
     omitDefaultBackground = false,
     contentWidth,
@@ -1256,7 +1254,7 @@ export function TopSidebar({
     // name) and its actions (Add...), and a second line with the tabs and the section's tools (filters, Search).
     const isSectionTabBar = !isProfile && !sectionSidebar
     const widthClass = contentWidth || appSetting('layout', 'page_content_width_default')
-    const showAddButtons = layout != 'mixed' && !isProfile
+    const showAddButtons = !isProfile
     const showTitle = !!title && conductorTheme.show_title !== false && !isProfile
     const desktopFlex = `hidden ${conductorTheme.hide_top_menu_from}:flex`
     // Tablets (sm to lg): the section's actions and tools at the end of the tab row (the page header shows its icon and
@@ -1385,7 +1383,6 @@ export const TabBar = ({
     contentWidth,
 }) => {
     const { t } = useTranslation()
-    const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const isDesktop = useIsDesktop()
     // Left-column menus and the Filters trigger sit at the end of the tab row while the left
@@ -1420,7 +1417,6 @@ export const TabBar = ({
             // Regular, as the header's own buttons: the section's two-line header is laid out on the same 44px grid.
             actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" controlSize="regular" />}
             toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" controlSize="regular" />}
-            layout={layout}
             title={t(menuSettings?.name)}
             icon={sectionIcon}
             contentWidth={contentWidth}

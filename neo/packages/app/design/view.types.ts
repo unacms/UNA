@@ -22,6 +22,11 @@ type WebExtras = {
 
 export type DesignViewProps = RNViewProps & WebExtras & {
     className?: string
+    /**
+     * Web, `View` and `Row`: report the first `onLayout` before the browser paints, for an element whose first paint
+     * depends on its own size. Native reports layout its own way and ignores it.
+     */
+    layoutBeforePaint?: boolean
     children?: ReactNode
     ref?: Ref<ViewInstance>
 }

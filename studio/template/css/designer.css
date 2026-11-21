@@ -134,14 +134,14 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: flex;
     gap: 0.25rem;
     padding: 0.25rem;
-    border-radius: 0.75rem;
+    border-radius: var(--bx-radius-xl);
     background-color: rgba(0, 0, 0, 0.05);
 }
 .adm-dsg-fs-vp {
     min-height: 2.25rem;
     padding: 0 0.75rem;
     border: 0;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background: transparent;
     color: #52525b;
     font-size: 0.875rem;
@@ -170,7 +170,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     min-height: 2.25rem;
     padding: 0 0.5rem;
     border: 0;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background-color: #fff;
     color: #18181b;
     font-size: 0.875rem;
@@ -203,7 +203,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     overflow: hidden;
     resize: horizontal;
     transform-origin: 0 0;
-    border-radius: 0.75rem;
+    border-radius: var(--bx-radius-xl);
     background-color: #fff;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
@@ -269,7 +269,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: block;
     width: 3.5rem;
     height: 3.5rem;
-    border-radius: 0.875rem;
+    border-radius: calc(0.875rem * var(--bx-radius-scale));
     object-fit: cover;
 }
 .adm-dsg-pwa-home {
@@ -293,7 +293,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
 .adm-dsg-pwa-launch .adm-dsg-pwa-icon {
     width: 4rem;
     height: 4rem;
-    border-radius: 1rem;
+    border-radius: var(--bx-radius-2xl);
 }
 .adm-dsg-pwa-name {
     max-width: 100%;
@@ -316,7 +316,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background-color: #fff;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 12px -4px rgba(0, 0, 0, 0.15);
 }
@@ -330,7 +330,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
 .adm-dsg-pwa-titlebar-icon {
     width: 1rem;
     height: 1rem;
-    border-radius: 0.25rem;
+    border-radius: var(--bx-radius);
 }
 .adm-dsg-pwa-titlebar .adm-dsg-pwa-name {
     font-size: 0.75rem;
@@ -370,7 +370,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 0.75rem;
+    border-radius: var(--bx-radius-xl);
     background-color: #fff;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
     cursor: pointer;
@@ -379,10 +379,10 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 .adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
-    box-shadow: 0 0 0 2px #2563eb;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-600));
 }
 .adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
-    outline: 2px solid #2563eb;
+    outline: 2px solid rgb(var(--bx-accent-600));
     outline-offset: 2px;
 }
 .adm-dsg-choice-input:focus-visible {
@@ -394,7 +394,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     width: 1rem;
     height: 1rem;
     margin: 0;
-    accent-color: #2563eb;
+    accent-color: rgb(var(--bx-accent-600));
 }
 .adm-dsg-choice-art {
     display: flex;
@@ -430,30 +430,11 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     padding: 0 0.375rem;
     border-radius: 9999px;
     background-color: #dbeafe;
-    color: #1d4ed8;
+    color: rgb(var(--bx-accent-700));
     font-size: 0.75rem;
     font-weight: 500;
     line-height: 1.25rem;
     vertical-align: 1px;
-}
-.adm-dsg-template-icon {
-    display: block;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 1rem;
-    object-fit: cover;
-}
-.adm-dsg-template-letter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 1rem;
-    background-color: #71717a;
-    color: #fff;
-    font-size: 1.75rem;
-    font-weight: 600;
 }
 
 /* Page layout sketches: header, side menu, content and footer as blocks, shown or hidden per layout. */
@@ -469,7 +450,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
 .adm-dsg-pt-body > span,
 .adm-dsg-pt-content > span {
     display: block;
-    border-radius: 0.25rem;
+    border-radius: var(--bx-radius);
 }
 .adm-dsg-pt-header,
 .adm-dsg-pt-footer {
@@ -516,6 +497,282 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: none !important;
 }
 
+/* Header settings: a table with a row per layout (Standard, Application) and a column per audience (visitors,
+   members). Each cell has a sketch of its header (logo, menu and toolbar over the page) that follows the cell's two
+   segmented controls through :has. In a narrow form the columns stack and each cell names its audience. */
+.adm-dsg-ht-frame {
+    container-type: inline-size;
+}
+.adm-dsg-ht {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+    align-items: start;
+}
+.adm-dsg-ht-col,
+.adm-dsg-ht-row,
+.adm-dsg-ht-cell-caption {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #18181b;
+}
+.adm-dsg-ht-row {
+    padding-top: 0.75rem; /* level with the top of the cells */
+}
+.adm-dsg-ht-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.75rem;
+    border-radius: var(--bx-radius-xl);
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+.adm-dsg-ht-cell-caption {
+    display: none;
+}
+@container (max-width: 40rem) {
+    .adm-dsg-ht {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .adm-dsg-ht-corner,
+    .adm-dsg-ht-col {
+        display: none;
+    }
+    .adm-dsg-ht-row {
+        padding-top: 0.5rem;
+    }
+    .adm-dsg-ht-cell-caption {
+        display: block;
+    }
+}
+.adm-dsg-ht-control {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+.adm-dsg-ht-label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #52525b;
+}
+.adm-dsg-ht-control-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+/* The page's pixels, beside Limited; gone while the page is Full width. */
+.adm-dsg-ht-px {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: #52525b;
+}
+.adm-dsg-ht-control:has([data-kind="page"][value="full"]:checked) .adm-dsg-ht-px {
+    display: none;
+}
+.adm-dsg-ht-px-input {
+    box-sizing: border-box;
+    width: 5.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: var(--bx-radius-xl);
+    background-color: #fff;
+    color: #18181b;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.adm-dsg-ht-px-input:focus-visible {
+    outline: 2px solid rgb(var(--bx-accent-600));
+    outline-offset: 2px;
+}
+
+/* A segmented control of radio buttons, the chosen one raised. The radio stays in place, transparent, for the keyboard. */
+.adm-dsg-seg {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: var(--bx-radius-xl);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.adm-dsg-seg-item {
+    position: relative;
+    display: flex;
+}
+.adm-dsg-seg-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.adm-dsg-seg-text {
+    display: flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border-radius: var(--bx-radius-lg);
+    color: #52525b;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+}
+.adm-dsg-seg-item:hover .adm-dsg-seg-text {
+    color: #18181b;
+}
+.adm-dsg-seg-input:checked + .adm-dsg-seg-text {
+    background-color: #fff;
+    color: #18181b;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+.adm-dsg-seg-input:focus-visible + .adm-dsg-seg-text {
+    outline: 2px solid rgb(var(--bx-accent-600));
+    outline-offset: 2px;
+}
+
+/* The sketch: the header's content as wide as the page (72%) or the window, the menu at its start, centre or end,
+   over the page's content, and the footer under it, as wide as the page or the window; an Application page has its
+   side menu and fills the window. */
+.adm-dsg-hd {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    height: 6rem;
+    padding: 0.75rem 0 0.5rem;
+    box-sizing: border-box;
+    border-radius: var(--bx-radius-lg);
+    background-color: #f4f4f5;
+    overflow: hidden;
+}
+.adm-dsg-hd-bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    height: 1.25rem;
+    background-color: #fff;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08);
+}
+.adm-dsg-hd-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+    transition: width 200ms ease, padding 200ms ease;
+}
+.adm-dsg-ht-cell:has([data-kind="width"][value="page"]:checked) .adm-dsg-hd-inner {
+    width: 72%;
+    padding: 0;
+}
+.adm-dsg-hd-logo,
+.adm-dsg-hd-tools {
+    flex: none;
+    width: 1rem;
+    height: 0.5rem;
+    border-radius: var(--bx-radius-sm);
+    background-color: #a1a1aa;
+}
+.adm-dsg-hd-tools {
+    border-radius: 9999px;
+}
+.adm-dsg-hd-menu {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 0.125rem;
+}
+.adm-dsg-ht-cell:has([data-kind="align"][value="center"]:checked) .adm-dsg-hd-menu {
+    justify-content: center;
+}
+.adm-dsg-ht-cell:has([data-kind="align"][value="end"]:checked) .adm-dsg-hd-menu {
+    justify-content: flex-end;
+}
+.adm-dsg-hd-menu > span {
+    width: 0.75rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background-color: rgb(var(--bx-accent-400));
+}
+.adm-dsg-hd-body {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 0.25rem;
+    width: 72%;
+    margin: 0 auto;
+}
+.adm-dsg-hd-side {
+    display: none;
+    flex: none;
+    width: 18%;
+    border-radius: var(--bx-radius);
+    background-color: #d4d4d8;
+}
+.adm-dsg-hd-content {
+    flex: 1 1 auto;
+    border-radius: var(--bx-radius);
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+/* A Full width page fills the window, and so does a header of Page width on it. */
+.adm-dsg-ht-cell:has([data-kind="page"][value="full"]:checked) .adm-dsg-hd-body {
+    width: auto;
+    margin: 0 0.5rem;
+}
+.adm-dsg-ht-cell:has([data-kind="page"][value="full"]:checked) .adm-dsg-hd-inner {
+    width: 100%;
+    padding: 0 0.5rem;
+}
+.adm-dsg-hd-application .adm-dsg-hd-side {
+    display: block;
+}
+/* The footer: its separator and links, as wide as the page's content (72%) or the window. */
+.adm-dsg-hd-footer {
+    display: flex;
+    flex: none;
+}
+.adm-dsg-hd-footer-inner {
+    display: flex;
+    gap: 0.125rem;
+    box-sizing: border-box;
+    width: 72%;
+    margin: 0 auto;
+    padding-top: 0.25rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    transition: width 200ms ease, padding 200ms ease;
+}
+.adm-dsg-hd-footer-inner > span {
+    width: 0.75rem;
+    height: 0.25rem;
+    border-radius: 9999px;
+    background-color: #a1a1aa;
+}
+.adm-dsg-ht-cell:has([data-kind="footer"][value="full"]:checked) .adm-dsg-hd-footer-inner,
+.adm-dsg-ht-cell:has([data-kind="page"][value="full"]:checked) .adm-dsg-hd-footer-inner {
+    width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+@media (prefers-reduced-motion: reduce) {
+    .adm-dsg-seg-text,
+    .adm-dsg-hd-inner,
+    .adm-dsg-hd-footer-inner {
+        transition: none;
+    }
+}
+
 .dark .adm-dsg-choice {
     background-color: rgba(255, 255, 255, 0.05);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -524,13 +781,13 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 .dark .adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
-    box-shadow: 0 0 0 2px #60a5fa;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
-    outline-color: #60a5fa;
+    outline-color: rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-choice-input {
-    accent-color: #60a5fa;
+    accent-color: rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-choice-art {
     background-color: rgba(255, 255, 255, 0.04);
@@ -557,6 +814,70 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
+.dark .adm-dsg-ht-col,
+.dark .adm-dsg-ht-row,
+.dark .adm-dsg-ht-cell-caption {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-ht-cell {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.dark .adm-dsg-ht-label,
+.dark .adm-dsg-ht-px {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-ht-px-input {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #fafafa;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.dark .adm-dsg-ht-px-input:focus-visible {
+    outline-color: rgb(var(--bx-accent-400));
+}
+.dark .adm-dsg-seg {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+.dark .adm-dsg-seg-text {
+    color: #a1a1aa;
+}
+.dark .adm-dsg-seg-item:hover .adm-dsg-seg-text {
+    color: #f4f4f5;
+}
+.dark .adm-dsg-seg-input:checked + .adm-dsg-seg-text {
+    background-color: #3f3f46;
+    color: #fafafa;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.dark .adm-dsg-seg-input:focus-visible + .adm-dsg-seg-text {
+    outline-color: rgb(var(--bx-accent-400));
+}
+.dark .adm-dsg-hd {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+.dark .adm-dsg-hd-bar {
+    background-color: #27272a;
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+.dark .adm-dsg-hd-logo,
+.dark .adm-dsg-hd-tools,
+.dark .adm-dsg-hd-footer-inner > span {
+    background-color: #52525b;
+}
+.dark .adm-dsg-hd-footer-inner {
+    border-top-color: rgba(255, 255, 255, 0.12);
+}
+.dark .adm-dsg-hd-menu > span {
+    background-color: rgb(var(--bx-accent-500));
+}
+.dark .adm-dsg-hd-side {
+    background-color: #3f3f46;
+}
+.dark .adm-dsg-hd-content {
+    background-color: #27272a;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
 /*--- Template: the installed templates as cards ---*/
 .adm-dsg-tmpl-list {
     display: grid;
@@ -567,12 +888,12 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: flex;
     gap: 0.75rem;
     padding: 0.75rem;
-    border-radius: 0.75rem;
+    border-radius: var(--bx-radius-xl);
     background-color: #fff;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 .adm-dsg-tmpl-card:has([aria-pressed="true"]) {
-    box-shadow: 0 0 0 2px #2563eb;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-600));
 }
 .adm-dsg-tmpl-icon {
     flex: none;
@@ -585,7 +906,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: block;
     width: 3rem;
     height: 3rem;
-    border-radius: 0.75rem;
+    border-radius: var(--bx-radius-xl);
     object-fit: cover;
     font-size: 2rem;
     line-height: 3rem;
@@ -628,35 +949,17 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     font-size: 0.875rem;
     line-height: 1.25rem;
 }
-.adm-dsg-tmpl-footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
-}
-.adm-dsg-tmpl-footer-text {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: #52525b;
-}
-/* The pinned footer is one row: on narrow screens the button alone (the Default badge names the template). */
-@media (max-width: 40rem) {
-    .adm-dsg-tmpl-footer-text {
-        display: none;
-    }
-}
 .dark .adm-dsg-tmpl-card {
     background-color: rgba(255, 255, 255, 0.05);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 .dark .adm-dsg-tmpl-card:has([aria-pressed="true"]) {
-    box-shadow: 0 0 0 2px #60a5fa;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-tmpl-title {
     color: #f4f4f5;
 }
-.dark .adm-dsg-tmpl-meta,
-.dark .adm-dsg-tmpl-footer-text {
+.dark .adm-dsg-tmpl-meta {
     color: #a1a1aa;
 }
 
@@ -666,7 +969,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 0.75rem;
+    border-radius: var(--bx-radius-xl);
     background-color: #fff;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
@@ -684,7 +987,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     min-height: 2.25rem;
     padding: 0 0.5rem;
     border: 0;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background-color: #fff;
     color: #18181b;
     font-size: 0.875rem;

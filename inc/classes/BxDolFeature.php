@@ -232,7 +232,7 @@ class BxDolFeature extends BxDolObject
 
     protected function _getIconDoFeature($bPerformed)
     {
-    	return $bPerformed && $this->isUndo() ? 'far star' : 'star';
+    	return $bPerformed ? 'star sys-icon-filled' : 'star'; // filled while it is featured
     }
 
     protected function _getTitleDoFeature($bPerformed)

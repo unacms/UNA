@@ -12,6 +12,12 @@ use NeuronAI\Tools\ToolProperty;
 
 class BxDolAIToolPromptFeedback extends BxDolAITool
 {
+    /** Works only inside an agent's chat: never given through MCP. */
+    public static function isMcpAllowed(): bool
+    {
+        return false;
+    }
+
     public const TABLE = 'sys_agents_prompt_feedback';
 
     protected const CLIP_FIELD = 20000;

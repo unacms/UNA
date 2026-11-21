@@ -91,6 +91,50 @@ class ImageTranscoderScriptTest extends BxDolIntegrationTestCase
         $this->assertTrue($this->isTranscoded($this->_iFileId . '@2x'));
     }
 
+    public function testFirstVisitGetsTheTranscoderLinkWithoutDensity(): void
+    {
+        $aServer = $_SERVER;
+        $aCookie = $_COOKIE;
+        try {
+            $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0';
+            unset($_COOKIE['devicePixelRatio']);
+            $this->assertTrue($this->_oTranscoder->isDevicePixelRatioUnknown(), 'a browser that has not stored its density yet');
+
+            $sUrl = $this->_oTranscoder->getFileUrl($this->_iFileId);
+            $this->assertStringContainsString('image_transcoder.php?', $sUrl, 'the copy is picked when the image is requested');
+            parse_str((string)parse_url($sUrl, PHP_URL_QUERY), $aGet);
+            $this->assertArrayNotHasKey('dpx', $aGet);
+
+            $_COOKIE['devicePixelRatio'] = '2';
+            $this->assertFalse($this->_oTranscoder->isDevicePixelRatioUnknown(), 'the density is known');
+
+            unset($_COOKIE['devicePixelRatio'], $_SERVER['HTTP_USER_AGENT']);
+            $this->assertFalse($this->_oTranscoder->isDevicePixelRatioUnknown(), 'no browser: emails, cron');
+        } finally {
+            $_SERVER = $aServer;
+            $_COOKIE = $aCookie;
+        }
+    }
+
+    public function testLinkWithoutDensityFollowsTheCookie(): void
+    {
+        $aGet = $this->notReadyLinkParams();
+        unset($aGet['dpx']);
+
+        $this->assertSame(302, $this->request($aGet, ['devicePixelRatio' => '2']));
+        $this->assertTrue($this->isTranscoded($this->_iFileId . '@2x'), 'the 2x copy for a 2x screen');
+    }
+
+    public function testLinkWithoutDensityOrCookieIsTheOneXCopy(): void
+    {
+        $aGet = $this->notReadyLinkParams();
+        unset($aGet['dpx']);
+
+        $this->assertSame(302, $this->request($aGet, [], ['HTTP_USER_AGENT' => 'Mozilla/5.0']));
+        $this->assertTrue($this->isTranscoded($this->_iFileId));
+        $this->assertFalse($this->isTranscoded($this->_iFileId . '@2x'));
+    }
+
     private function notReadyLinkParams(): array
     {
         $this->_oTranscoder->forceDevicePixelRatio(1);
@@ -112,11 +156,13 @@ class ImageTranscoderScriptTest extends BxDolIntegrationTestCase
     /**
      * Run image_transcoder.php in a separate process, since it exits, and return the response status.
      */
-    private function request(array $aGet): int
+    private function request(array $aGet, array $aCookie = [], array $aServer = []): int
     {
         $sCode = implode("\n", [
             "define('BX_SKIP_INSTALL_CHECK', 1);",
             '$_GET = $_REQUEST = ' . var_export(array_map('strval', $aGet), true) . ';',
+            '$_COOKIE = ' . var_export(array_map('strval', $aCookie), true) . ';',
+            '$_SERVER = array_merge($_SERVER, ' . var_export(array_map('strval', $aServer), true) . ');',
             'register_shutdown_function(function () { echo "\n#status:" . http_response_code(); });',
             'chdir(' . var_export(BX_DIRECTORY_PATH_ROOT, true) . ');',
             "require './image_transcoder.php';",

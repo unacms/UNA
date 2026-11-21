@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_agents_mcp_txt_operators"><![CDATA[MCP for operators]]></string_upd>
+    <string_upd name="_sys_agents_mcp_txt_members"><![CDATA[MCP for members]]></string_upd>
+    <string_upd name="_sys_form_account_input_captcha"><![CDATA[Security image]]></string_upd>
+    <string_upd name="_sys_form_account_input_password_current"><![CDATA[Current password]]></string_upd>
+    <string_upd name="_sys_form_account_input_receive_updates"><![CDATA[Receive site updates]]></string_upd>
+    <string_upd name="_sys_form_confirm_email_input_code"><![CDATA[Verification code]]></string_upd>
+    <string_upd name="_sys_form_report_input_caption_text"><![CDATA[Report text]]></string_upd>
+    <string_upd name="_sys_form_report_input_caption_type"><![CDATA[Report type]]></string_upd>
+    <string_upd name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive site updates]]></string_upd>
+    <string_upd name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+    <string_upd name="_sys_menu_item_title_cart"><![CDATA[Shopping cart]]></string_upd>
+    <string_upd name="_sys_menu_item_title_sm_join_paid"><![CDATA[Pay & join]]></string_upd>
+    <string_upd name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Delete version]]></string_upd>
+    <string_upd name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Delete block]]></string_upd>
+    <string_upd name="_sys_menu_item_title_sa_site"><![CDATA[Visit web app]]></string_upd>
+    <string_upd name="_sys_menu_item_title_sa_edit"><![CDATA[Manage apps]]></string_upd>
+    <string_upd name="_sys_menu_item_title_sa_tour"><![CDATA[Introduction tour]]></string_upd>
+    <string_upd name="_sys_menu_item_title_con_friends"><![CDATA[All friends]]></string_upd>
+    <string_upd name="_sys_menu_item_title_con_friend_requests"><![CDATA[Friend requests]]></string_upd>
+    <string_upd name="_sys_menu_item_title_con_friend_requested"><![CDATA[Sent requests]]></string_upd>
+    <string_upd name="_sys_page_block_title_account_settings_delete"><![CDATA[Delete account]]></string_upd>
+    <string_upd name="_sys_page_block_title_account_settings_email"><![CDATA[Email settings]]></string_upd>
+    <string_upd name="_sys_page_block_title_account_settings_info"><![CDATA[Edit account]]></string_upd>
+    <string_upd name="_sys_page_block_title_account_settings_pwd"><![CDATA[Change password]]></string_upd>
+    <string_upd name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+    <string_upd name="_sys_page_block_title_chart_growth"><![CDATA[Growth charts]]></string_upd>
+    <string_upd name="_sys_page_block_title_cmts_administration"><![CDATA[Manage comments]]></string_upd>
+    <string_upd name="_sys_page_block_title_confirm_email"><![CDATA[Email confirmation]]></string_upd>
+    <string_upd name="_sys_page_block_title_confirm_phone"><![CDATA[Phone confirmation]]></string_upd>
+    <string_upd name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend requests]]></string_upd>
+    <string_upd name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent friend requests]]></string_upd>
+    <string_upd name="_sys_page_block_title_recom_friends"><![CDATA[Friend suggestions]]></string_upd>
+    <string_upd name="_sys_page_block_title_search_keyword_form"><![CDATA[Search form]]></string_upd>
+    <string_upd name="_sys_page_block_title_search_keyword_result"><![CDATA[Search result]]></string_upd>
+    <string_upd name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - content]]></string_upd>
+    <string_upd name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - audit]]></string_upd>
+    <string_upd name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - reports]]></string_upd>
+    <string_upd name="_sys_page_block_title_privacy"><![CDATA[Privacy policy]]></string_upd>
+    <string_upd name="_sys_page_block_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string_upd>
+    <string_upd name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string_upd>
+    <string_upd name="_sys_page_block_title_terms"><![CDATA[Terms of service]]></string_upd>
+    <string_upd name="_sys_page_block_title_wiki_pages_list"><![CDATA[Pages list]]></string_upd>
+    <string_upd name="_sys_page_block_title_wiki_page_contents"><![CDATA[Page contents]]></string_upd>
+    <string_upd name="_sys_page_title_account_profile_switcher"><![CDATA[My profiles]]></string_upd>
+    <string_upd name="_sys_page_title_account_settings_delete"><![CDATA[Delete account]]></string_upd>
+    <string_upd name="_sys_page_title_account_settings_email"><![CDATA[Email settings]]></string_upd>
+    <string_upd name="_sys_page_title_account_settings_info"><![CDATA[Edit account]]></string_upd>
+    <string_upd name="_sys_page_title_account_settings_pwd"><![CDATA[Change password]]></string_upd>
+    <string_upd name="_sys_page_title_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+    <string_upd name="_sys_page_title_cmts_administration"><![CDATA[Manage comments]]></string_upd>
+    <string_upd name="_sys_page_title_confirm_email"><![CDATA[Email confirmation]]></string_upd>
+    <string_upd name="_sys_page_title_confirm_phone"><![CDATA[Phone confirmation]]></string_upd>
+    <string_upd name="_sys_page_title_privacy"><![CDATA[Privacy policy]]></string_upd>
+    <string_upd name="_sys_page_title_terms"><![CDATA[Terms of service]]></string_upd>
+    <string_upd name="_sys_page_title_search_keyword"><![CDATA[Search by keyword]]></string_upd>
+    <string_upd name="_sys_page_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string_upd>
+    <string_upd name="_sys_page_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string_upd>
+    <string_upd name="_sys_page_title_studio_dashboard"><![CDATA[Studio dashboard]]></string_upd>
+    <string_upd name="_sys_page_title_wiki_add_page"><![CDATA[Add page]]></string_upd>
+    <string_upd name="_sys_page_block_title_wiki_add_page"><![CDATA[Add page]]></string_upd>
+    <string_upd name="_sys_page_title_wiki_page_contents"><![CDATA[Table of contents]]></string_upd>
+    <string_upd name="_sys_page_title_con_friend_requests"><![CDATA[Friend requests]]></string_upd>
+    <string_upd name="_sys_page_title_con_friend_requested"><![CDATA[Sent friend requests]]></string_upd>
+    <string_upd name="_sys_page_title_recom_friends"><![CDATA[Friend suggestions]]></string_upd>
+    <string_upd name="_sys_txt_api_key"><![CDATA[API key]]></string_upd>
+    <string_upd name="_sys_page_title_redirect"><![CDATA[Redirect confirmation]]></string_upd>
+    <string_upd name="_sys_menu_item_title_dashboard"><![CDATA[Dashboard]]></string_upd>
+    <string_upd name="_sys_form_account_input_publish"><![CDATA[Sign up]]></string_upd>
+    <string_upd name="_sys_form_display_account_create"><![CDATA[Create account]]></string_upd>
+    <string_upd name="_sys_acl_action_create_account"><![CDATA[Create account]]></string_upd>
+    <string_upd name="_sys_form_account_input_agreement_value"><![CDATA[By signing up, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string_upd>
+    <string_upd name="_sys_txt_login_agreement"><![CDATA[By signing in, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string_upd>
+</resources>

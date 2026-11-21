@@ -19,7 +19,7 @@ $aConfig = array(
     'note' => 'Cidaas login, join with a Cidaas account',
     'version' => '15.0.0.DEV',
     'vendor' => 'UNA INC',
-    'help_url' => 'http://feed.una.io/?section={module_name}',
+    'help_url' => '',
 
     'compatible_with' => array(
         '15.0.x'
@@ -63,6 +63,13 @@ $aConfig = array(
      * Dependencies Section
      */
     'dependencies' => array(),
+
+    /**
+     * PHP libraries the module needs (class => composer package), installed with UNA's composer.json.
+     */
+    'php_classes' => array(
+        'Cidaas\\OAuth2\\Client\\Provider\\Cidaas' => 'cidaas/oauth2-cidaas',
+    ),
 );
 
 /** @} */

@@ -163,15 +163,19 @@ export const settingsElements = {
     cards: {
         // The card surface (bg-card/60) on every size: edge to edge with no outline shadow on
         // mobile, detached and rounded with the outline shadow from sm. Overlays use bg-popover.
-        // Corners: 20px (`rounded-block`), as blocks and UNA's blocks and cards.
-        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-block ',
-        'u-card-list-padding': 'p-4 sm:rounded-block',
+        // Corners: 20px (`rounded-card`), as UNA's cards.
+        'u-card-list': ' u-card-list bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-card ',
+        'u-card-list-padding': 'p-4 sm:rounded-card',
+        // Feed posts sit in the page's column beside blocks (the composer, Get started), so they take the block's surface:
+        // its outline (shadow-block-outline) and 22px corners (rounded-block), as UNA's timeline posts. Edge to edge on mobile.
+        'u-card-feed': ' u-card-list u-card-feed bg-card/60 sm:shadow-block-outline sm:dark:shadow-block-outline-deep sm:rounded-block ',
+        'u-card-feed-padding': 'p-4 sm:rounded-block',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-block transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-block',
-        'u-card-base': 'u-card-base rounded-block bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card/60 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-card transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-card',
+        'u-card-base': 'u-card-base rounded-card bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -195,7 +199,7 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-4 ',
         'u-block-bg':
-            ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
+            ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ', // the card at 60%, as on the UNA site and in Studio: white/60, neutral-800/60 in dark
         // 16px on every screen size, like cards. Call sites and blocks that set padding per
         // breakpoint (designbox.padding) can still change it.
         'u-block-pad':
@@ -222,7 +226,7 @@ export const settingsElements = {
             ' px-6 ',
         'u-block-gap-large':
             ' gap-6 ',
-        // 20px (`rounded-block`), as UNA's blocks: a row or tile with 12px corners 8px inside runs parallel.
+        // 22px (`rounded-block`), as UNA's blocks and Studio's.
         // Blocks take these per breakpoint (lib/responsive-classes.ts), so every prefixed form is named here for
         // Tailwind to find: rounded-block sm:rounded-block lg:rounded-block.
         'u-block-rounded': 'rounded-block',
@@ -249,26 +253,27 @@ export const settingsElements = {
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
         'u-block-icon-size': 20,
         'u-block-name': ' flex-auto gap-1 ',
+        // Titles and descriptions take the page's text colour (foreground), as UNA's block titles (.bx-db-title).
         // text-xl on every screen size; line height = the mini (legacy xs) button height, 28px, so the title lines up with header buttons.
         'u-block-title':
-            'text-card-foreground text-xl leading-7 font-semibold tracking-tight',
+            'text-foreground text-xl leading-7 font-semibold tracking-tight',
         // The title over a description: 4px apart, the regular title on a 24px line.
         'u-block-name-stacked': 'flex-auto min-w-0 gap-1',
         'u-block-title-stacked':
-            'text-card-foreground text-xl leading-6 font-semibold tracking-tight',
+            'text-foreground text-xl leading-6 font-semibold tracking-tight',
         // Studio's "Title size" (UNA's `title_size`): text-base on 24px (compact) or text-2xl on 32px (large) instead of
         // the regular text-xl on 28px. Over a description: 16px on 20px, 20px on 24px, 24px on 32px, so with the 4px gap
         // and the description's 20px line they are as tall as the header icon (44, 48, 56px).
         'u-block-title-compact':
-            'text-card-foreground text-base leading-6 font-semibold tracking-tight',
+            'text-foreground text-base leading-6 font-semibold tracking-tight',
         'u-block-title-large':
-            'text-card-foreground text-2xl leading-8 font-semibold tracking-tight',
+            'text-foreground text-2xl leading-8 font-semibold tracking-tight',
         'u-block-title-stacked-compact':
-            'text-card-foreground text-base leading-5 font-semibold tracking-tight',
+            'text-foreground text-base leading-5 font-semibold tracking-tight',
         'u-block-title-stacked-large':
-            'text-card-foreground text-2xl leading-8 font-semibold tracking-tight',
+            'text-foreground text-2xl leading-8 font-semibold tracking-tight',
         // 14px on a 20px line; it may wrap.
-        'u-block-description': 'text-card-foreground text-sm leading-5',
+        'u-block-description': 'text-foreground text-sm leading-5',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',

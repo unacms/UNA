@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Interface sounds: the "Play for guests too" option. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Звуки и для гостей]]></string_add>
+    <string_add name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[Если выключено, посетители, которые не вошли, ничего не слышат, а их страницы не загружают звуки.]]></string_add>
+</resources>

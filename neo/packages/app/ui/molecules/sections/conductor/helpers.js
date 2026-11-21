@@ -14,6 +14,7 @@ import {
     LAYOUT_BREAKPOINTS,
     findElementBySource,
     getMenuHub,
+    getMenuSectionListItems,
 } from 'app/lib/util'
 import { isSectionRootPage, withSectionListBlock } from 'app/lib/section-list'
 import { fetcher } from 'app/lib/fetcher'
@@ -434,13 +435,14 @@ export function fillTabs(
     currentUser,
     useSectionAsMenu
 ) {
-    const menuItems = menuItemsByName(
+    // A section that opens on its own list (Settings) has its section parents lifted out: one tab per page.
+    const menuItems = getMenuSectionListItems(menu, menuItemsByName(
         menu.object,
         menu.items,
         currentUser,
         data.url,
         menu?.config
-    )
+    ))
     const routes = []
 
     const visit = (items, depth, parentIndex) => {

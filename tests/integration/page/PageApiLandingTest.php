@@ -51,7 +51,8 @@ class PageApiLandingTest extends BxDolIntegrationTestCase
     public function testLandingPagesCarryTheirWords(): void
     {
         $aHome = $this->request('home');
-        $this->assertSame(['title' => _t('_sys_txt_splash_title'), 'text' => _t('_sys_txt_splash_slogan')], $aHome['texts'] ?? null);
+        // The tagline is the site's description while the splash shows it, else the slogan (BxDolSplash::getTagline).
+        $this->assertSame(['title' => _t('_sys_txt_splash_title'), 'text' => BxDolSplash::getInstance()->getTagline()], $aHome['texts'] ?? null);
 
         $aJoin = $this->request('create-account');
         foreach (['title' => '_sys_txt_join_title', 'text' => '_sys_txt_join_text', 'title_invite' => '_sys_txt_join_title_invite', 'text_invite' => '_sys_txt_join_text_invite'] as $sField => $sKey) {

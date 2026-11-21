@@ -19,7 +19,7 @@
 	<string name="_bx_contact_form_contact_input_body_err"><![CDATA[You need to type message's body here.]]></string>
 	<string name="_bx_contact_form_contact_input_sys_captcha"><![CDATA[Captcha]]></string>
 	<string name="_bx_contact_form_contact_input_captcha"><![CDATA[Security Image]]></string>
-	<string name="_bx_contact_form_contact_input_captcha_err"><![CDATA[Security image input failed. Please, try again.]]></string>
+	<string name="_bx_contact_form_contact_input_captcha_err"><![CDATA[Security image input failed. Please try again.]]></string>
 	<string name="_bx_contact_form_contact_input_sys_do_submit"><![CDATA[Send]]></string>
 	<string name="_bx_contact_form_contact_input_do_submit"><![CDATA[Send]]></string>
 
@@ -38,10 +38,10 @@
 	<string name="_bx_contact_et_contact_form_message"><![CDATA[Contact form message.]]></string>
 	<string name="_bx_contact_et_contact_form_message_subject"><![CDATA[Contact form message.]]></string>
 	<string name="_bx_contact_et_contact_form_message_body"><![CDATA[{email_header}
-<p><b>Dear Administrator</b>,</p>
-<p>You were contacted by <u>{SenderName}</u> with email <u>{SenderEmail}</u></p>
-<hr />
-<p><b>{MessageSubject}</b></p>
-<p>{MessageBody}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>Dear Administrator</b>,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You were contacted by <u>{SenderName}</u> with email <u>{SenderEmail}</u></p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>{MessageSubject}</b></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{MessageBody}</p>
 {email_footer}]]></string>
 </resources>

@@ -9,6 +9,7 @@ import { NeoButton } from 'app/design/controls'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { formResponseHasFieldErrors } from 'app/lib/form/form-helpers'
 import { playCue } from 'app/lib/sound'
+import { storeObjectsFrom } from 'app/lib/object-state'
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
@@ -971,6 +972,8 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
         if (formResponseHasFieldErrors(dynamicData?.data)) playCue('error');
         else if (dynamicData?.data?.browse?.new?.[0]) playCue('success', { emphasis: 'subtle' });
         if (dynamicData?.data?.browse && dynamicData?.data?.browse?.new?.[0]) {
+            // UNA sends the object's comments counter with the new count: every copy of it on screen shows it.
+            if (dynamicData.data.browse.element) storeObjectsFrom(dynamicData.data.browse.element);
             emitter.emit(EVENTS.commentThread(module, objectId), { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
             handleCancel() 
         }

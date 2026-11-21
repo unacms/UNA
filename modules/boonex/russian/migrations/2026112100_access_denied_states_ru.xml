@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Denied actions say why and what to do: titles of the states, plainer ACL messages, "No access" in place of "Error". -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_upd name="_sys_acl_action_account"><![CDATA[Чтобы использовать «{1}», нужен профиль. Всё, чем вы делитесь, публикуется от имени профиля.]]></string_upd>
+    <string_upd name="_sys_acl_action_unauthenticated"><![CDATA[Войдите или зарегистрируйтесь, чтобы использовать «{1}».]]></string_upd>
+    <string_upd name="_sys_acl_action_not_allowed"><![CDATA[Ваше членство ({2}) не включает «{1}».]]></string_upd>
+    <string_add name="_sys_acl_state_account_title"><![CDATA[Сначала создайте профиль]]></string_add>
+    <string_add name="_sys_acl_state_unauthenticated_title"><![CDATA[Войдите, чтобы продолжить]]></string_add>
+    <string_add name="_sys_acl_state_not_allowed_title"><![CDATA[Нет в вашем членстве]]></string_add>
+    <string_add name="_sys_acl_state_unconfirmed_title"><![CDATA[Подтвердите email]]></string_add>
+    <string_add name="_sys_acl_state_pending_title"><![CDATA[Ожидает одобрения]]></string_add>
+    <string_add name="_sys_acl_state_suspended_title"><![CDATA[Профиль заблокирован]]></string_add>
+    <string_add name="_sys_txt_access_denied_title"><![CDATA[Нет доступа]]></string_add>
+    <string_add name="_sys_txt_access_denied_text"><![CDATA[У вас нет доступа к этому.]]></string_add>
+</resources>

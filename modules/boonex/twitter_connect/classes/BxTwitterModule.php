@@ -24,6 +24,14 @@ class BxTwitterModule extends BxBaseModConnectModule
     }
 
     /**
+     * The settings the module needs to sign people in are filled in.
+     */
+    public function isConfigured()
+    {
+        return (bool)($this->_oConfig->sApiID && $this->_oConfig->sApiSecret);
+    }
+
+    /**
      * Redirect to remote site login form
      *
      * @return n/a - redirect or HTML page in case of error
@@ -33,7 +41,7 @@ class BxTwitterModule extends BxBaseModConnectModule
         if (isLogged())
             $this->_redirect ($this -> _oConfig -> sDefaultRedirectUrl);
         
-        if (!$this->_oConfig->sApiID || !$this->_oConfig->sApiSecret) {
+        if (!$this->isConfigured()) {
             require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
             bx_import('BxDolLanguages');
             $sCode =  MsgBox( _t('_bx_twitter_profile_error_api_keys') );

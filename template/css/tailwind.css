@@ -3,6 +3,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Corner radii. One scale for the site and Studio: every regular radius is its default size times --bx-radius-scale.
+ *   --bx-radius-size    Studio > Designer > Settings > Corners: 1 large (default), 0.75 small, 0 none
+ *   --bx-radius-smooth  1, or the smooth corners' multiplier where the browser draws them (design_radius.html)
+ * Tailwind's rounded-* classes read these (tailwind.config.js), and plain CSS uses the variables themselves:
+ * var(--bx-radius-lg) for 8px, var(--bx-radius-2xl) for 14px, var(--bx-radius-3xl) for 22px. That is the nesting: a
+ * surface (a block, a header bar) 22px, what is 8px inside it 14px, what is inside that 8px. A pill or a circle (rounded-full, 9999px, 50%)
+ * is not on the scale.
+ *   --bx-radius-max     the largest radius a surface gets, 34px: half of a 68px bar (Studio's header), the most such a
+ *                       bar can draw. With a multiplier, tall blocks stop there too, so bars and blocks match.
+ *   --bx-radius-max-row the same for the 14px step, 26px: half of a 52px row (Studio's sidebar items), so a dropdown or a
+ *                       card with that step has the corners of the rows.
+ */
+@layer base {
+    :root {
+        --bx-radius-size: 1;
+        --bx-radius-smooth: 1;
+        --bx-radius-scale: calc(var(--bx-radius-size) * var(--bx-radius-smooth));
+        --bx-radius-max: 2.125rem;
+        --bx-radius-max-row: 1.625rem;
+
+        --bx-radius-sm: calc(0.125rem * var(--bx-radius-scale));
+        --bx-radius: calc(0.25rem * var(--bx-radius-scale));
+        --bx-radius-md: calc(0.375rem * var(--bx-radius-scale));
+        --bx-radius-lg: calc(0.5rem * var(--bx-radius-scale));
+        --bx-radius-xl: calc(0.75rem * var(--bx-radius-scale));
+        --bx-radius-2xl: min(calc(0.875rem * var(--bx-radius-scale)), var(--bx-radius-max-row));
+        --bx-radius-3xl: min(calc(1.375rem * var(--bx-radius-scale)), var(--bx-radius-max));
+
+        /* The accent: Tailwind's blue as "r g b", which every blue-* class reads (tailwind.config.js). Studio > Designer >
+           Settings > Accent color puts another preset's scale here (design_accent.html, BxDolDesigns::getAccentPresets). */
+        --bx-accent-50: 239 246 255;
+        --bx-accent-100: 219 234 254;
+        --bx-accent-200: 191 219 254;
+        --bx-accent-300: 147 197 253;
+        --bx-accent-400: 96 165 250;
+        --bx-accent-500: 59 130 246;
+        --bx-accent-600: 37 99 235;
+        --bx-accent-700: 29 78 216;
+        --bx-accent-800: 30 64 175;
+        --bx-accent-900: 30 58 138;
+        --bx-accent-950: 23 37 84;
+    }
+}
+
 /* The fade a scrolling popup menu gives its top and bottom edges (".bx-popup-menu .bx-popup-content" below; NEO's
    .neo-scroll-fade does the same): the fade at each edge grows in over the first or last 24px of scrolling. */
 @property --bx-scroll-fade-top {
@@ -14,6 +59,18 @@
     syntax: '<length>';
     inherits: false;
     initial-value: 0px;
+}
+/* Studio's button plates (".bx-std .bx-btn" and the header buttons below) draw their gradient from these two colours, so a hover or a press
+   fades the gradient in the 300ms the header's hover halo takes. Tailwind's from-/to- stops carry a position and cannot be animated. */
+@property --bx-plate-from {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: transparent;
+}
+@property --bx-plate-to {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: transparent;
 }
 @keyframes bx-scroll-fade-top {
     from { --bx-scroll-fade-top: 0px; }
@@ -91,7 +148,7 @@
        blue links, 1.5 line height, 16px between paragraphs, lists indented 1.5rem. */
     .bx-def-vanilla-html {
         @apply prose prose-zinc dark:prose-invert leading-normal;
-        @apply prose-a:text-blue-700 dark:prose-a:text-blue-400 prose-a:font-normal;
+        @apply prose-a:text-blue-700 dark:prose-a:text-blue-300 prose-a:font-normal;
         --tw-prose-body: theme('colors.zinc.600');
         --tw-prose-headings: theme('colors.zinc.900');
         --tw-prose-bold: theme('colors.zinc.900');
@@ -123,6 +180,20 @@
         text-decoration-color: currentColor;
     }
     
+    /* Quill's alignment, indent and direction are classes, styled by its own CSS only in the editor: shown text keeps them too. */
+    /* The editor's Marker: a highlight the text keeps its colour on, in light and dark. */
+    .bx-def-vanilla-html mark {
+        @apply bg-yellow-200 dark:bg-yellow-400/30 text-inherit rounded-sm px-0.5;
+    }
+    .bx-def-vanilla-html .ql-align-center { text-align: center; }
+    .bx-def-vanilla-html .ql-align-right { text-align: right; }
+    .bx-def-vanilla-html .ql-align-justify { text-align: justify; }
+    .bx-def-vanilla-html .ql-direction-rtl { direction: rtl; text-align: inherit; }
+    .bx-def-vanilla-html .ql-indent-1 { padding-inline-start: 3em; }
+    .bx-def-vanilla-html .ql-indent-2 { padding-inline-start: 6em; }
+    .bx-def-vanilla-html .ql-indent-3 { padding-inline-start: 9em; }
+    .bx-def-vanilla-html .ql-indent-4 { padding-inline-start: 12em; }
+
     .bx-def-vanilla-html.bx-def-vh-sm {
         @apply prose-sm;
     }
@@ -144,7 +215,7 @@
     }
 
     .bx-artificer .bx-menthion-link {
-        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200;
     }
 
     .bx-artificer .bx-def-box-sizing {
@@ -590,7 +661,7 @@
     }
 
     .bx-artificer .bx-def-a-colored {
-        @apply text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200;
     }
 
     .bx-std a.bx-def-font-meta,
@@ -778,9 +849,11 @@
         @apply flex-row;
     }
     /* Blocks and cards are NEO's surfaces (bg-card/60, shadow-block-outline / shadow-card-outline in NEO's theme.css): the card
-       colour at 60% over the page, so a field or a button on its solid fill stands out from the block it is in, in light and
-       in dark. Popups float over content and stay solid. */
-    .bx-def-color-bg-block,
+       colour at 60% over the page (white, gray-800 in dark), so a field or a button on its solid fill stands out from the block it
+       is in. The site, Studio and NEO share them, over the same gray-100 / gray-950 page. Popups float over content and stay solid. */
+    .bx-def-color-bg-block {
+        @apply bg-white/60 dark:bg-gray-800/60;
+    }
     .bx-def-color-bg-box {
         @apply bg-white/60 dark:bg-gray-800/60;
     }
@@ -791,11 +864,13 @@
     .bx-def-color-bg-box-overflow {
         @apply bg-gradient-to-b from-transparent to-[#fbfbfb] dark:to-[#1b1b1e];
     }
-    /* Their edge is NEO's outline: a light hairline inside the surface and one soft drop under it, never a border. Studio draws
-       its own (.bx-std rules below). */
-    /* A Tailwind shadow at a single class's weight (:where adds none), so a card's own hover:shadow-lg still lifts it. */
+    /* A block's edge is Studio's (.bx-std-block, smooth-shadow-sm): a light hairline inside the surface (white/50, white/2.5 in dark)
+       and a soft six-layer drop under it, never a border; NEO's shadow-block-outline has the same values. */
     .bx-def-border-block {
-        @apply shadow-[inset_0_0_0_1px_rgb(255_255_255/1),0_1px_8px_-1px_rgb(0_0_0/0.1)] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_1px_8px_-1px_rgb(0_0_0/0.5)];
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 18px 47px rgb(0 0 0 / 0.03), 0 7.5px 19px rgb(0 0 0 / 0.02), 0 4px 10.5px rgb(0 0 0 / 0.02), 0 2.3px 5.8px rgb(0 0 0 / 0.01), 0 1.2px 3.1px rgb(0 0 0 / 0.01), 0 0.5px 1.3px rgb(0 0 0 / 0.01);
+    }
+    .bx-def-border-block:is(.dark *) {
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 18px 47px rgb(0 0 0 / 0.03), 0 7.5px 19px rgb(0 0 0 / 0.02), 0 4px 10.5px rgb(0 0 0 / 0.02), 0 2.3px 5.8px rgb(0 0 0 / 0.01), 0 1.2px 3.1px rgb(0 0 0 / 0.01), 0 0.5px 1.3px rgb(0 0 0 / 0.01);
     }
     /* Boxes are NEO's cards (shadow-card-outline): a lighter line inside and a faint one outside, which a shadow colour can tint. */
     .bx-def-color-bg-box:where(:not(.bx-std *)),
@@ -806,10 +881,13 @@
     .bx-popup-border {
         @apply ring-1 ring-gray-300/50 dark:ring-gray-600/50;
     }
-    /* Blocks and cards have the menu popups' 20px corners: a row or tile with 12px corners 8px inside them runs parallel (NEO's rounded-block). */
-    .bx-def-border-radius-block,
+    /* Blocks have Studio's 22px corners (--bx-radius-3xl, NEO's rounded-block); cards keep the menu popups' 20px: a row or tile with
+       12px corners 8px inside them runs parallel. */
+    .bx-def-border-radius-block {
+        border-radius: var(--bx-radius-3xl);
+    }
     .bx-def-box-round-corners {
-        border-radius: 1.25rem;
+        border-radius: calc(1.25rem * var(--bx-radius-scale));
     }
     .bx-popup-border {
         @apply rounded-2xl;
@@ -825,10 +903,10 @@
         @apply bg-gray-100 dark:bg-gray-700;
     }
 
-    /* A block's title is NEO's (theme.blocks u-block-title): 20px on a 28px line, semibold, tight, flush with the header's
+    /* A block's title is NEO's (theme.blocks u-block-title): the page's text colour (NEO's foreground, gray-950 / gray-50), 20px on a 28px line, semibold, tight, flush with the header's
        16px padding. The header (designbox_*.html) is 16px from the block's top and sides, the content 16px under it. */
     .bx-db-title {
-        @apply text-xl leading-7 font-semibold tracking-tight text-gray-900 dark:text-gray-100 align-middle;
+        @apply text-xl leading-7 font-semibold tracking-tight text-gray-950 dark:text-gray-50 align-middle;
     }
 
     /* Common Elements: HR */
@@ -866,7 +944,7 @@
     /* Common elements: Buttons
        The regular button is NEO's bordered button: a flat translucent fill of the text ink (gray-950, gray-50 in the dark scheme) at 8%, 12%
        hovered and pressed (--button-fill in neo/packages/app/design/styles/palette-schemes.css), so it reads on the page, a block or a popup alike.
-       The label and icon are gray-700 (gray-300 in dark) and go to gray-900 (gray-100) on hover. A press scales the button and an open menu tints
+       The label and icon are gray-700 (gray-300 in dark) and go to gray-900 (gray-100) on hover. A press deepens the fill and an open menu tints
        it, as NEO's do (see "Buttons: press and open" below). No outline and no shadow: the 1px border stays, transparent, only to keep every
        button's size and to carry the focus colour. Studio paints its own buttons (see "Studio: Buttons" below) and takes none of this. */
     .bx-btn-shadow {
@@ -896,12 +974,12 @@
         @apply active:text-gray-900 dark:active:text-gray-100;
     }
     .bx-btn {
-        @apply relative inline-flex items-center min-h-11 px-4 py-2 touch-manipulation;
+        @apply relative inline-flex items-center justify-center min-h-11 px-4 py-2 touch-manipulation; /* the label or icon in the middle, as NEO's buttons: an icon-only button (.bx-btn-icon) is wider than its icon */
         @apply bx-btn-shadow;
         @apply bx-btn-bg;
         @apply bx-btn-border rounded-xl; /* 12px, as NEO's regular button and the rows of a dropdown menu */
         @apply bx-btn-text;
-        @apply transform-gpu transition duration-150;
+        @apply transition duration-300; /* colours, opacity and shadows only: no transform on hover or press */
         @apply cursor-pointer;
         @apply bx-btn-hover bx-btn-focus bx-btn-active;
     }
@@ -962,17 +1040,12 @@
     }
 
     /* Buttons: press and open, as NEO's buttons (NeoButton's press transition and `selected` state, neo/packages/app/settings/theme/buttons.js).
-       A press scales the button to 98%, and to 110% on a touch screen, where the finger covers it. A button whose menu or popup is open
+       A press shows the whole button at 50% with no shadow: no scale, which shrank wide buttons too far. A button whose menu or popup is open
        (aria-expanded="true", which bx_menu_popup and bx_menu_popup_inline keep) takes the accent colours, NEO's bg-accent and
        text-accent-foreground, a step stronger and translucent (blue-200 at 60% and blue-700; blue-900 at 60% and blue-300 in dark), and a primary one the darker primary, while it stays open.
        Studio keeps its own buttons. */
     body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
-        @apply scale-[0.98];
-    }
-    @media (hover: none) and (pointer: coarse) {
-        body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active {
-            @apply scale-110;
-        }
+        @apply opacity-50 shadow-none;
     }
     body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary) {
         @apply bg-blue-200/60 hover:bg-blue-200/60 active:bg-blue-200/60 dark:bg-blue-900/60 dark:hover:bg-blue-900/60 dark:active:bg-blue-900/60;
@@ -1009,7 +1082,7 @@
         @apply min-h-[3.25rem] px-5 text-base rounded-xl;
     }
     .bx-btn.bx-btn-xlarge {
-        @apply min-h-[3.75rem] px-6 text-lg rounded-[14px];
+        @apply min-h-[3.75rem] px-6 text-lg rounded-[calc(14px_*_var(--bx-radius-scale))];
     }
 
     .bx-btn.bx-btn-mini i, 
@@ -1038,7 +1111,7 @@
         @apply text-base;
     }
     body:not(.bx-std) .bx-btn.bx-btn-small {
-        @apply rounded-[10px];
+        @apply rounded-[calc(10px_*_var(--bx-radius-scale))];
     }
     body:not(.bx-std) .bx-btn.bx-btn-large {
         @apply px-6;
@@ -1058,6 +1131,22 @@
     body:not(.bx-std) .bx-btn.bx-btn-xlarge :is(i, img, svg) {
         @apply w-7 h-7 leading-7;
     }
+    /* An icon-only button (.bx-btn-icon) is round and as wide as it is tall, as NEO's icon buttons, on the same size scale. */
+    body:not(.bx-std) .bx-btn.bx-btn-icon {
+        @apply w-11 min-w-11 px-0 rounded-full;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-mini {
+        @apply w-7 min-w-7;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-small {
+        @apply w-9 min-w-9;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-large {
+        @apply w-[3.25rem] min-w-[3.25rem];
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-xlarge {
+        @apply w-16 min-w-16;
+    }
 
     /* A menu's button size (Studio > Navigation > a menu > Button size; BxDolMenu::BUTTON_SIZE_*): the menu puts .bx-menu-btn-size-* on each of
        its items, and every button inside takes that size, whatever size class its template gave it. The same scale as the size classes above.
@@ -1068,7 +1157,7 @@
         @apply after:content-[''] after:absolute after:-inset-y-2 after:-inset-x-1;
     }
     body:not(.bx-std) .bx-menu-btn-size-small .bx-btn {
-        @apply min-h-9 px-3 py-1 text-sm rounded-[10px];
+        @apply min-h-9 px-3 py-1 text-sm rounded-[calc(10px_*_var(--bx-radius-scale))];
     }
     body:not(.bx-std) .bx-menu-btn-size-regular .bx-btn {
         @apply min-h-11 px-4 py-2 text-base rounded-xl;
@@ -1095,7 +1184,7 @@
 
     .bx-artificer form a:not(.bx-btn),
     .bx-artificer .sys-jf-agreement a:not(.bx-btn) {
-        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200;
     }
 
     .bx-artificer .bx-form-caption,
@@ -1230,6 +1319,47 @@
     .bx-artificer .bx-form-input-price:focus-visible {
         @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
         @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+    }
+    /* A plain textarea grows with its text (field-sizing; jquery.webForms.js where a browser has no field-sizing) from four lines to
+       sixteen, then scrolls; its handle resizes it in height only. A limit's counter is under it (form_field_textarea.html). */
+    .bx-std .bx-form-input-textarea:not(.bx-form-input-html, .bx-form-input-code),
+    .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html, .bx-form-input-code) {
+        @apply h-auto min-h-[7.5rem] max-h-[25.5rem] py-3 leading-6 resize-y;
+        field-sizing: content;
+    }
+
+    /* A rich text editor looks like the text inputs: the card's fill, the inset hairline, 12px corners, and the accent focus ring
+       around the whole editor while its text has the focus. Editor (bx_editor) is one box; Quill's toolbar and text are two, and
+       their wrapper draws the box around both, with a hairline between them. */
+    .bx-artificer .bx-form-input-html-editor,
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) {
+        @apply rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200;
+        @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
+        @apply transition-shadow duration-200;
+    }
+    .bx-artificer .bx-form-input-html-editor {
+        @apply min-h-[7.5rem] px-4 py-3 cursor-text;
+    }
+    /* A mini editor (a post in the feed, a comment) starts at about two and a half lines and grows as text is typed. */
+    .bx-artificer .bx-form-input-html-editor.bx-form-input-html-mini {
+        @apply min-h-[5.25rem];
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill.bx-form-input-html-mini) .ql-editor {
+        @apply min-h-[3.75rem];
+    }
+    .bx-artificer .bx-form-input-html-editor:focus-within,
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill):focus-within {
+        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
+        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-toolbar.ql-snow {
+        @apply border-0 border-b border-solid border-black/10 dark:border-white/5 bg-transparent px-3 py-2;
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-container.ql-snow {
+        @apply border-0 bg-transparent rounded-none;
+    }
+    .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-editor {
+        @apply min-h-[5.5rem] px-4 py-3 bg-transparent text-base leading-6 text-gray-800 dark:text-gray-200 border-0 outline-none ring-0;
     }
     /* The password field draws the look on its wrapper, so the input inside it is bare and takes the height and the sides. */
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password:focus-visible {
@@ -1486,7 +1616,7 @@
     }
     /* Menu popups: their rows' 12px corners plus the 8px around them, so the corners are concentric (NEO's rounded-popover). */
     .bx-artificer .bx-popup-menu .bx-popup-border {
-        border-radius: 1.25rem;
+        border-radius: calc(1.25rem * var(--bx-radius-scale));
     }
 
     .bx-artificer .bx-popup-width {
@@ -1588,7 +1718,7 @@
        is on the icon there: the "more" item is itself such an item and holds the popup), height and side padding with the links'
        paddings in Artificer's mod_profile/css/main.css. */
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *) {
-        @apply border-0 rounded-[10px] font-semibold;
+        @apply border-0 rounded-[calc(10px_*_var(--bx-radius-scale))] font-semibold;
         @apply text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100;
     }
     body:not(.bx-std) .bx-stl-mib:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm):not(.bx-popup *, .bx-menu-btn-style-glass, .bx-menu-btn-style-plain) {
@@ -1769,18 +1899,20 @@
 
     /* Common elements: Toolbar menu
        The header's buttons (Artificer menu_toolbar.html) are regular buttons, as NEO's header buttons: the ink at 8%, 12% hovered and pressed,
-       a gray-700 glyph (gray-300 in dark) that goes to gray-900 (gray-100) on hover, the press scale, and the accent colours while the item's
+       a gray-700 glyph (gray-300 in dark) that goes to gray-900 (gray-100) on hover, and the accent colours while the item's
        popup, sidebar or search is open (its link's aria-expanded="true") and while its page is the one open (bx-menu-tab-active: the
        notifications item on the notifications page, BxBaseMenuToolbar::_isSelected), as NEO's header buttons. See "Common elements: Buttons" and "Buttons: press and open". */
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item {
         @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
         @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
-        @apply transform-gpu transition duration-150 active:scale-[0.98];
+        @apply transition duration-300 active:opacity-50 active:shadow-none;
     }
-    @media (hover: none) and (pointer: coarse) {
-        .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:active {
-            @apply scale-110;
-        }
+    /* The Application layout's sidebar button (pt_application.html) is one more header button: the same plate, glyph and press. */
+    .bx-artificer .bx-sidebar-toggle {
+        @apply bg-gray-950/[0.08] hover:bg-gray-950/[0.12] active:bg-gray-950/[0.12] dark:bg-gray-50/[0.08] dark:hover:bg-gray-50/[0.12] dark:active:bg-gray-50/[0.12];
+        @apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;
+        @apply transition duration-300 active:opacity-50 active:shadow-none;
+        @apply border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item:has(> a[aria-expanded="true"]),
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item.bx-menu-tab-active {
@@ -1818,8 +1950,8 @@
         @apply rounded-xl;
     }
     /* Header: the current page's tab is in the accent colours, NEO's open and current buttons (blue-200 at 60% and blue-700,
-       blue-900 at 60% and blue-300 in dark), as the toolbar buttons that are current or open. NEO marks its tab with the accent label and a
-       sliding underline instead. */
+       blue-900 at 60% and blue-300 in dark), as the toolbar buttons that are current or open. NEO fills its current tab the same way.
+       */
     #bx-toolbar .bx-menu-main > .bx-menu-item.bx-menu-tab-active > .bx-stl-mil {
         @apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300 ring-0;
     }
@@ -1874,11 +2006,12 @@
      * Menus in popups (More, add content, item menus, language and design switchers) all take the header More list's
      * look: 44px rows like the header tabs and NEO's regular menu items, 16px from the label to either side, 12px corners,
      * 4px apart (NEO's gap-1). The list is inset 8px, so each row's 12px corner sits inside the popup's 20px one. Horizontal menus
-     * (share icons and the like) keep their own layout, and the account panel's list pads its own rows (its template).
+     * (share icons and the like), the apps grid (the homepage menu) and the cards of "Create your profile" keep
+     * their own layout, and the account panel's list pads its own rows (its template).
      * The rows are matched by structure and styled in plain CSS:
      * naming the bx-stl-mil* classes here would make Tailwind's @apply of them circular.
      */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         /* A column with a gap rather than Artificer's 1px row margins (menu.css): hidden rows leave no gap, and the
@@ -1887,39 +2020,39 @@
         flex-direction: column;
         gap: 0.25rem;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide)::after,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-highlight-list)::before {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards)::after,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards):not(.bx-menu-highlight-list)::before {
         display: none; /* bx-clearfix's table boxes would be flex items, with a gap of their own; the highlight's ::before stays */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li {
         position: relative;
         margin-top: 0;
         border-width: 0;
     }
     /* A focused row draws its ring on its edge, as NEO's do, and above its neighbours, so the current item's blue row
        next to it doesn't cover the ring. */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:has(:focus-visible) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:has(:focus-visible) {
         z-index: 1;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li a:focus-visible {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li a:focus-visible {
         outline-offset: 0;
     }
     /* The indent wrapper already gives these popups 8px above and below the list. */
-    .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
+    .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) {
         margin-top: 0;
         margin-bottom: 0;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
-        border-radius: 0.75rem;
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .sys-action-element-holder > a {
+        border-radius: var(--bx-radius-xl);
         font-size: 1rem;
         line-height: 1.5rem;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .sys-action-element-holder > a {
         display: flex;
         align-items: center;
         width: 100%;
@@ -1938,37 +2071,37 @@
      * accent row (blue-100 / blue-900, its label blue-700 / blue-300) with a solid blue-600 circle and a white glyph,
      * so the circle still shows on the blue row. Rows without an icon only take the label.
      */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a:has(> .bx-stl-mii > *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a:has(> .bx-stl-mii > *) {
         padding-inline-start: 0.5rem; /* the circle sits 8px in from the row's side; 6px above and below in the 44px row */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii:has(> *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii:has(> *) {
         @apply shrink-0 w-8 h-8 rounded-full ltr:mr-2 rtl:ml-2 bg-gray-200/50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400;
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii > * {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii > * {
         @apply w-5 h-5 m-0 text-xl;
         color: inherit;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mii > img {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii > img {
         @apply w-8 h-8 rounded-full object-cover; /* a picture fills the circle */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .bx-stl-mit {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mit {
         @apply text-sm font-medium text-gray-600 dark:text-gray-400; /* every menu's label: 14px medium, as the main menu's tabs and NEO's menus */
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mii:has(> *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:hover .bx-stl-mii:has(> *) {
         @apply bg-gray-300 dark:bg-gray-700 text-gray-950 dark:text-gray-50;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li:hover .bx-stl-mit {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:hover .bx-stl-mit {
         @apply text-gray-950 dark:text-gray-50;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active {
         @apply bg-blue-100 dark:bg-blue-900;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active .bx-stl-mit {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active .bx-stl-mit {
         @apply text-blue-700 dark:text-blue-300;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
         @apply bg-blue-600 text-white;
     }
     /* Header: the More list's rows are drawn as the main menu's tabs: a 24px icon without its circle, 12px from the row's side and
@@ -2004,11 +2137,11 @@
     /* Main menu dropdown (Artificer sidebar_site.html, below `lg`): the main menu as a dropdown under the header's menu button, as NEO's
        header menu: 320px wide, 8px under the menu button (62px from the top) and 16px in from the screen's edge, the menu popups' surface and 20px corners, and the
        rows of the header's More list: a 24px icon without a circle 12px from the row's side and 8px from the label, a 14px medium label,
-       12px corners, the full text colour and the hover fill on hover, the press scale, and the current page's row in the current tab's
+       12px corners, the full text colour and the hover fill on hover, a stronger fill on press, and the current page's row in the current tab's
        colours. A row with sub-pages unfolds them in place (bx_sidebar_dropdown_toggle); Log in and Sign up are buttons at the top.
        The opening motion is in Artificer's menu-sidebar.css. */
     #bx-sidebar-site .bx-sidebar-cnt {
-        @apply absolute top-[3.875rem] ltr:right-4 rtl:left-4 w-80 max-w-[calc(100%-2rem)] overflow-hidden rounded-[1.25rem] bg-white dark:bg-gray-800 smooth-shadow-popover;
+        @apply absolute top-[3.875rem] ltr:right-4 rtl:left-4 w-80 max-w-[calc(100%-2rem)] overflow-hidden rounded-[calc(1.25rem_*_var(--bx-radius-scale))] bg-white dark:bg-gray-800 smooth-shadow-popover;
         max-height: calc(100vh - 4.875rem);
         max-height: calc(100dvh - 4.875rem);
     }
@@ -2028,7 +2161,7 @@
     #bx-sidebar-site .bx-sidebar-item > a,
     #bx-sidebar-site .bx-sidebar-dropdown-content > li > a {
         @apply flex items-center min-h-11 py-0 ps-3 pe-3 rounded-xl border-0 text-sm leading-5 font-medium text-gray-600 dark:text-gray-400 no-underline;
-        transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1), scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
     #bx-sidebar-site .bx-sidebar-item > a:hover,
     #bx-sidebar-site .bx-sidebar-dropdown-content > li > a:hover {
@@ -2036,7 +2169,7 @@
     }
     #bx-sidebar-site .bx-sidebar-item > a:active,
     #bx-sidebar-site .bx-sidebar-dropdown-content > li > a:active {
-        @apply bg-gray-200 dark:bg-gray-700 scale-95 motion-reduce:scale-100;
+        @apply bg-gray-200 dark:bg-gray-700;
     }
     #bx-sidebar-site .bx-sidebar-item.bx-menu-tab-active > a,
     #bx-sidebar-site .bx-sidebar-item.bx-menu-tab-active > a:hover,
@@ -2068,7 +2201,7 @@
     /* Side menus (profile stats, categories, tags): the same rows, on the block's own padding. */
     .bx-artificer ul.bx-menu-vertical-more-less > li,
     .bx-artificer ul.bx-menu-vertical-more-less > li > div {
-        border-radius: 0.5rem;
+        border-radius: var(--bx-radius-lg);
         border-width: 0;
     }
     .bx-artificer ul.bx-menu-vertical-more-less > li > div > a {
@@ -2209,7 +2342,7 @@
 
     .bx-base-text-unit-title a,
     .bx-tl-title a {
-        @apply text-gray-800 hover:text-blue-700 dark:text-gray-100 dark:hover:text-blue-400 hover:no-underline;
+        @apply text-gray-800 hover:text-blue-700 dark:text-gray-100 dark:hover:text-blue-300 hover:no-underline;
     }
 
     .bx-base-text-unit-ext .bx-base-text-unit-text {
@@ -2257,14 +2390,20 @@
     }
 
     .bx-std-bg.bx-def-color-bg-page {
-        @apply bg-gray-200 dark:bg-black;
+        @apply bg-gray-100 dark:bg-gray-950; /* the site's and NEO's page */
     }
 
-    /* Active dock item: the sidebar's active item round its tile, as a ring: 0.5rem of black/10 (white/10 in dark), one step over the hover
-       halo's black/5, straight off the tile like the buttons' halo (the tile's own outer hairline is its inner edge), so neighbours 18px apart
-       keep 2px between their rings. The app is named beside the current-app tile in the breadcrumb too, so the ring is not its only cue. */
-    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon {
-        @apply ring-[0.5rem] ring-black/10 dark:ring-white/10;
+    /* Active dock item: the sidebar's active item round its tile, the hover halo's layer one step darker: black/8 (white/10 in dark), 0.5rem
+       round the tile, so neighbours 18px apart keep 2px between their layers. The app is named beside the current-app tile in the
+       breadcrumb too, so the layer is not its only cue. */
+    .bx-std .bx-menu-top-center .bx-menu-tab-active .bx-mi-icon::after {
+        @apply bg-black/[0.08] dark:bg-white/10;
+    }
+    /* The same active layer on the launcher button while the launcher is open, and on the menu button while its menu is open
+       (bx_menu_popup_inline keeps the button's aria-expanded); both outweigh the hover halo. */
+    .bx-std.bx-std-page-launcher .bx-menu-bc-home a:has(> .bx-std-header-btn)::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:has(> [aria-expanded="true"])::before {
+        @apply bg-black/[0.08] dark:bg-white/10;
     }
     /* The divider follows the dock items it separates: both are hidden below md. */
     .bx-std .bx-menu-top-center .bx-menu-item-divider {
@@ -2285,36 +2424,90 @@
         @apply rounded-lg;
     }
 
-    /* Header buttons: a translucent top-to-bottom gradient (white to black/5; white/10 to white/5 in the dark scheme) with the same two
-       hairlines in both schemes, a light one inset (white/50; white/5 in dark) and a dark one outside (black/10; black/20 in dark), drawn by
-       ::after so nothing covers them; hover only deepens the gradient and the glyph. Every Studio .bx-btn shares it (see "Studio: Buttons" below). */
+    /* Header buttons: a top-to-bottom gradient, opaque in light mode (gray-100 to gray-200, a step darker hovered) so they look
+       the same on any surface, translucent in the dark scheme (white/20 to white/10) with two hairlines
+       drawn by ::after so nothing covers them. Light: both inside the 36px, a dark 1px edge (black/15) and a light 2px one within it
+       (white/50), so the button is no larger than its box. Dark: a light one inset (white/5) and a dark one outside (black/20), which does
+       not show on the dark bar. Hover only deepens the gradient and the glyph. Every Studio .bx-btn shares it (see "Studio: Buttons" below). */
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
     .bx-std .bx-std-header-btn,
     .bx-std .bx-btn,
     .bx-std .bx-btn-group {
-        @apply relative border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
+        @apply relative border-0;
         @apply bg-transparent hover:bg-transparent active:bg-transparent; /* no gray fill under the gradient (the site's .bx-btn paints gray-100 / gray-700): the plate is only white and black over what it sits on */
-        @apply hover:from-white hover:to-black/10 dark:hover:from-white/20 dark:hover:to-white/10;
+        --bx-plate-from: theme('colors.gray.100');
+        --bx-plate-to: theme('colors.gray.200');
+        background-image: linear-gradient(to bottom, var(--bx-plate-from), var(--bx-plate-to));
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white;
-        @apply transition duration-300 active:duration-100 active:scale-95;
-        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+        @apply transition duration-300 after:transition-shadow after:duration-300;
+        transition-property: color, background-color, border-color, opacity, box-shadow, --bx-plate-from, --bx-plate-to;
+        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
-    /* The header's own controls keep a hover halo, drawn on the element under the ::after hairlines: a 0.5rem (8px) black/10 (white/10 in dark) ring
-       straight off the plate, as wide as the sidebar items' background round their tiles (16px outer corners), no offset gap (an offset ring
-       reads as a bright halo in the light scheme). The plate's outer hairline is the halo's inner edge, a 1px line that sets the two apart.
-       In rem like the bar's padding and corners, so the tile (0.5rem corners), the halo (1rem) and the bar (1.5rem) stay concentric at any text size.
-       Its black/5 (white/5) is the sidebar items' hover background, and the active dock item takes their active black/10 (white/10). */
-    .bx-std .bx-menu-toolbar .bx-menu-tab-item,
-    .bx-std .bx-std-search-trigger,
-    .bx-std .bx-std-header-btn {
-        @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover,
+    .bx-std .bx-std-search-trigger:hover,
+    .bx-std .bx-std-header-btn:hover,
+    .bx-std .bx-btn:hover,
+    .bx-std .bx-btn-group:hover,
+    .bx-std .group:hover .bx-std-tile-btn {
+        --bx-plate-from: theme('colors.gray.200');
+        --bx-plate-to: theme('colors.gray.300');
     }
-    /* Dock and current-app tiles: the same halo, straight off the tile: its art carries the buttons' two hairlines (below), so the outer one is the
-       halo's inner edge as on the buttons. The selected dock item keeps its active ring and a keyboard-focused one its focus ring
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:is(.dark *),
+    .bx-std .bx-std-search-trigger:is(.dark *),
+    .bx-std .bx-std-header-btn:is(.dark *),
+    .bx-std .bx-btn:is(.dark *),
+    .bx-std .bx-btn-group:is(.dark *),
+    .bx-std .bx-std-tile-btn:is(.dark *) {
+        --bx-plate-from: rgb(255 255 255 / 0.2);
+        --bx-plate-to: rgb(255 255 255 / 0.1);
+    }
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover:is(.dark *),
+    .bx-std .bx-std-search-trigger:hover:is(.dark *),
+    .bx-std .bx-std-header-btn:hover:is(.dark *),
+    .bx-std .bx-btn:hover:is(.dark *),
+    .bx-std .bx-btn-group:hover:is(.dark *),
+    .bx-std .group:hover .bx-std-tile-btn:is(.dark *) {
+        --bx-plate-from: rgb(255 255 255 / 0.3);
+        --bx-plate-to: rgb(255 255 255 / 0.15);
+    }
+    /* The header's hover halo is a background layer behind the tile, like the sidebar items' and the subtabs' background: 0.5rem (8px) round
+       the tile with their corners (--bx-radius-2xl), black/5 (white/5 in dark), so tile, halo and bar stay concentric at any corner size and
+       text size. A ring would not: its corner is the tile's plus its own width. The plate's outer hairline sets the tile apart from it.
+       The layer takes no presses; the 44px hit areas are separate. It sits behind its tile:
+       - the home button's on its link, which comes before the plate;
+       - a toolbar button's and a dock tile's at z-index -1 of the bar section (.bx-std-menu-top, a stacking context of its own);
+       - the current-app tile's at z-index -1 of the tile, behind its art. */
+    .bx-std a:has(> .bx-std-header-btn),
+    .bx-std .bx-menu-top-center li .bx-mi-icon {
+        @apply relative;
+    }
+    .bx-std a:has(> .bx-std-header-btn)::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
+    .bx-std .bx-menu-top-center li .bx-mi-icon::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile::before {
+        content: '';
+        position: absolute;
+        inset: -0.5rem;
+        border-radius: var(--bx-radius-2xl);
+        pointer-events: none;
+        @apply transition-colors duration-300; /* as the plate's gradient: halo and plate change together */
+    }
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item::before,
+    .bx-std .bx-menu-top-center li .bx-mi-icon::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile::before {
+        z-index: -1;
+    }
+    /* The selected dock item keeps its active layer and a keyboard-focused one its focus ring
        (left out with :where, so the halo gains no specificity over either). */
-    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon,
-    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile {
+    .bx-std a:has(> .bx-std-header-btn):hover::before,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:hover::before,
+    .bx-std .bx-menu-top-center li:where(:not(.bx-menu-tab-active)) a:where(:not(:focus-visible)) .bx-mi-icon:hover::after,
+    .bx-std .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon.bx-icon-tile:hover::before {
+        @apply bg-black/5 dark:bg-white/5;
+    }
+    /* The launcher's search button (phones) has both pseudo-elements taken: it keeps a ring. */
+    .bx-std .bx-std-search-trigger {
         @apply hover:ring-[0.5rem] hover:ring-black/5 dark:hover:ring-white/5;
     }
     .bx-std .bx-menu-toolbar .bx-menu-tab-item a,
@@ -2327,10 +2520,10 @@
         @apply w-6 h-6;
     }
 
-    /* Studio surfaces: translucent white (60% light, 6% dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
+    /* Studio surfaces: the site's block (white at 60%, gray-800 at 60% in dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
     .bx-std-block.cnt-ttl-bg,
     .bx-std-block.cnt-bg {
-        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];
+        @apply bg-white/60 dark:bg-gray-800/60 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];
         @apply rounded-3xl smooth-shadow-sm; /* 24px, the same corner as the header bar and the sidebar column */
     }
 
@@ -2346,14 +2539,14 @@
         @apply text-gray-800 dark:text-gray-100;
     }
 
+    /* One weight (500) in every state: a heavier name on hover or for the current item changes the text's width and makes it jump. */
     .bx-std-pmen-item {
         @apply hover:bg-black/5 dark:hover:bg-white/5;
-        @apply hover:font-medium;
+        @apply font-medium;
         @apply duration-300;
     }
     .bx-std-pmen-item.bx-menu-tab-active {
-        @apply bg-black/10 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/10;
-        @apply font-semibold;
+        @apply bg-black/[0.08] hover:bg-black/[0.08] dark:bg-white/10 dark:hover:bg-white/10;
     }
     /* The item background (8px round the tile) plays the role of the header icons' hover halo, and the tile is set apart from it the same
        way: by its own outer hairline (the buttons' pair, below), in both schemes. */
@@ -2372,34 +2565,45 @@
     }
 
     .bx-std .bx-def-color-bg-block {
-        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
+        @apply bg-white/60 dark:bg-gray-800/60 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
     }
     .bx-std .bx-popup-color-bg {
-        @apply bg-white dark:bg-[#1a1a1a]; /* popups float over content, so the surface is solid: white, and in dark the black page plus white/10 composite (one step above the white/6 blocks) */
+        @apply bg-white dark:bg-gray-800; /* popups float over content, so the surface is solid: white, gray-800 in dark (the site's and NEO's popover) */
     }
 
-    /* Icon tiles (launcher, top menu, side menu): soft outer shadow plus an inset hairline that darkens the tile in light mode and lightens it in dark mode, so the edge takes on the artwork's own hue. */
+    /* Icon tiles (launcher, top menu, side menu): soft outer shadow plus inset hairlines over the artwork's edge: in light mode a black/10 line with
+       a white/5 one inside it (the edge takes on the artwork's own hue), in dark mode a white/15 line. */
     .bx-std .bx-icon-tile {
         @apply relative smooth-shadow-md;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none;
     }
     .bx-std .bx-icon-tile:not(.bx-std-pmen-ic-icon):not(.bx-std-menu-top .bx-icon-tile) {
-        @apply after:ring-1 after:ring-inset after:ring-black/10 dark:after:ring-white/15;
+        @apply after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
     }
     /* Art tiles in the header (dock, current app) and the sidebar, all 36px: the header buttons' plate under the artwork (isolate keeps the z-index:-1 image above it). */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon {
         @apply isolate border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
     }
-    /* The art itself runs 1px past the tile (menu_top.css, general.css), as far as a button's outer hairline reaches, and a 1px black/20 line
-       over that outer pixel darkens the art's own edge: a darker shade of whatever colour the icon has there, so the edge is always darker than
-       the icon and never a gray that clashes with it, in both schemes. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
+    /* The art fills its 36px tile (menu_top.css, general.css), as the buttons beside it keep their hairlines inside theirs, and the launcher
+       tiles' lines lie over its outer pixels: a 1px black/10 one darkens the art's own edge (a darker shade of whatever colour the icon has
+       there, never a gray that clashes with it) and a 2px white/5 one inside it lifts it a little. In the dark scheme the line is white/15, as on the launcher's tiles: a darker edge leaves a dark icon without
+       an outline on the dark bar. The tile buttons in the sidebar (plain glyphs) keep the buttons' hairlines. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) {
-        @apply after:-inset-px after:rounded-[calc(0.5rem_+_1px)] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.2)];
+        @apply after:inset-0 after:rounded-[inherit] after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
+    }
+    /* Hovered (the tile, or the link it sits in), light mode: the dark line deepens to black/20. The class twice outweighs the launcher
+       tiles' :not() chain above. Not the sidebar's tile buttons (plain glyphs on the buttons' plate), which keep the buttons' hairlines
+       when their row is hovered, as the header buttons do. */
+    .bx-std a:hover .bx-icon-tile.bx-icon-tile:not(.bx-std-tile-btn):not(:is(.dark *))::after,
+    .bx-std .bx-icon-tile.bx-icon-tile:not(.bx-std-tile-btn):hover:not(:is(.dark *))::after {
+        --tw-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
     }
 
-    /* Tiles and buttons in the header (36px): a tight stack that stays inside the bar. The md stack above is sized for the 72px launcher tiles and lands mostly below the bar, where it reads as no shadow at all. */
+    /* Tiles and buttons in the header and the sidebar (36px), app icons and buttons alike: a tight two-layer shadow that stays inside the bar,
+       black/5 in light mode and black/20 in dark, where a fainter one does not show. The md stack above is sized for the 72px launcher tiles and
+       lands mostly below the bar, where it reads as no shadow at all. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
     .bx-std .bx-menu-toolbar .bx-menu-tab-item,
     .bx-std .bx-std-search-trigger,
@@ -2408,16 +2612,46 @@
     .bx-std .bx-std-pmen-ic-icon,
     .bx-std .bx-btn,
     .bx-std .bx-btn-group {
-        --tw-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.04);
-        --tw-shadow-colored: 0 1px 2px var(--tw-shadow-color), 0 2px 4px var(--tw-shadow-color), 0 4px 8px var(--tw-shadow-color);
+        --tw-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05);
+        --tw-shadow-colored: 0 1px 2px var(--tw-shadow-color), 0 2px 4px var(--tw-shadow-color);
         box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+    .bx-std .bx-std-menu-top .bx-icon-tile:is(.dark *),
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:is(.dark *),
+    .bx-std .bx-std-search-trigger:is(.dark *),
+    .bx-std .bx-std-header-btn:is(.dark *),
+    .bx-std .bx-std-tile-btn:is(.dark *),
+    .bx-std .bx-std-pmen-ic-icon:is(.dark *),
+    .bx-std .bx-btn:is(.dark *),
+    .bx-std .bx-btn-group:is(.dark *) {
+        --tw-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    /* Pressed: the whole button at 50% and no drop shadow; its hairlines stay. No scale, so its size never changes. After the shadow rules
+       above, which it overrides at the same specificity. */
+    .bx-std .bx-std-menu-top .bx-icon-tile:active,
+    .bx-std .bx-menu-toolbar .bx-menu-tab-item:active,
+    .bx-std .bx-std-search-trigger:active,
+    .bx-std .bx-std-header-btn:active,
+    .bx-std .group:active .bx-std-tile-btn,
+    .bx-std .bx-btn:not(.bx-btn-disabled):active,
+    .bx-std .bx-btn-group:active {
+        --tw-shadow: 0 0 #0000;
+        @apply opacity-50;
+    }
+    .bx-std .bx-btn-group > .bx-btn:active {
+        @apply opacity-100; /* the group dims as a whole */
     }
 
     /* Sidebar icon tiles: the same translucent gradient button as the header tools, hovered through the parent link (.group). */
     .bx-std .bx-std-tile-btn {
-        @apply relative border-0 bg-gradient-to-b from-white to-black/5 dark:from-white/10 dark:to-white/5;
+        @apply relative border-0;
+        --bx-plate-from: theme('colors.gray.100');
+        --bx-plate-to: theme('colors.gray.200');
+        background-image: linear-gradient(to bottom, var(--bx-plate-from), var(--bx-plate-to));
+        @apply transition duration-300;
+        transition-property: color, opacity, box-shadow, --bx-plate-from, --bx-plate-to;
         @apply text-black/80 dark:text-white/80;
-        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.5),0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+        @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15),inset_0_0_0_2px_rgb(255_255_255/0.5)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
     }
     /* 24px glyph in the 36px tile, like the header buttons (the svg fills the 6px padding box, menu_side.html; font icons get the same size). */
     .bx-std .bx-std-tile-btn > .sys-icon {
@@ -2426,7 +2660,7 @@
     }
     /* group-hover can't be @applied here (Tailwind would put .group above .bx-std), so the hovered link is spelled out. */
     .bx-std .group:hover .bx-std-tile-btn {
-        @apply from-white to-black/10 dark:from-white/20 dark:to-white/10 text-black dark:text-white;
+        @apply text-black dark:text-white; /* the plate colours are with the header buttons' hover */
     }
 
     /* Popups float above blocks, so they get the larger shadow stack and the blocks' inset hairline instead of an outer ring. */
@@ -2435,7 +2669,7 @@
     }
     /* Popup menus: same item treatment as the page sidebar, with 20px icons. */
     .bx-std .bx-popup-content:has(> .bx-menu-verlit) {
-        @apply p-1;
+        @apply p-2;
     }
     .bx-std .bx-menu-verlit li {
         @apply mt-0.5 first:mt-0 rounded-lg duration-300;
@@ -2458,11 +2692,12 @@
     .bx-std .bx-menu-verlit li .sys-icon {
         @apply flex-none w-5 h-5 m-0;
     }
-    /* Dropdown menus are tighter than modals: 12px outer radius over 8px items with 4px padding. */
+    /* Dropdown menus are tighter than modals: 16px outer radius over 36px rows with an 8px radius, 8px padding around the rows and 2px between them. The popup has the corners of
+       the sidebar's rows (the 16px step). */
     .bx-std .bx-popup-menu .bx-popup-border {
-        @apply rounded-xl;
+        @apply rounded-2xl;
     }
-    /* Account menu: the signed-in name is a label and the theme row holds a segmented control; neither is a link. */
+    /* Account menu: the signed-in name links to the profile and the theme row holds a segmented control; neither is a link. */
     .bx-std .bx-menu-account {
         @apply min-w-48;
     }
@@ -2473,44 +2708,81 @@
         @apply flex items-center gap-3 h-9 px-2.5 text-sm whitespace-nowrap;
     }
     .bx-std .bx-menu-verlit li.bx-mv-label {
-        @apply mb-1 pb-1 rounded-none border-b border-black/10 dark:border-white/10;
+        @apply mb-1 pb-1 rounded-none border-b border-black/[0.06] dark:border-white/[0.06]; /* a faint divider: the popup is a small surface, and NEO's black/10 block lines read heavy on it */
     }
-    .bx-std .bx-menu-verlit li.bx-mv-label > div {
-        @apply font-semibold;
+    /* The name row links to the profile: the link, not the row with its divider, takes the hover. */
+    .bx-std .bx-menu-verlit li.bx-mv-label > a {
+        @apply font-semibold hover:bg-black/5 dark:hover:bg-white/5 active:bg-blue-500/10 dark:active:bg-blue-400/10 transition-colors duration-300;
+    }
+    .bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture {
+        @apply w-6 h-6 -mx-0.5 rounded-full object-cover;
     }
     .bx-std .bx-menu-verlit li.bx-mv-theme {
-        @apply mt-1 pt-1 rounded-none border-t border-black/10 dark:border-white/10;
+        @apply mt-1 pt-1 rounded-none border-t border-black/[0.06] dark:border-white/[0.06];
     }
     .bx-std .bx-menu-verlit li.bx-mv-theme > div > span {
         @apply flex-auto;
     }
-    /* Segmented switcher: a pill of text tabs with the selected one raised on white; the theme toggle below is its icon-only sibling. */
+    /* Segmented switcher, 36px (28px tabs in a 4px frame), the height of the buttons and tiles beside it: a track with the buttons' 8px
+       corners and text tabs with 5px ones, the selected one raised on white; the theme toggle below is its icon-only sibling.
+       With page.js the raised plate is one layer of the track (::after) that slides to the selected tab with a slight overshoot
+       (--bx-seg-x and --bx-seg-w; data-bx-seg="on" once it is placed, so the first placement does not slide). */
     .bx-std .bx-std-segmented {
-        @apply inline-flex p-0.5 rounded-full bg-black/5 dark:bg-white/5; /* translucent track, like the hero plates */
+        @apply relative isolate inline-flex p-1 rounded-lg bg-black/5 dark:bg-white/5; /* translucent track, like the hero plates */
+        box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.05); /* a 1px edge, as the switches' track has (gray-300 there, opaque) */
+    }
+    .bx-std .bx-std-segmented:is(.dark *) {
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+    }
+    .bx-std .bx-std-segmented[data-bx-seg]::after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0.25rem;
+        bottom: 0.25rem;
+        left: 0;
+        width: var(--bx-seg-w, 0);
+        transform: translateX(var(--bx-seg-x, 0));
+        border-radius: calc(var(--bx-radius-lg) - 0.1875rem); /* 5px */
+        pointer-events: none;
+        background-color: rgb(255 255 255); /* a flat white plate with a subtle drop shadow */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    .bx-std .bx-std-segmented[data-bx-seg]:is(.dark *)::after {
+        background-color: rgb(255 255 255 / 0.1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    .bx-std .bx-std-segmented[data-bx-seg="on"]::after {
+        transition: transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1), width 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .bx-std .bx-std-segmented[data-bx-seg="on"]::after {
+            transition: none;
+        }
+    }
+    .bx-std .bx-std-segmented[data-bx-seg] .bx-std-segment[aria-selected="true"] {
+        background-color: transparent; /* the track's sliding plate stands in for it */
+    }
+    .bx-std .bx-std-segmented[data-bx-seg] .bx-std-segment[aria-selected="true"]:not(:focus-visible) {
+        box-shadow: none; /* its focus ring stays */
     }
     .bx-std .bx-std-segment {
-        @apply flex items-center justify-center h-7 px-3 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
+        @apply flex items-center justify-center h-7 px-3 rounded-[calc(var(--bx-radius-lg)-0.1875rem)] text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors duration-150; /* 4.5:1 on the gray track */
         @apply hover:text-gray-900 dark:hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
     }
     .bx-std .bx-std-segment[aria-selected="true"] {
-        @apply bg-white dark:bg-white/10 text-gray-900 dark:text-white smooth-shadow-xs;
+        @apply text-gray-900 dark:text-white;
+        background-color: rgb(255 255 255); /* without page.js: the tab is its own plate */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    .bx-std .bx-std-segment[aria-selected="true"]:is(.dark *) {
+        background-color: rgb(255 255 255 / 0.1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
     .bx-std .bx-std-segment:disabled {
         @apply opacity-50 cursor-default;
     }
-    /* Switches: translucent tracks instead of the site's tinted grays (the knob keeps its colours). */
-    .bx-std .bx-switcher-cont.off button {
-        @apply bg-black/10 dark:bg-white/10;
-    }
-    .bx-std .bx-switcher-cont.on button {
-        @apply bg-white dark:bg-white/10;
-    }
-    .bx-std .bx-switcher-cont.on button span {
-        @apply bg-green-500;
-    }
-    .bx-std .bx-switcher-cont.off button span {
-        @apply bg-white dark:bg-gray-500;
-    }
+    /* Switches are the site's ("Common elements: Forms: Switcher Input"): one look in Studio and on the site. */
     .bx-std .bx-theme-toggle {
         @apply flex p-0.5 rounded-full bg-black/5 dark:bg-white/5;
     }
@@ -2624,14 +2896,14 @@
         @apply block w-5 h-5 text-inherit;
     }
 
-    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press scale come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
+    /* Studio: Buttons: every .bx-btn is the header button (plate, hairline, shadow, hover halo and press come from the "Header buttons" rules above), with the label one step darker than the header glyphs so it passes AA on the plate. Primary is the same plate inverted: the dark-mode plate in light mode and the light-mode plate in dark mode.
        Sizes are the site's and NEO's scale: small 36px (12px sides, 14px text, 8px corners) is the default, for the toolbars, grid rows, cards and
        captions; regular 44px (16px sides, 16px text, 12px corners) is a form's and a dialog's; .bx-btn-small, -mini (28px) and -large (52px) keep theirs anywhere. */
     .bx-std .bx-btn {
         @apply inline-flex items-center justify-center h-9 min-h-9 px-3 py-0 rounded-lg;
         @apply text-sm font-medium leading-5;
         @apply text-black/80 dark:text-white/80 hover:text-black dark:hover:text-white active:text-black dark:active:text-white;
-        @apply hover:translate-y-0 active:translate-y-0; /* the site button lifts on hover and sinks on press; the header button scales instead */
+
     }
     .bx-std :where(form, .bx-std-login-form, #bx-popup-alert, #bx-popup-confirm, #bx-popup-prompt) .bx-btn:where(:not(.bx-btn-small, .bx-btn-mini, .bx-btn-large, .bx-btn-xlarge)) {
         @apply h-11 min-h-11 px-4 rounded-xl text-base leading-6;
@@ -2765,36 +3037,56 @@
         @apply text-inherit; /* glyphs follow the label */
     }
     .bx-std .bx-btn.bx-btn-primary {
-        @apply from-gray-700 to-gray-800 dark:from-gray-100 dark:to-gray-200;
-        @apply hover:from-gray-600 hover:to-gray-700 dark:hover:from-gray-200 dark:hover:to-gray-300;
+        --bx-plate-from: theme('colors.gray.600');
+        --bx-plate-to: theme('colors.gray.700');
         @apply border-0 text-gray-100 dark:text-gray-800 hover:text-white dark:hover:text-gray-900 active:text-white dark:active:text-gray-900;
-        /* The inset light hairline reads as a grey blur on the dark plate, so light mode keeps only the outer hairline; the dark scheme keeps both (user request 2026-09-09). */
-        @apply after:shadow-[0_0_0_1px_rgb(0_0_0/0.1)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.05),0_0_0_1px_rgb(0_0_0/0.2)];
+        /* The app icons' edge (.bx-icon-tile): a black/10 line with a white/5 one inside it, the black line black/20 when hovered; white/15 in
+           the dark scheme. Both inside the box, like the other buttons' hairlines. */
+        @apply after:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.1),inset_0_0_0_2px_rgb(255_255_255/0.05)] dark:after:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.15)];
     }
-    /* Studio notices: a message box (the grid's EMPTY notice, MsgBox()) is a black/5 (white/5 in dark) plate with 60% text instead of the site's gray plate. */
-    .bx-std .bx-msg-box {
+    .bx-std .bx-btn.bx-btn-primary:hover {
+        --bx-plate-from: theme('colors.gray.500');
+        --bx-plate-to: theme('colors.gray.600');
+    }
+    .bx-std .bx-btn.bx-btn-primary:is(.dark *) {
+        --bx-plate-from: theme('colors.gray.100');
+        --bx-plate-to: theme('colors.gray.200');
+    }
+    .bx-std .bx-btn.bx-btn-primary:hover:is(.dark *) {
+        --bx-plate-from: theme('colors.gray.200');
+        --bx-plate-to: theme('colors.gray.300');
+    }
+    .bx-std .bx-btn.bx-btn-primary:hover:not(:is(.dark *))::after {
+        --tw-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
+    }
+    /* Studio notices: a plain message box (MsgBox()) is a black/5 (white/5 in dark) plate with 60% text instead of the site's gray plate.
+       A state (an empty list, a denial) has no plate. */
+    .bx-std .bx-msg-box-container > .bx-msg-box {
         @apply bg-black/5 dark:bg-white/5 text-black/60 dark:text-white/60;
+    }
+    /* A state's icon follows its circle's neutral grey, not the iconset's blue. */
+    .bx-std .bx-msg-box-state .sys-icon {
+        @apply text-inherit;
     }
     /* Disabled: the same plate in the flat translucent tone (black/5, white/5 in dark) instead of the gradient, the label at 40%, the hairlines kept,
        no press. !important because the site's .bx-btn-disabled rule above forces its gray-50 / gray-700 plate the same way. */
     .bx-std .bx-btn.bx-btn-disabled {
         @apply bg-none bg-black/5 hover:bg-black/5 text-black/40 hover:text-black/40 !important;
-        @apply active:scale-100 cursor-default;
+        @apply cursor-default;
     }
     .bx-std .bx-btn.bx-btn-disabled:is(.dark *) {
         /* plain declarations: the dark: variant did not survive @apply … !important, and .dark .bx-std would miss a .bx-std on the root element */
         background-color: rgb(255 255 255 / 0.05) !important;
         color: rgb(255 255 255 / 0.4) !important;
     }
-    /* Joined button groups (the grid pager): the plate, hairline, shadow, halo and press scale belong to the group (it is in the header-plate
-       lists above); the segments are flat, square, hairline-separated, and only darken on hover and press. */
+    /* Joined button groups (the grid pager): the plate, hairline, shadow, halo and press belong to the group (it is in the header-plate
+       lists above); the segments are flat, square, hairline-separated, and only darken on hover. */
     .bx-std .bx-btn-group {
         @apply inline-flex items-stretch rounded-lg;
         @apply after:z-10; /* the group's hairline draws over the segments */
     }
     .bx-std .bx-btn-group > .bx-btn {
-        @apply rounded-none shadow-none hover:ring-0 hover:ring-offset-0 active:scale-100 active:shadow-none;
-        @apply active:from-white active:to-black/15 dark:active:from-white/25 dark:active:to-white/15; /* a pressed segment darkens a step further than a hovered plate, in the same translucent tones */
+        @apply rounded-none shadow-none hover:ring-0 hover:ring-offset-0 active:shadow-none;
         @apply after:hidden;
     }
     .bx-std .bx-btn-group > .bx-btn:first-child {
@@ -2826,7 +3118,7 @@
     
     /* Studio: Launcher */
     .bx-std-bg.bx-std-page-launcher {
-        @apply bg-gray-100 dark:bg-black;
+        @apply bg-gray-100 dark:bg-gray-950;
     }
 
     /* Keyboard focus in Studio chrome: one blue ring on the visual control, the link itself carries no outline. */
@@ -2883,7 +3175,7 @@
         @apply py-8 px-4 text-center text-sm text-gray-600 dark:text-gray-400;
     }
     .bx-std .bx-std-launcher-edit {
-        @apply fixed bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 pl-4 pr-1 py-1 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 text-sm font-medium text-gray-800 dark:text-gray-200 smooth-shadow-ring-lg;
+        @apply fixed bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 pl-4 pr-1 py-1 rounded-full bg-white/90 dark:bg-gray-800/90 text-sm font-medium text-gray-800 dark:text-gray-200 smooth-shadow-ring-lg;
     }
     .bx-std .bx-std-launcher-edit[hidden] {
         @apply hidden;
@@ -2966,7 +3258,7 @@
         @apply my-1 border-t border-black/10 dark:border-white/10;
     }
     .bx-std .bx-std-cm-label {
-        @apply px-2.5 pt-2 pb-1 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400;
+        @apply px-2.5 pt-2 pb-1 text-xs font-medium text-gray-500 dark:text-gray-400;
     }
     .bx-std [data-bx-context-menu] {
         -webkit-touch-callout: none; /* a long press opens the menu, not the browser's link sheet */
@@ -2989,10 +3281,10 @@
     /* Studio: Forms: collapsible sections (Settings accordion) follow the sidebar items: a 48px title row (studio/template/form_field_section_title.html) on a flat 5% black / 5% white plate with the sidebar's 14px radius, no border, ring, shadow or gradient; the whole section keeps the plate when expanded, and the title darkens a step on hover. */
     .bx-std .bx-form-section.bx-form-section-header,
     .bx-std .bx-form-section.bx-form-section-header:not(.bx-form-collapsed) {
-        @apply border-0 rounded-[0.875rem] bg-black/5 dark:bg-white/5 shadow-none;
+        @apply border-0 rounded-[calc(0.875rem_*_var(--bx-radius-scale))] bg-black/5 dark:bg-white/5 shadow-none;
     }
     .bx-std .bx-form-section.bx-form-section-header .bx-form-section-title:hover {
-        @apply rounded-[0.875rem] bg-none bg-black/5 dark:bg-white/5;
+        @apply rounded-[calc(0.875rem_*_var(--bx-radius-scale))] bg-none bg-black/5 dark:bg-white/5;
     }
     .bx-std .bx-form-section.bx-form-section-header:not(.bx-form-collapsed) .bx-form-section-title:hover {
         @apply rounded-b-none;
@@ -3030,15 +3322,7 @@
     }
 
 
-    /* 3d Party: Quill */
-    .bx-artificer div.ql-editor {
-        @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
-    }
-
-    .bx-artificer div.ql-editor:focus{
-        @apply border border-gray-300 dark:border-gray-700 focus:border-blue-600 dark:focus:border-blue-400 focus:ring-1 focus:ring-blue-600 dark:focus:ring-blue-400 focus:outline-none;
-    }
-
+    /* 3d Party: Quill (its box in a form is with the text inputs above) */
     .bx-artificer .ql-mention-list li {
         @apply flex items-center px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:text-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 text-sm font-normal;
     }
@@ -3167,7 +3451,7 @@
 .bx-std .select2-dropdown,
 .bx-std .select2-container--open .select2-dropdown--below,
 .bx-std .select2-container--open .select2-dropdown--above {
-    @apply border-0 rounded-xl p-1 smooth-shadow-lg ring-1 ring-inset ring-white/50 dark:ring-white/5 bg-white dark:bg-[#1a1a1a];
+    @apply border-0 rounded-xl p-1 smooth-shadow-lg ring-1 ring-inset ring-white/50 dark:ring-white/5 bg-white dark:bg-gray-800;
 }
 .bx-std .select2-container--open .select2-dropdown--below {
     @apply mt-1;
@@ -3199,7 +3483,7 @@
 }
 /* Dark mode, spelled out with the .dark prefix so these outrank the site's own dark select2 rules below. */
 .dark .bx-std .select2-container--default .select2-dropdown {
-    @apply bg-[#1a1a1a];
+    @apply bg-gray-800;
 }
 .dark .bx-std .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
     @apply bg-blue-400/10 text-white;

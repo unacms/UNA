@@ -119,21 +119,12 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
      * - list: the section opens on the menu itself, a list of its pages, and each page opens from it with Back (the
      *   account's Settings). The list is at the section's own page, which the menu names in its API config (`hub`, the
      *   page's uri: `settings`); a menu that names none keeps tabs. On large screens, and on the site, that page opens
-     *   the menu's first item.
+     *   the menu's first item. A top-level item without a link that has subitems is a section of the list, headed by
+     *   its title (Settings: Account, and the current profile titled `{member_display_name}`); an item whose API config
+     *   says `"danger": true` is drawn in the destructive colour (deleting the account).
      */
     const SECTION_NAV_SMALL_TABS = '';
     const SECTION_NAV_SMALL_LIST = 'list';
-
-    /**
-     * The group of a menu item (`sys_menu_items`.`group_name`, Studio > Navigation > an item > "Group in the apps"; the
-     * item's API carries it as `group`). The apps draw a menu whose items have groups as sections, in this order: the
-     * account's items, the current profile's under its name, the items without a group, and the dangerous ones last
-     * (deleting the account). The account's settings use them.
-     */
-    const ITEM_GROUP_NONE = '';
-    const ITEM_GROUP_ACCOUNT = 'account';
-    const ITEM_GROUP_PROFILE = 'profile';
-    const ITEM_GROUP_DANGER = 'danger';
 
     /**
      * Class names by value, written out in full: a class built from parts is one no stylesheet search finds.
@@ -182,22 +173,6 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $s = isset($this->_aObject['button_size']) ? (string)$this->_aObject['button_size'] : '';
         return isset(self::$_aButtonSizeClasses[$s]) ? $s : self::BUTTON_SIZE_AUTO;
-    }
-
-    /**
-     * Groups a menu item can be given, none (empty) first.
-     */
-    public static function getItemGroups()
-    {
-        return [self::ITEM_GROUP_NONE, self::ITEM_GROUP_ACCOUNT, self::ITEM_GROUP_PROFILE, self::ITEM_GROUP_DANGER];
-    }
-
-    /**
-     * A menu item's group as it is kept: one of the ITEM_GROUP_* values, none for anything else.
-     */
-    public static function normalizeItemGroup($sGroup)
-    {
-        return is_string($sGroup) && in_array($sGroup, self::getItemGroups(), true) ? $sGroup : self::ITEM_GROUP_NONE;
     }
 
     /**
@@ -459,8 +434,10 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         if((int)$this->_aObject['active'] == 0)
             return false;
 
+        // Kept for the menu's output, so a multilevel set's items come as getMenuItemsRaw() gives them, with their
+        // subitems: the flat list would show them all at one level.
     	if(!isset($this->_aObject['menu_items']))
-            $this->_aObject['menu_items'] = $this->_oQuery->getMenuItems();
+            $this->_aObject['menu_items'] = $this->isMultilevel() ? $this->_oQuery->getMenuItemsHierarchy() : $this->_oQuery->getMenuItems();
 
     	$bVisible = false;
     	foreach ($this->_aObject['menu_items'] as $a) {

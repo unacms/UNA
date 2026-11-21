@@ -147,11 +147,6 @@ class BxDolStudioOptions extends BxDol
             case 'delete-mix':
                 $aResult = array_merge($aResult, $this->deleteMix((int)$sValue));
                 break;
-
-            case 'get-page-by-type':
-                $this->sType = $sValue;
-                $aResult['content'] = $this->getPageCode();
-                break;
         }
 
         return $aResult;
@@ -430,7 +425,7 @@ class BxDolStudioOptions extends BxDol
         return bx_get_js_result([
             'code' => 0,
             'cue' => ['cue' => 'success', 'emphasis' => 'subtle'],
-            'message' => '_adm_stg_scs_save',
+            'toast' => '_adm_stg_scs_save',
             'eval' => $sEvalRenewToken
         ]);
     }

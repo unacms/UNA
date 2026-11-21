@@ -18,6 +18,7 @@ const BrowseList = dynamic(() => import('./browse-list'), { loading: DynamicFall
 const Form = dynamic(() => import('./form'), { loading: DynamicFallback });
 const Msg = dynamic(() => import('./msg'), { loading: DynamicFallback });
 const Informer = dynamic(() => import('./informer'), { loading: DynamicFallback });
+const Onboarding = dynamic(() => import('./onboarding'), { loading: DynamicFallback });
 const Login = dynamic(() => import('./login'), { loading: DynamicFallback });
 const Redirect = dynamic(() => import('./redirect'), { loading: DynamicFallback });
 const EntityPoll = dynamic(() => import('./entity-poll'), { loading: DynamicFallback });
@@ -65,11 +66,13 @@ const CreditsCheckout = dynamic(() => import('./credits-checkout'), { loading: D
 const PaymentOrderAdd = dynamic(() => import('./payment-order-add'), { loading: DynamicFallback });
 const Bundles = dynamic(() => import('./bundles'), { loading: DynamicFallback });
 const Membership = dynamic(() => import('./membership'), { loading: DynamicFallback });
+const MembershipStats = dynamic(() => import('./membership-stats'), { loading: DynamicFallback });
 const Pricing = dynamic(() => import('./pricing'), { loading: DynamicFallback });
 const CourseStructure = dynamic(() => import('./course-structure'), { loading: DynamicFallback });
 const EditCourseContent = dynamic(() => import('./edit-course-content'), { loading: DynamicFallback });
 const ModuleStructure = dynamic(() => import('./module-structure'), { loading: DynamicFallback });
 const DashboardStat = dynamic(() => import('./dashboard-stat'), { loading: DynamicFallback });
+const AccountDashboard = dynamic(() => import('./account-dashboard'), { loading: DynamicFallback });
 const Invite = dynamic(() => import('./invite'), { loading: DynamicFallback });
 const InviteInContext = dynamic(() => import('./invite-in-context'), { loading: DynamicFallback });
 const NotificationsSettings = dynamic(() => import('./notifications-settings'), { loading: DynamicFallback });
@@ -119,6 +122,7 @@ export const componentsMapDefault = {
     chart: Chart,
     bundles: Bundles,
     membership: Membership,
+    membership_stats: MembershipStats,
     comment_content:CommentContent,
     browse: Browse,
     browse_simple: BrowseSimple,
@@ -136,6 +140,7 @@ export const componentsMapDefault = {
     form: Form,
     msg: Msg,
     informer: Informer,
+    onboarding: Onboarding,
     login: Login,
     redirect: Redirect,
     entity_text: EntityText,
@@ -154,6 +159,7 @@ export const componentsMapDefault = {
     feed_item: FeedItem,
     notifications_settings: NotificationsSettings,
     dashboard_stat: DashboardStat,
+    account_dashboard: AccountDashboard,
     categories_list: CategoriesList,
     course_structure: CourseStructure,
     edit_course_content: EditCourseContent,

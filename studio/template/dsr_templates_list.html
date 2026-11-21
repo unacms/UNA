@@ -10,6 +10,7 @@
             <div class="adm-dsg-tmpl-meta">__vendor__ &middot; __version__</div>
             <div class="adm-dsg-tmpl-actions">
                 <button type="button" class="bx-btn bx-btn-small" aria-pressed="__pressed__" aria-label="<bx_text_attribute:_adm_dsg_btn_tmpl_preview />: __title_attr__" onclick="__js_object__.previewTemplate(this, '__uri__');"><bx_text:_adm_dsg_btn_tmpl_preview /></button>
+                <bx_if:make_default><button type="button" class="bx-btn bx-btn-small" aria-label="<bx_text_attribute:_adm_dsg_btn_tmpl_make_default />: __title_attr__" data-confirm="__confirm__" onclick="__js_object__.makeDefault('__uri__', this);"><bx_text:_adm_dsg_btn_tmpl_make_default /></button></bx_if:make_default>
                 <a class="adm-dsg-tmpl-open" href="<bx_url_root />?skin=__uri__&amp;preview=1" target="_blank" rel="noopener"><bx_text:_adm_dsg_lnk_tmpl_open /></a>
             </div>
         </div>

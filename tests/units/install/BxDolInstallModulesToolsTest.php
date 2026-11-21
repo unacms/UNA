@@ -96,4 +96,18 @@ class BxDolInstallModulesToolsTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('oauth2', $aUris, 'A dependency is installed even when it is not selected.');
         $this->assertLessThan(array_search('api', $aUris), array_search('oauth2', $aUris));
     }
+
+    public function testModuleWithItsOwnComposerNeedsItsVendorFolder(): void
+    {
+        $o = self::tools();
+        $sRoot = dirname(__DIR__, 3) . '/modules/';
+
+        // no composer.json of its own
+        $this->assertTrue($o->hasDependencies(array('home_dir' => 'boonex/timeline/')));
+        // Xero ships its dependencies in plugins/, its composer vendor-dir
+        if (file_exists($sRoot . 'boonex/xero/plugins/autoload.php'))
+            $this->assertTrue($o->hasDependencies(array('home_dir' => 'boonex/xero/')));
+        // Azure B2C takes its libraries from the root composer.json; a missing one stops its install with its own message
+        $this->assertTrue($o->hasDependencies(array('home_dir' => 'boonex/azure_b2c_con/')));
+    }
 }

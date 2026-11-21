@@ -11,7 +11,6 @@ class BxDolStudioDashboard extends BxTemplStudioWidget
 {
     protected $aBlocks;
     protected $aItemsCache;
-    protected $aItemsHTools;
 
     protected $aAuditReport = null; // the report getAuditReport() settled on in this request
     protected $aItemsQueues;
@@ -68,12 +67,6 @@ class BxDolStudioDashboard extends BxTemplStudioWidget
             array('name' => 'purifier'),
             array('name' => 'opcache'),
             array('name' => 'custom')
-        );
-
-        $this->aItemsHTools = array (
-            'PHP' => 'requirementsPHP',
-            'MySQL' => 'requirementsMySQL',
-            'Web Server' => 'requirementsWebServer',
         );
 
         //--- Check actions ---//
@@ -213,7 +206,7 @@ class BxDolStudioDashboard extends BxTemplStudioWidget
                     foreach($aActions as $sQuery)
                         BxDolDb::getInstance()->query($sQuery);
 
-                    $aResult = array('code' => 0, 'message' => _t('_adm_dbd_msg_q_clean_success'), 'data' => $this->getQueuesChartData(false));
+                    $aResult = array('code' => 0, 'toast' => _t('_adm_dbd_msg_q_clean_success'), 'data' => $this->getQueuesChartData(false));
                     break;
 
                 case 'run_audit':

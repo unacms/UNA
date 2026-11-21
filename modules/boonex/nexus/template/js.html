@@ -20,8 +20,9 @@
     }
 
     function bx_mobile_apps_show_profile_menu () {
-        if ($('.bx-sidebar-account-trigger').size())
-            bx_sidebar_toggle('account');
+        // Artificer: the account menu is a popup under the avatar (it was a sidebar)
+        if ($('.bx-menu-account-trigger').length && 'undefined' !== typeof(oBxArtificerUtils) && 'function' === typeof(oBxArtificerUtils.getAccountMenu))
+            oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account', $('.bx-menu-account-trigger:visible').get(0));
         else
             bx_menu_slide_inline('#bx-sliding-menu-account', null, 'site');
     }

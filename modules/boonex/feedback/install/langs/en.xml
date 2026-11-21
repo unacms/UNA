@@ -22,7 +22,7 @@
     <string name="_bx_feedback_form_question_input_author"><![CDATA[Author]]></string>
     <string name="_bx_feedback_form_question_input_sys_text"><![CDATA[Question]]></string>
     <string name="_bx_feedback_form_question_input_text"><![CDATA[Question]]></string>
-    <string name="_bx_feedback_form_question_input_text_err"><![CDATA[Question is essential. Please, fill in this field]]></string>
+    <string name="_bx_feedback_form_question_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string>
     <string name="_bx_feedback_form_question_input_sys_answers"><![CDATA[Answers]]></string>
     <string name="_bx_feedback_form_question_input_answers"><![CDATA[Answers]]></string>
     <string name="_bx_feedback_form_question_input_answers_err"><![CDATA[Question should have at least 2 non-empty answers.]]></string>
@@ -33,7 +33,7 @@
     <string name="_bx_feedback_form_question_input_lifetime_inf"><![CDATA[In days. Leave blank to create an unlimited question.]]></string>
     <string name="_bx_feedback_form_question_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_feedback_form_question_input_delete_confirm"><![CDATA[I am sure I want to delete this question]]></string>
-    <string name="_bx_feedback_form_question_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_feedback_form_question_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_feedback_form_question_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the question]]></string>
     <string name="_bx_feedback_form_question_input_sys_allow_view_to"><![CDATA[Visibility]]></string>
     <string name="_bx_feedback_form_question_input_allow_view_to"><![CDATA[Visibility]]></string>
@@ -68,7 +68,7 @@
     <string name="_bx_feedback_txt_answer_format"><![CDATA[<b>{0}</b> (<span class="bx-def-font-grayed">{1}</span>)]]></string>
     <string name="_bx_feedback_txt_answer_format_wo_comment"><![CDATA[<b>{0}</b>]]></string>
 
-    <string name="_bx_feedback_err_cannot_perform"><![CDATA[Cannot perform the action. Please report.]]></string>
-    <string name="_bx_feedback_err_login_required"><![CDATA[You need to login first.]]></string>
+    <string name="_bx_feedback_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
+    <string name="_bx_feedback_err_login_required"><![CDATA[You need to sign in first.]]></string>
     <string name="_bx_feedback_err_wrong_data"><![CDATA[Cannot accept the answer.]]></string>
 </resources>

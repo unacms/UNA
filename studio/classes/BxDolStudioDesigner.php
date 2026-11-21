@@ -32,6 +32,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     protected $sParamMarkDark;
     protected $sParamMarkInline;
     protected $sParamLogoAlt;
+    protected $sParamLogoEmail;
+    protected $sParamLogoEmailDark;
     protected $sLogoTemplate; // the template module whose own logo settings this page edits, '' for Designer's (every template's)
 
     protected $aLogos;
@@ -58,6 +60,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         $this->sParamMarkDark = 'sys_site_mark_dark';
         $this->sParamMarkInline = 'sys_site_mark_inline';
         $this->sParamLogoAlt = 'sys_site_logo_alt';
+        $this->sParamLogoEmail = 'sys_site_logo_email';
+        $this->sParamLogoEmailDark = 'sys_site_logo_email_dark';
         $this->sLogoTemplate = '';
 
         $this->aLogos = [
@@ -87,6 +91,16 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'mark_inline' => [
                 'param' => 'sParamMarkInline',
             ],
+            'logo_email' => [
+                'param' => 'sParamLogoEmail',
+                'storage' => 'sys_images_custom',
+                'transcoder' => 'sys_custom_images'
+            ],
+            'logo_email_dark' => [
+                'param' => 'sParamLogoEmailDark',
+                'storage' => 'sys_images_custom',
+                'transcoder' => 'sys_custom_images'
+            ],
         ];
 
         $this->aIcons = [
@@ -94,6 +108,10 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 'storage' => BX_DOL_STORAGE_OBJ_FILES
             ],
             'icon_svg' => [
+                'storage' => BX_DOL_STORAGE_OBJ_IMAGES
+            ],
+            // Browser tabs in a dark browser/OS colour scheme: Chrome ignores an SVG favicon's own prefers-color-scheme style.
+            'icon_dark' => [
                 'storage' => BX_DOL_STORAGE_OBJ_IMAGES
             ],
             'icon_apple' => [
@@ -166,6 +184,13 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 break;
 
             case 'make_default':
+                // Changes the site's template: a POST from the Template page only, with its form's CSRF token.
+                $sToken = isset($_POST['csrf_token']) ? bx_process_input($_POST['csrf_token']) : '';
+                if(!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] != 'POST' || !BxDolForm::isCsrfTokenValid($sToken, false)) {
+                    $aResult = ['code' => 3, 'message' => _t('_sys_txt_form_submission_error_csrf_expired')];
+                    break;
+                }
+
                 $aResult = array('code' => 0, 'message' => '');
                 if(!$this->makeDefault())
                     $aResult = array('code' => 2, 'message' => _t('_adm_dsg_err_make_default'));
@@ -196,8 +221,9 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
     /**
      * Points the page at a template's own logo options (its config's getLogoParams()). A slot the
-     * template doesn't declare is cleared, so the page never edits Designer's site-wide option for it.
-     * @param array $aParams option names by slot (logo, logo_dark, logo_inline, mark, mark_dark, mark_inline, logo_alt)
+     * template doesn't declare is cleared, so the page never edits Designer's site-wide option for it
+     * (the email logos are Designer's alone).
+     * @param array $aParams option names by slot (logo, logo_dark, logo_inline, mark, mark_dark, mark_inline, logo_alt, logo_email, logo_email_dark)
      */
     public function setLogoParams($aParams)
     {
@@ -209,6 +235,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'mark_dark' => 'sParamMarkDark',
             'mark_inline' => 'sParamMarkInline',
             'logo_alt' => 'sParamLogoAlt',
+            'logo_email' => 'sParamLogoEmail',
+            'logo_email_dark' => 'sParamLogoEmailDark',
         ];
 
         foreach($aSlots as $sSlot => $sProperty)
@@ -247,6 +275,22 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $oModule = BxDolModule::getInstance($aModule['name']);
         return $oModule && method_exists($oModule->_oConfig, 'getLogoParams') ? $oModule->_oConfig->getLogoParams() : [];
+    }
+
+    /**
+     * Whether the previewed template has a logo of its own: any of its logo options (getLogoParams()) is set. Those come
+     * before Designer's in the logo chain (BxDolDesigns::getLogoSources). An image option holds a file id, 0 when empty.
+     * @return bool
+     */
+    public function isLogoTemplateSet()
+    {
+        foreach($this->getLogoTemplateParams() as $sOption) {
+            if(!in_array(trim((string)getParam($sOption)), ['', '0'], true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -346,6 +390,10 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         return !empty($aModule) && file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/images/' . $sFile);
     }
 
+    /**
+     * Designer > Template: makes an enabled template the site's template. It is set there only; Designer > Settings
+     * links to it.
+     */
     function makeDefault()
     {
         $sValue = bx_get($this->sParamPrefix . '_value');
@@ -353,7 +401,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             return false;
 
         $sValue = bx_process_input($sValue);
-        return setParam('template', $sValue);
+        if(!array_key_exists($sValue, $this->getSettingsTemplateList())) {
+            return false;
+        }
+
+        $this->saveSettingValues(['template' => $sValue]);
+        return true;
     }
 
     public function submitLogo(&$oForm)
@@ -403,7 +456,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         }
 
         setParam($this->sParamLogoAlt, $oForm->getCleanValue('alt'));
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, bx_append_url_params($this->sManageUrl, array('page' => BX_DOL_STUDIO_DSG_TYPE_LOGO)));
+        return $this->getJsToast('_adm_dsg_scs_save', bx_append_url_params($this->sManageUrl, array('page' => BX_DOL_STUDIO_DSG_TYPE_LOGO)));
     }
 
     public function deleteLogo($sLogo)
@@ -459,7 +512,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             setParam($sSetting, $iId);
         }
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_ICON);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_ICON);
     }
 
     function deleteIcon($sIcon)
@@ -498,7 +551,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         // The form asks whether to show covers; the option stores whether they are off.
         setParam('sys_site_cover_disabled', $oForm->getCleanValue('show') == 'on' ? '' : 'on');
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_COVER);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_COVER);
     }
 
     function deleteCover($sCover)
@@ -525,19 +578,16 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             setParam(BxDolSplash::getOptionCode($sPlatform), (string)$oForm->getCleanValue('code_' . $sPlatform));
         }
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
     }
 
     /**
-     * Designer > Settings: the site template and the default page layouts, each only from what can be chosen.
+     * Designer > Settings: the default page layouts, the header and the footer per layout, each only from what can be chosen. The
+     * site template is chosen in Designer > Template (makeDefault).
      */
     public function submitSettings()
     {
         $aValues = [];
-
-        $sTemplate = bx_process_input(bx_get('template'));
-        if(array_key_exists($sTemplate, $this->getSettingsTemplateList()))
-            $aValues['template'] = $sTemplate;
 
         $aLayouts = $this->getSettingsLayoutList();
         foreach(['sys_pt_default_visitor', 'sys_pt_default_member'] as $sName) {
@@ -546,13 +596,69 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 $aValues[$sName] = $iType;
         }
 
+        // The header per layout and audience: only the widths and places there are.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho)
+                foreach(['width' => BxDolTemplate::HEADER_WIDTHS, 'align' => BxDolTemplate::HEADER_ALIGNS] as $sKind => $aAllowed) {
+                    $sName = 'sys_header_' . $sKind . '_' . $sLayout . '_' . $sWho;
+                    $sValue = bx_process_input(bx_get($sName));
+                    if(in_array($sValue, $aAllowed, true))
+                        $aValues[$sName] = $sValue;
+                }
+
+        // The footer per layout and audience: only the widths there are.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $sName = 'sys_footer_width_' . $sLayout . '_' . $sWho;
+                $sValue = bx_process_input(bx_get($sName));
+                if(in_array($sValue, BxDolTemplate::FOOTER_WIDTHS, true))
+                    $aValues[$sName] = $sValue;
+            }
+
+        // The page width per layout and audience: Full width, or whole pixels brought into Designer's range.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $sSuffix = $sLayout . '_' . $sWho;
+                $sKind = bx_process_input(bx_get('sys_page_width_kind_' . $sSuffix));
+                if($sKind == 'full')
+                    $aValues['sys_page_width_' . $sSuffix] = 'full';
+                else if($sKind == 'limited' && preg_match('/^\s*\d{1,6}\s*$/', (string)bx_get('sys_page_width_' . $sSuffix)))
+                    $aValues['sys_page_width_' . $sSuffix] = (string)min(BxDolTemplate::PAGE_WIDTH_MAX, max(BxDolTemplate::PAGE_WIDTH_MIN, (int)bx_get('sys_page_width_' . $sSuffix)));
+            }
+
         $sLabelStyle = bx_process_input(bx_get('sys_form_label_style'));
         if(array_key_exists($sLabelStyle, $this->getSettingsLabelStyleList()))
             $aValues['sys_form_label_style'] = $sLabelStyle;
 
-        // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
+        $sRadius = bx_process_input(bx_get('sys_design_radius'));
+        if(array_key_exists($sRadius, $this->getSettingsRadiusList())) {
+            $aValues['sys_design_radius'] = $sRadius;
+        }
+
+        $aValues['sys_design_radius_smooth'] = bx_get('sys_design_radius_smooth') == 'on' ? 'on' : '';
+
+        $sFactor = str_replace(',', '.', trim((string)bx_process_input(bx_get('sys_design_radius_smooth_factor'))));
+        if(is_numeric($sFactor)) {
+            $aValues['sys_design_radius_smooth_factor'] = (string)min(2, max(1, round((float)$sFactor, 2)));
+        }
+
+        $sAccent = bx_process_input(bx_get('sys_design_accent'));
+        if(array_key_exists($sAccent, $this->getSettingsAccentList()))
+            $aValues['sys_design_accent'] = $sAccent;
+
+        $this->saveSettingValues($aValues);
+
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
+    }
+
+    /**
+     * Saves options of the templates category as Studio's settings forms do (BxDolStudioOptions::saveChanges): an alert
+     * per changed option, then fresh caches.
+     */
+    protected function saveSettingValues($aValues)
+    {
         $aCategory = [];
-        BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
+        (new BxDolStudioOptionsQuery())->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
         foreach($aValues as $sName => $mixedValue) {
             $mixedPrior = getParam($sName);
             if((string)$mixedPrior === (string)$mixedValue)
@@ -568,8 +674,6 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         }
 
         $this->clearSettingsCache();
-
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
     }
 
     /**
@@ -581,6 +685,45 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             BxDolForm::LABEL_STYLE_REGULAR => _t('_adm_dsg_txt_settings_label_style_regular'),
             BxDolForm::LABEL_STYLE_ADAPTIVE => _t('_adm_dsg_txt_settings_label_style_adaptive'),
         ];
+    }
+
+    /**
+     * Corner sizes of the site and Studio: the design's own radii (large), half of them (small), square (none).
+     */
+    public function getSettingsRadiusList()
+    {
+        return [
+            'large' => _t('_adm_dsg_txt_settings_radius_large'),
+            'small' => _t('_adm_dsg_txt_settings_radius_small'),
+            'none' => _t('_adm_dsg_txt_settings_radius_none'),
+        ];
+    }
+
+    /**
+     * The accent presets by name (BxDolDesigns::getAccentPresets), with their titles.
+     */
+    public function getSettingsAccentList()
+    {
+        $aResult = [];
+        foreach(array_keys(BxDolDesigns::getAccentPresets()) as $sName)
+            $aResult[$sName] = _t('_adm_dsg_txt_settings_accent_' . $sName);
+
+        return $aResult;
+    }
+
+    public function getSettingsRadius()
+    {
+        $sValue = (string)getParam('sys_design_radius');
+        return array_key_exists($sValue, $this->getSettingsRadiusList()) ? $sValue : 'large';
+    }
+
+    /**
+     * The smooth corners' multiplier, between 1 and 3 (1.75 unless another is saved).
+     */
+    public function getSettingsRadiusSmoothFactor()
+    {
+        $fValue = (float)getParam('sys_design_radius_smooth_factor');
+        return (string)($fValue >= 1 && $fValue <= 3 ? $fValue : 1.75);
     }
 
     /**
@@ -656,7 +799,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $this->clearSettingsCache();
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_PWA);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_PWA);
     }
 
     function submitInjections(&$oForm)
@@ -669,7 +812,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             if(getParam('sys_db_cache_enable'))
                 $this->oDb->cleanCache('sys_injections.inc');
 
-            $sResult = '_adm_dsg_scs_save';
+            return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_INJECTIONS);
         }
 
         return $this->getJsResult($sResult, true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_INJECTIONS);

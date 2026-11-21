@@ -2,15 +2,19 @@
     @apply dark:border-gray-800 max-h-full flex flex-col;
 }
 
+/* Every column's header is a standard block header: the same padding, and as tall as a small button with its padding,
+   with or without buttons, so the dividers under the columns line up. */
 .bx-messenger-talks-list-header {
-    @apply w-full p-4 flex gap-3 items-center;
+    @apply w-full p-4 flex gap-2 md:gap-3 items-center min-h-[4.25rem];
 }
 
-.bx-messenger-talks-list-header-menu-item {
-    @apply p-2 leading-6 text-base font-medium rounded-full
-    bg-gray-100 dark:bg-gray-700/50 active:bg-gray-300 dark:active:bg-black/50 hover:bg-gray-200/50 dark:hover:bg-gray-700/50
-    border border-transparent hover:border-gray-200/50 active:border-gray-300 dark:hover:border-gray-700/50 dark:active:border-gray-700
-    text-gray-600 dark:text-gray-400 dark:hover:text-gray-200 hover:text-gray-800;
+.bx-messenger-talks-list-header-buttons {
+    @apply flex flex-none gap-1 md:gap-2 max-w-none;
+}
+
+/* Starred only: the star filled while it is on (oMessenger.showStarred) */
+.bx-messenger-talks-list-header-buttons .star.fill {
+    fill: currentColor;
 }
 
 .bx-messenger-talks-list-header-title-area {
@@ -18,7 +22,7 @@
 }
 
 .bx-messenger-talks-list-header-title {
-    @apply grow self-center mx-auto text-2xl flex-wrap font-semibold text-gray-800 dark:text-gray-100 text-ellipsis overflow-hidden;
+    @apply grow self-center min-w-0 truncate;
 }
 
 .bx-messenger-items-list
@@ -43,8 +47,8 @@
     @apply opacity-100;
 }
 
-.bx-messenger-talks-list-header-search-area-icon svg {
-    @apply h-6 w-6 text-gray-400;
+.bx-messenger-talks-list-header-search-area-icon .sys-icon {
+    @apply h-5 w-5 text-gray-400;
 }
 
 .bx-messenger-talks-list-search-input {
@@ -65,7 +69,5 @@
     @apply flex-shrink-0 h-12 w-12 justify-center flex items-center rounded-full text-white dark:group-hover:text-gray-200 group-hover:text-gray-700 bg-gray-500 dark:bg-gray-900;
 }
 
-.bx-messenger-talks-list-header-menu-item .star.fill {
-    @apply text-amber-600;
-}
+
 

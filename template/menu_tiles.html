@@ -1,0 +1,16 @@
+<!-- Menu template "Tiles": a grid of bordered cards, two to four across as the block's width allows. Each card has the item's icon in a circle over its title and, on the other side, its counter in large figures; the whole card is the link. Used for the stats of "Your account" on the dashboard. -->
+<div class="@container/tiles">
+    <ul class="bx-menu-tiles bx-menu-object-__object__ grid grid-cols-2 @md/tiles:grid-cols-3 @2xl/tiles:grid-cols-4 gap-3 list-none p-0 my-0">
+        <bx_repeat:menu_items>
+            <li class="bx-menu-item bx-menu-item-__name__ __class_add__ min-w-0 group">
+                <a class="flex items-end justify-between gap-2 h-full p-3 rounded-xl border border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 bx-btn-focus" href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick> __attrs__>
+                    <span class="flex flex-col items-start gap-2 min-w-0">
+                        <span class="flex shrink-0 items-center justify-center w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors group-hover:text-gray-900 dark:group-hover:text-gray-100" aria-hidden="true"><bx_include_auto:menu_icon.html /></span>
+                        <bx_if:title><span class="block max-w-full truncate text-sm font-semibold leading-5 text-gray-600 dark:text-gray-400 transition-colors group-hover:text-gray-900 dark:group-hover:text-gray-100">__title__</span></bx_if:title>
+                    </span>
+                    <bx_if:addon><span class="shrink-0 text-3xl font-bold leading-none tabular-nums text-gray-900 dark:text-gray-100">__addon__</span></bx_if:addon>
+                </a>
+            </li>
+        </bx_repeat:menu_items>
+    </ul>
+</div>

@@ -105,6 +105,38 @@ class BxArtificerConfig extends BxBaseModTemplateConfig
         return getParam('bx_artificer_color_scheme');
     }
 
+    /**
+     * The header's width on every layout: 'page' or 'full'; '' leaves it to Designer (per layout).
+     */
+    public function getHeaderWidth()
+    {
+        $sValue = getParam('bx_artificer_header_width');
+        return in_array($sValue, BxDolTemplate::HEADER_WIDTHS, true) ? $sValue : '';
+    }
+
+    /**
+     * The main menu's place in the header on every layout: 'start', 'center' or 'end'; '' leaves it to Designer.
+     */
+    public function getHeaderAlign()
+    {
+        $sValue = getParam('bx_artificer_header_align');
+        return in_array($sValue, BxDolTemplate::HEADER_ALIGNS, true) ? $sValue : '';
+    }
+
+    /**
+     * The page's width on every layout: pixels, or 'full' for 100%; '' leaves it to Designer (per layout and audience).
+     * @return int|string
+     */
+    public function getPageWidth()
+    {
+        $sValue = trim((string)getParam('bx_artificer_page_width'));
+        if($sValue === '100%')
+            return 'full';
+
+        $mixedWidth = BxDolTemplate::checkPageWidth($sValue);
+        return $mixedWidth !== false ? $mixedWidth : '';
+    }
+
     public function getLogoParams()
     {
     	$sPrefix = $this->getPrefix('option');

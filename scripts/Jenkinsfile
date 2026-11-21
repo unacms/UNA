@@ -150,17 +150,6 @@ pipeline {
             }
         }
 */
-        stage('Build messenger') {
-            steps {
-                script {
-                    dir('modules/boonex/messenger') {
-                        echo "Building messenger"
-                        sh 'yarn && yarn build'
-                        sh 'rm package.json && rm -rf js/emoji-mart && rm -rf template/css/tailwind'
-                    }
-                }
-            }
-        }
         stage('Install dependencies') {
             steps {
                 script {

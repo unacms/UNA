@@ -103,6 +103,8 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'ForgotPassword' => 'BxBaseServiceAccount',
             'SwitchProfile' => 'BxBaseServiceAccount',
             'AccountProfileSwitcher' => 'BxBaseServiceAccount',
+            'AccountProfilePromptSeen' => 'BxBaseServiceAccount',
+            'OnboardingHide' => 'BxBaseServiceAccount',
             'EmailConfirmation' => 'BxBaseServiceAccount',
             'ConfirmEmail' => 'BxBaseServiceAccount',
             
@@ -202,6 +204,19 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             case 'icons_js':
                 if(($sJs = BxDolIconset::getObjectInstance()->getPreloaderJs()) !== false)
                     $sResult = $sJs;
+                break;
+
+            case 'pusher_js':
+                // Pusher's client talks to the sockets server: none is set up on a fresh install
+                if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled())
+                    $sResult = 'pusher/pusher.min.js';
+                break;
+
+            case 'atwho_js':
+            case 'atwho_css':
+                // at.js (mentions while typing) is for members: guests write nothing
+                if(isLogged())
+                    $sResult = $sName == 'atwho_js' ? 'at.js/js/jquery.atwho.min.js' : '{dir_plugins_public}at.js/css/|jquery.atwho.min.css';
                 break;
 
             case 'datetime_js':
@@ -1651,6 +1666,30 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return $aResults;
     }
 
+    /**
+     * Studio > API > Settings > Search sections: the site's search sections (sys_objects_search with GlobalSearch on),
+     * by name, with their titles. A name already saved that isn't one of them any more is kept, under its own name, so
+     * saving the form doesn't drop it.
+     */
+    public function serviceGetOptionsApiSearchSections()
+    {
+        // getSections() keeps one cache for all its filters, so the GlobalSearch filter is applied here.
+        $aResults = [];
+        foreach(BxDolSearch::getSections() as $sName => $aSection) {
+            if((int)$aSection['GlobalSearch'] == 1) {
+                $aResults[$sName] = _t($aSection['title']);
+            }
+        }
+
+        foreach(explode(',', (string)getParam('sys_api_search_sections')) as $sName) {
+            if(($sName = trim($sName)) !== '' && !isset($aResults[$sName])) {
+                $aResults[$sName] = $sName;
+            }
+        }
+
+        return $aResults;
+    }
+
     public function serviceGetOptionsApiContextSwitcher()
     {
         $aContexts = bx_srv('system', 'get_modules_by_type', ['context']);
@@ -1823,7 +1862,37 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceHomeRedirect()
     {
         header("Location:" . BX_DOL_URL_ROOT, true, 301);
-        exit;        
+        exit;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-seo SEO
+     * @subsubsection bx_system_general-robots_txt robots_txt
+     *
+     * The default `/robots.txt` (a `sys_rewrite_rules` route), @see BxDolSitemap::getRobotsTxt
+     */
+    public function serviceRobotsTxt()
+    {
+        header('Content-Type: text/plain; charset=utf-8');
+        echo BxDolSitemap::getInstance()->getRobotsTxt();
+        exit;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-seo SEO
+     * @subsubsection bx_system_general-sitemap_xml sitemap_xml
+     *
+     * `/sitemap.xml` (a `sys_rewrite_rules` route): the public pages and content, @see BxDolSitemap
+     */
+    public function serviceSitemapXml()
+    {
+        header('Content-Type: application/xml; charset=utf-8');
+        echo BxDolSitemap::getInstance()->getSitemapXml();
+        exit;
     }
 
     public function serviceProcessEmbed()

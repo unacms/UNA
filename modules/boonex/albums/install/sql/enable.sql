@@ -232,17 +232,17 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 -- MENU: add to site menu
 SET @iSiteMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_site', 'bx_albums', 'albums-home', '_bx_albums_menu_item_title_system_entries_home', '_bx_albums_menu_item_title_entries_home', 'page.php?i=albums-home', '', '', 'far image', 'bx_albums_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
+('sys_site', 'bx_albums', 'albums-home', '_bx_albums_menu_item_title_system_entries_home', '_bx_albums_menu_item_title_entries_home', 'page.php?i=albums-home', '', '', 'image', 'bx_albums_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
 
 -- MENU: add to homepage menu
 SET @iHomepageMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_homepage' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_homepage', 'bx_albums', 'albums-home', '_bx_albums_menu_item_title_system_entries_home', '_bx_albums_menu_item_title_entries_home', 'page.php?i=albums-home', '', '', 'far image', 'bx_albums_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
+('sys_homepage', 'bx_albums', 'albums-home', '_bx_albums_menu_item_title_system_entries_home', '_bx_albums_menu_item_title_entries_home', 'page.php?i=albums-home', '', '', 'image', 'bx_albums_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
 
 -- MENU: add to "add content" menu
 SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_content_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_add_content_links', 'bx_albums', 'create-album', '_bx_albums_menu_item_title_system_create_entry', '_bx_albums_menu_item_title_create_entry', 'page.php?i=create-album', '', '', 'far image', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
+('sys_add_content_links', 'bx_albums', 'create-album', '_bx_albums_menu_item_title_system_create_entry', '_bx_albums_menu_item_title_create_entry', 'page.php?i=create-album', '', '', 'image', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
 
 -- MENU: actions menu for view entry 
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -253,8 +253,8 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('bx_albums_view', 'bx_albums', 'add-images-to-album', '_bx_albums_menu_item_title_system_add_images', '_bx_albums_menu_item_title_add_images', 'page.php?i=add-images&id={content_id}', '', '', 'plus', '', 2147483647, 1, 0, 10),
-('bx_albums_view', 'bx_albums', 'edit-album', '_bx_albums_menu_item_title_system_edit_entry', '_bx_albums_menu_item_title_edit_entry', 'page.php?i=edit-album&id={content_id}', '', '', 'pencil-alt', '', 2147483647, 1, 0, 20),
-('bx_albums_view', 'bx_albums', 'delete-album', '_bx_albums_menu_item_title_system_delete_entry', '_bx_albums_menu_item_title_delete_entry', 'page.php?i=delete-album&id={content_id}', '', '', 'remove', '', 2147483647, 1, 0, 30),
+('bx_albums_view', 'bx_albums', 'edit-album', '_bx_albums_menu_item_title_system_edit_entry', '_bx_albums_menu_item_title_edit_entry', 'page.php?i=edit-album&id={content_id}', '', '', 'pencil-line', '', 2147483647, 1, 0, 20),
+('bx_albums_view', 'bx_albums', 'delete-album', '_bx_albums_menu_item_title_system_delete_entry', '_bx_albums_menu_item_title_delete_entry', 'page.php?i=delete-album&id={content_id}', '', '', 'x', '', 2147483647, 1, 0, 30),
 ('bx_albums_view', 'bx_albums', 'approve', '_sys_menu_item_title_system_va_approve', '_sys_menu_item_title_va_approve', 'javascript:void(0)', 'javascript:bx_approve(this, ''{module_uri}'', {content_id});', '', 'check', '', 2147483647, 1, 0, 40);
 
 -- MENU: all actions menu for view entry 
@@ -269,7 +269,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_albums_view_actions', 'bx_albums', 'edit-album', '_bx_albums_menu_item_title_system_edit_entry', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 20),
 ('bx_albums_view_actions', 'bx_albums', 'delete-album', '_bx_albums_menu_item_title_system_delete_entry', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 30),
 ('bx_albums_view_actions', 'bx_albums', 'approve', '_sys_menu_item_title_system_va_approve', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 40),
-('bx_albums_view_actions', 'bx_albums', 'set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_albums'', content_id: {content_id}});', '', 'check-circle', '', '', 0, 2147483647, 'a:2:{s:6:"module";s:9:"bx_albums";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 50),
+('bx_albums_view_actions', 'bx_albums', 'set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_albums'', content_id: {content_id}});', '', 'circle-check', '', '', 0, 2147483647, 'a:2:{s:6:"module";s:9:"bx_albums";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 50),
 ('bx_albums_view_actions', 'bx_albums', 'comment', '_sys_menu_item_title_system_va_comment', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 200),
 ('bx_albums_view_actions', 'bx_albums', 'view', '_sys_menu_item_title_system_va_view', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 210),
 ('bx_albums_view_actions', 'bx_albums', 'vote', '_sys_menu_item_title_system_va_vote', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 220),
@@ -279,10 +279,10 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_albums_view_actions', 'bx_albums', 'feature', '_sys_menu_item_title_system_va_feature', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 250),
 ('bx_albums_view_actions', 'bx_albums', 'repost', '_sys_menu_item_title_system_va_repost', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 260),
 ('bx_albums_view_actions', 'bx_albums', 'report', '_sys_menu_item_title_system_va_report', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 270),
-('bx_albums_view_actions', 'bx_albums', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'exclamation-triangle', '', '', 0, 2147483647, '', 1, 0, 280),
-('bx_albums_view_actions', 'bx_albums', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_albums&content_id={content_id}', '', '', 'history', '', '', 0, 192, '', 1, 0, 290),
+('bx_albums_view_actions', 'bx_albums', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'triangle-exclamation-point', '', '', 0, 2147483647, '', 1, 0, 280),
+('bx_albums_view_actions', 'bx_albums', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_albums&content_id={content_id}', '', '', 'rotate-ccw-clock', '', '', 0, 192, '', 1, 0, 290),
 ('bx_albums_view_actions', 'bx_albums', 'social-sharing', '_sys_menu_item_title_system_social_sharing', '_sys_menu_item_title_social_sharing', 'javascript:void(0)', 'oBxDolPage.share(this, \'{url_encoded}\')', '', 'share', '', '', 0, 2147483647, '', 1, 0, 300),
-('bx_albums_view_actions', 'bx_albums', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, '', 1, 0, 9999);
+('bx_albums_view_actions', 'bx_albums', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, '', 1, 0, 9999);
 
 
 -- MENU: actions menu for view media
@@ -294,10 +294,10 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('bx_albums_view_media', 'bx_albums', 'add-images-to-album', '_bx_albums_menu_item_title_system_add_images', '_bx_albums_menu_item_title_add_images', 'page.php?i=add-images&id={content_id}', '', '', 'plus', '', 2147483647, 1, 0, 10),
-('bx_albums_view_media', 'bx_albums', 'edit-album', '_bx_albums_menu_item_title_system_edit_album', '_bx_albums_menu_item_title_edit_album', 'page.php?i=edit-album&id={content_id}', '', '', 'pencil-alt', '', 2147483647, 1, 0, 20),
-('bx_albums_view_media', 'bx_albums', 'edit-image', '_bx_albums_menu_item_title_system_edit_image', '_bx_albums_menu_item_title_edit_image', 'javascript:void(0)', 'javascript:{js_object}.editMedia(this, {media_id});', '', 'pencil-alt', '', 2147483647, 1, 0, 30),
-('bx_albums_view_media', 'bx_albums', 'delete-image', '_bx_albums_menu_item_title_system_delete_image', '_bx_albums_menu_item_title_delete_image', 'javascript:void(0)', 'javascript:{js_object}.deleteMedia(this, {media_id});', '', 'remove', '', 2147483647, 1, 0, 40),
-('bx_albums_view_media', 'bx_albums', 'move-image', '_bx_albums_menu_item_title_system_move_image', '_bx_albums_menu_item_title_move_image', 'javascript:void(0)', 'javascript:{js_object}.moveMedia(this, {media_id});', '', 'exchange-alt', '', 2147483647, 1, 0, 50);
+('bx_albums_view_media', 'bx_albums', 'edit-album', '_bx_albums_menu_item_title_system_edit_album', '_bx_albums_menu_item_title_edit_album', 'page.php?i=edit-album&id={content_id}', '', '', 'pencil-line', '', 2147483647, 1, 0, 20),
+('bx_albums_view_media', 'bx_albums', 'edit-image', '_bx_albums_menu_item_title_system_edit_image', '_bx_albums_menu_item_title_edit_image', 'javascript:void(0)', 'javascript:{js_object}.editMedia(this, {media_id});', '', 'pencil-line', '', 2147483647, 1, 0, 30),
+('bx_albums_view_media', 'bx_albums', 'delete-image', '_bx_albums_menu_item_title_system_delete_image', '_bx_albums_menu_item_title_delete_image', 'javascript:void(0)', 'javascript:{js_object}.deleteMedia(this, {media_id});', '', 'x', '', 2147483647, 1, 0, 40),
+('bx_albums_view_media', 'bx_albums', 'move-image', '_bx_albums_menu_item_title_system_move_image', '_bx_albums_menu_item_title_move_image', 'javascript:void(0)', 'javascript:{js_object}.moveMedia(this, {media_id});', '', 'repeat', '', 2147483647, 1, 0, 50);
 
 
 -- MENU: all actions menu for view media page 
@@ -321,7 +321,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_albums_view_actions_media', 'bx_albums', 'feature', '_sys_menu_item_title_system_va_feature', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 250),
 ('bx_albums_view_actions_media', 'bx_albums', 'report', '_sys_menu_item_title_system_va_report', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 260),
 ('bx_albums_view_actions_media', 'bx_albums', 'social-sharing', '_sys_menu_item_title_system_social_sharing', '_sys_menu_item_title_social_sharing', 'javascript:void(0)', 'oBxDolPage.share(this, \'{url_encoded}\')', '', 'share', '', '', 0, 2147483647, 1, 0, 300),
-('bx_albums_view_actions_media', 'bx_albums', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, 1, 0, 9999);
+('bx_albums_view_actions_media', 'bx_albums', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, 1, 0, 9999);
 
 -- MENU: actions menu for media unit
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -338,7 +338,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_albums_view_actions_media_unit', 'bx_albums', 'favorite', '_sys_menu_item_title_system_va_favorite', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 240),
 ('bx_albums_view_actions_media_unit', 'bx_albums', 'feature', '_sys_menu_item_title_system_va_feature', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 250),
 ('bx_albums_view_actions_media_unit', 'bx_albums', 'report', '_sys_menu_item_title_system_va_report', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 260),
-('bx_albums_view_actions_media_unit', 'bx_albums', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, 1, 0, 9999);
+('bx_albums_view_actions_media_unit', 'bx_albums', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, 1, 0, 9999);
 
 -- MENU: actions menu for my entries
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -395,7 +395,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- MENU: profile stats
 SET @iNotifMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_profile_stats' AND `active` = 1 LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_profile_stats', 'bx_albums', 'profile-stats-my-albums', '_bx_albums_menu_item_title_system_manage_my_albums', '_bx_albums_menu_item_title_manage_my_albums', 'page.php?i=albums-author&profile_id={member_id}', '', '_self', 'far image', 'a:2:{s:6:"module";s:9:"bx_albums";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, 1, 0, @iNotifMenuOrder + 1);
+('sys_profile_stats', 'bx_albums', 'profile-stats-my-albums', '_bx_albums_menu_item_title_system_manage_my_albums', '_bx_albums_menu_item_title_manage_my_albums', 'page.php?i=albums-author&profile_id={member_id}', '', '_self', 'image', 'a:2:{s:6:"module";s:9:"bx_albums";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, 1, 0, @iNotifMenuOrder + 1);
 
 -- MENU: manage tools submenu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -410,12 +410,12 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 -- MENU: dashboard manage tools
 SET @iManageMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard_manage_tools' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_account_dashboard_manage_tools', 'bx_albums', 'albums-administration', '_bx_albums_menu_item_title_system_admt_albums', '_bx_albums_menu_item_title_admt_albums', 'page.php?i=albums-administration', '', '_self', 'far image', 'a:2:{s:6:"module";s:9:"bx_albums";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
+('sys_account_dashboard_manage_tools', 'bx_albums', 'albums-administration', '_bx_albums_menu_item_title_system_admt_albums', '_bx_albums_menu_item_title_admt_albums', 'page.php?i=albums-administration', '', '_self', 'image', 'a:2:{s:6:"module";s:9:"bx_albums";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
 
 -- MENU: add menu item to profiles modules (trigger* menu sets are processed separately upon modules enable/disable)
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('trigger_profile_view_submenu', 'bx_albums', 'albums-author', '_bx_albums_menu_item_title_system_view_entries_author', '_bx_albums_menu_item_title_view_entries_author', 'page.php?i=albums-author&profile_id={profile_id}', '', '', 'far image', '', 2147483647, 1, 0, 0),
-('trigger_group_view_submenu', 'bx_albums', 'albums-context', '_bx_albums_menu_item_title_system_view_entries_in_context', '_bx_albums_menu_item_title_view_entries_in_context', 'page.php?i=albums-context&profile_id={profile_id}', '', '', 'far image', '', 2147483647, 1, 0, 0);
+('trigger_profile_view_submenu', 'bx_albums', 'albums-author', '_bx_albums_menu_item_title_system_view_entries_author', '_bx_albums_menu_item_title_view_entries_author', 'page.php?i=albums-author&profile_id={profile_id}', '', '', 'image', '', 2147483647, 1, 0, 0),
+('trigger_group_view_submenu', 'bx_albums', 'albums-context', '_bx_albums_menu_item_title_system_view_entries_in_context', '_bx_albums_menu_item_title_view_entries_in_context', 'page.php?i=albums-context&profile_id={profile_id}', '', '', 'image', '', 2147483647, 1, 0, 0);
 
 
 -- PRIVACY 
@@ -517,8 +517,8 @@ INSERT INTO `sys_objects_metatags` (`object`, `module`, `table_keywords`, `table
 -- STATS
 SET @iMaxOrderStats = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_statistics`);
 INSERT INTO `sys_statistics` (`module`, `name`, `title`, `link`, `icon`, `query`, `order`) VALUES 
-('bx_albums', 'bx_albums', '_bx_albums', 'page.php?i=albums-home', 'far image', 'SELECT COUNT(*) FROM `bx_albums_albums` WHERE 1 AND `status` = ''active'' AND `status_admin` = ''active''', @iMaxOrderStats + 1),
-('bx_albums', 'bx_albums_media', '_bx_albums_media', '', 'far image', 'SELECT COUNT(*) FROM `bx_albums_files` WHERE 1', @iMaxOrderStats + 2);
+('bx_albums', 'bx_albums', '_bx_albums', 'page.php?i=albums-home', 'image', 'SELECT COUNT(*) FROM `bx_albums_albums` WHERE 1 AND `status` = ''active'' AND `status_admin` = ''active''', @iMaxOrderStats + 1),
+('bx_albums', 'bx_albums_media', '_bx_albums_media', '', 'image', 'SELECT COUNT(*) FROM `bx_albums_files` WHERE 1', @iMaxOrderStats + 2);
 
 
 -- CHARTS
@@ -554,15 +554,15 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_albums_administration', 'bulk', 'delete', '_bx_albums_grid_action_title_adm_delete', '', 0, 1, 1),
 ('bx_albums_administration', 'bulk', 'clear_reports', '_bx_albums_grid_action_title_adm_clear_reports', '', 0, 1, 2),
-('bx_albums_administration', 'single', 'edit', '_bx_albums_grid_action_title_adm_edit', 'pencil-alt', 1, 0, 1),
-('bx_albums_administration', 'single', 'delete', '_bx_albums_grid_action_title_adm_delete', 'remove', 1, 1, 2),
-('bx_albums_administration', 'single', 'settings', '_bx_albums_grid_action_title_adm_more_actions', 'cog', 1, 0, 3),
+('bx_albums_administration', 'single', 'edit', '_bx_albums_grid_action_title_adm_edit', 'pencil-line', 1, 0, 1),
+('bx_albums_administration', 'single', 'delete', '_bx_albums_grid_action_title_adm_delete', 'x', 1, 1, 2),
+('bx_albums_administration', 'single', 'settings', '_bx_albums_grid_action_title_adm_more_actions', 'settings', 1, 0, 3),
 ('bx_albums_administration', 'single', 'audit_content', '_bx_albums_grid_action_title_adm_audit_content', 'search', 1, 0, 4),
 ('bx_albums_administration', 'single', 'clear_reports', '_bx_albums_grid_action_title_adm_clear_reports', 'eraser', 1, 0, 5),
 ('bx_albums_common', 'bulk', 'delete', '_bx_albums_grid_action_title_adm_delete', '', 0, 1, 1),
-('bx_albums_common', 'single', 'edit', '_bx_albums_grid_action_title_adm_edit', 'pencil-alt', 1, 0, 1),
-('bx_albums_common', 'single', 'delete', '_bx_albums_grid_action_title_adm_delete', 'remove', 1, 1, 2),
-('bx_albums_common', 'single', 'settings', '_bx_albums_grid_action_title_adm_more_actions', 'cog', 1, 0, 3);
+('bx_albums_common', 'single', 'edit', '_bx_albums_grid_action_title_adm_edit', 'pencil-line', 1, 0, 1),
+('bx_albums_common', 'single', 'delete', '_bx_albums_grid_action_title_adm_delete', 'x', 1, 1, 2),
+('bx_albums_common', 'single', 'settings', '_bx_albums_grid_action_title_adm_more_actions', 'settings', 1, 0, 3);
 
 
 -- UPLOADERS

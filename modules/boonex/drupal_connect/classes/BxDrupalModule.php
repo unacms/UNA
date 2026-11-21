@@ -14,7 +14,23 @@ class BxDrupalModule extends BxBaseModConnectModule
     function __construct(&$aModule)
     {
         parent::__construct($aModule);
-    }    
+    }
+
+    /**
+     * Logins are checked against Drupal only once its login URL is set; until then the site's own login form stays.
+     */
+    public function isConfigured()
+    {
+        return (bool)getParam('bx_drupal_login_url');
+    }
+
+    /**
+     * Drupal accounts sign in through the login form itself, the module has no "Continue with" page to link to.
+     */
+    public function isAuthButtonShown()
+    {
+        return false;
+    }
 
     function actionLoginSubmit()
     {

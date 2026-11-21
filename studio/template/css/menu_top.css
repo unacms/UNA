@@ -11,7 +11,7 @@ div.bx-std-menu-top-wrp {
 div.bx-std-menu-top-gap {
     margin: 0.75rem 0.75rem 0;
     padding: 1rem;
-    border-radius: 1.5rem; /* 24px = the tiles' 8px corners + the 16px padding, so the bar's corners run parallel with theirs (and with the 16px corners of their 8px hover halo, 8px in); the blocks' corners too */
+    border-radius: var(--bx-radius-3xl); /* 22px, the blocks' corners too; the tiles 16px inside it have 8px corners, their hover halo 8px inside it 14px */
     backdrop-filter: blur(16px);
 }
 div.bx-std-menu-top-wrp .bx-std-menu-top.bx-std-menu-top-center:first-child {
@@ -135,15 +135,13 @@ div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
 .dark div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
     background-color: rgba(255, 255, 255, 0.1);
 }
-/* Page item: the app's launcher icon fills its 36px tile and 1px beyond it (9px corners), where the tile's darker edge line sits over the art (tailwind.css), the title 12px after it. */
+/* Page item: the app's launcher icon fills its 36px tile (8px corners), as large as the header buttons; the tile's darker edge line sits over the art's outer pixel (tailwind.css), the title 12px after it. */
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile img,
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile svg.bx-std-app-icon {
     display: block;
-    width: calc(100% + 2px); /* the whole tile, not the 20px glyph size the header-button rule below gives images */
-    max-width: none; /* Tailwind's base caps images at their box */
-    height: calc(100% + 2px);
-    margin: -1px;
-    border-radius: calc(0.5rem + 1px);
+    width: 100%; /* the whole tile, not the 20px glyph size the header-button rule below gives images */
+    height: 100%;
+    border-radius: var(--bx-radius-lg);
     object-fit: cover;
 }
 div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon + .bx-mi-title {
@@ -201,7 +199,7 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-cle
     justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     color: rgb(113 113 122);
     cursor: pointer;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
@@ -300,7 +298,7 @@ div.bx-std-menu-top .bx-menu-top-center li a {
     width: auto;
 }
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active a {
-    border-color: rgba(59, 130, 246, 0.5);
+    border-color: rgb(var(--bx-accent-500) / 0.5);
 }
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active .bx-mi-bg {
     display: block;
@@ -329,23 +327,21 @@ div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
     height: 2.25rem;
 
     margin: 0;
-    border-radius: 0.5rem; /* matches rounded-lg on the icon wrapper, whose ring/shadow must not be clipped */
+    border-radius: var(--bx-radius-lg); /* matches rounded-lg on the icon wrapper, whose ring/shadow must not be clipped */
 }
 
-/* The dock's art: 1px beyond its 36px tile on every side (9px corners), as large as a header button with its outer hairline; the tile's
-   darker edge line sits over that outer 1px (tailwind.css). */
+/* The dock's art: its 36px tile (8px corners), as large as a header button; the tile's darker edge line sits over the art's outer
+   pixel (tailwind.css). */
 div.bx-std-menu-top .bx-menu-top-center li img,
 div.bx-std-menu-top .bx-menu-top-center li svg.bx-std-app-icon {
     position: relative;
     z-index: -1;
 
-    width: calc(2.25rem + 2px);
-    max-width: none; /* Tailwind's base caps images at their box */
-    height: calc(2.25rem + 2px);
-    margin: -1px;
-    border-radius: calc(0.5rem + 1px);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--bx-radius-lg);
 }
-/* The tile keeps its 36px: its own block formatting context holds the art's -1px margins instead of letting them collapse through it. */
+/* The tile keeps its 36px: its own block formatting context, so nothing inside collapses margins through it. */
 div.bx-std-menu-top .bx-menu-top-center li .bx-icon-tile {
     display: flow-root;
 }
@@ -384,7 +380,7 @@ div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item {
     height: 2.25rem;
     right: 0;
 
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 .bx-dir-rtl div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item {
     left: 0;
@@ -437,7 +433,7 @@ div.bx-std-menu-top .bx-menu-toolbar li {
     height: 2.25rem;
     min-width: 2.25rem;
     
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 
     line-height: 2.25rem;
 }
@@ -454,7 +450,7 @@ div.bx-std-menu-top .bx-menu-toolbar li:not(.bx-menu-tab-search) button {
     width: 100%;
     height: 100%;
 
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 
 div.bx-std-menu-top .bx-menu-toolbar li a:hover,
@@ -472,9 +468,8 @@ div.bx-std-menu-top-right li.bx-menu-tab-active i.sys-icon {
     text-shadow: 0 0 4px #ffe900;
 }
 
-/*--- Account, Actions, Help and Settings popups ---*/
+/*--- Account, Actions and Settings popups ---*/
 body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
-#bx-std-pcap-menu-popup-help,
 #bx-std-pcap-menu-popup-assistant,
 #bx-std-pcap-menu-popup-actions,
 #bx-std-pcap-menu-popup-account,
@@ -482,37 +477,29 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
     overflow: visible;
 }
 .bx-std-mod-popup-settings-wrapper .bx-popup-gap,
-#bx-std-pcap-menu-popup-help .bx-popup-gap,
 #bx-std-pcap-menu-popup-assistant .bx-popup-gap,
 #bx-std-pcap-menu-popup-actions .bx-popup-gap,
 #bx-std-pcap-menu-popup-account .bx-popup-gap,
 #bx-std-pmenu-popup-actions .bx-popup-gap {
     margin: 8px 0 0; /* with the script's 8px this puts the box 16px under the 36px trigger: flush with the header bar's bottom edge */
 }
-#bx-std-pcap-menu-popup-help .bx-popup,
 #bx-std-pcap-menu-popup-actions .bx-popup,
 .bx-std-mod-popup-settings-wrapper.bx-popup-applied:not(.bx-popup-chain) .bx-popup {
     margin: 0;
     border-width: 0;
-    border-radius: 0.75rem; /* same as the dropdown menus */
+    border-radius: var(--bx-radius-2xl); /* same as the dropdown menus */
 }
 #bx-std-pcap-menu-popup-actions .bx-popup-content {
     padding: 1.0rem;
 }
 
 .bx-std-mod-popup-settings-wrapper,
-#bx-std-pcap-menu-popup-help .bx-popup,
-#bx-std-pcap-menu-popup-help .bx-popup a,
-#bx-std-pcap-menu-popup-help .bx-popup .sys-icon,
 #bx-std-pcap-menu-popup-actions .bx-popup {
     color: rgba(0, 0, 0, 0.7);
 }
 #bx-std-pcap-menu-popup-account .bx-popup li > a > svg,
 #bx-std-pcap-menu-popup-account .bx-popup li > div > svg {
     opacity: 0.7;
-}
-#bx-std-pcap-menu-popup-help .bx-popup a:hover {
-    color: rgba(0, 0, 0, 0.85);
 }
 #bx-std-pcap-menu-popup-account .bx-popup li:hover > a > svg,
 #bx-std-pcap-menu-popup-account .bx-popup li:hover > div > svg,

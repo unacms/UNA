@@ -21,7 +21,7 @@ class BxForumStudioPage extends BxTemplStudioModule
 
         parent::__construct($sModule, $mixedPageName, $sPage);
 
-        $this->aMenuItems['categories'] = array('name' => 'categories', 'icon' => 'bars', 'title' => '_bx_forum_lmi_cpt_categories');
+        $this->aMenuItems['categories'] = array('name' => 'categories', 'icon' => 'menu', 'title' => '_bx_forum_lmi_cpt_categories');
     }
 
     protected function getCategories()

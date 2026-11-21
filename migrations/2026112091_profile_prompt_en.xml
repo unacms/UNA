@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "Accounts without a profile" and its choices; the shorter "create a profile" informer. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Accounts without a profile]]></string_upd>
+    <string_add name="_sys_acc_profile_requirement_optional"><![CDATA[Optional: a reminder bar on every page]]></string_add>
+    <string_add name="_sys_acc_profile_requirement_prompt"><![CDATA[Ask after sign-in: a “Create your profile” window on the first page]]></string_add>
+    <string_add name="_sys_acc_profile_requirement_required"><![CDATA[Required: send to profile creation before anything else]]></string_add>
+    <string_upd name="_sys_txt_account_profile_system"><![CDATA[You don't have a profile yet.]]></string_upd>
+</resources>

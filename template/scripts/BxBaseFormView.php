@@ -214,6 +214,8 @@ class BxBaseFormView extends BxDolForm
             'form_id' => $this->getId(),
             'chooser_id' => $this->_aHtmlIds['pgc'] . $iInputId,
             'icon' => $this->_getPrivacyIcon($sPrivacyGroup),
+            'title' => $this->_getPrivacyTitle($sPrivacyGroup),
+            'label' => _t('_sys_form_input_privacy_label', $this->_getPrivacyTitle($sPrivacyGroup)),
             'eval' => $this->getJsObjectName() . '.pgcOnSelectGroup(oData);'
         ));
     }
@@ -448,6 +450,11 @@ class BxBaseFormView extends BxDolForm
         foreach($this->aInputs as $sKey => $aInput) {
             if(isset($aInput['visible_for_levels']) && !self::isVisible($aInput)) 
                 continue;
+
+            // a view shows the apps what it shows on the site: not a field its author's privacy hides from the viewer
+            if($this->isViewMode() && isset($aInput['name']) && !empty($aInput['privacy']) && !$this->isInputVisible($aInput))
+                continue;
+
 
             if(isset($aInput['type']) && in_array($aInput['name'], ['captcha'])) 
                 continue;
@@ -883,12 +890,13 @@ BLAH;
         if($mixedResult[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
             return true;            
 
+        $sGroupDefault = $this->_getPrivacyGroupDefault($aInput);
         $aInputPrivacy = BxDolFormQuery::getInputPrivacy($aInput['id'], $this->_iAuthorId);
         if(empty($aInputPrivacy) || !is_array($aInputPrivacy))
-            if(BxDolFormQuery::setInputPrivacy($aInput['id'], $this->_iAuthorId, BxDolPrivacy::getFieldName($this->_sPrivacyObjectView), $this->_sPrivacyGroupDefault))
+            if(BxDolFormQuery::setInputPrivacy($aInput['id'], $this->_iAuthorId, BxDolPrivacy::getFieldName($this->_sPrivacyObjectView), $sGroupDefault))
                 $aInputPrivacy = BxDolFormQuery::getInputPrivacy($aInput['id'], $this->_iAuthorId);
 
-        if((empty($aInputPrivacy) || !is_array($aInputPrivacy)) && $this->_sPrivacyGroupDefault != BX_DOL_PG_ALL)
+        if((empty($aInputPrivacy) || !is_array($aInputPrivacy)) && $sGroupDefault != BX_DOL_PG_ALL)
             return false;
 
         $oPrivacy = BxDolPrivacy::getObjectInstance($this->_sPrivacyObjectView);            
@@ -1137,6 +1145,24 @@ BLAH;
         }
     }
 
+    /**
+     * Text fields that hold an email address are `type="email"`, so phones show the email keyboard. The form gets
+     * `novalidate`: its checkers say what is wrong, in its own words, not the browser.
+     * @param array $aNames input names
+     */
+    protected function _setEmailInputs($aNames)
+    {
+        $bAny = false;
+        foreach($aNames as $sName)
+            if(isset($this->aInputs[$sName]) && $this->aInputs[$sName]['type'] == 'text') {
+                $this->aInputs[$sName]['input_type'] = 'email';
+                $bAny = true;
+            }
+
+        if($bAny)
+            $this->aFormAttrs['novalidate'] = 'novalidate';
+    }
+
     protected function _isSecretInput($aInput)
     {
         return !empty($aInput['secret']) && !empty($aInput['name']);
@@ -1194,11 +1220,20 @@ BLAH;
             'caption' => _t($sTxtAge),
         ]);
 
-        if(bx_is_api())
+        if(bx_is_api()) {
+            $iAge = bx_birthday2age($aInput['value'] ?? '');
+
+            // No birthday: the site leaves the row out (genCustomViewRowValueBirthday), so the API leaves out the input.
+            if($iAge <= 0) {
+                $aInput['visible_for_levels'] = 0;
+                return '';
+            }
+
             $aInput = array_merge($aInput, [
                 'type' => 'text',
-                'value' => bx_birthday2age($aInput['value'])
+                'value' => $iAge
             ]);
+        }
 
         return $this->genViewRowWrapped($aInput);
     }
@@ -1216,10 +1251,8 @@ BLAH;
 
     protected function genCustomViewRowValueBirthday(&$aInput)
     {
-        if(!isset($aInput['value']) || !$aInput['value'] || in_array($aInput['value'], array('0000-00-00', '0000-00-00 00:00:00', '0000-00-00Z', '0000-00-00 00:00:00Z')))
-            return null;
-
-        return bx_birthday2age($aInput['value']);
+        $iAge = bx_birthday2age($aInput['value'] ?? '');
+        return $iAge > 0 ? $iAge : null;
     }
 
     /**
@@ -1237,7 +1270,7 @@ BLAH;
 
         $sRequired = $this->genRequiredMark($aInput, $isOneLine);
         
-        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
+        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon circle-question-mark"></i></a> ' : '';
 
         $sClassAdd = !empty($aInput['error']) ? ' bx-form-error' : '';
         $sInfoIcon = !empty($aInput['info']) ? $this->genInfoIcon($aInput['info']) : '';
@@ -1261,15 +1294,19 @@ BLAH;
          * the caption on the edge, so the two never overlap.
          */
         if ($bAdaptive) {
-            if (!isset($aInput['attrs']) || !is_array($aInput['attrs']))
-                $aInput['attrs'] = [];
-            $aInput['attrs']['id'] = $this->getInputId($aInput);
-
             $sClassWrapper .= ' bx-form-element-adaptive';
             if (isset($aInput['attrs']['placeholder']) && trim((string)$aInput['attrs']['placeholder']) !== '')
                 $sClassWrapper .= ' bx-form-element-adaptive-floated';
             else
                 $aInput['attrs']['placeholder'] = ' ';
+        }
+
+        // a caption above a text or password field is its label: clicking it focuses the field, and the field gets its name from it
+        if ($bAdaptive || (!$isOneLine && !$this->_bGenFormApi && $sCaption && in_array($aInput['type'] ?? '', ['text', 'password']) && empty($aInput['html']) && !empty($aInput['name']))) {
+            if (!isset($aInput['attrs']) || !is_array($aInput['attrs']))
+                $aInput['attrs'] = [];
+            if (empty($aInput['attrs']['id']))
+                $aInput['attrs']['id'] = $this->getInputId($aInput);
 
             $sCaption = $this->oTemplate->parseHtmlByName('form_row_label.html', [
                 'for' => bx_html_attribute($aInput['attrs']['id']),
@@ -1421,7 +1458,7 @@ BLAH;
 
         $sRequired = $this->genRequiredMark($aInput);
         
-        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
+        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon circle-question-mark"></i></a> ' : '';
 
         $sClassAdd = !empty($aInput['error']) ? ' bx-form-error' : '';
         $sInfoIcon = !empty($aInput['info']) ? $this->genInfoIcon($aInput['info']) : '';
@@ -1768,6 +1805,8 @@ BLAH;
         $aAttrs['type'] = $aInput['type'];
         if ('datetime' == $aAttrs['type'])
             $aAttrs['type'] = 'date_time';
+        else if ('text' == $aAttrs['type'] && ($aInput['input_type'] ?? '') == 'email') // @see _setEmailInputs
+            $aAttrs['type'] = 'email';
 
         switch($aAttrs['type']) {
             case 'datepicker':
@@ -2026,6 +2065,15 @@ BLAH;
             ]);
         }
 
+        // a plain text field with a length limit counts its characters under it
+        $iCounterMax = !$bHtmlEditor && !$bCodeEditor ? $this->_getInputTextareaMaxLength($aInput) : 0;
+        $sCounterId = '';
+        if($iCounterMax > 0) {
+            $sCounterId = 'bx-form-input-counter-' . $sUniq;
+            $aAttrs['data-bx-counter'] = $sCounterId;
+            $aAttrs['aria-describedby'] = trim(($aAttrs['aria-describedby'] ?? '') . ' ' . $sCounterId);
+        }
+
         return $this->oTemplate->parseHtmlByName('form_field_textarea.html', [
             'attrs' => bx_convert_array2attrs($aAttrs, $sClassAdd),
             'value' => $sValue,
@@ -2034,7 +2082,34 @@ BLAH;
                 'content' => $aTmplVarsSwitcher
             ],
             'agent_button' => $sAgentButton,
+            'bx_if:counter' => [
+                'condition' => $iCounterMax > 0,
+                'content' => [
+                    'id' => $sCounterId,
+                    'max' => $iCounterMax,
+                    'count' => get_mb_len(isset($aInput['value']) ? strip_tags((string)$aInput['value']) : ''),
+                    'limit_text' => bx_html_attribute(_t('_sys_form_input_counter_limit', $iCounterMax)),
+                ]
+            ],
         ]);
+    }
+
+    /**
+     * The most characters a textarea takes: its maxlength attribute, or the maximum of its Length checker.
+     * @return int 0 when there is no limit
+     */
+    protected function _getInputTextareaMaxLength($aInput)
+    {
+        if(!empty($aInput['attrs']['maxlength']) && (int)$aInput['attrs']['maxlength'] > 0)
+            return (int)$aInput['attrs']['maxlength'];
+
+        if(isset($aInput['checker']['func']) && strtolower($aInput['checker']['func']) == 'length' && !empty($aInput['checker']['params']) && is_array($aInput['checker']['params'])) {
+            $aParams = array_values($aInput['checker']['params']);
+            if(isset($aParams[1]) && (int)$aParams[1] > 0)
+                return (int)$aParams[1];
+        }
+
+        return 0;
     }
 
     protected function _genInputTextareaAttrs(&$aInput)
@@ -2203,6 +2278,8 @@ BLAH;
                 'attrs' => bx_convert_array2attrs($aAttrs),
                 'btn_class' => !empty($aInput['attrs']['disabled']) ? 'bx-btn-disabled' : '',
                 'button_title' => bx_js_string($oUploader->getUploaderButtonTitle(isset($aInput['upload_buttons_titles']) ? $aInput['upload_buttons_titles'] : false)),
+                // what a picture field shows before a picture is set, as the letter avatar of a profile whose name is known
+                'placeholder_image' => $aInput['placeholder_image'] ?? '',
             ];
 
             $sUploadersButtons .= $oUploader->getUploaderButton($aParamsButtons);
@@ -2238,6 +2315,7 @@ BLAH;
             'error' => $sError,
             'id_container_errors' => $oUploader ? $oUploader->getIdContainerErrors() : '',
             'id_container_result' => $oUploader ? $oUploader->getIdContainerResult() : '',
+            'class_container_result' => $oUploader ? $oUploader->getResultContainerClass() : '',
             'uploader_instance_name' => $oUploader ? $oUploader->getNameJsInstanceUploader() : '',
             'uploaders_js' => $sUploadersJs,
         ));
@@ -2855,7 +2933,7 @@ BLAH;
             $sPrivacyObject = $this->_sPrivacyObjectView;
 
         $iInputId = (int)$aInput['id'];
-        $mixedPrivacyGroup = $this->_getPrivacyGroup($sPrivacyObject, $iInputId, $iAuthorId);
+        $mixedPrivacyGroup = $this->_getPrivacyGroup($sPrivacyObject, $iInputId, $iAuthorId, $aInput);
 
         if(!isset($aInput['attrs_wrapper']['class']))
             $aInput['attrs_wrapper']['class'] = '';
@@ -2866,7 +2944,9 @@ BLAH;
             'html_id' => $this->_aHtmlIds['pgc'] . $iInputId,
             'id' => $iInputId,
             'privacy_object' => $sPrivacyObject,
-            'icon' => $this->_getPrivacyIcon($mixedPrivacyGroup)
+            'icon' => $this->_getPrivacyIcon($mixedPrivacyGroup),
+            'title' => bx_html_attribute($this->_getPrivacyTitle($mixedPrivacyGroup)),
+            'label' => bx_html_attribute(_t('_sys_form_input_privacy_label', $this->_getPrivacyTitle($mixedPrivacyGroup))),
         ));
     }
 

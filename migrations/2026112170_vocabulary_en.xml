@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_Member Login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_adm_ipbl_Stored_members_caption"><![CDATA[Stored IPs of signed-in members]]></string_upd>
+    <string_upd name="_adm_msg_oauth_need_authorize"><![CDATA[You need to sign in to your <b>UNA</b> account to get data: <a href="{0}">sign in to UNA</a>.]]></string_upd>
+    <string_upd name="_adm_msg_oauth_non_owner_logged"><![CDATA[WARNING: You are signed in to an <a href="{0}">UNA.IO</a> account which is different from the account that generated UNA Key & Secret for your domain.]]></string_upd>
+    <string_upd name="_adm_page_cpt_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[2FA code lifetime, in seconds (0 - send code at each sign-in)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_disable_login_form"><![CDATA[Disable sign-in form]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_disable_join_form"><![CDATA[Disable sign-up form]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_delete"><![CDATA[Delete accounts with no sign-in within N days]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_suspend"><![CDATA[Suspend accounts with no sign-in within N days]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_api_root_page_member"><![CDATA[Home page for signed-in members]]></string_upd>
+    <string_upd name="_adm_txt_login_title"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_adm_txt_login_subtitle"><![CDATA[Enter your email and password to sign in to Studio.]]></string_upd>
+    <string_upd name="_adm_txt_modules_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_cmt_msg_login_required"><![CDATA[<a href="{0}">Sign in</a> or <a href="{1}">sign up</a> to comment.]]></string_upd>
+    <string_upd name="_sys_acl_action_unauthenticated"><![CDATA[Sign in or sign up to use “{1}”.]]></string_upd>
+    <string_upd name="_sys_acl_state_unauthenticated_title"><![CDATA[Sign in to continue]]></string_upd>
+    <string_upd name="_sys_audit_action_account_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_audit_action_account_failed_login_attempt"><![CDATA[Failed sign-in attempt]]></string_upd>
+    <string_upd name="_sys_audit_action_account_logout"><![CDATA[Sign out]]></string_upd>
+    <string_upd name="_sys_connect_error_join_unavailable"><![CDATA[Sorry, sign-up is unavailable now. Please try again later.]]></string_upd>
+    <string_upd name="_sys_connect_option_confirm_email"><![CDATA[Always confirm emails when signed up using this module]]></string_upd>
+    <string_upd name="_sys_connect_option_approve"><![CDATA[Always approve profiles when signed up using this module]]></string_upd>
+    <string_upd name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to sign in to this site.]]></string_upd>
+    <string_upd name="_sys_form_confirm_email_input_code_error"><![CDATA[Verification code is invalid or expired, please sign in to your account and resend verification email.]]></string_upd>
+    <string_upd name="_sys_form_display_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_form_display_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+    <string_upd name="_sys_form_display_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+    <string_upd name="_sys_form_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_form_login_input_submit"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_inst_conf_modules_group_money_desc"><![CDATA[Selling, paid memberships and donations. Each needs a payment provider.]]></string_upd>
+    <string_upd name="_sys_menu_item_info_onboarding_join"><![CDATA[Anyone can sign up.]]></string_upd>
+    <string_upd name="_sys_menu_item_title_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_menu_item_title_sm_fans_respond"><![CDATA[Respond to a member]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_logout"><![CDATA[Sign out]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_onboarding_join"><![CDATA[Choose who can sign up]]></string_upd>
+    <string_upd name="_sys_menu_item_title_onboarding_join"><![CDATA[Choose who can sign up]]></string_upd>
+    <string_upd name="_sys_page_block_system_title_login"><![CDATA[Sign in with sign-up link]]></string_upd>
+    <string_upd name="_sys_page_block_system_title_login_step2"><![CDATA[Sign in - step2]]></string_upd>
+    <string_upd name="_sys_page_block_system_title_login_step3"><![CDATA[Sign in - step3]]></string_upd>
+    <string_upd name="_sys_page_block_system_title_login_only"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_page_block_title_logout"><![CDATA[Sign out]]></string_upd>
+    <string_upd name="_sys_page_block_title_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_page_block_title_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+    <string_upd name="_sys_page_block_title_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+    <string_upd name="_sys_page_title_logout"><![CDATA[Sign out]]></string_upd>
+    <string_upd name="_sys_page_title_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_page_title_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+    <string_upd name="_sys_page_title_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+    <string_upd name="_sys_page_title_system_forgot_password"><![CDATA[Sign in - forgot password]]></string_upd>
+    <string_upd name="_sys_page_title_system_login"><![CDATA[Sign in - step 1]]></string_upd>
+    <string_upd name="_sys_page_title_system_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+    <string_upd name="_sys_page_title_system_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+    <string_upd name="_sys_txt_confirm_email_error_occured"><![CDATA[Error occurred, please try to sign in to your account and resend verification email.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_phone_set_phone_error_occured"><![CDATA[Error occurred, please try to sign in to your account and repeat verification.]]></string_upd>
+    <string_upd name="_sys_txt_forgot_pasword_logged_in"><![CDATA[You are already signed in. If you still wish to reset your password, please sign out first and then initiate the password recovery process.]]></string_upd>
+    <string_upd name="_sys_txt_homepage_cover"><![CDATA[Unity is strength... when there is teamwork and collaboration, wonderful things can be achieved.<br /><button class="bx-btn bx-hide-when-logged-in bx-def-margin-top" onclick="document.location='{0}'">Sign up now</button>]]></string_upd>
+    <string_upd name="_sys_txt_join_description_action"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_txt_join_text"><![CDATA[Signing up is quick and easy. Create your own community account to get started.]]></string_upd>
+    <string_upd name="_sys_txt_join_text_invite"><![CDATA[Registration is by invitation only. Use your invitation code to sign up.]]></string_upd>
+    <string_upd name="_sys_txt_reset_pasword_success"><![CDATA[Your password was reset. You are welcome to sign in to your account.]]></string_upd>
+    <string_upd name="_sys_txt_splash_btn_join"><![CDATA[Sign up]]></string_upd>
+    <string_upd name="_sys_txt_splash_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_sys_txt_splash_join"><![CDATA[Sign up]]></string_upd>
+    <string_upd name="_sys_txt_unsubscribe_error_occured"><![CDATA[Error occurred, please sign in to your account and update email references there or contact site administrator to unsubscribe you manually.]]></string_upd>
+    <string_upd name="_adm_form_txt_groups_role_manage_fans"><![CDATA[Manage members]]></string_upd>
+    <string_upd name="_sys_onboarding_join_closed"><![CDATA[Nobody can sign up: the sign-up form is off.]]></string_upd>
+    <string_upd name="_sys_onboarding_join_invite"><![CDATA[Only people you invite can sign up.]]></string_upd>
+    <string_upd name="_sys_onboarding_join_open"><![CDATA[Anyone can sign up.]]></string_upd>
+</resources>

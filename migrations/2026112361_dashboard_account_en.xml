@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Dashboard: "Your account" (profile and switcher, stats as tiles, preferences, Sign out) and the Tiles menu template. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_menu_template_title_tiles"><![CDATA[Tiles]]></string_add>
+    <string_add name="_sys_menu_title_profile_stats_tiles"><![CDATA[Profile Stats as tiles]]></string_add>
+    <string_add name="_sys_menu_title_dashboard_account"><![CDATA[Your account]]></string_add>
+    <string_add name="_sys_menu_title_account_preferences"><![CDATA[Preferences]]></string_add>
+    <string_add name="_sys_menu_set_title_dashboard_account"><![CDATA[Your account]]></string_add>
+    <string_add name="_sys_menu_set_title_account_preferences"><![CDATA[Preferences]]></string_add>
+    <string_add name="_sys_menu_item_title_system_da_profile"><![CDATA[Profile and switcher]]></string_add>
+    <string_add name="_sys_menu_item_title_system_da_stats"><![CDATA[Stats]]></string_add>
+    <string_add name="_sys_menu_item_title_system_da_preferences"><![CDATA[Preferences]]></string_add>
+    <string_add name="_sys_menu_item_title_color_scheme"><![CDATA[Theme]]></string_add>
+    <string_add name="_sys_page_block_title_system_dashboard_account"><![CDATA[Your account (dashboard)]]></string_add>
+    <string_add name="_sys_page_block_title_dashboard_account"><![CDATA[Your account]]></string_add>
+</resources>

@@ -49,6 +49,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_view_pro
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_photos' AND `name`='photos-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_homepage' AND `module`='bx_photos' AND `name`='photos-home';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_content_links' AND `module`='bx_photos' AND `name`='create-photo';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='bx_photos' AND `name`='profile-stats-my-photos';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='bx_photos' AND `name`='photos-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_view' AND `module`='bx_photos' AND `name`='edit-photo';
@@ -76,3 +77,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' AND `module`='bx_photos' AND `name`='photos-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_snippet_meta' AND `module`='bx_photos' AND `name`='rating';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_snippet_meta' AND `module`='bx_photos' AND `name`='comments';
+
+-- PAGE: explore
+UPDATE `sys_pages_blocks` SET `active_api` = 1, `config_api` = '{"content_type":"browse_simple","header_more_url":"/photos-home","view":"row"}' WHERE `object` = 'sys_explore' AND `module` = 'bx_photos' AND `title` = '_bx_photos_page_block_title_recent_entries';

@@ -48,10 +48,6 @@
   @apply font-light text-xs;
 }
 
-.bx-messenger-no-server {
-   @apply hidden;
-}
-
 #bx-messenger-info-area .bx-messenger-info-area-connecting
 {
     @apply hidden;

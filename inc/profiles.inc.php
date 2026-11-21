@@ -148,6 +148,9 @@ function bx_login($iId, $bRememberMe = false)
 
     $oAccountQuery->updateLoggedIn($iId);
 
+    // "Accounts without a profile" set to "Ask after sign-in": the next page asks for one.
+    BxDolAccount::setProfilePromptDue();
+
     $oProfileQuery = BxDolProfileQuery::getInstance();
     if(($iProfileId = $oProfileQuery->getCurrentProfileByAccount($iId, true)) !== false) {
         $aProfileInfo = $oProfileQuery->getInfoById($iProfileId);

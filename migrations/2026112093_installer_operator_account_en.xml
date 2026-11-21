@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Installer: the account it creates is the site operator's, named as such. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_inst_conf_section_operator"><![CDATA[Your operator account]]></string_add>
+    <string_add name="_sys_inst_conf_section_operator_desc"><![CDATA[This account runs the site and Studio. It gets a profile of its own later, when you create one on the site.]]></string_add>
+    <string_upd name="_sys_inst_conf_section_site_info"><![CDATA[Site]]></string_upd>
+    <string_upd name="_sys_inst_conf_field_admin_username"><![CDATA[Your name]]></string_upd>
+    <string_upd name="_sys_inst_conf_desc_admin_username"><![CDATA[Your own name, not a role.]]></string_upd>
+    <string_upd name="_sys_inst_conf_field_admin_email"><![CDATA[Your email]]></string_upd>
+    <string_upd name="_sys_inst_conf_desc_admin_email"><![CDATA[You sign in with it, and the site's notices come to it.]]></string_upd>
+    <string_upd name="_sys_inst_conf_field_admin_pwd"><![CDATA[Password]]></string_upd>
+    <string_upd name="_sys_inst_conf_next_site"><![CDATA[Next: site and your account]]></string_upd>
+    <string_upd name="_sys_inst_site_config_lead"><![CDATA[Steps 2 to 4: the database, the site and your account, then the apps.]]></string_upd>
+    <string_upd name="_sys_inst_welcome_step_site"><![CDATA[Name the site, check its address and create your operator account.]]></string_upd>
+    <string_upd name="_sys_inst_msg_admin_account_not_found"><![CDATA[The operator account wasn't found by its email: {0}]]></string_upd>
+</resources>

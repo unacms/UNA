@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Dashboard > Updates: the line under the version says whether it is the latest stable or beta release, or which update is available, instead of when it was installed. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_dbd_txt_ver_is_latest_stable"><![CDATA[Установлена последняя стабильная версия]]></string_add>
+    <string_add name="_adm_dbd_txt_ver_is_latest_beta"><![CDATA[Установлена последняя бета-версия]]></string_add>
+    <string_add name="_adm_dbd_txt_ver_update_to"><![CDATA[Доступно обновление: {0}]]></string_add>
+    <string_add name="_adm_dbd_txt_ver_is_newer"><![CDATA[Новее последнего выпуска]]></string_add>
+    <string_add name="_adm_dbd_txt_ver_check_failed"><![CDATA[Не удалось проверить обновления]]></string_add>
+</resources>

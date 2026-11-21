@@ -87,9 +87,18 @@ html.bx-media-phone .bx-grid-table-wrapper-responsive .bx-grid-table-wrapper {
 html.bx-media-phone .bx-grid-table-wrapper-responsive .bx-grid-table {
     min-width:720px;
 }
-html.bx-media-phone .bx-grid-table-wrapper-responsive.bx-grid-table-wrapper2:before,
-html.bx-media-phone .bx-grid-table-wrapper-responsive.bx-grid-table-wrapper2:after {
-    display:block;
+/* The table fades out at an edge it scrolls on under: a mask, so the fade is right on any block colour, light or dark. */
+html.bx-media-phone .bx-grid-table-wrapper-responsive .bx-grid-table-wrapper {
+    --bx-grid-fade-before: 1.5rem;
+    --bx-grid-fade-after: 1.5rem;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--bx-grid-fade-before), #000 calc(100% - var(--bx-grid-fade-after)), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 var(--bx-grid-fade-before), #000 calc(100% - var(--bx-grid-fade-after)), transparent);
+}
+html.bx-media-phone .bx-grid-table-wrapper-responsive.bx-grid-table-hide-shadow-before .bx-grid-table-wrapper {
+    --bx-grid-fade-before: 0px;
+}
+html.bx-media-phone .bx-grid-table-wrapper-responsive.bx-grid-table-hide-shadow-after .bx-grid-table-wrapper {
+    --bx-grid-fade-after: 0px;
 }
 
 

@@ -146,7 +146,7 @@ class BxDolProfileUndefined extends BxDolFactory implements iBxDolSingleton, iBx
      */
     public function getPicture()
     {
-        return BxDolTemplate::getInstance()->getImageUrl('account.svg');
+        return BxDolTemplate::getLetterAvatarUrl($this->getDisplayName(), $this->id());
     }
 
     /**
@@ -154,7 +154,7 @@ class BxDolProfileUndefined extends BxDolFactory implements iBxDolSingleton, iBx
      */
     public function getAvatarBig()
     {
-        return BxDolTemplate::getInstance()->getImageUrl('account.svg');
+        return BxDolTemplate::getLetterAvatarUrl($this->getDisplayName(), $this->id());
     }
 
     /**
@@ -162,7 +162,7 @@ class BxDolProfileUndefined extends BxDolFactory implements iBxDolSingleton, iBx
      */
     public function getAvatar()
     {
-        return BxDolTemplate::getInstance()->getImageUrl('account.svg');
+        return BxDolTemplate::getLetterAvatarUrl($this->getDisplayName(), $this->id());
     }
 	
     /**
@@ -178,7 +178,7 @@ class BxDolProfileUndefined extends BxDolFactory implements iBxDolSingleton, iBx
      */
     public function getThumb()
     {
-        return BxDolTemplate::getInstance()->getImageUrl('account.svg');
+        return BxDolTemplate::getLetterAvatarUrl($this->getDisplayName(), $this->id());
     }
 
     /**
@@ -186,7 +186,7 @@ class BxDolProfileUndefined extends BxDolFactory implements iBxDolSingleton, iBx
      */
     public function getIcon()
     {
-        return BxDolTemplate::getInstance()->getImageUrl('account.svg');
+        return BxDolTemplate::getLetterAvatarUrl($this->getDisplayName(), $this->id());
     }
 
     /**

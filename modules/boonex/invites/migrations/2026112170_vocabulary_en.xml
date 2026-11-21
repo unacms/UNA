@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_invites_grid_invites_column_title_aj"><![CDATA[After sign-up]]></string_upd>
+    <string_upd name="_bx_invites_txt_email_use"><![CDATA[Required at sign-up]]></string_upd>
+</resources>

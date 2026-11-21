@@ -32,7 +32,7 @@
 	<string name="_bx_channels_form_profile_input_initial_members"><![CDATA[Invite Members]]></string>
   	<string name="_bx_channels_form_profile_input_sys_channel_name"><![CDATA[Channel Name]]></string>
 	<string name="_bx_channels_form_profile_input_channel_name"><![CDATA[Channel Name]]></string>
-	<string name="_bx_channels_form_profile_input_channel_name_err"><![CDATA[Please, fill in this field. Channel name must be unique.]]></string>
+	<string name="_bx_channels_form_profile_input_channel_name_err"><![CDATA[Please fill in this field. Channel name must be unique.]]></string>
 	<string name="_bx_channels_form_profile_input_sys_picture"><![CDATA[Channel Picture]]></string>
 	<string name="_bx_channels_form_profile_input_picture"><![CDATA[Upload New Channel Picture]]></string>
 	<string name="_bx_channels_form_profile_input_picture_err"><![CDATA[Channel picture is mandatory.]]></string>
@@ -40,7 +40,7 @@
 	<string name="_bx_channels_form_profile_input_cover"><![CDATA[Upload New Cover Picture]]></string>
 	<string name="_bx_channels_form_profile_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
 	<string name="_bx_channels_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this channel]]></string>
-	<string name="_bx_channels_form_profile_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+	<string name="_bx_channels_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
 	<string name="_bx_channels_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete channel.]]></string>
 	
 	<string name="_bx_channels_acl_action_delete_profile"><![CDATA[Delete Channel]]></string>
@@ -86,15 +86,15 @@
 	<string name="_bx_channels_page_title_entries_search"><![CDATA[Search]]></string>
   <string name="_bx_channels_page_title_sys_entries_toplevel"><![CDATA[Top level]]></string>
   <string name="_bx_channels_page_title_entries_toplevel"><![CDATA[Top level]]></string>
-  <string name="_bx_channels_page_title_sys_entries_of_author"><![CDATA[Сhannels of author]]></string>
-  <string name="_bx_channels_page_title_entries_of_author"><![CDATA[Сhannels by {display_name}]]></string>
+  <string name="_bx_channels_page_title_sys_entries_of_author"><![CDATA[Channels of author]]></string>
+  <string name="_bx_channels_page_title_entries_of_author"><![CDATA[Channels by {display_name}]]></string>
 
     <string name="_bx_channels_page_block_title_system_profile_subscribed_me"><![CDATA[Followers]]></string>
     <string name="_bx_channels_page_block_title_profile_subscribed_me"><![CDATA[Followers]]></string>
     <string name="_bx_channels_page_block_title_sys_entries_actions"><![CDATA[Channels actions]]></string>
     <string name="_bx_channels_page_block_title_entries_actions"><![CDATA[Channels actions]]></string>
-    <string name="_bx_channels_page_block_title_sys_entries_of_author"><![CDATA[Followed Сhannels]]></string>
-    <string name="_bx_channels_page_block_title_entries_of_author"><![CDATA[Followed Сhannels]]></string>
+    <string name="_bx_channels_page_block_title_sys_entries_of_author"><![CDATA[Followed Channels]]></string>
+    <string name="_bx_channels_page_block_title_entries_of_author"><![CDATA[Followed Channels]]></string>
     <string name="_bx_channels_page_block_title_favorites_of_author"><![CDATA[Favorite Channels]]></string>
     <string name="_bx_channels_page_block_title_sys_favorites_of_author"><![CDATA[Favorite Channels]]></string>
     <string name="_bx_channels_page_block_title_edit_profile"><![CDATA[Edit Channel]]></string>

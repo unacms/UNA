@@ -13,6 +13,9 @@ class BxBaseStudioSettings extends BxDolStudioSettings
     public function __construct($sType = '', $mixedCategory = '')
     {
         parent::__construct($sType, $mixedCategory);
+
+        $this->sPageJsClass = 'BxDolStudioSettings';
+        $this->sPageJsObject = 'oBxDolStudioSettings';
     }
 
     public function getPageCss()
@@ -22,12 +25,17 @@ class BxBaseStudioSettings extends BxDolStudioSettings
 
     public function getPageJs()
     {
-        return array_merge(parent::getPageJs(), $this->oOptions->getJs());
+        return array_merge(parent::getPageJs(), $this->oOptions->getJs(), ['settings.js']);
     }
 
-    public function getPageJsObject()
+    public function getPageCaption()
     {
-        return 'oBxDolStudioSettings';
+        return parent::getPageCaption() . $this->getPageJsCode([
+            'sActionUrl' => BX_DOL_URL_STUDIO . 'settings.php',
+            'sObjName' => $this->getPageJsObject(),
+            'sType' => $this->oOptions->getType(),
+            'sTextUnsaved' => _t('_adm_stg_txt_unsaved_changes'),
+        ]);
     }
 
     public function getPageMenu($aMenu = array(), $aMarkers = array())
@@ -36,7 +44,8 @@ class BxBaseStudioSettings extends BxDolStudioSettings
 
         $aTypes = $aMenu = [];
         if($this->oDb->getTypes(['type' => 'all', 'not_in_group' =>[BX_DOL_STUDIO_STG_GROUP_TEMPLATES]], $aTypes) > 0 ) {
-            $aTypesGrouped = [];
+            // the system groups come first; the modules' types share the same order numbers
+            $aTypesGrouped = [BX_DOL_STUDIO_STG_GROUP_SYSTEM => []];
             foreach($aTypes as $aType)
                 $aTypesGrouped[$aType['group']][] = $aType;
 
@@ -45,12 +54,18 @@ class BxBaseStudioSettings extends BxDolStudioSettings
                     $aMenu[] = [
                         'name' => $aType['name'],
                         'icon' => $this->getMenuIcon($sGroup, $aType),
-                        'icon_bg' => $aType['name'] == 'system',
+                        'icon_bg' => $sGroup == BX_DOL_STUDIO_STG_GROUP_SYSTEM, // every group of the system settings
                         'link' => BX_DOL_URL_STUDIO . 'settings.php?page=' . $aType['name'],
                         'title' => $aType['caption'],
                         'selected' => $aType['name'] == $sType
                     ];
         }
+
+        // a click switches the group in place (studio/js/settings.js); the link stays for a new tab, a refresh and no script
+        $sJsObject = $this->getPageJsObject();
+        foreach($aMenu as &$aItem)
+            $aItem['onclick'] = 'return ' . $sJsObject . ".changePage('" . bx_js_string($aItem['name'], BX_ESCAPE_STR_APOS) . "', event)";
+        unset($aItem);
 
         return parent::getPageMenu($aMenu);
     }
@@ -61,17 +76,24 @@ class BxBaseStudioSettings extends BxDolStudioSettings
         if($sResult === false)
             return false;
 
+        return $sResult . $this->getOptionsBlock();
+    }
+
+    /**
+     * The selected group's options, captioned with the selected side menu item, as on every other settings page.
+     */
+    protected function getOptionsBlock()
+    {
         $aType = [];
         $this->oDb->getTypes(['type' => 'by_name', 'value' => $this->oOptions->getType()], $aType, false);
 
-        // captioned with the selected side menu item, as on every other settings page
         $aBlock = ['content' => $this->oOptions->getCode()];
         if(!empty($aType['caption']))
             $aBlock['caption'] = _t($aType['caption']);
         else
             $aBlock['type'] = BX_DB_NO_CAPTION;
 
-        return $sResult . $this->getBlockCode($aBlock);
+        return $this->getBlockCode($aBlock);
     }
 
     protected function getMenuIcon($sGroup, &$aType)
