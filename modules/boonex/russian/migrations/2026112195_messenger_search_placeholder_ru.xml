@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The conversations search field's placeholder: "Найти", not "Найти..". -->
+<resources name="ru" flag="ru" title="Russian" category="Messenger">
+    <string_upd name="_bx_messenger_title_search"><![CDATA[Найти]]></string_upd>
+</resources>

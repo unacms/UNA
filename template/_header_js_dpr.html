@@ -1,0 +1,10 @@
+<script>
+    // The screen's pixel density for the images the site makes (bx_get_device_pixel_ratio): stored before
+    // any image is requested, so the first visit needs no reload. Images of a page made before the site
+    // knew it are asked for through image_transcoder.php, which reads this cookie (BxDolTranscoderImage).
+    (function(w, d) {
+        var iDpr = Math.round(w.devicePixelRatio || 1);
+        if(navigator.cookieEnabled && !new RegExp('(^|;\\s*)devicePixelRatio=' + iDpr + '(;|$)').test(d.cookie))
+            d.cookie = 'devicePixelRatio=' + iDpr + '; path=/; max-age=31536000; SameSite=Lax';
+    })(window, document);
+</script>

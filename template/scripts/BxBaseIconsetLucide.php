@@ -278,7 +278,8 @@ class BxBaseIconsetLucide extends BxBaseIconset
  
             const aMap = $sMap;
  
-            document.querySelectorAll('i.sys-icon').forEach(el => {
+            // An emoji (reactions, categories) is the icon's text, not a Lucide name.
+            document.querySelectorAll('i.sys-icon:not(.sys-icon-emoji)').forEach(el => {
                 if(el.hasAttribute('data-lucide'))
                     return;
 
