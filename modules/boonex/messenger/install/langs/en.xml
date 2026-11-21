@@ -266,7 +266,7 @@
 	<string name="_bx_messenger_max_max_lots_number"><![CDATA[Default number of chats in chats' list block]]></string>
 	<string name="_bx_messenger_enable_joined_organizations"><![CDATA[Allow organization to communicate with profile only if user joined or followed the organization]]></string>
 	<string name="_bx_messenger_mark_as_unread"><![CDATA[Mark as unread]]></string>
-	<string name="_bx_messenger_menu_item_title_video_call"><![CDATA[Video Call]]></string>
+	<string name="_bx_messenger_menu_item_title_video_call"><![CDATA[Video call]]></string>
 	<string name="_bx_messenger_menu_item_title_star"><![CDATA[Mark chats as important]]></string>
 	<string name="_bx_messenger_menu_item_title_mute"><![CDATA[Mute chat]]></string>
 	<string name="_bx_messenger_menu_set_title_talk_menu"><![CDATA[Chat menu]]></string>
@@ -321,7 +321,7 @@
 	<string name="_bx_messenger_nav_menu_item_title_replies"><![CDATA[Replies]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_saved"><![CDATA[Saved messages]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_favorites"><![CDATA[Favorite chats]]></string>
-	<string name="_bx_messenger_nav_menu_item_title_mr"><![CDATA[Mentions & Reactions]]></string>
+	<string name="_bx_messenger_nav_menu_item_title_mr"><![CDATA[Mentions & reactions]]></string>
 	<string name="_bx_messenger_menu_item_title_parent_lot"><![CDATA[Open original message]]></string>
 	<string name="_bx_messenger_jot_server_jwt"><![CDATA[Secret word for JWT Token Authentication with Jot Server. Set the same <b>secret</b> word in the config/config.json file of the Jot Server to enable this option. This allows connections to Jot Server only from authorized sites. Leave it empty if you don't want to use JWT tokens with Jot Server.]]></string>
 	<string name="_bx_messenger_nav_menu_title_view"><![CDATA[Main menu]]></string>

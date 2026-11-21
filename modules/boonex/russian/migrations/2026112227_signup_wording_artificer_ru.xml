@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sign up instead of Create account and Join for creating an account. -->
+<resources name="ru" flag="ru" title="Russian" category="Boonex Artificer Template">
+    <string_upd name="_bx_artificer_txt_splash_login_join"><![CDATA[Зарегистрироваться]]></string_upd>
+</resources>
