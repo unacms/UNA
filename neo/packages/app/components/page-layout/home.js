@@ -87,10 +87,12 @@ const defineCells = (blocks, data) => {
 const homeColumns = ({ isWeb, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks }) => {
     const hasProfile = Boolean(appSetting('layout', 'show_profile_info') && currentUser)
     const hasLeftColumn = (hasProfile || feedList.length > 1 || navBarBlocks.length > 0)
-    return {
-        hasSideColumns: isWeb && (hasLeftColumn || sideBarBlocks.length > 0),
-        hasFeed: timelineBlocks.length > 0 || feedList.some(item => blocks?.[item.name + '_feed']),
-    }
+    const hasSideColumns = isWeb && (hasLeftColumn || sideBarBlocks.length > 0)
+    const hasFeed = timelineBlocks.length > 0 || feedList.some(item => blocks?.[item.name + '_feed'])
+    // Native: the feed list owns the scrolling and the space under the floating header, so the cover and the center
+    // blocks go at the top of the list (centerInFeed). Above the list they would sit under the header.
+    const centerInFeed = !isWeb && hasFeed && !hasSideColumns
+    return { hasSideColumns, hasFeed, centerInFeed, centerAbove: !hasSideColumns && !centerInFeed }
 }
 
 /** The top blocks open the middle column beside side columns, else they run across the page's content width. */
@@ -212,25 +214,12 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     let dUser = Object.assign({}, currentUser)
     dUser.url_avatar = dUser.avatar
     dUser.url = appSetting('dashboard', 'url')
-    const headerBlocks = (
-        <>
-            {topBlocks?.map((item, index) => {
-                return (
-                    <View className='mb-0.5 sm:mb-3' key={'block_' + index}><BlockByName
-                        name={item.block}
-                        data={data}
-                        {...item.block.props}
-                    /></View>
-                )
-            })}
-        </>
-    )
     
     // UNA's home cover (Studio > Pages > Home > Cover, sent as `cover_home`) and the blocks of the top cell (the home
     // menu). On the web the side columns are fixed to the window, so whatever is above them would slide under them:
     // with side columns these go at the top of the middle column, above the feed; without any (a guest's home), across
     // the page's content width above it, as UNA's site shows them.
-    const { hasSideColumns, hasFeed } = homeColumns({ isWeb, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks })
+    const { hasSideColumns, hasFeed, centerInFeed, centerAbove } = homeColumns({ isWeb, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks })
     const hasTop = Boolean(data?.cover_home) || centerBlocks?.length > 0
     const BlocksCenter = hasTop ? <View className={topBlocksClassName(hasSideColumns)}>
         <HomeCover cover={data?.cover_home} hiddenOn={data?.cover_hidden_on} />
@@ -244,6 +233,22 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 />
             )
         })}</View> : null
+
+    // The top of the feed list: on native the cover and the center blocks (homeColumns), then the top cell's blocks.
+    const headerBlocks = (
+        <>
+            {centerInFeed ? BlocksCenter : null}
+            {topBlocks?.map((item, index) => {
+                return (
+                    <View className='mb-0.5 sm:mb-3' key={'block_' + index}><BlockByName
+                        name={item.block}
+                        data={data}
+                        {...item.block.props}
+                    /></View>
+                )
+            })}
+        </>
+    )
 
     const MenuItemSubmenu = components['menu-item']['submenu'];
 
@@ -475,7 +480,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
             <PageHeaderOptions sub={subHeader} band mobileOnly />
             {/* The home cover is the page's heading: no title in the header over it. */}
             {data?.cover_home ? <PageHeaderOptions showTitle={false} /> : null}
-            {hasSideColumns ? null : BlocksCenter}
+            {centerAbove ? BlocksCenter : null}
         
             {hasFeed || hasSideColumns ? <PanelGroup
                 ref={groupRef}
