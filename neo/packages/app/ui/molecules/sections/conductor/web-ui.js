@@ -55,7 +55,6 @@ import {
     PanelHandler,
     resolvePanelProps,
 } from 'app/ui/molecules/page/resizable-panels'
-import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpointName } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useHeaderHeight } from 'app/context/jotai/layout'
@@ -1241,7 +1240,6 @@ export function TopSidebar({
     children,
     title,
     icon,
-    layout,
     layoutName,
     omitDefaultBackground = false,
     contentWidth,
@@ -1256,7 +1254,7 @@ export function TopSidebar({
     // name) and its actions (Add...), and a second line with the tabs and the section's tools (filters, Search).
     const isSectionTabBar = !isProfile && !sectionSidebar
     const widthClass = contentWidth || appSetting('layout', 'page_content_width_default')
-    const showAddButtons = layout != 'mixed' && !isProfile
+    const showAddButtons = !isProfile
     const showTitle = !!title && conductorTheme.show_title !== false && !isProfile
     const desktopFlex = `hidden ${conductorTheme.hide_top_menu_from}:flex`
     // Tablets (sm to lg): the section's actions and tools at the end of the tab row (the page header shows its icon and
@@ -1385,7 +1383,6 @@ export const TabBar = ({
     contentWidth,
 }) => {
     const { t } = useTranslation()
-    const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const isDesktop = useIsDesktop()
     // Left-column menus and the Filters trigger sit at the end of the tab row while the left
@@ -1420,7 +1417,6 @@ export const TabBar = ({
             // Regular, as the header's own buttons: the section's two-line header is laid out on the same 44px grid.
             actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" controlSize="regular" />}
             toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" controlSize="regular" />}
-            layout={layout}
             title={t(menuSettings?.name)}
             icon={sectionIcon}
             contentWidth={contentWidth}

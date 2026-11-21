@@ -93,7 +93,10 @@ BxArtificerUtils.prototype.setColorSchemeHtml = function()
 
 BxArtificerUtils.prototype.setColorSchemeIcon = function() 
 {
-    $('.bx-sb-theme-current').html('<i class="sys-icon ' + (this.isColorSchemeDark() ? 'moon' : 'sun') + '"></i>').bxProcessHtml();
+    // Pages without the switch (the "Please wait" page after signing in) have none of the page scripts bxProcessHtml needs.
+    var oCurrent = $('.bx-sb-theme-current');
+    if(oCurrent.length)
+        oCurrent.html('<i class="sys-icon ' + (this.isColorSchemeDark() ? 'moon' : 'sun') + '"></i>').bxProcessHtml();
 
     this.markColorSchemeSwitches();
 };
