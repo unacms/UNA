@@ -643,13 +643,14 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
 }
 
 /* The sketch: the header's content as wide as the page (72%) or the window, the menu at its start, centre or end,
-   over the page's content; an Application page has its side menu and fills the window. */
+   over the page's content, and the footer under it, as wide as the page or the window; an Application page has its
+   side menu and fills the window. */
 .adm-dsg-hd {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
-    height: 5rem;
-    padding: 0.75rem 0;
+    height: 6rem;
+    padding: 0.75rem 0 0.5rem;
     box-sizing: border-box;
     border-radius: var(--bx-radius-lg);
     background-color: #f4f4f5;
@@ -737,9 +738,37 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
 .adm-dsg-hd-application .adm-dsg-hd-side {
     display: block;
 }
+/* The footer: its separator and links, as wide as the page's content (72%) or the window. */
+.adm-dsg-hd-footer {
+    display: flex;
+    flex: none;
+}
+.adm-dsg-hd-footer-inner {
+    display: flex;
+    gap: 0.125rem;
+    box-sizing: border-box;
+    width: 72%;
+    margin: 0 auto;
+    padding-top: 0.25rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    transition: width 200ms ease, padding 200ms ease;
+}
+.adm-dsg-hd-footer-inner > span {
+    width: 0.75rem;
+    height: 0.25rem;
+    border-radius: 9999px;
+    background-color: #a1a1aa;
+}
+.adm-dsg-ht-cell:has([data-kind="footer"][value="full"]:checked) .adm-dsg-hd-footer-inner,
+.adm-dsg-ht-cell:has([data-kind="page"][value="full"]:checked) .adm-dsg-hd-footer-inner {
+    width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
 @media (prefers-reduced-motion: reduce) {
     .adm-dsg-seg-text,
-    .adm-dsg-hd-inner {
+    .adm-dsg-hd-inner,
+    .adm-dsg-hd-footer-inner {
         transition: none;
     }
 }
@@ -831,8 +860,12 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 .dark .adm-dsg-hd-logo,
-.dark .adm-dsg-hd-tools {
+.dark .adm-dsg-hd-tools,
+.dark .adm-dsg-hd-footer-inner > span {
     background-color: #52525b;
+}
+.dark .adm-dsg-hd-footer-inner {
+    border-top-color: rgba(255, 255, 255, 0.12);
 }
 .dark .adm-dsg-hd-menu > span {
     background-color: rgb(var(--bx-accent-500));

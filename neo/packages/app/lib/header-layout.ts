@@ -45,6 +45,24 @@ export function resolveHeaderLayout(fromUna: unknown, override?: { width?: unkno
     };
 }
 
+/** The site footer's width: as wide as the page's content, its separator included, or as the window. */
+export type FooterWidth = 'page' | 'full';
+
+/** The footer before UNA sent one: across the window. */
+export const FOOTER_WIDTH_DEFAULT: FooterWidth = 'full';
+
+/**
+ * The footer's width, as UNA's Designer sets it per page layout and audience (Designer > Settings > Page, header and
+ * footer) and sends it, resolved for the viewer, with each page (`footer` of the page JSON,
+ * `BxDolTemplate::getFooterLayout`): the app's own setting wins (`layout.footer.width`, null follows UNA), then the
+ * page's from UNA, then the one the previous page had (a page whose data has none yet keeps the footer as it is), then
+ * the default. Unknown values are skipped.
+ */
+export function resolveFooterWidth(fromUna: unknown, override?: unknown, previous?: FooterWidth | null): FooterWidth {
+    const una = fromUna && typeof fromUna === 'object' ? (fromUna as { width?: unknown }) : {};
+    return pick(WIDTHS, override, una.width, previous) ?? FOOTER_WIDTH_DEFAULT;
+}
+
 /**
  * The page's content width as a CSS `max-width`: the app's own setting wins (`layout.page_width`, null follows UNA:
  * a CSS length, or 'full'), then the page's from UNA (`page_width`: pixels, or 'full'), then the previous page's.

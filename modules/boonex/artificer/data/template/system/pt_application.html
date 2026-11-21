@@ -139,13 +139,16 @@
                     </div> <!-- .bx-page-wrapper -->
                 </div> <!-- #bx-content-wrapper -->
             </main> <!-- #bx-content-main -->
-            <footer class="p-4 m-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 xl:p-8 dark:bg-gray-800">
-                <bx_injection:injection_footer_before />
-                <div id="bx-menu-bottom">
-                    <bx_menu:sys_footer />
-                </div>
-                <bx_injection:injection_footer_after />
-            </footer>
+            <!-- As wide as the page's content, or as the content's block (Designer > Settings) -->
+            <div class="bx-footer-box __sys_footer_width__ mx-auto">
+                <footer class="p-4 m-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 xl:p-8 dark:bg-gray-800">
+                    <bx_injection:injection_footer_before />
+                    <div id="bx-menu-bottom">
+                        <bx_menu:sys_footer />
+                    </div>
+                    <bx_injection:injection_footer_after />
+                </footer>
+            </div>
         </div>
         <!-- END: Main Content -->
     </div>

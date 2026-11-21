@@ -582,7 +582,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
-     * Designer > Settings: the default page layouts and the header per layout, each only from what can be chosen. The
+     * Designer > Settings: the default page layouts, the header and the footer per layout, each only from what can be chosen. The
      * site template is chosen in Designer > Template (makeDefault).
      */
     public function submitSettings()
@@ -605,6 +605,15 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                     if(in_array($sValue, $aAllowed, true))
                         $aValues[$sName] = $sValue;
                 }
+
+        // The footer per layout and audience: only the widths there are.
+        foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)
+            foreach(BxDolTemplate::HEADER_AUDIENCES as $sWho) {
+                $sName = 'sys_footer_width_' . $sLayout . '_' . $sWho;
+                $sValue = bx_process_input(bx_get($sName));
+                if(in_array($sValue, BxDolTemplate::FOOTER_WIDTHS, true))
+                    $aValues[$sName] = $sValue;
+            }
 
         // The page width per layout and audience: Full width, or whole pixels brought into Designer's range.
         foreach(BxDolTemplate::HEADER_LAYOUTS as $sLayout)

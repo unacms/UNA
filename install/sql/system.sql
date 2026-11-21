@@ -579,7 +579,13 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', '1280', 'text', '', '', '', 26),
 (@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27),
 -- Accent color (Studio > Designer > Settings): a preset of BxDolDesigns::getAccentPresets for the site, Studio and NEO.
-(@iCategoryId, 'sys_design_accent', '_adm_stg_cpt_option_sys_design_accent', 'blue', 'select', 'blue,indigo,violet,rose,orange,green,teal,graphite', '', '', 28);
+(@iCategoryId, 'sys_design_accent', '_adm_stg_cpt_option_sys_design_accent', 'blue', 'select', 'blue,indigo,violet,rose,orange,green,teal,graphite', '', '', 28),
+-- Footer width (Studio > Designer > Settings), per page layout and audience as the header's: as wide as the page's
+-- content, its separator included, or as the window. BxDolTemplate::getFooterLayout; the apps get it with each page.
+(@iCategoryId, 'sys_footer_width_standard_visitor', '_adm_stg_cpt_option_sys_footer_width_standard_visitor', 'page', 'select', 'page,full', '', '', 29),
+(@iCategoryId, 'sys_footer_width_standard_member', '_adm_stg_cpt_option_sys_footer_width_standard_member', 'page', 'select', 'page,full', '', '', 30),
+(@iCategoryId, 'sys_footer_width_application_visitor', '_adm_stg_cpt_option_sys_footer_width_application_visitor', 'full', 'select', 'page,full', '', '', 31),
+(@iCategoryId, 'sys_footer_width_application_member', '_adm_stg_cpt_option_sys_footer_width_application_member', 'full', 'select', 'page,full', '', '', 32);
 
 --
 -- CATEGORY: General (Site Settings)
