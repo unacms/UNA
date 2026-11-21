@@ -22,8 +22,24 @@ class GuestFirstImpressionTest extends BxDolIntegrationTestCase
         // The default code uses the marker, and the apps get the words in its place.
         $this->assertStringContainsString('{site_description}', $this->_installDefault('sys_site_splash_code'));
         $sCode = $oSplash->getCodeForApp('<p class="bx-landing-text">{site_description}</p>');
-        $this->assertStringContainsString(htmlspecialchars($sDescription, ENT_NOQUOTES), $sCode);
+        $this->assertStringContainsString(htmlspecialchars($sDescription, ENT_NOQUOTES | ENT_HTML5), $sCode);
         $this->assertStringNotContainsString('{site_description}', $sCode);
+    }
+
+    public function testTaglineKeepsAnOlderSplashsSlogan(): void
+    {
+        $sCode = (string)getParam('sys_site_splash_code');
+        try {
+            setParam('sys_site_splash_code', '<p>{site_description}</p>');
+            $this->assertSame(BxDolSplash::getInstance()->getSiteDescription(), BxDolSplash::getInstance()->getTagline());
+
+            // An operator kept an older splash with the slogan: the apps and the home cover keep it too.
+            setParam('sys_site_splash_code', '<p><bx_text:_sys_txt_splash_slogan /></p>');
+            $this->assertSame(trim(strip_tags(_t('_sys_txt_splash_slogan'))), BxDolSplash::getInstance()->getTagline());
+        }
+        finally {
+            setParam('sys_site_splash_code', $sCode);
+        }
     }
 
     public function testFreshInstallShowsTheSplashOnTheSite(): void

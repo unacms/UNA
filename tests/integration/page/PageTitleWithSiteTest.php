@@ -34,8 +34,13 @@ class PageTitleWithSiteTest extends BxDolIntegrationTestCase
 
         // The home page's "Welcome to Harbor Club" names it already, in any case.
         $this->assertSame('Welcome to harbor club', $oTemplate->getPageTitleWithSite('Welcome to harbor club'));
+        $this->assertSame('Harbor Club: rules', $oTemplate->getPageTitleWithSite('Harbor Club: rules'));
         $this->assertSame('Harbor Club', $oTemplate->getPageTitleWithSite(''));
-        $this->assertSame('Harbor Club', $oTemplate->getPageTitleWithSite('  '));
+
+        // A word that only starts like the site's name doesn't count.
+        setParam('site_title', 'UNA');
+        $this->assertSame(_t('_sys_page_title_with_site', 'Unanswered questions', 'UNA'), $oTemplate->getPageTitleWithSite('Unanswered questions'));
+        $this->assertSame('UNA', $oTemplate->getPageTitleWithSite('  '));
     }
 
     public function testAuthPagesAskNotToBeIndexed(): void

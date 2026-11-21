@@ -1128,7 +1128,11 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 
         if($sTitle === '')
             return $sSite;
-        if($sSite === '' || bx_mb_strpos(mb_strtolower($sTitle), mb_strtolower($sSite)) !== false)
+        // "Welcome to Site" or "Site: about us" name the site already; "Unanswered questions" on a site called "UNA" doesn't.
+        $sTitleLower = mb_strtolower($sTitle);
+        $sSiteLower = mb_strtolower($sSite);
+        $iSite = mb_strlen($sSiteLower);
+        if($sSite === '' || mb_substr($sTitleLower, -$iSite) === $sSiteLower || (mb_substr($sTitleLower, 0, $iSite) === $sSiteLower && !preg_match('/^[\p{L}\p{N}]/u', mb_substr($sTitle, $iSite))))
             return $sTitle;
 
         return _t('_sys_page_title_with_site', $sTitle, $sSite);

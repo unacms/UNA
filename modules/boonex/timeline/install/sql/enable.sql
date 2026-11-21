@@ -314,7 +314,7 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_timeline_enable_repost_own_actions', 'on', @iCategId, '_bx_timeline_option_enable_repost_own_actions', 'checkbox', '', '', '', '', 5),
 ('bx_timeline_enable_hide_upon_delete', '', @iCategId, '_bx_timeline_option_enable_hide_upon_delete', 'checkbox', '', '', '', '', 6),
 ('bx_timeline_events_hide', CONCAT_WS(',', @iHdrIdComment), @iCategId, '_bx_timeline_option_events_hide', 'rlist', '', '', '', 'a:2:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:21:"get_actions_checklist";}', 7),
-('bx_timeline_searchable_fields', 'title,content', @iCategId, '_bx_timeline_option_searchable_fields', 'list', '', '', '', 'a:2:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:21:"get_searchable_fields";}', 8);
+('bx_timeline_searchable_fields', 'title,description', @iCategId, '_bx_timeline_option_searchable_fields', 'list', '', '', '', 'a:2:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:21:"get_searchable_fields";}', 8);
 
 -- Category: Browse
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order`)

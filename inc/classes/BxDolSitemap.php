@@ -58,15 +58,18 @@ class BxDolSitemap extends BxDolFactory implements iBxDolSingleton
     {
         $sPath = rtrim((string)parse_url(BX_DOL_URL_ROOT, PHP_URL_PATH), '/');
 
-        $aLines = [
-            'User-agent: *',
-            'Disallow: ' . $sPath . '/' . BX_DOL_STUDIO_FOLDER . '/',
+        $aLines = ['User-agent: *'];
+        // A renamed Studio folder is kept private: its pages ask not to be indexed anyway.
+        if(BX_DOL_STUDIO_FOLDER == 'studio')
+            $aLines[] = 'Disallow: ' . $sPath . '/studio/';
+
+        $aLines = array_merge($aLines, [
             'Disallow: ' . $sPath . '/searchKeyword.php',
             'Disallow: ' . $sPath . '/searchKeywordContent.php',
             'Disallow: ' . $sPath . '/searchExtended.php',
             '',
             'Sitemap: ' . BX_DOL_URL_ROOT . 'sitemap.xml',
-        ];
+        ]);
 
         return implode("\n", $aLines) . "\n";
     }
@@ -136,6 +139,7 @@ class BxDolSitemap extends BxDolFactory implements iBxDolSingleton
         if(!empty($CNF['FIELD_CF']) && $oCf->isEnabled()) {
             $aParams['field_cf'] = $CNF['FIELD_CF'];
             $aParams['cf_guest'] = $oCf->getDefaultValueUnauthenticated();
+            $aParams['cf_default'] = (int)$oCf->getDefaultValue();
             $aParams['cf_prohibited'] = $oCf->getProhibited();
         }
 

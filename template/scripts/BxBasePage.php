@@ -736,9 +736,9 @@ class BxBasePage extends BxDolPage
             $aTexts = ['title' => '_sys_txt_join_title', 'text' => '_sys_txt_join_text', 'title_invite' => '_sys_txt_join_title_invite', 'text_invite' => '_sys_txt_join_text_invite'];
         if($aTexts)
             $a['texts'] = self::getTranslatedTextsAPI($aTexts);
-        // The home page's tagline is the site's description, as in the splash code ({site_description}).
-        if($sUri == 'home' && ($sDescription = BxDolSplash::getInstance()->getSiteDescription()) !== '')
-            $a['texts']['text'] = $sDescription;
+        // The home page's tagline: the site's description while the splash shows it ({site_description}).
+        if($sUri == 'home' && ($sTagline = BxDolSplash::getInstance()->getTagline()) !== '')
+            $a['texts']['text'] = $sTagline;
 
         // The title UNA's cover shows (the selected site menu item for a section, else the page's), for the apps' header.
         // HTML-escaped like `title`.
@@ -1673,15 +1673,14 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageMetaDescFromBlocks()
     {
-        foreach($this->_oQuery->getPageBlocks() as $aCell)
-            foreach($aCell as $aBlock) {
-                if(!in_array($aBlock['type'], ['lang', 'html']) || !$this->_isVisibleBlock($aBlock))
-                    continue;
+        foreach($this->_oQuery->getPageTextBlocks(bx_is_api()) as $aBlock) {
+            if(!$this->_isVisibleBlock($aBlock))
+                continue;
 
-                $sText = $this->_replaceMarkers($aBlock['type'] == 'lang' ? _t(trim($aBlock['content'])) : $aBlock['content']);
-                if(trim(strip_tags($sText)) !== '')
-                    return $sText;
-            }
+            $sText = $this->_replaceMarkers($aBlock['type'] == 'lang' ? _t(trim($aBlock['content'])) : $aBlock['content']);
+            if(trim(strip_tags($sText)) !== '')
+                return $sText;
+        }
 
         return '';
     }
@@ -1730,12 +1729,13 @@ class BxBasePage extends BxDolPage
 
         // The uploaded logo (not an SVG, which previews don't show), else the template's own 512px icon, so a shared
         // link always has a picture.
-        if(($iLogo = (int)getParam('sys_site_logo')) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iLogo, 'object' => BX_DOL_STORAGE_OBJ_IMAGES], false)))
+        if(($iLogo = (int)getParam('sys_site_logo')) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iLogo, 'object' => 'sys_images_custom'], false)))
             return $sUrl;
 
+        // A real address: the template may inline a small image as a data: URL, which previews can't fetch.
         $sUrl = $this->_oTemplate->getIconUrl('android-icon-512.png');
-        if(!$sUrl)
-            return '';
+        if(!$sUrl || str_starts_with($sUrl, 'data:'))
+            $sUrl = BX_DOL_URL_ROOT . 'template/images/icons/android-icon-512.png';
 
         $this->_aMetaImages[$sUrl] = ['width' => 512, 'height' => 512, 'card' => 'summary'];
         return $sUrl;

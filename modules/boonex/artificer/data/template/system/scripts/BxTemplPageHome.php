@@ -28,7 +28,7 @@ class BxTemplPageHome extends BxBasePageHome
             'link_join' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=create-account')),
             'link_login' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login')),
             // The site's tagline (its description), the same words as the splash.
-            'site_description' => bx_process_output(BxDolSplash::getInstance()->getSiteDescription()),
+            'site_description' => bx_process_output(BxDolSplash::getInstance()->getTagline()),
             'bx_if:empty_cover_class' => array (
                 'condition' => !$bTmplVarsCover,
                 'content' => array(),
@@ -55,7 +55,7 @@ class BxTemplPageHome extends BxBasePageHome
         return array_merge(parent::_getCoverHomeLookAPI(), [
             'title' => _t('_bx_artificer_txt_splash_welcome_l1'),
             'title_accent' => _t('_bx_artificer_txt_splash_welcome_l2'),
-            'text' => BxDolSplash::getInstance()->getSiteDescription(),
+            'text' => BxDolSplash::getInstance()->getTagline(),
             'join' => _t('_bx_artificer_txt_splash_welcome_a1'),
             'login' => _t('_bx_artificer_txt_splash_welcome_a2'),
             'login_icon' => 'arrow-right',

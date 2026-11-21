@@ -89,7 +89,8 @@ class SplashSiteShellTest extends BxDolTestCase
         $this->assertStringContainsString('<span>&copy; {site_title}</span>', $aSecond[1]);
         $this->assertSame(substr($aFirst[0], strpos($aFirst[0], 'UPDATE `sys_options`')), substr($aSecond[0], strpos($aSecond[0], 'UPDATE `sys_options`')), 'It gives the same code.');
 
-        // And that code is the install default.
-        $this->assertStringContainsString("SET `value` = '" . str_replace(["\n", "'"], ['\r\n', "\\'"], self::defaultCode()) . "'", $sSecond);
+        // And that code is the install default, before 2026112182 made its tagline the site's description.
+        $sDefault = str_replace('<p class="bx-landing-text">{site_description}</p>', '<p class="bx-landing-text"><bx_text:_sys_txt_splash_slogan /></p>', self::defaultCode());
+        $this->assertStringContainsString("SET `value` = '" . str_replace(["\n", "'"], ['\r\n', "\\'"], $sDefault) . "'", $sSecond);
     }
 }

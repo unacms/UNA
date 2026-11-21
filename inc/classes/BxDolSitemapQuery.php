@@ -68,7 +68,9 @@ class BxDolSitemapQuery extends BxDolDb
 
         if(!empty($aParams['field_cf'])) {
             $sCf = "`c`." . $this->_ident($aParams['field_cf']);
-            $sWhere .= " AND (" . $sCf . " = 0 OR (1 << (" . $sCf . " - 1)) & " . (int)$aParams['cf_guest'] . ")";
+            // 0 is the default value, as BxDolContentFilter::isAllowedByViewer reads it.
+            $sCfValue = "IF(" . $sCf . " = 0, " . max(1, (int)($aParams['cf_default'] ?? 1)) . ", " . $sCf . ")";
+            $sWhere .= " AND (1 << (" . $sCfValue . " - 1)) & " . (int)$aParams['cf_guest'];
             if(!empty($aParams['cf_prohibited'])) {
                 $sWhere .= " AND " . $sCf . " NOT IN (" . $this->implode_escape($aParams['cf_prohibited']) . ")";
             }

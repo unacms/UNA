@@ -188,18 +188,32 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
         ]);
 
         $sCode = bx_process_macros($sCode);
-        $sCode = bx_replace_markers($sCode, ['site_title' => self::TOKEN_SITE_TITLE, 'site_description' => $this->getSiteDescription()]);
+        $sCode = bx_replace_markers($sCode, ['site_title' => self::TOKEN_SITE_TITLE, 'site_description' => htmlspecialchars($this->getSiteDescription(), ENT_NOQUOTES | ENT_HTML5, 'UTF-8')]);
 
         return $this->cleanForApp($sCode, (string)getParam('site_title'));
     }
 
     /**
      * The site's tagline for `{site_description}`: the home page's description, else the site's default one
-     * (Studio > Languages, `_sys_page_meta_description_default`), the same words search results show. Plain text.
+     * (Studio > Languages, `_sys_page_meta_description_default`), the same words search results show. Plain text,
+     * entities decoded: escape it where it goes into HTML.
      */
     public function getSiteDescription()
     {
-        return trim(strip_tags(BxDolPage::getMetaDescriptionByObject('sys_home')));
+        return trim(html_entity_decode(strip_tags(BxDolPage::getMetaDescriptionByObject('sys_home')), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    }
+
+    /**
+     * The home page's tagline outside the splash (the apps' own splash text, the home cover): the site's description
+     * while the site's splash shows it, else the splash slogan (`_sys_txt_splash_slogan`), which an operator who keeps
+     * an older splash may have written. Plain text.
+     */
+    public function getTagline()
+    {
+        if(str_contains((string)getParam('sys_site_splash_code'), '{site_description}') && ($s = $this->getSiteDescription()) !== '')
+            return $s;
+
+        return trim(html_entity_decode(strip_tags(_t('_sys_txt_splash_slogan')), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     }
 
     /**

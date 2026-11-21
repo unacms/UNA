@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
-<!-- Timeline searchable fields: the post's text. -->
-<resources name="ru" flag="ru" title="Russian" category="Timeline">
-    <string_add name="_bx_timeline_txt_text"><![CDATA[Текст]]></string_add>
-</resources>

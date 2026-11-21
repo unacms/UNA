@@ -34,7 +34,12 @@ class SitemapTest extends BxDolIntegrationTestCase
 
         $this->assertStringStartsWith("User-agent: *\n", $sRobots);
         $this->assertStringContainsString("\nSitemap: " . BX_DOL_URL_ROOT . "sitemap.xml\n", $sRobots);
-        $this->assertStringContainsString('Disallow: ' . rtrim((string)parse_url(BX_DOL_URL_ROOT, PHP_URL_PATH), '/') . '/' . BX_DOL_STUDIO_FOLDER . '/', $sRobots);
+        // A renamed Studio folder stays private.
+        $sStudio = 'Disallow: ' . rtrim((string)parse_url(BX_DOL_URL_ROOT, PHP_URL_PATH), '/') . '/' . BX_DOL_STUDIO_FOLDER . '/';
+        if (BX_DOL_STUDIO_FOLDER == 'studio')
+            $this->assertStringContainsString($sStudio, $sRobots);
+        else
+            $this->assertStringNotContainsString(BX_DOL_STUDIO_FOLDER, $sRobots);
     }
 
     public function testRewriteRulesServeRobotsAndSitemap(): void
