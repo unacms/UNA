@@ -457,7 +457,7 @@ export function DashboardSettingsMenu({ settingsLink = true, layouts = true, tit
 }
 
 /** The language switcher, a bordered button naming the language in use; its menu lists the app's languages. */
-export function DashboardLanguageButton({ label }) {
+export function DashboardLanguageButton({ label = '' }) {
     const { lang, setLang } = useLayoutSettings()
     const { t } = useTranslation()
     const langs = appSetting('layout', 'avaliable_langs')

@@ -1,7 +1,8 @@
+import type { ComponentType, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'app/design/view';
 import { NeoButtonLink } from 'app/design/controls';
-import { Block, BlockContent } from 'app/ui/molecules/page/page-block';
+import { Block as BlockJs, BlockContent as BlockContentJs } from 'app/ui/molecules/page/page-block';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, decodeTextNode, findIconFromRemote } from 'app/lib/util';
@@ -35,6 +36,10 @@ export interface AccountDashboardProps {
     data?: { items?: AccountPart[] };
     blockWrapperProps?: Record<string, unknown>;
 }
+
+// page-block.js is JavaScript, its inferred props all required.
+const Block = BlockJs as unknown as ComponentType<{ className?: string; children?: ReactNode }>;
+const BlockContent = BlockContentJs as unknown as ComponentType<{ className?: string; children?: ReactNode }>;
 
 // The tiles' grid follows UNA's Tiles menu template (menu_tiles.html): two, three or four across.
 const TILES_GRID = 'grid w-full grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4';
