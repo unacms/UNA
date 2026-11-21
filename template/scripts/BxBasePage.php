@@ -1101,8 +1101,9 @@ class BxBasePage extends BxDolPage
             foreach ($aCell as $i => $aBlock) {
                 $this->processPageBlock($aBlock, false);
 
-                $aBlocks[$sKey][$i] = $aBlock;
+                // Drawing a block may change it (a service that returns a class for its container): kept after.
                 $aCodes[$sKey . ':' . $i] = $this->_getBlockCodeWithCache($aBlock, $aBlock['async']);
+                $aBlocks[$sKey][$i] = $aBlock;
             }
         }
         $this->_setHeadingBlockByContent($aCodes);
