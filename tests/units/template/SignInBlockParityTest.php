@@ -58,5 +58,10 @@ class SignInBlockParityTest extends BxDolTestCase
     public function testNeoSplashIllustrationStaysInItsColumn(): void
     {
         $this->assertStringContainsString('<View className="aspect-square w-48 max-w-full">', self::read('neo/packages/app/ui/molecules/sections/splash-parts.tsx'), '12rem grows with the text size: capped at the column, and square.');
+
+        // The built-in splash and the join page draw theirs the same way.
+        $sStatic = self::read('neo/packages/app/default/static.js');
+        $this->assertSame(2, substr_count($sStatic, '<View className="aspect-square w-48 max-w-full">'));
+        $this->assertStringNotContainsString('h-48 w-48', $sStatic);
     }
 }
