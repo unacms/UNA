@@ -2448,6 +2448,7 @@
         <string name="_adm_stg_txt_mix_title_inf"><![CDATA[Create a <b>_sys_template_mixed_[template_name]_[mix_name]</b> language key in Polyglot to customise the publicly-displayed name. <b>[template_name]</b> and <b>[mix_name]</b> are in lowercase, underscore instead of space.]]></string>
 	<string name="_adm_stg_txt_mix_title_err"><![CDATA[Title is required. Please fill in this field.]]></string>
 	<string name="_adm_stg_txt_mix_system"><![CDATA[System]]></string>
+	<string name="_adm_stg_txt_unsaved_changes"><![CDATA[Your changes here are not saved. Leave without saving them?]]></string>
 	<string name="_adm_stg_err_remove_old_image"><![CDATA[Cannot remove current image.]]></string>
 	<string name="_adm_str_cpt_files_file"><![CDATA[File]]></string>
 	<string name="_adm_str_cpt_files_version"><![CDATA[Version]]></string>

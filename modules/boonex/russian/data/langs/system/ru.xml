@@ -2420,6 +2420,7 @@
     <string name="_adm_stg_txt_mix_title_inf"><![CDATA[Создайте <b>_sys_template_mixed_[template_name]_[mix_name]</b> языковой ключ в Polyglot, чтобы изменить публичное отображение. <b>[template_name]</b> и <b>[mix_name]</b>: строчные буквы, пробелы заменены на подчеркивания.]]></string>
     <string name="_adm_stg_txt_mix_title_err"><![CDATA[Нужно указать название. Пожалуйста, заполните это поле.]]></string>
     <string name="_adm_stg_txt_mix_system"><![CDATA[Системный]]></string>
+    <string name="_adm_stg_txt_unsaved_changes"><![CDATA[Изменения здесь не сохранены. Уйти, не сохраняя их?]]></string>
     <string name="_adm_stg_err_remove_old_image"><![CDATA[Невозможно удалить текущее изображение.]]></string>
     <string name="_adm_str_cpt_files_file"><![CDATA[Файл]]></string>
     <string name="_adm_str_cpt_files_version"><![CDATA[Версия]]></string>

@@ -649,7 +649,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     protected function saveSettingValues($aValues)
     {
         $aCategory = [];
-        BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
+        (new BxDolStudioOptionsQuery())->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
         foreach($aValues as $sName => $mixedValue) {
             $mixedPrior = getParam($sName);
             if((string)$mixedPrior === (string)$mixedValue)

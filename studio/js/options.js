@@ -41,6 +41,9 @@ BxDolStudioOptions.prototype.onSubmitted = function(sFormId, sTocken, oData) {
     bx_std_loading_btn(oSubmit, false);
 
     this.bBusy = false;
+
+    // for the page that holds the form (Settings keeps what was saved, studio/js/settings.js)
+    oForm.trigger('bx-options-submitted', [oData]);
 };
 
 BxDolStudioOptions.prototype.import = function(oButton) {
