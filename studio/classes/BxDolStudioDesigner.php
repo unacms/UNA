@@ -453,7 +453,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         }
 
         setParam($this->sParamLogoAlt, $oForm->getCleanValue('alt'));
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, bx_append_url_params($this->sManageUrl, array('page' => BX_DOL_STUDIO_DSG_TYPE_LOGO)));
+        return $this->getJsToast('_adm_dsg_scs_save', bx_append_url_params($this->sManageUrl, array('page' => BX_DOL_STUDIO_DSG_TYPE_LOGO)));
     }
 
     public function deleteLogo($sLogo)
@@ -509,7 +509,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             setParam($sSetting, $iId);
         }
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_ICON);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_ICON);
     }
 
     function deleteIcon($sIcon)
@@ -548,7 +548,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         // The form asks whether to show covers; the option stores whether they are off.
         setParam('sys_site_cover_disabled', $oForm->getCleanValue('show') == 'on' ? '' : 'on');
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_COVER);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_COVER);
     }
 
     function deleteCover($sCover)
@@ -575,7 +575,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             setParam(BxDolSplash::getOptionCode($sPlatform), (string)$oForm->getCleanValue('code_' . $sPlatform));
         }
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SPLASH);
     }
 
     /**
@@ -632,7 +632,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $this->saveSettingValues($aValues);
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
     }
 
     /**
@@ -771,7 +771,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $this->clearSettingsCache();
 
-        return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_PWA);
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_PWA);
     }
 
     function submitInjections(&$oForm)
@@ -784,7 +784,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             if(getParam('sys_db_cache_enable'))
                 $this->oDb->cleanCache('sys_injections.inc');
 
-            $sResult = '_adm_dsg_scs_save';
+            return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_INJECTIONS);
         }
 
         return $this->getJsResult($sResult, true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_INJECTIONS);

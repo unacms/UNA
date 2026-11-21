@@ -397,7 +397,7 @@ class BxBaseFavorite extends BxDolFavorite
         }
 
         $sPopupId = $this->_aHtmlIds['do_popup'];
-        $sPopupContent = BxTemplFunctions::getInstance()->transBox($sPopupId, $this->_oTemplate->parseHtmlByName('favorite_do_favorite_popup.html', array(
+        $sPopupContent = BxTemplFunctions::getInstance()->popupBox($sPopupId, _t('_favorite_popup_title_do'), $this->_oTemplate->parseHtmlByName('favorite_do_favorite_popup.html', array(
             'style_prefix' => $this->_sStylePrefix,
             'js_object' => $this->getJsObjectName(),
             'form' => str_replace('{js_object}', $this->getJsObjectName(), $oForm->getCode()),
@@ -448,7 +448,7 @@ class BxBaseFavorite extends BxDolFavorite
         }
          
         $sPopupId = $this->_aHtmlIds['do_popup'];
-        $sPopupContent = BxTemplFunctions::getInstance()->transBox($sPopupId, $this->_oTemplate->parseHtmlByName('favorite_edit_favorite_list.html', array(
+        $sPopupContent = BxTemplFunctions::getInstance()->popupBox($sPopupId, _t('_favorite_popup_title_edit_list'), $this->_oTemplate->parseHtmlByName('favorite_edit_favorite_list.html', array(
             'style_prefix' => $this->_sStylePrefix,
                 'js_object' => $this->getJsObjectName(),
                 'form' => str_replace('{js_object}', $this->getJsObjectName(), $oForm->getCode()),

@@ -61,9 +61,9 @@
     <string name="_bx_payment_page_title_response"><![CDATA[Результат оплаты]]></string>
     <string name="_bx_payment_page_title_error"><![CDATA[Ошибка в процессе оплаты]]></string>
 
-    <string name="_bx_payment_page_title_sys_join"><![CDATA[Присоединиться]]></string>
-    <string name="_bx_payment_page_title_join"><![CDATA[Присоединиться]]></string>
-    <string name="_bx_payment_page_block_title_join"><![CDATA[Присоединиться]]></string>
+    <string name="_bx_payment_page_title_sys_join"><![CDATA[Регистрация]]></string>
+    <string name="_bx_payment_page_title_join"><![CDATA[Регистрация]]></string>
+    <string name="_bx_payment_page_block_title_join"><![CDATA[Регистрация]]></string>
 
     <string name="_bx_payment_page_title_sys_invoices"><![CDATA[Счета]]></string>
     <string name="_bx_payment_page_title_invoices"><![CDATA[Счета]]></string>
@@ -397,7 +397,7 @@
     <string name="_bx_payment_err_wrong_vendor"><![CDATA[Неверный продавец.]]></string>
     <string name="_bx_payment_err_wrong_data"><![CDATA[Неверные входные данные.]]></string>
     <string name="_bx_payment_err_not_found_pending"><![CDATA[Обрабатываемый заказ не найден.]]></string>
-    <string name="_bx_payment_err_cannot_perform"><![CDATA[Действие не может быть выполнено. Свяжитесь с нами.]]></string>
+    <string name="_bx_payment_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_bx_payment_err_wrong_quantity"><![CDATA[Указано неправильное количество.]]></string>
     <string name="_bx_payment_err_already_processed"><![CDATA[Этот платеж уже обработан.]]></string>
     <string name="_bx_payment_err_already_registered"><![CDATA[Подписка с аналогичными данными уже была зарегистрирована.]]></string>
@@ -553,7 +553,7 @@
     <string name="_bx_payment_pp_api_err_cannot_authorize"><![CDATA[Не удалось авторизовать одобренный заказ.]]></string>
     <string name="_bx_payment_pp_api_err_cannot_capture"><![CDATA[Не удалось завершить оплату.]]></string>
     <string name="_bx_payment_pp_api_err_no_item"><![CDATA[Объект для создания подписки отсутствует.]]></string>
-    <string name="_bx_payment_pp_api_err_wrong_item"><![CDATA[Продукт, на который вы хотите подписаться, имеет неверные данные на стороне PayPal. Пожалуйста, сообщите.]]></string>
+    <string name="_bx_payment_pp_api_err_wrong_item"><![CDATA[У PayPal неверные данные об этом продукте, поэтому подписаться на него пока нельзя. Напишите нам.]]></string>
     <string name="_bx_payment_pp_api_err_no_subscription"><![CDATA[Данные подписки недоступны или неверны.]]></string>
     <string name="_bx_payment_pp_api_err_subscription_not_confirmed"><![CDATA[Подписка не подтверждена.]]></string>
     <string name="_bx_payment_pp_api_msg_authorized"><![CDATA[Заказ авторизован.]]></string>

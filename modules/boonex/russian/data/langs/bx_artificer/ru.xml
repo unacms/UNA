@@ -58,6 +58,6 @@
     <string name="_bx_artificer_txt_splash_stats_c2"><![CDATA[посты]]></string>
     <string name="_bx_artificer_txt_splash_stats_c3"><![CDATA[комментарии]]></string>
     <string name="_bx_artificer_txt_splash_login_title"><![CDATA[Войти в свой аккаунт]]></string>
-    <string name="_bx_artificer_txt_splash_login_join"><![CDATA[Создать новый аккаунт]]></string>
+    <string name="_bx_artificer_txt_splash_login_join"><![CDATA[Зарегистрироваться]]></string>
     <string name="_bx_artificer_txt_splash_login_agreement"><![CDATA[Выполняя вход, вы соглашаетесь с нашими <a href="{0}" class="font-medium text-gray-900 dark:text-white hover:underline">Условиями использования</a> и <a href= "{1}" class="dark:text-white font-medium text-gray-900 hover:underline">Политикой конфиденциальности</a>.]]></string>
 </resources>

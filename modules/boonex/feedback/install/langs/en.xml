@@ -68,7 +68,7 @@
     <string name="_bx_feedback_txt_answer_format"><![CDATA[<b>{0}</b> (<span class="bx-def-font-grayed">{1}</span>)]]></string>
     <string name="_bx_feedback_txt_answer_format_wo_comment"><![CDATA[<b>{0}</b>]]></string>
 
-    <string name="_bx_feedback_err_cannot_perform"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_bx_feedback_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_feedback_err_login_required"><![CDATA[You need to sign in first.]]></string>
     <string name="_bx_feedback_err_wrong_data"><![CDATA[Cannot accept the answer.]]></string>
 </resources>

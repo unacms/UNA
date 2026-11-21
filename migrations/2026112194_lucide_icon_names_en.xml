@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Icons: a location shows a map pin (Lucide) instead of Font Awesome's location-arrow, which Lucide doesn't draw. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_location_country"><![CDATA[<i class="sys-icon map-pin"></i> {0}]]></string_upd>
+    <string_upd name="_sys_location_country_city"><![CDATA[<i class="sys-icon map-pin"></i> {2}, {1}, {0}]]></string_upd>
+    <string_upd name="_sys_location_country_city_street"><![CDATA[<i class="sys-icon map-pin"></i> {4} {3}, {2}, {1}, {0} ]]></string_upd>
+</resources>

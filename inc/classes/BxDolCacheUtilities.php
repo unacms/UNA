@@ -141,7 +141,7 @@ class BxDolCacheUtilities extends BxDol
         if (!$oCache->removeAllByPrefix ($sPrefix))
             return array('code' => 1, 'message' => _t('_adm_dbd_err_c_clean_failed'));
         else
-            return array('code' => 0, 'message' => _t('_adm_dbd_msg_c_clean_success'));
+            return array('code' => 0, 'toast' => _t('_adm_dbd_msg_c_clean_success'));
     }
 
     protected function _clearFile($sPrefix, $sPath)
@@ -156,7 +156,7 @@ class BxDolCacheUtilities extends BxDol
 
         closedir($rHandler);
 
-        return array('code' => 0, 'message' => _t('_adm_dbd_msg_c_clean_success'));
+        return array('code' => 0, 'toast' => _t('_adm_dbd_msg_c_clean_success'));
     }
 
     protected function _clearPurifier()
@@ -166,7 +166,7 @@ class BxDolCacheUtilities extends BxDol
         $oConfig->set('Cache.DefinitionImpl', null);
         $oHtmlPurifier = new HTMLPurifier($oConfig);
         $oHtmlPurifier->purify('');
-        return ['code' => 0, 'message' => _t('_adm_dbd_msg_c_clean_success')];
+        return ['code' => 0, 'toast' => _t('_adm_dbd_msg_c_clean_success')];
     }
 
     protected function _clearOpcache()
@@ -174,12 +174,12 @@ class BxDolCacheUtilities extends BxDol
         if(function_exists('opcache_reset'))
             opcache_reset();
 
-        return ['code' => 0, 'message' => _t('_adm_dbd_msg_c_clean_success')];
+        return ['code' => 0, 'toast' => _t('_adm_dbd_msg_c_clean_success')];
     }
 
     protected function _clearCustom()
     {
-        return ['code' => 0, 'message' => _t('_adm_dbd_msg_c_clean_success')];
+        return ['code' => 0, 'toast' => _t('_adm_dbd_msg_c_clean_success')];
     }
 
     protected function _clearUnsupported()

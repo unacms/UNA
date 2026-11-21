@@ -210,13 +210,13 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 
 SET @iSiteMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_site', 'bx_persons', 'persons-home', '_bx_persons_menu_item_title_system_entries_home', '_bx_persons_menu_item_title_entries_home', 'page.php?i=persons-home', '', '', 'user', 'bx_persons_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
+('sys_site', 'bx_persons', 'persons-home', '_bx_persons_menu_item_title_system_entries_home', '_bx_persons_menu_item_title_entries_home', 'page.php?i=persons-home', '', '', 'user-round', 'bx_persons_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
 
 -- MENU: add to homepage menu
 
 SET @iHomepageMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_homepage' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_homepage', 'bx_persons', 'persons-home', '_bx_persons_menu_item_title_system_entries_home', '_bx_persons_menu_item_title_entries_home', 'page.php?i=persons-home', '', '', 'user', 'bx_persons_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
+('sys_homepage', 'bx_persons', 'persons-home', '_bx_persons_menu_item_title_system_entries_home', '_bx_persons_menu_item_title_entries_home', 'page.php?i=persons-home', '', '', 'user-round', 'bx_persons_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
 
 -- SET @iCreateProfileMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_profiles_create' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 -- INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
@@ -224,7 +224,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_profile_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `info`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_add_profile_links', 'bx_persons', 'create-persons-profile', '_bx_persons_menu_item_title_system_create_profile', '_bx_persons_menu_item_title_create_profile', '_bx_persons_menu_item_info_create_profile', 'page.php?i=create-persons-profile', '', '', 'user', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
+('sys_add_profile_links', 'bx_persons', 'create-persons-profile', '_bx_persons_menu_item_title_system_create_profile', '_bx_persons_menu_item_title_create_profile', '_bx_persons_menu_item_info_create_profile', 'page.php?i=create-persons-profile', '', '', 'user-round', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
 
 -- MENU: view actions
 
@@ -235,15 +235,15 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_persons_view_actions', 'bx_persons', '_bx_persons_menu_set_title_view_profile_actions', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES 
-('bx_persons_view_actions', 'bx_persons', 'profile-friend-add', '_bx_persons_menu_item_title_system_befriend', '{title_add_friend}', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_friends\', \'add\', \'{profile_id}\')', '', 'user-plus', '', 0, 2147483647, '', 1, 0, 10),
-('bx_persons_view_actions', 'bx_persons', 'profile-friend-remove', '_bx_persons_menu_item_title_system_unfriend', '{title_remove_friend}', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_friends\', \'remove\', \'{profile_id}\')', '', 'user-times', '', 0, 2147483647, '', 1, 0, 11),
-('bx_persons_view_actions', 'bx_persons', 'profile-relation-add', '_bx_persons_menu_item_title_system_relation_add', '_bx_persons_menu_item_title_relation_add', 'javascript:void(0)', 'bx_menu_popup(''sys_add_relation'', window, {}, {profile_id: {profile_id}});', '', 'sync', '', 0, 2147483647, '', 1, 0, 15),
-('bx_persons_view_actions', 'bx_persons', 'profile-relation-remove', '_bx_persons_menu_item_title_system_relation_delete', '_bx_persons_menu_item_title_relation_delete', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_relations\', \'remove\', \'{profile_id}\')', '', 'sync', '', 0, 2147483647, '', 1, 0, 16),
+('bx_persons_view_actions', 'bx_persons', 'profile-friend-add', '_bx_persons_menu_item_title_system_befriend', '{title_add_friend}', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_friends\', \'add\', \'{profile_id}\')', '', 'user-round-plus', '', 0, 2147483647, '', 1, 0, 10),
+('bx_persons_view_actions', 'bx_persons', 'profile-friend-remove', '_bx_persons_menu_item_title_system_unfriend', '{title_remove_friend}', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_friends\', \'remove\', \'{profile_id}\')', '', 'user-round-x', '', 0, 2147483647, '', 1, 0, 11),
+('bx_persons_view_actions', 'bx_persons', 'profile-relation-add', '_bx_persons_menu_item_title_system_relation_add', '_bx_persons_menu_item_title_relation_add', 'javascript:void(0)', 'bx_menu_popup(''sys_add_relation'', window, {}, {profile_id: {profile_id}});', '', 'refresh-ccw', '', 0, 2147483647, '', 1, 0, 15),
+('bx_persons_view_actions', 'bx_persons', 'profile-relation-remove', '_bx_persons_menu_item_title_system_relation_delete', '_bx_persons_menu_item_title_relation_delete', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_relations\', \'remove\', \'{profile_id}\')', '', 'refresh-ccw', '', 0, 2147483647, '', 1, 0, 16),
 ('bx_persons_view_actions', 'bx_persons', 'profile-subscribe-add', '_bx_persons_menu_item_title_system_subscribe', '_bx_persons_menu_item_title_subscribe', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_subscriptions\', \'add\', \'{profile_id}\')', '', 'check', '', 0, 2147483647, '', 1, 0, 20),
 ('bx_persons_view_actions', 'bx_persons', 'profile-subscribe-remove', '_bx_persons_menu_item_title_system_unsubscribe', '_bx_persons_menu_item_title_unsubscribe', 'javascript:void(0)', 'bx_conn_action(this, \'sys_profiles_subscriptions\', \'remove\', \'{profile_id}\')', '', 'check', '', 0, 2147483647, '', 1, 0, 21),
-('bx_persons_view_actions', 'bx_persons', 'profile-set-acl-level', '_sys_menu_item_title_system_set_acl_level', '_sys_menu_item_title_set_acl_level', 'javascript:void(0)', 'bx_menu_popup(''sys_set_acl_level'', window, {id:{value:''sys_acl_set_{profile_id}'', force:true}, closeOnOuterClick: false, removeOnClose: true, displayMode: ''box'', cssClass: ''''}, {profile_id: {profile_id}});', '', 'certificate', '', 0, 2147483647, '', 1, 0, 30),
-('bx_persons_view_actions', 'bx_persons', 'profile-set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_persons'', content_id: {content_id}});', '', 'check-circle', '', 0, 192, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 30),
-('bx_persons_view_actions', 'bx_persons', 'profile-actions-more', '_bx_persons_menu_item_title_system_more_actions', '_bx_persons_menu_item_title_more_actions', 'javascript:void(0)', 'bx_menu_popup(''bx_persons_view_actions_more'', this, {}, {profile_id:{profile_id}});', '', 'cog', 'bx_persons_view_actions_more', 1, 2147483647, '', 1, 0, 9999);
+('bx_persons_view_actions', 'bx_persons', 'profile-set-acl-level', '_sys_menu_item_title_system_set_acl_level', '_sys_menu_item_title_set_acl_level', 'javascript:void(0)', 'bx_menu_popup(''sys_set_acl_level'', window, {id:{value:''sys_acl_set_{profile_id}'', force:true}, closeOnOuterClick: false, removeOnClose: true, displayMode: ''box'', cssClass: ''''}, {profile_id: {profile_id}});', '', 'award', '', 0, 2147483647, '', 1, 0, 30),
+('bx_persons_view_actions', 'bx_persons', 'profile-set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_persons'', content_id: {content_id}});', '', 'circle-check', '', 0, 192, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 30),
+('bx_persons_view_actions', 'bx_persons', 'profile-actions-more', '_bx_persons_menu_item_title_system_more_actions', '_bx_persons_menu_item_title_more_actions', 'javascript:void(0)', 'bx_menu_popup(''bx_persons_view_actions_more'', this, {}, {profile_id:{profile_id}});', '', 'settings', 'bx_persons_view_actions_more', 1, 2147483647, '', 1, 0, 9999);
 
 -- MENU: view actions more
 
@@ -254,12 +254,12 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_persons_view_actions_more', 'bx_persons', '_bx_persons_menu_set_title_view_profile_actions_more', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_persons_view_actions_more', 'bx_persons', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'exclamation-triangle', '', 192, 1, 0, 10),
-('bx_persons_view_actions_more', 'bx_persons', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_persons&content_id={content_id}', '', '', 'history', '', 192, 1, 0, 20),
-('bx_persons_view_actions_more', 'bx_persons', 'edit-persons-profile', '_bx_persons_menu_item_title_system_edit_profile', '_bx_persons_menu_item_title_edit_profile', 'page.php?i=edit-persons-profile&id={content_id}', '', '', 'pencil-alt', '', 2147483647, 1, 0, 30),
-('bx_persons_view_actions_more', 'bx_persons', 'edit-persons-badge', '_bx_persons_menu_item_title_system_edit_badge', '_bx_persons_menu_item_title_edit_badge', 'page.php?i=edit-persons-badge&id={content_id}', '', '', 'fa-certificate', '', 2147483647, 1, 0, 32),
-('bx_persons_view_actions_more', 'bx_persons', 'delete-persons-profile', '_bx_persons_menu_item_title_system_delete_profile', '_bx_persons_menu_item_title_delete_profile', 'page.php?i=delete-persons-profile&id={content_id}', '', '', 'remove', '', 2147483647, 1, 0, 40),
-('bx_persons_view_actions_more', 'bx_persons', 'delete-persons-account', '_bx_persons_menu_item_title_system_delete_account', '_bx_persons_menu_item_title_delete_account', 'page.php?i=account-settings-delete&id={account_id}&content=0', '', '', 'user-times', '', 128, 1, 0, 50),
+('bx_persons_view_actions_more', 'bx_persons', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'triangle-exclamation-point', '', 192, 1, 0, 10),
+('bx_persons_view_actions_more', 'bx_persons', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_persons&content_id={content_id}', '', '', 'rotate-ccw-clock', '', 192, 1, 0, 20),
+('bx_persons_view_actions_more', 'bx_persons', 'edit-persons-profile', '_bx_persons_menu_item_title_system_edit_profile', '_bx_persons_menu_item_title_edit_profile', 'page.php?i=edit-persons-profile&id={content_id}', '', '', 'pencil-line', '', 2147483647, 1, 0, 30),
+('bx_persons_view_actions_more', 'bx_persons', 'edit-persons-badge', '_bx_persons_menu_item_title_system_edit_badge', '_bx_persons_menu_item_title_edit_badge', 'page.php?i=edit-persons-badge&id={content_id}', '', '', 'badge', '', 2147483647, 1, 0, 32),
+('bx_persons_view_actions_more', 'bx_persons', 'delete-persons-profile', '_bx_persons_menu_item_title_system_delete_profile', '_bx_persons_menu_item_title_delete_profile', 'page.php?i=delete-persons-profile&id={content_id}', '', '', 'x', '', 2147483647, 1, 0, 40),
+('bx_persons_view_actions_more', 'bx_persons', 'delete-persons-account', '_bx_persons_menu_item_title_system_delete_account', '_bx_persons_menu_item_title_delete_account', 'page.php?i=account-settings-delete&id={account_id}&content=0', '', '', 'user-round-x', '', 128, 1, 0, 50),
 ('bx_persons_view_actions_more', 'bx_persons', 'delete-persons-account-content', '_bx_persons_menu_item_title_system_delete_account_content', '_bx_persons_menu_item_title_delete_account_content', 'page.php?i=account-settings-delete&id={account_id}&content=1', '', '', 'trash', '', 128, 1, 0, 60);
 
 -- MENU: all actions menu for view entry 
@@ -290,7 +290,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_persons_view_actions_all', 'bx_persons', 'favorite', '_sys_menu_item_title_system_va_favorite', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 230),
 ('bx_persons_view_actions_all', 'bx_persons', 'feature', '_sys_menu_item_title_system_va_feature', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 240),
 ('bx_persons_view_actions_all', 'bx_persons', 'report', '_sys_menu_item_title_system_va_report', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 250),
-('bx_persons_view_actions_all', 'bx_persons', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, '', 1, 0, 9999);
+('bx_persons_view_actions_all', 'bx_persons', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, '', 1, 0, 9999);
 
 -- MENU: meta (counters) menu for view entry
 
@@ -336,13 +336,13 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_persons_view_submenu', 'bx_persons', '_bx_persons_menu_set_title_view_profile_submenu', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_persons_view_submenu', 'bx_persons', 'view-persons-profile', '_bx_persons_menu_item_title_system_view_profile_view', '_bx_persons_menu_item_title_view_profile_view', 'page.php?i=view-persons-profile&id={content_id}', '', '', 'user', '', '', 0, 2147483647, 1, 0, 1),
-('bx_persons_view_submenu', 'bx_persons', 'persons-profile-info', '_bx_persons_menu_item_title_system_view_profile_info', '_bx_persons_menu_item_title_view_profile_info', 'page.php?i=persons-profile-info&id={content_id}', '', '', 'info-circle', '', '', 0, 2147483647, 1, 0, 2),
-('bx_persons_view_submenu', 'bx_persons', 'persons-profile-friends', '_bx_persons_menu_item_title_system_view_profile_friends', '_bx_persons_menu_item_title_view_profile_friends', 'page.php?i=persons-profile-friends&profile_id={profile_id}', '', '', 'users', '', '', 0, 2147483647, 1, 0, 3),
-('bx_persons_view_submenu', 'bx_persons', 'persons-profile-relations', '_bx_persons_menu_item_title_system_view_profile_relations', '_bx_persons_menu_item_title_view_profile_relations', 'page.php?i=persons-profile-relations&profile_id={profile_id}', '', '', 'sync', '', '', 0, 2147483647, 1, 0, 4),
+('bx_persons_view_submenu', 'bx_persons', 'view-persons-profile', '_bx_persons_menu_item_title_system_view_profile_view', '_bx_persons_menu_item_title_view_profile_view', 'page.php?i=view-persons-profile&id={content_id}', '', '', 'user-round', '', '', 0, 2147483647, 1, 0, 1),
+('bx_persons_view_submenu', 'bx_persons', 'persons-profile-info', '_bx_persons_menu_item_title_system_view_profile_info', '_bx_persons_menu_item_title_view_profile_info', 'page.php?i=persons-profile-info&id={content_id}', '', '', 'info', '', '', 0, 2147483647, 1, 0, 2),
+('bx_persons_view_submenu', 'bx_persons', 'persons-profile-friends', '_bx_persons_menu_item_title_system_view_profile_friends', '_bx_persons_menu_item_title_view_profile_friends', 'page.php?i=persons-profile-friends&profile_id={profile_id}', '', '', 'users-round', '', '', 0, 2147483647, 1, 0, 3),
+('bx_persons_view_submenu', 'bx_persons', 'persons-profile-relations', '_bx_persons_menu_item_title_system_view_profile_relations', '_bx_persons_menu_item_title_view_profile_relations', 'page.php?i=persons-profile-relations&profile_id={profile_id}', '', '', 'refresh-ccw', '', '', 0, 2147483647, 1, 0, 4),
 ('bx_persons_view_submenu', 'bx_persons', 'persons-profile-subscriptions', '_bx_persons_menu_item_title_system_view_profile_subscriptions', '_bx_persons_menu_item_title_view_profile_subscriptions', 'page.php?i=persons-profile-subscriptions&profile_id={profile_id}', '', '', 'check', '', '', 0, 2147483647, 1, 0, 5),
 ('bx_persons_view_submenu', 'bx_persons', 'persons-profile-comments', '_bx_persons_menu_item_title_system_view_profile_comments', '_bx_persons_menu_item_title_view_profile_comments', 'page.php?i=persons-profile-comments&id={content_id}', '', '', '', '', '', 0, 2147483647, 0, 0, 6),
-('bx_persons_view_submenu', 'bx_persons', 'more-auto', '_bx_persons_menu_item_title_system_view_profile_more_auto', '_bx_persons_menu_item_title_view_profile_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, 1, 0, 9999);
+('bx_persons_view_submenu', 'bx_persons', 'more-auto', '_bx_persons_menu_item_title_system_view_profile_more_auto', '_bx_persons_menu_item_title_view_profile_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, 1, 0, 9999);
 
 -- MENU: custom menu for snippet meta info
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -376,14 +376,14 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- MENU: notifications menu in account popup
 SET @iNotifMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_account_notifications' AND `active` = 1 AND `order` < 9999 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_account_notifications', 'bx_persons', 'notifications-friend-requests', '_bx_persons_menu_item_title_system_friends', '_bx_persons_menu_item_title_friends', 'page.php?i=persons-profile-friends', '', '', 'users', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:17:"is_enable_friends";}', 1, 0, @iNotifMenuOrder + 1),
-('sys_account_notifications', 'bx_persons', 'notifications-relation-requests', '_bx_persons_menu_item_title_system_relations', '_bx_persons_menu_item_title_relations', 'page.php?i=persons-profile-relations', '', '', 'sync', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:22:"sys_profiles_relations";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_enable_relations";}', 1, 0, @iNotifMenuOrder + 2);
+('sys_account_notifications', 'bx_persons', 'notifications-friend-requests', '_bx_persons_menu_item_title_system_friends', '_bx_persons_menu_item_title_friends', 'page.php?i=persons-profile-friends', '', '', 'users-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:17:"is_enable_friends";}', 1, 0, @iNotifMenuOrder + 1),
+('sys_account_notifications', 'bx_persons', 'notifications-relation-requests', '_bx_persons_menu_item_title_system_relations', '_bx_persons_menu_item_title_relations', 'page.php?i=persons-profile-relations', '', '', 'refresh-ccw', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:22:"sys_profiles_relations";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_enable_relations";}', 1, 0, @iNotifMenuOrder + 2);
 
 -- MENU: profile stats
 SET @iNotifMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_profile_stats' AND `active` = 1 LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_profile_stats', 'bx_persons', 'profile-stats-friend-requests', '_bx_persons_menu_item_title_system_friend_requests', '_bx_persons_menu_item_title_friend_requests', 'page.php?i=persons-profile-friends&profile_id={member_id}', '', '', 'users', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:17:"is_enable_friends";}', 0, 0, @iNotifMenuOrder + 1),
-('sys_profile_stats', 'bx_persons', 'profile-stats-manage-profiles', '_bx_persons_menu_item_title_system_manage_my_profiles', '_bx_persons_menu_item_title_manage_my_profiles', 'page.php?i=persons-manage', '', '_self', 'users', 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, '', 1, 0, @iNotifMenuOrder + 2),
+('sys_profile_stats', 'bx_persons', 'profile-stats-friend-requests', '_bx_persons_menu_item_title_system_friend_requests', '_bx_persons_menu_item_title_friend_requests', 'page.php?i=persons-profile-friends&profile_id={member_id}', '', '', 'users-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:17:"is_enable_friends";}', 0, 0, @iNotifMenuOrder + 1),
+('sys_profile_stats', 'bx_persons', 'profile-stats-manage-profiles', '_bx_persons_menu_item_title_system_manage_my_profiles', '_bx_persons_menu_item_title_manage_my_profiles', 'page.php?i=persons-manage', '', '_self', 'users-round', 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, '', 1, 0, @iNotifMenuOrder + 2),
 ('sys_profile_stats', 'bx_persons', 'profile-stats-favorite-persons', '_bx_persons_menu_item_title_system_favorites', '_bx_persons_menu_item_title_favorites', 'page.php?i=persons-profile-favorites&profile_id={member_id}', '', '', 'star', 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:38:"get_menu_addon_favorites_profile_stats";}', '', 2147483646, '', 1, 0, @iNotifMenuOrder + 3);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `addon_cache`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
@@ -391,18 +391,18 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_profile_stats', 'bx_persons', 'profile-stats-subscribed-me', '_bx_persons_menu_item_title_system_subscribed_me', '_bx_persons_menu_item_title_subscribed_me', 'page.php?i=persons-profile-subscriptions&profile_id={member_id}#subscribers', '', '_self', 'rss', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"get_connected_initiators_num";s:6:"params";a:1:{i:0;s:26:"sys_profiles_subscriptions";}s:5:"class";s:23:"TemplServiceConnections";}', 1, '', 2147483646, '', 0, 0, @iNotifMenuOrder + 5);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_profile_stats', 'bx_persons', 'profile-stats-relations', '_bx_persons_menu_item_title_system_relations', '_bx_persons_menu_item_title_relations', 'page.php?i=persons-profile-relations&profile_id={member_id}#relations', '', '_self', 'sync', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_connected_content_num";s:6:"params";a:3:{i:0;s:22:"sys_profiles_relations";i:1;i:0;i:2;i:1;}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_enable_relations";}', 1, 0, @iNotifMenuOrder + 6),
-('sys_profile_stats', 'bx_persons', 'profile-stats-related-me', '_bx_persons_menu_item_title_system_related_me', '_bx_persons_menu_item_title_related_me', 'page.php?i=persons-profile-relations&profile_id={member_id}#related-me', '', '_self', 'sync', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"get_connected_initiators_num";s:6:"params";a:3:{i:0;s:22:"sys_profiles_relations";i:1;i:0;i:2;i:1;}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_enable_relations";}', 1, 0, @iNotifMenuOrder + 7);
+('sys_profile_stats', 'bx_persons', 'profile-stats-relations', '_bx_persons_menu_item_title_system_relations', '_bx_persons_menu_item_title_relations', 'page.php?i=persons-profile-relations&profile_id={member_id}#relations', '', '_self', 'refresh-ccw', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_connected_content_num";s:6:"params";a:3:{i:0;s:22:"sys_profiles_relations";i:1;i:0;i:2;i:1;}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_enable_relations";}', 1, 0, @iNotifMenuOrder + 6),
+('sys_profile_stats', 'bx_persons', 'profile-stats-related-me', '_bx_persons_menu_item_title_system_related_me', '_bx_persons_menu_item_title_related_me', 'page.php?i=persons-profile-relations&profile_id={member_id}#related-me', '', '_self', 'refresh-ccw', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"get_connected_initiators_num";s:6:"params";a:3:{i:0;s:22:"sys_profiles_relations";i:1;i:0;i:2;i:1;}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:19:"is_enable_relations";}', 1, 0, @iNotifMenuOrder + 7);
 
 -- MENU: profile followings
 SET @iFollowingsMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_profile_followings' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `collapsed`, `active`, `copyable`, `order`) VALUES 
-('sys_profile_followings', 'bx_persons', 'persons', '_bx_persons_menu_item_title_system_followings', '_bx_persons_menu_item_title_followings', 'javascript:void(0)', '', '_self', 'users', '', '', 2147483647, 0, 1, 0, @iFollowingsMenuOrder + 1);
+('sys_profile_followings', 'bx_persons', 'persons', '_bx_persons_menu_item_title_system_followings', '_bx_persons_menu_item_title_followings', 'javascript:void(0)', '', '_self', 'users-round', '', '', 2147483647, 0, 1, 0, @iFollowingsMenuOrder + 1);
 
 -- MENU: profile memberships (the contexts one belongs to)
 SET @iMembershipsMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_profile_memberships' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `collapsed`, `active`, `copyable`, `order`) VALUES 
-('sys_profile_memberships', 'bx_persons', 'persons', '_bx_persons_menu_item_title_system_memberships', '_bx_persons_menu_item_title_memberships', 'javascript:void(0)', '', '_self', 'users', '', '', 2147483646, 0, 1, 0, @iMembershipsMenuOrder + 1);
+('sys_profile_memberships', 'bx_persons', 'persons', '_bx_persons_menu_item_title_system_memberships', '_bx_persons_menu_item_title_memberships', 'javascript:void(0)', '', '_self', 'users-round', '', '', 2147483646, 0, 1, 0, @iMembershipsMenuOrder + 1);
 
 -- MENU: manage tools submenu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -413,13 +413,13 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('bx_persons_menu_manage_tools', 'bx_persons', 'clear-reports', '_bx_persons_menu_item_title_system_clear_reports', '_bx_persons_menu_item_title_clear_reports', 'javascript:void(0)', 'javascript:{js_object}.onClickClearReports({content_id});', '_self', 'eraser', '', 2147483647, 1, 0, 1),
-('bx_persons_menu_manage_tools', 'bx_persons', 'manage-cf', '_bx_persons_menu_item_title_system_manage_cf', '_bx_persons_menu_item_title_manage_cf', 'javascript:void(0)', 'javascript:{js_object}.onClickManageCf({content_id});', '_self', 'filter', '', 2147483647, 1, 0, 6),
-('bx_persons_menu_manage_tools', 'bx_persons', 'delete-with-content', '_bx_persons_menu_item_title_system_delete_with_content', '_bx_persons_menu_item_title_delete_with_content', 'javascript:void(0)', 'javascript:{js_object}.onClickDeleteWithContent({content_id});', '_self', 'far trash-alt', '', 2147483647, 1, 0, 99);
+('bx_persons_menu_manage_tools', 'bx_persons', 'manage-cf', '_bx_persons_menu_item_title_system_manage_cf', '_bx_persons_menu_item_title_manage_cf', 'javascript:void(0)', 'javascript:{js_object}.onClickManageCf({content_id});', '_self', 'funnel', '', 2147483647, 1, 0, 6),
+('bx_persons_menu_manage_tools', 'bx_persons', 'delete-with-content', '_bx_persons_menu_item_title_system_delete_with_content', '_bx_persons_menu_item_title_delete_with_content', 'javascript:void(0)', 'javascript:{js_object}.onClickDeleteWithContent({content_id});', '_self', 'trash', '', 2147483647, 1, 0, 99);
 
 -- MENU: dashboard manage tools
 SET @iManageMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard_manage_tools' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_account_dashboard_manage_tools', 'bx_persons', 'persons-administration', '_bx_persons_menu_item_title_system_admt_persons', '_bx_persons_menu_item_title_admt_persons', 'page.php?i=persons-administration', '', '_self', 'user', 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
+('sys_account_dashboard_manage_tools', 'bx_persons', 'persons-administration', '_bx_persons_menu_item_title_system_admt_persons', '_bx_persons_menu_item_title_admt_persons', 'page.php?i=persons-administration', '', '_self', 'user-round', 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
 
 
 -- ACL
@@ -513,7 +513,7 @@ INSERT INTO `sys_objects_search` (`ObjectName`, `Title`, `Order`, `ClassName`, `
 -- STATS
 SET @iMaxOrderStats = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_statistics`);
 INSERT INTO `sys_statistics` (`module`, `name`, `title`, `link`, `icon`, `query`, `order`) VALUES 
-('bx_persons', 'bx_persons', '_bx_persons', 'page.php?i=persons-home', 'user', 'SELECT COUNT(*) FROM `bx_persons_data` AS `td` LEFT JOIN `sys_profiles` AS `tp` ON `td`.`id` = `tp`.`content_id` AND `tp`.`type`=''bx_persons'' WHERE 1 AND `tp`.`status`=''active''', @iMaxOrderStats + 1);
+('bx_persons', 'bx_persons', '_bx_persons', 'page.php?i=persons-home', 'user-round', 'SELECT COUNT(*) FROM `bx_persons_data` AS `td` LEFT JOIN `sys_profiles` AS `tp` ON `td`.`id` = `tp`.`content_id` AND `tp`.`type`=''bx_persons'' WHERE 1 AND `tp`.`status`=''active''', @iMaxOrderStats + 1);
 
 -- CHARTS
 SET @iMaxOrderCharts = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_objects_chart`);
@@ -544,13 +544,13 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('bx_persons_administration', 'bulk', 'set_acl_level', '_bx_persons_grid_action_title_adm_set_acl_level', '', 0, 0, 1),
 ('bx_persons_administration', 'bulk', 'delete_with_content', '_bx_persons_grid_action_title_adm_delete_with_content', '', 0, 1, 2),
 ('bx_persons_administration', 'bulk', 'clear_reports', '_bx_persons_grid_action_title_adm_clear_reports', '', 0, 1, 3),
-('bx_persons_administration', 'single', 'set_acl_level', '_bx_persons_grid_action_title_adm_set_acl_level', 'certificate', 1, 0, 1),
-('bx_persons_administration', 'single', 'settings', '_bx_persons_grid_action_title_adm_more_actions', 'cog', 1, 0, 2),
+('bx_persons_administration', 'single', 'set_acl_level', '_bx_persons_grid_action_title_adm_set_acl_level', 'award', 1, 0, 1),
+('bx_persons_administration', 'single', 'settings', '_bx_persons_grid_action_title_adm_more_actions', 'settings', 1, 0, 2),
 ('bx_persons_administration', 'single', 'audit_content', '_bx_persons_grid_action_title_adm_audit_content', 'search', 1, 0, 3),
-('bx_persons_administration', 'single', 'audit_profile', '_bx_persons_grid_action_title_adm_audit_profile', 'search-location', 1, 0, 4),
+('bx_persons_administration', 'single', 'audit_profile', '_bx_persons_grid_action_title_adm_audit_profile', 'search-check', 1, 0, 4),
 
 ('bx_persons_common', 'bulk', 'delete_with_content', '_bx_persons_grid_action_title_adm_delete_with_content', '', 0, 1, 1),
-('bx_persons_common', 'single', 'settings', '_bx_persons_grid_action_title_adm_more_actions', 'cog', 1, 0, 1);
+('bx_persons_common', 'single', 'settings', '_bx_persons_grid_action_title_adm_more_actions', 'settings', 1, 0, 1);
 
 -- LIVE UPDATES
 INSERT INTO `sys_objects_live_updates`(`name`, `frequency`, `service_call`, `active`) VALUES

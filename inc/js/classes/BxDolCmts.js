@@ -374,7 +374,7 @@ BxDolCmts.prototype.cmtRemove = function(e, iCmtId) {
                                         var oCounter = $this._getCounter(oSource);
                                         if(oCounter && oCounter.length > 0) {
                                             if(oData.countf != undefined && oData.countf.length != 0)
-                                                oCounter.html(oData.countf);
+                                                oCounter.html(oData.countf).bxProcessHtml();
 
                                             if(parseInt(oData.count) == 0)
                                                 oCounter.toggleClass('sys-ac-hidden');

@@ -43,7 +43,35 @@ BxDolPage.prototype.init = function() {
     bx_process_links();
 };
 
+/**
+ * Share a page's link: on a phone the system share sheet when the browser has one, else (and on a computer,
+ * or when the sheet fails) the Share popup with the services and the link to copy.
+ */
 BxDolPage.prototype.share = function(oLink, sUrl)
+{
+    var $this = this;
+    if(this._isPhone() && navigator.share) {
+        var sLink = sUrl;
+        try {
+            sLink = decodeURIComponent(sUrl); // the menus pass the link URL-encoded ({url_encoded})
+        } catch(e) {}
+
+        navigator.share({url: sLink, title: document.title}).catch(function(oError) {
+            if(!oError || oError.name != 'AbortError') // closing the sheet is not a failure
+                $this.sharePopup(oLink, sUrl);
+        });
+        return;
+    }
+
+    this.sharePopup(oLink, sUrl);
+};
+
+BxDolPage.prototype._isPhone = function()
+{
+    return $('html').hasClass('bx-media-phone') || (window.matchMedia && window.matchMedia('(pointer: coarse) and (max-width: 767px)').matches);
+};
+
+BxDolPage.prototype.sharePopup = function(oLink, sUrl)
 {
     var oData = this._getDefaultParams();
     oData['a'] = 'get_share';

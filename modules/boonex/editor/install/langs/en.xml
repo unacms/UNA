@@ -2,6 +2,7 @@
 <resources name="en" flag="gb" title="English">
     <string name="_sys_module_editor"><![CDATA[Editor]]></string>
     <string name="_bx_editor"><![CDATA[Editor]]></string>
+    <string name="_bx_editor_adm_stg_cpt_type"><![CDATA[Editor]]></string>
 
     <string name="_bx_editor_setting"><![CDATA[Editor Setting]]></string>
 

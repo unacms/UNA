@@ -458,8 +458,6 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 .bx-dbd-gauge-label {
     font-size: 0.75rem;
     line-height: 1.25rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
     color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 /* Status rows: 52px rows with 2px between them; a row with a note grows to fit it. */

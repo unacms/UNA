@@ -134,7 +134,7 @@ class BxBaseReport extends BxDolReport
             ];
 
         $sPopupId = $this->_aHtmlIds['do_popup'];
-        $sPopupContent = BxTemplFunctions::getInstance()->transBox($sPopupId, $this->_oTemplate->parseHtmlByName('report_do_report_form.html', array(
+        $sPopupContent = BxTemplFunctions::getInstance()->popupBox($sPopupId, _t('_report_do_report'), $this->_oTemplate->parseHtmlByName('report_do_report_form.html', array(
             'style_prefix' => $this->_sStylePrefix,
             'js_object' => $this->getJsObjectName(),
             'form' => $oForm->getCode(),

@@ -1052,7 +1052,12 @@
             return false;
 
         $.post('modules/?r=messenger/leave', { lot: iLotId }, function (oData) {
-            bx_alert(oData.message);
+            // leaving is a success that doesn't block; a refusal (code 1) is a dialog
+            if (!parseInt(oData.code))
+                bx_toast(oData.message);
+            else
+                bx_alert(oData.message);
+
             if (!parseInt(oData.code))
                 _this.searchByItems(() => $(talksListItems).length ? $(talksListItems).first().click() : '');
         }, 'json');
@@ -2395,7 +2400,7 @@
                             .find('time img')
                             .replaceWith(
                                 $(`<a href="javascript:void(0);" class="bx-messenger-send-retry bx-form-warn">
-									<i class="sys-icon exclamation-circle"></i>
+									<i class="sys-icon circle-exclamation-point"></i>
 							  		</a>`)
                                     .on('click', function () {
                                         if (_this.oSendPool.has(sTmp)) {
@@ -4143,7 +4148,7 @@
                             .html(
                                 oObject
                                     .append(
-                                        $(`<i class="sys-icon times"></i>`)
+                                        $(`<i class="sys-icon x"></i>`)
                                             .on('click', function () {
                                                 $(this)
                                                     .closest(giphyWrapper)

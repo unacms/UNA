@@ -176,7 +176,7 @@ class BxDolCmtsReviews extends BxTemplCmts
 
     protected function _getIconDo()
     {
-    	return 'far comment-dots';
+    	return 'message-square-dashed';
     }
 
     protected function _getTitleDo()

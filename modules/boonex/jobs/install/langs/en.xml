@@ -475,7 +475,7 @@
 
     <string name="_bx_jobs_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_jobs_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
-    <string name="_bx_jobs_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_jobs_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_jobs_alert_action_fan_added"><![CDATA[assignee joined]]></string>
     <string name="_bx_jobs_txt_ntfs_fan_added"><![CDATA[Job <b class="bx-ntfs-content-profile">{owner_name}</b> has got an assignee <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

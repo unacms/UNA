@@ -433,7 +433,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         if (!$sIcon)
-            $sIcon = '<i class="sys-icon robot"></i>';
+            $sIcon = '<i class="sys-icon bot"></i>';
 
         return parent::_getCellDefault($sIcon, $sKey, $aField, $aRow);
     }
