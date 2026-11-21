@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Titles of form dialogs (favorites, cropper, Studio API), the guest's sign-in state on a members-only page, missing Studio menu names. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_form_txt_badges_empty"><![CDATA[No badges yet]]></string_add>
+    <string_add name="_adm_form_txt_badges_empty_select_module"><![CDATA[No badges yet. Choose a module to add one.]]></string_add>
+    <string_add name="_adm_api_popup_title_add_key"><![CDATA[Add API key]]></string_add>
+    <string_add name="_adm_api_popup_title_add_origin"><![CDATA[Add origin]]></string_add>
+    <string_add name="_favorite_popup_title_do"><![CDATA[Add to favorites]]></string_add>
+    <string_add name="_favorite_popup_title_edit_list"><![CDATA[Edit list]]></string_add>
+    <string_add name="_sys_menu_set_title_tabbar"><![CDATA[Tab bar]]></string_add>
+    <string_add name="_sys_menu_title_tabbar"><![CDATA[Tab bar]]></string_add>
+    <string_add name="_sys_txt_access_denied_guest_page"><![CDATA[Sign in or sign up to see this page.]]></string_add>
+    <string_add name="_sys_uploader_crop_popup_title"><![CDATA[Crop picture]]></string_add>
+</resources>

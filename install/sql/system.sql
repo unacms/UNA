@@ -293,6 +293,10 @@ INSERT INTO `sys_email_templates` (`Module`, `NameSystem`, `Name`, `Subject`, `B
 ('system', '_sys_et_txt_name_system_confirmation', 't_Confirmation', '_sys_et_txt_subject_confirmation', '_sys_et_txt_body_confirmation'),
 ('system', '_sys_et_txt_name_system_welcome', 't_Welcome', '_sys_et_txt_subject_welcome', '_sys_et_txt_body_welcome'),
 ('system', '_sys_et_txt_name_system_forgot', 't_Forgot', '_sys_et_txt_subject_forgot', '_sys_et_txt_body_forgot'),
+('system', '_sys_et_txt_name_system_confirm_email_change', 't_ConfirmEmailChange', '_sys_et_txt_subject_confirm_email_change', '_sys_et_txt_body_confirm_email_change'),
+('system', '_sys_et_txt_name_system_email_change_requested', 't_EmailChangeRequested', '_sys_et_txt_subject_email_change_requested', '_sys_et_txt_body_email_change_requested'),
+('system', '_sys_et_txt_name_system_email_changed', 't_EmailChanged', '_sys_et_txt_subject_email_changed', '_sys_et_txt_body_email_changed'),
+('system', '_sys_et_txt_name_system_password_changed', 't_PasswordChanged', '_sys_et_txt_subject_password_changed', '_sys_et_txt_body_password_changed'),
 ('system', '_sys_et_txt_name_system_mem_expiration', 't_MemExpiration', '_sys_et_txt_subject_mem_expiration', '_sys_et_txt_body_mem_expiration'),
 ('system', '_sys_et_txt_name_system_mem_changed', 't_MemChanged', '_sys_et_txt_subject_mem_changed', '_sys_et_txt_body_mem_changed'),
 ('system', '_sys_et_txt_name_system_mem_prolonged', 't_MemProlonged', '_sys_et_txt_subject_mem_prolonged', '_sys_et_txt_body_mem_prolonged'),
@@ -400,7 +404,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 
 (@iCategoryId, 'sys_editor_default', '_adm_stg_cpt_option_sys_editor_default', 'sys_quill', 'digit', '', '', '', '', 50),
 (@iCategoryId, 'sys_player_default', '_adm_stg_cpt_option_sys_player_default', 'sys_html5', 'digit', '', '', '', '', 55),
-(@iCategoryId, 'sys_player_default_format', '_adm_stg_cpt_option_sys_player_default_quality', 'sd', 'select', 'sd,hd', '', '', '', 56),
+(@iCategoryId, 'sys_player_default_format', '_adm_stg_cpt_option_sys_player_default_quality', 'hd', 'select', 'sd,hd', '', '', '', 56),
 
 (@iCategoryId, 'sys_live_updates_interval', '_adm_stg_cpt_option_sys_live_updates_interval', '10000', 'digit', '', '', '', '', 60),
 
@@ -425,10 +429,10 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_session_auth', '_adm_stg_cpt_option_sys_session_auth', 'on', 'checkbox', '', '', '', '', 112),
 
 (@iCategoryId, 'sys_logs_storage_default', '_adm_stg_cpt_option_sys_logs_storage_default', 'Folder', 'select', 'Folder,PHPLog,STDErr', '', '', '', 130),
-(@iCategoryId, 'sys_logs_level', '_adm_stg_cpt_option_sys_logs_level', 'DEBUG', 'select', 'ERROR,WARNING,INFO,DEBUG', '', '', '', 132),
+(@iCategoryId, 'sys_logs_level', '_adm_stg_cpt_option_sys_logs_level', 'ERROR', 'select', 'ERROR,WARNING,INFO,DEBUG', '', '', '', 132),
 
 (@iCategoryId, 'sys_default_socket_timeout', '_adm_stg_cpt_option_sys_default_socket_timeout', '30', 'digit', '', '', '', '', 140),
-(@iCategoryId, 'sys_default_curl_timeout', '_adm_stg_cpt_option_sys_default_curl_timeout', '300', 'digit', '', '', '', '', 141),
+(@iCategoryId, 'sys_default_curl_timeout', '_adm_stg_cpt_option_sys_default_curl_timeout', '30', 'digit', '', '', '', '', 141),
 (@iCategoryId, 'sys_curl_ssl_allow_untrusted', '_adm_stg_cpt_option_sys_ssl_allow_untrusted', '', 'checkbox', '', '', '', '', 145),
 
 (@iCategoryId, 'sys_csp_frame_ancestors', '_adm_stg_cpt_option_sys_csp_frame_ancestors', '*', 'digit', '', '', '', '', 150),
@@ -467,7 +471,6 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_bg_jobs_workers_limit', '_adm_stg_cpt_option_sys_bg_jobs_workers_limit', '3', 'digit', '', '', '', '', 304),
 (@iCategoryId, 'sys_bg_jobs_cleanup_timeout', '_adm_stg_cpt_option_sys_bg_jobs_cleanup_timeout', '30', 'digit', '', '', '', '', 306),
 
-(@iCategoryId, 'sys_alerts_logger', '_adm_stg_cpt_option_sys_alerts_logger', 'on', 'checkbox', '', '', '', '', 310),
 (@iCategoryId, 'sys_alerts_stats', '_adm_stg_cpt_option_sys_alerts_stats', '', 'checkbox', '', '', '', '', 312),
 
 (@iCategoryId, 'sys_maintenance_mode', '_adm_stg_cpt_option_sys_maintenance_mode', '', 'checkbox', '', '', '', '', 400),
@@ -530,9 +533,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'lang_default', '_adm_stg_cpt_option_lang_default', '', 'select', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"get_languages";s:6:"params";a:2:{i:0;b:0;i:1;b:1;}s:5:"class";s:22:"TemplLanguagesServices";}', '', '', 1),
 (@iCategoryId, 'lang_subst_from_en', '_adm_stg_cpt_option_lang_subst_from_en', 'on', 'checkbox', '', '', '', 2),
 
-(@iCategoryId, 'sys_format_date', '_adm_stg_cpt_option_sys_format_date', 'D MMM YYYY', 'digit', '', '', '', 3),
-(@iCategoryId, 'sys_format_time', '_adm_stg_cpt_option_sys_format_time', 'HH:mm', 'digit', '', '', '', 4),
-(@iCategoryId, 'sys_format_datetime', '_adm_stg_cpt_option_sys_format_datetime', 'D MMM YYYY h:mm:ss a', 'digit', '', '', '', 5),
+(@iCategoryId, 'sys_format_date', '_adm_stg_cpt_option_sys_format_date', 'll', 'digit', '', '', '', 3),
+(@iCategoryId, 'sys_format_time', '_adm_stg_cpt_option_sys_format_time', 'LT', 'digit', '', '', '', 4),
+(@iCategoryId, 'sys_format_datetime', '_adm_stg_cpt_option_sys_format_datetime', 'lll', 'digit', '', '', '', 5),
 (@iCategoryId, 'sys_format_timeago', '_adm_stg_cpt_option_sys_format_timeago', 432000, 'digit', '', '', '', 6),
 (@iCategoryId, 'sys_format_input_24h', '_adm_stg_cpt_option_sys_format_input_24h', 'on', 'checkbox', '', '', '', 24);
 
@@ -569,7 +572,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', '1280', 'text', '', '', '', 24),
 (@iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', '1280', 'text', '', '', '', 25),
 (@iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', '1280', 'text', '', '', '', 26),
-(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27);
+(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27),
+-- Accent color (Studio > Designer > Settings): a preset of BxDolDesigns::getAccentPresets for the site, Studio and NEO.
+(@iCategoryId, 'sys_design_accent', '_adm_stg_cpt_option_sys_design_accent', 'blue', 'select', 'blue,indigo,violet,rose,orange,green,teal,graphite', '', '', 28);
 
 --
 -- CATEGORY: General (Site Settings)
@@ -735,10 +740,10 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_storage_s3_bucket', '_adm_stg_cpt_option_sys_storage_s3_bucket', '', 'digit', '', '', '', 4),
 (@iCategoryId, 'sys_storage_s3_domain', '_adm_stg_cpt_option_sys_storage_s3_domain', '', 'digit', '', '', '', 5),
 (@iCategoryId, 'sys_storage_s3_endpoint', '_adm_stg_cpt_option_sys_storage_s3_endpoint', '', 'digit', '', '', '', 6),
-(@iCategoryId, 'sys_storage_s3_sig_ver', '_adm_stg_cpt_option_sys_storage_s3_sig_ver', 'v2', 'select', 'v2,v4', '', '', 7),
+(@iCategoryId, 'sys_storage_s3_sig_ver', '_adm_stg_cpt_option_sys_storage_s3_sig_ver', 'v4', 'select', 'v2,v4', '', '', 7),
 (@iCategoryId, 'sys_storage_s3_region', '_adm_stg_cpt_option_sys_storage_s3_region', '', 'digit', '', '', '', 8),
 (@iCategoryId, 'sys_storage_s3_amz_iam_role', '_adm_stg_cpt_option_sys_storage_s3_amz_iam_role', '', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'sys_storage_s3_acl_enable', '_adm_stg_cpt_option_sys_storage_s3_acl_enable', 'on', 'checkbox', '', '', '', 12),
+(@iCategoryId, 'sys_storage_s3_acl_enable', '_adm_stg_cpt_option_sys_storage_s3_acl_enable', '', 'checkbox', '', '', '', 12),
 (@iCategoryId, 'sys_storage_s3_force_auth_urls', '_adm_stg_cpt_option_sys_storage_s3_force_auth_urls', '', 'digit', '', '', '', 14), 
 (@iCategoryId, 'sys_storage_ghost_lifetime', '_adm_stg_cpt_option_sys_storage_ghost_lifetime', '60', 'digit', '', '', '', 20);
 
@@ -749,6 +754,7 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_account_join', '_adm_stg_cpt_option_sys_account_join', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_join_modes";s:5:"class";s:18:"BaseServiceAccount";}', 'JoinMode', '_adm_stg_err_option_sys_account_join', 0),
 (@iCategoryId, 'sys_account_online_time', '_adm_stg_cpt_option_sys_account_online_time', '5', 'digit', '', 'Avail', '_adm_stg_err_option_sys_account_online_time', 1),
 (@iCategoryId, 'sys_account_autoapproval', '_adm_stg_cpt_option_sys_account_autoapproval', 'on', 'checkbox', '', '', '', 10),
 (@iCategoryId, 'sys_account_confirmation_type', '_adm_stg_cpt_option_sys_account_confirmation_type', 'email', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:22:"get_confirmation_types";s:5:"class";s:18:"BaseServiceAccount";}', '', '', 11),
@@ -767,7 +773,6 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_account_reset_password_redirect_custom', '_adm_stg_cpt_option_sys_account_reset_password_redirect_custom', '', 'digit', '', '', '', 32),
 
 (@iCategoryId, 'sys_account_disable_login_form', '_adm_stg_cpt_option_sys_account_disable_login_form', '', 'checkbox', '', '', '', 40),
-(@iCategoryId, 'sys_account_disable_join_form', '_adm_stg_cpt_option_sys_account_disable_join_form', '', 'checkbox', '', '', '', 42),
 
 (@iCategoryId, 'sys_account_allow_plus_in_email', '_adm_stg_cpt_option_sys_allow_plus_in_email', 'on', 'checkbox', '', '', '', 50),
 
@@ -910,6 +915,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'sys_sounds_level', '_adm_stg_cpt_option_sys_sounds_level', '_adm_stg_inf_option_sys_sounds_level', 'full', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_level";s:5:"class";s:13:"TemplServices";}', '', '', 2),
 (@iCategoryId, 'sys_sounds_set', '_adm_stg_cpt_option_sys_sounds_set', '_adm_stg_inf_option_sys_sounds_set', 'default', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:22:"get_options_sounds_set";s:5:"class";s:13:"TemplServices";}', '', '', 3),
 (@iCategoryId, 'sys_sounds_volume', '_adm_stg_cpt_option_sys_sounds_volume', '_adm_stg_inf_option_sys_sounds_volume', '100', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_options_sounds_volume";s:5:"class";s:13:"TemplServices";}', '', '', 4),
+(@iCategoryId, 'sys_sounds_guests', '_adm_stg_cpt_option_sys_sounds_guests', '_adm_stg_inf_option_sys_sounds_guests', '', 'checkbox', '', '', '', 5),
 (@iCategoryId, 'sys_sounds_buttons', '_adm_stg_cpt_option_sys_sounds_buttons', '_adm_stg_inf_option_sys_sounds_buttons', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 10),
 (@iCategoryId, 'sys_sounds_choices', '_adm_stg_cpt_option_sys_sounds_choices', '_adm_stg_inf_option_sys_sounds_choices', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 11),
 (@iCategoryId, 'sys_sounds_reactions', '_adm_stg_cpt_option_sys_sounds_reactions', '_adm_stg_inf_option_sys_sounds_reactions', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 12),
@@ -1271,6 +1277,10 @@ INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`,
 ('system', 'wiki unsafe', NULL, '_sys_acl_action_unsafe', '', 0, 0);
 SET @iIdActionWikiUnsafe = LAST_INSERT_ID();
 
+INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`, `Desc`, `Countable`, `DisabledForLevels`) VALUES
+('system', 'use connectors', NULL, '_sys_acl_action_use_connectors', '', 0, 1);
+SET @iIdActionUseConnectors = LAST_INSERT_ID();
+
 
 
 CREATE TABLE `sys_acl_actions_track` (
@@ -1467,7 +1477,14 @@ INSERT INTO `sys_acl_matrix` (`IDLevel`, `IDAction`) VALUES
 
 -- show membership private info
 (@iModerator, @iIdActionShowMembershipPrivateInfo),
-(@iAdministrator, @iIdActionShowMembershipPrivateInfo);
+(@iAdministrator, @iIdActionShowMembershipPrivateInfo),
+
+-- use connectors (personal access tokens)
+(@iAccount, @iIdActionUseConnectors),
+(@iStandard, @iIdActionUseConnectors),
+(@iModerator, @iIdActionUseConnectors),
+(@iAdministrator, @iIdActionUseConnectors),
+(@iPremium, @iIdActionUseConnectors);
 
 CREATE TABLE `sys_acl_levels` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1547,6 +1564,7 @@ CREATE TABLE `sys_accounts` (
   `picture` int(11) NOT NULL DEFAULT '0',
   `email` varchar(255) NOT NULL,
   `email_confirmed` tinyint(4) NOT NULL DEFAULT '0',
+  `email_pending` varchar(255) NOT NULL DEFAULT '',
   `phone` varchar(255) NOT NULL,
   `phone_confirmed` tinyint(4) NOT NULL DEFAULT '0',
   `welcome_sent` tinyint(4) NOT NULL DEFAULT '0',
@@ -1686,9 +1704,7 @@ CREATE TABLE `sys_objects_rss` (
 );
 
 INSERT INTO `sys_objects_rss` (`object`, `class_name`, `class_file`) VALUES
-('sys_page_block', 'BxDolRssPageBlock', ''),
-('sys_studio_page_help', 'BxDolStudioRssPageHelp', ''),
-('sys_studio_module_help', 'BxDolStudioRssModuleHelp', '');
+('sys_page_block', 'BxDolRssPageBlock', '');
 
 
 -- --------------------------------------------------------
@@ -4092,6 +4108,7 @@ CREATE TABLE IF NOT EXISTS `sys_form_inputs` (
   `collapsed` tinyint(4) NOT NULL DEFAULT '0',
   `html` tinyint(4) NOT NULL DEFAULT '0',
   `privacy` tinyint(4) NOT NULL DEFAULT '0',
+  `privacy_default` varchar(16) NOT NULL DEFAULT '',
   `rateable` varchar(32) NOT NULL DEFAULT '',
   `attrs` text NOT NULL,
   `attrs_tr` text NOT NULL,
@@ -5034,7 +5051,7 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 ('sys_add_profile_vertical', '_sys_menu_title_add_profile_vertical', '', 'sys_add_profile_links', 'system', 6, 0, 1, 'BxTemplMenuProfileAdd', ''),
 ('sys_account_dashboard', '_sys_menu_title_account_dashboard', '_sys_menu_title_public_account_dashboard', 'sys_account_dashboard', 'system', 8, 0, 1, 'BxTemplMenuAccountDashboard', ''),
 ('sys_account_dashboard_manage_tools', '_sys_menu_title_account_dashboard_manage_tools', '', 'sys_account_dashboard_manage_tools', 'system', 24, 0, 1, 'BxTemplMenuDashboardManageTools', ''),
-('sys_account_settings_submenu', '_sys_menu_title_account_settings', '_sys_menu_title_public_account_settings', 'sys_account_settings', 'system', 8, 0, 1, '', ''),
+('sys_account_settings_submenu', '_sys_menu_title_account_settings', '_sys_menu_title_public_account_settings', 'sys_account_settings', 'system', 18, 0, 1, 'BxTemplMenuMoreAuto', ''),
 ('sys_profiles_create', '_sys_menu_title_profiles_create', '', 'sys_profiles_create', 'system', 4, 0, 1, '', ''),
 ('sys_cmts_item_manage', '_sys_menu_title_cmts_item_manage', '', 'sys_cmts_item_manage', 'system', 20, 0, 1, 'BxTemplCmtsMenuManage', ''),
 ('sys_cmts_item_actions', '_sys_menu_title_cmts_item_actions', '', 'sys_cmts_item_actions', 'system', 15, 0, 1, 'BxTemplCmtsMenuActions', ''),
@@ -5227,7 +5244,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_onboarding_operator', 'system', 'profile', '_sys_menu_item_title_system_onboarding_profile', '_sys_menu_item_title_onboarding_profile', '_sys_menu_item_info_onboarding_profile', 'page.php?i=account-profile-switcher', '', '', 'circle-user-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:7:"profile";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 1),
 ('sys_onboarding_operator', 'system', 'logo', '_sys_menu_item_title_system_onboarding_logo', '_sys_menu_item_title_onboarding_logo', '_sys_menu_item_info_onboarding_logo', '{url_studio}designer.php?page=logo', '', '', 'target', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"logo";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 2),
 ('sys_onboarding_operator', 'system', 'cover', '_sys_menu_item_title_system_onboarding_cover', '_sys_menu_item_title_onboarding_cover', '_sys_menu_item_info_onboarding_cover', '{url_studio}designer.php?page=cover', '', '', 'gallery-vertical', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"is_onboarding_step_available";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 0, 1, 3),
-('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-round-plus', '', 2147483646, '', 1, 0, 1, 10);
+('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-round-plus', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"join";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 10);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
 ('sys_homepage_submenu', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'bolt', '', '', 2147483647, '', 0, 1, 1),
@@ -5294,12 +5311,12 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_notifications', 'system', 'cart', '_sys_menu_item_title_system_cart', '_sys_menu_item_title_cart', 'cart.php', '', '', 'shopping-cart', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_cart_items_count";s:6:"params";a:0:{}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 1, 1, 6),
 ('sys_account_notifications', 'system', 'orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'shopping-cart', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_orders_count";s:6:"params";a:1:{i:0;s:3:"new";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 7),
 ('sys_account_notifications', 'system', 'invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'receipt', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_invoices_count";s:6:"params";a:1:{i:0;s:6:"unpaid";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 8),
-('sys_account_notifications', 'system', 'sounds', '_sys_menu_item_title_system_sounds', '_sys_menu_item_title_sounds', 'javascript:void(0);', 'bx_sound_toggle(this);', '', 'volume-2', '', '', 2147483646, 1, 1, 9998),
-('sys_account_notifications', 'system', 'logout', '_sys_menu_item_title_system_logout', '_sys_menu_item_title_logout', 'page.php?i=logout', '', '', 'log-out', '', '', 2147483646, 1, 1, 9999);
+('sys_account_notifications', 'system', 'sounds', '_sys_menu_item_title_system_sounds', '_sys_menu_item_title_sounds', 'javascript:void(0);', 'bx_sound_toggle(this);', '', 'volume-2', '', '', 2147483646, 1, 1, 99998),
+('sys_account_notifications', 'system', 'logout', '_sys_menu_item_title_system_logout', '_sys_menu_item_title_logout', 'page.php?i=logout', '', '', 'log-out', '', '', 2147483646, 1, 1, 99999);
 
 -- The homepage introduction tour, for operators while it is on (BxDolTours).
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_account_notifications', 'system', 'tour', '_sys_menu_item_title_system_onboarding', '_sys_menu_item_title_onboarding', 'index.php?onboarding=1', '', '', 'list-checks', '', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"is_tour_available";s:6:"params";a:1:{i:0;s:4:"home";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 9997);
+('sys_account_notifications', 'system', 'tour', '_sys_menu_item_title_system_onboarding', '_sys_menu_item_title_onboarding', 'index.php?onboarding=1', '', '', 'list-checks', '', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"is_tour_available";s:6:"params";a:1:{i:0;s:4:"home";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 99997);
 
 -- account settings menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
@@ -5308,7 +5325,8 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_settings', 'system', 'account-settings-email', '_sys_menu_item_title_system_account_settings_email', '_sys_menu_item_title_account_settings_email', 'page.php?i=account-settings-email', '', '', 'mail', '', 2147483646, '', 1, 1, 3),
 ('sys_account_settings', 'system', 'account-settings-password', '_sys_menu_item_title_system_account_settings_pwd', '_sys_menu_item_title_account_settings_pwd', 'page.php?i=account-settings-password', '', '', 'key', '', 2147483646, '', 1, 1, 4),
 ('sys_account_settings', 'system', 'profile-settings-cfilter', '_sys_menu_item_title_system_profile_settings_cfilter', '_sys_menu_item_title_profile_settings_cfilter', 'page.php?i=profile-settings-cfilter', '', '', 'funnel', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"is_enabled_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 1, 1, 5),
-('sys_account_settings', 'system', 'account-settings-connectors', '_sys_menu_item_title_system_account_settings_connectors', '_sys_menu_item_title_account_settings_connectors', 'page.php?i=account-settings-connectors', '', '', 'plug', '', 2147483646, '', 1, 1, 6),
+('sys_account_settings', 'system', 'account-settings-connectors', '_sys_menu_item_title_system_account_settings_connectors', '_sys_menu_item_title_account_settings_connectors', 'page.php?i=account-settings-connectors', '', '', 'plug', '', 2147483646, 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:23:"is_connectors_available";s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 6),
+('sys_account_settings', 'system', 'account-settings-privacy', '_sys_menu_item_title_system_account_settings_privacy', '_sys_menu_item_title_account_settings_privacy', 'page.php?i=account-settings-privacy', '', '', 'lock', '', 2147483646, 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:20:"is_privacy_available";s:5:"class";s:19:"TemplServiceAccount";}', 1, 1, 6),
 ('sys_account_settings', 'system', 'account-settings-delete', '_sys_menu_item_title_system_account_settings_delete', '_sys_menu_item_title_account_settings_delete', 'page.php?i=account-settings-delete', '', '', 'x', '', 2147483646, '', 1, 1, 9999);
 -- Its sections, items without a link: the apps draw each as a heading over its subitems (the current profile's under
 -- the profile's name), the site's tab row shows the subitems in their place
@@ -5318,11 +5336,14 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 SET @iMiAccountSettingsAccount = (SELECT `id` FROM `sys_menu_items` WHERE `set_name`='sys_account_settings' AND `name`='account-settings-section-account' LIMIT 1);
 SET @iMiAccountSettingsProfile = (SELECT `id` FROM `sys_menu_items` WHERE `set_name`='sys_account_settings' AND `name`='account-settings-section-profile' LIMIT 1);
 UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsAccount WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-settings-info', 'account-profile-switcher', 'account-settings-email', 'account-settings-password', 'account-settings-connectors');
-UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='profile-settings-cfilter';
+UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('profile-settings-cfilter', 'account-settings-privacy');
+-- the site's tab row puts the tabs which don't fit on a phone under More
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
+('sys_account_settings', 'system', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', '', '', 2147483646, '', 1, 0, 99999);
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
-('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 2147483647, 0, 1, 2),
+('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 192, 0, 1, 2),
 ('sys_account_dashboard', 'system', 'dashboard-subscriptions', '_sys_menu_item_title_system_subscriptions', '_sys_menu_item_title_subscriptions', 'subscriptions.php', '', '', 'credit-card col-blue3', '', '', 2147483646, 1, 1, 3),
 ('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'shopping-cart col-green3', '', '', 2147483646, 1, 1, 4),
 ('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'receipt col-green3', '', '', 2147483646, 1, 1, 5),
@@ -6373,6 +6394,7 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_account_settings_info', 'account-settings-info', '_sys_page_title_system_account_settings_info', '_sys_page_title_account_settings_info', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-settings-info', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_settings_delete', 'account-settings-delete', '_sys_page_title_system_account_settings_delete', '_sys_page_title_account_settings_delete', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-settings-delete', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_settings_connectors', 'account-settings-connectors', '_sys_page_title_system_account_settings_connectors', '_sys_page_title_account_settings_connectors', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=account-settings-connectors', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
+('sys_account_settings_privacy', 'account-settings-privacy', '_sys_page_title_system_account_settings_privacy', '_sys_page_title_account_settings_privacy', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=account-settings-privacy', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_account_profile_switcher', 'account-profile-switcher', '_sys_page_title_system_account_profile_switcher', '_sys_page_title_account_profile_switcher', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=account-profile-switcher', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
 ('sys_profile_settings_cfilter', 'profile-settings-cfilter', '_sys_page_title_system_profile_settings_cfilter', '_sys_page_title_profile_settings_cfilter', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=profile-settings-cfilter', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_unsubscribe_notifications', 'unsubscribe-notifications', '_sys_page_title_system_unsubscribe_notifications', '_sys_page_title_unsubscribe_notifications', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=unsubscribe-notifications', '', '', '', 0, 1, 0, '', '', 0),
@@ -6680,6 +6702,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 ('sys_account_settings_delete', 1, 'system', '', '_sys_page_block_title_account_settings_delete', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_settings_del_account";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
 ('sys_account_settings_connectors', 1, 'system', '', '_sys_page_block_title_account_settings_connectors', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:27:"account_settings_connectors";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
+('sys_account_settings_privacy', 1, 'system', '', '_sys_page_block_title_account_settings_privacy', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:24:"account_settings_privacy";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
 
 ('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_switcher', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_profile_switcher_all";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
 
@@ -7588,7 +7611,7 @@ CREATE TABLE IF NOT EXISTS `sys_preloader` (
 
 INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALUES
 ('system', 'css_system', '{dir_plugins_public}marka/|marka.min.css', 1, 1),
-('system', 'css_system', '{dir_plugins_public}at.js/css/|jquery.atwho.min.css', 1, 2),
+('system', 'css_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:9:"atwho_css";}s:5:"class";s:12:"BaseServices";}', 1, 2),
 ('system', 'css_system', '{dir_plugins_public}prism/|prism.css', 1, 3),
 ('system', 'css_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:8:"tailwind";}s:5:"class";s:12:"BaseServices";}', 1, 4),
 ('system', 'css_system', 'common.css', 1, 10),
@@ -7610,7 +7633,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'css_system', 'vote.css', 1, 36),
 ('system', 'css_system', '{dir_plugins_public}spin.js/|spin.css', 1, 37),
 
-('system', 'js_system', 'pusher/pusher.min.js', 1, 0),
+('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:9:"pusher_js";}s:5:"class";s:12:"BaseServices";}', 1, 0),
 ('system', 'js_system', 'jquery/jquery.min.js', 1, 1),
 ('system', 'js_system', 'jquery/jquery-migrate.min.js', 1, 2),
 ('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:12:"jquery_ui_js";}s:5:"class";s:12:"BaseServices";}', 1, 3),
@@ -7621,7 +7644,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:11:"datetime_js";}s:5:"class";s:12:"BaseServices";}', 1, 8),
 ('system', 'js_system', 'marka/marka.min.js', 1, 9),
 ('system', 'js_system', 'headroom.min.js', 1, 10),
-('system', 'js_system', 'at.js/js/jquery.atwho.min.js', 1, 11),
+('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:8:"atwho_js";}s:5:"class";s:12:"BaseServices";}', 1, 11),
 ('system', 'js_system', 'prism/prism.js', 1, 12),
 ('system', 'js_system', 'htmx/htmx.min.js', 1, 13),
 ('system', 'js_system', 'htmx/head-support.min.js', 1, 14),

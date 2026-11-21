@@ -1579,6 +1579,39 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         ];
     }
 
+    /**
+     * Designer > Settings > Accent color: a preset for links, buttons, switches and focus rings of the site, Studio
+     * and NEO (BxDolDesigns::getAccentPresets, BxBaseFunctions::getInjHeadDesignAccent).
+     */
+    protected function getSettingsAccentInputs($oTemplate)
+    {
+        return [
+            'accent_section' => [
+                'type' => 'block_header',
+                'name' => 'accent_section',
+                'caption' => _t('_adm_dsg_txt_settings_section_accent'),
+            ],
+            'accent_info' => [
+                'type' => 'custom',
+                'name' => 'accent_info',
+                'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                    'text' => _t('_adm_dsg_inf_settings_section_accent')
+                ]),
+            ],
+            'sys_design_accent' => [
+                'type' => 'select',
+                'name' => 'sys_design_accent',
+                'caption' => _t('_adm_stg_cpt_option_sys_design_accent'),
+                'values' => $this->getSettingsAccentList(),
+                'value' => BxDolDesigns::getAccent(),
+                'attrs' => [
+                    'onchange' => $this->getPageJsObject() . '.previewAccent(this)',
+                    'data-presets' => json_encode(BxDolDesigns::getAccentPresets()),
+                ],
+            ],
+        ];
+    }
+
     protected function getSettings()
     {
         $oTemplate = BxDolStudioTemplate::getInstance();
@@ -1687,6 +1720,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         ];
 
         $aForm['inputs'] += $this->getSettingsCornersInputs($oTemplate);
+        $aForm['inputs'] += $this->getSettingsAccentInputs($oTemplate);
 
         $aForm['inputs'] += [
             'header_note' => [ // the note under the sections, in a section of its own

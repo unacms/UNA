@@ -82,7 +82,7 @@ class BxBaseModGroupsGridPricesView extends BxBaseModGroupsGridPrices
 
         $aResult = [];
         if($this->_oModule->setRole($this->_iGroupProfileId, $this->_iClient, $aItem['role_id'], ['period' => $aItem['period'], 'period_unit' => $aItem['period_unit']]))
-            $aResult = ['grid' => $this->getCode(false), 'blink' => $aItem['id'], 'msg' => _t($CNF['T']['msg_performed'])];
+            $aResult = ['grid' => $this->getCode(false), 'blink' => $aItem['id'], 'toast' => _t($CNF['T']['msg_performed'])];
         else
             $aResult = ['msg' => _t($CNF['T']['err_cannot_perform'])];
 

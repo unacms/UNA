@@ -159,10 +159,12 @@ const PageError = ({ error, reset }) => {
                         'Something didn’t go as planned. Please try again or reload the page.',
                     )}
                 </Text>
-                <Text className="text-center text-sm text-muted-foreground ">
-                    {error.digest}
-                    {error.message}
-                </Text>
+                {/* The error's own text is for developers: people get the sentence above. */}
+                {process.env.NODE_ENV !== 'production' && error?.message ? (
+                    <Text className="text-center text-sm text-muted-foreground ">
+                        {error.message}
+                    </Text>
+                ) : null}
 
                 <NeoButton
                     onPress={() => reset()}

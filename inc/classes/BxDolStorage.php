@@ -1634,7 +1634,7 @@ class BxDolStorageHelperUrl extends BxDolStorageHelperPath
             if (!$bAllowRestricted) {
                 // a non-null value makes the helper report the final HTTP status, error pages are not saved as files
                 $sHttpCode = 0;
-                $bSaved = true === bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], false, $sTmpFilename);
+                $bSaved = true === bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], BX_DOL_FILE_TRANSFER_TIMEOUT, [], false, $sTmpFilename);
                 if ($bSaved && ((int)$sHttpCode < 200 || (int)$sHttpCode >= 300))
                     $bSaved = false;
             }

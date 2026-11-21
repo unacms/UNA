@@ -167,6 +167,7 @@ class BxOrgsConfig extends BxBaseModGroupsConfig
             'OBJECT_FORM_ENTRY_DISPLAY_EDIT' => 'bx_organization_edit',
             'OBJECT_FORM_ENTRY_DISPLAY_EDIT_COVER' => 'bx_organization_edit_cover',
             'OBJECT_FORM_ENTRY_DISPLAY_EDIT_BADGE' => 'bx_organization_edit_badge',
+            'OBJECT_FORM_ENTRY_DISPLAY_EDIT_PRIVACY' => 'bx_organization_edit_privacy',
             'OBJECT_FORM_ENTRY_DISPLAY_DELETE' => 'bx_organization_delete',
             'OBJECT_FORM_ENTRY_DISPLAY_INVITE' => 'bx_organization_invite',
             'OBJECT_FORM_PRICE' => 'bx_organizations_price',

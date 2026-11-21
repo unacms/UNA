@@ -53,6 +53,11 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, blo
     const layout = layoutForList(normalizedData.module, unitMode);
     const limitedData = normalizedLimit ? sourceItems.slice(0, normalizedLimit) : sourceItems;
 
+    // A page block with nothing to list ("Who to follow" with no one to suggest) is left out, as UNA's site leaves
+    // out a block without content; its title alone would read as still loading.
+    if (!sourceItems.length && blockWrapperProps)
+        return null;
+
     const items = limitedData.map((item, index) => {
         const unitProps = {
             unit: unitType,

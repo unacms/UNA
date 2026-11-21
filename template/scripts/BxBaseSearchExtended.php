@@ -294,6 +294,7 @@ class BxBaseSearchExtended extends BxDolSearchExtended
         // A search that found nothing says so (BxDolEmptyState); before any search there is nothing to say.
         if (!$aBlock['hide_empty_msg'] && empty($aBlock['data']) && (int)$iStart == 0) {
             $aBlock['empty_state'] = BxDolEmptyState::forApi([
+                'icon' => 'search',
                 'title' => '_sys_txt_empty_search_title',
                 'text' => '_sys_txt_empty_search_text',
             ]);

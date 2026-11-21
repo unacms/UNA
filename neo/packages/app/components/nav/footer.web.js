@@ -250,6 +250,7 @@ function TabAvatar({ currentUser, url }) {
             <Profile
                 {...currentUser}
                 url_avatar={currentUser?.avatar}
+                color={currentUser?.color}
                 url={url}
                 showLinks={false}
                 displayType="unit_wo_info"
@@ -371,6 +372,7 @@ function MoreMenuHeader({ profileItem, currentUser, agentActive, onProfilePress,
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser?.avatar}
+                                color={currentUser?.color}
                                 url={profileItem.link}
                                 showLinks={false}
                                 displayType="unit_wo_info"

@@ -56,7 +56,7 @@
 	<string name="_bx_messenger_lots_class_my_members"><![CDATA[Shoutbox]]></string>
 	<string name="_bx_messenger_save_part_list"><![CDATA[Save]]></string>
 	<string name="_bx_messenger_save_part_failed"><![CDATA[Add at least one participant.]]></string>
-	<string name="_bx_messenger_save_part_success"><![CDATA[Participants list was successfully updated!]]></string>
+	<string name="_bx_messenger_save_part_success"><![CDATA[Participants updated.]]></string>
 	<string name="_bx_messenger_delete_lot"><![CDATA[Are you sure you want to delete "{0}" conversation?]]></string>
 	<string name="_bx_messenger_can_not_delete"><![CDATA[You cannot delete this chat.]]></string>	
 	<string name="_bx_messenger_not_participant"><![CDATA[You are not in this chat.]]></string>
@@ -209,10 +209,10 @@
 	<string name="_bx_messenger_jitsi_vc_into_title"><![CDATA[Message was sent in video conference created by {0} at {1}]]></string>
 	<string name="_bx_messenger_jitsi_vc_join"><![CDATA[Join]]></string>
 	<string name="_bx_messenger_are_you_sure_close_jisti"><![CDATA[Are you sure you want to leave the conference?]]></string>
-	<string name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Allow to use Jitsi]]></string>
+	<string name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Video calls]]></string>
 	<string name="_bx_messenger_jisti_connection_error"><![CDATA[Cannot connect to video conference server. Please check your internet connection or try again later.]]></string>
 	<string name="_bx_messenger_jisti_not_active_conference"><![CDATA[Active conference is not found. Please reload the chat or try to create your own conference.]]></string>
-	<string name="_bx_messenger_jitsi_server"><![CDATA[Use defined domain as Jitsi server]]></string>
+	<string name="_bx_messenger_jitsi_server"><![CDATA[Jitsi server domain, such as meet.example.com. Video calls stay off until you set one.]]></string>
 	<string name="_bx_messenger_jitsi_chat_enable"><![CDATA[Enable Jitsi chat inside of Jitsi conference]]></string>
 	<string name="_bx_messenger_jitsi_chat_sync"><![CDATA[Synchronize Jitsi chat with Messenger history (in this case all messages from Jitsi chat will be duplicated in Messenger history also)]]></string>
 	<string name="_bx_messenger_jitsi_hide_info"><![CDATA[Show chat info (members will be able to see chat room link and share it with non-members)]]></string>
@@ -266,7 +266,7 @@
 	<string name="_bx_messenger_max_max_lots_number"><![CDATA[Default number of chats in chats' list block]]></string>
 	<string name="_bx_messenger_enable_joined_organizations"><![CDATA[Allow organization to communicate with profile only if user joined or followed the organization]]></string>
 	<string name="_bx_messenger_mark_as_unread"><![CDATA[Mark as unread]]></string>
-	<string name="_bx_messenger_menu_item_title_video_call"><![CDATA[Video Call]]></string>
+	<string name="_bx_messenger_menu_item_title_video_call"><![CDATA[Video call]]></string>
 	<string name="_bx_messenger_menu_item_title_star"><![CDATA[Mark chats as important]]></string>
 	<string name="_bx_messenger_menu_item_title_mute"><![CDATA[Mute chat]]></string>
 	<string name="_bx_messenger_menu_set_title_talk_menu"><![CDATA[Chat menu]]></string>
@@ -321,7 +321,7 @@
 	<string name="_bx_messenger_nav_menu_item_title_replies"><![CDATA[Replies]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_saved"><![CDATA[Saved messages]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_favorites"><![CDATA[Favorite chats]]></string>
-	<string name="_bx_messenger_nav_menu_item_title_mr"><![CDATA[Mentions & Reactions]]></string>
+	<string name="_bx_messenger_nav_menu_item_title_mr"><![CDATA[Mentions & reactions]]></string>
 	<string name="_bx_messenger_menu_item_title_parent_lot"><![CDATA[Open original message]]></string>
 	<string name="_bx_messenger_jot_server_jwt"><![CDATA[Secret word for JWT Token Authentication with Jot Server. Set the same <b>secret</b> word in the config/config.json file of the Jot Server to enable this option. This allows connections to Jot Server only from authorized sites. Leave it empty if you don't want to use JWT tokens with Jot Server.]]></string>
 	<string name="_bx_messenger_nav_menu_title_view"><![CDATA[Main menu]]></string>

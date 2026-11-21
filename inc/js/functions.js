@@ -62,7 +62,12 @@ function processJsonData(oData) {
 			fContinue(oData);
 		});
     else if(oData && oData.toast != undefined && oData.toast.length != 0) {
-        bx_toast(oData.toast);
+        // A success doesn't block: it shows as a toast, on the next page when the reply reloads or redirects.
+        if((oData.reload != undefined && Number.parseInt(oData.reload) == 1) || (oData.redirect != undefined && oData.redirect.length != 0))
+            bx_toast_next_page(oData.toast);
+        else
+            bx_toast(oData.toast);
+
         fContinue(oData);
     }
 	else
@@ -1722,28 +1727,6 @@ function bx_search (n, sFormSel, sResultsContSel, sLoadingContSel, bSortResults,
     return false;
 }
 
-function on_filter_apply(e, sInputId, sFilterName)
-{
-	var oRegExp = new RegExp("[&]{0,1}" + sFilterName + "=.*");
-    var s = ('' + document.location).replace(oRegExp, ''); // remove filter
-    s = s.replace(/page=\d+/, 'page=1'); // goto 1st page
-    if (e.checked && $('#' + sInputId).val().length > 2)
-        s += (-1 == s.indexOf('?') ? '?' : '&') + sFilterName + '=' + $('#' + sInputId).val(); // append filter
-    document.location = s;
-}
-
-function on_filter_key_up (e, sCheckboxId)
-{
-    if (13 == e.keyCode) {
-        $('#' + sCheckboxId).click();
-        return false;
-    }
-    else {
-        $('#' + sCheckboxId).removeAttr('checked');
-        return true;
-    }
-}
-
 function on_copyright_click()
 {
 	oDate = new Date();
@@ -1912,6 +1895,34 @@ function bx_toast(sMessage, oParams)
     }, 1000 * (oParams && oParams.autoHide !== undefined ? parseInt(oParams.autoHide) : 3));
 };
 
+/**
+ * Show a toast on the next page this tab opens: for a success that reloads or redirects.
+ */
+function bx_toast_next_page(sMessage)
+{
+    try {
+        sessionStorage.setItem('bx-toast-next-page', sMessage);
+    }
+    catch(e) {
+        // no storage (private window, blocked site data): the toast is skipped, the page still works
+    }
+}
+
+$(document).ready(function() {
+    var sMessage = null;
+    try {
+        sMessage = sessionStorage.getItem('bx-toast-next-page');
+        if(sMessage)
+            sessionStorage.removeItem('bx-toast-next-page');
+    }
+    catch(e) {
+        // no storage: nothing to show
+    }
+
+    if(sMessage)
+        bx_toast(sMessage);
+});
+
 function bx_is_color_scheme_dark()
 {
     return localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2005,19 +2016,61 @@ function bx_onboarding_hide(oButton, sMenu)
 }
 
 /*
- * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form further
- * down the same page (the "Add new..." block) instead of reloading it; without the form the link is followed.
+ * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form of the
+ * "Add new..." block on the same page instead of reloading it. That block loads when it scrolls into view, so it is
+ * scrolled to and its form is opened once it is there. A page without the block goes to the homepage, which opens it.
  */
-function bx_onboarding_post()
+function bx_onboarding_post(bStay)
 {
-    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
-    if(!oForm)
-        return true;
+    var bReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fOpen = function(oForm) {
+        oForm.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+        oForm.click();
+    };
 
-    oForm.scrollIntoView({block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
-    oForm.click();
+    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
+    if(oForm) {
+        fOpen(oForm);
+        return false;
+    }
+
+    // the block is still a placeholder (block_async_create_post.html)
+    var oPlaceholder = document.querySelector('.sys-cpf-placeholder');
+    var oBlock = oPlaceholder ? oPlaceholder.closest('.bx-page-block-container') : null;
+    if(oBlock) {
+        oPlaceholder.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+
+        var oObserver = new MutationObserver(function() {
+            var oLoaded = oBlock.querySelector('.sys-cpf-default');
+            if(!oLoaded)
+                return;
+
+            oObserver.disconnect();
+            fOpen(oLoaded);
+        });
+        oObserver.observe(oBlock, {childList: true, subtree: true});
+        setTimeout(function() {
+            oObserver.disconnect();
+        }, 10000);
+
+        return false;
+    }
+
+    if(!bStay)
+        location.href = sUrlRoot + '#bx-compose';
     return false;
 }
+
+/*
+ * The homepage opened from "Write the first post" on another page (#bx-compose): opens the post form there.
+ */
+$(document).ready(function() {
+    if(location.hash != '#bx-compose')
+        return;
+
+    history.replaceState(null, '', location.pathname + location.search);
+    bx_onboarding_post(true);
+});
 
 /*
  * Introduction tours (BxDolTours): the Studio tour, built on Shepherd (plugins_public/shepherd). A step is drawn as a
@@ -2506,7 +2559,7 @@ function bx_sound_form_reply(oData)
     var mixedPopup = oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup;
     if((oData.code != undefined && Number.parseInt(oData.code) != 0) || bx_sound_has_field_error(oData.form) || bx_sound_has_field_error(mixedPopup))
         bx_sound('error');
-    else if(oData.code != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
+    else if(oData.code != undefined || oData.toast != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
         bx_sound('success', {emphasis: 'subtle'});
 }
 

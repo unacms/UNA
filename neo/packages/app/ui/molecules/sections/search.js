@@ -270,6 +270,7 @@ export function ElementSearchData(oProps) {
                             className="w-full"
                             rounded="full"
                             name="search"
+                            accessibilityLabel={t('Search')}
                             placeholder={t('Search') + '...'}
                             onKeyPress={(event) => handleKeyPress(event)}
                             value={inputValue}
@@ -301,6 +302,7 @@ export function ElementSearchData(oProps) {
                     <Input
                         className="w-full"
                         name="search"
+                        accessibilityLabel={t('Search')}
                         autoFocus={true}
                         placeholder={t('Start typing to search...')}
                         onKeyPress={(event) => handleKeyPress(event)}
@@ -357,6 +359,7 @@ export function ElementSearchData(oProps) {
                 <Input
                     className="w-full"
                     name="search"
+                    accessibilityLabel={t('Search')}
                     autoFocus={true}
                     placeholder={t('Start typing to search...')}
                     onKeyPress={(event) => handleKeyPress(event)}

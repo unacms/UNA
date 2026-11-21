@@ -241,7 +241,6 @@ html.dark {
 /*--- Profile Stats ---*/
 .bx-menu-vertical-more-less li.bx-psmi-show-more,
 .bx-menu-vertical-more-less li.bx-psmi-show-less {
-    text-transform: uppercase;
     font-size: 0.875rem;
 }
 

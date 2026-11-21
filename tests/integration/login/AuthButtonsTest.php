@@ -100,10 +100,10 @@ class AuthButtonsTest extends BxDolIntegrationTestCase
         $this->bxBecomeGuest();
 
         // Both forms on for this test, whatever the site has set.
-        $aParams = ['sys_account_disable_login_form' => getParam('sys_account_disable_login_form'), 'sys_account_disable_join_form' => getParam('sys_account_disable_join_form')];
+        $aParams = ['sys_account_disable_login_form' => getParam('sys_account_disable_login_form'), 'sys_account_join' => getParam('sys_account_join')];
         try {
-            foreach($aParams as $sParam => $sValue)
-                setParam($sParam, '');
+            setParam('sys_account_disable_login_form', '');
+            setParam('sys_account_join', BxDolAccount::JOIN_OPEN);
 
             $aForms = [
                 'login' => (string)(new BxTemplServiceLogin())->serviceLoginForm(),
@@ -134,10 +134,10 @@ class AuthButtonsTest extends BxDolIntegrationTestCase
 
         $this->bxBecomeGuest();
 
-        $aParams = ['sys_account_disable_login_form' => getParam('sys_account_disable_login_form'), 'sys_account_disable_join_form' => getParam('sys_account_disable_join_form')];
+        $aParams = ['sys_account_disable_login_form' => getParam('sys_account_disable_login_form'), 'sys_account_join' => getParam('sys_account_join')];
         try {
-            foreach($aParams as $sParam => $sValue)
-                setParam($sParam, 'on');
+            setParam('sys_account_disable_login_form', 'on');
+            setParam('sys_account_join', BxDolAccount::JOIN_CLOSED);
 
             $aForms = [
                 'login' => (string)(new BxTemplServiceLogin())->serviceLoginForm(),

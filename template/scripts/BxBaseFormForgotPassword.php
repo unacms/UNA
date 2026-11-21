@@ -9,17 +9,21 @@
 
 bx_import('BxTemplFormView');
 
+/**
+ * The checks look at the format only: whether an account uses the email or phone isn't said to anybody
+ * who asks, the reply is the same either way, @see BxBaseServiceAccount::serviceForgotPassword
+ */
 class BxFormForgotPasswordCheckerHelper extends BxDolFormCheckerHelper
 {
     /**
-     * Check if email is exists.
+     * Check the email format.
      */
     function checkEmailExist ($s)
     {        
         if (!$this->checkEmail($s))
             return false;
 
-        return BxDolAccountQuery::getInstance()->getIdByEmail($s) ? true : _t('_sys_form_forgot_password_email_not_recognized');
+        return true;
     }
     
     function checkEmailExistOrEmpty ($s)
@@ -30,11 +34,11 @@ class BxFormForgotPasswordCheckerHelper extends BxDolFormCheckerHelper
         if (!$this->checkEmail($s))
             return false;
 
-        return BxDolAccountQuery::getInstance()->getIdByEmail($s) ? true : _t('_sys_form_forgot_password_email_not_recognized');
+        return true;
     }
 	
 	/**
-     * Check if phone is exists.
+     * Check the phone format.
      */
     function checkPhoneExist ($s)
     {
@@ -43,7 +47,7 @@ class BxFormForgotPasswordCheckerHelper extends BxDolFormCheckerHelper
             return _t('_sys_form_forgot_password_phone_error_format');
         }
 
-        return BxDolAccountQuery::getInstance()->getIdByPhone($s) ? true : _t('_sys_form_forgot_password_phone_not_recognized');
+        return true;
     }
     
     function checkPhoneExistOrEmpty ($s)
@@ -56,7 +60,7 @@ class BxFormForgotPasswordCheckerHelper extends BxDolFormCheckerHelper
             return _t('_sys_form_forgot_password_phone_error_format');
         }
 
-        return BxDolAccountQuery::getInstance()->getIdByPhone($s) ? true : _t('_sys_form_forgot_password_phone_not_recognized');
+        return true;
     }
 
 }

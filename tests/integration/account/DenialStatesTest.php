@@ -120,6 +120,35 @@ class DenialStatesTest extends BxDolAccountTestCase
         }
     }
 
+    public function testAppsLeaveOutTheInformerBarToo(): void
+    {
+        $sRequire = getParam('sys_account_require_profile');
+        $this->bxSetParamCache('sys_account_require_profile', BxDolAccount::PROFILE_OPTIONAL);
+        try {
+            $this->bxSignInMemberWithoutProfile();
+
+            $sMsg = $this->bxDeniedMessage(bx_get_logged_profile_id(), 'bx_posts');
+            $aApi = bx_api_get_msg($sMsg);
+            $this->assertNotEmpty($aApi['empty_state']['icon'] ?? null);
+            $this->assertSame(BxDolAcl::getDenialState($sMsg)['icon'], $aApi['empty_state']['icon'], 'The apps draw the state with its icon.');
+            $this->assertStringNotContainsString('sys-account-profile-system', $this->bxInformer(), 'The page\'s `user.informer` has no "You don\'t have a profile yet" either.');
+
+            BxDolInformer::resetHidden();
+            $_GET['api'] = 1;
+            try {
+                $aBlock = bx_srv('system', 'create_profile_block', [], 'TemplServiceProfiles');
+            }
+            finally {
+                unset($_GET['api']);
+            }
+            if ($aBlock)
+                $this->assertStringNotContainsString('sys-account-profile-system', $this->bxInformer(), '"Create your profile" on the page says it already.');
+        }
+        finally {
+            $this->bxSetParamCache('sys_account_require_profile', $sRequire);
+        }
+    }
+
     public function testOtherMessagesStayPlain(): void
     {
         $this->assertNull(BxDolAcl::getDenialState('Some message'));

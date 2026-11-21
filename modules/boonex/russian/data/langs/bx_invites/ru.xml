@@ -110,7 +110,6 @@
     <string name="_bx_invites_option_key_lifetime"><![CDATA[Срок действия ключа приглашения (в днях)]]></string>
     <string name="_bx_invites_option_enable_request_invite"><![CDATA[Разрешить запросы на приглашение]]></string>
     <string name="_bx_invites_option_requests_email"><![CDATA[Эл. адреса для посылки запросов на приглашение (разделенение запятой)]]></string>
-    <string name="_bx_invites_option_enable_reg_by_inv"><![CDATA[Регистрация строго по приглашению]]></string>
     <string name="_bx_invites_option_context_auto_join"><![CDATA[Включить автоматическое присоединение при использовании функции «Пригласить в контекст»]]></string>
     <string name="_bx_invites_option_context_key_length"><![CDATA[Длина ключа для приглашений в сообщества (0 = длина по умолчанию)]]></string>
 

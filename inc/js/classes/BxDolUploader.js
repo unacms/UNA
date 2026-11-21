@@ -950,6 +950,41 @@ BxDolUploaderCrop.prototype._readFile = function (oFile, onRead) {
 };
 
 /**
+ * The cropper opens with a picture: the file picker comes first, then the titled popup (BxBaseUploaderCrop::getUploaderForm)
+ * with the chosen picture in the cropper.
+ */
+BxDolUploaderCrop.prototype.showUploaderForm = function () {
+    if (!this._oPendingFile) {
+        if (!this._eChooser)
+            this._eChooser = $('<input type="file" accept="image/*" class="hidden" tabindex="-1" aria-hidden="true" />').on('change', (oEvent) => {
+                this.onPictureChosen(oEvent.currentTarget);
+            }).appendTo('body');
+
+        this._eChooser.val('').trigger('click');
+        return;
+    }
+
+    var sUrl = this._getUrlWithStandardParams() + '&a=show_uploader_form&m=' + (this._isMultiple ? 1 : 0) + '&c=' + this._iContentId + '&p=' + this._isPrivate + '&_t=' + Date.now();
+    $.get(sUrl, (sHtml) => {
+        $('#' + this._sPopupContainerId).remove();
+
+        // its script starts the cropper once the popup is in the page
+        var oPopup = $(sHtml.trim());
+        oPopup.hide().prependTo('body').bxProcessHtml();
+
+        oPopup.dolPopup({
+            closeElement: false,
+            closeOnOuterClick: false,
+            onBeforeShow: () => {
+                oPopup.find('.bx-popup-element-close').on('click', () => {
+                    this.onClickCancel();
+                });
+            }
+        });
+    }, 'html');
+};
+
+/**
  * Opens the file picker of the preview (the preview itself, or "Change picture" in its menu).
  */
 BxDolUploaderCrop.prototype.choosePicture = function () {
