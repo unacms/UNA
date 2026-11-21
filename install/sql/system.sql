@@ -567,7 +567,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', '1280', 'text', '', '', '', 24),
 (@iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', '1280', 'text', '', '', '', 25),
 (@iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', '1280', 'text', '', '', '', 26),
-(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27);
+(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27),
+-- Accent color (Studio > Designer > Settings): a preset of BxDolDesigns::getAccentPresets for the site, Studio and NEO.
+(@iCategoryId, 'sys_design_accent', '_adm_stg_cpt_option_sys_design_accent', 'blue', 'select', 'blue,indigo,violet,rose,orange,green,teal,graphite', '', '', 28);
 
 --
 -- CATEGORY: General (Site Settings)

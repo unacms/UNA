@@ -66,6 +66,22 @@ module.exports = {
                 900: '#18181b',
                 950: '#0a0a0c',
             },
+            // UNA's blue is the site's accent: Tailwind blue by default (template/css/tailwind.css), one of the
+            // presets of Studio > Designer > Settings > Accent color otherwise (BxDolDesigns::getAccentPresets), the
+            // same scale NEO's --accent-* gets. So links, primary buttons, switches and focus rings follow it.
+            blue: {
+                50: 'rgb(var(--bx-accent-50) / <alpha-value>)',
+                100: 'rgb(var(--bx-accent-100) / <alpha-value>)',
+                200: 'rgb(var(--bx-accent-200) / <alpha-value>)',
+                300: 'rgb(var(--bx-accent-300) / <alpha-value>)',
+                400: 'rgb(var(--bx-accent-400) / <alpha-value>)',
+                500: 'rgb(var(--bx-accent-500) / <alpha-value>)',
+                600: 'rgb(var(--bx-accent-600) / <alpha-value>)',
+                700: 'rgb(var(--bx-accent-700) / <alpha-value>)',
+                800: 'rgb(var(--bx-accent-800) / <alpha-value>)',
+                900: 'rgb(var(--bx-accent-900) / <alpha-value>)',
+                950: 'rgb(var(--bx-accent-950) / <alpha-value>)',
+            },
         },
         width: {
             '21': '5.25rem',

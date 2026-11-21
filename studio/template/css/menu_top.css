@@ -298,7 +298,7 @@ div.bx-std-menu-top .bx-menu-top-center li a {
     width: auto;
 }
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active a {
-    border-color: rgba(59, 130, 246, 0.5);
+    border-color: rgb(var(--bx-accent-500) / 0.5);
 }
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active .bx-mi-bg {
     display: block;
