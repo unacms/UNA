@@ -58,6 +58,12 @@ const JoinTextComponent = (props) => {
     )
 }
 
+/**
+ * The built-in Sign up picture, so the Sign up intro can tell a project's own `join_text` (static.js) from it:
+ * a project's own picture wins over the one UNA sends (components/elements/intro.tsx).
+ */
+export const JoinTextBuiltIn = JoinTextComponent
+
 const ComponentsCommentsEmpty = () => {
     const { t } = useTranslation()
     return (

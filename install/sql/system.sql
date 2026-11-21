@@ -6587,7 +6587,7 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_dashboard_content', 'dashboard-content', '_sys_page_title_system_dashboard_content', '_sys_page_title_dashboard_content', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-content', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_dashboard_reports', 'dashboard-reports', '_sys_page_title_system_dashboard_reports', '_sys_page_title_dashboard_reports', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-reports', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_dashboard_audit', 'dashboard-audit', '_sys_page_title_system_dashboard_audit', '_sys_page_title_dashboard_audit', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-audit', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
-('sys_create_account', 'create-account', '_sys_page_title_system_create_account', '_sys_page_title_create_account', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=create-account', '', '', 'noindex', 0, 1, 0, '', '', 0),
+('sys_create_account', 'create-account', '_sys_page_title_system_create_account', '_sys_page_title_create_account', 'system', 0, 4, '', 2147483647, 1, 'page.php?i=create-account', '', '', 'noindex', 0, 1, 0, '', '', 0),
 ('sys_login', 'login', '_sys_page_title_system_login', '_sys_page_title_login', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=login', '', '', 'noindex', 0, 1, 0, '', '', 0),
 ('sys_login_step2', 'login-step2', '_sys_page_title_system_login_step2', '_sys_page_title_login_step2', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=login-step2', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_login_step3', 'login-step3', '_sys_page_title_system_login_step3', '_sys_page_title_login_step3', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=login-step3', '', '', '', 0, 1, 0, '', '', 0),
@@ -6890,7 +6890,8 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 ('sys_dashboard_reports', 1, 'system', '', '_sys_page_block_title_dashboard_reports', 11, 1, 0, 192, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"manage_reports";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', 0, 1, 1, 1),
 
-('sys_create_account', 1, 'system', '', '_sys_page_block_title_create_account', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:19:\"create_account_form\";s:6:\"params\";a:0:{}s:5:\"class\";s:19:\"TemplServiceAccount\";}', 0, 1, 1, 1),
+('sys_create_account', 1, 'system', '', '_sys_page_block_title_create_account_intro', 0, 0, 0, 2147483647, 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:20:\"create_account_intro\";s:5:\"class\";s:19:\"TemplServiceAccount\";}', 0, 1, 1, 1),
+('sys_create_account', 2, 'system', '', '_sys_page_block_title_create_account', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:19:\"create_account_form\";s:6:\"params\";a:0:{}s:5:\"class\";s:19:\"TemplServiceAccount\";}', 0, 1, 1, 1),
 
 ('sys_login_step2', 1, 'system', '_sys_page_block_system_title_login_step2', '_sys_page_block_title_login_step2', 11, 0, 0, 2147483647, 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:16:\"login_form_step2\";s:5:\"class\";s:17:\"TemplServiceLogin\";}', 0, 1, 1, 1),
 
@@ -6946,6 +6947,9 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 -- The sign-in and join blocks, on their pages and on the home page: a title icon and a line under the title
 UPDATE `sys_pages_blocks` SET `icon`='user-round-key', `description`='_sys_page_block_desc_login' WHERE `object` IN ('sys_login', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_login';
 UPDATE `sys_pages_blocks` SET `icon`='user-round-plus', `description`='_sys_page_block_desc_create_account' WHERE `object` IN ('sys_create_account', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_create_account';
+
+-- The sign-in and sign-up blocks have large padding, on their pages and on the home page (the guest splash draws those)
+UPDATE `sys_pages_blocks` SET `padding_size`='large' WHERE `object` IN ('sys_login', 'sys_create_account', 'sys_home') AND `module`='system' AND `title` IN ('_sys_page_block_title_login', '_sys_page_block_title_create_account');
 
 -- The friend and follow suggestions, in the blocks list and in the home page's sidebar: a compact title
 UPDATE `sys_pages_blocks` SET `title_size`='compact' WHERE `object` IN ('', 'sys_home') AND `module`='system' AND `title` IN ('_sys_page_block_title_recom_friends', '_sys_page_block_title_recom_subscriptions');

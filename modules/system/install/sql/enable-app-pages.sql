@@ -4,7 +4,6 @@
 
 -- 'config_api' settings
 UPDATE `sys_objects_page` SET `config_api`='{"layout":"chat"}' WHERE `object`='sys_cooperator';
-UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'create-account\',\r\n    blocks: {\r\n        form_join: {\r\n            name: \'system:create_account_form\',\r\n            showTitle: false,\r\n            showBg: false,\r\n        },\r\n        form_invitation: {\r\n            name: \'bx_invites:get_block_form_request\',\r\n            showTitle: false,\r\n            showBg: false,\r\n        },\r\n    },\r\n}' WHERE `object`='sys_create_account';
 UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'login\',\r\n}' WHERE `object`='sys_forgot_password';
 UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'post\',\r\n   \r\n}' WHERE `object`='sys_cmts_view';
 UPDATE `sys_objects_page` SET `config_api`='{\r\n            layout: \'navigator_search\',\r\n            blocks: {\r\n                browse: {\r\n                    name: \'system:search_keyword_result\',\r\n                    showTitle: false,\r\n                    perLine: 4,\r\n                    showBg: false,\r\n                },\r\n            },\r\n            icon: \'Search\',\r\n            headerSettings: { backButton: false, header: true, menu: true },\r\n        }' WHERE `object`='sys_search_keyword';
@@ -42,6 +41,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_audit
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_reports' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_reports';
 
 UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{\"rounded\": [\"mobile\", \"tablet\", \"desktop\"]}' WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_create_account';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_create_account_intro';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login' AND `title`='_sys_page_block_title_login';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login_step2' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login_step2' AND `title`='_sys_page_block_title_login_step2';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_login_step3' AND `module`='system' AND `title_system`='_sys_page_block_system_title_login_step3' AND `title`='_sys_page_block_title_login_step3';

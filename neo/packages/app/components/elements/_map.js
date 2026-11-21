@@ -35,6 +35,7 @@ const ProfileSwitcher = dynamic(() => import('./profile-switcher'), { loading: D
 const ProfileContacts = dynamic(() => import('./contacts'), { loading: DynamicFallback });
 const SimpleList = dynamic(() => import('./simple-list'), { loading: DynamicFallback });
 const Lang = dynamic(() => import('./lang'), { loading: DynamicFallback });
+const Intro = dynamic(() => import('./intro'), { loading: DynamicFallback });
 const Menu = dynamic(() => import('./menu'), { loading: DynamicFallback });
 const Grid = dynamic(() => import('./grid'), { loading: DynamicFallback });
 const MultiPostForm = dynamic(() => import('./multi-post-form'), { loading: DynamicFallback });
@@ -165,6 +166,7 @@ export const componentsMapDefault = {
     edit_course_content: EditCourseContent,
     module_structure: ModuleStructure,
     lang: Lang,
+    intro: Intro,
     profiles_list: ProfileList,
     raw: Lang,
     html: Lang,

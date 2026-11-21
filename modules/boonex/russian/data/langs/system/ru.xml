@@ -4505,6 +4505,7 @@
         <string name="_sys_page_block_title_system_create_profile"><![CDATA[Создать профиль (аккаунты без профиля)]]></string>
         <string name="_sys_page_block_title_cooperator"><![CDATA[Соавтор]]></string>
 	<string name="_sys_page_block_title_create_account"><![CDATA[Присоединиться]]></string>
+        <string name="_sys_page_block_title_create_account_intro"><![CDATA[Вступление к регистрации]]></string>
         <string name="_sys_page_block_title_sys_author"><![CDATA[Автор]]></string>
 	<string name="_sys_page_block_title_author"><![CDATA[Автор]]></string>
         <string name="_sys_page_block_title_sys_ai_agent"><![CDATA[ИИ агент]]></string>

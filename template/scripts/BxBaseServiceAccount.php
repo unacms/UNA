@@ -264,6 +264,58 @@ class BxBaseServiceAccount extends BxDol
         ]);
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-account Account
+     * @subsubsection bx_system_general-create_account_intro create_account_intro
+     *
+     * @code bx_srv('system', 'create_account_intro', [], 'TemplServiceAccount'); @endcode
+     * @code {{~system:create_account_intro:TemplServiceAccount~}} @endcode
+     *
+     * The picture and the words beside the sign-up form (Studio > Pages > Sign up): the illustration
+     * (create_account_illustration.html), a title, which is the page's heading, and a line of text. Where people sign up
+     * by invitation and the visitor has none, the words ask to request one. Nothing where nobody can sign up.
+     *
+     * The apps get one `intro` item: `name` (`create_account`, or `create_account_invite` with the words about an
+     * invitation), `title`, `text` and `picture` (BxDolIllustration::getAPI: the shapes to draw, false for a picture
+     * they cannot draw).
+     */
+    /**
+     * @ref bx_system_general-create_account_intro "create_account_intro"
+     */
+    public function serviceCreateAccountIntro ()
+    {
+        $bApi = bx_is_api();
+
+        $sMode = BxDolAccount::getJoinMode();
+        if($sMode == BxDolAccount::JOIN_CLOSED)
+            return $bApi ? [] : '';
+
+        // By invitation only (getJoinMode says so only while Invitations is on): Invitations' check is empty for a
+        // visitor who came with an invitation, and they get the sign-up form.
+        $bInvite = $sMode == BxDolAccount::JOIN_INVITE && BxDolService::call('bx_invites', 'account_add_form_check') != '';
+
+        $sTitle = _t($bInvite ? '_sys_txt_join_title_invite' : '_sys_txt_join_title');
+        $sText = _t($bInvite ? '_sys_txt_join_text_invite' : '_sys_txt_join_text');
+
+        // The apps show the words as plain text; the site shows the language strings as they are.
+        if($bApi)
+            return [bx_api_get_block('intro', [
+                // which intro it is, for an app that has words or a picture of its own for it
+                'name' => $bInvite ? 'create_account_invite' : 'create_account',
+                'title' => trim(html_entity_decode(strip_tags($sTitle), ENT_QUOTES | ENT_HTML5, 'UTF-8')),
+                'text' => trim(html_entity_decode(strip_tags($sText), ENT_QUOTES | ENT_HTML5, 'UTF-8')),
+                'picture' => BxDolIllustration::getAPI('create_account'),
+            ])];
+
+        return BxDolTemplate::getInstance()->parseHtmlByName('block_join_intro.html', [
+            'picture' => BxDolIllustration::getCode('create_account'),
+            'title' => $sTitle,
+            'text' => $sText,
+        ]);
+    }
+
     public function serviceAccountSettingsEmail ($iAccountId = false)
     {
         if (false === $iAccountId || !isAdmin())

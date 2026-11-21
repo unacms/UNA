@@ -214,6 +214,14 @@ export const settingsLayout = {
         '/create-account': {
             max_width: '',
         },
+        // UNA's Sign up page (two columns: the picture and the words, and the form): its columns
+        // keep UNA's widths, with no handle to drag between them, and its blocks keep their gap on
+        // phones too, where the form's card comes under the words. Used while UNA sends no config
+        // for the page; a project's own entry replaces it.
+        'create-account': {
+            sizable: false,
+            gap: true,
+        },
         copilot: {
             layout: 'chat',
         },
