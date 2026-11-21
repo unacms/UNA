@@ -862,6 +862,7 @@
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Рисует углы плавной кривой в браузерах, которые это поддерживают, например в Chrome. В остальных углы остаются круглыми.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[Плавный угол выглядит меньше круглого того же радиуса. Там, где углы плавные, радиусы умножаются на это число, от 1 до 2.]]></string>
+	<string name="_adm_dsg_inf_settings_section_accent"><![CDATA[Цвет ссылок, кнопок, переключателей и рамки фокуса на сайте, в Студии и в приложениях. Каждый вариант сохраняет читаемость текста (WCAG AA) в светлой и тёмной теме.]]></string>
 	<string name="_adm_dsg_inf_settings_section_corners"><![CDATA[Насколько скруглены углы блоков, кнопок, полей и всплывающих окон на сайте и в Студии. Капсулы и круги сохраняют форму.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string>
 	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина страниц, ширина шапки и место главного меню в ней для каждого макета страницы, отдельно для гостей и для участников. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string>
@@ -924,6 +925,14 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Использовать service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Цвет окна]]></string>
+	<string name="_adm_dsg_txt_settings_accent_blue"><![CDATA[Синий]]></string>
+	<string name="_adm_dsg_txt_settings_accent_graphite"><![CDATA[Графит]]></string>
+	<string name="_adm_dsg_txt_settings_accent_green"><![CDATA[Зелёный]]></string>
+	<string name="_adm_dsg_txt_settings_accent_indigo"><![CDATA[Индиго]]></string>
+	<string name="_adm_dsg_txt_settings_accent_orange"><![CDATA[Оранжевый]]></string>
+	<string name="_adm_dsg_txt_settings_accent_rose"><![CDATA[Розовый]]></string>
+	<string name="_adm_dsg_txt_settings_accent_teal"><![CDATA[Бирюзовый]]></string>
+	<string name="_adm_dsg_txt_settings_accent_violet"><![CDATA[Фиолетовый]]></string>
 	<string name="_adm_dsg_txt_settings_header_align"><![CDATA[Главное меню]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_center"><![CDATA[По центру]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_end"><![CDATA[В конце]]></string>
@@ -945,6 +954,7 @@
 	<string name="_adm_dsg_txt_settings_radius_large"><![CDATA[Большой]]></string>
 	<string name="_adm_dsg_txt_settings_radius_none"><![CDATA[Без скругления]]></string>
 	<string name="_adm_dsg_txt_settings_radius_small"><![CDATA[Маленький]]></string>
+	<string name="_adm_dsg_txt_settings_section_accent"><![CDATA[Цвета]]></string>
 	<string name="_adm_dsg_txt_settings_section_corners"><![CDATA[Углы]]></string>
 	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string>
 	<string name="_adm_dsg_txt_settings_section_header"><![CDATA[Страница и шапка]]></string>
@@ -1972,11 +1982,13 @@
     <string name="_adm_stg_cpt_option_sys_account_welcome_letter"><![CDATA[Включить приветственное письмо]]></string>
     <string name="_adm_stg_cpt_option_sys_account_confirmation_type"><![CDATA[Аккаунт подтвержден когда]]></string>
     <string name="_adm_stg_cpt_option_sys_account_hide_unconfirmed_accounts"><![CDATA[Скрывать профили у неподтвержденных аккаунтов]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Кто может зарегистрироваться]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_enable"><![CDATA[Включить двухфакторную аутентификацию]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[Срок жизни 2FA-кода, секунд (0 = отправлять код при каждом входе)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_autoapproval"><![CDATA[Автоматическая активация аккаунта после создания]]></string>
     <string name="_adm_stg_cpt_option_sys_account_auto_profile_creation"><![CDATA[Автоматическое создание профайла из аккаунта]]></string>
     <string name="_adm_stg_cpt_option_sys_account_online_time"><![CDATA[Временные рамки статуса "онлайн" (минуты)]]></string>
+    <string name="_adm_stg_err_option_sys_account_join"><![CDATA[Для режима «Только по приглашению» нужно приложение «Приглашения», но его не удалось добавить. Добавьте его в магазине приложений и сохраните снова.]]></string>
     <string name="_adm_stg_err_option_sys_account_online_time"><![CDATA[Вам необходимо ввести значение больше нуля.]]></string>
     <string name="_adm_stg_cpt_option_sys_account_default_profile_type"><![CDATA[Тип профиля по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Максимум профилей в аккаунте (0 = без ограничений)]]></string>
@@ -1989,7 +2001,6 @@
     <string name="_adm_stg_cpt_option_value_sys_account_reset_password_redirect_custom"><![CDATA[Пользовательская страница]]></string>
     <string name="_adm_stg_cpt_option_sys_account_reset_password_redirect_custom"><![CDATA[URL для перенаправления 'Пользовательская страница']]></string>
     <string name="_adm_stg_cpt_option_sys_account_disable_login_form"><![CDATA[Скрыть форму авторизации]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_disable_join_form"><![CDATA[Скрыть форму регистрации]]></string>
     <string name="_adm_stg_cpt_option_sys_allow_plus_in_email"><![CDATA[Разрешить использование знака плюс ("+") в адресе электронной почты]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning"><![CDATA[Удалять учетные записи]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning_interval"><![CDATA[Период удаления учетных записей (в днях)]]></string>
@@ -2188,6 +2199,7 @@
     <string name="_adm_stg_cpt_option_sys_session_auth"><![CDATA[Аутентификация через сессию]]></string>
     <string name="_adm_stg_cpt_option_sys_default_curl_timeout"><![CDATA[cURL - Таймаут по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_default_socket_timeout"><![CDATA[Таймаут чтения HTTP контекста (в секундах, -1 - неограниченно)]]></string>
+    <string name="_adm_stg_cpt_option_sys_design_accent"><![CDATA[Акцентный цвет]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius"><![CDATA[Размер скругления]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Плавные углы]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Множитель плавных углов]]></string>
@@ -2655,6 +2667,10 @@
 	<string name="_sys_acc_confirmation_type_phone"><![CDATA[телефон подтвержден]]></string>
 	<string name="_sys_acc_confirmation_type_email_and_phone"><![CDATA[email и телефон подтвержден]]></string>
   <string name="_sys_acc_confirmation_type_email_or_phone"><![CDATA[email или телефон подтвержден]]></string>
+	<string name="_sys_acc_join_closed"><![CDATA[Никто]]></string>
+	<string name="_sys_acc_join_invite"><![CDATA[Только по приглашению]]></string>
+	<string name="_sys_acc_join_invite_add"><![CDATA[Только по приглашению (добавит приложение «Приглашения»)]]></string>
+	<string name="_sys_acc_join_open"><![CDATA[Все]]></string>
 	<string name="_sys_acc_profile_requirement_optional"><![CDATA[Необязателен: напоминание вверху каждой страницы]]></string>
 	<string name="_sys_acc_profile_requirement_prompt"><![CDATA[Предлагать после входа: окно «Создайте профайл» на первой странице]]></string>
 	<string name="_sys_acc_profile_requirement_required"><![CDATA[Обязателен: сначала направлять к созданию профайла]]></string>
@@ -4974,6 +4990,7 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Не удалось отправить код для входа. Попробуйте ещё раз позже.]]></string>
     <string name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
+    <string name="_sys_txt_join_closed"><![CDATA[Регистрация на сайте закрыта.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string>
@@ -5227,6 +5244,7 @@
   <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string>
+  <string name="_sys_onboarding_done"><![CDATA[Всё готово]]></string>
   <string name="_sys_onboarding_hide"><![CDATA[Скрыть]]></string>
   <string name="_sys_onboarding_join_closed"><![CDATA[Присоединиться к сайту нельзя: форма регистрации выключена.]]></string>
   <string name="_sys_onboarding_join_invite"><![CDATA[Присоединиться к сайту могут только приглашённые.]]></string>

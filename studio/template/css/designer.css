@@ -379,10 +379,10 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 .adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
-    box-shadow: 0 0 0 2px #2563eb;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-600));
 }
 .adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
-    outline: 2px solid #2563eb;
+    outline: 2px solid rgb(var(--bx-accent-600));
     outline-offset: 2px;
 }
 .adm-dsg-choice-input:focus-visible {
@@ -394,7 +394,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     width: 1rem;
     height: 1rem;
     margin: 0;
-    accent-color: #2563eb;
+    accent-color: rgb(var(--bx-accent-600));
 }
 .adm-dsg-choice-art {
     display: flex;
@@ -430,7 +430,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     padding: 0 0.375rem;
     border-radius: 9999px;
     background-color: #dbeafe;
-    color: #1d4ed8;
+    color: rgb(var(--bx-accent-700));
     font-size: 0.75rem;
     font-weight: 500;
     line-height: 1.25rem;
@@ -591,7 +591,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 .adm-dsg-ht-px-input:focus-visible {
-    outline: 2px solid #2563eb;
+    outline: 2px solid rgb(var(--bx-accent-600));
     outline-offset: 2px;
 }
 
@@ -638,7 +638,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 }
 .adm-dsg-seg-input:focus-visible + .adm-dsg-seg-text {
-    outline: 2px solid #2563eb;
+    outline: 2px solid rgb(var(--bx-accent-600));
     outline-offset: 2px;
 }
 
@@ -703,7 +703,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     width: 0.75rem;
     height: 0.375rem;
     border-radius: 9999px;
-    background-color: #60a5fa;
+    background-color: rgb(var(--bx-accent-400));
 }
 .adm-dsg-hd-body {
     display: flex;
@@ -752,13 +752,13 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 .dark .adm-dsg-choice:has(.adm-dsg-choice-input:checked) {
-    box-shadow: 0 0 0 2px #60a5fa;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-choice:has(.adm-dsg-choice-input:focus-visible) {
-    outline-color: #60a5fa;
+    outline-color: rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-choice-input {
-    accent-color: #60a5fa;
+    accent-color: rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-choice-art {
     background-color: rgba(255, 255, 255, 0.04);
@@ -804,7 +804,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 .dark .adm-dsg-ht-px-input:focus-visible {
-    outline-color: #60a5fa;
+    outline-color: rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-seg {
     background-color: rgba(255, 255, 255, 0.06);
@@ -821,7 +821,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 .dark .adm-dsg-seg-input:focus-visible + .adm-dsg-seg-text {
-    outline-color: #60a5fa;
+    outline-color: rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-hd {
     background-color: rgba(255, 255, 255, 0.04);
@@ -835,7 +835,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     background-color: #52525b;
 }
 .dark .adm-dsg-hd-menu > span {
-    background-color: #3b82f6;
+    background-color: rgb(var(--bx-accent-500));
 }
 .dark .adm-dsg-hd-side {
     background-color: #3f3f46;
@@ -860,7 +860,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 .adm-dsg-tmpl-card:has([aria-pressed="true"]) {
-    box-shadow: 0 0 0 2px #2563eb;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-600));
 }
 .adm-dsg-tmpl-icon {
     flex: none;
@@ -921,7 +921,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 .dark .adm-dsg-tmpl-card:has([aria-pressed="true"]) {
-    box-shadow: 0 0 0 2px #60a5fa;
+    box-shadow: 0 0 0 2px rgb(var(--bx-accent-400));
 }
 .dark .adm-dsg-tmpl-title {
     color: #f4f4f5;

@@ -36,6 +36,29 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
         'mark_dark' => 'mark-dark-generic.svg',
     ];
 
+    /**
+     * The accent color the site has unless Studio > Designer > Settings > Accent color picks another preset.
+     */
+    const ACCENT_DEFAULT = 'blue';
+
+    /**
+     * Accent presets (sys_design_accent): a scale of 11 steps each, as "r g b", that every blue-* class of the site and
+     * Studio reads (--bx-accent-*, template/css/tailwind.css) and that NEO gets as its --accent-* (`accent` of the page
+     * JSON). Tailwind's own scales, except Orange, Green and Teal, whose 500-950 are one step darker: their 600 is too
+     * light for white text. Every preset keeps AA: white on 600, 700 on white, 50 and 100, 400 on the dark page and cards
+     * (tests/units/designs/AccentPresetsTest.php).
+     */
+    protected static $_aAccentPresets = [
+        'blue' => [50 => '239 246 255', 100 => '219 234 254', 200 => '191 219 254', 300 => '147 197 253', 400 => '96 165 250', 500 => '59 130 246', 600 => '37 99 235', 700 => '29 78 216', 800 => '30 64 175', 900 => '30 58 138', 950 => '23 37 84'],
+        'indigo' => [50 => '238 242 255', 100 => '224 231 255', 200 => '199 210 254', 300 => '165 180 252', 400 => '129 140 248', 500 => '99 102 241', 600 => '79 70 229', 700 => '67 56 202', 800 => '55 48 163', 900 => '49 46 129', 950 => '30 27 75'],
+        'violet' => [50 => '245 243 255', 100 => '237 233 254', 200 => '221 214 254', 300 => '196 181 253', 400 => '167 139 250', 500 => '139 92 246', 600 => '124 58 237', 700 => '109 40 217', 800 => '91 33 182', 900 => '76 29 149', 950 => '46 16 101'],
+        'rose' => [50 => '255 241 242', 100 => '255 228 230', 200 => '254 205 211', 300 => '253 164 175', 400 => '251 113 133', 500 => '244 63 94', 600 => '225 29 72', 700 => '190 18 60', 800 => '159 18 57', 900 => '136 19 55', 950 => '76 5 25'],
+        'orange' => [50 => '255 247 237', 100 => '255 237 213', 200 => '254 215 170', 300 => '253 186 116', 400 => '251 146 60', 500 => '234 88 12', 600 => '194 65 12', 700 => '154 52 18', 800 => '124 45 18', 900 => '67 20 7', 950 => '67 20 7'],
+        'green' => [50 => '236 253 245', 100 => '209 250 229', 200 => '167 243 208', 300 => '110 231 183', 400 => '52 211 153', 500 => '5 150 105', 600 => '4 120 87', 700 => '6 95 70', 800 => '6 78 59', 900 => '2 44 34', 950 => '2 44 34'],
+        'teal' => [50 => '240 253 250', 100 => '204 251 241', 200 => '153 246 228', 300 => '94 234 212', 400 => '45 212 191', 500 => '13 148 136', 600 => '15 118 110', 700 => '17 94 89', 800 => '19 78 74', 900 => '4 47 46', 950 => '4 47 46'],
+        'graphite' => [50 => '248 250 252', 100 => '241 245 249', 200 => '226 232 240', 300 => '203 213 225', 400 => '148 163 184', 500 => '100 116 139', 600 => '71 85 105', 700 => '51 65 85', 800 => '30 41 59', 900 => '15 23 42', 950 => '2 6 23'],
+    ];
+
     protected $sDesign;
     protected $oDesign;
 
@@ -98,6 +121,33 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
             if(isset($this->aParams['mark_dark']))
                 $this->aValues += $this->oDesign->_oConfig->getLogoValues('mark_dark', $this->getSiteMarkDarkUrl(), $this->getSiteMarkDarkInfo());
         }
+    }
+
+    /**
+     * The accent presets: name => scale (step => "r g b").
+     */
+    public static function getAccentPresets()
+    {
+        return self::$_aAccentPresets;
+    }
+
+    /**
+     * The site's accent preset: Designer's choice, or ACCENT_DEFAULT.
+     */
+    public static function getAccent()
+    {
+        $sAccent = (string)getParam('sys_design_accent');
+        return isset(self::$_aAccentPresets[$sAccent]) ? $sAccent : self::ACCENT_DEFAULT;
+    }
+
+    /**
+     * The scale of the site's accent when it isn't the default (step => "r g b"), else an empty array: the default
+     * is in the stylesheets already (the site's tailwind.css, NEO's palette.css), so nothing needs to replace it.
+     */
+    public static function getAccentScale()
+    {
+        $sAccent = self::getAccent();
+        return $sAccent != self::ACCENT_DEFAULT ? self::$_aAccentPresets[$sAccent] : [];
     }
 
     public static function getAspectRatioDefault($sType)

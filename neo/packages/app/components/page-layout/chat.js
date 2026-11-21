@@ -22,11 +22,14 @@ export default function PageLayout({ data, pageClasses }) {
     const agentsBlock = block ? null : BlockDataByType(data, 'ai_agents_admin')
     const agentsData = agentsBlock?.content?.find((item) => item?.type === 'ai_agents_admin')?.data
 
-    const chat = block?.content[0]?.data ? (
+    // UNA sends its "Create a profile first" state (a `msg` item) in place of
+    // Messenger for an account without a profile: that one renders as a block.
+    const messengerItem = block?.content?.find((item) => item?.type === 'messenger_main_page')
+    const chat = messengerItem?.data ? (
         <Messenger
             pageData={data}
             block={block}
-            data={block.content[0].data}
+            data={messengerItem.data}
             url={data.url}
         />
     ) : agentsData ? (

@@ -97,7 +97,8 @@ class BxInvConfig extends BxBaseModGeneralConfig
         $this->_iKeyLifetime = 86400 * (int)getParam($sOptionPrefix . 'key_lifetime');
         $this->_bRequestInvite = getParam($sOptionPrefix . 'enable_request_invite') == 'on';
         $this->_sRequestsEmail = getParam($sOptionPrefix . 'requests_email');
-        $this->_bRegistrationByInvitation = getParam($sOptionPrefix . 'enable_reg_by_inv') == 'on';
+        // "Who can join" in Studio > Settings > Account
+        $this->_bRegistrationByInvitation = getParam('sys_account_join') == BxDolAccount::JOIN_INVITE;
         $this->_bContextAutoJoin = getParam($sOptionPrefix . 'context_auto_join') == 'on';
         $this->_iContextKeyLength = (int)getParam($sOptionPrefix . 'context_key_length');
     }

@@ -35,8 +35,9 @@ class BxBaseServiceAccount extends BxDol
 
     /**
      * The "Get started" block: the onboarding checklist that the menu $sMenu holds (BxDolTours), drawn by the menu's
-     * template, its progress as the block's description and Hide as the block's button. Nothing once every step is
-     * done or the account hid it; index.php?onboarding=1 (the account menu's "Get started") brings a hidden one back.
+     * template, its progress as the block's description and Hide as the block's button. With every step done it says
+     * "You're set up" and stays, its steps still there to go back to, until the account hides it;
+     * index.php?onboarding=1 (the account menu's "Get started") brings a hidden one back.
      * The block can go on any page (Studio > Pages, block "Get started checklist"), with another menu as its parameter.
      * The apps get an `onboarding` element with the menu's items (each with its `state`) and the hide request.
      */
@@ -54,7 +55,7 @@ class BxBaseServiceAccount extends BxDol
         $mixedMenu = bx_is_api() ? $oMenu->getCodeAPI() : $oMenu->getCode();
 
         list($iDone, $iSteps) = $oMenu->getProgress();
-        if(!$iSteps || ($iDone == $iSteps && !$bForced))
+        if(!$iSteps)
             return '';
 
         // "Create your profile" says the same as the "create a profile" message.
@@ -62,7 +63,7 @@ class BxBaseServiceAccount extends BxDol
         if(isset($aStates['profile']) && $aStates['profile'] != BxDolTours::STEP_DONE && ($oInformer = BxDolInformer::getInstance(BxDolTemplate::getInstance())))
             $oInformer->remove('sys-account-profile-system');
 
-        $sDescription = _t('_sys_onboarding_progress', $iDone, $iSteps);
+        $sDescription = $iDone == $iSteps ? _t('_sys_onboarding_done') : _t('_sys_onboarding_progress', $iDone, $iSteps);
         $sHide = _t('_sys_onboarding_hide');
 
         if(bx_is_api())
@@ -149,7 +150,7 @@ class BxBaseServiceAccount extends BxDol
 
         $bAuthButtons = !isset($aParams['no_auth_buttons']) || false === (bool)$aParams['no_auth_buttons'];
         $bLoginText = !isset($aParams['no_login_text']) || false === (bool)$aParams['no_login_text'];
-        $bFormShown = !(bool)getParam('sys_account_disable_join_form');
+        $bFormShown = BxDolAccount::getJoinMode() != BxDolAccount::JOIN_CLOSED;
 
         if($bApi) {
             // With the form go the parts the block shows around it, as with the login form (BxBaseServiceLogin::serviceLoginForm).
@@ -229,14 +230,13 @@ class BxBaseServiceAccount extends BxDol
                 BxDolSession::getInstance()->setValue('join-referrer', $sJoinReferrer);
         }
 
-        $aTmplVarsForm = [];
-        if($bFormShown)
-            $aTmplVarsForm['content'] = $this->_oAccountForms->createAccountForm($aParams);
+        // Nobody can join (Studio > Settings > Account > Who can join): the block says so instead of the form.
+        $aTmplVarsForm = ['content' => $bFormShown ? $this->_oAccountForms->createAccountForm($aParams) : MsgBox(_t('_sys_txt_join_closed'))];
 
         // Other sign-in methods go under the form, after an "or".
         $aTmplVarsAuth = [];
         if($bAuthButtons)
-            $aTmplVarsAuth['content'] = BxDolService::call('system', 'member_auth_code', array(array(), !empty($aTmplVarsForm)), 'TemplServiceLogin');
+            $aTmplVarsAuth['content'] = BxDolService::call('system', 'member_auth_code', array(array(), $bFormShown), 'TemplServiceLogin');
 
         $aTmplVarsLogin = [];
         if($bLoginText)
@@ -462,6 +462,19 @@ class BxBaseServiceAccount extends BxDol
             $aResult[$sChoice] = _t('_sys_acc_confirmation_type_' . $sChoice);
         
         return $aResult;
+    }
+
+    /**
+     * Choices of "Who can join" (sys_account_join) in Studio > Settings > Account. Invitation only adds the
+     * Invitations app when it isn't there yet (BxDolStudioFormCheckerHelper::checkJoinMode).
+     */
+    public function serviceGetJoinModes()
+    {
+        return [
+            BxDolAccount::JOIN_OPEN => _t('_sys_acc_join_open'),
+            BxDolAccount::JOIN_INVITE => _t(BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites') ? '_sys_acc_join_invite' : '_sys_acc_join_invite_add'),
+            BxDolAccount::JOIN_CLOSED => _t('_sys_acc_join_closed'),
+        ];
     }
 
     /**

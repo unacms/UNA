@@ -314,6 +314,26 @@ class BxDolStudioFormCheckerHelper extends BxDolFormCheckerHelper
     {
         return strlen($sVal) > 0 && BxDolModuleQuery::getInstance()->isEnabled($sVal);
     }
+
+    /**
+     * "Who can join" (sys_account_join): one of its choices. Invitation only needs the Invitations app, which is
+     * installed along when the site doesn't have it yet; the choice isn't saved when that fails.
+     */
+    public function checkJoinMode($sVal)
+    {
+        if(!in_array($sVal, [BxDolAccount::JOIN_OPEN, BxDolAccount::JOIN_INVITE, BxDolAccount::JOIN_CLOSED], true))
+            return false;
+
+        if($sVal != BxDolAccount::JOIN_INVITE || BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites'))
+            return true;
+
+        $aResult = BxDolStudioInstallerUtils::getInstance()->perform('boonex/invites/', 'install', ['auto_enable' => true]);
+        if(!isset($aResult['code']) || $aResult['code'] != BX_DOL_STUDIO_IU_RC_SUCCESS)
+            return false;
+
+        $aModule = BxDolModuleQuery::getInstance()->getModuleByName('bx_invites', false);
+        return !empty($aModule['enabled']);
+    }
 }
 
 /** @} */

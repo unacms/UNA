@@ -67,6 +67,7 @@ export default function MultiPostForm({ data, blockWrapperProps, trigger_label: 
     const profileData = useMemo(() => ({
         ...currentUser,
         url_avatar: currentUser.avatar,
+        color: currentUser.color,
         url: null,
     }));
 

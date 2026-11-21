@@ -109,7 +109,6 @@
     <string name="_bx_invites_option_enable_request_invite"><![CDATA[Enable invitation requests by email]]></string>
     <string name="_bx_invites_option_requests_notifications"><![CDATA[Enable invitation requests in notifications]]></string>
     <string name="_bx_invites_option_requests_email"><![CDATA[Emails to send invitation requests to (comma separated)]]></string>
-    <string name="_bx_invites_option_enable_reg_by_inv"><![CDATA[Enable registration by invitation only]]></string>
     <string name="_bx_invites_option_context_auto_join"><![CDATA[Enable auto join when 'Invite to Context' feature is used]]></string>
     <string name="_bx_invites_option_context_key_length"><![CDATA[Key length for invitations to communities (0 = default length)]]></string>
 
