@@ -1753,7 +1753,25 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageAccessDeniedMsg ($mixedMsg = false)
     {
-        return MsgBox($mixedMsg !== false ? $mixedMsg : _t('_Access denied'));
+        $sMsg = is_string($mixedMsg) && $mixedMsg !== '' ? $mixedMsg : _t('_Access denied');
+
+        if (!$this->_bSubPage && !bx_is_api()) {
+            if (!headers_sent()) {
+                header('HTTP/1.0 403 Forbidden');
+                header('Status: 403 Forbidden');
+            }
+
+            // The page keeps its name in the title bar; a title with markers would name the content, so it is left out.
+            $sTitle = _t($this->_aObject['title']);
+            if ($sTitle !== '' && strpos($sTitle, '{') === false)
+                BxDolTemplate::getInstance()->setPageHeader($sTitle);
+        }
+
+        // A guest gets the same "Sign in to continue" card as a block that needs an account.
+        if (!isLogged() && !BxDolAcl::getDenialState($sMsg))
+            return DesignBoxContent('', MsgBox(BxDolAcl::getDenialStateByLevel(MEMBERSHIP_ID_NON_MEMBER, _t('_sys_txt_access_denied_guest_page'))), BX_DB_PADDING_NO_CAPTION);
+
+        return MsgBox($sMsg);
     }
 
     /**

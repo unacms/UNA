@@ -491,6 +491,8 @@
         <string name="_adm_api_msg_removed"><![CDATA[Settings were removed.]]></string>
         <string name="_adm_api_msg_removed_for"><![CDATA[All apps settings were removed.]]></string>
         <string name="_adm_api_popup_import"><![CDATA[Import Settings]]></string>
+        <string name="_adm_api_popup_title_add_key"><![CDATA[Add API key]]></string>
+        <string name="_adm_api_popup_title_add_origin"><![CDATA[Add origin]]></string>
         <string name="_adm_api_ttl_module"><![CDATA[Module]]></string>
         <string name="_adm_api_ttl_sync_api"><![CDATA[Keep in sync]]></string>
 	<string name="_adm_block_cpt_categories"><![CDATA[Categories]]></string>
@@ -1240,6 +1242,8 @@
   <string name="_adm_form_txt_badges_module"><![CDATA[Module]]></string>
   <string name="_adm_form_txt_badges_add_popup"><![CDATA[Add New Badge]]></string>
   <string name="_adm_form_txt_badges_edit_popup"><![CDATA[Edit "{0}" badge]]></string>
+  <string name="_adm_form_txt_badges_empty"><![CDATA[No badges yet]]></string>
+  <string name="_adm_form_txt_badges_empty_select_module"><![CDATA[No badges yet. Choose a module to add one.]]></string>
   <string name="_adm_pgt_txt_badges_text"><![CDATA[Text]]></string>
   <string name="_adm_pgt_txt_badges_icon"><![CDATA[Icon]]></string>
 
@@ -4310,10 +4314,12 @@
     <string name="_sys_menu_title_switch_language_popup"><![CDATA[Language Switcher (popup)]]></string>
     <string name="_sys_menu_title_switch_language_inline"><![CDATA[Language Switch (inline)]]></string>
     <string name="_sys_menu_title_switch_template"><![CDATA[Switch Template]]></string>
+    <string name="_sys_menu_title_tabbar"><![CDATA[Tab bar]]></string>
     <string name="_sys_menu_title_snippet_meta"><![CDATA[Snippet Meta Info]]></string>
     <string name="_sys_menu_title_vote_reactions_do"><![CDATA[Do Reaction Vote]]></string>
     <string name="_sys_menu_title_wiki"><![CDATA[Wiki]]></string>
     <string name="_sys_menu_set_title_sys_wiki"><![CDATA[Wiki]]></string>
+    <string name="_sys_menu_set_title_tabbar"><![CDATA[Tab bar]]></string>
     <string name="_sys_menu_item_title_wiki_edit"><![CDATA[Edit]]></string>
     <string name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Delete Version]]></string>
     <string name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Delete Block]]></string>
@@ -4942,6 +4948,7 @@
     <string name="_sys_txt_api_key"><![CDATA[API Key]]></string>
     <string name="_sys_txt_auth_or"><![CDATA[or]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Access denied]]></string>
+    <string name="_sys_txt_access_denied_guest_page"><![CDATA[Sign in or sign up to see this page.]]></string>
     <string name="_sys_txt_access_denied_text"><![CDATA[You don't have access to this.]]></string>
     <string name="_sys_txt_access_denied_title"><![CDATA[No access]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Your account is pending approval, please wait until it is activated.]]></string>
@@ -5142,6 +5149,7 @@
 	<string name="_sys_uploader_crop_submit_button"><![CDATA[Upload]]></string>
     <string name="_sys_uploader_crop_title"><![CDATA[Crop Image]]></string>
     <string name="_sys_uploader_crop_err_upload"><![CDATA[Error Uploading.]]></string>
+    <string name="_sys_uploader_crop_popup_title"><![CDATA[Crop picture]]></string>
     <string name="_sys_uploader_crop_remove_picture"><![CDATA[Remove]]></string>
     <string name="_sys_uploader_crop_wrong_ext"><![CDATA[Wrong file extension, only images with the following extensions are allowed: jpg, jpeg, png, gif.]]></string>
 	<string name="_sys_uploader_err_msg"><![CDATA[Oops! An error occurred with {0} file: {1}]]></string>
@@ -5319,4 +5327,6 @@
     <string name="_sys_membership_stats_unlimited"><![CDATA[Unlimited]]></string>
     <string name="_sys_membership_stats_until"><![CDATA[Active until {0}]]></string>
     <string name="_sys_membership_stats_used"><![CDATA[{0} used]]></string>
+    <string name="_favorite_popup_title_do"><![CDATA[Add to favorites]]></string>
+    <string name="_favorite_popup_title_edit_list"><![CDATA[Edit list]]></string>
 </resources>

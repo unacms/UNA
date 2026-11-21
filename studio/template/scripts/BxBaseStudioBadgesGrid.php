@@ -244,6 +244,12 @@ class BxBaseStudioBadgesGrid extends BxDolStudioBadgesGrid
         return $this->sModule != '';
     }
     
+    protected function _getEmptyText()
+    {
+        // badges are added per module: until one is chosen, say so
+        return _t($this->canAdd() ? '_adm_form_txt_badges_empty' : '_adm_form_txt_badges_empty_select_module');
+    }
+
     protected function _getActionAdd($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
     {
         if(!$this->canAdd())

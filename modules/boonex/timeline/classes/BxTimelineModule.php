@@ -409,7 +409,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if($oForm->isSubmitted()) {
             if(!$oForm->isValid())
                 return echoJson(['popup' => [
-                    'html' => BxTemplFunctions::getInstance()->transBox($this->_oConfig->getHtmlIds('repost', 'with_popup'), $this->_oTemplate->getRepostWith($oForm)), 
+                    'html' => $this->_getRepostPopup('with', $oForm), 
                     'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]
                 ]]);
 
@@ -430,7 +430,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             ]);
         }
 
-        echo $this->_oTemplate->getRepostTo($oForm);
+        echoJson(['popup' => ['html' => $this->_getRepostPopup('with', $oForm), 'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]]]);
     }
 
     public function actionRepostTo()
@@ -454,7 +454,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if($oForm->isSubmitted()) {
             if(!$oForm->isValid())
                 return echoJson(['popup' => [
-                    'html' => BxTemplFunctions::getInstance()->transBox($this->_oConfig->getHtmlIds('repost', 'to_popup'), $this->_oTemplate->getRepostTo($oForm)), 
+                    'html' => $this->_getRepostPopup('to', $oForm), 
                     'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]
                 ]]);
 
@@ -490,7 +490,21 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             ]);
         }
 
-        echo $this->_oTemplate->getRepostTo($oForm);
+        echoJson(['popup' => ['html' => $this->_getRepostPopup('to', $oForm), 'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]]]);
+    }
+
+    /**
+     * The Repost with text / Repost to dialog: a titled popup with the form.
+     */
+    protected function _getRepostPopup($sType, $oForm)
+    {
+        $bWith = $sType == 'with';
+
+        return BxTemplFunctions::getInstance()->popupBox(
+            $this->_oConfig->getHtmlIds('repost', $bWith ? 'with_popup' : 'to_popup'),
+            _t($bWith ? '_bx_timeline_txt_do_repost_with' : '_bx_timeline_txt_do_repost_to'),
+            $bWith ? $this->_oTemplate->getRepostWith($oForm) : $this->_oTemplate->getRepostTo($oForm)
+        );
     }
 
     function actionGetView()

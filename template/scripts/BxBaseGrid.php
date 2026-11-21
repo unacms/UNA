@@ -840,9 +840,12 @@ class BxBaseGrid extends BxDolGrid
         if(empty($a) || !is_array($a) || empty($a['active']) || empty($a['title']))
             return [];
 
-        // a grid that hides its Add action (no permission) hides it here too
-        if(method_exists($this, '_getActionAdd') && $this->_getActionAdd('independent', 'add', $a) === '')
-            return [];
+        // a grid that hides its Add action (no permission) or disables it (a filter to choose first) leaves it out here too
+        if(method_exists($this, '_getActionAdd')) {
+            $sAction = $this->_getActionAdd('independent', 'add', $a);
+            if($sAction === '' || strpos($sAction, 'bx-btn-disabled') !== false)
+                return [];
+        }
 
         return [
             'title' => $a['title'],
