@@ -35,6 +35,7 @@
     <string name="_bx_orgs_form_profile_display_add"><![CDATA[Add Organization]]></string>
     <string name="_bx_orgs_form_profile_display_edit"><![CDATA[Edit Organization]]></string>
     <string name="_bx_orgs_form_profile_display_edit_cover"><![CDATA[Edit Cover]]></string>
+    <string name="_bx_orgs_form_profile_display_edit_privacy"><![CDATA[Privacy]]></string>
     <string name="_bx_orgs_form_profile_display_edit_badge"><![CDATA[Edit Badge]]></string>
     <string name="_bx_orgs_form_profile_display_delete"><![CDATA[Delete Organization]]></string>
     <string name="_bx_orgs_form_profile_display_view"><![CDATA[View Organization]]></string>

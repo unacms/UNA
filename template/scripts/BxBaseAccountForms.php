@@ -335,33 +335,56 @@ class BxBaseAccountForms extends BxDolProfileForms
         // check and display form
         $oForm = BxDolForm::getObjectInstance('sys_account', $sDisplayName);
         if (!$oForm)
-            return $sLKey = '_sys_txt_error_occured' && $bIsApi ? _t($sLKey) : MsgBox(_t($sLKey));
+            return $bIsApi ? _t('_sys_txt_error_occured') : MsgBox(_t('_sys_txt_error_occured'));
 
         if (!$oForm->isSubmitted())
             unset($aAccountInfo['password']);
 
         $oForm->initChecker($aAccountInfo);
 
-        if (!$oForm->isSubmittedAndValid())
+        if (!$oForm->isSubmittedAndValid()) {
+            $this->_setEmailPendingInfo($oForm, $oAccount);
             return $bIsApi ? $oForm->getCodeAPI() : $oForm->getCode();
+        }
 
         $aTrackTextFieldsChanges = array (); // track text fields changes, not-null(for example empty array) - means track, null - means don't track
 
-        // update email and email setting in DB
-        if (!$oForm->update ($aAccountInfo['id'], array(), $aTrackTextFieldsChanges)) {
+        /*
+         * A confirmed email stays the account's email, for signing in and password recovery, until the new
+         * address is confirmed: the new one waits in `email_pending`, and the profile stays visible meanwhile.
+         * Saving the current email again cancels a pending change.
+         */
+        $aValsToAdd = array();
+        $sEmailNew = isset($oForm->aInputs['email']) ? trim((string)$oForm->getCleanValue('email')) : '';
+        $bEmailChanged = $sEmailNew !== '' && $sEmailNew != $aAccountInfo['email'];
+        $bEmailPending = $bEmailChanged && $aAccountInfo['email_confirmed'] && BxDolAccount::isNeedConfirmEmail();
+        if ($bEmailPending)
+            $aValsToAdd['email'] = $aAccountInfo['email'];
+
+        // update email and email setting in DB; saving the same values again changes no rows, and that is no error
+        if (false === $oForm->update ($aAccountInfo['id'], $aValsToAdd, $aTrackTextFieldsChanges)) {
             if (!$oForm->isValid())
                 return $bIsApi ? $oForm->getCodeAPI() : $oForm->getCode();
             else
-                return $sLKey = '_sys_txt_error_account_update' && $bIsApi ? _t($sLKey) : MsgBox(_t($sLKey));
+                return $bIsApi ? _t('_sys_txt_error_account_update') : MsgBox(_t('_sys_txt_error_account_update'));
         }
 
         if(($sField = 'picture') && isset($oForm->aInputs[$sField]))
             $oForm->processFiles($sField, $iAccountId, false);
 
         // check if email was changed
-        if (!empty($aTrackTextFieldsChanges['changed_fields']) && in_array('email', $aTrackTextFieldsChanges['changed_fields'])){
-            $oAccount = BxDolAccount::getInstance($iAccountId, true); // refresh account to clear cache 
-            $oAccount->updateEmailConfirmed(false);  // mark email as unconfirmed
+        $sMsgEmail = '';
+        $oAccount = BxDolAccount::getInstance($iAccountId, true); // refresh account to clear cache
+        if ($bEmailPending) {
+            $sMsgEmail = $oAccount->requestEmailChange($sEmailNew) ? _t('_sys_txt_account_email_change_sent', bx_process_output($sEmailNew), bx_process_output($aAccountInfo['email'])) : _t('_sys_txt_confirm_email_sent_failed');
+        }
+        else if ($bEmailChanged) {
+            $oAccount->cancelEmailChange();
+            $oAccount->sendEmailChangeNotice('t_EmailChanged', $aAccountInfo['email'], ['new_email' => $sEmailNew]);
+            $oAccount->updateEmailConfirmed(false);  // mark the new email as unconfirmed, the confirmation goes to it
+        }
+        else if (isset($oForm->aInputs['email']) && $oAccount->getEmailPending()) {
+            $oAccount->cancelEmailChange(); // the current email was saved again
         }
 
         // check if password was changed
@@ -370,6 +393,8 @@ class BxBaseAccountForms extends BxDolProfileForms
             bx_alert('account', 'edited', $aAccountInfo['id'], $aAccountInfo['id'], array('action' => 'change_password'));
             bx_logout();
             bx_login($aAccountInfo['id'], bx_is_remember_me());
+
+            $oAccount->sendPasswordChangedNotice();
         }
 
         // check if other text info was changed - if auto-appproval is off
@@ -377,7 +402,8 @@ class BxBaseAccountForms extends BxDolProfileForms
         if (!$isAutoApprove) {
             $oProfile = BxDolProfile::getInstanceAccountProfile($aAccountInfo['id']); // get profile associated with account, not current porfile
             $aProfileInfo = $oProfile->getInfo();
-            unset($aTrackTextFieldsChanges['changed_fields']['email']); // email confirmation is automatic and separate, don't need to deactivate whole profile if email is changed
+            if (!empty($aTrackTextFieldsChanges['changed_fields'])) // email confirmation is automatic and separate, don't need to deactivate whole profile if email is changed
+                $aTrackTextFieldsChanges['changed_fields'] = array_values(array_diff($aTrackTextFieldsChanges['changed_fields'], ['email']));
             if (BX_PROFILE_STATUS_ACTIVE == $aProfileInfo['status'] && !empty($aTrackTextFieldsChanges['changed_fields']))
                 $oProfile->disapprove(BX_PROFILE_ACTION_AUTO);  // change profile to 'pending' only if some text fields were changed and profile is active
         }
@@ -385,13 +411,33 @@ class BxBaseAccountForms extends BxDolProfileForms
         
         bx_alert('account', 'edited', $aAccountInfo['id'], $aAccountInfo['id'], array('display' => $sDisplayName));
 
-        // display result message            
-        $sMsg = MsgBox(_t('_' . $sDisplayName . '_successfully_submitted'));
-        
-        if ($bIsApi)
-            return ['form' => $oForm->getCodeAPI(), 'msg' => _t('_' . $sDisplayName . '_successfully_submitted')];
+        // the form shows what is saved now: the current email with the pending one, and empty password fields
+        foreach ($oForm->aInputs as $sKey => $aInput)
+            if (isset($aInput['type']) && 'password' == $aInput['type'])
+                $oForm->aInputs[$sKey]['value'] = '';
+        if (isset($oForm->aInputs['email'])) {
+            $oForm->aInputs['email']['value'] = $oAccount->getEmail();
+            $this->_setEmailPendingInfo($oForm, $oAccount);
+        }
 
-        return $sMsg . $oForm->getCode();
+        // display result message
+        $sMsgText = $sMsgEmail ? $sMsgEmail : _t('_' . $sDisplayName . '_successfully_submitted');
+
+        if ($bIsApi)
+            return ['form' => $oForm->getCodeAPI(), 'msg' => $sMsgText];
+
+        return MsgBox($sMsgText) . $oForm->getCode();
+    }
+
+    /**
+     * Say under the email field which new address waits for its confirmation.
+     */
+    protected function _setEmailPendingInfo(&$oForm, $oAccount)
+    {
+        if (!isset($oForm->aInputs['email']) || !$oAccount || !($sEmailPending = $oAccount->getEmailPending()))
+            return;
+
+        $oForm->aInputs['email']['info'] = _t('_sys_form_account_input_email_info_pending', bx_process_output($sEmailPending));
     }     
 }
 

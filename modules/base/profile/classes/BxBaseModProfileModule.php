@@ -26,6 +26,9 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
 {
     protected $_iAccountId;
 
+    /** Actions a profile's own action menus don't show on that profile, @see isMenuItemVisible */
+    protected $_aMenuItemsHiddenOnOwnProfile = ['vote', 'reaction', 'score', 'favorite', 'feature', 'report', 'messenger', 'public-vc-messenger', 'profile-set-acl-level'];
+
     function __construct(&$aModule)
     {
         parent::__construct($aModule);
@@ -111,6 +114,7 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             'BrowseConnections' => '',
             'BrowseConnectionsEverywhere' => '',
             'BrowseByAcl' => '',
+            'EntityEditPrivacy' => '',
         ));
     }
 
@@ -1157,6 +1161,32 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
     public function serviceEntityEditCover($iContentId = 0)
     {
         return $this->_serviceEntityForm('editDataForm', $iContentId, $this->_oConfig->CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_COVER']);
+    }
+
+    /**
+     * Who sees the profile, posts on it and contacts it, in account settings > Privacy: the module's privacy
+     * form display, which comes back to account settings after saving.
+     */
+    public function serviceEntityEditPrivacy($iContentId = 0)
+    {
+        if (!$this->serviceIsPrivacyFormAvailable())
+            return false;
+
+        $iContentId = $this->_getContent($iContentId, false);
+        if ($iContentId === false)
+            return false;
+
+        $oFormsHelper = $this->getFormsHelper();
+        $oFormsHelper->setRedirectAfterEdit('page.php?i=account-settings-privacy', 'entity_edit_privacy');
+        return $oFormsHelper->editDataForm((int)$iContentId, $this->_oConfig->CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_PRIVACY']);
+    }
+
+    /**
+     * Whether the module has a privacy form display, @see serviceEntityEditPrivacy
+     */
+    public function serviceIsPrivacyFormAvailable()
+    {
+        return !empty($this->_oConfig->CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_PRIVACY']);
     }
 
     public function serviceEntityEditBadge($iContentId = 0)
@@ -2352,7 +2382,30 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
                 return false;
         }
 
+        // the actions of a profile don't offer one on itself: its owner doesn't like, feature, report, message or call it
+        if(in_array($aItem['name'], $this->_aMenuItemsHiddenOnOwnProfile) && $this->_isOwnProfileActionsMenu($sObject, $aContentInfo))
+            return false;
+
         return $bResult;
+    }
+
+    /**
+     * Whether a menu is one of the profile's action menus and the signed-in profile is the one it is for.
+     */
+    protected function _isOwnProfileActionsMenu($sObject, $aContentInfo)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aObjects = [];
+        foreach(['OBJECT_MENU_ACTIONS_VIEW_ENTRY', 'OBJECT_MENU_ACTIONS_VIEW_ENTRY_MORE', 'OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL'] as $sKey)
+            if(!empty($CNF[$sKey]))
+                $aObjects[] = $CNF[$sKey];
+
+        if(!in_array($sObject, $aObjects) || empty($aContentInfo[$CNF['FIELD_ID']]) || !($iLogged = bx_get_logged_profile_id()))
+            return false;
+
+        $oProfile = BxDolProfile::getInstanceByContentAndType($aContentInfo[$CNF['FIELD_ID']], $this->getName());
+        return $oProfile && (int)$oProfile->id() == (int)$iLogged;
     }
 
     public function onUpdateImage($iContentId, $sFiledName, $sFiledValue, $iProfileId = 0)

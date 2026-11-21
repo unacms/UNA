@@ -134,6 +134,7 @@ class BxPersonsConfig extends BxBaseModProfileConfig
             'OBJECT_FORM_ENTRY_DISPLAY_EDIT' => 'bx_person_edit',
             'OBJECT_FORM_ENTRY_DISPLAY_EDIT_COVER' => 'bx_person_edit_cover',
             'OBJECT_FORM_ENTRY_DISPLAY_EDIT_BADGE' => 'bx_person_edit_badge',
+            'OBJECT_FORM_ENTRY_DISPLAY_EDIT_PRIVACY' => 'bx_person_edit_privacy',
             'OBJECT_FORM_ENTRY_DISPLAY_DELETE' => 'bx_person_delete',
             'OBJECT_MENU_ACTIONS_VIEW_ENTRY' => 'bx_persons_view_actions', // actions menu on view entry page
             'OBJECT_MENU_ACTIONS_VIEW_ENTRY_MORE' => 'bx_persons_view_actions_more', // actions menu on view entry page for "more" popup

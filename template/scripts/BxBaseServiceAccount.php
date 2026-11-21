@@ -16,6 +16,9 @@ class BxBaseServiceAccount extends BxDol
     protected $_oAccountForms;
     protected $_oAccountQuery;
 
+    /** The last confirmed key was a new email of an account, @see _confirmEmail */
+    protected $_bEmailChangeConfirmed = false;
+
     public function __construct()
     {
         parent::__construct();
@@ -384,6 +387,42 @@ class BxBaseServiceAccount extends BxDol
         return BxDolApiTokens::getBlockCode();
     }
 
+    /**
+     * Account settings > Privacy: who sees the current profile, posts on it and contacts it, from its module's
+     * privacy form display (CNF OBJECT_FORM_ENTRY_DISPLAY_EDIT_PRIVACY).
+     */
+    public function serviceAccountSettingsPrivacy ()
+    {
+        $oProfile = BxDolProfile::getInstance();
+        if (!$oProfile || !$this->serviceIsPrivacyAvailable())
+            return bx_is_api() ? [bx_api_get_msg(_t('_sys_txt_access_denied'))] : MsgBox(_t('_sys_txt_access_denied'));
+
+        return bx_srv($oProfile->getModule(), 'entity_edit_privacy', [$oProfile->getContentId()]);
+    }
+
+    /**
+     * Whether account settings show Privacy: the current profile's module has a privacy form, @see serviceAccountSettingsPrivacy
+     */
+    public function serviceIsPrivacyAvailable ()
+    {
+        if (!isLogged() || !($oProfile = BxDolProfile::getInstance()))
+            return false;
+
+        $sModule = $oProfile->getModule();
+        if ('system' == $sModule || !BxDolRequest::serviceExists($sModule, 'entity_edit_privacy'))
+            return false;
+
+        return (bool)bx_srv($sModule, 'is_privacy_form_available');
+    }
+
+    /**
+     * Whether account settings show Connectors (menu item visibility), @see BxDolApiTokens::isAvailable
+     */
+    public function serviceIsConnectorsAvailable ()
+    {
+        return BxDolApiTokens::isAvailable();
+    }
+
     public function serviceAccountSettingsDelAccount ($iAccountId = false)
     {
         if (!$iAccountId)
@@ -530,10 +569,10 @@ class BxBaseServiceAccount extends BxDol
     public function serviceEmailConfirmation($sMsg = false)
     {
         $bApi = bx_is_api();
-        // if user is logged in and email is confirmed then just display a message
+        // if user is logged in and email is confirmed then just display a message, unless a new email waits for its code
         if (isLogged() && !bx_get('code')) {
             $oAccount = BxDolAccount::getInstance();
-            if ($oAccount->isConfirmedEmail())
+            if ($oAccount->isConfirmedEmail() && !$oAccount->getEmailPending())
                 return $bApi ? [bx_api_get_msg(_t("_sys_txt_confirm_email_already_confirmed"))] : MsgBox(_t("_sys_txt_confirm_email_already_confirmed"));
         }
 
@@ -544,7 +583,7 @@ class BxBaseServiceAccount extends BxDol
         // if user requested to resend verification letter then send letter and display message
         if (bx_process_input(bx_get('resend')) && isLogged()) {
             $oAccount = BxDolAccount::getInstance();
-            if ($oAccount->sendConfirmationEmail())
+            if ($oAccount->getEmailPending() ? $oAccount->sendEmailChangeConfirmation() : $oAccount->sendConfirmationEmail())
                 $sMsg = _t('_sys_txt_confirm_email_sent');
             else
                 $sMsg = _t('_sys_txt_confirm_email_sent_failed');
@@ -682,6 +721,22 @@ class BxBaseServiceAccount extends BxDol
         if(is_string($mixedAccountId) && !is_numeric($mixedAccountId))
             return $bApi ? [bx_api_get_msg($mixedAccountId)] : MsgBox($mixedAccountId);
 
+        // a new email of a confirmed account: back to the email settings, which show it
+        if($this->_bEmailChangeConfirmed) {
+            $sUrl = 'page.php?i=account-settings-email';
+            if($bApi)
+                return [bx_api_get_msg(_t('_sys_txt_account_email_change_confirmed')), bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink($sUrl))])];
+
+            $oTemplate = BxDolTemplate::getInstance();
+            $oTemplate->setPageNameIndex (BX_PAGE_TRANSITION);
+            $oTemplate->setPageHeader (_t('_sys_txt_account_email_change_confirmed'));
+            $oTemplate->setPageContent ('page_main_code', MsgBox(_t('_sys_txt_account_email_change_confirmed')));
+            $oTemplate->setPageContent ('url_relocate', bx_absolute_url(BxDolPermalinks::getInstance()->permalink(isLogged() ? $sUrl : 'page.php?i=login')));
+
+            $oTemplate->getPageCode();
+            exit;
+        }
+
         if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled())
             $oSockets->sendEvent('sys_account', $mixedAccountId, 'confirmed', '');
 
@@ -715,6 +770,7 @@ class BxBaseServiceAccount extends BxDol
 
     public function serviceConfirmEmail($sKey)
     {
+        $bApi = bx_is_api();
         $mixedAccountId = $this->_confirmEmail($sKey);
         
         if(is_string($mixedAccountId) && !is_numeric($mixedAccountId))
@@ -838,19 +894,25 @@ class BxBaseServiceAccount extends BxDol
             $sEmail = $oForm->getCleanValue('email');
             $sPhone = $oForm->getCleanValue('phone');
 
+            /*
+             * The reply is the same whether an account uses the email or phone or not, and whether the
+             * letter went out: anybody may ask, and the reply mustn't tell which addresses have accounts.
+             */
             if (isset($oForm->aInputs['email']) &&  $sEmail != '') {
-                $oAccount = BxDolAccount::getInstance($this->_oAccountQuery->getIdByEmail($sEmail));
+                $oAccount = ($iAccountId = $this->_oAccountQuery->getIdByEmail($sEmail)) ? BxDolAccount::getInstance($iAccountId) : false;
 
-                if($oAccount && $oAccount->sendResetPasswordEmail())
-                    $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_email"));
-                else
-                    $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_email_send_failed"));
+                if($oAccount && !$oAccount->sendResetPasswordEmail())
+                    bx_log('sys_debug', 'Reset password email was not sent to account ' . $iAccountId, BX_LOG_ERR);
 
+                $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_email"));
                 $sForm = '';
             }
 
-            if (isset($oForm->aInputs['phone']) &&  $sPhone != '') {   
-                $iAccountId = $this->_oAccountQuery->getIdByPhone($sPhone);
+            if (isset($oForm->aInputs['phone']) &&  $sPhone != '' && !($iAccountId = $this->_oAccountQuery->getIdByPhone($sPhone))) {
+                $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_phone"));
+                $sForm = '';
+            }
+            else if (isset($oForm->aInputs['phone']) &&  $sPhone != '') {
                 $aAccountInfo = $this->_oAccountQuery->getInfoById($iAccountId);
 
                 $sKey = bx_get_reset_password_key($aAccountInfo['email']);
@@ -883,10 +945,10 @@ class BxBaseServiceAccount extends BxDol
                 ]);
 
                 if ($mixedOverrideResult === null) {
-                    if(($oSms = BxDolSms::getObjectInstance()) !== false && $oSms->send($sPhone,  $sSmsText))
-                        $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_phone"));
-                    else
-                        $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_error_occured"));
+                    if(($oSms = BxDolSms::getObjectInstance()) === false || !$oSms->send($sPhone,  $sSmsText))
+                        bx_log('sys_sms', 'Reset password SMS was not sent to account ' . $iAccountId, BX_LOG_ERR);
+
+                    $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_phone"));
                 }
 
                 $sForm = '';
@@ -1102,6 +1164,16 @@ class BxBaseServiceAccount extends BxDol
         $oAccount = BxDolAccount::getInstance($aData['account_id']);
         if (!$oAccount)
             return _t("_sys_txt_confirm_email_error_occured");
+
+        // a new email of an account: it replaces the current email, without signing anybody in
+        if (!empty($aData['email'])) {
+            $oKey->removeKey($sKey);
+            if (!$oAccount->confirmEmailChange($aData['email']))
+                return _t('_sys_txt_account_email_change_failed');
+
+            $this->_bEmailChangeConfirmed = true;
+            return (int)$aData['account_id'];
+        }
 
         // remove key
         $oKey->removeKey($sKey);

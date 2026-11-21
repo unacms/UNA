@@ -99,6 +99,9 @@ function bx_ex_editor_init(oEditor, oParams)
             }
         })
     }
+    // the text the page came with stays in the textarea until the editor has shown it: a change the editor
+    // reports while it is still empty (as it starts) would clear it, and a form saved again would lose it
+    var bRendered = $(oParams.selector).val() == '';
     oEditor = new EditorJS({
         holder : document.getElementById(oParams.name),
         minHeight: oParams.css_class && oParams.css_class.indexOf('bx-form-input-html-mini') != -1 ? 0 : 48, // room under the text; the box's own height is in tailwind.css
@@ -114,10 +117,15 @@ function bx_ex_editor_init(oEditor, oParams)
                     i.innerHTML = i.getAttribute('source');
                 });
                 
-                oEditor.blocks.renderFromHTML(doc.documentElement.getElementsByTagName('body')[0].innerHTML);
+                Promise.resolve(oEditor.blocks.renderFromHTML(doc.documentElement.getElementsByTagName('body')[0].innerHTML)).finally(() => {
+                    bRendered = true;
+                });
             }
         },
         onChange:() =>{
+            if (!bRendered)
+                return;
+
             oEditor.save().then((savedData) =>{
                 const edjsParser = edjsHTML({embedblock: bx_ex_editor_custom_parser_embedblock});
                 oData = edjsParser.parse(savedData);

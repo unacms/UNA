@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Member account and privacy: email change, password notices, forgot password reply, Privacy tab, Connectors level action -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_acl_action_use_connectors"><![CDATA[Use connectors (access tokens for assistants and apps)]]></string_add>
+    <string_add name="_sys_audit_action_account_email_change_requested"><![CDATA[Email change requested]]></string_add>
+    <string_add name="_sys_et_txt_body_confirm_email_change"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Confirm {new_email} as the email of your account on {site_name} with this link:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">or enter this code:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Until you confirm it, you sign in with {email}. If you didn't ask for this, ignore this email.</p>
+{email_footer}]]></string_add>
+    <string_add name="_sys_et_txt_body_email_change_requested"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Someone asked to change the email of your account on {site_name} to {new_email}. It changes when the new address is confirmed. Until then you sign in with this one.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, sign in and change your password.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{account_settings_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Change password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_add>
+    <string_add name="_sys_et_txt_body_email_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The email of your account on {site_name} is now {new_email}. This address no longer signs in.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reply to this email or contact {site_name}.</p>
+{email_footer}]]></string_add>
+    <string_add name="_sys_et_txt_body_password_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The password of your account on {site_name} was changed.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reset your password now.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Reset password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_add>
+    <string_add name="_sys_et_txt_name_system_confirm_email_change"><![CDATA[New email confirmation]]></string_add>
+    <string_add name="_sys_et_txt_name_system_email_change_requested"><![CDATA[Email change requested notice]]></string_add>
+    <string_add name="_sys_et_txt_name_system_email_changed"><![CDATA[Email changed notice]]></string_add>
+    <string_add name="_sys_et_txt_name_system_password_changed"><![CDATA[Password changed notice]]></string_add>
+    <string_add name="_sys_et_txt_subject_confirm_email_change"><![CDATA[Confirm your new email address]]></string_add>
+    <string_add name="_sys_et_txt_subject_email_change_requested"><![CDATA[Your email address is changing]]></string_add>
+    <string_add name="_sys_et_txt_subject_email_changed"><![CDATA[Your email address was changed]]></string_add>
+    <string_add name="_sys_et_txt_subject_password_changed"><![CDATA[Your password was changed]]></string_add>
+    <string_add name="_sys_form_account_input_email_info_pending"><![CDATA[Waiting for confirmation: {0}. Open the link we sent there. To cancel, save your current email.]]></string_add>
+    <string_add name="_sys_form_account_input_password_new"><![CDATA[New password]]></string_add>
+    <string_add name="_sys_form_account_input_password_new_confirm"><![CDATA[Confirm new password]]></string_add>
+    <string_add name="_sys_form_input_privacy_label"><![CDATA[Who can see it: {0}]]></string_add>
+    <string_add name="_sys_location_ph_country"><![CDATA[Country]]></string_add>
+    <string_add name="_sys_menu_item_title_account_settings_privacy"><![CDATA[Privacy]]></string_add>
+    <string_add name="_sys_menu_item_title_system_account_settings_privacy"><![CDATA[Privacy]]></string_add>
+    <string_add name="_sys_page_block_title_account_settings_privacy"><![CDATA[Who can see and contact you]]></string_add>
+    <string_add name="_sys_page_title_account_settings_privacy"><![CDATA[Privacy]]></string_add>
+    <string_add name="_sys_page_title_system_account_settings_privacy"><![CDATA[Account - Privacy]]></string_add>
+    <string_add name="_sys_txt_account_email_change_confirmed"><![CDATA[Your new email is confirmed]]></string_add>
+    <string_add name="_sys_txt_account_email_change_failed"><![CDATA[This link no longer works, or another account uses this email now. Change your email again to get a new link.]]></string_add>
+    <string_add name="_sys_txt_account_email_change_sent"><![CDATA[We sent a confirmation link to {0}. Until you open it, you sign in with {1}.]]></string_add>
+    <string_add name="_sys_txt_profile_not_available_text"><![CDATA[It may be waiting for review or turned off for now.]]></string_add>
+    <string_add name="_sys_txt_profile_not_available_title"><![CDATA[This profile isn't available]]></string_add>
+    <string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Email settings saved]]></string_upd>
+    <string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Password changed]]></string_upd>
+    <string_upd name="_sys_form_account_input_password_current"><![CDATA[Current password]]></string_upd>
+    <string_upd name="_sys_txt_forgot_pasword_check_email"><![CDATA[If an account uses this email, we sent it a link to reset the password.]]></string_upd>
+    <string_upd name="_sys_txt_forgot_pasword_check_phone"><![CDATA[If an account uses this phone number, we sent it a text message with a link to reset the password.]]></string_upd>
+</resources>

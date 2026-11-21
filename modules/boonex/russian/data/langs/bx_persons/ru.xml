@@ -29,6 +29,7 @@
     <string name="_bx_persons_form_profile_display_add"><![CDATA[Добавление персоны]]></string>
     <string name="_bx_persons_form_profile_display_edit"><![CDATA[Редактирование персоны]]></string>
     <string name="_bx_persons_form_profile_display_edit_cover"><![CDATA[Редактирование обложки]]></string>
+    <string name="_bx_persons_form_profile_display_edit_privacy"><![CDATA[Приватность]]></string>
     <string name="_bx_persons_form_profile_display_edit_badge"><![CDATA[Редактирование значка]]></string>
     <string name="_bx_persons_form_profile_display_delete"><![CDATA[Удаление персоны]]></string>
     <string name="_bx_persons_form_profile_display_view"><![CDATA[Просмотр персоны]]></string>
