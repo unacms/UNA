@@ -319,7 +319,7 @@ class BxDolStudioFormCheckerHelper extends BxDolFormCheckerHelper
      * "Who can join" (sys_account_join): one of its choices. Invitation only needs the Invitations app, which is
      * installed along when the site doesn't have it yet; the choice isn't saved when that fails.
      */
-    function checkJoinMode($sVal)
+    public function checkJoinMode($sVal)
     {
         if(!in_array($sVal, [BxDolAccount::JOIN_OPEN, BxDolAccount::JOIN_INVITE, BxDolAccount::JOIN_CLOSED], true))
             return false;
