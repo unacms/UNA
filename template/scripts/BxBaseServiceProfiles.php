@@ -236,6 +236,41 @@ class BxBaseServiceProfiles extends BxDol
         return BxDolTemplate::getInstance()->parseHtmlByName('profile_stats.html', $aVars);
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-profiles Profiles
+     * @subsubsection bx_system_general-account_dashboard account_dashboard
+     *
+     * @code bx_srv('system', 'account_dashboard', [], 'TemplServiceProfiles'); @endcode
+     * @code {{~system:account_dashboard:TemplServiceProfiles~}} @endcode
+     *
+     * "Your account": the member's profile with the profile switcher, their stats as tiles, their preferences
+     * (Settings, language, theme) and Sign out. Nothing without a profile.
+     *
+     * @see BxBaseServiceProfiles::serviceAccountDashboard
+     */
+    /**
+     * @ref bx_system_general-account_dashboard "account_dashboard"
+     */
+    public function serviceAccountDashboard ()
+    {
+        $bApi = bx_is_api();
+        if(!bx_get_logged_profile_id())
+            return $bApi ? [] : '';
+
+        $oMenu = BxDolMenu::getObjectInstance('sys_dashboard_account');
+        if(!$oMenu)
+            return $bApi ? [] : '';
+
+        if($bApi) {
+            $aMenu = $oMenu->getCodeAPI();
+            return !empty($aMenu['items']) ? [bx_api_get_block('account_dashboard', $aMenu)] : [];
+        }
+
+        return $oMenu->getCode();
+    }
+
     public function serviceGetMenuAddonProfileEdit($iProfileId = 0, $sCaption = '')
     {
         /**

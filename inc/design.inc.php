@@ -77,6 +77,11 @@ define('BX_MENU_TEMPLATE_SUBMENU_MORE_AUTO', 18);
 define('BX_MENU_TEMPLATE_CUSTOM_HOR', 15);
 define('BX_MENU_TEMPLATE_CUSTOM_VER', 20);
 
+/*
+ * Menu template ID for tiles (menu_tiles.html)
+ */
+define('BX_MENU_TEMPLATE_TILES', 37);
+
 /**
  * Display "design box" HTML code
  *
