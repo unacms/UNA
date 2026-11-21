@@ -47,8 +47,10 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        if (!$this->_isAvailablePage($this->_aObject))
-            return $this->_getPageNotFoundMsg();
+        if (!$this->_isAvailablePage($this->_aObject)) {
+            $this->_getPageNotFoundMsg(); // displays the page and exits
+            exit;
+        }
 
         $oCover = BxDolCover::getInstance($this->_oModule->_oTemplate);        
         if ($oCover)

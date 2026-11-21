@@ -117,9 +117,10 @@ function bx_ex_editor_init(oEditor, oParams)
                     i.innerHTML = i.getAttribute('source');
                 });
                 
-                Promise.resolve(oEditor.blocks.renderFromHTML(doc.documentElement.getElementsByTagName('body')[0].innerHTML)).finally(() => {
+                const fRendered = () => {
                     bRendered = true;
-                });
+                };
+                Promise.resolve(oEditor.blocks.renderFromHTML(doc.documentElement.getElementsByTagName('body')[0].innerHTML)).then(fRendered, fRendered);
             }
         },
         onChange:() =>{
