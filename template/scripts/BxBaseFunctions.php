@@ -1489,6 +1489,25 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         ]);
     }
 
+    /**
+     * The accent color Studio > Designer > Settings picks, when it isn't the default blue: its scale as the
+     * --bx-accent-* variables that every blue-* class reads (template/css/tailwind.css, BxDolDesigns::getAccentPresets).
+     */
+    protected function getInjHeadDesignAccent()
+    {
+        $aScale = BxDolDesigns::getAccentScale();
+        if(empty($aScale))
+            return '';
+
+        $aSteps = [];
+        foreach($aScale as $iStep => $sRgb)
+            $aSteps[] = ['step' => (int)$iStep, 'rgb' => preg_replace('/[^0-9 ]/', '', $sRgb)];
+
+        return $this->_oTemplate->parseHtmlByName('design_accent.html', [
+            'bx_repeat:steps' => $aSteps,
+        ]);
+    }
+
     protected function getInjHeadLiveUpdates() 
     {
         $sContent = '';

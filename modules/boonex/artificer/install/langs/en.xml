@@ -28,7 +28,7 @@
     <string name="_bx_artificer_stg_cpt_category_styles_custom"><![CDATA[Custom Styles]]></string>
     <string name="_bx_artificer_stg_cpt_option_styles_custom"><![CDATA[Custom styles]]></string>
     <string name="_bx_artificer_stg_cpt_option_images_custom"><![CDATA[Custom images]]></string>
-    <string name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Each line represents an image. Line format: <b>name</b> => <b>value</b> => <b>type</b> => <b>class</b><br />Where <b>type</b> and/or <b>class</b> may be omitted. Available types are <b>ic</b> - icon (Font Awesome), <b>im</b> - image (file name or URL), <b>sc</b> - source code (SVG).<br />Don't forget to clear template cache (if it's enabled) to see the changes.]]></string>
+    <string name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Each line is one image: <b>name</b> => <b>value</b> => <b>type</b> => <b>class</b>. <b>type</b> and <b>class</b> may be left out. Types: <b>ic</b> an icon (a Lucide icon name, as in lucide.dev), <b>im</b> an image (file name or URL), <b>sc</b> SVG code.<br />Clear the template cache (if it's on) to see the changes.]]></string>
 
     <!-- Pages -->
     <string name="_bx_artificer_page_block_title_splash"><![CDATA[Splash]]></string>

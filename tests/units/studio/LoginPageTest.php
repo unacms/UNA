@@ -53,9 +53,9 @@ class LoginPageTest extends BxDolTestCase
     {
         $s = self::read('studio/template/css/login.css');
 
-        // the password input has no border: its frame shows the ring; the buttons had no ring at all
+        // the password input has no border: its frame shows the ring; the buttons had no ring at all; the ring is the accent
         $this->assertStringContainsString('#bx-std-login-form-box .bx-form-input-wrapper-password:has(.bx-form-input-password:focus-visible)', $s);
-        $this->assertMatchesRegularExpression('/#bx-std-login-form-box \.bx-btn:focus-visible \{\s*outline: 2px solid #2563eb;\s*outline-offset: 2px;/', $s);
+        $this->assertMatchesRegularExpression('/#bx-std-login-form-box \.bx-btn:focus-visible \{\s*outline: 2px solid rgb\(var\(--bx-accent-600\)\);\s*outline-offset: 2px;/', $s);
         $this->assertStringContainsString('outline-color: Highlight;', $s);
     }
 }
