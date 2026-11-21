@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import Card, {CardList} from 'app/ui/molecules/page/card'
+import Card, {CardList, CardFeed} from 'app/ui/molecules/page/card'
 import { memo } from 'react'
 const items = Array(5).fill('');
 
@@ -112,7 +112,7 @@ const PostsSmall = memo(() => (
 
 
 const FeedDefault = memo(() => (
-    <CardList className="animate-pulse w-full mb-0.5 sm:mb-3">
+    <CardFeed className="animate-pulse w-full mb-0.5 sm:mb-3">
         
         <View className="flex-row gap-x-2 mb-2">
             <View className="relative flex-row">
@@ -135,7 +135,7 @@ const FeedDefault = memo(() => (
         <View className="h-3 my-1 w-full bg-muted/50 rounded-full"></View>
         <View className="h-3 my-1 w-3/4 bg-muted/50 rounded-full"></View>
         
-    </CardList>
+    </CardFeed>
 ));
 
 export const skeletonsMapDefault = {

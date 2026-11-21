@@ -28,7 +28,8 @@ export interface OnboardingItem {
 
 export interface OnboardingData {
     menu?: { object?: string; items?: OnboardingItem[] };
-    hide?: { title?: string; request_url?: string };
+    /** The block's close button: `title` names it (Hide), `icon` draws it (X). */
+    hide?: { title?: string; icon?: string; request_url?: string };
 }
 
 type Mark = { icon: string; className: string };
@@ -51,7 +52,7 @@ function stepHref(item: OnboardingItem): string {
 }
 
 /**
- * A step as UNA's "List with descriptions" menu template draws it: the item's icon on a 44px tile with the regular
+ * A step as UNA's "List with descriptions" menu template draws it: the item's 24px icon on a 44px tile with the regular
  * button's surface and corners, the title over the item's Info, the state's mark at the end. The row is the link.
  */
 function OnboardingStep({ item }: Readonly<{ item: OnboardingItem }>) {
@@ -60,7 +61,7 @@ function OnboardingStep({ item }: Readonly<{ item: OnboardingItem }>) {
     const row = (
         <View className="flex-row items-center gap-3 rounded-xl p-2">
             <View aria-hidden className="h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-button">
-                <Icon icon={item.icon || 'Circle'} size={20} className="text-secondary-foreground" />
+                <Icon icon={item.icon || 'Circle'} size={24} className="text-button-foreground" />
             </View>
             <View className="min-w-0 flex-1">
                 <Text
@@ -69,7 +70,7 @@ function OnboardingStep({ item }: Readonly<{ item: OnboardingItem }>) {
                 >
                     {decodeTextNode(item.title || '')}
                 </Text>
-                {item.info ? <Text className="text-sm leading-5 text-muted-foreground">{decodeTextNode(item.info)}</Text> : null}
+                {item.info ? <Text className="text-sm leading-5 font-normal text-muted-foreground">{decodeTextNode(item.info)}</Text> : null}
             </View>
             <View aria-hidden>
                 <Icon icon={mark.icon} size={20} className={mark.className} />
@@ -82,7 +83,7 @@ function OnboardingStep({ item }: Readonly<{ item: OnboardingItem }>) {
     if (href && item.name === 'post')
         return <PostStep href={href}>{row}</PostStep>;
 
-    return href ? <Link href={href} className="rounded-xl web:hover:bg-button">{row}</Link> : row;
+    return href ? <Link href={href} className="rounded-xl web:hover:bg-button-hover">{row}</Link> : row;
 }
 
 function PostStep({ href, children }: Readonly<{ href: string; children: ReactNode }>) {
@@ -90,7 +91,7 @@ function PostStep({ href, children }: Readonly<{ href: string; children: ReactNo
     return (
         <Pressable
             role="button"
-            className="rounded-xl web:hover:bg-button"
+            className="rounded-xl web:hover:bg-button-hover"
             onPress={() => {
                 if (emitter.listeners(EVENTS.composer).length > 0)
                     emitter.emit(EVENTS.composer, { action: 'open' });
@@ -122,6 +123,7 @@ export default function Onboarding({ data, blockWrapperProps }: Readonly<{ data?
             items: [{
                 name: 'onboarding-hide',
                 title: hide.title,
+                icon: hide.icon || 'X',
                 onPress: () => {
                     setHidden(true);
                     if (hide.request_url)

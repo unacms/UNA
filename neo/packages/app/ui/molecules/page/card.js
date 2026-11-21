@@ -20,6 +20,9 @@ function CardSection({
     if (baseClass === 'u-card-base') {
         defPadding = cardTheme['u-card-padding'];
     }
+    if (baseClass === 'u-card-feed') {
+        defPadding = cardTheme['u-card-list-padding'];
+    }
     if (baseClass === 'u-card-list') {
         defPadding = listFlush
             ? (cardTheme['u-card-list-flush-padding'] || cardTheme['u-card-list-padding'])
@@ -76,6 +79,9 @@ const Card = ({
 
 const CardList = (props) => <CardSection baseClass="u-card-list" {...props} />;
 
+/** A feed post: a list card with the block's surface (outline and corners), as it sits beside the page's blocks. */
+const CardFeed = (props) => <CardSection baseClass="u-card-feed" {...props} />;
+
 const CardHeader = (props) => <CardSection baseClass="u-card-header" {...props} />;
 
 const CardIcon = (props) => <CardSection baseClass="u-card-icon" {...props} />;
@@ -111,6 +117,7 @@ export default Card;
 export {
     Card,
     CardList,
+    CardFeed,
     CardHeader,
     CardIcon,
     CardTitle,

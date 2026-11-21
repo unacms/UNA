@@ -64,6 +64,7 @@ function BlockHeaderMenu({ menu, pathname }) {
                     <MenuItemBlockmenu
                         key={item.id || item.name}
                         title={item.title}
+                        icon={item.icon}
                         href={onPress ? undefined : href}
                         pressed={pressed}
                         disabled={item.disabled}
