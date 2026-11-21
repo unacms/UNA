@@ -44,8 +44,8 @@ $(document).ready(function () {
         return;
 
     var oCfg = JSON.parse(eCfg.textContent);
-    if (typeof glGrids === 'undefined')
-        glGrids = {};
+    if (window.glGrids === undefined)
+        window.glGrids = {};
 
     if (undefined == glGrids[oCfg.object])
         glGrids[oCfg.object] = new BxDolGrid(oCfg.object, oCfg.bx);
@@ -57,6 +57,9 @@ $(document).ready(function () {
             query_append: oCfg.bx.query_append
         });
 
-    new BxDolGridAg(oCfg, glGrids[oCfg.object]);
+    // Kept by object name, as glGrids keeps the classic script: a page's own scripts can reach the AG grid.
+    if (window.glGridsAg === undefined)
+        window.glGridsAg = {};
+    glGridsAg[oCfg.object] = new BxDolGridAg(oCfg, glGrids[oCfg.object]);
 });
 </script>

@@ -13,28 +13,32 @@
  * Actions, bulk selection and the secret eye go through the BxDolGrid instance
  * kept in glGrids, so Studio scripts that call reload() and processJson()
  * keep working.
+ *
+ * Cell values: the server (BxBaseGrid::_agCell) flags a text cell 'html' when its
+ * value is what the classic grid prints inside the cell. Only such a value is
+ * inserted as HTML; every other value is inserted as text.
  */
 
 function BxDolGridAg(oCfg, oBx) {
     this._oCfg = oCfg || {};
     this._oBx = oBx || null;
     this._oApi = null;
-    this._sObject = oCfg.object;
-    this._sFieldId = oCfg.field_id;
-    this._sWrap = 'bx-grid-wrap-' + oCfg.object;
-    this._iStart = parseInt(oCfg.start, 10) || 0;
-    this._iPerPage = parseInt(oCfg.per_page, 10) || 10;
+    this._sObject = this._oCfg.object;
+    this._sFieldId = this._oCfg.field_id;
+    this._sWrap = 'bx-grid-wrap-' + this._sObject;
+    this._iStart = Number.parseInt(this._oCfg.start, 10) || 0;
+    this._iPerPage = Number.parseInt(this._oCfg.per_page, 10) || 10;
     this._iTotal = 0;
     this._sAppliedField = null;
     this._sAppliedDir = null;
 
-    var oBxOpts = oCfg.bx || {};
+    const oBxOpts = this._oCfg.bx || {};
     this._sStartGet = oBxOpts.paginate_get_start || '';
     this._sPerPageGet = oBxOpts.paginate_get_per_page || '';
     this._sFilterGet = oBxOpts.filter_get || 'filter';
     this._sOrderGetField = oBxOpts.order_get_field || 'order_field';
     this._sOrderGetDir = oBxOpts.order_get_dir || 'order_dir';
-    this._oExpand = oCfg.expand || null;
+    this._oExpand = this._oCfg.expand || null;
     this._oExpanded = {};
     this._oChildren = {};
     this._oItemsBx = null;
@@ -42,7 +46,7 @@ function BxDolGridAg(oCfg, oBx) {
     this._iItemHeight = 44;
     // From tablets up every row is a card: the row is taller by the gap between the cards, and no
     // column is pinned, so a card is one piece. Phones keep the plain table.
-    this._bCards = !!(window.matchMedia && window.matchMedia('(min-width: 768px)').matches);
+    this._bCards = !!globalThis.matchMedia?.('(min-width: 768px)').matches;
     this._iRowGap = this._bCards ? 8 : 0;
 
     this._adoptBx();
@@ -51,88 +55,79 @@ function BxDolGridAg(oCfg, oBx) {
 }
 
 BxDolGridAg.prototype._adoptBx = function () {
-    if (!this._oBx)
+    const oBx = this._oBx;
+    if (!oBx)
         return;
 
-    var self = this;
-    var oBx = this._oBx;
-
-    oBx.reload = function (iStart) {
-        if (typeof iStart !== 'undefined' && iStart !== null && iStart !== '') {
-            self._iStart = parseInt(iStart, 10) || 0;
-            this._oOptions.start = self._iStart;
+    oBx.reload = (iStart) => {
+        if (iStart !== undefined && iStart !== null && iStart !== '') {
+            this._iStart = Number.parseInt(iStart, 10) || 0;
+            oBx._oOptions.start = this._iStart;
         }
-        self.refresh();
+        this.refresh();
     };
 
-    oBx.setFilter = function (sFilter, isReload) {
-        if (this._sFilter == sFilter)
+    oBx.setFilter = (sFilter, isReload) => {
+        if (oBx._sFilter == sFilter)
             return;
 
-        this._sFilter = sFilter;
+        oBx._sFilter = sFilter;
         if (isReload) {
-            self._iStart = 0;
-            this._oOptions.start = 0;
-            self.refresh();
+            this._iStart = 0;
+            oBx._oOptions.start = 0;
+            this.refresh();
         }
     };
 
     // A response that carries new HTML would replace this grid. Refresh the rows instead.
-    oBx.setOnReload(function () {
-        self.refresh();
-    });
+    oBx.setOnReload(() => this.refresh());
 
-    var fProcess = oBx.processJson;
-    oBx.processJson = function (oData, sAction, isDisableLoading) {
-        fProcess.apply(this, arguments);
-        if (!oData)
-            return;
+    const fProcess = oBx.processJson;
+    oBx.processJson = (...aArgs) => {
+        fProcess.call(oBx, ...aArgs);
 
         // A switch only flips its own control. Reloading the grid would jump the scroll.
-        if (sAction === 'reorder')
-            self.refresh();
+        if (aArgs[0] && aArgs[1] === 'reorder')
+            this.refresh();
     };
 };
 
 /**
- * The header's filter selects are select2 fields, as Studio's other selects (the page builder's
- * page picker). select2 fires the select's own change, so the filter's onchange still runs.
+ * In Studio the header's filter selects are select2 fields, as Studio's other selects (the page
+ * builder's page picker). select2 fires the select's own change, so the filter's onchange still
+ * runs. On a site page they stay the form's own selects, as in the classic grid.
  */
 BxDolGridAg.prototype._select2Filters = function () {
-    if (typeof jQuery === 'undefined' || typeof jQuery.fn.select2 !== 'function')
+    if (!Number(this._oCfg.select2) || typeof jQuery === 'undefined' || typeof jQuery.fn.select2 !== 'function')
         return;
 
     jQuery('#' + this._sWrap + ' .bx-grid-header-controls-filter select').each(function () {
-        var $s = jQuery(this);
+        const $s = jQuery(this);
         if ($s.hasClass('select2-hidden-accessible'))
             return;
         $s.select2({
             width: 'resolve',
             minimumResultsForSearch: 10,
-            templateSelection: function (d) {
-                return d.text;
-            }
+            templateSelection: (d) => d.text
         });
     });
 };
 
 BxDolGridAg.prototype._mount = function () {
-    var eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
+    const eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
     if (!eGrid || typeof bxAgGrid === 'undefined' || typeof bxAgGrid.createGrid !== 'function')
         return;
 
     if (this._bCards)
         eGrid.classList.add('bx-grid-ag-cards');
 
-    var self = this;
-    var oOptions = {
+    const oOptions = {
         theme: 'legacy',
         columnDefs: this._columns(),
         context: { ag: this },
-        getRowId: function (p) {
-            if (p.data && p.data[self._sFieldId] != null && p.data[self._sFieldId] !== '')
-                return String(p.data[self._sFieldId]);
-            return 'bx-ag-row';
+        getRowId: (p) => {
+            const mixedId = p.data?.[this._sFieldId];
+            return mixedId != null && mixedId !== '' ? String(mixedId) : 'bx-ag-row';
         },
         suppressMovableColumns: true,
         suppressCellFocus: true,
@@ -144,39 +139,32 @@ BxDolGridAg.prototype._mount = function () {
         rowDragManaged: false,
         overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">' + this._esc(this._oCfg.empty || '') + '</span>',
         datasource: {
-            getRows: function (params) {
-                self._getRows(params);
-            }
+            getRows: (params) => this._getRows(params)
         },
-        onGridReady: function (e) {
-            self._oApi = e.api;
+        onGridReady: (e) => {
+            this._oApi = e.api;
         },
-        onSelectionChanged: function () {
-            self._syncChecks();
-        },
-        onModelUpdated: function () {
-            self._fitHeight();
-        }
+        onSelectionChanged: () => this._syncChecks(),
+        onModelUpdated: () => this._fitHeight()
     };
+    // With no cell focus the grid leaves its row checkboxes out of the Tab order. Put them back and
+    // name them, once the rows that just came into view are drawn.
+    const fNameChecks = () => setTimeout(() => this._nameChecks(eGrid), 0);
 
-    if (this._oExpand) {
-        oOptions.getRowHeight = function (p) {
-            return self._rowHeight(p && p.data);
-        };
-    }
+    if (this._oExpand)
+        oOptions.getRowHeight = (p) => this._rowHeight(p?.data);
 
-    if (this._hasOrder()) {
-        oOptions.onRowDragEnd = function (e) {
-            self._onRowDragEnd(e);
-        };
-    }
+    if (this._hasKind('order'))
+        oOptions.onRowDragEnd = (e) => this._onRowDragEnd(e);
 
-    if (this._hasCheckbox()) {
+    if (this._hasKind('checkbox')) {
         oOptions.rowSelection = {
             mode: 'multiRow',
             checkboxes: true,
             headerCheckbox: false,
-            enableClickSelection: false
+            enableClickSelection: false,
+            // A row the classic grid gives a disabled checkbox (_isCheckboxDisabled) cannot be selected here either.
+            isRowSelectable: (node) => !Number(node.data?.checkbox?.disabled)
         };
         oOptions.selectionColumnDef = {
             width: 52,
@@ -184,160 +172,236 @@ BxDolGridAg.prototype._mount = function () {
             pinned: this._bCards ? null : 'left',
             sortable: false,
             resizable: false,
-            suppressHeaderMenuButton: true
+            suppressHeaderMenuButton: true,
+            cellClass: 'bx-grid-ag-select'
+        };
+        oOptions.onViewportChanged = fNameChecks;
+        oOptions.onModelUpdated = () => {
+            this._fitHeight();
+            fNameChecks();
         };
     }
+
+    // Before the grid's own key handlers, which are on elements inside this one.
+    eGrid.addEventListener('keydown', (ev) => this._onTab(ev, eGrid), true);
 
     this._oApi = bxAgGrid.createGrid(eGrid, oOptions);
 };
 
-BxDolGridAg.prototype._hasCheckbox = function () {
-    var a = this._oCfg.columns || [];
-    for (var i = 0; i < a.length; i++) {
-        if (a[i].kind === 'checkbox')
-            return true;
-    }
-    return false;
+/**
+ * Tab inside the grid. Cells take no focus (suppressCellFocus), so the grid has no cell to move
+ * Tab to: from a header it walks the headers in a circle, and from a switch or a button in a row
+ * it does not move at all. So Tab is taken before the grid sees it:
+ * - from a header, to the first control in the rows (a checkbox, a switch, a link, a button);
+ * - between the controls of the rows, in the order they are shown;
+ * - from the last control out of the grid, and with Shift from the first one back to the headers.
+ * Arrow keys between headers, Enter to sort and Shift+Tab from a header stay the grid's own.
+ */
+BxDolGridAg.prototype._onTab = function (ev, eGrid) {
+    if (ev.key !== 'Tab' || ev.altKey || ev.ctrlKey || ev.metaKey)
+        return;
+
+    const eFrom = ev.target;
+    const bHeader = !!eFrom.closest?.('.ag-header');
+    if ((!bHeader && !eFrom.closest?.('.ag-row')) || (bHeader && ev.shiftKey))
+        return;
+
+    const aControls = this._rowStops(eGrid);
+    const iFrom = aControls.indexOf(eFrom);
+    let eTo = null;
+    if (bHeader)
+        eTo = aControls[0];
+    else if (ev.shiftKey)
+        eTo = iFrom > 0 ? aControls[iFrom - 1] : eGrid.querySelector('.ag-header-cell');
+    else
+        eTo = aControls[iFrom + 1];
+
+    // Past the last control: the first one after the grid.
+    if (!eTo && !ev.shiftKey)
+        eTo = this._tabStops([document.body]).find((e) => !eGrid.contains(e) && (eGrid.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING));
+
+    if (!eTo)
+        return;
+
+    ev.stopPropagation();
+    ev.preventDefault();
+    eTo.focus();
 };
 
-BxDolGridAg.prototype._hasOrder = function () {
-    var a = this._oCfg.columns || [];
-    for (var i = 0; i < a.length; i++) {
-        if (a[i].kind === 'order')
-            return true;
+/**
+ * The controls in the rows in the order they are shown: by row, then by column, then what an
+ * opened row holds under its cells. The grid keeps rows and cells in the DOM in the order it made
+ * them, not the order on screen (ensureDomOrder would fix that, but it re-inserts rows as they
+ * scroll, and a re-inserted control loses the focus).
+ */
+BxDolGridAg.prototype._rowStops = function (eGrid) {
+    const fRow = (e) => Number(e.getAttribute('row-index')) || 0;
+    const fCol = (e) => Number(e.closest('.ag-cell')?.getAttribute('aria-colindex')) || Infinity;
+
+    const a = [];
+    for (const eRow of Array.from(eGrid.querySelectorAll('.ag-row')).sort((x, y) => fRow(x) - fRow(y)))
+        a.push(...this._tabStops([eRow]).sort((x, y) => fCol(x) - fCol(y)));
+    return a;
+};
+
+/**
+ * What Tab stops at inside these elements, in document order.
+ */
+BxDolGridAg.prototype._tabStops = function (aIn) {
+    const sStops = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]';
+    const a = [];
+    for (const eIn of aIn) {
+        for (const e of eIn.querySelectorAll(sStops)) {
+            if (e.tabIndex >= 0 && !e.disabled && e.getClientRects().length && !e.closest('.ag-tab-guard, [hidden], [inert]'))
+                a.push(e);
+        }
     }
-    return false;
+    return a;
+};
+
+BxDolGridAg.prototype._hasKind = function (sKind) {
+    return (this._oCfg.columns || []).some((oCol) => oCol.kind === sKind);
+};
+
+/**
+ * Row checkboxes: reachable with Tab, and named for a screen reader as the classic grid names them.
+ */
+BxDolGridAg.prototype._nameChecks = function (eGrid) {
+    const sLabel = this._oCfg.text_select || '';
+    for (const eInput of eGrid.querySelectorAll('.ag-selection-checkbox input[type="checkbox"]')) {
+        eInput.tabIndex = 0;
+        if (sLabel && !eInput.getAttribute('aria-label'))
+            eInput.setAttribute('aria-label', sLabel);
+    }
 };
 
 BxDolGridAg.prototype._columns = function () {
-    var aCfg = this._oCfg.columns || [];
-    var sSortField = this._oCfg.sorting_field || '';
-    var sSortDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'desc' : 'asc';
-    var bExpand = !!this._oExpand;
-    var aCols = [];
+    const aCols = [];
 
-    if (bExpand) {
-        aCols.push({
-            colId: '_bx_expand',
-            field: '_bx_expand',
-            headerName: '',
-            width: 46,
-            minWidth: 46,
-            maxWidth: 46,
-            flex: 0,
-            pinned: this._bCards ? null : 'left',
-            lockPosition: 'left',
-            sortable: false,
-            resizable: false,
-            suppressHeaderMenuButton: true,
-            cellDataType: false,
-            cellClass: 'bx-grid-ag-expand',
-            cellStyle: { paddingLeft: '0px', paddingRight: '0px' },
-            valueGetter: function () {
-                return '';
-            },
-            cellRenderer: BxDolGridAgCell,
-            bxExpand: true
-        });
-    }
+    if (this._oExpand)
+        aCols.push(this._columnExpand());
 
-    for (var i = 0; i < aCfg.length; i++) {
-        var col = aCfg[i];
-        if (col.kind === 'checkbox')
+    for (const oCol of this._oCfg.columns || []) {
+        if (oCol.kind === 'checkbox')
             continue;
 
-        if (col.kind === 'order') {
-            aCols.push({
-                colId: col.name,
-                field: col.name,
-                headerName: '',
-                width: 52,
-                maxWidth: 64,
-                flex: 0,
-                pinned: this._bCards ? null : 'left',
-                sortable: false,
-                resizable: false,
-                suppressHeaderMenuButton: true,
-                cellDataType: false,
-                rowDrag: true,
-                cellRenderer: BxDolGridAgCell
-            });
-            continue;
-        }
-
-        var oCol = {
-            colId: col.name,
-            field: col.name,
-            headerName: col.title || '',
-            sortable: parseInt(col.sortable, 10) === 1,
-            filter: false,
-            suppressHeaderMenuButton: true,
-            cellDataType: false,
-            comparator: function () {
-                return 0;
-            }
-        };
-
-        if (sSortField && sSortField === col.name && oCol.sortable)
-            oCol.sort = sSortDir;
-
-        if (col.controls && col.name === 'actions') {
-            oCol.width = 168;
-            oCol.minWidth = 96;
-            oCol.flex = 0;
-            oCol.cellRenderer = BxDolGridAgCell;
-        } else if (col.controls) {
-            oCol.width = 88;
-            oCol.minWidth = 64;
-            oCol.flex = 0;
-            oCol.cellRenderer = BxDolGridAgCell;
-        } else {
-            var oSize = this._size(col.width);
-            for (var sKey in oSize)
-                oCol[sKey] = oSize[sKey];
-            oCol.cellRenderer = BxDolGridAgCell;
-        }
-
-        aCols.push(oCol);
+        aCols.push(oCol.kind === 'order' ? this._columnOrder(oCol) : this._columnData(oCol));
     }
 
     return aCols;
 };
 
-BxDolGridAg.prototype._size = function (sWidth) {
-    var s = String(sWidth || '');
-    var m = /^(\d+(?:\.\d+)?)%$/.exec(s.trim());
-    if (m)
-        return { flex: parseFloat(m[1]) || 1, minWidth: 80 };
+/**
+ * What the narrow, fixed columns share: the arrow that opens a row and the drag handle.
+ */
+BxDolGridAg.prototype._columnFixed = function (sName, oMore) {
+    return Object.assign({
+        colId: sName,
+        field: sName,
+        headerName: '',
+        flex: 0,
+        pinned: this._bCards ? null : 'left',
+        sortable: false,
+        resizable: false,
+        suppressHeaderMenuButton: true,
+        cellDataType: false,
+        cellRenderer: BxDolGridAgCell
+    }, oMore);
+};
 
-    m = /^(\d+(?:\.\d+)?)px$/.exec(s.trim());
+BxDolGridAg.prototype._columnExpand = function () {
+    return this._columnFixed('_bx_expand', {
+        width: 46,
+        minWidth: 46,
+        maxWidth: 46,
+        lockPosition: 'left',
+        cellClass: 'bx-grid-ag-expand',
+        cellStyle: { paddingLeft: '0px', paddingRight: '0px' },
+        valueGetter: () => '',
+        bxExpand: true
+    });
+};
+
+BxDolGridAg.prototype._columnOrder = function (oCol) {
+    return this._columnFixed(oCol.name, {
+        headerName: '',
+        width: 52,
+        maxWidth: 64,
+        rowDrag: true
+    });
+};
+
+BxDolGridAg.prototype._columnData = function (oCol) {
+    const sSortField = this._oCfg.sorting_field || '';
+    const sSortDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'desc' : 'asc';
+
+    const oDef = {
+        colId: oCol.name,
+        field: oCol.name,
+        headerName: oCol.title || '',
+        sortable: Number.parseInt(oCol.sortable, 10) === 1,
+        filter: false,
+        suppressHeaderMenuButton: true,
+        cellDataType: false,
+        cellRenderer: BxDolGridAgCell,
+        // The server sorts. The grid only shows the arrow.
+        comparator: () => 0
+    };
+
+    if (sSortField && sSortField === oCol.name && oDef.sortable)
+        oDef.sort = sSortDir;
+
+    if (!oCol.controls)
+        return Object.assign(oDef, this._size(oCol.width));
+
+    if (oCol.name === 'actions')
+        return Object.assign(oDef, { width: 168, minWidth: 96, flex: 0 });
+
+    return Object.assign(oDef, { width: 88, minWidth: 64, flex: 0 });
+};
+
+BxDolGridAg.prototype._size = function (sWidth) {
+    const s = String(sWidth || '').trim();
+    let m = /^(\d+(?:\.\d+)?)%$/.exec(s);
     if (m)
-        return { width: parseFloat(m[1]), flex: 0, minWidth: 48 };
+        return { flex: Number.parseFloat(m[1]) || 1, minWidth: 80 };
+
+    m = /^(\d+(?:\.\d+)?)px$/.exec(s);
+    if (m)
+        return { width: Number.parseFloat(m[1]), flex: 0, minWidth: 48 };
 
     return { flex: 1, minWidth: 80 };
 };
 
 BxDolGridAg.prototype.refresh = function () {
-    if (this._oApi && this._oApi.purgeInfiniteCache)
-        this._oApi.purgeInfiniteCache();
+    this._oApi?.purgeInfiniteCache?.();
 };
 
 BxDolGridAg.prototype._getRows = function (params) {
-    var self = this;
-    var iStart = params.startRow;
-    var iPer = params.endRow - params.startRow;
-    var oSort = { field: '', dir: 'ASC' };
-    if (params.sortModel && params.sortModel.length) {
+    const iStart = params.startRow;
+    const iPer = params.endRow - params.startRow;
+    const oSort = { field: '', dir: 'ASC' };
+    if (params.sortModel?.length) {
         oSort.field = params.sortModel[0].colId;
         oSort.dir = params.sortModel[0].sort === 'desc' ? 'DESC' : 'ASC';
     }
 
-    this._fetch(iStart, iPer, oSort, function (o) {
-        self._setTotal(o);
+    this._fetch(iStart, iPer, oSort, (o) => {
+        this._setTotal(o);
         // lastRow is stored as the row count, so this is the server total.
         params.successCallback(o.data || [], typeof o.total === 'number' ? o.total : 0);
-    }, function () {
-        params.failCallback();
+    }, () => params.failCallback());
+};
+
+/**
+ * One GET of rows. cache: false adds jQuery's own timestamp, so a browser never answers from its cache.
+ */
+BxDolGridAg.prototype._getJson = function (oQuery) {
+    return jQuery.ajax({
+        url: sUrlRoot + 'grid.php',
+        data: oQuery,
+        dataType: 'json',
+        cache: false
     });
 };
 
@@ -347,44 +411,34 @@ BxDolGridAg.prototype._fetch = function (iStart, iPerPage, oSort, fOk, fFail) {
     if (this._oBx)
         this._oBx._oOptions.start = iStart;
 
-    jQuery.getJSON(sUrlRoot + 'grid.php', this._query(iStart, iPerPage))
-        .done(function (o) {
-            if (typeof fOk === 'function')
-                fOk(o || {});
-        })
-        .fail(function () {
-            if (typeof fFail === 'function')
-                fFail();
-        });
+    this._getJson(this._query(iStart, iPerPage))
+        .done((o) => fOk?.(o || {}))
+        .fail(() => fFail?.());
 };
 
 BxDolGridAg.prototype._query = function (iStart, iPerPage) {
-    var o = { o: this._sObject, a: 'data_ag' };
-    var oAppend = this._oBx ? this._oBx._oQueryAppend : null;
+    const o = { o: this._sObject, a: 'data_ag' };
+    const oAppend = this._oBx ? this._oBx._oQueryAppend : null;
     if (oAppend && typeof oAppend === 'object') {
-        for (var sKey in oAppend) {
-            if (Object.prototype.hasOwnProperty.call(oAppend, sKey))
-                o[sKey] = oAppend[sKey];
-        }
+        for (const sKey of Object.keys(oAppend))
+            o[sKey] = oAppend[sKey];
     }
 
-    o[this._sFilterGet] = this._oBx ? (this._oBx._sFilter || '') : '';
+    o[this._sFilterGet] = this._oBx?._sFilter || '';
     if (this._sAppliedField) {
         o[this._sOrderGetField] = this._sAppliedField;
         o[this._sOrderGetDir] = this._sAppliedDir || 'ASC';
     }
     o[this._sStartGet || 'start'] = iStart;
     o[this._sPerPageGet || 'per_page'] = iPerPage;
-    if (this._oBx && this._oBx._sCsrfToken)
+    if (this._oBx?._sCsrfToken)
         o.csrf_token = this._oBx._sCsrfToken;
-    o._r = Math.random();
     return o;
 };
 
 BxDolGridAg.prototype._applySort = function (oSort) {
-    oSort = oSort || { field: '', dir: 'ASC' };
-    this._sAppliedField = oSort.field || '';
-    this._sAppliedDir = oSort.dir || 'ASC';
+    this._sAppliedField = oSort?.field || '';
+    this._sAppliedDir = oSort?.dir || 'ASC';
     if (!this._oBx)
         return;
     this._oBx._sOrderField = this._sAppliedField;
@@ -392,31 +446,29 @@ BxDolGridAg.prototype._applySort = function (oSort) {
 };
 
 BxDolGridAg.prototype._setTotal = function (o) {
-    this._iTotal = parseInt(o.total, 10) || 0;
+    this._iTotal = Number.parseInt(o.total, 10) || 0;
     if (!o.total_f)
         return;
-    var e = document.querySelector('#' + this._sWrap + ' .bx-grid-header-controls-counter-value');
+    const e = document.querySelector('#' + this._sWrap + ' .bx-grid-header-controls-counter-value');
     if (e)
         e.textContent = o.total_f;
 };
 
 BxDolGridAg.prototype._rowHeight = function (oData) {
-    var iRow = this._iRowHeight + this._iRowGap;
+    const iRow = this._iRowHeight + this._iRowGap;
     if (!this._oExpand || !oData)
         return iRow;
-    var sId = String(oData[this._sFieldId]);
+    const sId = String(oData[this._sFieldId]);
     if (!this._oExpanded[sId])
         return iRow;
-    var a = this._oChildren[sId] || [];
-    var n = a.length || 1;
+    const n = (this._oChildren[sId] || []).length || 1;
     return iRow + n * this._iItemHeight + 8;
 };
 
 BxDolGridAg.prototype._layoutRow = function (node) {
     if (!node)
         return;
-    if (node.setRowHeight)
-        node.setRowHeight(this._rowHeight(node.data));
+    node.setRowHeight?.(this._rowHeight(node.data));
     if (!this._oApi)
         return;
     this._oApi.onRowHeightChanged();
@@ -429,29 +481,27 @@ BxDolGridAg.prototype._layoutRow = function (node) {
  * A few rows then leave no empty space above the bulk actions.
  */
 BxDolGridAg.prototype._fitHeight = function () {
-    var eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
-    if (!eGrid || !this._oApi || !this._oApi.getDisplayedRowCount)
+    const eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
+    if (!eGrid || !this._oApi?.getDisplayedRowCount)
         return;
 
-    var iMax = parseFloat(window.getComputedStyle(eGrid).maxHeight);
-    if (isNaN(iMax))
+    let iMax = Number.parseFloat(globalThis.getComputedStyle(eGrid).maxHeight);
+    if (Number.isNaN(iMax))
         iMax = Infinity;
 
-    var iCount = this._oApi.getDisplayedRowCount();
+    const iCount = this._oApi.getDisplayedRowCount();
     if (!iCount)
         return;
 
-    var iHeight = 44 + 2;
-    for (var i = 0; i < iCount && iHeight < iMax; i++) {
-        var oNode = this._oApi.getDisplayedRowAtIndex(i);
-        iHeight += oNode && oNode.rowHeight ? oNode.rowHeight : this._iRowHeight + this._iRowGap;
-    }
+    let iHeight = 44 + 2;
+    for (let i = 0; i < iCount && iHeight < iMax; i++)
+        iHeight += this._oApi.getDisplayedRowAtIndex(i)?.rowHeight || this._iRowHeight + this._iRowGap;
 
     eGrid.style.height = Math.ceil(Math.min(iHeight, iMax)) + 'px';
 };
 
 BxDolGridAg.prototype.toggleExpand = function (sId, node) {
-    if (!this._oExpand || !node || !node.data)
+    if (!this._oExpand || !node?.data)
         return;
 
     if (this._oExpanded[sId]) {
@@ -460,62 +510,60 @@ BxDolGridAg.prototype.toggleExpand = function (sId, node) {
         return;
     }
 
-    var oMeta = node.data._meta || {};
+    const oMeta = node.data._meta || {};
     if (!oMeta[this._oExpand.set])
         return;
 
-    var self = this;
     if (this._oChildren[sId]) {
         this._oExpanded[sId] = true;
         this._layoutRow(node);
         return;
     }
 
-    this._fetchItems(oMeta, function (aRows) {
-        self._oChildren[sId] = aRows || [];
-        self._oExpanded[sId] = true;
-        self._layoutRow(node);
+    this._fetchItems(oMeta, (aRows) => {
+        this._oChildren[sId] = aRows || [];
+        this._oExpanded[sId] = true;
+        this._layoutRow(node);
     });
 };
 
+/**
+ * The items of an opened row, all of them: the first request asks for 500, and a longer list is
+ * asked for once more by its total. The server caps what one request returns.
+ */
 BxDolGridAg.prototype._fetchItems = function (oMeta, fDone) {
-    var self = this;
-    var fLoad = function (iPer, bAgain) {
-        jQuery.getJSON(sUrlRoot + 'grid.php', self._itemsQuery(oMeta, iPer))
-            .done(function (o) {
-                o = o || {};
-                var a = o.data || [];
-                var n = parseInt(o.total, 10) || a.length;
+    const fLoad = (iPer, bAgain) => {
+        this._getJson(this._itemsQuery(oMeta, iPer))
+            .done((o) => {
+                const a = o?.data || [];
+                const n = Number.parseInt(o?.total, 10) || a.length;
                 if (bAgain && a.length && a.length < n) {
                     fLoad(n, false);
                     return;
                 }
                 fDone(a);
             })
-            .fail(function () {
-                fDone([]);
-            });
+            .fail(() => fDone([]));
     };
     fLoad(500, true);
 };
 
 BxDolGridAg.prototype._itemsQuery = function (oMeta, iPer) {
-    var oCfg = this._oExpand;
-    var o = { o: oCfg.object, a: 'data_ag' };
+    const oCfg = this._oExpand;
+    const o = { o: oCfg.object, a: 'data_ag' };
     o.set = oMeta[oCfg.set] || '';
     o.module = oMeta[oCfg.module] || '';
     o.start = 0;
     o.per_page = iPer;
-    if (this._oBx && this._oBx._sCsrfToken)
+    if (this._oBx?._sCsrfToken)
         o.csrf_token = this._oBx._sCsrfToken;
-    o._r = Math.random();
     return o;
 };
 
 BxDolGridAg.prototype._itemsBx = function (oMeta) {
-    var oCfg = this._oExpand;
+    const oCfg = this._oExpand;
     if (!this._oItemsBx) {
-        var oBxOpts = this._oCfg.bx || {};
+        const oBxOpts = this._oCfg.bx || {};
         this._oItemsBx = new BxDolGrid(oCfg.object, {
             csrf_token: oBxOpts.csrf_token || '',
             sortable: 0,
@@ -532,10 +580,7 @@ BxDolGridAg.prototype._itemsBx = function (oMeta) {
             text_search_input: '',
             columns: 1
         });
-        var self = this;
-        this._oItemsBx.setOnReload(function () {
-            self._reloadExpanded();
-        });
+        this._oItemsBx.setOnReload(() => this._reloadExpanded());
     }
     this._oItemsBx._oQueryAppend = {
         set: oMeta[oCfg.set] || '',
@@ -545,85 +590,84 @@ BxDolGridAg.prototype._itemsBx = function (oMeta) {
 };
 
 BxDolGridAg.prototype._reloadExpanded = function () {
-    var self = this;
     if (!this._oApi)
         return;
-    this._oApi.forEachNode(function (n) {
+    this._oApi.forEachNode((n) => {
         if (!n.data)
             return;
-        var sId = String(n.data[self._sFieldId]);
-        if (!self._oExpanded[sId])
+        const sId = String(n.data[this._sFieldId]);
+        if (!this._oExpanded[sId])
             return;
-        self._fetchItems(n.data._meta || {}, function (aRows) {
-            self._oChildren[sId] = aRows || [];
-            self._layoutRow(n);
+        this._fetchItems(n.data._meta || {}, (aRows) => {
+            this._oChildren[sId] = aRows || [];
+            this._layoutRow(n);
         });
     });
 };
 
-BxDolGridAg.prototype._onRowDragEnd = function (e) {
-    if (!this._oBx || !this._oApi || !e || !e.node || e.node.rowIndex == null || e.overIndex == null || e.overIndex < 0)
-        return;
-    if (e.node.rowIndex === e.overIndex)
-        return;
-
-    var sField = this._sFieldId;
-    var a = [];
-    this._oApi.forEachNode(function (n) {
-        if (n.data && n.data[sField] != null && n.rowIndex != null)
+/**
+ * Ids of the loaded rows in the order they are shown, or null when the rows are not one
+ * unbroken list from the first row (a block is still loading): a reorder then would save a
+ * wrong order.
+ */
+BxDolGridAg.prototype._loadedIds = function () {
+    const sField = this._sFieldId;
+    const a = [];
+    this._oApi.forEachNode((n) => {
+        if (n.data?.[sField] != null && n.rowIndex != null)
             a.push({ i: n.rowIndex, id: String(n.data[sField]) });
     });
-    a.sort(function (x, y) {
-        return x.i - y.i;
-    });
-    if (!a.length || a[0].i !== 0)
-        return;
-    for (var k = 1; k < a.length; k++) {
-        if (a[k].i !== a[k - 1].i + 1)
-            return;
-    }
+    a.sort((x, y) => x.i - y.i);
 
-    var aIds = [];
-    for (var i = 0; i < a.length; i++)
-        aIds.push(a[i].id);
+    if (!a.length || a.some((o, k) => o.i !== k))
+        return null;
 
-    var iFrom = e.node.rowIndex;
-    var iTo = e.overIndex;
-    if (iFrom < 0 || iFrom >= aIds.length || iTo < 0 || iTo >= aIds.length)
+    return a.map((o) => o.id);
+};
+
+BxDolGridAg.prototype._reorderQuery = function (sObject, aIds) {
+    const sKey = encodeURIComponent(sObject + '_row[]');
+    return aIds.map((sId) => sKey + '=' + encodeURIComponent(sId)).join('&');
+};
+
+BxDolGridAg.prototype._onRowDragEnd = function (e) {
+    if (!this._oBx || !this._oApi || e?.node?.rowIndex == null || e.overIndex == null || e.overIndex < 0)
         return;
 
-    var sId = aIds.splice(iFrom, 1)[0];
+    const iFrom = e.node.rowIndex;
+    const iTo = e.overIndex;
+    if (iFrom === iTo)
+        return;
+
+    const aIds = this._loadedIds();
+    if (!aIds || iFrom < 0 || iFrom >= aIds.length || iTo >= aIds.length)
+        return;
+
+    const sId = aIds.splice(iFrom, 1)[0];
     aIds.splice(iTo, 0, sId);
 
-    var sKey = encodeURIComponent(this._sObject + '_row[]');
-    var s = '';
-    for (var j = 0; j < aIds.length; j++)
-        s += (s ? '&' : '') + sKey + '=' + encodeURIComponent(aIds[j]);
-
-    this._oBx.action('reorder', {}, s, true);
+    this._oBx.action('reorder', {}, this._reorderQuery(this._sObject, aIds), true);
 };
 
 BxDolGridAg.prototype._syncChecks = function () {
-    var e = document.getElementById('bx-grid-table-' + this._sObject);
-    if (!e || !this._oApi || !this._oApi.getSelectedRows)
+    const e = document.getElementById('bx-grid-table-' + this._sObject);
+    if (!e || !this._oApi?.getSelectedRows)
         return;
 
-    var sName = this._sObject + '_check';
-    var sField = this._sFieldId;
-    var aRows = this._oApi.getSelectedRows() || [];
-    var eWrap = document.getElementById(this._sWrap);
-    if (eWrap)
-        eWrap.classList.toggle('bx-grid-ag-has-selection', aRows.length > 0);
+    const sName = this._sObject + '_check';
+    const sField = this._sFieldId;
+    const aRows = this._oApi.getSelectedRows() || [];
+    document.getElementById(this._sWrap)?.classList.toggle('bx-grid-ag-has-selection', aRows.length > 0);
     this._syncBulk(aRows.length);
     e.textContent = '';
-    for (var i = 0; i < aRows.length; i++) {
-        if (!aRows[i] || aRows[i][sField] == null)
+    for (const oRow of aRows) {
+        if (oRow?.[sField] == null)
             continue;
-        var oInput = document.createElement('input');
+        const oInput = document.createElement('input');
         oInput.type = 'checkbox';
         oInput.name = sName;
         oInput.checked = true;
-        oInput.value = aRows[i][sField];
+        oInput.value = oRow[sField];
         e.appendChild(oInput);
     }
 };
@@ -633,52 +677,86 @@ BxDolGridAg.prototype._syncChecks = function () {
  * how many, the bulk actions, and a button that clears the selection.
  */
 BxDolGridAg.prototype._syncBulk = function (iCount) {
-    var eBar = document.getElementById('bx-grid-ag-bulk-' + this._sObject);
+    const eBar = document.getElementById('bx-grid-ag-bulk-' + this._sObject);
     if (!eBar)
         return;
 
-    var eCount = eBar.querySelector('.bx-grid-ag-bulk-count');
+    const eCount = eBar.querySelector('.bx-grid-ag-bulk-count');
     if (eCount)
         eCount.textContent = String(this._oCfg.text_selected || '{0}').replace('{0}', iCount);
 
-    var bShow = iCount > 0;
+    const bShow = iCount > 0;
     if (eBar.hidden === !bShow)
         return;
     eBar.hidden = !bShow;
 
     if (!eBar._bxBound) {
         eBar._bxBound = true;
-        var self = this;
-        var eClear = eBar.querySelector('.bx-grid-ag-bulk-clear');
-        if (eClear)
-            eClear.addEventListener('click', function () {
-                if (self._oApi && self._oApi.deselectAll)
-                    self._oApi.deselectAll();
-            });
+        eBar.querySelector('.bx-grid-ag-bulk-clear')?.addEventListener('click', () => this._oApi?.deselectAll?.());
     }
 
     this._fitHeight();
 };
 
 BxDolGridAg.prototype._esc = function (s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
+    const oMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+    return String(s ?? '').replace(/[&<>"']/g, (c) => oMap[c]);
 };
 
-function BxDolGridAgCell() {}
+/**
+ * A link target from row data: http(s), mailto, tel or a path of this site. Anything else,
+ * a javascript: URL for one, is not used.
+ */
+BxDolGridAg.safeUrl = function (sUrl) {
+    const s = String(sUrl ?? '').trim();
+    if (s === '')
+        return '';
+    if (/^(?:https?:|mailto:|tel:)/i.test(s))
+        return s;
+    return /^[a-z][a-z0-9+.-]*:/i.test(s) ? '' : s;
+};
+
+BxDolGridAg.prototype._saveChildOrder = function (ePanel, oMeta, sMenuId) {
+    const oCfg = this._oExpand;
+    if (!oCfg)
+        return;
+    const sField = oCfg.field_id || 'id';
+    const aIds = [];
+    for (const eRow of ePanel.querySelectorAll('.bx-grid-ag-item')) {
+        if (eRow.dataset.id)
+            aIds.push(eRow.dataset.id);
+    }
+    if (aIds.length < 2)
+        return;
+
+    const oById = {};
+    for (const oItem of this._oChildren[sMenuId] || []) {
+        if (oItem?.[sField] != null)
+            oById[String(oItem[sField])] = oItem;
+    }
+    this._oChildren[sMenuId] = aIds.filter((sId) => oById[sId]).map((sId) => oById[sId]);
+
+    this._itemsBx(oMeta).action('reorder', {}, this._reorderQuery(oCfg.object, aIds), true);
+};
+
+/**
+ * Cell renderer of every column. AG Grid makes one per cell and calls init().
+ */
+function BxDolGridAgCell() {
+    this.eGui = null;
+    this._eItems = null;
+    this._eRow = null;
+}
 
 BxDolGridAgCell.prototype.init = function (params) {
     this.eGui = document.createElement('div');
     this.eGui.className = 'bx-grid-ag-cell';
-    this._eItems = null;
-    this._eRow = null;
 
-    var oAg = params.context && params.context.ag;
+    const oAg = params.context?.ag;
     if (!oAg)
         return;
 
-    var cell = params.value;
+    let cell = params.value;
     if ((cell == null || cell === '') && params.data)
         cell = params.data[params.colDef.field];
 
@@ -686,204 +764,17 @@ BxDolGridAgCell.prototype.init = function (params) {
     // and the expand column has nothing else to draw.
     this._draw(this.eGui, cell, params, oAg);
 
-    if (params.colDef && params.colDef.bxExpand) {
+    if (params.colDef?.bxExpand) {
         this._chevron(params, oAg);
         this._childItems(params, oAg);
     }
 };
 
 BxDolGridAgCell.prototype.destroy = function () {
-    if (this._eItems && this._eItems.parentNode)
-        this._eItems.parentNode.removeChild(this._eItems);
-    if (this._eRow)
-        this._eRow.classList.remove('bx-grid-ag-row-open');
+    this._eItems?.remove();
+    this._eRow?.classList.remove('bx-grid-ag-row-open');
     this._eItems = null;
     this._eRow = null;
-};
-
-BxDolGridAgCell.prototype._chevron = function (params, oAg) {
-    if (!oAg._oExpand || !params.data)
-        return;
-
-    var sId = String(params.data[oAg._sFieldId]);
-    var bOpen = !!oAg._oExpanded[sId];
-    var eBtn = document.createElement('button');
-    eBtn.type = 'button';
-    eBtn.className = 'bx-grid-ag-chevron' + (bOpen ? ' is-open' : '');
-    eBtn.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
-    eBtn.setAttribute('aria-label', 'Expand');
-    eBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
-    eBtn.addEventListener('click', function (ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        oAg.toggleExpand(sId, params.node);
-    });
-    if (this.eGui.firstChild)
-        this.eGui.insertBefore(eBtn, this.eGui.firstChild);
-    else
-        this.eGui.appendChild(eBtn);
-};
-
-BxDolGridAgCell.prototype._childItems = function (params, oAg) {
-    if (!params.data || !params.eGridCell)
-        return;
-    var sId = String(params.data[oAg._sFieldId]);
-    if (!oAg._oExpanded[sId])
-        return;
-
-    var eRow = params.eGridCell.closest ? params.eGridCell.closest('.ag-row') : null;
-    if (!eRow)
-        return;
-
-    var aItems = oAg._oChildren[sId] || [];
-    var oMeta = params.data._meta || {};
-    var ePanel = document.createElement('div');
-    ePanel.className = 'bx-grid-ag-items';
-    ePanel.style.top = (oAg._iRowGap / 2 + oAg._iRowHeight) + 'px';
-
-    if (!aItems.length) {
-        var eEmpty = document.createElement('div');
-        eEmpty.className = 'bx-grid-ag-item bx-grid-ag-item-empty';
-        eEmpty.textContent = oAg._oCfg.empty || '';
-        ePanel.appendChild(eEmpty);
-    } else {
-        for (var i = 0; i < aItems.length; i++)
-            ePanel.appendChild(this._childRow(aItems[i], oAg, oMeta));
-    }
-
-    eRow.classList.add('bx-grid-ag-row-open');
-    eRow.appendChild(ePanel);
-    this._eItems = ePanel;
-    this._eRow = eRow;
-    this._bindChildDrag(ePanel, oAg, oMeta, sId);
-};
-
-BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
-    var sField = oAg._oExpand.field_id || 'id';
-    var sId = oItem && oItem[sField] != null ? String(oItem[sField]) : '';
-    var eRow = document.createElement('div');
-    eRow.className = 'bx-grid-ag-item';
-    eRow.setAttribute('data-id', sId);
-
-    var eHandle = document.createElement('div');
-    eHandle.className = 'bx-grid-drag-handle';
-    var eGrip = document.createElement('i');
-    eGrip.className = 'sys-icon grip-vertical';
-    eHandle.appendChild(eGrip);
-    eRow.appendChild(eHandle);
-
-    var oReal = oAg._itemsBx(oMeta);
-    var oQuery = {};
-    oQuery[oAg._oExpand.set] = oMeta[oAg._oExpand.set] || '';
-    oQuery[oAg._oExpand.module] = oMeta[oAg._oExpand.module] || '';
-    var oBx = {
-        actionWithId: function () {
-            oReal._oQueryAppend = {
-                set: oQuery[oAg._oExpand.set],
-                module: oQuery[oAg._oExpand.module]
-            };
-            return oReal.actionWithId.apply(oReal, arguments);
-        }
-    };
-    var oChild = { _oBx: oBx, _sFieldId: sField };
-    if (oItem.switcher && oItem.switcher.type === 'switcher')
-        this._switch(eRow, oItem.switcher, { data: oItem, colDef: {} }, oChild);
-    if (oItem.switcher_api && oItem.switcher_api.type === 'switcher')
-        this._switch(eRow, oItem.switcher_api, { data: oItem, colDef: {} }, oChild);
-
-    var eTitle = document.createElement('span');
-    eTitle.className = 'bx-grid-ag-item-title';
-    var oTitle = oItem.title_system || {};
-    this._text(eTitle, oTitle.value == null ? '' : oTitle.value, oAg);
-    eRow.appendChild(eTitle);
-
-    if (oItem.actions && oItem.actions.type === 'actions') {
-        var eActs = document.createElement('span');
-        eActs.className = 'bx-grid-ag-item-actions';
-        this._actions(eActs, oItem.actions.data, { data: oItem }, oChild);
-        eRow.appendChild(eActs);
-    }
-
-    return eRow;
-};
-
-BxDolGridAgCell.prototype._bindChildDrag = function (ePanel, oAg, oMeta, sMenuId) {
-    var eDrag = null;
-    var aRows = ePanel.querySelectorAll('.bx-grid-ag-item');
-    for (var i = 0; i < aRows.length; i++) {
-        (function (eRow) {
-            var eHandle = eRow.querySelector('.bx-grid-drag-handle');
-            if (!eHandle)
-                return;
-            eHandle.addEventListener('mousedown', function () {
-                eRow.setAttribute('draggable', 'true');
-            });
-            eRow.addEventListener('dragstart', function (ev) {
-                eDrag = eRow;
-                eRow.classList.add('is-dragging');
-                if (ev.dataTransfer) {
-                    ev.dataTransfer.effectAllowed = 'move';
-                    ev.dataTransfer.setData('text/plain', eRow.getAttribute('data-id') || '');
-                }
-                ev.stopPropagation();
-            });
-            eRow.addEventListener('dragover', function (ev) {
-                if (!eDrag || eDrag === eRow)
-                    return;
-                ev.preventDefault();
-                var r = eRow.getBoundingClientRect();
-                var bAfter = ev.clientY > r.top + r.height / 2;
-                if (bAfter)
-                    eRow.parentNode.insertBefore(eDrag, eRow.nextSibling);
-                else
-                    eRow.parentNode.insertBefore(eDrag, eRow);
-            });
-            eRow.addEventListener('dragend', function () {
-                eRow.classList.remove('is-dragging');
-                eRow.removeAttribute('draggable');
-                if (eDrag) {
-                    eDrag = null;
-                    oAg._saveChildOrder(ePanel, oMeta, sMenuId);
-                }
-            });
-        })(aRows[i]);
-    }
-};
-
-BxDolGridAg.prototype._saveChildOrder = function (ePanel, oMeta, sMenuId) {
-    var oCfg = this._oExpand;
-    if (!oCfg)
-        return;
-    var sField = oCfg.field_id || 'id';
-    var aIds = [];
-    var aRows = ePanel.querySelectorAll('.bx-grid-ag-item');
-    for (var i = 0; i < aRows.length; i++) {
-        var sId = aRows[i].getAttribute('data-id');
-        if (sId)
-            aIds.push(sId);
-    }
-    if (aIds.length < 2)
-        return;
-
-    var aOld = this._oChildren[sMenuId] || [];
-    var m = {};
-    for (var j = 0; j < aOld.length; j++) {
-        if (aOld[j] && aOld[j][sField] != null)
-            m[String(aOld[j][sField])] = aOld[j];
-    }
-    var aNew = [];
-    for (var k = 0; k < aIds.length; k++) {
-        if (m[aIds[k]])
-            aNew.push(m[aIds[k]]);
-    }
-    this._oChildren[sMenuId] = aNew;
-
-    var sKey = encodeURIComponent(oCfg.object + '_row[]');
-    var s = '';
-    for (var n = 0; n < aIds.length; n++)
-        s += (s ? '&' : '') + sKey + '=' + encodeURIComponent(aIds[n]);
-
-    this._itemsBx(oMeta).action('reorder', {}, s, true);
 };
 
 BxDolGridAgCell.prototype.getGui = function () {
@@ -894,20 +785,161 @@ BxDolGridAgCell.prototype.refresh = function () {
     return false;
 };
 
+BxDolGridAgCell.prototype._chevron = function (params, oAg) {
+    if (!oAg._oExpand || !params.data)
+        return;
+
+    const sId = String(params.data[oAg._sFieldId]);
+    const bOpen = !!oAg._oExpanded[sId];
+    const eBtn = document.createElement('button');
+    eBtn.type = 'button';
+    eBtn.className = 'bx-grid-ag-chevron' + (bOpen ? ' is-open' : '');
+    eBtn.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
+    eBtn.setAttribute('aria-label', oAg._oCfg.text_expand || '');
+    eBtn.title = oAg._oCfg.text_expand || '';
+    eBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+    eBtn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        oAg.toggleExpand(sId, params.node);
+    });
+    this.eGui.prepend(eBtn);
+};
+
+BxDolGridAgCell.prototype._childItems = function (params, oAg) {
+    if (!params.data || !params.eGridCell)
+        return;
+    const sId = String(params.data[oAg._sFieldId]);
+    if (!oAg._oExpanded[sId])
+        return;
+
+    const eRow = params.eGridCell.closest('.ag-row');
+    if (!eRow)
+        return;
+
+    const aItems = oAg._oChildren[sId] || [];
+    const oMeta = params.data._meta || {};
+    const ePanel = document.createElement('div');
+    ePanel.className = 'bx-grid-ag-items';
+    ePanel.style.top = (oAg._iRowGap / 2 + oAg._iRowHeight) + 'px';
+
+    if (aItems.length) {
+        for (const oItem of aItems)
+            ePanel.appendChild(this._childRow(oItem, oAg, oMeta));
+    } else {
+        const eEmpty = document.createElement('div');
+        eEmpty.className = 'bx-grid-ag-item bx-grid-ag-item-empty';
+        eEmpty.textContent = oAg._oCfg.empty || '';
+        ePanel.appendChild(eEmpty);
+    }
+
+    eRow.classList.add('bx-grid-ag-row-open');
+    eRow.appendChild(ePanel);
+    this._eItems = ePanel;
+    this._eRow = eRow;
+    this._bindChildDrag(ePanel, oAg, oMeta, sId);
+};
+
+BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
+    const sField = oAg._oExpand.field_id || 'id';
+    const sId = oItem?.[sField] == null ? '' : String(oItem[sField]);
+    const eRow = document.createElement('div');
+    eRow.className = 'bx-grid-ag-item';
+    eRow.dataset.id = sId;
+
+    const eHandle = document.createElement('div');
+    eHandle.className = 'bx-grid-drag-handle';
+    eHandle.title = oAg._oCfg.text_order || '';
+    const eGrip = document.createElement('i');
+    eGrip.className = 'sys-icon grip-vertical';
+    eGrip.setAttribute('aria-hidden', 'true');
+    eHandle.appendChild(eGrip);
+    eRow.appendChild(eHandle);
+
+    // The items belong to another grid object: their actions go through its own BxDolGrid, with the menu's set.
+    const oReal = oAg._itemsBx(oMeta);
+    const oQuery = {
+        set: oMeta[oAg._oExpand.set] || '',
+        module: oMeta[oAg._oExpand.module] || ''
+    };
+    const oBx = {
+        actionWithId: (...aArgs) => {
+            oReal._oQueryAppend = { set: oQuery.set, module: oQuery.module };
+            return oReal.actionWithId(...aArgs);
+        }
+    };
+    const oChild = { _oBx: oBx, _sFieldId: sField, _oCfg: oAg._oCfg };
+    for (const sSwitch of ['switcher', 'switcher_api']) {
+        if (oItem[sSwitch]?.type === 'switcher')
+            this._switch(eRow, oItem[sSwitch], { data: oItem, colDef: {} }, oChild);
+    }
+
+    const eTitle = document.createElement('span');
+    eTitle.className = 'bx-grid-ag-item-title';
+    const oTitle = oItem.title_system || {};
+    this._text(eTitle, oTitle.value ?? '', oAg, !!oTitle.html);
+    eRow.appendChild(eTitle);
+
+    if (oItem.actions?.type === 'actions') {
+        const eActs = document.createElement('span');
+        eActs.className = 'bx-grid-ag-item-actions';
+        this._actions(eActs, oItem.actions.data, { data: oItem }, oChild);
+        eRow.appendChild(eActs);
+    }
+
+    return eRow;
+};
+
+BxDolGridAgCell.prototype._bindChildDrag = function (ePanel, oAg, oMeta, sMenuId) {
+    let eDrag = null;
+    for (const eRow of ePanel.querySelectorAll('.bx-grid-ag-item')) {
+        const eHandle = eRow.querySelector('.bx-grid-drag-handle');
+        if (!eHandle)
+            continue;
+
+        eHandle.addEventListener('mousedown', () => eRow.setAttribute('draggable', 'true'));
+        eRow.addEventListener('dragstart', (ev) => {
+            eDrag = eRow;
+            eRow.classList.add('is-dragging');
+            if (ev.dataTransfer) {
+                ev.dataTransfer.effectAllowed = 'move';
+                ev.dataTransfer.setData('text/plain', eRow.dataset.id || '');
+            }
+            ev.stopPropagation();
+        });
+        eRow.addEventListener('dragover', (ev) => {
+            if (!eDrag || eDrag === eRow)
+                return;
+            ev.preventDefault();
+            const r = eRow.getBoundingClientRect();
+            if (ev.clientY > r.top + r.height / 2)
+                eRow.after(eDrag);
+            else
+                eRow.before(eDrag);
+        });
+        eRow.addEventListener('dragend', () => {
+            eRow.classList.remove('is-dragging');
+            eRow.removeAttribute('draggable');
+            if (eDrag) {
+                eDrag = null;
+                oAg._saveChildOrder(ePanel, oMeta, sMenuId);
+            }
+        });
+    }
+};
+
 BxDolGridAgCell.prototype._draw = function (eGui, cell, params, oAg) {
     if (cell == null || cell === '')
         return;
 
     if (typeof cell !== 'object') {
-        this._text(eGui, cell, oAg);
+        this._text(eGui, cell, oAg, false);
         return;
     }
 
-    var oBx = oAg._oBx;
-    var sType = cell.type || 'text';
-    switch (sType) {
+    switch (cell.type || 'text') {
         case 'text':
-            this._text(eGui, cell.value == null ? '' : cell.value, oAg);
+            this._text(eGui, cell.value ?? '', oAg, !!cell.html);
             break;
         case 'price':
             eGui.textContent = this._pair(cell.value, 'value', 'currency');
@@ -917,7 +949,7 @@ BxDolGridAgCell.prototype._draw = function (eGui, cell, params, oAg) {
             break;
         case 'time':
         case 'datetime':
-            eGui.textContent = this._when(cell.data, sType === 'datetime');
+            eGui.textContent = this._when(cell.data, cell.type === 'datetime');
             break;
         case 'link':
             this._link(eGui, cell.data || {});
@@ -938,105 +970,152 @@ BxDolGridAgCell.prototype._draw = function (eGui, cell, params, oAg) {
         case 'checkbox':
             break;
         default:
-            if (typeof cell.value === 'string' || typeof cell.value === 'number')
-                this._text(eGui, cell.value, oAg);
-            else if (typeof cell.data === 'string')
-                this._text(eGui, cell.data, oAg);
+            this._other(eGui, cell, oAg);
             break;
     }
 };
 
-BxDolGridAgCell.prototype._text = function (eGui, mixed, oAg) {
-    var s = mixed == null ? '' : String(mixed);
-    var e = document.createElement('span');
+/**
+ * A cell type this script does not know is shown as its text, never as HTML.
+ */
+BxDolGridAgCell.prototype._other = function (eGui, cell, oAg) {
+    if (typeof cell.value === 'string' || typeof cell.value === 'number')
+        this._text(eGui, cell.value, oAg, false);
+    else if (typeof cell.data === 'string')
+        this._text(eGui, cell.data, oAg, false);
+};
+
+/**
+ * bHtml: the server flagged the value as what the classic grid prints inside the cell (escaped
+ * text, or the markup of the grid's own cell method). Anything else is text.
+ */
+BxDolGridAgCell.prototype._text = function (eGui, mixed, oAg, bHtml) {
+    const e = document.createElement('span');
     e.className = 'bx-grid-ag-text';
-    if (/<[a-z!/]/i.test(s)) {
-        e.innerHTML = s;
-        eGui.appendChild(e);
-        if (window.jQuery) {
-            if (jQuery.fn.bxProcessHtml)
-                jQuery(e).bxProcessHtml();
-            if (oAg._oBx && oAg._oBx._bindActionsSingle)
-                oAg._oBx._bindActionsSingle(jQuery(e));
-        }
-    } else {
-        e.textContent = s;
-        eGui.appendChild(e);
+    eGui.appendChild(e);
+
+    if (!bHtml) {
+        e.textContent = String(mixed ?? '');
+        e.title = e.textContent;
+        return;
     }
+
+    e.innerHTML = String(mixed ?? '');
+    // A column cuts long text with an ellipsis: plain text is there in full when pointed at.
+    if (!e.firstElementChild)
+        e.title = e.textContent;
+    if (!e.firstElementChild || !globalThis.jQuery)
+        return;
+
+    if (jQuery.fn.bxProcessHtml)
+        jQuery(e).bxProcessHtml();
+    oAg._oBx?._bindActionsSingle?.(jQuery(e));
 };
 
 BxDolGridAgCell.prototype._pair = function (v, sA, sB) {
-    if (v && typeof v === 'object') {
-        var a = [];
-        if (v[sA] != null && v[sA] !== '')
-            a.push(v[sA]);
-        if (v[sB] != null && v[sB] !== '')
-            a.push(v[sB]);
-        return a.join(' ');
-    }
-    return v == null ? '' : String(v);
+    if (v && typeof v === 'object')
+        return [v[sA], v[sB]].filter((m) => m != null && m !== '').join(' ');
+
+    return String(v ?? '');
 };
 
 BxDolGridAgCell.prototype._when = function (nStamp, bTime) {
-    var n = Number(nStamp);
+    const n = Number(nStamp);
     if (!n)
         return '';
-    var d = new Date(n * 1000);
-    if (isNaN(d.getTime()))
+    const d = new Date(n * 1000);
+    if (Number.isNaN(d.getTime()))
         return '';
     return bTime ? d.toLocaleString() : d.toLocaleDateString();
 };
 
 BxDolGridAgCell.prototype._link = function (eGui, oLink) {
-    var e = document.createElement(oLink.url ? 'a' : 'span');
-    if (oLink.url)
-        e.setAttribute('href', oLink.url);
+    const sUrl = BxDolGridAg.safeUrl(oLink.url);
+    const e = document.createElement(sUrl ? 'a' : 'span');
+    if (sUrl)
+        e.setAttribute('href', sUrl);
     e.textContent = oLink.text || '';
     eGui.appendChild(e);
 };
 
 BxDolGridAgCell.prototype._switch = function (eGui, cell, params, oAg) {
-    var bOn = cell.data == 1 || cell.data === 'active';
-    var eCont = document.createElement('div');
+    // 'on' is the classic grid's own answer (_isSwitcherOn). Older data has only the field's value.
+    const bOn = cell.on == null ? (cell.data == 1 || cell.data === 'active') : Number(cell.on) === 1;
+    const eCont = document.createElement('div');
     eCont.className = 'bx-switcher-cont relative ' + (bOn ? 'on' : 'off');
 
-    var eBtn = document.createElement('button');
+    const eBtn = document.createElement('button');
     eBtn.type = 'button';
     eBtn.className = 'relative inline-flex flex-shrink-0 h-6 w-11 ring-1 ring-gray-300 dark:ring-gray-700 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 dark:focus:ring-blue-400';
     eBtn.setAttribute('role', 'switch');
     eBtn.setAttribute('aria-checked', bOn ? 'true' : 'false');
-    if (params.colDef.headerName)
-        eBtn.setAttribute('aria-label', params.colDef.headerName);
+    // The name the classic grid gives the switch: what it does and the row's title.
+    const sLabel = cell.label || params.colDef.headerName || '';
+    if (sLabel) {
+        eBtn.setAttribute('aria-label', sLabel);
+        eBtn.title = sLabel;
+    }
 
-    var eKnob = document.createElement('span');
+    const eKnob = document.createElement('span');
     eKnob.setAttribute('aria-hidden', 'true');
     eKnob.className = 'inline-block h-5 w-5 rounded-full shadow transform ring-0 transition ease-in-out duration-200 pointer-events-none';
     eBtn.appendChild(eKnob);
     eCont.appendChild(eBtn);
 
-    var sId = params.data ? params.data[oAg._sFieldId] : '';
-    var sAction = cell.action || 'enable';
-    eBtn.addEventListener('click', function (ev) {
+    const sId = params.data ? params.data[oAg._sFieldId] : '';
+    const sAction = cell.action || 'enable';
+    eBtn.addEventListener('click', (ev) => {
         ev.preventDefault();
-        var bNext = eCont.classList.contains('off');
+        const bNext = eCont.classList.contains('off');
         eCont.classList.toggle('on', bNext);
         eCont.classList.toggle('off', !bNext);
         eBtn.setAttribute('aria-checked', bNext ? 'true' : 'false');
-        if (oAg._oBx)
-            oAg._oBx.actionWithId(sId, sAction, { checked: bNext ? 1 : 0 }, '', false, 0);
+        // The row keeps its data while the grid redraws it (scrolled away and back, opened, closed):
+        // the new state goes there too, or the switch would come back as it was loaded.
+        cell.on = bNext ? 1 : 0;
+        this._syncRowActions(eCont);
+        oAg._oBx?.actionWithId(sId, sAction, { checked: bNext ? 1 : 0 }, '', false, 0);
     });
 
     eGui.appendChild(eCont);
 };
 
+/**
+ * The classic grid greys a row's actions while every switch of the row is off, and brings them
+ * back when one is turned on. The same here, for the actions that follow the row's state.
+ */
+BxDolGridAgCell.prototype._syncRowActions = function (eSwitch) {
+    const eRow = eSwitch.closest('.bx-grid-ag-item, .ag-row');
+    if (!eRow)
+        return;
+
+    // An opened menu row holds its items' rows too: only this row's own controls count.
+    const fOwn = (e) => e.closest('.bx-grid-ag-item, .ag-row') === eRow;
+    const bOn = Array.from(eRow.querySelectorAll('.bx-switcher-cont')).filter(fOwn).some((e) => e.classList.contains('on'));
+    for (const eBtn of eRow.querySelectorAll('button[bx_grid_action_single]:not([bx_grid_permanent_state])')) {
+        if (fOwn(eBtn))
+            this._disable(eBtn, !bOn);
+    }
+};
+
+BxDolGridAgCell.prototype._disable = function (eBtn, bDisabled) {
+    eBtn.classList.toggle('bx-btn-disabled', bDisabled);
+    if (bDisabled)
+        eBtn.setAttribute('aria-disabled', 'true');
+    else
+        eBtn.removeAttribute('aria-disabled');
+};
+
 BxDolGridAgCell.prototype._profile = function (eGui, d) {
-    var e = document.createElement(d.url ? 'a' : 'span');
+    const sUrl = BxDolGridAg.safeUrl(d.url);
+    const e = document.createElement(sUrl ? 'a' : 'span');
     e.className = 'bx-grid-ag-profile';
-    if (d.url)
-        e.setAttribute('href', d.url);
-    if (d.url_avatar) {
-        var eImg = document.createElement('img');
-        eImg.src = d.url_avatar;
+    if (sUrl)
+        e.setAttribute('href', sUrl);
+    const sAvatar = BxDolGridAg.safeUrl(d.url_avatar);
+    if (sAvatar) {
+        const eImg = document.createElement('img');
+        eImg.src = sAvatar;
         eImg.alt = '';
         e.appendChild(eImg);
     }
@@ -1045,117 +1124,104 @@ BxDolGridAgCell.prototype._profile = function (eGui, d) {
 };
 
 BxDolGridAgCell.prototype._actions = function (eGui, aActions, params, oAg) {
-    if (!aActions || !aActions.length)
+    if (!aActions?.length)
         return;
 
     eGui.classList.add('bx-grid-ag-actions');
-    var sId = params.data ? params.data[oAg._sFieldId] : '';
-    for (var i = 0; i < aActions.length; i++) {
-        var a = aActions[i];
-        if (!a || typeof a !== 'object' || !a.name)
-            continue;
-
-        var eBtn = document.createElement('button');
-        eBtn.type = 'button';
-        eBtn.className = 'bx-btn bx-btn-small bx-def-margin-thd';
-        if (a.title) {
-            eBtn.title = a.title;
-            eBtn.setAttribute('aria-label', a.title);
-        }
-        if (a.icon)
-            this._actionIcon(eBtn, a.icon);
-        if (!parseInt(a.icon_only, 10) && a.title) {
-            var eLabel = document.createElement('u');
-            eLabel.textContent = a.title;
-            eBtn.appendChild(eLabel);
-        }
-
-        // A settings button carries the classic onclick that opens its menu. Calling the action
-        // instead would skip that menu.
-        var oAttr = a.attr && typeof a.attr === 'object' ? a.attr : {};
-        var sOnClick = oAttr.onclick ? String(oAttr.onclick) : '';
-        var aKeep = ['bx_grid_action_single', 'bx_grid_action_data', 'bx_grid_action_confirm', 'bx_grid_action_reset_paginate', 'bx-popup-id'];
-        for (var k = 0; k < aKeep.length; k++) {
-            if (oAttr[aKeep[k]] != null && oAttr[aKeep[k]] !== '')
-                eBtn.setAttribute(aKeep[k], oAttr[aKeep[k]]);
-        }
-        if (!eBtn.getAttribute('bx_grid_action_data') && sId !== '')
-            eBtn.setAttribute('bx_grid_action_data', sId);
-
-        if (sOnClick) {
-            eBtn.setAttribute('onclick', sOnClick);
-            eBtn.addEventListener('click', function (ev) {
-                ev.stopPropagation();
-            });
-        } else {
-            (function (sName, iConfirm) {
-                eBtn.addEventListener('click', function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    if (oAg._oBx)
-                        oAg._oBx.actionWithId(sId, sName, {}, '', false, iConfirm);
-                });
-            })(a.name, a.confirm ? 1 : 0);
-        }
-
-        eGui.appendChild(eBtn);
+    const sId = params.data ? params.data[oAg._sFieldId] : '';
+    for (const oAction of aActions) {
+        if (oAction && typeof oAction === 'object' && oAction.name)
+            eGui.appendChild(this._action(oAction, sId, oAg));
     }
 };
 
+/**
+ * One row action as the classic grid's button: its icon and title, the bx_grid_* attributes
+ * BxDolGrid reads, and the disabled look of an action the row does not allow now.
+ */
+BxDolGridAgCell.prototype._action = function (oAction, sId, oAg) {
+    const eBtn = document.createElement('button');
+    eBtn.type = 'button';
+    eBtn.className = 'bx-btn bx-btn-small bx-def-margin-thd';
+    const sLabel = oAction.title || oAction.label || '';
+    if (sLabel) {
+        eBtn.title = sLabel;
+        eBtn.setAttribute('aria-label', sLabel);
+    }
+    if (oAction.icon)
+        this._actionIcon(eBtn, oAction.icon);
+    if (!Number.parseInt(oAction.icon_only, 10) && oAction.title) {
+        const eLabel = document.createElement('u');
+        eLabel.textContent = oAction.title;
+        eBtn.appendChild(eLabel);
+    }
+
+    const oAttr = oAction.attr && typeof oAction.attr === 'object' ? oAction.attr : {};
+    for (const sKeep of ['bx_grid_action_single', 'bx_grid_action_data', 'bx_grid_action_confirm', 'bx_grid_action_reset_paginate', 'bx_grid_permanent_state', 'bx-popup-id']) {
+        if (oAttr[sKeep] != null && oAttr[sKeep] !== '')
+            eBtn.setAttribute(sKeep, oAttr[sKeep]);
+    }
+    if (!eBtn.getAttribute('bx_grid_action_data') && sId !== '')
+        eBtn.setAttribute('bx_grid_action_data', sId);
+
+    if (Number(oAction.disabled))
+        this._disable(eBtn, true);
+
+    // A settings button carries the classic onclick that opens its menu. Calling the action
+    // instead would skip that menu. The attribute comes from the grid's own action definition.
+    const sOnClick = oAttr.onclick ? String(oAttr.onclick) : '';
+    const sName = oAction.name;
+    const iConfirm = oAction.confirm ? 1 : 0;
+
+    // Added before the onclick attribute, so it runs first and can stop a disabled button's onclick.
+    eBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        if (eBtn.classList.contains('bx-btn-disabled')) {
+            ev.preventDefault();
+            ev.stopImmediatePropagation();
+            return;
+        }
+        if (sOnClick)
+            return;
+
+        ev.preventDefault();
+        oAg._oBx?.actionWithId(sId, sName, {}, '', false, iConfirm);
+    });
+
+    if (sOnClick)
+        eBtn.setAttribute('onclick', sOnClick);
+
+    return eBtn;
+};
+
 BxDolGridAgCell.prototype._actionIcon = function (eBtn, sIcon) {
-    var s = String(sIcon || '');
+    const s = String(sIcon || '');
     if (/<svg[\s>]/i.test(s)) {
-        var eSvg = this._svgNode(s);
+        const eSvg = this._svgNode(s);
         if (eSvg)
             eBtn.appendChild(eSvg);
         return;
     }
 
-    var sClass = s.replace(/[^A-Za-z0-9_ -]/g, '').replace(/^\s+|\s+$/g, '');
+    const sClass = s.replace(/[^\w -]/g, '').trim();
     if (!sClass)
         return;
-    var eIcon = document.createElement('i');
+    const eIcon = document.createElement('i');
     eIcon.className = 'sys-icon ' + sClass;
+    eIcon.setAttribute('aria-hidden', 'true');
     eBtn.appendChild(eIcon);
 };
 
+/**
+ * An icon given as SVG markup is rebuilt from a short list of shapes and attributes, so
+ * nothing that runs (a script, an event handler, a link) can come in with it.
+ */
 BxDolGridAgCell.prototype._svgNode = function (sMarkup) {
-    var eWrap = document.createElement('div');
-    eWrap.innerHTML = String(sMarkup);
-    var eSrc = eWrap.querySelector('svg');
+    const eSrc = new DOMParser().parseFromString(String(sMarkup), 'text/html').querySelector('svg');
     if (!eSrc)
         return null;
 
-    var aAllowed = { svg: 1, path: 1, circle: 1, rect: 1, g: 1, line: 1, polyline: 1, polygon: 1, ellipse: 1, title: 1 };
-    var aAttr = {
-        viewBox: 1, width: 1, height: 1, fill: 1, stroke: 1, 'stroke-width': 1, 'stroke-linecap': 1, 'stroke-linejoin': 1,
-        d: 1, cx: 1, cy: 1, r: 1, x: 1, y: 1, x1: 1, y1: 1, x2: 1, y2: 1, rx: 1, ry: 1, points: 1, transform: 1,
-        xmlns: 1, 'fill-rule': 1, 'clip-rule': 1, opacity: 1
-    };
-    var fCopy = function (eFrom) {
-        var sTag = eFrom.tagName ? eFrom.tagName.toLowerCase() : '';
-        if (!aAllowed[sTag])
-            return null;
-        var e = document.createElementNS('http://www.w3.org/2000/svg', sTag);
-        for (var i = 0; i < eFrom.attributes.length; i++) {
-            var oA = eFrom.attributes[i];
-            if (!aAttr[oA.name])
-                continue;
-            if (/javascript:|url\s*\(/i.test(oA.value))
-                continue;
-            e.setAttribute(oA.name, oA.value);
-        }
-        for (var c = 0; c < eFrom.childNodes.length; c++) {
-            if (eFrom.childNodes[c].nodeType !== 1)
-                continue;
-            var eChild = fCopy(eFrom.childNodes[c]);
-            if (eChild)
-                e.appendChild(eChild);
-        }
-        return e;
-    };
-
-    var eSvg = fCopy(eSrc);
+    const eSvg = this._svgCopy(eSrc);
     if (!eSvg)
         return null;
     eSvg.setAttribute('class', 'sys-icon sys-icon-svg');
@@ -1163,34 +1229,64 @@ BxDolGridAgCell.prototype._svgNode = function (sMarkup) {
     return eSvg;
 };
 
+BxDolGridAgCell.prototype._svgCopy = function (eFrom) {
+    const aTags = ['svg', 'path', 'circle', 'rect', 'g', 'line', 'polyline', 'polygon', 'ellipse', 'title'];
+    const aAttrs = [
+        'viewBox', 'width', 'height', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
+        'd', 'cx', 'cy', 'r', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'rx', 'ry', 'points', 'transform',
+        'xmlns', 'fill-rule', 'clip-rule', 'opacity'
+    ];
+
+    const sTag = (eFrom.tagName || '').toLowerCase();
+    if (!aTags.includes(sTag))
+        return null;
+
+    const e = document.createElementNS('http://www.w3.org/2000/svg', sTag);
+    for (const oAttr of eFrom.attributes) {
+        if (aAttrs.includes(oAttr.name) && !/javascript:|url\s*\(/i.test(oAttr.value))
+            e.setAttribute(oAttr.name, oAttr.value);
+    }
+    for (const eNode of eFrom.children) {
+        const eChild = this._svgCopy(eNode);
+        if (eChild)
+            e.appendChild(eChild);
+    }
+    return e;
+};
+
 BxDolGridAgCell.prototype._secret = function (eGui, cell, params, oAg) {
-    var sMasked = typeof cell.value === 'string' ? cell.value : '';
-    var eWrap = document.createElement('div');
+    const sMasked = typeof cell.value === 'string' ? cell.value : '';
+    const eWrap = document.createElement('div');
     eWrap.className = 'bx-grid-secret';
 
-    var eVal = document.createElement('span');
+    const eVal = document.createElement('span');
     eVal.className = 'bx-grid-secret-value';
-    eVal.setAttribute('data-masked', sMasked);
+    eVal.dataset.masked = sMasked;
     eVal.textContent = sMasked;
     eWrap.appendChild(eVal);
 
-    var eToggle = document.createElement('a');
-    eToggle.href = 'javascript:void(0)';
+    const sRowId = params.data ? params.data[oAg._sFieldId] : '';
+    const sField = params.colDef.field || '';
+    const eToggle = document.createElement('button');
+    eToggle.type = 'button';
     eToggle.className = 'bx-grid-secret-toggle';
-    eToggle.setAttribute('bx_grid_secret_id', params.data ? params.data[oAg._sFieldId] : '');
-    eToggle.setAttribute('bx_grid_secret_field', params.colDef.field || '');
-    var eIcon = document.createElement('i');
+    // The title is the button's name: BxDolGrid changes it to "Hide" while the value is shown.
+    eToggle.title = oAg._oCfg.text_reveal || '';
+    eToggle.setAttribute('bx_grid_secret_id', sRowId);
+    eToggle.setAttribute('bx_grid_secret_field', sField);
+    const eIcon = document.createElement('i');
     eIcon.className = 'sys-icon eye';
+    eIcon.setAttribute('aria-hidden', 'true');
     eToggle.appendChild(eIcon);
 
-    eToggle.addEventListener('click', function (ev) {
+    eToggle.addEventListener('click', (ev) => {
         ev.preventDefault();
         if (!oAg._oBx)
             return;
         if (eWrap.classList.contains('bx-grid-secret-shown'))
             oAg._oBx.hideSecret(jQuery(eWrap));
         else
-            oAg._oBx.revealSecret(eToggle.getAttribute('bx_grid_secret_id'), eToggle.getAttribute('bx_grid_secret_field'));
+            oAg._oBx.revealSecret(sRowId, sField);
     });
 
     eWrap.appendChild(eToggle);

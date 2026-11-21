@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- AG grids: the name of the button that opens a row's items (a menu's items in Studio > Navigation > Menus). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_grid_txt_show_items"><![CDATA[Show items]]></string_add>
+</resources>

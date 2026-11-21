@@ -13,6 +13,9 @@ class BxBaseStudioGrid extends BxDolStudioGrid
     function __construct($aOptions, $oTemplate = false)
     {
         parent::__construct($aOptions, $oTemplate);
+
+        // Studio styles select2, and its other selects are select2 fields (the page builder's page picker)
+        $this->_bAgSelect2 = true;
     }
 
     /**
@@ -37,8 +40,10 @@ class BxBaseStudioGrid extends BxDolStudioGrid
      */
     protected function _agActionIcon($sIcon)
     {
-        if(!is_string($sIcon) || !preg_match('/^[a-z0-9-]+$/i', $sIcon))
+        // _getIconLucide refuses anything that is not an icon name (an action with its own <svg>, for one)
+        if(!is_string($sIcon)) {
             return $sIcon;
+        }
 
         $sName = isset($this->_aActionIcons[$sIcon]) ? $this->_aActionIcons[$sIcon] : $sIcon;
         $sSvg = $this->_getIconLucide($sName);

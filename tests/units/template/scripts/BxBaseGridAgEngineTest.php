@@ -2,7 +2,8 @@
 
 /**
  * engine '' keeps the HTML table. engine 'ag' renders the AG Grid container and its data
- * action returns decodeDataAPI rows plus a total, without leaving the request in API mode.
+ * action returns typed cells (the _getCell* methods in their API shape, with the values the
+ * classic grid prints) plus a total, without leaving the request in API mode.
  */
 class BxBaseGridAgEngineTest extends BxDolTestCase
 {
@@ -191,6 +192,126 @@ class BxBaseGridAgEngineTest extends BxDolTestCase
         $this->assertCount(1, $a['data']);
         $this->assertSame(1, $a['total']);
         $this->assertSame('Bee', $a['data'][0]['title']['value']);
+    }
+
+    /**
+     * The classic grid escapes a row's text (_getCellData) before it prints it. The AG data carries
+     * the same escaped value and says it is HTML, so the client can insert it as the classic grid
+     * prints it and markup from the row never runs.
+     */
+    public function testDataAgEscapesRowTextAsTheClassicGridDoes(): void
+    {
+        $_GET['start'] = '0';
+        $_GET['per_page'] = '10';
+
+        $sTitle = '<img src=x onerror="alert(1)">Tom & Jerry';
+        $aField = ['name' => 'title', 'title' => 'Name', 'width' => '100%', 'chars_limit' => 0, 'translatable' => 0];
+        $oGrid = $this->grid([
+            'engine' => 'ag',
+            'source' => [
+                ['id' => 1, 'title' => $sTitle, 'active' => 1],
+            ],
+            'fields' => ['title' => $aField],
+        ]);
+
+        $a = $this->bxCallProtected($oGrid, '_getDataAg');
+        $aCell = $a['data'][0]['title'];
+
+        $this->assertSame('text', $aCell['type']);
+        $this->assertSame(1, $aCell['html']);
+        $this->assertStringNotContainsString('<', $aCell['value']);
+        $this->assertSame($sTitle, html_entity_decode($aCell['value'], ENT_QUOTES, 'UTF-8'));
+
+        // the classic cell prints the very same value
+        $this->assertSame($aCell['value'], $this->bxCallProtected($oGrid, '_getCellData', 'title', $aField, ['id' => 1, 'title' => $sTitle]));
+    }
+
+    public function testDataAgNeverReturnsMoreThanItsCap(): void
+    {
+        $_GET['start'] = '0';
+        $_GET['per_page'] = '100000';
+
+        $oGrid = $this->grid(['engine' => 'ag', 'paginate_per_page' => 20]);
+        list(, , , $iPerPage) = $this->bxCallProtected($oGrid, '_agWindow');
+        $this->assertSame($this->bxGetProtected($oGrid, '_iAgPerPageMax', BxBaseGrid::class), $iPerPage);
+
+        // a grid whose own page is larger than the cap keeps its page
+        $oGrid = $this->grid(['engine' => 'ag', 'paginate_per_page' => 1000]);
+        list(, , , $iPerPage) = $this->bxCallProtected($oGrid, '_agWindow');
+        $this->assertSame(1000, $iPerPage);
+
+        $_GET['per_page'] = '7';
+        list(, , , $iPerPage) = $this->bxCallProtected($oGrid, '_agWindow');
+        $this->assertSame(7, $iPerPage);
+    }
+
+    /**
+     * What the classic grid decides on the server for a row goes out with the AG data: a
+     * disabled checkbox, the state of the switch, and the disabled state of the row's actions.
+     */
+    public function testDataAgCarriesTheRowStateOfTheClassicGrid(): void
+    {
+        $_GET['start'] = '0';
+        $_GET['per_page'] = '10';
+
+        $aCol = ['title' => '', 'width' => '1%', 'chars_limit' => 0, 'translatable' => 0];
+        $oGrid = $this->grid([
+            'engine' => 'ag',
+            'source' => [
+                ['id' => 1, 'title' => 'On', 'active' => 1],
+                ['id' => 2, 'title' => 'Off', 'active' => 0],
+            ],
+            'actions_single' => [
+                'edit' => ['active' => 1, 'title' => 'Edit', 'icon' => 'pencil', 'icon_only' => 1, 'confirm' => 0],
+            ],
+            'fields' => [
+                'checkbox' => ['name' => 'checkbox'] + $aCol,
+                'switcher' => ['name' => 'switcher'] + $aCol,
+                'actions' => ['name' => 'actions'] + $aCol,
+            ],
+        ]);
+
+        $a = $this->bxCallProtected($oGrid, '_getDataAg');
+        list($aOn, $aOff) = $a['data'];
+
+        $this->assertSame(0, $aOn['checkbox']['disabled']);
+        $this->assertSame(1, $aOn['switcher']['on']);
+        $this->assertSame('edit', $aOn['actions']['data'][0]['name']);
+        $this->assertSame(0, $aOn['actions']['data'][0]['disabled']);
+
+        $this->assertSame(1, $aOff['checkbox']['disabled']);
+        $this->assertSame(0, $aOff['switcher']['on']);
+        $this->assertSame(1, $aOff['actions']['data'][0]['disabled']);
+    }
+
+    /**
+     * The engine switch is a console command. Nothing in the site root changes a grid on a GET,
+     * and the command leaves before UNA is loaded when it is not run from the console.
+     */
+    public function testEngineSwitchIsConsoleOnly(): void
+    {
+        $this->assertFileDoesNotExist(BX_DIRECTORY_PATH_ROOT . 'grid_engine.php');
+
+        $s = file_get_contents(BX_DIRECTORY_PATH_ROOT . 'scripts/grid_engine.php');
+        $iGuard = strpos($s, "PHP_SAPI !== 'cli'");
+        $iHeader = strpos($s, 'header.inc.php');
+        $this->assertNotFalse($iGuard);
+        $this->assertNotFalse($iHeader);
+        $this->assertLessThan($iHeader, $iGuard);
+    }
+
+    /**
+     * The client inserts a value as HTML only when the server flagged it, and asks for rows
+     * without a home-made random number in the request.
+     */
+    public function testClientInsertsHtmlOnlyWhenTheServerFlagsIt(): void
+    {
+        $s = file_get_contents(BX_DIRECTORY_PATH_ROOT . 'inc/js/classes/BxDolGridAg.js');
+
+        $this->assertStringNotContainsString('Math.random', $s);
+        $this->assertSame(1, preg_match('/_text = function \(eGui, mixed, oAg, bHtml\) \{(.*?)\n\};/s', $s, $aMatch));
+        $this->assertLessThan(strpos($aMatch[1], 'innerHTML'), strpos($aMatch[1], 'if (!bHtml)'));
+        $this->assertStringContainsString("this._text(eGui, cell.value ?? '', oAg, !!cell.html);", $s);
     }
 
     public function testDataAgRefusesAClassicGrid(): void

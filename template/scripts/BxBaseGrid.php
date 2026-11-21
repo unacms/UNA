@@ -34,6 +34,9 @@ class BxBaseGrid extends BxDolGrid
     protected $_iCharsLimitLinesMax = 6;
     protected $_fTextColumnsScale = null; ///< what the text columns' percent widths are multiplied by, see _getTextColumnsScale
     protected $_sCellClampText = ''; ///< the full text of the cell being built, when it is longer than one line: _getCellDefault wraps it
+    protected $_aAgActionNames = ['edit' => '_Edit', 'delete' => '_Delete']; ///< names of the icon-only row actions that have no title (engine 'ag')
+    protected $_bAgSelect2 = false; ///< the filter selects of an engine 'ag' grid are select2 fields: only where the page styles select2 (Studio)
+    protected $_iAgPerPageMax = 500; ///< the most rows one data_ag request returns (engine 'ag'), unless the grid's own page is larger
     protected $_aFilterAreaLabels = []; // filter name => accessible name (lang key or plain text); filter controls are rendered without a visible caption
 
     public function __construct ($aOptions, $oTemplate)
@@ -216,8 +219,9 @@ class BxBaseGrid extends BxDolGrid
     public function getCode ($isDisplayHeader = true)
     {
         // 'ag' is drawn by AG Grid. Every other engine, including empty, keeps the HTML grid below.
-        if ($this->_isAgEngine())
+        if ($this->_isAgEngine()) {
             return $this->_getCodeAg($isDisplayHeader);
+        }
 
         $this->_replaceMarkers ();
 
@@ -1593,24 +1597,34 @@ class BxBaseGrid extends BxDolGrid
 
     /**
      * Window the infinite grid asks for. A grid with no paginate GET names still scrolls:
-     * the data action then reads start and per_page.
+     * the data action then reads start and per_page. One request returns at most
+     * _iAgPerPageMax rows (or the grid's own page size, when that is larger), whatever
+     * per_page the request names.
      */
     protected function _agWindow()
     {
         $sStart = !empty($this->_aOptions['paginate_get_start']) ? (string)$this->_aOptions['paginate_get_start'] : 'start';
         $sPer = !empty($this->_aOptions['paginate_get_per_page']) ? (string)$this->_aOptions['paginate_get_per_page'] : 'per_page';
+        $iPerPageOwn = !empty($this->_aOptions['paginate_per_page']) ? (int)$this->_aOptions['paginate_per_page'] : 0;
 
         $iStart = 0;
-        if (bx_get($sStart) !== false && ($iStartGet = (int)bx_get($sStart)) >= 0)
+        if (bx_get($sStart) !== false && ($iStartGet = (int)bx_get($sStart)) >= 0) {
             $iStart = $iStartGet;
+        }
 
         $iPerPage = 10;
-        if (bx_get($sPer) !== false && ($iPerPageGet = (int)bx_get($sPer)) > 0)
+        if (bx_get($sPer) !== false && ($iPerPageGet = (int)bx_get($sPer)) > 0) {
             $iPerPage = $iPerPageGet;
-        else if (!empty($this->_aOptions['paginate_per_page']))
-            $iPerPage = (int)$this->_aOptions['paginate_per_page'];
+        } elseif ($iPerPageOwn > 0) {
+            $iPerPage = $iPerPageOwn;
+        }
 
-        return [$sStart, $sPer, $iStart, $iPerPage];
+        return [$sStart, $sPer, $iStart, min($iPerPage, max($this->_iAgPerPageMax, $iPerPageOwn))];
+    }
+
+    protected function _agOrderDir()
+    {
+        return 0 === strcasecmp('desc', (string)bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
     }
 
     /**
@@ -1619,8 +1633,9 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _getDataAg()
     {
-        if (!$this->_isAgEngine())
+        if (!$this->_isAgEngine()) {
             return ['data' => [], 'total' => 0];
+        }
 
         $this->_replaceMarkers();
 
@@ -1631,40 +1646,24 @@ class BxBaseGrid extends BxDolGrid
         $this->_aOptions['show_total_count'] = 1;
 
         try {
-            $sFilter = $this->_getFilterValue();
-            $sOrderField = $this->_getOrderValue();
-            $sOrderDir = 0 === strcasecmp('desc', (string)bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
-
             list(, , $iStart, $iPerPage) = $this->_agWindow();
 
-            $aData = $this->_getData($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
-            if (!is_array($aData))
-                $aData = [];
+            $aData = $this->_getData($this->_getFilterValue(), $this->_getOrderValue(), $this->_agOrderDir(), $iStart, $iPerPage);
 
-            $aDecoded = array_values($this->decodeDataAPI($aData));
-            $aSource = array_values($aData);
-            foreach ($aDecoded as $iIndex => $aOut) {
-                $aMeta = $this->_agRowMeta(isset($aSource[$iIndex]) && is_array($aSource[$iIndex]) ? $aSource[$iIndex] : []);
-                if ($aMeta)
-                    $aDecoded[$iIndex]['_meta'] = $aMeta;
-
-                foreach ($aOut as $sKey => $mixedCell) {
-                    if (!is_array($mixedCell) || !isset($mixedCell['type']) || $mixedCell['type'] !== 'actions' || empty($mixedCell['data']) || !is_array($mixedCell['data']))
-                        continue;
-
-                    foreach ($mixedCell['data'] as $iAction => $aAction) {
-                        if (is_array($aAction) && !empty($aAction['icon']))
-                            $aDecoded[$iIndex][$sKey]['data'][$iAction]['icon'] = $this->_agActionIcon($aAction['icon']);
-                    }
+            $aRows = [];
+            foreach (is_array($aData) ? $aData : [] as $aRow) {
+                if (is_array($aRow)) {
+                    $aRows[] = $this->_agRow($aRow);
                 }
             }
 
             $aResult = [
-                'data' => $aDecoded,
+                'data' => $aRows,
                 'total' => (int)$this->_iTotalCount,
             ];
-            if ((int)$iShowTotal === 1)
+            if ((int)$iShowTotal === 1) {
                 $aResult['total_f'] = $this->_getCounter();
+            }
 
             return $aResult;
         } finally {
@@ -1673,30 +1672,152 @@ class BxBaseGrid extends BxDolGrid
         }
     }
 
-    protected function _getCodeAg($isDisplayHeader = true)
+    /**
+     * One row of AG data: the id, a typed cell per column, and the row's meta when it has any.
+     */
+    protected function _agRow($aRow)
     {
-        $this->_replaceMarkers();
+        $sKeyId = $this->_aOptions['field_id'];
+        $aOut = [$sKeyId => isset($aRow[$sKeyId]) ? $aRow[$sKeyId] : ''];
 
-        if ($isDisplayHeader && empty($this->_aOptions['paginate_url']))
-            $this->resetQueryParams();
+        foreach ($this->_aOptions['fields'] as $sKey => $aField) {
+            $mixedCell = $this->_agCell($sKey, $aField, $aRow);
+            if ($mixedCell) {
+                $aOut[$sKey] = $mixedCell;
+            }
+        }
 
-        $sFilter = $this->_getFilterValue();
-        $sOrderField = $this->_getOrderValue();
-        $sOrderDir = 0 === strcasecmp('desc', (string)bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
+        $aMeta = $this->_agRowMeta($aRow);
+        if ($aMeta) {
+            $aOut['_meta'] = $aMeta;
+        }
 
-        list($sStartName, $sPerName, $iStart, $iPerPage) = $this->_agWindow();
+        return $aOut;
+    }
 
-        $aQueryAppend = array_merge(is_array($this->_aQueryAppend) ? $this->_aQueryAppend : [], is_array($this->_aMarkers) ? $this->_aMarkers : []);
-        if (!empty($this->_aQueryAppendExclude) && is_array($this->_aQueryAppendExclude))
-            $aQueryAppend = array_diff_key($aQueryAppend, array_flip($this->_aQueryAppendExclude));
+    /**
+     * One cell of AG data, from the same _getCell* method as decodeDataAPI, with what the classic
+     * grid does around that method:
+     * - the value is prepared as _getCellDesign prepares it: escaped (or shown by the field's
+     *   'display' function) by _getCellData, translated, and without tags in a column with
+     *   chars_limit. It is not cut to chars_limit: an AG column cuts its text in CSS;
+     * - a text cell is flagged 'html': its value is what the classic grid prints inside the
+     *   cell, so the client inserts it as HTML. A text value without the flag is inserted as text;
+     * - a checkbox, a switch and the row's actions carry the state the classic grid gives them
+     *   (_isCheckboxDisabled, _isSwitcherOn, the disabled state of the actions), and a switch
+     *   and an icon-only action carry a name for assistive tech.
+     *
+     * So a _getCell* method of an engine=ag grid returns, as a text value, HTML that is safe to
+     * print, as it does for the classic grid: text from the row is escaped before it goes in.
+     */
+    protected function _agCell($sKey, $aField, $aRow)
+    {
+        $sMethod = '_getCell' . $this->_genMethodName($sKey);
+        if (!method_exists($this, $sMethod)) {
+            $sMethod = !empty($aField['secret']) ? '_getCellSecret' : '_getCellDefault';
+        }
 
+        $mixedValue = $this->_getCellData($sKey, $aField, $aRow);
+        if (!empty($aField['translatable'])) {
+            $mixedValue = _t($mixedValue);
+            $aField['translatable'] = 0; // _getCellDefault translates in API mode, and this is translated already
+        }
+        if ($sMethod != '_getCellSecret' && is_string($mixedValue) && !empty($aField['chars_limit']) && (int)$aField['chars_limit'] > 0) {
+            $mixedValue = strip_tags($mixedValue);
+        }
+
+        $mixedCell = $this->$sMethod($mixedValue, $sKey, $aField, $aRow);
+        if (!is_array($mixedCell) || !isset($mixedCell['type'])) {
+            return $mixedCell;
+        }
+
+        switch ($mixedCell['type']) {
+            case 'text':
+                $mixedCell['html'] = 1;
+                break;
+
+            case 'checkbox':
+                $mixedCell['disabled'] = $this->_isCheckboxDisabled($aRow) ? 1 : 0;
+                break;
+
+            case 'switcher':
+                $sFieldActive = isset($mixedCell['fld']) ? $mixedCell['fld'] : '';
+                $mixedCell['on'] = $this->_isSwitcherOn(isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : false, $sKey, $aField, $aRow) ? 1 : 0;
+                $mixedCell['label'] = $this->_agSwitcherLabel($sKey, $aField, $aRow);
+                break;
+
+            case 'actions':
+                $mixedCell['data'] = $this->_agActions(is_array($mixedCell['data']) ? $mixedCell['data'] : [], $aRow);
+                break;
+
+            default:
+                break;
+        }
+
+        return $mixedCell;
+    }
+
+    /**
+     * Name of a row's switch for assistive tech, as _getCellSwitcherFor names it: what the switch
+     * does, then the row's title.
+     */
+    protected function _agSwitcherLabel($sKey, $aField, $aRow)
+    {
+        $sLabel = $this->_getSwitcherLabel($sKey, $aField);
+
+        foreach (['title', 'name', 'caption'] as $sTitleKey) {
+            if (!empty($aRow[$sTitleKey]) && is_string($aRow[$sTitleKey])) {
+                return $sLabel . ': ' . strip_tags(_t($aRow[$sTitleKey]));
+            }
+        }
+
+        return $sLabel;
+    }
+
+    /**
+     * Row actions for AG data: the icon the grid draws for the action, and the disabled state the
+     * classic grid gives the row's actions. An action with bx_grid_permanent_state keeps its state.
+     */
+    protected function _agActions($aActions, $aRow)
+    {
+        $mixedDisabledBehavior = $this->_getActionsDisabledBehavior($aRow);
+        $bDisabled = null === $mixedDisabledBehavior ? $this->_isRowDisabled($aRow) : (bool)$mixedDisabledBehavior;
+
+        foreach ($aActions as $iAction => $aAction) {
+            if (!is_array($aAction)) {
+                continue;
+            }
+
+            if (!empty($aAction['icon'])) {
+                $aActions[$iAction]['icon'] = $this->_agActionIcon($aAction['icon']);
+            }
+
+            $aActions[$iAction]['disabled'] = $bDisabled ? 1 : 0;
+
+            // An icon-only action with no title of its own (edit and delete in Studio) still needs a name.
+            $sName = isset($aAction['name']) ? $aAction['name'] : '';
+            if (empty($aAction['title']) && isset($this->_aAgActionNames[$sName])) {
+                $aActions[$iAction]['label'] = _t($this->_aAgActionNames[$sName]);
+            }
+        }
+
+        return $aActions;
+    }
+
+    /**
+     * Columns of the AG config: name, title, width, whether the column sorts, and its kind.
+     */
+    protected function _agColumns()
+    {
         $aOrderFields = $this->_getOrderFields();
         $aFields = !empty($this->_aOptions['fields']) && is_array($this->_aOptions['fields']) ? $this->_aOptions['fields'] : [];
+
         $aColumns = [];
         foreach ($aFields as $sKey => $aField) {
             $sTitle = isset($aField['title']) ? $aField['title'] : '';
-            if ($sTitle === '')
+            if ($sTitle === '') {
                 $sTitle = $this->_getCellHeaderFallbackTitle($sKey);
+            }
 
             $aColumns[] = [
                 'name' => $sKey,
@@ -1708,18 +1829,31 @@ class BxBaseGrid extends BxDolGrid
             ];
         }
 
-        $bReorder = false;
-        foreach ($aColumns as $aColumn) {
-            if ($aColumn['kind'] === 'order')
-                $bReorder = true;
+        return $aColumns;
+    }
+
+    /**
+     * Config the client reads: the AG options, and under 'bx' the options of the classic BxDolGrid
+     * script, which still runs the actions.
+     */
+    protected function _agConfig($aColumns)
+    {
+        $sFilter = $this->_getFilterValue();
+        $sOrderField = $this->_getOrderValue();
+        $sOrderDir = $this->_agOrderDir();
+
+        list($sStartName, $sPerName, $iStart, $iPerPage) = $this->_agWindow();
+
+        $aQueryAppend = array_merge(is_array($this->_aQueryAppend) ? $this->_aQueryAppend : [], is_array($this->_aMarkers) ? $this->_aMarkers : []);
+        if (!empty($this->_aQueryAppendExclude) && is_array($this->_aQueryAppendExclude)) {
+            $aQueryAppend = array_diff_key($aQueryAppend, array_flip($this->_aQueryAppendExclude));
         }
-        $sClassHeader = empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '';
 
         $aConfig = [
             'object' => $this->_sObject,
             'field_id' => $this->_aOptions['field_id'],
-            'sortable' => $bReorder ? 1 : 0,
-            'sorting' => empty($aOrderFields) ? 0 : 1,
+            'sortable' => in_array('order', array_column($aColumns, 'kind')) ? 1 : 0,
+            'sorting' => empty($this->_getOrderFields()) ? 0 : 1,
             'sorting_field' => $sOrderField,
             'sorting_dir' => $sOrderDir,
             'start' => $iStart,
@@ -1727,6 +1861,11 @@ class BxBaseGrid extends BxDolGrid
             'show_total_count' => empty($this->_aOptions['show_total_count']) ? 0 : 1,
             'empty' => _t('_Empty'),
             'text_selected' => _t('_sys_grid_txt_n_selected'),
+            'text_select' => _t('_sys_grid_lbl_select'),
+            'text_order' => _t('_sys_grid_lbl_order'),
+            'text_expand' => _t('_sys_grid_txt_show_items'),
+            'text_reveal' => _t('_sys_grid_secret_reveal'),
+            'select2' => $this->_bAgSelect2 ? 1 : 0,
             'columns' => $aColumns,
             'bx' => [
                 'csrf_token' => (string)BxDolForm::getCsrfToken(),
@@ -1746,13 +1885,24 @@ class BxBaseGrid extends BxDolGrid
                 'popup_options' => $this->_agMap($this->_aPopupOptions),
                 'query_append' => $this->_agMap($aQueryAppend),
                 'confirm_messages' => $this->_agMap($this->_aConfirmMessages),
-                'columns' => count($aFields),
+                'columns' => count($aColumns),
             ],
         ];
 
         $aExtra = $this->_agExtraConfig();
-        if ($aExtra)
-            $aConfig = array_merge($aConfig, $aExtra);
+
+        return $aExtra ? array_merge($aConfig, $aExtra) : $aConfig;
+    }
+
+    protected function _getCodeAg($isDisplayHeader = true)
+    {
+        $this->_replaceMarkers();
+
+        if ($isDisplayHeader && empty($this->_aOptions['paginate_url'])) {
+            $this->resetQueryParams();
+        }
+
+        $aConfig = $this->_agConfig($this->_agColumns());
 
         $aVars = [
             'object' => $this->_sObject,
@@ -1764,7 +1914,7 @@ class BxBaseGrid extends BxDolGrid
             'bx_if:display_header' => [
                 'condition' => $isDisplayHeader,
                 'content' => [
-                    'class' => $sClassHeader,
+                    'class' => empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '',
                     'bx_if:actions_independent' => [
                         'condition' => !empty($this->_aOptions['actions_independent']),
                         'content' => [
@@ -1808,29 +1958,33 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _agCellKind($sKey, $aField)
     {
-        if ($sKey === 'checkbox')
+        if ($sKey === 'checkbox') {
             return 'checkbox';
+        }
 
         $sMethod = '_getCellDefault';
-        if (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey)
+        if (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey) {
             $sMethod = '_getCellOrder';
+        }
 
         $sCustomMethod = '_getCell' . $this->_genMethodName($sKey);
-        if (method_exists($this, $sCustomMethod))
+        if (method_exists($this, $sCustomMethod)) {
             $sMethod = $sCustomMethod;
-        else if (!empty($aField['secret']))
+        } elseif (!empty($aField['secret'])) {
             $sMethod = '_getCellSecret';
+        }
 
         return $sMethod === '_getCellOrder' ? 'order' : '';
     }
 
     /**
      * Values the row needs that are not grid columns. A menu row carries its set, so the
-     * expanded line can ask the items grid for that set.
+     * expanded line can ask the items grid for that set. A row of an Array source may bring
+     * its own under '_meta'.
      */
     protected function _agRowMeta($aRow)
     {
-        return [];
+        return isset($aRow['_meta']) && is_array($aRow['_meta']) ? $aRow['_meta'] : [];
     }
 
     /**
@@ -1856,8 +2010,9 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _agMap($mixed)
     {
-        if (empty($mixed) || !is_array($mixed))
+        if (empty($mixed) || !is_array($mixed)) {
             return new stdClass();
+        }
 
         return $mixed;
     }
@@ -1867,14 +2022,18 @@ class BxBaseGrid extends BxDolGrid
         $this->_oTemplate->addCss([
             BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'ag-grid/|ag-grid.min.css',
             BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'ag-grid/|ag-theme-quartz.min.css',
-            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'select2/css/|select2.min.css',
             'grid_ag.css',
         ]);
         $this->_oTemplate->addJs([
             'ag-grid/ag-grid.min.js',
-            'select2/js/select2.min.js',
             'BxDolGridAg.js',
         ]);
+
+        // On a site page the filters stay the form's own selects, as in the classic grid.
+        if ($this->_bAgSelect2) {
+            $this->_oTemplate->addCss(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'select2/css/|select2.min.css');
+            $this->_oTemplate->addJs('select2/js/select2.min.js');
+        }
     }
 
     protected function _addJsCss()
