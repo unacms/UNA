@@ -27,6 +27,7 @@ class BxBaseStudioPolyglot extends BxDolStudioPolyglot
         $this->sSubpageUrl = BX_DOL_URL_STUDIO . 'polyglot.php?page=';
 
         $this->aMenuItems = [
+            BX_DOL_STUDIO_PGT_TYPE_LANGUAGES => ['icon' => 'mi-pgt-languages.svg'],
             BX_DOL_STUDIO_PGT_TYPE_SETTINGS => ['icon' => 'mi-pgt-settings.svg'],
             BX_DOL_STUDIO_PGT_TYPE_KEYS => ['icon' => 'mi-pgt-keys.svg'],
             BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_TEXT => ['icon' => 'mi-pgt-etemplates-text.svg'],
@@ -34,6 +35,7 @@ class BxBaseStudioPolyglot extends BxDolStudioPolyglot
         ];
 
         $this->aGridObjects = [
+            'languages' => 'sys_studio_lang_languages',
             'keys' => 'sys_studio_lang_keys',
             'etemplates' => 'sys_studio_lang_etemplates',
         ];
@@ -76,6 +78,20 @@ class BxBaseStudioPolyglot extends BxDolStudioPolyglot
             ];
 
         return parent::getPageMenu($aMenu);
+    }
+
+    /**
+     * The installed languages, with a link to the App Store to get more.
+     */
+    protected function getPgtLanguages()
+    {
+        return [
+            'caption' => '_adm_lmi_cpt_pgt_languages',
+            'actions' => [
+                ['name' => 'get-more', 'caption' => '_adm_pgt_btn_get_more', 'url' => BX_DOL_URL_STUDIO . 'store.php']
+            ],
+            'content' => $this->getGrid($this->aGridObjects['languages'])
+        ];
     }
 
     protected function getPgtSettings()

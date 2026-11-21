@@ -18,7 +18,9 @@
                 </div>
                 <div class="bx-dbd-htools-items">
                     <bx_repeat:items>
-                        <div class="bx-dbd-htools-item bx-dbd-htools-item-__status__"><span class="bx-dbd-tile" aria-hidden="true">__icon__</span><span class="bx-dbd-htools-name">__title__<span class="bx-dbd-htools-status sr-only">, __status_title__</span><bx_if:show_desc><span class="bx-dbd-htools-desc">__desc__</span></bx_if:show_desc></span><b class="bx-dbd-htools-value">__value__</b><span class="bx-dbd-htools-dot" aria-hidden="true"></span></div>
+                        <bx_if:show_plain><div class="bx-dbd-htools-item bx-dbd-htools-item-__status__"><span class="bx-dbd-tile" aria-hidden="true">__icon__</span><span class="bx-dbd-htools-name">__title__<span class="bx-dbd-htools-status sr-only">, __status_title__</span><bx_if:show_desc><span class="bx-dbd-htools-desc">__desc__</span></bx_if:show_desc></span><b class="bx-dbd-htools-value">__value__</b><span class="bx-dbd-htools-dot" aria-hidden="true"></span></div></bx_if:show_plain>
+                        <!-- a section with warnings or failures opens its rows in the Audit tab -->
+                        <bx_if:show_link><button type="button" class="bx-dbd-htools-item bx-dbd-htools-item-__status__ bx-dbd-htools-item-link" onclick="__js_object__.auditOpen('__name__')"><span class="bx-dbd-tile" aria-hidden="true">__icon__</span><span class="bx-dbd-htools-name">__title__<span class="bx-dbd-htools-status sr-only">, __status_title__</span><bx_if:show_desc><span class="bx-dbd-htools-desc">__desc__</span></bx_if:show_desc></span><b class="bx-dbd-htools-value">__value__</b><span class="bx-dbd-htools-dot" aria-hidden="true"></span><span class="bx-dbd-audit-chevron" aria-hidden="true">__icon_chevron__</span></button></bx_if:show_link>
                     </bx_repeat:items>
                 </div>
             </div>

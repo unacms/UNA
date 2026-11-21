@@ -7,12 +7,14 @@
  * @{
  */
 
+define('BX_DOL_STUDIO_PGT_TYPE_LANGUAGES', 'pgt_languages');
 define('BX_DOL_STUDIO_PGT_TYPE_SETTINGS', 'pgt_settings');
 define('BX_DOL_STUDIO_PGT_TYPE_KEYS', 'pgt_keys');
 define('BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_TEXT', 'etemplates_text');
 define('BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML', 'etemplates_html');
 
-define('BX_DOL_STUDIO_PGT_TYPE_DEFAULT', BX_DOL_STUDIO_PGT_TYPE_SETTINGS);
+// Polyglot opens on the list of installed languages.
+define('BX_DOL_STUDIO_PGT_TYPE_DEFAULT', BX_DOL_STUDIO_PGT_TYPE_LANGUAGES);
 
 class BxDolStudioPolyglot extends BxTemplStudioWidget
 {

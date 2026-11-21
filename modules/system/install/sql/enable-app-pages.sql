@@ -17,7 +17,6 @@ UPDATE `sys_pages_blocks` SET `config_api`='{"designbox": {"bg": true, "padding"
 
 -- 'active_api' switch
 -- Home: the apps show the home menu as the site does; the sign-in and join blocks stay off, the splash gets them anyway (BxDolSplash::AUTH_BLOCKS)
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `type`='menu' AND `content`='sys_homepage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system` IN ('_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_system_onboarding');
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title`='_sys_page_block_title_profile_menu';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';
@@ -32,7 +31,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_privacy' AND `m
 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_cooperator' AND `module`='system' AND `title_system`='_sys_page_block_title_system_cooperator' AND `title`='_sys_page_block_title_cooperator';
 
-UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{"designbox": {"bg": ["tablet", "desktop"]}}' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';
+UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{"designbox": {"bg": ["tablet", "desktop"]}}' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_account';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system` IN ('_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_system_create_profile');
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_membership_stats';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_admin' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_admin' AND `title`='_sys_page_block_title_dashboard_admin';

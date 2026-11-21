@@ -1232,7 +1232,9 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             $CNF = &$this->_oConfig->CNF;
 
             $aContentInfo['cover'] = $this->serviceGetCover($iContentId);
-            $aContentInfo['image'] = $this->serviceGetThumb($iContentId);            
+            $aContentInfo['image'] = $this->serviceGetThumb($iContentId);
+
+            $aContentInfo['cover_default'] = $this->getCoverDefaultAPI();
 
             $sKey = 'OBJECT_MENU_VIEW_ENTRY_META';
             if(!empty($CNF[$sKey]) && ($oMetaMenu = BxTemplMenu::getObjectInstance($CNF[$sKey])) !== false)
@@ -1341,8 +1343,9 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
 
         bx_import('BxDolConnection');
         $s = $this->serviceBrowseConnectionsQuick ($aContentInfo['profile_id'], 'sys_profiles_friends', BX_CONNECTIONS_CONTENT_TYPE_CONTENT, true);
+        // No friends: no block, rather than an empty box on the profile.
         if (!$s)
-            return MsgBox(_t('_sys_txt_empty'));
+            return false;
 
         return $s;
     }
@@ -2640,6 +2643,16 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
      * Cover block of an API profile page (@see BxBasePage::getPageAPI) and of the profile_cover system service.
      * The meta and actions menus must already have the entry, as BxBaseModProfileTemplate::prepareCoverApi gives it to them.
      */
+    /**
+     * The template's own art the site shows on a profile without a cover picture, light and dark, for the apps.
+     */
+    public function getCoverDefaultAPI()
+    {
+        list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri(BxDolTemplate::getInstance()->getCode()));
+
+        return ['light' => $sArtLight, 'dark' => $sArtDark ? $sArtDark : $sArtLight];
+    }
+
     public function getCoverBlockAPI($aContentInfo)
     {
         $CNF = &$this->_oConfig->CNF;
@@ -2667,6 +2680,7 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             'meta_menu' => '',
             'badges' => $oProfile->getBadges(),
             'cover' => $this->serviceGetCover($iContentId),
+            'cover_default' => $this->getCoverDefaultAPI(),
             'allow_edit' => $this->checkAllowedChangeCover($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED
         ];
 

@@ -26,10 +26,18 @@ class BxBaseMenuProfileStats extends BxTemplMenuAccountNotifications
     public function getMenuItems ()
     {
         $aItems = parent::getMenuItems();
-        if(empty($aItems) || !is_array($aItems) || $this->_bIsApi)
+        if(empty($aItems) || !is_array($aItems) || $this->_bIsApi || $this->_isTiles())
             return $aItems;
 
         return $this->_addMenuItemsMoreLess($aItems, $this->_iMenuItemsMin);
+    }
+
+    /**
+     * Tiles (the dashboard's "Your account") show every item: there is no Show more.
+     */
+    protected function _isTiles ()
+    {
+        return isset($this->_aObject['template_id']) && (int)$this->_aObject['template_id'] == BX_MENU_TEMPLATE_TILES;
     }
 
     protected function getMenuItemsRaw ()

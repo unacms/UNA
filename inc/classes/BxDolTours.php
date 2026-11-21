@@ -123,7 +123,7 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
      */
     public function getJoinSettingsUrl()
     {
-        return BX_DOL_URL_STUDIO . 'settings.php?page=system&category=account';
+        return BX_DOL_URL_STUDIO . 'settings.php?page=system_members&category=account';
     }
 
     /**

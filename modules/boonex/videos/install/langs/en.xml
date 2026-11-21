@@ -12,7 +12,7 @@
     <string name="_bx_videos_option_per_page_profile"><![CDATA[Number of items on profile/group page]]></string>
     <string name="_bx_videos_option_rss_num"><![CDATA[Number of items in RSS feed]]></string>
     <string name="_bx_videos_option_searchable_fields"><![CDATA[Searchable fields for keyword search]]></string>
-    <string name="_bx_videos_option_auto_activation_for_categories"><![CDATA[Auto-Activation For Categories]]></string>
+    <string name="_bx_videos_option_auto_activation_for_categories"><![CDATA[Auto-activation for categories]]></string>
     <string name="_bx_videos_option_per_page_for_favorites_lists"><![CDATA[Number of favorite lists per page]]></string>
 
     <string name="_bx_videos_form_entry"><![CDATA[Videos]]></string>
@@ -70,7 +70,7 @@
 	<string name="_bx_videos_acl_action_edit_any_entry"><![CDATA[Edit Any Video]]></string>
 	<string name="_bx_videos_acl_action_delete_any_entry"><![CDATA[Delete Any Video]]></string>
 
-	<string name="_bx_videos_page_title_sys_create_entry"><![CDATA[New Video]]></string>
+	<string name="_bx_videos_page_title_sys_create_entry"><![CDATA[New video]]></string>
 	<string name="_bx_videos_page_title_create_entry"><![CDATA[New video]]></string>
 	<string name="_bx_videos_page_block_title_create_entry"><![CDATA[New video]]></string>
 	<string name="_bx_videos_page_title_sys_edit_entry"><![CDATA[Edit]]></string>
@@ -79,7 +79,7 @@
     <string name="_bx_videos_page_title_sys_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_videos_page_title_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_videos_page_block_title_delete_entry"><![CDATA[Delete]]></string>
-	<string name="_bx_videos_page_title_sys_view_entry"><![CDATA[View Video]]></string>
+	<string name="_bx_videos_page_title_sys_view_entry"><![CDATA[View video]]></string>
 	<string name="_bx_videos_page_title_view_entry"><![CDATA[{title}]]></string>
 	<string name="_bx_videos_page_block_title_entry_text"><![CDATA[Text]]></string>
 	<string name="_bx_videos_page_block_title_entry_video"><![CDATA[Video]]></string>
@@ -92,7 +92,7 @@
     <string name="_bx_videos_page_title_browse_popular"><![CDATA[Popular Videos]]></string>
     <string name="_bx_videos_page_title_browse_top"><![CDATA[Top Videos]]></string>
     <string name="_bx_videos_page_title_browse_updated"><![CDATA[Updated Videos]]></string>
-    <string name="_bx_videos_page_title_sys_home"><![CDATA[Videos Home]]></string>
+    <string name="_bx_videos_page_title_sys_home"><![CDATA[Videos home]]></string>
     <string name="_bx_videos_page_title_home"><![CDATA[Videos]]></string>
     <string name="_bx_videos_page_block_title_featured_entries"><![CDATA[Featured Videos (Gallery View)]]></string>
     <string name="_bx_videos_page_block_title_featured_entries_view_extended"><![CDATA[Featured videos]]></string>
@@ -110,14 +110,14 @@
     <string name="_bx_videos_page_block_title_entry_attachments"><![CDATA[Attachments]]></string>
     <string name="_bx_videos_page_block_title_entry_all_actions"><![CDATA[All actions]]></string>
     <string name="_bx_videos_page_block_title_entry_rating"><![CDATA[Rating]]></string>
-    <string name="_bx_videos_page_title_sys_entries_popular"><![CDATA[Popular Videos]]></string>
+    <string name="_bx_videos_page_title_sys_entries_popular"><![CDATA[Popular videos]]></string>
     <string name="_bx_videos_page_title_entries_popular"><![CDATA[Popular videos]]></string>
-    <string name="_bx_videos_page_title_sys_entries_top"><![CDATA[Top Videos]]></string>
+    <string name="_bx_videos_page_title_sys_entries_top"><![CDATA[Top videos]]></string>
     <string name="_bx_videos_page_title_entries_top"><![CDATA[Top videos]]></string>
-    <string name="_bx_videos_page_title_sys_entries_updated"><![CDATA[Updated Videos]]></string>
+    <string name="_bx_videos_page_title_sys_entries_updated"><![CDATA[Updated videos]]></string>
     <string name="_bx_videos_page_title_entries_updated"><![CDATA[Updated videos]]></string>
     <string name="_bx_videos_page_title_sys_entries_search"><![CDATA[Search]]></string>
-    <string name="_bx_videos_page_title_sys_entries_favorites"><![CDATA[Favorites Videos]]></string>
+    <string name="_bx_videos_page_title_sys_entries_favorites"><![CDATA[Favorite videos]]></string>
     <string name="_bx_videos_page_title_entries_favorites"><![CDATA[Favorite videos]]></string>
     <string name="_bx_videos_page_title_entries_search"><![CDATA[Search]]></string>
     <string name="_bx_videos_page_block_title_search_form"><![CDATA[Search form]]></string>
@@ -134,7 +134,7 @@
     <string name="_bx_videos_page_block_title_favorites_entries_info"><![CDATA[Info]]></string>
     <string name="_bx_videos_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string>
     <string name="_bx_videos_page_block_title_favorites_entries_social_sharing"><![CDATA[Favorites List Social Actions]]></string>
-    <string name="_bx_videos_page_title_sys_view_entry_comments"><![CDATA[Video Comments]]></string>
+    <string name="_bx_videos_page_title_sys_view_entry_comments"><![CDATA[Video comments]]></string>
     <string name="_bx_videos_page_title_view_entry_comments"><![CDATA[Comments to {title}]]></string>
     <string name="_bx_videos_page_title_sys_entries_of_author"><![CDATA[Videos of author]]></string>
     <string name="_bx_videos_page_title_entries_of_author"><![CDATA[Videos by {display_name}]]></string>
@@ -150,8 +150,8 @@
     <string name="_bx_videos_page_block_title_multi_categories_in_context"><![CDATA[Categories in <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_videos_page_block_title_entries_actions"><![CDATA[Videos actions]]></string>
     <string name="_bx_videos_page_block_title_browse_cmts"><![CDATA[Videos' Comments]]></string>
-    <string name="_bx_videos_page_title_sys_manage"><![CDATA[Manage Own]]></string>
-    <string name="_bx_videos_page_title_sys_manage_administration"><![CDATA[Manage All]]></string>
+    <string name="_bx_videos_page_title_sys_manage"><![CDATA[Manage own]]></string>
+    <string name="_bx_videos_page_title_sys_manage_administration"><![CDATA[Manage all]]></string>
     <string name="_bx_videos_page_title_manage"><![CDATA[Manage]]></string>
     <string name="_bx_videos_page_block_title_system_manage"><![CDATA[Manage Own]]></string>
     <string name="_bx_videos_page_block_title_system_manage_administration"><![CDATA[Manage All]]></string>

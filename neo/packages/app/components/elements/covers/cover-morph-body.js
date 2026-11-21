@@ -202,6 +202,7 @@ export function CoverMorphBody({
                                 <CoverImage
                                     mode="cover"
                                     coverData={data?.cover}
+                                    defaultArt={data?.cover_default}
                                     profileData={profileData}
                                     allowEdit={bAllowEdit}
                                     allowSwitch={isAllowSwitch}
@@ -312,6 +313,7 @@ export function CoverMorphBody({
                                             : avatarExpandedKey
                                     }
                                     coverData={data?.cover}
+                                    defaultArt={data?.cover_default}
                                     profileData={profileData}
                                     allowEdit={bAllowEdit && !compactBar}
                                     allowSwitch={isAllowSwitch}

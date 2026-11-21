@@ -44,7 +44,8 @@ class BxBaseStudioSettings extends BxDolStudioSettings
 
         $aTypes = $aMenu = [];
         if($this->oDb->getTypes(['type' => 'all', 'not_in_group' =>[BX_DOL_STUDIO_STG_GROUP_TEMPLATES]], $aTypes) > 0 ) {
-            $aTypesGrouped = [];
+            // the system groups come first; the modules' types share the same order numbers
+            $aTypesGrouped = [BX_DOL_STUDIO_STG_GROUP_SYSTEM => []];
             foreach($aTypes as $aType)
                 $aTypesGrouped[$aType['group']][] = $aType;
 
@@ -53,7 +54,7 @@ class BxBaseStudioSettings extends BxDolStudioSettings
                     $aMenu[] = [
                         'name' => $aType['name'],
                         'icon' => $this->getMenuIcon($sGroup, $aType),
-                        'icon_bg' => $aType['name'] == 'system',
+                        'icon_bg' => $sGroup == BX_DOL_STUDIO_STG_GROUP_SYSTEM, // every group of the system settings
                         'link' => BX_DOL_URL_STUDIO . 'settings.php?page=' . $aType['name'],
                         'title' => $aType['caption'],
                         'selected' => $aType['name'] == $sType

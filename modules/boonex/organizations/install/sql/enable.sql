@@ -59,7 +59,7 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 ('bx_organizations_view_profile', 3, 'bx_organizations', '', '_bx_orgs_page_block_title_profile_location', 13, 2147483647, 'service', 'a:2:{s:6:\"module\";s:16:\"bx_organizations\";s:6:\"method\";s:15:\"entity_location\";}', 0, 0, 0, 0),
 ('bx_organizations_view_profile', 3, 'bx_organizations', '', '_bx_orgs_page_block_title_profile_info', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:16:\"bx_organizations\";s:6:\"method\";s:11:\"entity_info\";}', 0, 0, 1, 1),
 ('bx_organizations_view_profile', 3, 'bx_organizations', '', '_bx_orgs_page_block_title_profile_all_actions', 13, 2147483647, 'service', 'a:2:{s:6:"module";s:16:"bx_organizations";s:6:"method";s:18:"entity_all_actions";}', 0, 0, 0, 0),
-('bx_organizations_view_profile', 3, 'bx_organizations', '', '_bx_orgs_page_block_title_profile_membership', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:16:\"bx_organizations\";s:6:\"method\";s:18:\"profile_membership\";}', 0, 0, 1, 2),
+('bx_organizations_view_profile', 3, 'bx_organizations', '', '_bx_orgs_page_block_title_profile_membership', 11, 2147483646, 'service', 'a:2:{s:6:\"module\";s:16:\"bx_organizations\";s:6:\"method\";s:18:\"profile_membership\";}', 0, 0, 1, 2),
 ('bx_organizations_view_profile', 3, 'bx_organizations', '', '_bx_orgs_page_block_title_admins', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:16:\"bx_organizations\";s:6:\"method\";s:6:\"admins\";}', 0, 0, 1, 3),
 ('bx_organizations_view_profile', 3, 'bx_organizations', '', '_bx_orgs_page_block_title_profile_location', 3, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:13:\"locations_map\";s:6:\"params\";a:2:{i:0;s:16:\"bx_organizations\";i:1;s:12:\"{content_id}\";}s:5:\"class\";s:20:\"TemplServiceMetatags\";}', 0, 0, 1, 4),
 ('bx_organizations_view_profile', 2, 'bx_organizations', '', '_bx_orgs_page_block_title_entry_reports', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:16:\"bx_organizations\";s:6:\"method\";s:14:\"entity_reports\";}', 0, 0, 1, 6);
@@ -375,7 +375,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_organizations_view_meta', 'bx_organizations', '_bx_orgs_menu_set_title_view_profile_meta', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES 
-('bx_organizations_view_meta', 'bx_organizations', 'membership', '_sys_menu_item_title_system_vm_membership', '_sys_menu_item_title_vm_membership', '', '', '', '', '', 0, 2147483647, '', 1, 0, 10),
+('bx_organizations_view_meta', 'bx_organizations', 'membership', '_sys_menu_item_title_system_vm_membership', '_sys_menu_item_title_vm_membership', '', '', '', '', '', 0, 2147483646, '', 1, 0, 10),
 ('bx_organizations_view_meta', 'bx_organizations', 'badges', '_sys_menu_item_title_system_vm_badges', '_sys_menu_item_title_vm_badges', '', '', '', '', '', 0, 2147483647, '', 1, 0, 20),
 ('bx_organizations_view_meta', 'bx_organizations', 'members', '_sys_menu_item_title_system_sm_members', '_sys_menu_item_title_sm_members', '', '', '', '', '', 0, 2147483647, '', 1, 0, 30),
 ('bx_organizations_view_meta', 'bx_organizations', 'subscribers', '_sys_menu_item_title_system_sm_subscribers', '_sys_menu_item_title_sm_subscribers', '', '', '', '', '', 0, 2147483647, '', 1, 0, 40),

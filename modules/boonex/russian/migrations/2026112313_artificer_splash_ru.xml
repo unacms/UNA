@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<resources name="ru" flag="ru" title="Russian" category="Boonex Artificer Template">
+    <string_add name="_bx_artificer_page_block_title_system_splash"><![CDATA[Титульная страница со статистикой]]></string_add>
+</resources>

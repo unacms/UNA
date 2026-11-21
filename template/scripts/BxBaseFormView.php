@@ -1145,6 +1145,24 @@ BLAH;
         }
     }
 
+    /**
+     * Text fields that hold an email address are `type="email"`, so phones show the email keyboard. The form gets
+     * `novalidate`: its checkers say what is wrong, in its own words, not the browser.
+     * @param array $aNames input names
+     */
+    protected function _setEmailInputs($aNames)
+    {
+        $bAny = false;
+        foreach($aNames as $sName)
+            if(isset($this->aInputs[$sName]) && $this->aInputs[$sName]['type'] == 'text') {
+                $this->aInputs[$sName]['input_type'] = 'email';
+                $bAny = true;
+            }
+
+        if($bAny)
+            $this->aFormAttrs['novalidate'] = 'novalidate';
+    }
+
     protected function _isSecretInput($aInput)
     {
         return !empty($aInput['secret']) && !empty($aInput['name']);
@@ -1787,6 +1805,8 @@ BLAH;
         $aAttrs['type'] = $aInput['type'];
         if ('datetime' == $aAttrs['type'])
             $aAttrs['type'] = 'date_time';
+        else if ('text' == $aAttrs['type'] && ($aInput['input_type'] ?? '') == 'email') // @see _setEmailInputs
+            $aAttrs['type'] = 'email';
 
         switch($aAttrs['type']) {
             case 'datepicker':

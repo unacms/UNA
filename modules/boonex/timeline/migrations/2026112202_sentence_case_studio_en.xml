@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Enable infinite scroll]]></string_upd>
+    <string_upd name="_bx_timeline_option_filters_style"><![CDATA[Filters: style]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_sys_view"><![CDATA[Profile feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_sys_view_home"><![CDATA[Public feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_sys_view_hot"><![CDATA[Hot feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_sys_item"><![CDATA[Feed item]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_sys_item_brief"><![CDATA[Feed item preview]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_sys_manage_administration"><![CDATA[Manage all]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_system_item_repost_with"><![CDATA[Repost with text]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_system_item_repost_to"><![CDATA[Repost to context]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_system_item_mute"><![CDATA[Mute author]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_system_add_link"><![CDATA[Add link]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_system_add_video_record"><![CDATA[Record video]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_system_add_poll"><![CDATA[Add poll]]></string_upd>
+</resources>

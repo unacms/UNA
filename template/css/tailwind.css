@@ -1950,8 +1950,8 @@
         @apply rounded-xl;
     }
     /* Header: the current page's tab is in the accent colours, NEO's open and current buttons (blue-200 at 60% and blue-700,
-       blue-900 at 60% and blue-300 in dark), as the toolbar buttons that are current or open. NEO marks its tab with the accent label and a
-       sliding underline instead. */
+       blue-900 at 60% and blue-300 in dark), as the toolbar buttons that are current or open. NEO fills its current tab the same way.
+       */
     #bx-toolbar .bx-menu-main > .bx-menu-item.bx-menu-tab-active > .bx-stl-mil {
         @apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300 ring-0;
     }
@@ -2782,19 +2782,7 @@
     .bx-std .bx-std-segment:disabled {
         @apply opacity-50 cursor-default;
     }
-    /* Switches: translucent tracks instead of the site's tinted grays (the knob keeps its colours). */
-    .bx-std .bx-switcher-cont.off button {
-        @apply bg-black/10 dark:bg-white/10;
-    }
-    .bx-std .bx-switcher-cont.on button {
-        @apply bg-white dark:bg-white/10;
-    }
-    .bx-std .bx-switcher-cont.on button span {
-        @apply bg-green-500;
-    }
-    .bx-std .bx-switcher-cont.off button span {
-        @apply bg-white dark:bg-gray-500;
-    }
+    /* Switches are the site's ("Common elements: Forms: Switcher Input"): one look in Studio and on the site. */
     .bx-std .bx-theme-toggle {
         @apply flex p-0.5 rounded-full bg-black/5 dark:bg-white/5;
     }

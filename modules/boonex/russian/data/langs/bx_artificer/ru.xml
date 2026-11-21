@@ -32,6 +32,7 @@
     <!-- Pages -->
     <string name="_bx_artificer_page_block_title_splash"><![CDATA[Титульная страница]]></string>
     <string name="_bx_artificer_page_block_title_splash_lite"><![CDATA[Открытия]]></string>
+    <string name="_bx_artificer_page_block_title_system_splash"><![CDATA[Титульная страница со статистикой]]></string>
 
     <!-- Menus -->
     <string name="_bx_artificer_lmi_cpt_styles"><![CDATA[Стили]]></string>

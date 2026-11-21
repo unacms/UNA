@@ -372,8 +372,13 @@ CREATE TABLE `sys_options_types` (
 --
 -- Dumping data for tables `sys_options_types`
 --
+-- Global: what the operator sets up first (Site, Account, Security...). Advanced, right after it in the side menu:
+-- server settings (cache engines, storage, push and SMS providers, sockets).
 INSERT INTO `sys_options_types`(`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system', '_adm_stg_cpt_type_system', 'mi-cog.svg', 1);
 SET @iTypeId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options_types`(`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'advanced', '_adm_stg_cpt_type_advanced', 'mi-set-advanced.svg', 9);
+SET @iTypeIdAdvanced = LAST_INSERT_ID();
 
 --
 -- CATEGORY (HIDDEN): Hidden
@@ -506,8 +511,8 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 -- (@iCategoryId, 'sys_site_logo_width', '_adm_stg_cpt_option_sys_site_logo_width', '240', 'digit', '', '', '', 23),
 -- (@iCategoryId, 'sys_site_logo_height', '_adm_stg_cpt_option_sys_site_logo_height', '48', 'digit', '', '', '', 24),
 
-(@iCategoryId, 'sys_site_splash_code', '', '<style>\r\n    /* Guest splash, laid out like the built-in splash of the apps. The colours follow the light and dark scheme.\r\n       The site and the apps show it between their own header and footer (the web app in .neo-splash), so it has\r\n       none of its own. The apps leave out what has data-site-only. */\r\n    .bx-landing {\r\n        --bx-landing-muted: #e4e4e7;\r\n        --bx-landing-accent: #dbeafe;\r\n        --bx-landing-accent-fg: #1d4ed8;\r\n        --bx-landing-primary: #2563eb;\r\n        --bx-landing-title: #0a0a0c;\r\n        --bx-landing-text: #52525b;\r\n        --bx-landing-border: #e4e4e7;\r\n        display: flex;\r\n        flex-direction: column;\r\n        min-height: calc(100vh - 4rem); /* the first screen, under the site header */\r\n        min-height: calc(100dvh - 4rem);\r\n    }\r\n    .dark .bx-landing,\r\n    [data-theme="dark"] .bx-landing {\r\n        --bx-landing-muted: #3f3f46;\r\n        --bx-landing-accent: #172554;\r\n        --bx-landing-accent-fg: #60a5fa;\r\n        --bx-landing-title: #fafafc;\r\n        --bx-landing-text: #a1a1aa;\r\n        --bx-landing-border: #3f3f46;\r\n    }\r\n    @media (prefers-color-scheme: dark) {\r\n        :root:not([data-theme="light"]) .neo-splash .bx-landing {\r\n            --bx-landing-muted: #3f3f46;\r\n            --bx-landing-accent: #172554;\r\n            --bx-landing-accent-fg: #60a5fa;\r\n            --bx-landing-title: #fafafc;\r\n            --bx-landing-text: #a1a1aa;\r\n            --bx-landing-border: #3f3f46;\r\n        }\r\n    }\r\n    .neo-splash .bx-landing {\r\n        flex: 1 1 auto;\r\n        min-height: 0;\r\n    }\r\n    .bx-landing-main {\r\n        display: flex;\r\n        flex: 1 1 auto;\r\n        flex-direction: column;\r\n        align-items: center;\r\n        justify-content: center;\r\n        gap: 1.5rem;\r\n        box-sizing: border-box;\r\n        width: 100%;\r\n        max-width: 88rem;\r\n        margin: 0 auto;\r\n        padding: 1rem;\r\n    }\r\n    .bx-landing-intro {\r\n        display: flex;\r\n        flex: 1 1 auto;\r\n        flex-direction: column;\r\n        align-items: center;\r\n        gap: 1.5rem;\r\n        width: 100%;\r\n        text-align: center;\r\n    }\r\n    .bx-landing-art {\r\n        display: block;\r\n        width: 12rem;\r\n        height: 12rem;\r\n    }\r\n    .bx-landing-title {\r\n        margin: 0;\r\n        color: var(--bx-landing-title);\r\n        font-size: 2.25rem;\r\n        font-weight: 700;\r\n        line-height: 1.25;\r\n        letter-spacing: -0.025em;\r\n        text-wrap: balance;\r\n    }\r\n    .bx-landing-text {\r\n        max-width: 48rem;\r\n        margin: 0;\r\n        color: var(--bx-landing-text);\r\n        font-size: 1rem;\r\n        line-height: 1.5rem;\r\n        text-wrap: pretty;\r\n    }\r\n    .bx-landing-auth {\r\n        flex: none;\r\n        width: 100%;\r\n        max-width: 28rem;\r\n    }\r\n    @media (min-width: 640px) {\r\n        .bx-landing-main { padding: 1.5rem; }\r\n        .bx-landing-text { font-size: 1.125rem; line-height: 1.75rem; }\r\n    }\r\n    @media (min-width: 1024px) {\r\n        .bx-landing-main {\r\n            flex-direction: row;\r\n            gap: 3rem;\r\n            padding: 3rem;\r\n        }\r\n        .bx-landing-intro {\r\n            align-items: flex-start;\r\n            text-align: start;\r\n        }\r\n    }\r\n    @media (min-width: 1280px) {\r\n        .bx-landing-title { font-size: 3rem; }\r\n    }\r\n</style>\r\n<div class="bx-landing bx-def-color-bg-page">\r\n    <div class="bx-landing-main">\r\n        <div class="bx-landing-intro text-center">\r\n            __illustration__\r\n            <h1 class="bx-landing-title"><bx_text:_sys_txt_splash_title /></h1>\r\n            <p class="bx-landing-text"><bx_text:_sys_txt_splash_slogan /></p>\r\n        </div>\r\n        <div class="bx-landing-auth">__login_form_in_box__</div>\r\n    </div>\r\n</div>', 'text', '', '', '', 25),
-(@iCategoryId, 'sys_site_splash_enabled', '', '', 'checkbox', '', '', '', 26),
+(@iCategoryId, 'sys_site_splash_code', '', '<style>\r\n    /* Guest splash, laid out like the built-in splash of the apps. The colours follow the light and dark scheme.\r\n       The site and the apps show it between their own header and footer (the web app in .neo-splash), so it has\r\n       none of its own. The apps leave out what has data-site-only. */\r\n    .bx-landing {\r\n        --bx-landing-muted: #e4e4e7;\r\n        --bx-landing-accent: #dbeafe;\r\n        --bx-landing-accent-fg: #1d4ed8;\r\n        --bx-landing-primary: #2563eb;\r\n        --bx-landing-title: #0a0a0c;\r\n        --bx-landing-text: #52525b;\r\n        --bx-landing-border: #e4e4e7;\r\n        display: flex;\r\n        flex-direction: column;\r\n        min-height: calc(100vh - 4rem); /* the first screen, under the site header */\r\n        min-height: calc(100dvh - 4rem);\r\n    }\r\n    .dark .bx-landing,\r\n    [data-theme="dark"] .bx-landing {\r\n        --bx-landing-muted: #3f3f46;\r\n        --bx-landing-accent: #172554;\r\n        --bx-landing-accent-fg: #60a5fa;\r\n        --bx-landing-title: #fafafc;\r\n        --bx-landing-text: #a1a1aa;\r\n        --bx-landing-border: #3f3f46;\r\n    }\r\n    @media (prefers-color-scheme: dark) {\r\n        :root:not([data-theme="light"]) .neo-splash .bx-landing {\r\n            --bx-landing-muted: #3f3f46;\r\n            --bx-landing-accent: #172554;\r\n            --bx-landing-accent-fg: #60a5fa;\r\n            --bx-landing-title: #fafafc;\r\n            --bx-landing-text: #a1a1aa;\r\n            --bx-landing-border: #3f3f46;\r\n        }\r\n    }\r\n    .neo-splash .bx-landing {\r\n        flex: 1 1 auto;\r\n        min-height: 0;\r\n    }\r\n    .bx-landing-main {\r\n        display: flex;\r\n        flex: 1 1 auto;\r\n        flex-direction: column;\r\n        align-items: center;\r\n        justify-content: center;\r\n        gap: 1.5rem;\r\n        box-sizing: border-box;\r\n        width: 100%;\r\n        max-width: 88rem;\r\n        margin: 0 auto;\r\n        padding: 1rem;\r\n    }\r\n    .bx-landing-intro {\r\n        display: flex;\r\n        flex: 1 1 auto;\r\n        flex-direction: column;\r\n        align-items: center;\r\n        gap: 1.5rem;\r\n        width: 100%;\r\n        text-align: center;\r\n    }\r\n    .bx-landing-art {\r\n        display: block;\r\n        width: 12rem;\r\n        height: 12rem;\r\n    }\r\n    .bx-landing-title {\r\n        margin: 0;\r\n        color: var(--bx-landing-title);\r\n        font-size: 2.25rem;\r\n        font-weight: 700;\r\n        line-height: 1.25;\r\n        letter-spacing: -0.025em;\r\n        text-wrap: balance;\r\n    }\r\n    .bx-landing-text {\r\n        max-width: 48rem;\r\n        margin: 0;\r\n        color: var(--bx-landing-text);\r\n        font-size: 1rem;\r\n        line-height: 1.5rem;\r\n        text-wrap: pretty;\r\n    }\r\n    .bx-landing-auth {\r\n        flex: none;\r\n        width: 100%;\r\n        max-width: 28rem;\r\n    }\r\n    @media (min-width: 640px) {\r\n        .bx-landing-main { padding: 1.5rem; }\r\n        .bx-landing-text { font-size: 1.125rem; line-height: 1.75rem; }\r\n    }\r\n    @media (min-width: 1024px) {\r\n        .bx-landing-main {\r\n            flex-direction: row;\r\n            gap: 3rem;\r\n            padding: 3rem;\r\n        }\r\n        .bx-landing-intro {\r\n            align-items: flex-start;\r\n            text-align: start;\r\n        }\r\n    }\r\n    @media (min-width: 1280px) {\r\n        .bx-landing-title { font-size: 3rem; }\r\n    }\r\n</style>\r\n<div class="bx-landing bx-def-color-bg-page">\r\n    <div class="bx-landing-main">\r\n        <div class="bx-landing-intro text-center">\r\n            __illustration__\r\n            <h1 class="bx-landing-title"><bx_text:_sys_txt_splash_title /></h1>\r\n            <p class="bx-landing-text">{site_description}</p>\r\n        </div>\r\n        <div class="bx-landing-auth">__login_form_in_box__</div>\r\n    </div>\r\n</div>', 'text', '', '', '', 25),
+(@iCategoryId, 'sys_site_splash_enabled', '', 'on', 'checkbox', '', '', '', 26),
 -- The apps' splash switches: 'on', 'off', or '' (never saved) to follow sys_api_root_page_guest. Empty code uses sys_site_splash_code.
 (@iCategoryId, 'sys_site_splash_web_enabled', '', '', 'checkbox', '', '', '', 26),
 (@iCategoryId, 'sys_site_splash_ios_enabled', '', '', 'checkbox', '', '', '', 26),
@@ -515,6 +520,8 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_site_splash_code_web', '', '', 'text', '', '', '', 26),
 (@iCategoryId, 'sys_site_splash_code_ios', '', '', 'text', '', '', '', 26),
 (@iCategoryId, 'sys_site_splash_code_android', '', '', 'text', '', '', '', 26),
+-- Text blocks (language keys) with the default text UNA ships, until the operator saves them in Studio (BxDolPage::isLangBlockToReview).
+(@iCategoryId, 'sys_page_lang_blocks_review', '', '_sys_page_lang_block_terms,_sys_page_lang_block_privacy', 'text', '', '', '', 27),
 
 (@iCategoryId, 'sys_site_cover_common', '', '0', 'digit', '', '', '', 27),
 (@iCategoryId, 'sys_unit_cover_profile', '', '0', 'digit', '', '', '', 28),
@@ -622,7 +629,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: System (General)
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'general', '_adm_stg_cpt_category_general', 0, 5);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'general', '_adm_stg_cpt_category_general', 0, 5);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -653,7 +660,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: Cache
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'cache', '_adm_stg_cpt_category_cache', 0, 6);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'cache', '_adm_stg_cpt_category_cache', 0, 6);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -685,7 +692,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: Permalinks
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'permalinks', '_adm_stg_cpt_category_permalinks', 0, 9);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'permalinks', '_adm_stg_cpt_category_permalinks', 0, 9);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -699,7 +706,7 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `e
 --
 -- CATEGORY: Security
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'security', '_adm_stg_cpt_category_security', 0, 11);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'security', '_adm_stg_cpt_category_security', 0, 19);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -728,7 +735,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: Storage
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'storage', '_adm_stg_cpt_category_storage', 0, 13);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'storage', '_adm_stg_cpt_category_storage', 0, 13);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -809,7 +816,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 --
 -- CATEGORY: Push Notifications
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'notifications_push', '_adm_stg_cpt_category_notifications_push', 0, 17);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'notifications_push', '_adm_stg_cpt_category_notifications_push', 0, 17);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -831,7 +838,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 --
 -- CATEGORY: Twilio gate settings
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'sms', '_adm_stg_cpt_category_sms', 0, 18);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'sms', '_adm_stg_cpt_category_sms', 0, 18);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -880,7 +887,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 --
 -- CATEGORY: Sockets
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'sockets', '_adm_stg_cpt_category_sockets', 0, 22);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'sockets', '_adm_stg_cpt_category_sockets', 0, 22);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -950,15 +957,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_api_cookie_secure', '_adm_stg_cpt_option_sys_api_cookie_secure', '', 'checkbox', '', '', '', 42),
 (@iCategoryId, 'sys_api_cookie_samesite', '_adm_stg_cpt_option_sys_api_cookie_samesite', 'Lax', 'select', 'None,Lax,Strict', '', '', 44),
 (@iCategoryId, 'sys_api_url_root_email', '_adm_stg_cpt_option_sys_api_url_root_email', '', 'digit', '', '', '', 50),
-(@iCategoryId, 'sys_api_url_root_push', '_adm_stg_cpt_option_sys_api_url_root_push', '', 'digit', '', '', '', 51),
-(@iCategoryId, 'sys_api_v2_enable', '_adm_stg_cpt_option_sys_api_v2_enable', '', 'checkbox', '', '', '', 59),
-(@iCategoryId, 'sys_api_v2_rate_limit', '_adm_stg_cpt_option_sys_api_v2_rate_limit', 'on', 'checkbox', '', '', '', 60),
-(@iCategoryId, 'sys_api_v2_rate_limit_general', '_adm_stg_cpt_option_sys_api_v2_rate_limit_general', '600', 'digit', '', '', '', 61),
-(@iCategoryId, 'sys_api_v2_rate_limit_write', '_adm_stg_cpt_option_sys_api_v2_rate_limit_write', '120', 'digit', '', '', '', 62),
-(@iCategoryId, 'sys_api_v2_rate_limit_search', '_adm_stg_cpt_option_sys_api_v2_rate_limit_search', '120', 'digit', '', '', '', 63),
-(@iCategoryId, 'sys_api_v2_rate_limit_preview', '_adm_stg_cpt_option_sys_api_v2_rate_limit_preview', '30', 'digit', '', '', '', 64),
-(@iCategoryId, 'sys_api_v2_rate_limit_agent', '_adm_stg_cpt_option_sys_api_v2_rate_limit_agent', '20', 'digit', '', '', '', 65),
-(@iCategoryId, 'sys_api_v2_rate_limit_upload', '_adm_stg_cpt_option_sys_api_v2_rate_limit_upload', '120', 'digit', '', '', '', 66);
+(@iCategoryId, 'sys_api_url_root_push', '_adm_stg_cpt_option_sys_api_url_root_push', '', 'digit', '', '', '', 51);
 
 
 --
@@ -974,9 +973,26 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_api_context_switcher', '_adm_stg_cpt_option_sys_api_context_switcher', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:32:"get_options_api_context_switcher";s:5:"class";s:13:"TemplServices";}', '', '', 6),
 (@iCategoryId, 'sys_api_context_connection', '_adm_stg_cpt_option_sys_api_context_connection', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:34:"get_options_api_context_connection";s:5:"class";s:13:"TemplServices";}', '', '', 7),
 (@iCategoryId, 'sys_api_comments_flat', '_adm_stg_cpt_option_sys_api_comments_flat', '', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'sys_api_search_sections', '_adm_stg_cpt_option_sys_api_search_sections', 'bx_posts,bx_persons,bx_groups', 'digit', '', '', '', 20),
+(@iCategoryId, 'sys_api_search_sections', '_adm_stg_cpt_option_sys_api_search_sections', 'bx_posts,bx_persons,bx_groups', 'list', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_options_api_search_sections";s:5:"class";s:13:"TemplServices";}', '', '', 20),
 (@iCategoryId, 'sys_api_extended_units', '_adm_stg_cpt_option_sys_api_extended_units', '', 'checkbox', '', '', '', 30),
 (@iCategoryId, 'sys_api_conn_in_prof_units', '_adm_stg_cpt_option_sys_api_conn_in_prof_units', '', 'checkbox', '', '', '', 31);
+
+
+--
+-- CATEGORY (HIDDEN): API (preview): API v2, which is not for production yet
+--
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'api_preview', '_adm_stg_cpt_category_api_preview', 1, 4);
+SET @iCategoryId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_api_v2_enable', '_adm_stg_cpt_option_sys_api_v2_enable', '', 'checkbox', '', '', '', 59),
+(@iCategoryId, 'sys_api_v2_rate_limit', '_adm_stg_cpt_option_sys_api_v2_rate_limit', 'on', 'checkbox', '', '', '', 60),
+(@iCategoryId, 'sys_api_v2_rate_limit_general', '_adm_stg_cpt_option_sys_api_v2_rate_limit_general', '600', 'digit', '', '', '', 61),
+(@iCategoryId, 'sys_api_v2_rate_limit_write', '_adm_stg_cpt_option_sys_api_v2_rate_limit_write', '120', 'digit', '', '', '', 62),
+(@iCategoryId, 'sys_api_v2_rate_limit_search', '_adm_stg_cpt_option_sys_api_v2_rate_limit_search', '120', 'digit', '', '', '', 63),
+(@iCategoryId, 'sys_api_v2_rate_limit_preview', '_adm_stg_cpt_option_sys_api_v2_rate_limit_preview', '30', 'digit', '', '', '', 64),
+(@iCategoryId, 'sys_api_v2_rate_limit_agent', '_adm_stg_cpt_option_sys_api_v2_rate_limit_agent', '20', 'digit', '', '', '', 65),
+(@iCategoryId, 'sys_api_v2_rate_limit_upload', '_adm_stg_cpt_option_sys_api_v2_rate_limit_upload', '120', 'digit', '', '', '', 66);
 
 --
 -- CATEGORY (HIDDEN): API (config)
@@ -1030,6 +1046,175 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_agents_asst_chats_trans_del', '_adm_stg_cpt_option_sys_agents_asst_chats_trans_del', 'on', 'checkbox', '', '', '', 1);
+
+
+--
+-- Settings groups
+--
+-- Studio > Settings groups: the system settings in nine groups instead of one "Global" page, and
+-- the live options of the Hidden category in visible categories. Option and category names stay,
+-- so getParam, links by category and the Polyglot, Audit, API, Agents and Designer pages keep working.
+-- Each move is guarded by the old place, so a site where an admin moved something keeps it.
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system'), `order` = 1 WHERE `name` = 'site_settings' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_updates', '_adm_stg_cpt_category_sys_updates', 0, 2 FROM `sys_options_types` WHERE `name` = 'system';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_updates'), `order` = 101 WHERE `name` = 'sys_autoupdate' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_updates'), `order` = 102 WHERE `name` = 'sys_autoupdate_force_modified_files' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_updates'), `order` = 103 WHERE `name` = 'sys_maintenance_mode' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_updates'), `order` = 104 WHERE `name` = 'sys_maintenance_mode_html' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system'), `order` = 3 WHERE `name` = 'permalinks' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system'), `order` = 4 WHERE `name` = 'sounds' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_app_banner', '_adm_stg_cpt_category_sys_app_banner', 0, 5 FROM `sys_options_types` WHERE `name` = 'system';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_app_banner'), `order` = 101 WHERE `name` = 'smart_app_banner' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_app_banner'), `order` = 102 WHERE `name` = 'smart_app_banner_ios_app_id' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system_members', '_adm_stg_cpt_type_system_members', 'mi-set-members.svg', 2);
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_members'), `order` = 1 WHERE `name` = 'account' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'account'), `order` = 101 WHERE `name` = 'sys_redirect_after_account_added' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'account'), `order` = 102 WHERE `name` = 'sys_redirect_after_email_confirmation' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_members'), `order` = 2 WHERE `name` = 'acl' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_relations', '_adm_stg_cpt_category_sys_relations', 0, 3 FROM `sys_options_types` WHERE `name` = 'system_members';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_relations'), `order` = 101 WHERE `name` = 'sys_relations_enable' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_relations'), `order` = 102 WHERE `name` = 'sys_relations' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system_security', '_adm_stg_cpt_type_system_security', 'mi-set-security.svg', 3);
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_sign_in_protection', '_adm_stg_cpt_category_sys_sign_in_protection', 0, 1 FROM `sys_options_types` WHERE `name` = 'system_security';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 101 WHERE `name` = 'sys_account_activation_2fa_enable' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'account');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 102 WHERE `name` = 'sys_account_activation_2fa_lifetime' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'account');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 103 WHERE `name` = 'sys_account_limit_incorrect_login_attempts' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'account');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 104 WHERE `name` = 'sys_account_accounts_password_log_count' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'account');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 105 WHERE `name` = 'sys_account_accounts_force_password_change_after_expiration' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'account');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 106 WHERE `name` = 'sys_captcha_default' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 107 WHERE `name` = 'sys_recaptcha_key_public' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sign_in_protection'), `order` = 108 WHERE `name` = 'sys_recaptcha_key_private' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_security'), `order` = 2 WHERE `name` = 'security' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_sessions', '_adm_stg_cpt_category_sys_sessions', 0, 3 FROM `sys_options_types` WHERE `name` = 'system_security';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sessions'), `order` = 101 WHERE `name` = 'sys_session_lifetime_in_min' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sessions'), `order` = 102 WHERE `name` = 'sys_session_auth' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sessions'), `order` = 103 WHERE `name` = 'sys_samesite_cookies' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sessions'), `order` = 104 WHERE `name` = 'sys_x_frame_options' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_sessions'), `order` = 105 WHERE `name` = 'sys_csp_frame_ancestors' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_privacy', '_adm_stg_cpt_category_sys_privacy', 0, 4 FROM `sys_options_types` WHERE `name` = 'system_security';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_privacy'), `order` = 101 WHERE `name` = 'sys_lock_from_unauthenticated' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_privacy'), `order` = 102 WHERE `name` = 'sys_lock_from_unauthenticated_exceptions' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_privacy'), `order` = 103 WHERE `name` = 'sys_enable_post_to_context_for_privacy' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_privacy'), `order` = 104 WHERE `name` = 'sys_hide_post_to_context_for_privacy' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system_content', '_adm_stg_cpt_type_system_content', 'mi-set-content.svg', 4);
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_posting', '_adm_stg_cpt_category_sys_posting', 0, 1 FROM `sys_options_types` WHERE `name` = 'system_content';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_posting'), `order` = 101 WHERE `name` = 'sys_attach_links_max' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_posting'), `order` = 102 WHERE `name` = 'sys_create_post_form_preloading_list' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_posting'), `order` = 103 WHERE `name` = 'sys_treat_cxt_in_cxt_as_cnt' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_posting'), `order` = 104 WHERE `name` = 'sys_check_fan_in_parent_context' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_posting'), `order` = 105 WHERE `name` = 'sys_notify_to_approve_by_role' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_moderation', '_adm_stg_cpt_category_sys_moderation', 0, 2 FROM `sys_options_types` WHERE `name` = 'system_content';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 101 WHERE `name` = 'sys_cmts_enable_auto_approve' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 102 WHERE `name` = 'sys_security_block_content_after_n_reports' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 103 WHERE `name` = 'sys_cf_enable' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 104 WHERE `name` = 'sys_cf_enable_comments' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 105 WHERE `name` = 'sys_cf_prohibited' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 106 WHERE `name` = 'sys_cf_unauthenticated' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 107 WHERE `name` = 'sys_add_nofollow' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_moderation'), `order` = 108 WHERE `name` = 'sys_confirmation_before_redirect' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'security');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_hashtags', '_adm_stg_cpt_category_sys_hashtags', 0, 3 FROM `sys_options_types` WHERE `name` = 'system_content';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_hashtags'), `order` = 101 WHERE `name` = 'sys_metatags_hashtags_only' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_hashtags'), `order` = 102 WHERE `name` = 'sys_metatags_hashtags_max' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_hashtags'), `order` = 103 WHERE `name` = 'sys_metatags_mentions_max' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_content'), `order` = 4 WHERE `name` = 'reactions' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_search', '_adm_stg_cpt_category_sys_search', 0, 5 FROM `sys_options_types` WHERE `name` = 'system_content';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 101 WHERE `name` = 'sys_per_page_search_keyword_single' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 102 WHERE `name` = 'sys_per_page_search_keyword_plural' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 103 WHERE `name` = 'sys_live_search_limit' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 104 WHERE `name` = 'sys_profiles_search_limit' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 105 WHERE `name` = 'sys_per_page_browse_showcase' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 106 WHERE `name` = 'sys_per_page_search_extended' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 107 WHERE `name` = 'sys_per_page_recommendations' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 108 WHERE `name` = 'sys_per_page_recommendations_showcase' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'site_settings');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 109 WHERE `name` = 'useLikeOperator' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_search'), `order` = 110 WHERE `name` = 'sys_search_keyword_min_len' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_embeds', '_adm_stg_cpt_category_sys_embeds', 0, 6 FROM `sys_options_types` WHERE `name` = 'system_content';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_embeds'), `order` = 101 WHERE `name` = 'sys_embed_default' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_embeds'), `order` = 102 WHERE `name` = 'sys_embed_lifetime' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_embeds'), `order` = 103 WHERE `name` = 'sys_embedly_api_key' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_embeds'), `order` = 104 WHERE `name` = 'sys_iframely_api_key' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_embeds'), `order` = 105 WHERE `name` = 'sys_embed_microlink_key' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_embeds'), `order` = 106 WHERE `name` = 'sys_embed_peekalink_api_key' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_editor', '_adm_stg_cpt_category_sys_editor', 0, 7 FROM `sys_options_types` WHERE `name` = 'system_content';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 101 WHERE `name` = 'sys_editor_default' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 102 WHERE `name` = 'sys_quill_insert_as_plain_text' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 103 WHERE `name` = 'sys_quill_allow_empty_tags' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 104 WHERE `name` = 'sys_quill_allowed_tags_mini' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 105 WHERE `name` = 'sys_quill_allowed_tags_standard' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 106 WHERE `name` = 'sys_quill_allowed_tags_full' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 107 WHERE `name` = 'sys_quill_toolbar_mini' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 108 WHERE `name` = 'sys_quill_toolbar_standard' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 109 WHERE `name` = 'sys_quill_toolbar_full' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 110 WHERE `name` = 'sys_player_default' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 111 WHERE `name` = 'sys_player_default_format' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_editor'), `order` = 112 WHERE `name` = 'sys_form_lpc_enable' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_content'), `order` = 8 WHERE `name` = 'social_settings' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_content'), `order` = 9 WHERE `name` = 'location' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system_files', '_adm_stg_cpt_type_system_files', 'mi-set-files.svg', 5);
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_files'), `order` = 1 WHERE `name` = 'storage' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_uploads', '_adm_stg_cpt_category_sys_uploads', 0, 2 FROM `sys_options_types` WHERE `name` = 'system_files';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 101 WHERE `name` = 'client_image_resize_width' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 102 WHERE `name` = 'client_image_resize_height' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 103 WHERE `name` = 'sys_files_ext_images' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 104 WHERE `name` = 'sys_files_ext_video' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 105 WHERE `name` = 'sys_files_ext_audio' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 106 WHERE `name` = 'sys_files_ext_imagevideo' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 107 WHERE `name` = 'sys_files_ext_dangerous' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 108 WHERE `name` = 'enable_gd' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_uploads'), `order` = 109 WHERE `name` = 'sys_transcoder_queue_storage' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system_messaging', '_adm_stg_cpt_type_system_messaging', 'mi-set-messaging.svg', 6);
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_messaging'), `order` = 1 WHERE `name` = 'notifications' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'notifications'), `order` = 101 WHERE `name` = 'sys_email_attachable_email_templates' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_messaging'), `order` = 2 WHERE `name` = 'notifications_push' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_messaging'), `order` = 3 WHERE `name` = 'sms' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_messaging'), `order` = 4 WHERE `name` = 'sockets' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sockets'), `order` = 101 WHERE `name` = 'sys_live_updates_interval' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system_payments', '_adm_stg_cpt_type_system_payments', 'mi-set-payments.svg', 7);
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_payments', '_adm_stg_cpt_category_sys_payments', 0, 1 FROM `sys_options_types` WHERE `name` = 'system_payments';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_payments'), `order` = 101 WHERE `name` = 'currency_code' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_payments'), `order` = 102 WHERE `name` = 'currency_sign' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_payments'), `order` = 103 WHERE `name` = 'sys_default_payment' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_store_account', '_adm_stg_cpt_category_sys_store_account', 0, 2 FROM `sys_options_types` WHERE `name` = 'system_payments';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_store_account'), `order` = 101 WHERE `name` = 'sys_oauth_key' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_store_account'), `order` = 102 WHERE `name` = 'sys_oauth_secret' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general');
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system_performance', '_adm_stg_cpt_type_system_performance', 'mi-set-performance.svg', 8);
+UPDATE `sys_options_categories` SET `type_id` = (SELECT `id` FROM `sys_options_types` WHERE `name` = 'system_performance'), `order` = 1 WHERE `name` = 'cache' AND `type_id` IN (SELECT `id` FROM `sys_options_types` WHERE `name` IN ('system', 'advanced'));
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'cache'), `order` = 101 WHERE `name` = 'sys_template_cache_image_enable' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'cache'), `order` = 102 WHERE `name` = 'sys_template_cache_image_max_size' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_bg_jobs', '_adm_stg_cpt_category_sys_bg_jobs', 0, 2 FROM `sys_options_types` WHERE `name` = 'system_performance';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_bg_jobs'), `order` = 101 WHERE `name` = 'sys_bg_jobs_process_per_run' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_bg_jobs'), `order` = 102 WHERE `name` = 'sys_bg_jobs_workers_limit' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_bg_jobs'), `order` = 103 WHERE `name` = 'sys_bg_jobs_cleanup_timeout' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_connections', '_adm_stg_cpt_category_sys_connections', 0, 3 FROM `sys_options_types` WHERE `name` = 'system_performance';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_connections'), `order` = 101 WHERE `name` = 'sys_default_socket_timeout' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_connections'), `order` = 102 WHERE `name` = 'sys_default_curl_timeout' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_connections'), `order` = 103 WHERE `name` = 'sys_curl_ssl_allow_untrusted' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'advanced', '_adm_stg_cpt_type_advanced', 'mi-set-advanced.svg', 9);
+UPDATE `sys_options_types` SET `icon` = 'mi-set-advanced.svg', `order` = 9 WHERE `name` = 'advanced' AND `icon` = 'mi-server-cog.svg';
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_logs', '_adm_stg_cpt_category_sys_logs', 0, 1 FROM `sys_options_types` WHERE `name` = 'advanced';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_logs'), `order` = 101 WHERE `name` = 'sys_logs_storage_default' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_logs'), `order` = 102 WHERE `name` = 'sys_logs_level' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_logs'), `order` = 104 WHERE `name` = 'sys_alerts_stats' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_interface', '_adm_stg_cpt_category_sys_interface', 0, 2 FROM `sys_options_types` WHERE `name` = 'advanced';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_interface'), `order` = 101 WHERE `name` = 'sys_fixed_header' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_interface'), `order` = 102 WHERE `name` = 'sys_iconset_default' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_interface'), `order` = 103 WHERE `name` = 'sys_css_tailwind_default' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_interface'), `order` = 104 WHERE `name` = 'sys_css_media_classes' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_interface'), `order` = 105 WHERE `name` = 'sys_viewport_meta_tag' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_studio', '_adm_stg_cpt_category_sys_studio', 0, 3 FROM `sys_options_types` WHERE `name` = 'advanced';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 101 WHERE `name` = 'sys_std_show_header_left' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 102 WHERE `name` = 'sys_std_show_header_left_search' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 103 WHERE `name` = 'sys_std_show_header_center' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 104 WHERE `name` = 'sys_std_show_header_right' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 105 WHERE `name` = 'sys_std_show_header_right_search' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 106 WHERE `name` = 'sys_std_show_header_right_site' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 107 WHERE `name` = 'sys_std_show_launcher_left' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_studio'), `order` = 108 WHERE `name` = 'sys_std_pgt_etemplates_editor' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+INSERT IGNORE INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) SELECT `id`, 'sys_ftp', '_adm_stg_cpt_category_sys_ftp', 0, 4 FROM `sys_options_types` WHERE `name` = 'advanced';
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_ftp'), `order` = 101 WHERE `name` = 'sys_ftp_login' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_ftp'), `order` = 102 WHERE `name` = 'sys_ftp_password' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options` SET `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'sys_ftp'), `order` = 103 WHERE `name` = 'sys_ftp_dir' AND `category_id` = (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'hidden');
+UPDATE `sys_options_categories` SET `hidden` = 1 WHERE `name` = 'general' AND `hidden` = 0 AND NOT EXISTS (SELECT 1 FROM `sys_options` WHERE `category_id` = (SELECT `id` FROM (SELECT `id` FROM `sys_options_categories` WHERE `name` = 'general') AS `c`));
 
 
 --
@@ -4138,7 +4323,7 @@ INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `c
 
 ('sys_account', 'system', 'email', '', '', 0, 'text', '_sys_form_login_input_caption_system_email', '_sys_form_account_input_email', '', 1, 0, 0, '', '', '', 'EmailUniq', '', '_sys_form_account_input_email_error', 'Xss', '', 0, 0),
 ('sys_account', 'system', 'phone', '', '', 0, 'text', '_sys_form_login_input_caption_system_phone', '_sys_form_login_input_phone', '_sys_form_login_input_phone_info', 1, 0, 0, '', '', '', 'PhoneExist', '', '_sys_form_login_input_phone_error_format', 'Xss', '', 1, 0),
-('sys_account', 'system', 'password', '', '', 0, 'password', '_sys_form_login_input_caption_system_password', '_sys_form_account_input_password', '', 1, 0, 0, '', '', '', 'Password', 'a:1:{s:4:"preg";s:38:"~^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}~";}', '_sys_form_account_input_password_error', '', '', 0, 0),
+('sys_account', 'system', 'password', '', '', 0, 'password', '_sys_form_login_input_caption_system_password', '_sys_form_account_input_password', '_sys_form_account_input_password_info', 1, 0, 0, '', '', '', 'Password', 'a:1:{s:4:"preg";s:38:"~^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}~";}', '_sys_form_account_input_password_error', '', '', 0, 0),
 ('sys_account', 'system', 'password_confirm', '', '', 0, 'password', '_sys_form_login_input_caption_system_password_confirm', '_sys_form_account_input_password_confirm', '', 1, 0, 0, '', '', '', 'PasswordConfirm', '', '_sys_form_account_input_password_confirm_error', '', '', 0, 0),
 ('sys_account', 'system', 'do_submit', '_sys_form_account_input_submit', '', 0, 'submit', '_sys_form_login_input_caption_system_do_submit', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
 ('sys_account', 'system', 'do_publish', '_sys_form_account_input_publish', '', 0, 'submit', '_sys_form_login_input_caption_system_do_publish', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
@@ -4160,7 +4345,7 @@ INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `c
 ('sys_profile', 'system', 'do_cancel', '_sys_form_profile_input_do_cancel', '', 0, 'button', '_sys_form_profile_input_sys_do_cancel', '', '', 0, 0, 0, 'a:2:{s:5:"class";s:22:"bx-def-margin-sec-left";s:7:"onclick";s:45:"$(''.bx-popup-applied:visible'').dolPopupHide()";}', '', '', '', '', '', '', '', 0, 0),
 
 ('sys_forgot_password', 'system', 'key', '', '', 0, 'hidden', '_sys_form_forgot_password_input_caption_system_key', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
-('sys_forgot_password', 'system', 'password', '', '', 0, 'password', '_sys_form_forgot_password_input_caption_system_password_reset', '_sys_form_forgot_password_input_caption_password_reset', '', 1, 0, 0, '', '', '', 'Preg', 'a:1:{s:4:"preg";s:38:"~^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}~";}', '_sys_form_account_input_password_error', 'Xss', '', 1, 0),
+('sys_forgot_password', 'system', 'password', '', '', 0, 'password', '_sys_form_forgot_password_input_caption_system_password_reset', '_sys_form_forgot_password_input_caption_password_reset', '_sys_form_account_input_password_info', 1, 0, 0, '', '', '', 'Preg', 'a:1:{s:4:"preg";s:38:"~^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}~";}', '_sys_form_account_input_password_error', 'Xss', '', 1, 0),
 ('sys_forgot_password', 'system', 'email', '', '', 0, 'text', '_sys_form_forgot_password_input_caption_system_email', '_sys_form_forgot_password_input_email', '', 1, 0, 0, '', '', '', 'EmailExistOrEmpty', '', '_sys_form_account_input_email_error', 'Xss', '', 0, 0),
 ('sys_forgot_password', 'system', 'phone', '', '', 0, 'text', '_sys_form_forgot_password_input_caption_system_phone', '_sys_form_forgot_password_input_phone', '', 1, 0, 0, '', '', '', 'PhoneExistOrEmpty', '', '_sys_form_account_input_phone_error', 'Xss', '', 0, 0),
 ('sys_forgot_password', 'system', 'captcha', '', '', 0, 'captcha', '_sys_form_login_input_caption_system_captcha', '_sys_form_account_input_captcha', '', 1, 0, 0, '', '', '', 'Captcha', '', '_sys_form_account_input_captcha_error', '', '', 1, 0),
@@ -5004,7 +5189,8 @@ INSERT INTO `sys_menu_templates` (`id`, `template`, `title`, `visible`) VALUES
 (33, 'menu_toolbar_left.html', '_sys_menu_template_title_toolbar_left', 0),
 (34, 'menu_toolbar_right.html', '_sys_menu_template_title_toolbar_right', 0),
 (35, 'menu_list_desc.html', '_sys_menu_template_title_list_desc', 1),
-(36, 'menu_list_desc_cards.html', '_sys_menu_template_title_list_desc_cards', 1);
+(36, 'menu_list_desc_cards.html', '_sys_menu_template_title_list_desc_cards', 1),
+(37, 'menu_tiles.html', '_sys_menu_template_title_tiles', 1);
 
 CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -5058,6 +5244,9 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 ('sys_account_popup', '_sys_menu_title_account_popup', '', 'sys_account_popup', 'system', 12, 0, 1, 'BxTemplMenuAccountPopup', ''),
 ('sys_account_notifications', '_sys_menu_title_account_notifications', '', 'sys_account_notifications', 'system', 19, 0, 1, 'BxTemplMenuAccountNotifications', ''),
 ('sys_profile_stats', '_sys_menu_title_profile_stats', '', 'sys_profile_stats', 'system', 21, 0, 1, 'BxTemplMenuProfileStats', ''),
+('sys_profile_stats_tiles', '_sys_menu_title_profile_stats_tiles', '', 'sys_profile_stats', 'system', 37, 0, 1, 'BxTemplMenuProfileStats', ''),
+('sys_dashboard_account', '_sys_menu_title_dashboard_account', '', 'sys_dashboard_account', 'system', 20, 0, 1, 'BxTemplMenuDashboardAccount', ''),
+('sys_account_preferences', '_sys_menu_title_account_preferences', '', 'sys_account_preferences', 'system', 9, 0, 1, 'BxTemplMenuAccountPreferences', ''),
 ('sys_tags_cloud', '_sys_menu_title_tags_cloud', '', '', 'system', 21, 0, 1, 'BxTemplMenuTagsCloud', ''),
 ('sys_profile_followings', '_sys_menu_title_profile_followings', '', 'sys_profile_followings', 'system', 27, 0, 1, 'BxTemplMenuProfileFollowings', ''),
 ('sys_profile_memberships', '_sys_menu_title_profile_memberships', '', 'sys_profile_memberships', 'system', 27, 0, 1, 'BxTemplMenuProfileMemberships', ''),
@@ -5087,7 +5276,7 @@ UPDATE `sys_objects_menu` SET `section_nav`='sidebar' WHERE `object`='sys_con_su
 UPDATE `sys_objects_menu` SET `section_nav`='sidebar', `section_nav_small`='list' WHERE `object`='sys_account_settings_submenu';
 
 UPDATE `sys_objects_menu` SET `cache` = 'per_acl' WHERE `object` IN('sys_site', 'sys_account_notifications', 'sys_add_content', 'sys_toolbar_site', 'sys_footer', 'sys_site_submenu', 'sys_homepage_submenu', 'sys_homepage', 'sys_application', 'sys_site_in_panel');
-UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` IN('sys_toolbar_member', 'sys_profile_stats');
+UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` IN('sys_toolbar_member', 'sys_profile_stats', 'sys_profile_stats_tiles');
 -- the apps' menu has the viewer's own profile link: its items for API v2 GET /navigation are kept per profile
 UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` = 'sys_apps_menu';
 
@@ -5123,6 +5312,8 @@ INSERT INTO `sys_menu_sets` (`set_name`, `module`, `title`, `deletable`) VALUES
 ('sys_account_settings', 'system', '_sys_menu_set_title_account_settings', 0),
 ('sys_profiles_create', 'system', '_sys_menu_set_title_profile_create_links', 0),
 ('sys_profile_stats', 'system', '_sys_menu_set_title_profile_stats', 0),
+('sys_dashboard_account', 'system', '_sys_menu_set_title_dashboard_account', 0),
+('sys_account_preferences', 'system', '_sys_menu_set_title_account_preferences', 0),
 ('sys_profile_followings', 'system', '_sys_menu_set_title_profile_followings', 0),
 ('sys_profile_memberships', 'system', '_sys_menu_set_title_profile_memberships', 0),
 ('sys_apps_sidebar', 'system', '_sys_menu_set_title_apps_sidebar', 0),
@@ -5291,6 +5482,19 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'user-round',  '', '', 0, 1, 0, 1, 0, 2),
 ('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-round-plus',  '', '', 0, 1, 0, 1, 0, 3);
 
+-- "Your account" on the dashboard: the profile with the switcher, the stats as tiles, the preferences and Sign out
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_dashboard_account', 'system', 'profile', '_sys_menu_item_title_system_da_profile', '', '', '', '', '', '', '', 2147483646, 1, 0, 1),
+('sys_dashboard_account', 'system', 'stats', '_sys_menu_item_title_system_da_stats', '', '', '', '', '', '', 'sys_profile_stats_tiles', 2147483646, 1, 0, 2),
+('sys_dashboard_account', 'system', 'preferences', '_sys_menu_item_title_system_da_preferences', '', '', '', '', '', '', 'sys_account_preferences', 2147483646, 1, 0, 3),
+('sys_dashboard_account', 'system', 'logout', '_sys_menu_item_title_system_logout', '_sys_menu_item_title_logout', 'page.php?i=logout', '', '', 'log-out', '', '', 2147483646, 1, 1, 4);
+
+-- the member's preferences in "Your account": Settings, language and theme
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_account_preferences', 'system', 'settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=settings', '', '', 'settings', '', '', 2147483646, 1, 1, 1),
+('sys_account_preferences', 'system', 'switch-language', '_sys_menu_item_title_system_switch_language', '_sys_menu_item_title_switch_language', 'javascript:void(0);', 'bx_menu_popup(''sys_switch_language_popup'', this, {pointer: {flip: true}});', '', 'languages', '', '', 2147483646, 1, 0, 2),
+('sys_account_preferences', 'system', 'color-scheme', '_sys_menu_item_title_system_color_scheme', '_sys_menu_item_title_color_scheme', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-account-preferences-color-scheme'', this, {pointer: {flip: true}});', '', 'eclipse', '', '', 2147483646, 1, 0, 3);
+
 -- account popup menu; its own profile list (profile-switcher) is off on the site: the account menu's switch-profile item shows it
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_popup', 'system', 'profile-active', '_sys_menu_item_title_system_ap_profile_active', '', '', '', '', '', '', '', 2147483646, 1, 1, 1),
@@ -5303,7 +5507,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_notifications', 'system', 'switch-profile', '_sys_menu_item_title_system_switch_profile', '_sys_menu_item_title_switch_profile', '{switch_profile}', '', '', 'users-round', '', '', 2147483646, 1, 1, 0),
 ('sys_account_notifications', 'system', 'dashboard', '_sys_menu_item_title_system_dashboard', '_sys_menu_item_title_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
 ('sys_account_notifications', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{own_profile_url}', '', '', 'user-round', '', '', 2147483644, 1, 1, 2),
-('sys_account_notifications', 'system', 'account-settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=account-settings-email', '', '', 'settings', '', '', 2147483646, 1, 1, 3),
+('sys_account_notifications', 'system', 'account-settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=settings', '', '', 'settings', '', '', 2147483646, 1, 1, 3),
 ('sys_account_notifications', 'system', 'add-content', '_sys_menu_item_title_system_add_content', '_sys_menu_item_title_add_content', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_add_content\', $(\'#bx-menu-toolbar-item-add-content a\').get(0), \'site\');', '', 'plus', '', '', 2147483646, 1, 1, 4),
 ('sys_account_notifications', 'system', 'studio', '_sys_menu_item_title_system_studio', '_sys_menu_item_title_studio', '{studio_url}', '', '', 'wrench', '', '', 2147483646, 1, 0, 5),
 ('sys_account_notifications', 'system', 'cart', '_sys_menu_item_title_system_cart', '_sys_menu_item_title_cart', 'cart.php', '', '', 'shopping-cart', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_cart_items_count";s:6:"params";a:0:{}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 1, 1, 6),
@@ -5426,7 +5630,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 -- notifiactions submenu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_ntfs_submenu', 'system', 'context-invitations', '_sys_menu_item_title_system_ntfs_context_invitations', '_sys_menu_item_title_ntfs_context_invitations', 'page.php?i=context-invitations', '', '', 'ticket', '', '', 2147483647, '', 1, 1, 1);
+('sys_ntfs_submenu', 'system', 'context-invitations', '_sys_menu_item_title_system_ntfs_context_invitations', '_sys_menu_item_title_ntfs_context_invitations', 'page.php?i=context-invitations', '', '', 'ticket', '', '', 2147483646, '', 1, 1, 1);
 
 -- studio: account menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES
@@ -5476,8 +5680,9 @@ CREATE TABLE IF NOT EXISTS `sys_objects_grid` (
 -- GRIDS: studio
 
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_lang_keys', 'Sql', 'SELECT `tlk`.`ID` AS `id`, `tlk`.`Key` AS `key`, `tlc`.`Name` AS `module`, `tls`.`String` AS `string` FROM `sys_localization_keys` AS `tlk` LEFT JOIN `sys_localization_categories` AS `tlc` ON `tlk`.`IDCategory`=`tlc`.`ID` LEFT JOIN `sys_localization_strings` AS `tls` ON `tlk`.`ID`=`tls`.`IDKey` WHERE `tls`.`IDLanguage`=\'%d\'', 'sys_localization_keys', 'id', '', '', '', 20, NULL, 'start', '', 'key,string', '', 'like', 'key,module,string', '', 'BxTemplStudioPolyglotKeys', ''),
+('sys_studio_lang_keys', 'Sql', 'SELECT `tlk`.`ID` AS `id`, `tlk`.`Key` AS `key`, IFNULL((SELECT `tm`.`title` FROM `sys_modules` AS `tm` WHERE `tm`.`lang_category`=`tlc`.`Name` LIMIT 1), `tlc`.`Name`) AS `module`, `tls`.`String` AS `string` FROM `sys_localization_keys` AS `tlk` LEFT JOIN `sys_localization_categories` AS `tlc` ON `tlk`.`IDCategory`=`tlc`.`ID` LEFT JOIN `sys_localization_strings` AS `tls` ON `tlk`.`ID`=`tls`.`IDKey` WHERE `tls`.`IDLanguage`=\'%d\'', 'sys_localization_keys', 'id', '', '', '', 20, NULL, 'start', '', 'key,string', '', 'like', 'key,module,string', '', 'BxTemplStudioPolyglotKeys', ''),
 ('sys_studio_lang_etemplates', 'Sql', 'SELECT * FROM `sys_email_templates` WHERE 1 ', 'sys_email_templates', 'ID', '', '', '', 20, NULL, 'start', '', 'Module', 'NameSystem,Subject,Body', 'auto', 'Module', 'NameSystem', 'BxTemplStudioPolyglotEtemplates', ''),
+('sys_studio_lang_languages', 'Sql', 'SELECT `tl`.`ID` AS `id`, `tl`.`Name` AS `name`, `tl`.`Title` AS `title`, `tl`.`Enabled` AS `enabled`, `tm`.`name` AS `module` FROM `sys_localization_languages` AS `tl` LEFT JOIN `sys_modules` AS `tm` ON `tm`.`type`=\'language\' AND `tm`.`uri`=`tl`.`Name` WHERE 1 ', 'sys_localization_languages', 'id', '', '', '', 20, NULL, 'start', '', '', '', 'auto', '', '', 'BxTemplStudioPolyglotLanguages', ''),
 
 ('sys_studio_roles', 'Sql', 'SELECT * FROM `sys_std_roles` WHERE 1 ', 'sys_std_roles', 'id', 'order', 'active', '', 100, NULL, 'start', '', 'name', 'title,description', 'auto', '', '', 'BxTemplStudioRolesLevels', ''),
 ('sys_studio_roles_actions', 'Sql', 'SELECT *, ''0'' AS `active` FROM `sys_std_roles_actions` WHERE 1 ', 'sys_std_roles_actions', 'id', '', 'active', '', 20, NULL, 'start', '', 'name', 'title,description', 'auto', '', '', 'BxTemplStudioRolesActions', ''),
@@ -5540,6 +5745,10 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_lang_etemplates', 'NameSystem', '_adm_pgt_txt_etemplates_gl_name_system', '60%', 1, '58', '', 1),
 ('sys_studio_lang_etemplates', 'Module', '_adm_pgt_txt_etemplates_gl_module', '20%', 0, '18', '', 2),
 ('sys_studio_lang_etemplates', 'actions', '', '20%', 0, '', '', 3),
+
+('sys_studio_lang_languages', 'title', '_adm_pgt_txt_language', '50%', 0, '', '', 1),
+('sys_studio_lang_languages', 'name', '_adm_pgt_txt_code', '20%', 0, '', '', 2),
+('sys_studio_lang_languages', 'enabled', '_adm_pgt_txt_status', '30%', 0, '', '', 3),
 
 ('sys_studio_roles', 'order', '', '1%', 0, 0, '', 1),
 ('sys_studio_roles', 'switcher', '', '5%', 0, 0, '', 2),
@@ -6371,19 +6580,19 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_about', 'about', '_sys_page_title_system_about', '_sys_page_title_about', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=about', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_terms', 'terms', '_sys_page_title_system_terms', '_sys_page_title_terms', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=terms', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_privacy', 'privacy', '_sys_page_title_system_privacy', '_sys_page_title_privacy', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=privacy', '', '', '', 0, 1, 0, '', '', 0),
-('sys_explore', 'explore', '_sys_page_title_sys_explore', '_sys_page_title_explore', 'system', 1, 5, 'sys_homepage_submenu', 2147483647, 1, 'page.php?i=explore', '', '', '', 0, 1, 0, 'BxTemplPageHome', '', 0),
+('sys_explore', 'explore', '_sys_page_title_sys_explore', '_sys_page_title_explore', 'system', 1, 5, 'sys_homepage_submenu', 2147483647, 1, 'page.php?i=explore', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_updates', 'updates', '_sys_page_title_sys_updates', '_sys_page_title_updates', 'system', 1, 5, 'sys_homepage_submenu', 2147483647, 1, 'page.php?i=updates', '', '', '', 0, 1, 0, 'BxTemplPageHome', '', 0),
 ('sys_trends', 'trends', '_sys_page_title_sys_trends', '_sys_page_title_trends', 'system', 1, 5, 'sys_homepage_submenu', 2147483647, 1, 'page.php?i=trends', '', '', '', 0, 1, 0, 'BxTemplPageHome', '', 0),
 ('sys_dashboard', 'dashboard', '_sys_page_title_system_dashboard', '_sys_page_title_dashboard', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_dashboard_content', 'dashboard-content', '_sys_page_title_system_dashboard_content', '_sys_page_title_dashboard_content', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-content', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_dashboard_reports', 'dashboard-reports', '_sys_page_title_system_dashboard_reports', '_sys_page_title_dashboard_reports', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-reports', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_dashboard_audit', 'dashboard-audit', '_sys_page_title_system_dashboard_audit', '_sys_page_title_dashboard_audit', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-audit', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
-('sys_create_account', 'create-account', '_sys_page_title_system_create_account', '_sys_page_title_create_account', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=create-account', '', '', '', 0, 1, 0, '', '', 0),
-('sys_login', 'login', '_sys_page_title_system_login', '_sys_page_title_login', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=login', '', '', '', 0, 1, 0, '', '', 0),
+('sys_create_account', 'create-account', '_sys_page_title_system_create_account', '_sys_page_title_create_account', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=create-account', '', '', 'noindex', 0, 1, 0, '', '', 0),
+('sys_login', 'login', '_sys_page_title_system_login', '_sys_page_title_login', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=login', '', '', 'noindex', 0, 1, 0, '', '', 0),
 ('sys_login_step2', 'login-step2', '_sys_page_title_system_login_step2', '_sys_page_title_login_step2', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=login-step2', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_login_step3', 'login-step3', '_sys_page_title_system_login_step3', '_sys_page_title_login_step3', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=login-step3', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_logout', 'logout', '', '_sys_page_title_logout', 'system', 0, 18, '', 2147483647, 0, 'page.php?i=logout', '', '', '', 0, 0, 0, '', '', 0),
-('sys_forgot_password', 'forgot-password', '_sys_page_title_system_forgot_password', '_sys_page_title_forgot_password', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=forgot-password', '', '', '', 0, 1, 0, '', '', 0),
+('sys_forgot_password', 'forgot-password', '_sys_page_title_system_forgot_password', '_sys_page_title_forgot_password', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=forgot-password', '', '', 'noindex', 0, 1, 0, '', '', 0),
 ('sys_confirm_email', 'confirm-email', '_sys_page_title_system_confirm_email', '_sys_page_title_confirm_email', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=confirm-email', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_confirm_phone', 'confirm-phone', '_sys_page_title_system_confirm_phone', '_sys_page_title_confirm_phone', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=confirm-phone', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_settings', 'settings', '_sys_page_title_system_settings', '_sys_page_title_settings', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=settings', '', '', '', 0, 1, 0, 'BxTemplPageAccount', '', 0),
@@ -6626,7 +6835,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 0, 'system', '', '_sys_page_block_title_profile_followings', 13, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"profile_followings";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 0, 3),
 
 ('sys_home', 1, 'system', '', '_sys_page_block_title_homepage_splash', 0, 0, 0, 2147483647, 'raw', '<style>\r\n    /* Home page splash block, laid out like the NEO guest home. The shape colours follow the light and dark scheme. */\r\n    .bx-landing {\r\n        --bx-landing-muted: #e4e4e7;\r\n        --bx-landing-accent: #dbeafe;\r\n        --bx-landing-accent-fg: #1d4ed8;\r\n        --bx-landing-primary: #2563eb;\r\n        --bx-landing-title: #09090b;\r\n    }\r\n    .dark .bx-landing {\r\n        --bx-landing-muted: #3f3f46;\r\n        --bx-landing-accent: #172554;\r\n        --bx-landing-accent-fg: #60a5fa;\r\n        --bx-landing-title: #fafafa;\r\n    }\r\n    .bx-landing-main {\r\n        display: flex;\r\n        flex-direction: column;\r\n        align-items: center;\r\n        justify-content: center;\r\n        gap: 1.5rem;\r\n        box-sizing: border-box;\r\n        width: 100%;\r\n        max-width: 88rem;\r\n        margin: 0 auto;\r\n        padding: 1.5rem;\r\n    }\r\n    .bx-landing-intro {\r\n        display: flex;\r\n        flex: 1 1 auto;\r\n        flex-direction: column;\r\n        align-items: center;\r\n        gap: 1.5rem;\r\n        width: 100%;\r\n        text-align: center;\r\n    }\r\n    .bx-landing-art {\r\n        display: block;\r\n        width: 12rem;\r\n        height: 12rem;\r\n    }\r\n    /* Raw blocks style their content as an article (bx-def-vanilla-html). not-prose turns most of that off;\r\n       this undoes the rest, so the sign-in card looks as it does on the login page. */\r\n    .bx-def-vanilla-html .bx-landing a {\r\n        text-decoration-line: none;\r\n    }\r\n    .bx-def-vanilla-html .bx-landing h2 {\r\n        padding-bottom: 0;\r\n        border-bottom-width: 0;\r\n        font-size: inherit;\r\n    }\r\n    .bx-def-vanilla-html .bx-landing p {\r\n        margin: 0;\r\n    }\r\n    .bx-landing-muted { fill: var(--bx-landing-muted); }\r\n    .bx-landing-accent { fill: var(--bx-landing-accent); }\r\n    .bx-landing-accent-fg { fill: var(--bx-landing-accent-fg); }\r\n    .bx-landing-primary { fill: var(--bx-landing-primary); }\r\n    .bx-landing h2.bx-landing-title {\r\n        margin: 0;\r\n        color: var(--bx-landing-title);\r\n        font-size: 2.25rem;\r\n        font-weight: 700;\r\n        line-height: 1.1;\r\n        letter-spacing: -0.025em;\r\n        text-wrap: balance;\r\n    }\r\n    .bx-landing-text {\r\n        max-width: 48rem;\r\n        margin: 0;\r\n        font-size: 1rem;\r\n        line-height: 1.5;\r\n        text-wrap: pretty;\r\n    }\r\n    .bx-landing-auth {\r\n        flex: none;\r\n        width: 100%;\r\n        max-width: 24rem;\r\n    }\r\n    @media (min-width: 640px) {\r\n        .bx-landing h2.bx-landing-title { font-size: 3rem; }\r\n        .bx-landing-text { font-size: 1.125rem; }\r\n    }\r\n    @media (min-width: 1024px) {\r\n        .bx-landing-main {\r\n            flex-direction: row;\r\n            gap: 3rem;\r\n            padding: 3rem;\r\n        }\r\n        .bx-landing-intro {\r\n            align-items: flex-start;\r\n            text-align: start;\r\n        }\r\n    }\r\n</style>\r\n<div class="bx-landing not-prose">\r\n    <div class="bx-landing-main">\r\n        <div class="bx-landing-intro">\r\n            <svg class="bx-landing-art" viewBox="0 0 200 200" aria-hidden="true" focusable="false">\r\n                <path class="bx-landing-muted" d="M28 4H72A24 24 0 0 1 96 28V72A24 24 0 0 1 72 96H28A24 24 0 0 1 4 72V28A24 24 0 0 1 28 4Z" />\r\n                <path class="bx-landing-primary" d="M24 50a26 26 0 1 0 52 0a26 26 0 1 0 -52 0Z" />\r\n                <path class="bx-landing-accent" d="M104 96V4A92 92 0 0 1 196 96Z" />\r\n                <path class="bx-landing-accent-fg" d="M168 20a12 12 0 1 0 24 0a12 12 0 1 0 -24 0Z" />\r\n                <path class="bx-landing-accent-fg" d="M4 104A46 46 0 0 0 96 104Z" />\r\n                <path class="bx-landing-muted" d="M4 196A46 46 0 0 1 96 196Z" />\r\n                <path class="bx-landing-muted" d="M104 150a46 46 0 1 0 92 0a46 46 0 1 0 -92 0ZM120 150a30 30 0 1 0 60 0a30 30 0 1 0 -60 0Z" fill-rule="evenodd" />\r\n                <path class="bx-landing-primary" d="M134 150a16 16 0 1 0 32 0a16 16 0 1 0 -32 0Z" />\r\n            </svg>\r\n            <h2 class="bx-landing-title"><bx_text:_sys_txt_splash_title /></h2>\r\n            <p class="bx-landing-text bx-def-font-grayed"><bx_text:_sys_txt_splash_slogan /></p>\r\n        </div>\r\n        <div class="bx-landing-auth">__login_form_in_box__</div>\r\n    </div>\r\n</div>', 0, 1, 0, 0, 0),
-('sys_home', 1, 'system', '', '_sys_page_block_title_homepage_menu', 13, 0, 0, 1, 'menu', 'sys_homepage', 0, 1, 1, 0, 0),
+('sys_home', 1, 'system', '', '_sys_page_block_title_homepage_menu', 13, 0, 0, 1, 'menu', 'sys_homepage', 0, 1, 0, 0, 0),
 ('sys_home', 1, 'system', '_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_onboarding', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:20:\"get_block_onboarding\";s:6:\"params\";a:1:{i:0;s:23:\"sys_onboarding_operator\";}s:5:\"class\";s:19:\"TemplServiceAccount\";}', 0, 1, 1, 0, 1),
 
 ('sys_home', 2, 'system', '', '_sys_page_block_title_profile_stats', 3, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"profile_stats";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 0, 1),
@@ -6637,7 +6846,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 1, 'system', '', '_sys_page_block_title_create_account', '', '', 11, '', '', 0, 0, 1, '', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:19:\"create_account_form\";s:6:\"params\";a:0:{}s:5:\"class\";s:19:\"TemplServiceAccount\";}', '', '', 0, '', 0, '', 0, 0, 0, 0, 0),
 ('sys_home', 1, 'system', '_sys_page_block_system_title_login', '_sys_page_block_title_login', '', '', 11, '', '', 0, 0, 1, '', 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:10:\"login_form\";s:5:\"class\";s:17:\"TemplServiceLogin\";}', '', '', 0, '', 0, '', 0, 0, 0, 0, 0),
 ('sys_home', 1, 'system', '', '_sys_page_block_title_forgot_password', '', '', 13, '', '', 0, 0, 1, '', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:15:\"forgot_password\";s:6:\"params\";a:0:{}s:5:\"class\";s:19:\"TemplServiceAccount\";}', '', '', 0, '', 0, '', 0, 0, 0, 0, 0),
-('sys_home', 2, 'system', '', '_sys_page_block_title_profile_menu', '', '', 0, '', '', 0, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:12:\"profile_menu\";s:6:\"params\";a:0:{}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
+('sys_home', 2, 'system', '_sys_page_block_title_system_profile_menu_apps', '_sys_page_block_title_profile_menu', '', '', 0, '', '', 0, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:12:\"profile_menu\";s:6:\"params\";a:0:{}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
 ('sys_home', 4, 'system', '_sys_page_block_title_sys_recom_friends', '_sys_page_block_title_recom_friends', '', '', 11, '', '', 1, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:30:\"browse_recommendations_friends\";s:6:\"params\";a:2:{i:0;i:0;i:1;a:2:{s:8:\"per_page\";i:3;s:11:\"empty_state\";b:1;}}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 1, 0, 0),
 ('sys_home', 4, 'system', '_sys_page_block_title_sys_recom_subscriptions', '_sys_page_block_title_recom_subscriptions', '', '', 11, '', '', 1, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:36:\"browse_recommendations_subscriptions\";s:6:\"params\";a:0:{}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
 ('sys_home', 4, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', '', '', 11, '', '', 1, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:18:\"browse_invitations\";s:6:\"params\";a:0:{}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0);
@@ -6671,7 +6880,8 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_dashboard', 2, 'system', '_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_onboarding', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_block_onboarding";s:6:"params";a:1:{i:0;s:23:"sys_onboarding_operator";}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
 ('sys_dashboard', 2, 'system', '_sys_page_block_title_system_create_profile', '_sys_page_block_title_account_profile_create', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"create_profile_block";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
 ('sys_dashboard', 3, 'system', '', '_sys_page_block_title_membership_stats', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:24:"profile_membership_stats";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1),
-('sys_dashboard', 3, 'system', '_sys_page_block_title_system_dashboard_profiles', '_sys_page_block_title_dashboard_profiles', 11, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_profile_switcher_all";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
+('sys_dashboard', 2, 'system', '_sys_page_block_title_system_dashboard_account', '_sys_page_block_title_dashboard_account', 13, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"account_dashboard";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 0),
+('sys_dashboard', 3, 'system', '_sys_page_block_title_system_dashboard_profiles', '_sys_page_block_title_dashboard_profiles', 11, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_profile_switcher_all";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 0, 2),
 ('sys_dashboard', 2, 'system', '', '_sys_page_block_title_chart_stats', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_chart_stats";s:6:"params";a:0:{}s:5:"class";s:18:"TemplChartServices";}', 0, 1, 1, 3),
 
 ('sys_dashboard_content', 1, 'system', '', '_sys_page_block_title_dashboard_content', 11, 1, 0, 192, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"manage_content";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', 0, 1, 1, 1),
@@ -7011,7 +7221,9 @@ INSERT INTO `sys_rewrite_rules` (`preg`, `service`, `active`) VALUES
 ('^sys-action/(.*)$', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"wiki_action";s:6:"params";a:2:{i:0;s:3:"sys";i:1;s:3:"{1}";}s:5:"class";s:16:"TemplServiceWiki";}', '1'),
 ('^home/?$', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:13:\"home_redirect\";s:6:\"params\";a:0:{}}', 1),
 ('^sys-agent-form-input/(.*)$', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:25:\"call_agent_for_form_input\";s:6:\"params\";a:1:{i:0;s:3:\"{1}\";}s:5:\"class\";s:13:\"TemplServices\";}', 1),
-('^sys-ai-chat/(.*)$', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:7:\"ai_chat\";s:6:\"params\";a:1:{i:0;s:3:\"{1}\";}s:5:\"class\";s:13:\"TemplServices\";}', 1);
+('^sys-ai-chat/(.*)$', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:7:\"ai_chat\";s:6:\"params\";a:1:{i:0;s:3:\"{1}\";}s:5:\"class\";s:13:\"TemplServices\";}', 1),
+('^robots\\.txt$', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:10:"robots_txt";s:6:"params";a:0:{}}', 1),
+('^sitemap\\.xml$', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:11:"sitemap_xml";s:6:"params";a:0:{}}', 1);
 
 -- --------------------------------------------------------
 

@@ -1,0 +1,14 @@
+<!-- "Your account" (sys_dashboard_account), the profile item: the avatar, the profile's name as a link to it and its membership level; the round button opens the profile switcher under it. -->
+<div class="bx-mda-profile flex items-center gap-3 min-w-0">
+    <div class="bx-mda-profile-unit flex-none">__profile_unit__</div>
+    <div class="min-w-0 grow">
+        <a class="block truncate text-xl font-semibold leading-7 text-gray-900 dark:text-gray-100 hover:underline" href="__profile_url__">__profile_title__</a>
+        <bx_if:acl>
+            <div class="truncate text-sm leading-5 text-gray-600 dark:text-gray-400">__acl_title__</div>
+        </bx_if:acl>
+    </div>
+    <bx_if:switcher>
+        <button type="button" class="bx-btn bx-btn-icon flex-none" onclick="bx_menu_popup_inline('#__popup_id__', this, {pointer: {align: 'right'}});" title="__switcher_title__" aria-label="__switcher_title__" aria-haspopup="menu" aria-expanded="false"><i class="sys-icon chevron-down"></i></button>
+        __popup__
+    </bx_if:switcher>
+</div>

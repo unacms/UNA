@@ -55,14 +55,15 @@ function getPageMainCode()
         'illustration' => BxDolSplash::getInstance()->getIllustration(),
     	'join_link' => BX_DOL_URL_ROOT . $oPermalink->permalink('page.php?i=create-account'),
         'join_form' => $sJoinForm,
-        'join_form_in_box' => DesignBoxContent(_t('_sys_txt_splash_join'), $sJoinForm, BX_DB_PADDING_DEF),
+        // The boxes have the icon and the description of the sign-in and join blocks, as the apps' splash draws them.
+        'join_form_in_box' => DesignBoxContent([_t('_sys_txt_splash_join'), _t('_sys_page_block_desc_create_account'), 'user-plus'], $sJoinForm, BX_DB_PADDING_DEF),
         'login_link' => BX_DOL_URL_ROOT . $oPermalink->permalink('page.php?i=login'),
     	'login_form' => $sLoginForm,
-        'login_form_in_box' => DesignBoxContent(_t('_sys_txt_splash_login'), $sLoginForm, BX_DB_PADDING_DEF)
+        'login_form_in_box' => DesignBoxContent([_t('_sys_txt_splash_login'), _t('_sys_page_block_desc_login'), 'user-round-key'], $sLoginForm, BX_DB_PADDING_DEF)
     ));
 
     $s = bx_process_macros($s);
-    $s = bx_replace_markers($s, array('site_title' => getParam('site_title')));
+    $s = bx_replace_markers($s, array('site_title' => getParam('site_title'), 'site_description' => bx_process_output(BxDolSplash::getInstance()->getSiteDescription())));
     return $s;
 }
 
