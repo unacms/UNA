@@ -87,13 +87,17 @@ class BxBaseModTemplateConfig extends BxBaseModGeneralConfig
         if(!$this->$sAspectRatio)
             $this->$sAspectRatio = $this->_calculateValuesAspectRatio($sType, $sUrl, $aInfo);
 
+        // An unknown ratio (0, or below 0 for an image that gave no size) leaves the width out:
+        // the logo gets its height only and the browser takes the width from the image itself.
+        $fAspectRatio = $this->$sAspectRatio > 0 ? (float)$this->$sAspectRatio : 0.0;
+
         $sWidth = '_i' . $sTypeUc . 'Width';
-        $this->$sWidth = (int)ceil($this->$sHeight * $this->$sAspectRatio);
+        $this->$sWidth = $fAspectRatio > 0 ? (int)ceil($this->$sHeight * $fAspectRatio) : 0;
 
         return [
             $sType . '_width' => $this->$sWidth,
             $sType . '_height' => $this->$sHeight,
-            $sType . '_aspect_ratio' => $this->$sAspectRatio,
+            $sType . '_aspect_ratio' => $fAspectRatio,
         ];
     }
 
@@ -168,26 +172,23 @@ class BxBaseModTemplateConfig extends BxBaseModGeneralConfig
         return $iHeaderHeight - $iPTop - $iPBottom;
     }
 
+    /**
+     * The aspect ratio of an uploaded logo image, read from the stored file (BxDolDesigns::getLogoFileAspectRatio)
+     * and saved in the template's option, so it is measured once per upload. An image that gives no size is
+     * saved as -1 (unknown), so it isn't measured on every page either.
+     * @return float the ratio, or the type's default (0 = unknown) when there is no image
+     */
     protected function _calculateValuesAspectRatio($sType, $sUrl, $aInfo)
     {
         $sTypeUc = bx_gen_method_name($sType);
 
-        if(!$sUrl)
+        if(!$sUrl || empty($aInfo['id']))
             return $this->{'_f' . $sTypeUc . 'AspectRatioDefault'};
 
-        $iWidth = $iHeight = 0;
-        if(strpos($sUrl, '.svg') !== false)
-            list($iWidth, $iHeight) = bx_get_svg_image_size($sUrl);
-        else if(isset($aInfo['mime_type']) && strncmp($aInfo['mime_type'], 'image/', 6) === 0)
-            list($iWidth, $iHeight) = getimagesize($sUrl);
+        $fResult = BxDolDesigns::getLogoFileAspectRatio((int)$aInfo['id']);
+        $this->_oDb->setParam($this->{'_sKey' . $sTypeUc . 'AspectRatio'}, $fResult > 0 ? $fResult : -1);
 
-        if(!$iHeight) 
-            return $this->{'_f' . $sTypeUc . 'AspectRatioDefault'};
-
-        $fResult = $iWidth / $iHeight;
-        $this->_oDb->setParam($this->{'_sKey' . $sTypeUc . 'AspectRatio'}, $fResult);
-
-        return $fResult;
+        return $fResult > 0 ? $fResult : $this->{'_f' . $sTypeUc . 'AspectRatioDefault'};
     }
 
     protected function _str2px($sValue)

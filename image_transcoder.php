@@ -28,8 +28,12 @@ if (!$oTranscoder || !($bUnsigned ? $oTranscoder->isUnsignedHandlerAllowed($sHan
 
 ob_end_clean();
 
+// A link made before the browser stored its pixel density has no dpx: the cookie, set by then, decides.
+// Without the cookie (cookies off) it is the 1x copy, so getFileUrl below never gives this link back.
 if (isset($_GET['dpx']))
     $oTranscoder->forceDevicePixelRatio((int)$_GET['dpx']);
+elseif (!isset($_COOKIE['devicePixelRatio']))
+    $oTranscoder->forceDevicePixelRatio(1);
 
 // Video goes through the transcoding queue (getFileUrl queues it), never inline ffmpeg here.
 if (!($oTranscoder instanceof BxDolTranscoderVideo) && !$oTranscoder->isFileReady($sHandler) && !$oTranscoder->transcode ($sHandler)) {
