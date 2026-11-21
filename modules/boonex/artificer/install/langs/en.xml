@@ -7,7 +7,7 @@
     <string name="_bx_artificer_stg_cpt_type"><![CDATA[Artificer]]></string>
 
     <string name="_bx_artificer_stg_cpt_category_system"><![CDATA[General]]></string>
-    <string name="_bx_artificer_stg_cpt_option_switcher_name"><![CDATA[Name in Template Switcher]]></string>	
+    <string name="_bx_artificer_stg_cpt_option_switcher_name"><![CDATA[Name in template switcher]]></string>	
     <string name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Page width in pixels (empty: as set in Designer)]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width"><![CDATA[Header width]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_width_full"><![CDATA[Full width]]></string>
@@ -18,7 +18,7 @@
     <string name="_bx_artificer_stg_cpt_option_header_align_start"><![CDATA[Start]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_designer"><![CDATA[As set in Designer]]></string>
     <string name="_bx_artificer_stg_cpt_option_header_search"><![CDATA[Open search in a popup]]></string>
-    <string name="_bx_artificer_stg_cpt_option_color_scheme"><![CDATA[Color Scheme]]></string>
+    <string name="_bx_artificer_stg_cpt_option_color_scheme"><![CDATA[Color scheme]]></string>
     <string name="_bx_artificer_stg_cpt_option_color_scheme_auto"><![CDATA[Auto with switcher]]></string>
     <string name="_bx_artificer_stg_cpt_option_color_scheme_light_only"><![CDATA[Light mode only]]></string>
     <string name="_bx_artificer_stg_cpt_option_color_scheme_dark_only"><![CDATA[Dark mode only]]></string>
@@ -26,8 +26,8 @@
     
 
     <string name="_bx_artificer_stg_cpt_category_styles_custom"><![CDATA[Custom Styles]]></string>
-    <string name="_bx_artificer_stg_cpt_option_styles_custom"><![CDATA[Custom Styles]]></string>
-    <string name="_bx_artificer_stg_cpt_option_images_custom"><![CDATA[Custom Images]]></string>
+    <string name="_bx_artificer_stg_cpt_option_styles_custom"><![CDATA[Custom styles]]></string>
+    <string name="_bx_artificer_stg_cpt_option_images_custom"><![CDATA[Custom images]]></string>
     <string name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Each line represents an image. Line format: <b>name</b> => <b>value</b> => <b>type</b> => <b>class</b><br />Where <b>type</b> and/or <b>class</b> may be omitted. Available types are <b>ic</b> - icon (Font Awesome), <b>im</b> - image (file name or URL), <b>sc</b> - source code (SVG).<br />Don't forget to clear template cache (if it's enabled) to see the changes.]]></string>
 
     <!-- Pages -->

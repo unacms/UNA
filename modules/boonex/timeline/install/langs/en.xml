@@ -24,7 +24,7 @@
     <string name="_bx_timeline_option_events_per_page_account"><![CDATA[Number of items in context (profile) + subscriptions timeline]]></string>
     <string name="_bx_timeline_option_events_per_page_home"><![CDATA[Number of items in public timeline]]></string>
     <string name="_bx_timeline_option_events_per_page"><![CDATA[Number of items per page]]></string>
-    <string name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Enable Infinite Scroll]]></string>
+    <string name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Enable infinite scroll]]></string>
     <string name="_bx_timeline_option_events_per_preload"><![CDATA[Infinite Scroll: Number of items per preload]]></string>
     <string name="_bx_timeline_option_auto_preloads"><![CDATA[Infinite Scroll: Number of auto preloads]]></string>
     <string name="_bx_timeline_option_rss_length"><![CDATA[The length of RSS feed]]></string>
@@ -78,7 +78,7 @@
     <string name="_bx_timeline_option_extenals_every_feed_preload"><![CDATA[Show external event as every N-th in context (profile) + subscriptions timeline with Infinite Scroll enabled]]></string>
     <string name="_bx_timeline_option_extenals_every_hot_preload"><![CDATA[Show external event as every N-th in hot timeline with Infinite Scroll enabled]]></string>
     <string name="_bx_timeline_option_extenals_every_feed_and_hot_preload"><![CDATA[Show external event as every N-th in 'For You' timeline with Infinite Scroll enabled]]></string>
-    <string name="_bx_timeline_option_filters_style"><![CDATA[Filters: Style]]></string>
+    <string name="_bx_timeline_option_filters_style"><![CDATA[Filters: style]]></string>
     <string name="_bx_timeline_option_filters_style_default"><![CDATA[Default]]></string>
     <string name="_bx_timeline_option_filters_style_display"><![CDATA[Display]]></string>
     <string name="_bx_timeline_option_filters_contexts_hide"><![CDATA[Filters: By contexts]]></string>
@@ -209,19 +209,19 @@
 
 
     <!-- Pages -->
-    <string name="_bx_timeline_page_title_sys_view"><![CDATA[Profile Feed]]></string>
+    <string name="_bx_timeline_page_title_sys_view"><![CDATA[Profile feed]]></string>
     <string name="_bx_timeline_page_title_view"><![CDATA[Profile feed]]></string>
-    <string name="_bx_timeline_page_title_sys_view_home"><![CDATA[Public Feed]]></string>
+    <string name="_bx_timeline_page_title_sys_view_home"><![CDATA[Public feed]]></string>
     <string name="_bx_timeline_page_title_view_home"><![CDATA[Public feed]]></string>
-    <string name="_bx_timeline_page_title_sys_view_hot"><![CDATA[Hot Feed]]></string>
+    <string name="_bx_timeline_page_title_sys_view_hot"><![CDATA[Hot feed]]></string>
     <string name="_bx_timeline_page_title_view_hot"><![CDATA[Hot feed]]></string>
-    <string name="_bx_timeline_page_title_sys_item"><![CDATA[Feed Item]]></string>
+    <string name="_bx_timeline_page_title_sys_item"><![CDATA[Feed item]]></string>
     <string name="_bx_timeline_page_title_item"><![CDATA[Feed item]]></string>
-    <string name="_bx_timeline_page_title_sys_item_brief"><![CDATA[Feed Item Preview]]></string>
+    <string name="_bx_timeline_page_title_sys_item_brief"><![CDATA[Feed item preview]]></string>
     <string name="_bx_timeline_page_title_item_brief"><![CDATA[Feed item preview]]></string>
     <string name="_bx_timeline_page_title_sys_account"><![CDATA[Feed]]></string>
     <string name="_bx_timeline_page_title_account"><![CDATA[Feed]]></string>
-    <string name="_bx_timeline_page_title_sys_manage_administration"><![CDATA[Manage All]]></string>
+    <string name="_bx_timeline_page_title_sys_manage_administration"><![CDATA[Manage all]]></string>
     <string name="_bx_timeline_page_title_manage"><![CDATA[Manage]]></string>
     <string name="_bx_timeline_page_block_title_system_post_profile"><![CDATA[Post to Context Feed]]></string>
     <string name="_bx_timeline_page_block_title_post_profile"><![CDATA[Post to feed]]></string>
@@ -316,9 +316,9 @@
     <string name="_bx_timeline_menu_set_title_item_share"><![CDATA[Share Item]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_repost"><![CDATA[Repost]]></string>
     <string name="_bx_timeline_menu_item_title_item_repost"><![CDATA[Repost]]></string>
-    <string name="_bx_timeline_menu_item_title_system_item_repost_with"><![CDATA[Repost with Text]]></string>
+    <string name="_bx_timeline_menu_item_title_system_item_repost_with"><![CDATA[Repost with text]]></string>
     <string name="_bx_timeline_menu_item_title_item_repost_with"><![CDATA[Repost with text]]></string>
-    <string name="_bx_timeline_menu_item_title_system_item_repost_to"><![CDATA[Repost to Context]]></string>
+    <string name="_bx_timeline_menu_item_title_system_item_repost_to"><![CDATA[Repost to context]]></string>
     <string name="_bx_timeline_menu_item_title_item_repost_to"><![CDATA[Repost to a community]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_send"><![CDATA[Send]]></string>
     <string name="_bx_timeline_menu_item_title_item_send"><![CDATA[Send to friend]]></string>
@@ -347,7 +347,7 @@
     <string name="_bx_timeline_menu_item_title_item_delete"><![CDATA[{delete_title}]]></string>
     <string name="_bx_timeline_menu_item_title_item_delete_common"><![CDATA[Delete]]></string>
     <string name="_bx_timeline_menu_item_title_item_delete_system"><![CDATA[Hide from feeds]]></string>
-    <string name="_bx_timeline_menu_item_title_system_item_mute"><![CDATA[Mute Author]]></string>
+    <string name="_bx_timeline_menu_item_title_system_item_mute"><![CDATA[Mute author]]></string>
     <string name="_bx_timeline_menu_item_title_item_mute"><![CDATA[Mute author]]></string>
 
     <string name="_bx_timeline_menu_title_item_actions"><![CDATA[Item Actions]]></string>
@@ -370,7 +370,7 @@
 
     <string name="_bx_timeline_menu_title_post_attachments"><![CDATA[Form Attachments]]></string>
     <string name="_bx_timeline_menu_set_title_post_attachments"><![CDATA[Form Attachments]]></string>
-    <string name="_bx_timeline_menu_item_title_system_add_link"><![CDATA[Add Link]]></string>
+    <string name="_bx_timeline_menu_item_title_system_add_link"><![CDATA[Add link]]></string>
     <string name="_bx_timeline_menu_item_title_add_link"><![CDATA[Add link]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_photo_simple"><![CDATA[Add Photo (Simple)]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_photo_html5"><![CDATA[Add Photo (HTML5)]]></string>
@@ -381,9 +381,9 @@
     <string name="_bx_timeline_menu_item_title_system_add_file_simple"><![CDATA[Add File (Simple)]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_file_html5"><![CDATA[Add File (HTML5)]]></string>
     <string name="_bx_timeline_menu_item_title_add_video"><![CDATA[Add video]]></string>
-    <string name="_bx_timeline_menu_item_title_system_add_video_record"><![CDATA[Record Video]]></string>
+    <string name="_bx_timeline_menu_item_title_system_add_video_record"><![CDATA[Record video]]></string>
     <string name="_bx_timeline_menu_item_title_add_video_record"><![CDATA[Record video]]></string>
-    <string name="_bx_timeline_menu_item_title_system_add_poll"><![CDATA[Add Poll]]></string>
+    <string name="_bx_timeline_menu_item_title_system_add_poll"><![CDATA[Add poll]]></string>
     <string name="_bx_timeline_menu_item_title_add_poll"><![CDATA[Add poll]]></string>
     <string name="_bx_timeline_menu_item_title_system_timeline"><![CDATA[Timeline]]></string>
     <string name="_bx_timeline_menu_item_title_timeline"><![CDATA[Timeline]]></string>

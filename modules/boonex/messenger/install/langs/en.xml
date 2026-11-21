@@ -350,7 +350,7 @@
 	<string name="_bx_messenger_search_item_content"><![CDATA[messages content]]></string>
 	<string name="_bx_messenger_time_in_history"><![CDATA[Use <b>from now</b> time format in chat's history]]></string>
 	<string name="_bx_messenger_dont_show_search_desc"><![CDATA[Don't show description in search profiles popup]]></string>
-	<string name="_bx_messenger_use_unique_mode"><![CDATA[Switch to Two-Column View (Simple Mode)]]></string>
+	<string name="_bx_messenger_use_unique_mode"><![CDATA[Switch to two-column view (simple mode)]]></string>
 	<string name="_bx_messenger_talk_is_not_allowed"><![CDATA[This chat is not available to you.]]></string>
 	<string name="_bx_messenger_connect_friends_only"><![CDATA[Allow to create chats only with friends]]></string>
 	<string name="_bx_messenger_talk_types_market_title"><![CDATA[Conversation with {opponent}]]></string>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_ntfs_page_title_system_settings"><![CDATA[Notification settings]]></string_upd>
+    <string_upd name="_bx_ntfs_menu_item_title_system_notifications_all"><![CDATA[All notifications]]></string_upd>
+    <string_upd name="_bx_ntfs_menu_item_title_system_notifications_site"><![CDATA[On site]]></string_upd>
+</resources>

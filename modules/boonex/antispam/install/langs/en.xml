@@ -209,7 +209,7 @@ This antispam method scan submitted content for the URLs and check them if any o
     <string name="_bx_antispam_adm_stg_cpt_category_lasso_moderation"><![CDATA[Lasso Moderation]]></string>
     <string name="_bx_antispam_option_lasso_moderation_enable"><![CDATA[Enable]]></string>
     <string name="_bx_antispam_option_lasso_moderation_api_key"><![CDATA[API key]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_webhook_secret"><![CDATA[Webhook Secret]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_webhook_secret"><![CDATA[Webhook secret]]></string>
     <string name="_bx_antispam_option_lasso_moderation_webhook_url"><![CDATA[Webhook URL]]></string>
     <string name="_bx_antispam_option_lasso_moderation_action"><![CDATA[Action]]></string>
     <string name="_bx_antispam_option_lasso_moderation_action_none"><![CDATA[None]]></string>
