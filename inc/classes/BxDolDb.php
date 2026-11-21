@@ -915,8 +915,9 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 		$sEngine = $this->getParam('sys_db_cache_engine');
 		// No engine: the params are not loaded (they are being reloaded). The file engine serves this call, and the
 		// next one picks the real engine: the base BxDolCache kept here cleared nothing and reported a failure.
-		if(empty($sEngine))
+		if(empty($sEngine)) {
 			return bx_instance('BxDolCacheFile');
+		}
 
 		$this->_oDbCacheObject = bx_instance('BxDolCache'.$sEngine);
 		if(!$this->_oDbCacheObject->isAvailable())
