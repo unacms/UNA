@@ -3057,8 +3057,9 @@
     .bx-std .bx-btn.bx-btn-primary:hover:not(:is(.dark *))::after {
         --tw-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
     }
-    /* Studio notices: a message box (the grid's EMPTY notice, MsgBox()) is a black/5 (white/5 in dark) plate with 60% text instead of the site's gray plate. */
-    .bx-std .bx-msg-box {
+    /* Studio notices: a plain message box (MsgBox()) is a black/5 (white/5 in dark) plate with 60% text instead of the site's gray plate.
+       A state (an empty list, a denial) has no plate. */
+    .bx-std .bx-msg-box-container > .bx-msg-box {
         @apply bg-black/5 dark:bg-white/5 text-black/60 dark:text-white/60;
     }
     /* Disabled: the same plate in the flat translucent tone (black/5, white/5 in dark) instead of the gradient, the label at 40%, the hairlines kept,
@@ -3251,7 +3252,7 @@
         @apply my-1 border-t border-black/10 dark:border-white/10;
     }
     .bx-std .bx-std-cm-label {
-        @apply px-2.5 pt-2 pb-1 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400;
+        @apply px-2.5 pt-2 pb-1 text-xs font-medium text-gray-500 dark:text-gray-400;
     }
     .bx-std [data-bx-context-menu] {
         -webkit-touch-callout: none; /* a long press opens the menu, not the browser's link sheet */

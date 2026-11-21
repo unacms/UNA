@@ -815,6 +815,41 @@ class BxBaseGrid extends BxDolGrid
         return $mixedState ? true : false;
     }
 
+    /**
+     * What an empty grid shows: the standard empty state, with the grid's Add action as its button when the grid has one
+     * and no search is applied.
+     */
+    protected function _getEmptyState()
+    {
+        $bFiltered = !empty($this->_aOptions['filter_get']) && (string)bx_get($this->_aOptions['filter_get']) !== '';
+
+        return $this->_oFunctions->emptyState($this->_getEmptyText(), !$bFiltered ? $this->_getEmptyStateButton() : []);
+    }
+
+    /**
+     * The empty grid's line: "Nothing here yet" unless a grid names what it lists ("No badges yet").
+     */
+    protected function _getEmptyText()
+    {
+        return _t('_Empty');
+    }
+
+    protected function _getEmptyStateButton()
+    {
+        $a = $this->_aOptions['actions_independent']['add'] ?? null;
+        if(empty($a) || !is_array($a) || empty($a['active']) || empty($a['title']))
+            return [];
+
+        // a grid that hides its Add action (no permission) hides it here too
+        if(method_exists($this, '_getActionAdd') && $this->_getActionAdd('independent', 'add', $a) === '')
+            return [];
+
+        return [
+            'title' => $a['title'],
+            'onclick' => "glGrids['" . bx_js_string($this->_sObject) . "'].action('add', {}, '', false, 0)",
+        ];
+    }
+
     protected function _getRowsDataDesign (&$aData)
     {
         $aGrid = array();
@@ -823,7 +858,7 @@ class BxBaseGrid extends BxDolGrid
             $aGrid[] = array(
                 'id_row' => 0,
                 'row_class' => 'bx-grid-table-row-empty',
-                'row' => '<td class="bx-def-padding-sec-topbottom" colspan="' . count($this->_aOptions['fields']) . '">' . MsgBox(_t('_Empty')) . '</td>'
+                'row' => '<td class="bx-def-padding-sec-topbottom" colspan="' . count($this->_aOptions['fields']) . '">' . $this->_getEmptyState() . '</td>'
             );
         else
             foreach ($aData as $aRow)
