@@ -11,7 +11,7 @@ defined('BX_DOL') or die('hack attempt');
 
 class BxTemplStudioPolyglotLanguages extends BxBaseStudioPolyglotLanguages
 {
-    function __construct($aOptions, $oTemplate = false)
+    public function __construct($aOptions, $oTemplate = false)
     {
         parent::__construct($aOptions, $oTemplate);
     }

@@ -45,7 +45,7 @@ class BxDolStudioPolyglotQuery extends BxDolStudioLanguagesUtilsQuery
      * category's name "BoonEx English"), by name when no module has them (System, Custom).
      * @return array category ID => title, ordered by title
      */
-    function getCategoryTitles()
+    public function getCategoryTitles()
     {
         return $this->getPairs("SELECT
                 `tlc`.`ID` AS `id`,
