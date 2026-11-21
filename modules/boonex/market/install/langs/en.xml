@@ -397,7 +397,7 @@
     <string name="_bx_market_grid_action_title_lcs_edit"><![CDATA[Edit]]></string>
     <string name="_bx_market_grid_action_title_lcs_reset"><![CDATA[Reset]]></string>
     <string name="_bx_market_grid_action_title_lcs_delete"><![CDATA[Delete]]></string>
-    <string name="_bx_market_grid_action_err_cannot_perform"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_bx_market_grid_action_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_market_grid_txt_lcs_type_single"><![CDATA[one-time]]></string>
     <string name="_bx_market_grid_txt_lcs_type_recurring"><![CDATA[recurring]]></string>
     <string name="_bx_market_grid_txt_lcs_never"><![CDATA[never]]></string>

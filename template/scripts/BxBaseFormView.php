@@ -1244,7 +1244,7 @@ BLAH;
 
         $sRequired = $this->genRequiredMark($aInput, $isOneLine);
         
-        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
+        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon circle-question-mark"></i></a> ' : '';
 
         $sClassAdd = !empty($aInput['error']) ? ' bx-form-error' : '';
         $sInfoIcon = !empty($aInput['info']) ? $this->genInfoIcon($aInput['info']) : '';
@@ -1432,7 +1432,7 @@ BLAH;
 
         $sRequired = $this->genRequiredMark($aInput);
         
-        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
+        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon circle-question-mark"></i></a> ' : '';
 
         $sClassAdd = !empty($aInput['error']) ? ' bx-form-error' : '';
         $sInfoIcon = !empty($aInput['info']) ? $this->genInfoIcon($aInput['info']) : '';

@@ -251,7 +251,7 @@
     
     <string name="_bx_forum_menu_item_title_system_add_link"><![CDATA[Add Link]]></string>
     <string name="_bx_forum_menu_item_title_add_link"><![CDATA[Add Link]]></string>
-    <string name="_bx_forum_form_post_input_link_err_delete"><![CDATA[Cannot remove the link. Please report.]]></string>
+    <string name="_bx_forum_form_post_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string>
     <string name="_bx_forum_form_post_input_sys_link"><![CDATA[Link]]></string>
     <string name="_bx_forum_form_post_input_link_alt"><![CDATA[Add Link]]></string>
     <string name="_bx_forum_form_attach_link"><![CDATA[Attach Link]]></string>

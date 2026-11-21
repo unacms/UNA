@@ -40,7 +40,7 @@ SELECT 'sys_account_preferences', 'system', 'switch-language', '_sys_menu_item_t
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `sys_menu_items` WHERE `set_name` = 'sys_account_preferences' AND `name` = 'switch-language');
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `active_api`, `copyable`, `order`)
-SELECT 'sys_account_preferences', 'system', 'color-scheme', '_sys_menu_item_title_system_color_scheme', '_sys_menu_item_title_color_scheme', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-account-preferences-color-scheme'', this, {pointer: {flip: true}});', '', 'adjust', '', '', 2147483646, 1, 1, 0, 3
+SELECT 'sys_account_preferences', 'system', 'color-scheme', '_sys_menu_item_title_system_color_scheme', '_sys_menu_item_title_color_scheme', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-account-preferences-color-scheme'', this, {pointer: {flip: true}});', '', 'eclipse', '', '', 2147483646, 1, 1, 0, 3
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `sys_menu_items` WHERE `set_name` = 'sys_account_preferences' AND `name` = 'color-scheme');
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `config_api`, `deletable`, `copyable`, `active`, `active_api`, `order`)
