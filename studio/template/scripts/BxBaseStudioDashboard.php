@@ -598,18 +598,29 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             }
 
             // Status rows: a row per section of the last audit with its headline (a version) or its outcome, and the issue count when it has issues.
+            // A section with warnings or failures is a button that opens its rows in the Audit tab (dashboard.js auditOpen).
+            $sChevron = $this->getChartIcon('chevron-right')['svg'];
             foreach($this->getAuditReport()['sections'] as $aSection) {
                 $aSummary = $this->getAuditSectionSummary($aSection);
-                $aTmplVarsItems[] = [
+                $aRow = [
+                    'js_object' => $sJsObject,
+                    'name' => $aSection['name'],
                     'status' => $aSummary['status'],
                     'status_title' => _t('_sys_audit_title_' . $aSummary['status']), // read out in place of the dot's colour
                     'icon' => $this->getChartIcon($aSection['icon'])['svg'],
+                    'icon_chevron' => $sChevron,
                     'title' => $aSection['title'],
                     'value' => $aSummary['value'],
                     'bx_if:show_desc' => [
                         'condition' => $aSummary['desc'] !== '',
                         'content' => ['desc' => $aSummary['desc']]
                     ]
+                ];
+
+                $bIssues = in_array($aSummary['status'], ['warn', 'fail']);
+                $aTmplVarsItems[] = [
+                    'bx_if:show_plain' => ['condition' => !$bIssues, 'content' => $aRow],
+                    'bx_if:show_link' => ['condition' => $bIssues, 'content' => $aRow],
                 ];
             }
         }
