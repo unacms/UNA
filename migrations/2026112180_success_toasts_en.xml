@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Success messages show as a toast and say what happened, without "successfully". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_ADM_PROFILE_SEND_MSG"><![CDATA[Message sent.]]></string_upd>
+    <string_upd name="_DELETE_SUCCESS"><![CDATA[Your account was deleted.]]></string_upd>
+    <string_upd name="_adm_bp_scs_save"><![CDATA[Changes saved.]]></string_upd>
+    <string_upd name="_adm_dbd_msg_q_clean_success"><![CDATA[Queue cleared.]]></string_upd>
+    <string_upd name="_adm_dbd_msg_c_clean_success"><![CDATA[Cache cleared.]]></string_upd>
+    <string_upd name="_adm_dsg_scs_save"><![CDATA[Changes saved.]]></string_upd>
+    <string_upd name="_adm_msg_modules_success_added_to_cart"><![CDATA[Added to the cart.]]></string_upd>
+    <string_upd name="_adm_msg_modules_success_checkouted"><![CDATA[Payment accepted. The purchased apps show up in Apps -&gt; Purchases within a few minutes. If they don't, contact the vendor with your payment details.]]></string_upd>
+    <string_upd name="_adm_msg_modules_success_delete"><![CDATA[The package was deleted.]]></string_upd>
+    <string_upd name="_adm_msg_modules_success_disable"><![CDATA[The app was disabled.]]></string_upd>
+    <string_upd name="_adm_msg_modules_success_enable"><![CDATA[The app was enabled.]]></string_upd>
+    <string_upd name="_adm_msg_modules_success_install"><![CDATA[The app was installed.]]></string_upd>
+    <string_upd name="_adm_msg_modules_success_uninstall"><![CDATA[The app was uninstalled.]]></string_upd>
+    <string_upd name="_adm_pgt_scs_recompiled"><![CDATA[Languages recompiled.]]></string_upd>
+    <string_upd name="_adm_pgt_scs_restored"><![CDATA[Languages restored.]]></string_upd>
+    <string_upd name="_adm_pgt_scs_et_hf_save"><![CDATA[Changes saved.]]></string_upd>
+    <string_upd name="_adm_stg_scs_save"><![CDATA[Settings saved.]]></string_upd>
+    <string_upd name="_adm_str_msg_download_successfully"><![CDATA[Downloaded. You can install it in Apps &gt; Downloaded.]]></string_upd>
+    <string_upd name="_adm_str_msg_download_and_install_successfully"><![CDATA[Downloaded and installed.]]></string_upd>
+    <string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Email settings saved.]]></string_upd>
+    <string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Password changed.]]></string_upd>
+    <string_upd name="_sys_account_settings_info_successfully_submitted"><![CDATA[Account settings saved.]]></string_upd>
+    <string_upd name="_sys_conn_msg_success"><![CDATA[Done.]]></string_upd>
+    <string_upd name="_sys_profile_cf_set_successfully_submitted"><![CDATA[Content filter updated.]]></string_upd>
+    <string_upd name="_sys_profile_cf_manage_successfully_submitted"><![CDATA[Content filter updated.]]></string_upd>
+    <string_upd name="_sys_txt_account_profile_context_changed_success"><![CDATA[You switched to <b>{0}</b>.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_email_success"><![CDATA[Your email address is confirmed.]]></string_upd>
+    <string_upd name="_sys_wiki_block_deleted"><![CDATA[Block deleted.]]></string_upd>
+</resources>

@@ -13,15 +13,19 @@ function bx_get_js_result($aParams)
     if(isset($aParams['code']))
         $aResult['code'] = $aParams['code'];
 
-    if(!empty($aParams['message'])) {
-        $aResult['message'] = $aParams['message'];
+    // 'message' opens a dialog, for an error or a question; 'toast' shows a success without blocking
+    foreach(['message', 'toast'] as $sKey) {
+        if(empty($aParams[$sKey]))
+            continue;
+
+        $aResult[$sKey] = $aParams[$sKey];
 
         if(!isset($aParams['translate']) || !empty($aParams['translate'])) {
-            $aTrtParams = array($aResult['message']);
+            $aTrtParams = array($aResult[$sKey]);
             if(!empty($aParams['translate']) && is_array($aParams['translate']))
                 $aTrtParams = array_merge($aTrtParams, $aParams['translate']);
 
-            $aResult['message'] = call_user_func_array ('_t', $aTrtParams);
+            $aResult[$sKey] = call_user_func_array ('_t', $aTrtParams);
         }
     }
 

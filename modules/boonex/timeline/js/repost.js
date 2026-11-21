@@ -59,8 +59,12 @@ BxTimelineRepost.prototype.repostItem = function(oLink, iOwnerId, sType, sAction
 
             if(oData && oData.message != undefined && oData.message.length > 0 && !bCounter)
                 bx_alert(oData.message, fContinue);
-            else
+            else {
+                if(oData && oData.toast != undefined && oData.toast.length > 0)
+                    bx_toast(oData.toast);
+
                 fContinue();
+            }
         },
         'json'
     );

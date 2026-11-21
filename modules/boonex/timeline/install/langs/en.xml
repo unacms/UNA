@@ -424,8 +424,8 @@
     <string name="_bx_timeline_alert_action_repost_follow_context"><![CDATA[New content repost]]></string>
 
     <string name="_bx_timeline_txt_msg_no_results"><![CDATA[Empty]]></string>
-    <string name="_bx_timeline_txt_msg_performed_action"><![CDATA[The action was successfully performed.]]></string>
-    <string name="_bx_timeline_txt_msg_posted"><![CDATA[Posted successfully.]]></string>
+    <string name="_bx_timeline_txt_msg_performed_action"><![CDATA[Done.]]></string>
+    <string name="_bx_timeline_txt_msg_posted"><![CDATA[Posted.]]></string>
     <string name="_bx_timeline_grid_action_err_delete"><![CDATA[Cannot delete the selected timeline events(s).]]></string>
     <string name="_bx_timeline_txt_err_cannot_perform_insertion"><![CDATA[Cannot perform insertion.]]></string>
     <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
@@ -495,7 +495,7 @@
     <string name="_bx_timeline_txt_reposted_by"><![CDATA[Reposted by]]></string>
     <string name="_bx_timeline_txt_err_cannot_repost"><![CDATA[Cannot repost. Please report.]]></string>
     <string name="_bx_timeline_txt_err_already_reposted"><![CDATA[You already reposted the item.]]></string>
-    <string name="_bx_timeline_txt_msg_success_repost"><![CDATA[The item was successfully reposted.]]></string>
+    <string name="_bx_timeline_txt_msg_success_repost"><![CDATA[Reposted.]]></string>
     <string name="_bx_timeline_txt_object_reposted"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> reposted a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
 
     <string name="_bx_timeline_txt_poll_view_answers"><![CDATA[poll]]></string>

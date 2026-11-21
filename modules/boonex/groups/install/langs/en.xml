@@ -426,7 +426,7 @@
     <string name="_bx_groups_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_groups_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    
 
-    <string name="_bx_groups_msg_performed"><![CDATA[The action was successfully performed.]]></string>
+    <string name="_bx_groups_msg_performed"><![CDATA[Done.]]></string>
     <string name="_bx_groups_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
     <string name="_bx_groups_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
 

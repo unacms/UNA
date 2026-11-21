@@ -259,7 +259,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         echoJson([
             'code' => 0,
-            'message' => _t('_bx_timeline_txt_msg_performed_action')
+            'toast' => _t('_bx_timeline_txt_msg_performed_action')
         ]);
     }
 
@@ -328,7 +328,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             'object_author_id' => $this->_oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $aEvent['owner_id'] : $aEvent['object_id']
         ]);
 
-        echoJson(array('code' => 0, 'message' => _t('_bx_timeline_txt_msg_performed_action'), 'reload' => 1));
+        echoJson(array('code' => 0, 'toast' => _t('_bx_timeline_txt_msg_performed_action'), 'reload' => 1));
     }
 
     function actionDelete()
@@ -375,7 +375,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         echoJson([
             'code' => 0, 
-            'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+            'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
             'count' => $aReposted['reposts'], 
             'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts'], $aParams) : '',
             'counter' => $this->_oTemplate->getRepostCounter($aReposted, $aParams),
@@ -423,7 +423,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
             return echoJson([
                 'code' => 0, 
-                'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+                'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
                 'count' => $aReposted['reposts'], 
                 'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts']) : '',
                 'counter' => $this->_oTemplate->getRepostCounter($aReposted),
@@ -483,7 +483,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
             return echoJson([
                 'code' => 0, 
-                'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+                'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
                 'count' => $aReposted['reposts'], 
                 'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts']) : '',
                 'counter' => $this->_oTemplate->getRepostCounter($aReposted),

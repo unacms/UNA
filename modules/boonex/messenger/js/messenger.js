@@ -1052,7 +1052,12 @@
             return false;
 
         $.post('modules/?r=messenger/leave', { lot: iLotId }, function (oData) {
-            bx_alert(oData.message);
+            // leaving is a success that doesn't block; a refusal (code 1) is a dialog
+            if (!parseInt(oData.code))
+                bx_toast(oData.message);
+            else
+                bx_alert(oData.message);
+
             if (!parseInt(oData.code))
                 _this.searchByItems(() => $(talksListItems).length ? $(talksListItems).first().click() : '');
         }, 'json');

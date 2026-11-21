@@ -56,7 +56,7 @@
 	<string name="_bx_messenger_lots_class_my_members"><![CDATA[Shoutbox]]></string>
 	<string name="_bx_messenger_save_part_list"><![CDATA[Save]]></string>
 	<string name="_bx_messenger_save_part_failed"><![CDATA[Participant list cannot be empty!]]></string>
-	<string name="_bx_messenger_save_part_success"><![CDATA[Participants list was successfully updated!]]></string>
+	<string name="_bx_messenger_save_part_success"><![CDATA[Participants updated.]]></string>
 	<string name="_bx_messenger_delete_lot"><![CDATA[Are you sure you want to delete "{0}" conversation?]]></string>
 	<string name="_bx_messenger_can_not_delete"><![CDATA[You cannot delete this lot!]]></string>	
 	<string name="_bx_messenger_not_participant"><![CDATA[You are not a participant!]]></string>
