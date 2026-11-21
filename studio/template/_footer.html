@@ -1,4 +1,8 @@
        __system_injection_footer__
        <bx_injection:injection_footer />
+       <!-- Side menu items are full page loads: fetch the page when the pointer rests on an item (Chromium; other browsers ignore it). Script items have an onclick and are left out. -->
+       <script type="speculationrules">
+       {"prefetch": [{"where": {"and": [{"selector_matches": ".bx-std-pmen-item a[onclick='']"}, {"not": {"selector_matches": ".bx-menu-tab-active a"}}]}, "eagerness": "moderate"}]}
+       </script>
     </body>
 </html>
