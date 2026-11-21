@@ -2103,7 +2103,6 @@
     <string name="_adm_stg_cpt_option_sys_audit_report"><![CDATA[Отчёт последнего аудита сервера]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start"><![CDATA[Количество сообщенией, отправляемое из Push очереди при каждом запуске]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient"><![CDATA[Количество сообщенией, отправляемое из Push очереди одному и тому же получателю при каждом запуске]]></string>
-    <string name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Журнал оповещений/хуков]]></string>
     <string name="_adm_stg_cpt_option_sys_alerts_stats"><![CDATA[Статистика оповещений/хуков]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_default"><![CDATA[Поставщик]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_twilio_sid"><![CDATA[Twilio: SID учетной записи]]></string>
@@ -2159,6 +2158,7 @@
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых на странице поиска профиля.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_buttons"><![CDATA[Кнопки отправки и другие кнопки. В приложениях кнопки отвечают только вибрацией.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_choices"><![CDATA[Вкладки, пункты меню, переключатели, флажки, радиокнопки.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[Если выключено, посетители, которые не вошли, ничего не слышат, а их страницы не загружают звуки.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_level"><![CDATA[Каждый может выбрать для себя «Громко», «Тихо» или «Выкл.»: в меню аккаунта на сайте и в Студии, в подвале и на панели управления в приложениях.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_menus"><![CDATA[Открытие и закрытие меню, всплывающих окон, панелей и разделов.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_navigation"><![CDATA[Панель вкладок и кнопки «Назад» в приложениях, открытие приложений Студии.]]></string>
@@ -2303,6 +2303,7 @@
     <string name="_adm_stg_cpt_option_sys_sounds_choices"><![CDATA[Звук выбора]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_main"><![CDATA[Основной набор]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_off"><![CDATA[Без звука]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Звуки и для гостей]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level"><![CDATA[Уровень для тех, кто его не выбрал]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_full"><![CDATA[Громко]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_off"><![CDATA[Выкл.]]></string>
@@ -2522,7 +2523,6 @@
         <string name="_adm_txt_settings"><![CDATA[Настройки]]></string>
 	<string name="_adm_txt_show_actions"><![CDATA[Действия]]></string>
 	<string name="_adm_txt_show_help"><![CDATA[Помощь]]></string>
-	<string name="_adm_txt_show_help_content_empty"><![CDATA[Помошь недоступна]]></string>
 	<string name="_adm_txt_uninstall"><![CDATA[Демонтировать]]></string>
         <string name="_adm_wgt_cpt_api"><![CDATA[API]]></string>
         <string name="_adm_wgt_cpt_agents"><![CDATA[Агенты]]></string>
@@ -3000,8 +3000,6 @@
   <string name="_sys_add_friend"><![CDATA[Добавить в друзья]]></string>
         <string name="_sys_add_relation"><![CDATA[Добавить связь]]></string>
 	<string name="_sys_adm_installed"><![CDATA[Установленные]]></string>
-	<string name="_sys_admin_apply"><![CDATA[Применить]]></string>
-	<string name="_sys_admin_filter"><![CDATA[Фильтр:]]></string>
   <string name="_sys_audit_filter_profile_select"><![CDATA[Выберите профиль]]></string>
   <string name="_sys_audit_filter_action_select"><![CDATA[Выберите действия]]></string>
 	<string name="_sys_audit_cron_jobs"><![CDATA[Планировщик]]></string>

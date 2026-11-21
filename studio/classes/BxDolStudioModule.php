@@ -32,8 +32,6 @@ class BxDolStudioModule extends BxTemplStudioWidget
         $this->sLangPrefix = 'mod';
         $this->sParamPrefix = 'mod';
 
-        $this->sPageRssHelpObject = 'sys_studio_module_help'; 
-
         $this->sModule = '';
         if(is_string($sModule) && !empty($sModule))
             $this->sModule = $sModule;
@@ -77,9 +75,6 @@ class BxDolStudioModule extends BxTemplStudioWidget
         $this->aModule = BxDolModuleQuery::getInstance()->getModuleByName($this->sModule);
         if(empty($this->aModule) || !is_array($this->aModule))
             BxDolStudioTemplate::getInstance()->displayPageNotFound();
-
-        $this->sPageRssHelpUrl = $this->aModule['help_url'];
-        $this->sPageRssHelpId = $this->aModule['name'];
 
         $this->addMarkers(array(
             'module_name' => $this->aModule['name'],

@@ -2131,7 +2131,6 @@
     <string name="_adm_stg_cpt_option_sys_audit_report"><![CDATA[Last server audit report]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start"><![CDATA[Number of messages to send from Push queue per run]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient"><![CDATA[Number of messages to send from Push queue per run to some recipient]]></string>
-    <string name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Alerts/hooks logger]]></string>
     <string name="_adm_stg_cpt_option_sys_alerts_stats"><![CDATA[Alerts/hooks stats]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_default"><![CDATA[Provider]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_twilio_sid"><![CDATA[Twilio: Account SID]]></string>
@@ -2186,6 +2185,7 @@
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Set the maximum number of results displayed per page in Profile Search.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_buttons"><![CDATA[Submit and other buttons. In the apps, buttons answer with haptics only.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_choices"><![CDATA[Tabs, menu items, switches, checkboxes, radio buttons.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[When this is off, visitors who haven't signed in hear nothing, and their pages don't load the sounds.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_level"><![CDATA[Everyone can pick Full, Quiet or Off for themselves: in the account menu on the site and in Studio, in the footer and the dashboard of the apps.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_menus"><![CDATA[Menus, popups, drawers and sections opening and closing.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_navigation"><![CDATA[The apps' tab bar and back buttons, opening Studio apps.]]></string>
@@ -2331,6 +2331,7 @@
     <string name="_adm_stg_cpt_option_sys_sounds_choices"><![CDATA[Sound for choices]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_main"><![CDATA[Main sound set]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_off"><![CDATA[No sound]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Play for guests too]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level"><![CDATA[Level for people who haven't chosen]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_full"><![CDATA[Full]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_off"><![CDATA[Off]]></string>
@@ -2550,7 +2551,6 @@
         <string name="_adm_txt_settings"><![CDATA[Settings]]></string>
 	<string name="_adm_txt_show_actions"><![CDATA[Actions]]></string>
 	<string name="_adm_txt_show_help"><![CDATA[Help]]></string>
-	<string name="_adm_txt_show_help_content_empty"><![CDATA[Help is not available]]></string>
 	<string name="_adm_txt_uninstall"><![CDATA[Uninstall]]></string>
         <string name="_adm_wgt_cpt_api"><![CDATA[API]]></string>
         <string name="_adm_wgt_cpt_agents"><![CDATA[Agents]]></string>
@@ -3028,8 +3028,6 @@
   <string name="_sys_add_friend"><![CDATA[Add friend]]></string>
         <string name="_sys_add_relation"><![CDATA[Add relationship]]></string>
 	<string name="_sys_adm_installed"><![CDATA[Installed]]></string>
-	<string name="_sys_admin_apply"><![CDATA[Apply]]></string>
-	<string name="_sys_admin_filter"><![CDATA[Filter:]]></string>
   <string name="_sys_audit_filter_profile_select"><![CDATA[Select Profile]]></string>
   <string name="_sys_audit_filter_action_select"><![CDATA[Select Action]]></string>
 	<string name="_sys_audit_cron_jobs"><![CDATA[Cron jobs]]></string>

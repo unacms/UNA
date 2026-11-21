@@ -443,7 +443,10 @@ import url(../../../../../../../template/css/forms.css);
 }
 .bx-form-input-wrapper-html .fr-wrapper{
     border-radius: 0 0 .375rem .375rem !important; 
-    border-bottom-color: #CCCCCC !important;
+    border-bottom-color: #d4d4d8 !important; /* gray-300 */
+}
+:where(.dark) .bx-form-input-wrapper-html .fr-wrapper{
+    border-bottom-color: #3f3f46 !important; /* gray-700 */
 }
 .bx-form-input-wrapper-html .second-toolbar{
     border-bottom:none !important;

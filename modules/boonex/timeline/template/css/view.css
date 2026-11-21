@@ -1,8 +1,14 @@
 /*--- General section ---*/
+/* Colours are the site's gray scale (Tailwind gray = NEO's neutrals, tailwind.config.js) in NEO's roles: muted surface gray-200/700,
+   border gray-300/700, muted text gray-600/400, card white/gray-800. Each has a :where(.dark) twin, which keeps the light rule's
+   specificity so a template's own overrides still win in both schemes. */
 
 /*--- Dynamic Browsing: Menu ---*/
 .bx-tl-menu-feeds.bx-menu-ver li.bx-menu-tab-active {
-    background-color: rgba(235, 240, 245, 0.8);
+    background-color: #f4f4f5;
+}
+:where(.dark) .bx-tl-menu-feeds.bx-menu-ver li.bx-menu-tab-active {
+    background-color: #3f3f46;
 }
 .bx-tl-menu-feeds.bx-menu-ver li .bx-menu-item-link {
     position: relative;
@@ -188,16 +194,21 @@ div.bx-tl-divider-cnt {
 
     width: 100%;
 
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    border: 2px solid #d4d4d8;
     border-radius: 20px;
     -moz-border-radius: 20px;
     -webkit-border-radius: 20px;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #e4e4e7;
     
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
-    color: #ffffff;
+    color: #52525b;
+}
+:where(.dark) div.bx-tl-divider-cnt {
+    border-color: #3f3f46;
+    background-color: #27272a;
+    color: #a1a1aa;
 }
 
 /*--- Item Style ---*/
@@ -216,6 +227,10 @@ div.bx-tl-blink-plate {
     padding: 10px;
     background-color: rgb(255, 244, 213);
     background-color: rgba(255, 234, 193, 0.5);
+}
+/* The new-item flash keeps its amber; a light cream would glare on the dark page. */
+:where(.dark) div.bx-tl-blink-plate {
+    background-color: rgba(245, 158, 11, 0.15);
 }
 
 div.bx-tl-item.bx-tl-blink div.bx-tl-blink-plate {
@@ -246,13 +261,20 @@ div.bx-tl-item.bx-tl-sample .bx-tl-is-icon,
 div.bx-tl-item.bx-tl-sample .bx-tl-is-title,
 div.bx-tl-item.bx-tl-sample .bx-tl-is-aux > li,
 div.bx-tl-item.bx-tl-sample .bx-tl-is-paragraph > li {
-    background: -webkit-gradient(linear,left top,right top,color-stop(25%,#f2f2f2),color-stop(37%,#e6e6e6),color-stop(63%,#f2f2f2));
-    background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+    background: -webkit-gradient(linear,left top,right top,color-stop(25%,#f4f4f5),color-stop(37%,#e4e4e7),color-stop(63%,#f4f4f5));
+    background: linear-gradient(90deg, #f4f4f5 25%, #e4e4e7 37%, #f4f4f5 63%);
     background-size: auto;
     background-size: 400% 100%;
 
     -webkit-animation: bx-tl-sample-loading 1.4s ease infinite;
     animation: bx-tl-sample-loading 1.4s ease infinite;
+}
+/* background-image, not the shorthand, so the 400% size above stays. */
+:where(.dark) div.bx-tl-item.bx-tl-sample .bx-tl-is-icon,
+:where(.dark) div.bx-tl-item.bx-tl-sample .bx-tl-is-title,
+:where(.dark) div.bx-tl-item.bx-tl-sample .bx-tl-is-aux > li,
+:where(.dark) div.bx-tl-item.bx-tl-sample .bx-tl-is-paragraph > li {
+    background-image: linear-gradient(90deg, #27272a 25%, #3f3f46 37%, #27272a 63%);
 }
 div.bx-tl-item.bx-tl-sample .bx-tl-is-icon {
     display: block;
@@ -363,7 +385,13 @@ div.bx-tl-item div.bx-tl-owner-name .bx-tl-date,
 div.bx-tl-item div.bx-tl-owner-name .bx-tl-pinned .sys-icon,
 div.bx-tl-item div.bx-tl-owner-name .bx-tl-sticked .sys-icon,
 div.bx-tl-item div.bx-tl-owner-name .bx-tl-hot .sys-icon {
-    color: rgba(40, 60, 80, 0.5);
+    color: #52525b;
+}
+:where(.dark) div.bx-tl-item div.bx-tl-owner-name .bx-tl-date,
+:where(.dark) div.bx-tl-item div.bx-tl-owner-name .bx-tl-pinned .sys-icon,
+:where(.dark) div.bx-tl-item div.bx-tl-owner-name .bx-tl-sticked .sys-icon,
+:where(.dark) div.bx-tl-item div.bx-tl-owner-name .bx-tl-hot .sys-icon {
+    color: #a1a1aa;
 }
 div.bx-tl-item div.bx-tl-owner-name .bx-tl-pinned .sys-icon,
 div.bx-tl-item div.bx-tl-owner-name .bx-tl-sticked .sys-icon,
@@ -410,7 +438,13 @@ div.bx-tl-item div.bx-tl-owner-name .bx-tl-hot .sys-icon {
 .bx-tl-item-meta .bx-tl-pinned .sys-icon,
 .bx-tl-item-meta .bx-tl-sticked .sys-icon,
 .bx-tl-item-meta .bx-tl-hot .sys-icon {
-    color: rgba(40, 60, 80, 0.5);
+    color: #52525b;
+}
+:where(.dark) .bx-tl-item-meta .bx-tl-date,
+:where(.dark) .bx-tl-item-meta .bx-tl-pinned .sys-icon,
+:where(.dark) .bx-tl-item-meta .bx-tl-sticked .sys-icon,
+:where(.dark) .bx-tl-item-meta .bx-tl-hot .sys-icon {
+    color: #a1a1aa;
 }
 .bx-tl-item-meta .bx-tl-pinned .sys-icon,
 .bx-tl-item-meta .bx-tl-sticked .sys-icon,
@@ -565,11 +599,17 @@ div.bx-tl-item div.bx-tl-item-activity .bx-menu-custom li .bx-menu-item-icon {
     width: 2.0rem;
     height: 2.0rem;
 
-    background-color: rgba(232, 232, 232, 1.0);
+    background-color: #e4e4e7;
     border: 1px solid #ffffff;
     border-radius: 1rem;
 
     font-size: 1.0rem;
+}
+:where(.dark) div.bx-tl-item div.bx-tl-item-manage .bx-menu-item-icon,
+:where(.dark) div.bx-tl-item div.bx-tl-item-activity .bx-menu-custom li .sys-action-do-icon,
+:where(.dark) div.bx-tl-item div.bx-tl-item-activity .bx-menu-custom li .bx-menu-item-icon {
+    background-color: #3f3f46;
+    border-color: #27272a;
 }
 
 div.bx-tl-item div.bx-tl-item-activity .bx-menu-custom li .sys-action-do-icon .sys-icon,
@@ -677,14 +717,18 @@ div.bx-tl-view-timeline div.bx-tl-item-circle {
     width: 2rem;
     height: 2rem;
 
-    background-color: #dddddd;
+    background-color: #e4e4e7;
     background-clip: padding-box;
     border-radius: 2rem;
 
     text-align: center;
-    color: #999999;
+    color: #52525b;
 
     overflow: hidden;
+}
+:where(.dark) div.bx-tl-view-timeline div.bx-tl-item-circle {
+    background-color: #3f3f46;
+    color: #d4d4d8;
 }
 div.bx-tl-view-timeline div.bx-tl-item-circle .sys-icon {
     font-size: 1.0rem;
@@ -789,6 +833,9 @@ div.bx-tl-item-attachment .bx-tl-iv-duration {
     bottom: 0.25rem;
     background-color: rgba(255, 255, 255, 0.8);
 }
+:where(.dark) div.bx-tl-item-attachment .bx-tl-iv-duration {
+    background-color: rgba(24, 24, 27, 0.8);
+}
 
 
 /*+++ Showcase Layout +++*/
@@ -878,18 +925,25 @@ div.bx-tl-view-outline div.bx-tl-reposted div.bx-tl-item-text {
 	padding-left: 5px;
 	padding-left: 0.3rem;
 
-	border-left: 1px solid #999999;
-	border-left: 0.07rem solid #999999;
+	border-left: 1px solid #d4d4d8;
+	border-left: 0.07rem solid #d4d4d8;
+}
+:where(.dark) div.bx-tl-view-outline div.bx-tl-reposted div.bx-tl-item-text {
+	border-left-color: #3f3f46;
 }
 div.bx-tl-view-outline div.bx-tl-reposted div.bx-tl-title {
 	font-size: 1.0rem;
 }
 div.bx-tl-view-outline div.bx-tl-reposted div.bx-tl-title a {
-	color: #999999;
+	color: #52525b;
 }
 div.bx-tl-view-outline div.bx-tl-reposted div.bx-tl-content {
 	font-size: 0.875rem;
-	color: #999999;
+	color: #52525b;
+}
+:where(.dark) div.bx-tl-view-outline div.bx-tl-reposted div.bx-tl-title a,
+:where(.dark) div.bx-tl-view-outline div.bx-tl-reposted div.bx-tl-content {
+	color: #a1a1aa;
 }
 
 /*--- Item Style: View page ---*/

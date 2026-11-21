@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Messenger: video call settings say that calls need a Jitsi server. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Video calls]]></string_upd>
+    <string_upd name="_bx_messenger_jitsi_server"><![CDATA[Jitsi server domain, such as meet.example.com. Video calls stay off until you set one.]]></string_upd>
+</resources>

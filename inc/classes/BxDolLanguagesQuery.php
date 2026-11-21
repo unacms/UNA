@@ -9,6 +9,9 @@
 
 class BxDolLanguagesQuery extends BxDolDb implements iBxDolSingleton
 {
+    /** @var array|null category name => caption, @see getCategoryCaptions */
+    protected $_aCategoryCaptions = null;
+
     protected function __construct()
     {
         if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
@@ -350,8 +353,33 @@ class BxDolLanguagesQuery extends BxDolDb implements iBxDolSingleton
 
     function getCategories()
     {
-        $sSql = "SELECT `ID`, `Name` FROM `sys_localization_categories` ORDER BY `Name`";
-        return $this->getPairs($sSql, 'ID', 'Name');
+        $aCaptions = $this->getCategoryCaptions();
+
+        $aResult = [];
+        foreach($this->getPairs("SELECT `ID`, `Name` FROM `sys_localization_categories`", 'ID', 'Name') as $iId => $sName)
+            $aResult[$iId] = $aCaptions[$sName] ?? $sName;
+
+        asort($aResult, SORT_NATURAL | SORT_FLAG_CASE);
+        return $aResult;
+    }
+
+    /**
+     * What operators see for a language category: the title of the module that owns it ("English" for the category
+     * "BoonEx English"). The name itself stays as it is, modules and their updates find their category by it.
+     *
+     * @return array category name => caption, only for categories that belong to a module
+     */
+    function getCategoryCaptions()
+    {
+        if($this->_aCategoryCaptions !== null)
+            return $this->_aCategoryCaptions;
+
+        $aResult = [];
+        foreach($this->getAll("SELECT `lang_category`, `title` FROM `sys_modules` WHERE `lang_category` <> '' AND `title` <> '' ORDER BY `id`") as $aRow)
+            if(!isset($aResult[$aRow['lang_category']]))
+                $aResult[$aRow['lang_category']] = $aRow['title'];
+
+        return $this->_aCategoryCaptions = $aResult;
     }
 
     function getCategoriesBy($aParams, &$aItems, $bReturnCount = true)

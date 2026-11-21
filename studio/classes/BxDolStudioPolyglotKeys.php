@@ -90,12 +90,13 @@ class BxDolStudioPolyglotKeys extends BxTemplStudioGrid
 
         $aResults = parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
 
+        $aCaptions = $this->oDb->getCategoryCaptions();
         foreach($aResults as $iIndex => $aResult) {
             $aKey = $this->oDb->getKeyFullInfo($aResult['id'], $this->iPreviewLength);
             if(empty($aKey))
                 continue;
 
-            $aResults[$iIndex]['module'] = $aKey['module'];
+            $aResults[$iIndex]['module'] = $aCaptions[$aKey['module']] ?? $aKey['module'];
             $aResults[$iIndex]['string'] = $aKey['strings'][$aLanguage['name']]['preview'];
             $aResults[$iIndex]['languages'] = implode(', ', array_keys($aKey['strings']));
         }

@@ -1722,28 +1722,6 @@ function bx_search (n, sFormSel, sResultsContSel, sLoadingContSel, bSortResults,
     return false;
 }
 
-function on_filter_apply(e, sInputId, sFilterName)
-{
-	var oRegExp = new RegExp("[&]{0,1}" + sFilterName + "=.*");
-    var s = ('' + document.location).replace(oRegExp, ''); // remove filter
-    s = s.replace(/page=\d+/, 'page=1'); // goto 1st page
-    if (e.checked && $('#' + sInputId).val().length > 2)
-        s += (-1 == s.indexOf('?') ? '?' : '&') + sFilterName + '=' + $('#' + sInputId).val(); // append filter
-    document.location = s;
-}
-
-function on_filter_key_up (e, sCheckboxId)
-{
-    if (13 == e.keyCode) {
-        $('#' + sCheckboxId).click();
-        return false;
-    }
-    else {
-        $('#' + sCheckboxId).removeAttr('checked');
-        return true;
-    }
-}
-
 function on_copyright_click()
 {
 	oDate = new Date();
