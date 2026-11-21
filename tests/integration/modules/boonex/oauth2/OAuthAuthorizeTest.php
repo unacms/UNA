@@ -34,6 +34,8 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
     private $_aAccessTokens = [];
     private $_aRefreshTokens = [];
     private $_aAccounts = [];
+    /** Client rows a case added under a built-in client's id: the row goes, the client's codes and tokens on the site stay. */
+    private $_aClientRows = [];
 
     protected function setUp(): void
     {
@@ -58,6 +60,8 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
             foreach (['bx_oauth_authorization_codes', 'bx_oauth_access_tokens', 'bx_oauth_refresh_tokens', 'bx_oauth_clients'] as $sTable)
                 $oDb->query("DELETE FROM `" . $sTable . "` WHERE `client_id` = :c", ['c' => $sClientId]);
 
+        foreach ($this->_aClientRows as $sClientId)
+            $oDb->query("DELETE FROM `bx_oauth_clients` WHERE `client_id` = :c AND `title` = 'OAuthAuthorizeTest'", ['c' => $sClientId]);
         foreach ($this->_aAccounts as $iAccount)
             if (($oAccount = BxDolAccount::getInstance($iAccount, true)))
                 $oAccount->delete(true);
@@ -441,7 +445,8 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
 
         $sRedirect = 'https://client.example/cb';
         $oDb->query("INSERT INTO `bx_oauth_clients` (`title`, `client_id`, `client_secret`, `redirect_uri`, `grant_types`, `scope`) VALUES ('OAuthAuthorizeTest', :c, NULL, :r, 'authorization_code', 'basic')", ['c' => self::NATIVE_APP, 'r' => $sRedirect]);
-        $this->_aClients[] = self::NATIVE_APP;
+        // only the row: every code and token of `una-desktop` would sign out the desktop apps of this site
+        $this->_aClientRows[] = self::NATIVE_APP;
         $aQuery = ['client_id' => self::NATIVE_APP, 'response_type' => 'code', 'scope' => 'basic', 'redirect_uri' => $sRedirect, 'state' => 'x'];
 
         // API v2 off: a client like any other, with its own redirect and no PKCE
