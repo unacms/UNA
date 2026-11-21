@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Titles of form dialogs (favorites, cropper, Studio API), the guest's sign-in state on a members-only page, missing Studio menu names. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_form_txt_badges_empty"><![CDATA[Значков пока нет]]></string_add>
+    <string_add name="_adm_form_txt_badges_empty_select_module"><![CDATA[Значков пока нет. Выберите модуль, чтобы добавить значок.]]></string_add>
+    <string_add name="_adm_api_popup_title_add_key"><![CDATA[Добавить ключ API]]></string_add>
+    <string_add name="_adm_api_popup_title_add_origin"><![CDATA[Добавить источник]]></string_add>
+    <string_add name="_favorite_popup_title_do"><![CDATA[Добавить в избранное]]></string_add>
+    <string_add name="_favorite_popup_title_edit_list"><![CDATA[Изменить список]]></string_add>
+    <string_add name="_sys_menu_set_title_tabbar"><![CDATA[Панель вкладок]]></string_add>
+    <string_add name="_sys_menu_title_tabbar"><![CDATA[Панель вкладок]]></string_add>
+    <string_add name="_sys_txt_access_denied_guest_page"><![CDATA[Войдите или зарегистрируйтесь, чтобы открыть эту страницу.]]></string_add>
+    <string_add name="_sys_uploader_crop_popup_title"><![CDATA[Обрезка изображения]]></string_add>
+</resources>

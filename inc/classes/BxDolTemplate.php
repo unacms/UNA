@@ -648,6 +648,24 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The colour getColorCode picks for a name or an id, as `#rrggbb`: for clients that draw a letter avatar
+     * themselves (the apps), so a profile has the same colour there as on the site.
+     * @param $mixedName the getColorCode key: an account or profile id
+     * @return string
+     */
+    public static function getColorHex($mixedName)
+    {
+        // Lists send it for every profile, and getColorPalette runs a hook each time.
+        static $aCache = [];
+
+        $sKey = (string)$mixedName;
+        if(!isset($aCache[$sKey]))
+            $aCache[$sKey] = vsprintf('#%02x%02x%02x', array_map('intval', array_slice(self::getColorCode($mixedName), 0, 3)));
+
+        return $aCache[$sKey];
+    }
+
+    /**
      * The colour, darkened in small steps when it has to be, on which white text has at least the given contrast.
      * @param $aRgb [r, g, b], 0-255
      * @param $fRatio the contrast to reach, 4.5 by default (WCAG AA for text of any size)
@@ -4263,6 +4281,10 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             header('Content-Security-Policy: frame-ancestors ' . getParam('sys_csp_frame_ancestors'));
 
         $sResult = $oTemplate->parsePageByName('page_' . $oTemplate->getPageNameIndex() . '.html', $oTemplate->getPageContent());
+
+        // the drawings of the icons the page names go into the icon set's code (BxBaseIconsetLucide::fillPageIcons)
+        if(($oIconset = BxDolIconset::getObjectInstance()) && method_exists($oIconset, 'fillPageIcons'))
+            $sResult = $oIconset->fillPageIcons($sResult);
         
         /**
          * @hooks

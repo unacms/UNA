@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_albums_form_entry_input_text"><![CDATA[Album description]]></string_upd>
+    <string_upd name="_bx_albums_page_title_create_entry"><![CDATA[New album]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_create_entry"><![CDATA[New album]]></string_upd>
+    <string_upd name="_bx_albums_page_title_add_images"><![CDATA[Add/edit pictures]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_add_images"><![CDATA[Add/edit pictures]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_entry_view_media"><![CDATA[View media]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_entry_text"><![CDATA[Album description]]></string_upd>
+    <string_upd name="_bx_albums_page_title_edit_media"><![CDATA[Edit media]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_edit_media"><![CDATA[Edit media]]></string_upd>
+    <string_upd name="_bx_albums_page_title_move_media"><![CDATA[Move media]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_move_media"><![CDATA[Move media]]></string_upd>
+    <string_upd name="_bx_albums_page_title_delete_media"><![CDATA[Delete media]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_delete_media"><![CDATA[Delete media]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_featured_entries_view_extended"><![CDATA[Featured albums]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_featured_entries_view_gallery_media"><![CDATA[Featured media]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_entry_all_actions"><![CDATA[All actions]]></string_upd>
+    <string_upd name="_bx_albums_page_title_entries_popular_media"><![CDATA[Popular images]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_popular_media"><![CDATA[Popular images]]></string_upd>
+    <string_upd name="_bx_albums_page_title_entries_top_media"><![CDATA[Top images]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_top_media"><![CDATA[Top images]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_updated_entries"><![CDATA[Updated albums]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_popular_keywords_albums"><![CDATA[Popular album hashtags]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_popular_keywords_media"><![CDATA[Popular media hashtags]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_popular_keywords_media_camera"><![CDATA[Popular cameras]]></string_upd>
+    <string_upd name="_bx_albums_page_title_entries_favorites"><![CDATA[Favorite media]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_search_form_media"><![CDATA[Images search form]]></string_upd>
+    <string_upd name="_bx_albums_page_block_title_search_results_media"><![CDATA[Images search results]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_edit_album"><![CDATA[Edit album]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_add_images"><![CDATA[Add/edit pictures]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_edit_image"><![CDATA[Edit image]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_delete_image"><![CDATA[Delete image]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_move_image"><![CDATA[Move image to]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_entries_popular_media"><![CDATA[Popular images]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_entries_top_media"><![CDATA[Top images]]></string_upd>
+    <string_upd name="_bx_albums_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+</resources>

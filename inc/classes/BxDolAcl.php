@@ -114,9 +114,9 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      * A level that isn't here is a membership that doesn't include the action.
      */
     protected $aLevel2State = array (
-        MEMBERSHIP_ID_NON_MEMBER => ['title' => '_sys_acl_state_unauthenticated_title', 'icon' => 'sign-in-alt'],
-        MEMBERSHIP_ID_ACCOUNT => ['title' => '_sys_acl_state_account_title', 'icon' => 'user-plus'],
-        MEMBERSHIP_ID_UNCONFIRMED => ['title' => '_sys_acl_state_unconfirmed_title', 'icon' => 'envelope'],
+        MEMBERSHIP_ID_NON_MEMBER => ['title' => '_sys_acl_state_unauthenticated_title', 'icon' => 'log-in'],
+        MEMBERSHIP_ID_ACCOUNT => ['title' => '_sys_acl_state_account_title', 'icon' => 'user-round-plus'],
+        MEMBERSHIP_ID_UNCONFIRMED => ['title' => '_sys_acl_state_unconfirmed_title', 'icon' => 'mail'],
         MEMBERSHIP_ID_PENDING => ['title' => '_sys_acl_state_pending_title', 'icon' => 'clock'],
         MEMBERSHIP_ID_SUSPENDED => ['title' => '_sys_acl_state_suspended_title', 'icon' => 'ban'],
     );
@@ -174,7 +174,20 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
             return null;
         }
 
-        $iLevel = self::$aDenials[$sMessage];
+        return self::getDenialStateByLevel(self::$aDenials[$sMessage], $sMessage);
+    }
+
+    /**
+     * The state of a denial for a viewer at the membership level: a guest is asked to sign in or sign up, an account
+     * without a profile to create one.
+     *
+     * @param int $iLevel membership level id (MEMBERSHIP_ID_*)
+     * @param string $sMessage translated text of the state
+     * @return array as getDenialState
+     */
+    public static function getDenialStateByLevel($iLevel, $sMessage)
+    {
+        $iLevel = (int)$iLevel;
         $oAcl = self::getInstance();
         $aState = $oAcl->aLevel2State[$iLevel] ?? ['title' => '_sys_acl_state_not_allowed_title', 'icon' => 'lock'];
 

@@ -21,7 +21,7 @@ class ToursTest extends BxDolIntegrationTestCase
             $this->_aParamsBefore[$sName] = getParam($sName);
             setParam($sName, 'on');
         }
-        foreach(['sys_site_logo', 'sys_site_mark', 'sys_site_logo_inline', 'sys_site_mark_inline', 'sys_site_cover_common', 'sys_site_cover_disabled', 'sys_account_disable_join_form'] as $sName)
+        foreach(['sys_site_logo', 'sys_site_mark', 'sys_site_logo_inline', 'sys_site_mark_inline', 'sys_site_cover_common', 'sys_site_cover_disabled', 'sys_account_join'] as $sName)
             $this->_aParamsBefore[$sName] = getParam($sName);
 
         // The admin account's own state is put back afterwards.
@@ -106,19 +106,44 @@ class ToursTest extends BxDolIntegrationTestCase
         $this->bxLoginAsAdmin();
         $oTours = BxDolTours::getInstance();
 
-        setParam('sys_account_disable_join_form', 'on');
-        $this->assertSame(BxDolTours::JOIN_CLOSED, $oTours->getJoinMode());
-        $this->assertStringContainsString('category=account', $oTours->getJoinSettingsUrl());
+        setParam('sys_account_join', '');
+        $this->assertSame(BxDolTours::JOIN_OPEN, $oTours->getJoinMode(), 'not chosen yet is anyone');
+        $this->assertSame(BxDolTours::STEP_TODO, $oTours->getStepState('join'));
 
-        setParam('sys_account_disable_join_form', '');
-        $sMode = $oTours->getJoinMode();
-        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites') && getParam('bx_invites_enable_reg_by_inv') == 'on') {
-            $this->assertSame(BxDolTours::JOIN_INVITE, $sMode);
-            $this->assertStringContainsString('name=bx_invites', $oTours->getJoinSettingsUrl());
-        }
-        else {
-            $this->assertSame(BxDolTours::JOIN_OPEN, $sMode);
-        }
+        setParam('sys_account_join', BxDolAccount::JOIN_CLOSED);
+        $this->assertSame(BxDolTours::JOIN_CLOSED, $oTours->getJoinMode());
+        $this->assertSame(BxDolTours::STEP_DONE, $oTours->getStepState('join'), 'chosen is done');
+        $this->assertStringContainsString('settings.php?page=system&category=account', $oTours->getJoinSettingsUrl());
+
+        setParam('sys_account_join', BxDolAccount::JOIN_INVITE);
+        $sExpected = BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites') ? BxDolTours::JOIN_INVITE : BxDolTours::JOIN_OPEN;
+        $this->assertSame($sExpected, $oTours->getJoinMode(), 'invitation only needs the Invitations app');
+        $this->assertStringContainsString('category=account', $oTours->getJoinSettingsUrl(), 'one place for who can join');
+    }
+
+    public function testJoinModeChoicesAndCheck(): void
+    {
+        $aModes = BxDolService::call('system', 'get_join_modes', [], 'TemplServiceAccount', true);
+        $this->assertSame([BxDolAccount::JOIN_OPEN, BxDolAccount::JOIN_INVITE, BxDolAccount::JOIN_CLOSED], array_keys($aModes), 'Anyone comes first');
+
+        require_once(BX_DIRECTORY_PATH_ROOT . 'studio/classes/BxDolStudioForm.php');
+        $oChecker = new BxDolStudioFormCheckerHelper();
+        $this->assertTrue($oChecker->checkJoinMode(BxDolAccount::JOIN_OPEN));
+        $this->assertTrue($oChecker->checkJoinMode(BxDolAccount::JOIN_CLOSED));
+        $this->assertFalse($oChecker->checkJoinMode('anything'));
+        $this->assertFalse($oChecker->checkJoinMode(''));
+    }
+
+    public function testNobodyCanJoinTakesNoSignUp(): void
+    {
+        $this->bxBecomeGuest();
+
+        setParam('sys_account_join', BxDolAccount::JOIN_CLOSED);
+        $oForms = new BxTemplAccountForms();
+        $this->assertStringContainsString(_t('_sys_txt_join_closed'), $oForms->createAccountForm());
+
+        setParam('sys_account_join', BxDolAccount::JOIN_OPEN);
+        $this->assertStringNotContainsString(_t('_sys_txt_join_closed'), $oForms->createAccountForm());
     }
 
     public function testOnboardingStepsFollowTheSiteState(): void
@@ -131,7 +156,6 @@ class ToursTest extends BxDolIntegrationTestCase
 
         $this->assertSame(BxDolTours::STEP_TODO, $oTours->getStepState('logo'));
         $this->assertSame(BxDolTours::STEP_TODO, $oTours->getStepState('cover'));
-        $this->assertSame(BxDolTours::STEP_NOTE, $oTours->getStepState('join'), 'who can join is told, not a task');
         $this->assertSame($oTours->hasProfile() ? BxDolTours::STEP_DONE : BxDolTours::STEP_TODO, $oTours->getStepState('profile'));
 
         setParam('sys_site_logo_inline', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>');
@@ -201,5 +225,50 @@ class ToursTest extends BxDolIntegrationTestCase
         $this->bxBecomeGuest();
         $this->assertSame('', BxDolService::call('system', 'get_block_onboarding', [BxDolTours::ONBOARDING_OPERATOR], 'TemplServiceAccount', true));
         $this->assertSame(['code' => 1], BxDolService::call('system', 'onboarding_hide', [BxDolTours::ONBOARDING_OPERATOR], 'TemplServiceAccount', true));
+    }
+
+    public function testEveryRowCountsAndDoneSaysSetUp(): void
+    {
+        $this->bxLoginAsAdmin();
+        setParam('sys_account_join', '');
+        BxDolService::cleanMemoryCache();
+
+        $oMenu = BxDolMenu::getObjectInstance(BxDolTours::ONBOARDING_OPERATOR);
+        $oMenu->getCode();
+        list(, $iSteps) = $oMenu->getProgress();
+        $this->assertSame(count($oMenu->getStates()), $iSteps, 'every row of the checklist is a counted step, "Choose who can join" too');
+
+        // Every step done: the block stays and says "You're set up" instead of vanishing.
+        setParam('sys_account_join', BxDolAccount::JOIN_OPEN);
+        setParam('sys_site_logo_inline', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>');
+        setParam('sys_site_cover_common', '5');
+        setParam('sys_site_cover_disabled', '');
+
+        // Timeline's "Write the first post" asks the feed: a post of the operator's profile for the test.
+        $iPostId = 0;
+        $aProfileIds = BxDolTours::getInstance()->getProfileIds();
+        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline') && $aProfileIds) {
+            $oDb = BxDolDb::getInstance();
+            $oDb->query("INSERT INTO `bx_timeline_events` (`owner_id`, `type`, `action`, `object_id`, `object_owner_id`, `object_privacy_view`, `description`, `date`, `status`) VALUES (:id, 'timeline_common_post', '', 0, :id, 3, 'phpunit', UNIX_TIMESTAMP(), 'active')", ['id' => (int)reset($aProfileIds)]);
+            $iPostId = (int)$oDb->lastId();
+        }
+
+        try {
+            BxDolService::cleanMemoryCache();
+            $oMenu->getCode();
+            list($iDone, $iSteps) = $oMenu->getProgress();
+            if($iDone != $iSteps)
+                $this->markTestSkipped('A step is still to do on this site: ' . json_encode($oMenu->getStates()));
+
+            $mBlock = BxDolService::call('system', 'get_block_onboarding', [BxDolTours::ONBOARDING_OPERATOR], 'TemplServiceAccount', true);
+            $this->assertIsArray($mBlock, 'all done still shows the block');
+            $this->assertSame(_t('_sys_onboarding_done'), $mBlock['description']);
+            $this->assertStringContainsString('bx_onboarding_hide', $mBlock['buttons'][0]['onclick']);
+        }
+        finally {
+            if($iPostId)
+                BxDolDb::getInstance()->query("DELETE FROM `bx_timeline_events` WHERE `id` = :id", ['id' => $iPostId]);
+            BxDolService::cleanMemoryCache();
+        }
     }
 }

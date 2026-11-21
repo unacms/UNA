@@ -112,7 +112,7 @@ class BxBaseLabel extends BxDolLabel
             return array('eval' => $sJsObject . '.onSelectLabels(oData);', 'name' => $sName, 'content' => $sLabels);
         }
 
-        $sContent = BxTemplFunctions::getInstance()->transBox($this->_aHtmlIds['labels_select_popup'], $this->_oTemplate->parseHtmlByName('label_select_popup.html', array(
+        $sContent = BxTemplFunctions::getInstance()->popupBox($this->_aHtmlIds['labels_select_popup'], _t('_sys_form_labels'), $this->_oTemplate->parseHtmlByName('label_select_popup.html', array(
             'js_object' => $sJsObject,
             'form' => $oForm->getCode(),
             'form_id' => $oForm->getId()

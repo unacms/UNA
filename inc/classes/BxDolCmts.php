@@ -2604,7 +2604,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
     protected function _getIconDo()
     {
-    	return 'far comment';
+    	return 'message-circle';
     }
 
     protected function _getTitleDo()

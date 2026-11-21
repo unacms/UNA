@@ -208,7 +208,7 @@
     
     <string name="_bx_posts_menu_item_title_system_add_link"><![CDATA[Добавить ссылку]]></string>
     <string name="_bx_posts_menu_item_title_add_link"><![CDATA[Добавить ссылку]]></string>
-    <string name="_bx_posts_form_post_input_link_err_delete"><![CDATA[Невозможно удалить ссылку. Пожалуйста, оповестите нас о проблеме.]]></string>
+    <string name="_bx_posts_form_post_input_link_err_delete"><![CDATA[Не удалось удалить ссылку. Попробуйте ещё раз.]]></string>
     <string name="_bx_posts_form_post_input_sys_link"><![CDATA[Ссылка]]></string>
     <string name="_bx_posts_form_post_input_link_alt"><![CDATA[Добавить ссылку]]></string>
     <string name="_bx_posts_form_attach_link"><![CDATA[Прикрепить ссылку]]></string>
@@ -350,7 +350,7 @@
 
     <string name="_bx_posts_txt_msg_status_hidden"><![CDATA[Данная публикация была скрыта.]]></string>
     <string name="_bx_posts_txt_msg_status_pending"><![CDATA[Данная публикация ожидает утверждения.]]></string>
-    <string name="_bx_posts_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_posts_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_posts_txt_poll_view_answers"><![CDATA[опрос]]></string>
     <string name="_bx_posts_txt_poll_view_results"><![CDATA[результаты]]></string>

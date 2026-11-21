@@ -180,7 +180,7 @@ URI DNSBL - это DNSBL, которые перечисляют доменные
 	<string name="_bx_antispam_option_toxicity_filter_action_disapprove"><![CDATA[Когда возможно, скрывать токсичный контент, остальное блокировать.]]></string>
 	<string name="_bx_antispam_option_toxicity_report"><![CDATA[Отправлять администратору уведомление о токсичном контенте]]></string>
 	<string name="_bx_antispam_option_toxicity_filter_api_key"><![CDATA[Perspective API ключ (см. <a href="https://developers.perspectiveapi.com/s/docs-get-started">эту</a> страницу о способе получения ключа)]]></string>
-	<string name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Пороговое значение при котором текст считать токсичным (0 - 100)]]></string>
+	<string name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Порог токсичности, с которого текст считается токсичным (от 0 до 100)]]></string>
 	<string name="_bx_antispam_form_submission_error"><![CDATA[Ошибка. Похоже форма содержит токсичный контент. Пожалуйста проверьте данные формы и попробуйте снова.]]></string>
 
 	<string name="_bx_antispam_toxicity_blocked_report_name"><![CDATA[Сообщение о заблокированном токсичном контенте]]></string>
@@ -216,10 +216,10 @@ URI DNSBL - это DNSBL, которые перечисляют доменные
     <string name="_bx_antispam_option_lasso_moderation_action_none"><![CDATA[Нет]]></string>
     <string name="_bx_antispam_option_lasso_moderation_action_disapprove"><![CDATA[Скрывать]]></string>
     <string name="_bx_antispam_option_lasso_moderation_report"><![CDATA[Отправлять администратору уведомление о вредоносном контенте]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Порог токсичности (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Порог угрозы (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Порог атаки на личность (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Порог ненормативной лексики (0 - 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Порог токсичности (от 0 до 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Порог угрозы (от 0 до 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Порог атаки на личность (от 0 до 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Порог ненормативной лексики (от 0 до 100)]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_name"><![CDATA[Сообщение о размещенном вредоносном контенте]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_subject"><![CDATA[Размещен вредоносный контент]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_body"><![CDATA[{email_header}

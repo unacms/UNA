@@ -183,7 +183,7 @@
 	<string name="_bx_analytics_adm_stg_cpt_track_vitals"><![CDATA[Measure performance]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_tracking"><![CDATA[Collect visits and events]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_trusted_proxies"><![CDATA[Trusted proxies]]></string>
-	<string name="_bx_analytics_adm_stg_cpt_items_count"><![CDATA[Max number of items]]></string>
+	<string name="_bx_analytics_adm_stg_cpt_items_count"><![CDATA[Maximum items]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_limit_hits"><![CDATA[Hits per minute from one address]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_limit_visits"><![CDATA[New visits per hour from one address]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_link_members"><![CDATA[Link visits to members]]></string>

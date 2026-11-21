@@ -148,7 +148,7 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 ('bx_posts_home', 1, 'bx_posts', '', '_bx_posts_page_block_title_recent_entries_view_extended', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_posts";s:6:"method";s:13:"browse_public";s:6:"params";a:1:{i:0;s:8:"extended";}}', 0, 1, 1, 1),
 ('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_popular_keywords', 11, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:14:\"keywords_cloud\";s:6:\"params\";a:2:{i:0;s:8:\"bx_posts\";i:1;s:8:\"bx_posts\";}s:5:\"class\";s:20:\"TemplServiceMetatags\";}', 0, 1, 1, 0),
 ('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_cats', 11, 2147483647, 'menu', 'bx_posts_categories', 0, 1, 1, 1),
-('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_cats', 11, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:15:\"categories_list\";s:6:\"params\";a:2:{i:0;s:13:\"bx_posts_cats\";i:1;a:1:{s:10:\"show_empty\";b:1;}}s:5:\"class\";s:20:\"TemplServiceCategory\";}', 0, 1, 0, 3),
+('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_cats', 11, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:15:\"categories_list\";s:6:\"params\";a:2:{i:0;s:13:\"bx_posts_cats\";i:1;a:1:{s:10:\"show_empty\";b:0;}}s:5:\"class\";s:20:\"TemplServiceCategory\";}', 0, 1, 0, 3),
 ('bx_posts_home', 2, 'bx_posts', '_bx_posts_page_block_title_sys_multicats', '_bx_posts_page_block_title_multicats', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:21:"categories_multi_list";}', 0, 1, 0, 2);
 
 -- PAGE: search for entries
@@ -206,24 +206,24 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system` , `
 
 SET @iSiteMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_site' AND `active` = 1 AND `order` < 9999 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_site', 'bx_posts', 'posts-home', '_bx_posts_menu_item_title_system_entries_home', '_bx_posts_menu_item_title_entries_home', 'page.php?i=posts-home', '', '', 'file-alt', 'bx_posts_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
+('sys_site', 'bx_posts', 'posts-home', '_bx_posts_menu_item_title_system_entries_home', '_bx_posts_menu_item_title_entries_home', 'page.php?i=posts-home', '', '', 'file-text', 'bx_posts_submenu', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
 
 -- MENU: add to homepage menu
 
 SET @iHomepageMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_homepage' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_homepage', 'bx_posts', 'posts-home', '_bx_posts_menu_item_title_system_entries_home', '_bx_posts_menu_item_title_entries_home', 'page.php?i=posts-home', '', '', 'file-alt', 'bx_posts_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
+('sys_homepage', 'bx_posts', 'posts-home', '_bx_posts_menu_item_title_system_entries_home', '_bx_posts_menu_item_title_entries_home', 'page.php?i=posts-home', '', '', 'file-text', 'bx_posts_submenu', 2147483647, 1, 1, IFNULL(@iHomepageMenuOrder, 0) + 1);
 
 -- MENU: add to "add content" menu
 
 SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_content_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_add_content_links', 'bx_posts', 'create-post', '_bx_posts_menu_item_title_system_create_entry', '_bx_posts_menu_item_title_create_entry', 'page.php?i=create-post', '', '', 'file-alt', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
+('sys_add_content_links', 'bx_posts', 'create-post', '_bx_posts_menu_item_title_system_create_entry', '_bx_posts_menu_item_title_create_entry', 'page.php?i=create-post', '', '', 'file-text', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
 
 -- MENU: add to "create post" menu
 SET @iCreatePostOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_create_post' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_create_post', 'bx_posts', 'create-post', '_bx_posts_menu_item_title_system_create_entry', '_bx_posts_menu_item_title_create_entry', 'page.php?i=create-post', '', '', 'file-alt', '', 2147483647, 1, 0, IFNULL(@iCreatePostOrder, 0) + 1);
+('sys_create_post', 'bx_posts', 'create-post', '_bx_posts_menu_item_title_system_create_entry', '_bx_posts_menu_item_title_create_entry', 'page.php?i=create-post', '', '', 'file-text', '', 2147483647, 1, 0, IFNULL(@iCreatePostOrder, 0) + 1);
 
 -- MENU: create post form attachments (link, photo, video, etc)
 
@@ -238,12 +238,12 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_posts_entry_attachments', 'bx_posts', 'photo_html5', '_bx_posts_menu_item_title_system_cpa_photo_html5', '_bx_posts_menu_item_title_cpa_photo_html5', 'javascript:void(0)', 'javascript:{js_object_uploader_photos_html5}.showUploaderForm();', '_self', 'camera', '', '', 2147483647, '', 1, 0, 1, 2),
 ('bx_posts_entry_attachments', 'bx_posts', 'video_simple', '_bx_posts_menu_item_title_system_cpa_video_simple', '_bx_posts_menu_item_title_cpa_video_simple', 'javascript:void(0)', 'javascript:{js_object_uploader_videos_simple}.showUploaderForm();', '_self', 'video', '', '', 2147483647, '', 0, 0, 1, 3),
 ('bx_posts_entry_attachments', 'bx_posts', 'video_html5', '_bx_posts_menu_item_title_system_cpa_video_html5', '_bx_posts_menu_item_title_cpa_video_html5', 'javascript:void(0)', 'javascript:{js_object_uploader_videos_html5}.showUploaderForm();', '_self', 'video', '', '', 2147483647, '', 1, 0, 1, 4),
-('bx_posts_entry_attachments', 'bx_posts', 'video_record_video', '_bx_posts_menu_item_title_system_cpa_video_record_video', '_bx_posts_menu_item_title_cpa_video_record_video', 'javascript:void(0)', 'javascript:{js_object_uploader_videos_record_video}.showUploaderForm();', '_self', 'fas circle', '', '', 2147483647, '', 1, 0, 1, 5),
-('bx_posts_entry_attachments', 'bx_posts', 'sound_simple', '_bx_posts_menu_item_title_system_cpa_sound_simple', '_bx_posts_menu_item_title_cpa_sound_simple', 'javascript:void(0)', 'javascript:{js_object_uploader_sounds_simple}.showUploaderForm();', '_self', 'music', '', '', 2147483647, '', 0, 0, 1, 6),
-('bx_posts_entry_attachments', 'bx_posts', 'sound_html5', '_bx_posts_menu_item_title_system_cpa_sound_html5', '_bx_posts_menu_item_title_cpa_sound_html5', 'javascript:void(0)', 'javascript:{js_object_uploader_sounds_html5}.showUploaderForm();', '_self', 'music', '', '', 2147483647, '', 1, 0, 1, 7),
+('bx_posts_entry_attachments', 'bx_posts', 'video_record_video', '_bx_posts_menu_item_title_system_cpa_video_record_video', '_bx_posts_menu_item_title_cpa_video_record_video', 'javascript:void(0)', 'javascript:{js_object_uploader_videos_record_video}.showUploaderForm();', '_self', 'circle', '', '', 2147483647, '', 1, 0, 1, 5),
+('bx_posts_entry_attachments', 'bx_posts', 'sound_simple', '_bx_posts_menu_item_title_system_cpa_sound_simple', '_bx_posts_menu_item_title_cpa_sound_simple', 'javascript:void(0)', 'javascript:{js_object_uploader_sounds_simple}.showUploaderForm();', '_self', 'eighth-notes', '', '', 2147483647, '', 0, 0, 1, 6),
+('bx_posts_entry_attachments', 'bx_posts', 'sound_html5', '_bx_posts_menu_item_title_system_cpa_sound_html5', '_bx_posts_menu_item_title_cpa_sound_html5', 'javascript:void(0)', 'javascript:{js_object_uploader_sounds_html5}.showUploaderForm();', '_self', 'eighth-notes', '', '', 2147483647, '', 1, 0, 1, 7),
 ('bx_posts_entry_attachments', 'bx_posts', 'file_simple', '_bx_posts_menu_item_title_system_cpa_file_simple', '_bx_posts_menu_item_title_cpa_file_simple', 'javascript:void(0)', 'javascript:{js_object_uploader_files_simple}.showUploaderForm();', '_self', 'file', '', '', 2147483647, '', 0, 0, 1, 8),
 ('bx_posts_entry_attachments', 'bx_posts', 'file_html5', '_bx_posts_menu_item_title_system_cpa_file_html5', '_bx_posts_menu_item_title_cpa_file_html5', 'javascript:void(0)', 'javascript:{js_object_uploader_files_html5}.showUploaderForm();', '_self', 'file', '', '', 2147483647, '', 1, 0, 1, 9),
-('bx_posts_entry_attachments', 'bx_posts', 'poll', '_bx_posts_menu_item_title_system_cpa_poll', '_bx_posts_menu_item_title_cpa_poll', 'javascript:void(0)', 'javascript:{js_object}.showPollForm(this);', '_self', 'tasks', '', '', 2147483647, '', 1, 0, 1, 7),
+('bx_posts_entry_attachments', 'bx_posts', 'poll', '_bx_posts_menu_item_title_system_cpa_poll', '_bx_posts_menu_item_title_cpa_poll', 'javascript:void(0)', 'javascript:{js_object}.showPollForm(this);', '_self', 'square-check', '', '', 2147483647, '', 1, 0, 1, 7),
 ('bx_posts_entry_attachments', 'bx_posts', 'add-link', '_bx_posts_menu_item_title_system_add_link', '_bx_posts_menu_item_title_add_link', 'javascript:void(0)', 'javascript:{js_object_link}.showAttachLink(this);', '_self', 'link', '', '', 2147483647, '', 1, 0, 1, 10);
 
 -- MENU: actions menu for view entry 
@@ -255,8 +255,8 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_posts_view', 'bx_posts', '_bx_posts_menu_set_title_view_entry', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_posts_view', 'bx_posts', 'edit-post', '_bx_posts_menu_item_title_system_edit_entry', '_bx_posts_menu_item_title_edit_entry', 'page.php?i=edit-post&id={content_id}', '', '', 'pencil-alt', '', 2147483647, 1, 0, 1),
-('bx_posts_view', 'bx_posts', 'delete-post', '_bx_posts_menu_item_title_system_delete_entry', '_bx_posts_menu_item_title_delete_entry', 'page.php?i=delete-post&id={content_id}', '', '', 'remove', '', 2147483647, 1, 0, 2),
+('bx_posts_view', 'bx_posts', 'edit-post', '_bx_posts_menu_item_title_system_edit_entry', '_bx_posts_menu_item_title_edit_entry', 'page.php?i=edit-post&id={content_id}', '', '', 'pencil-line', '', 2147483647, 1, 0, 1),
+('bx_posts_view', 'bx_posts', 'delete-post', '_bx_posts_menu_item_title_system_delete_entry', '_bx_posts_menu_item_title_delete_entry', 'page.php?i=delete-post&id={content_id}', '', '', 'x', '', 2147483647, 1, 0, 2),
 ('bx_posts_view', 'bx_posts', 'approve', '_sys_menu_item_title_system_va_approve', '_sys_menu_item_title_va_approve', 'javascript:void(0)', 'javascript:bx_approve(this, ''{module_uri}'', {content_id});', '', 'check', '', 2147483647, 1, 0, 3);
 
 
@@ -272,7 +272,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_posts_view_actions', 'bx_posts', 'edit-post', '_bx_posts_menu_item_title_system_edit_entry', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 10),
 ('bx_posts_view_actions', 'bx_posts', 'delete-post', '_bx_posts_menu_item_title_system_delete_entry', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 20),
 ('bx_posts_view_actions', 'bx_posts', 'approve', '_sys_menu_item_title_system_va_approve', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 30),
-('bx_posts_view_actions', 'bx_posts', 'set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_posts'', content_id: {content_id}});', '', 'check-circle', '', '', 0, 2147483647, 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 40),
+('bx_posts_view_actions', 'bx_posts', 'set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_posts'', content_id: {content_id}});', '', 'circle-check', '', '', 0, 2147483647, 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 40),
 ('bx_posts_view_actions', 'bx_posts', 'comment', '_sys_menu_item_title_system_va_comment', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 200),
 ('bx_posts_view_actions', 'bx_posts', 'view', '_sys_menu_item_title_system_va_view', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 210),
 ('bx_posts_view_actions', 'bx_posts', 'vote', '_sys_menu_item_title_system_va_vote', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 220),
@@ -284,10 +284,10 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_posts_view_actions', 'bx_posts', 'repost-with-text', '_sys_menu_item_title_system_va_repost_with_text', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 261),
 ('bx_posts_view_actions', 'bx_posts', 'repost-to-context', '_sys_menu_item_title_system_va_repost_to_context', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 262),
 ('bx_posts_view_actions', 'bx_posts', 'report', '_sys_menu_item_title_system_va_report', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 270),
-('bx_posts_view_actions', 'bx_posts', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'exclamation-triangle', '', '', 0, 2147483647, '', 1, 0, 280),
-('bx_posts_view_actions', 'bx_posts', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_posts&content_id={content_id}', '', '', 'history', '', '', 0, 192, '', 1, 0, 290),
+('bx_posts_view_actions', 'bx_posts', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'triangle-exclamation-point', '', '', 0, 2147483647, '', 1, 0, 280),
+('bx_posts_view_actions', 'bx_posts', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_posts&content_id={content_id}', '', '', 'rotate-ccw-clock', '', '', 0, 192, '', 1, 0, 290),
 ('bx_posts_view_actions', 'bx_posts', 'social-sharing', '_sys_menu_item_title_system_social_sharing', '_sys_menu_item_title_social_sharing', 'javascript:void(0)', 'oBxDolPage.share(this, \'{url_encoded}\')', '', 'share', '', '', 0, 2147483647, '', 1, 0, 300),
-('bx_posts_view_actions', 'bx_posts', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, '', 1, 0, 9999);
+('bx_posts_view_actions', 'bx_posts', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, '', 1, 0, 9999);
 
 
 -- MENU: actions menu for my entries
@@ -350,7 +350,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- MENU: profile stats
 SET @iNotifMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_profile_stats' AND `active` = 1 LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_profile_stats', 'bx_posts', 'profile-stats-my-posts', '_bx_posts_menu_item_title_system_manage_my_posts', '_bx_posts_menu_item_title_manage_my_posts', 'page.php?i=posts-author&profile_id={member_id}', '', '_self', 'file-alt', 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, 1, 0, @iNotifMenuOrder + 1);
+('sys_profile_stats', 'bx_posts', 'profile-stats-my-posts', '_bx_posts_menu_item_title_system_manage_my_posts', '_bx_posts_menu_item_title_manage_my_posts', 'page.php?i=posts-author&profile_id={member_id}', '', '_self', 'file-text', 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:41:"get_menu_addon_manage_tools_profile_stats";}', '', 2147483646, 1, 0, @iNotifMenuOrder + 1);
 
 -- MENU: manage tools submenu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -365,13 +365,13 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 -- MENU: dashboard manage tools
 SET @iManageMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard_manage_tools' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_account_dashboard_manage_tools', 'bx_posts', 'posts-administration', '_bx_posts_menu_item_title_system_admt_posts', '_bx_posts_menu_item_title_admt_posts', 'page.php?i=posts-administration', '', '_self', 'file-alt', 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
+('sys_account_dashboard_manage_tools', 'bx_posts', 'posts-administration', '_bx_posts_menu_item_title_system_admt_posts', '_bx_posts_menu_item_title_admt_posts', 'page.php?i=posts-administration', '', '_self', 'file-text', 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
 
 -- MENU: add menu item to profiles modules (trigger* menu sets are processed separately upon modules enable/disable)
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('trigger_profile_view_submenu', 'bx_posts', 'posts-author', '_bx_posts_menu_item_title_system_view_entries_author', '_bx_posts_menu_item_title_view_entries_author', 'page.php?i=posts-author&profile_id={profile_id}', '', '', 'file-alt', '', 2147483647, 1, 0, 0),
-('trigger_group_view_submenu', 'bx_posts', 'posts-context', '_bx_posts_menu_item_title_system_view_entries_in_context', '_bx_posts_menu_item_title_view_entries_in_context', 'page.php?i=posts-context&profile_id={profile_id}', '', '', 'file-alt', '', 2147483647, 1, 0, 0);
+('trigger_profile_view_submenu', 'bx_posts', 'posts-author', '_bx_posts_menu_item_title_system_view_entries_author', '_bx_posts_menu_item_title_view_entries_author', 'page.php?i=posts-author&profile_id={profile_id}', '', '', 'file-text', '', 2147483647, 1, 0, 0),
+('trigger_group_view_submenu', 'bx_posts', 'posts-context', '_bx_posts_menu_item_title_system_view_entries_in_context', '_bx_posts_menu_item_title_view_entries_in_context', 'page.php?i=posts-context&profile_id={profile_id}', '', '', 'file-text', '', 2147483647, 1, 0, 0);
 
 
 -- PRIVACY 
@@ -472,7 +472,7 @@ INSERT INTO `sys_objects_category` (`object`, `module`, `search_object`, `form_o
 -- STATS
 SET @iMaxOrderStats = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_statistics`);
 INSERT INTO `sys_statistics` (`module`, `name`, `title`, `link`, `icon`, `query`, `order`) VALUES 
-('bx_posts', 'bx_posts', '_bx_posts', 'page.php?i=posts-home', 'file-alt', 'SELECT COUNT(*) FROM `bx_posts_posts` WHERE 1 AND `status` = ''active'' AND `status_admin` = ''active''', @iMaxOrderStats + 1);
+('bx_posts', 'bx_posts', '_bx_posts', 'page.php?i=posts-home', 'file-text', 'SELECT COUNT(*) FROM `bx_posts_posts` WHERE 1 AND `status` = ''active'' AND `status_admin` = ''active''', @iMaxOrderStats + 1);
 
 -- CHARTS
 SET @iMaxOrderCharts = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_objects_chart`);
@@ -505,16 +505,16 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_posts_administration', 'bulk', 'delete', '_bx_posts_grid_action_title_adm_delete', '', 0, 1, 1),
 ('bx_posts_administration', 'bulk', 'clear_reports', '_bx_posts_grid_action_title_adm_clear_reports', '', 0, 1, 1),
-('bx_posts_administration', 'single', 'edit', '_bx_posts_grid_action_title_adm_edit', 'pencil-alt', 1, 0, 1),
-('bx_posts_administration', 'single', 'delete', '_bx_posts_grid_action_title_adm_delete', 'remove', 1, 1, 2),
-('bx_posts_administration', 'single', 'settings', '_bx_posts_grid_action_title_adm_more_actions', 'cog', 1, 0, 3),
+('bx_posts_administration', 'single', 'edit', '_bx_posts_grid_action_title_adm_edit', 'pencil-line', 1, 0, 1),
+('bx_posts_administration', 'single', 'delete', '_bx_posts_grid_action_title_adm_delete', 'x', 1, 1, 2),
+('bx_posts_administration', 'single', 'settings', '_bx_posts_grid_action_title_adm_more_actions', 'settings', 1, 0, 3),
 ('bx_posts_administration', 'single', 'audit_content', '_bx_posts_grid_action_title_adm_audit_content', 'search', 1, 0, 4),
 ('bx_posts_administration', 'single', 'clear_reports', '_bx_posts_grid_action_title_adm_clear_reports', 'eraser', 1, 0, 5),
 
 ('bx_posts_common', 'bulk', 'delete', '_bx_posts_grid_action_title_adm_delete', '', 0, 1, 1),
-('bx_posts_common', 'single', 'edit', '_bx_posts_grid_action_title_adm_edit', 'pencil-alt', 1, 0, 1),
-('bx_posts_common', 'single', 'delete', '_bx_posts_grid_action_title_adm_delete', 'remove', 1, 1, 2),
-('bx_posts_common', 'single', 'settings', '_bx_posts_grid_action_title_adm_more_actions', 'cog', 1, 0, 3);
+('bx_posts_common', 'single', 'edit', '_bx_posts_grid_action_title_adm_edit', 'pencil-line', 1, 0, 1),
+('bx_posts_common', 'single', 'delete', '_bx_posts_grid_action_title_adm_delete', 'x', 1, 1, 2),
+('bx_posts_common', 'single', 'settings', '_bx_posts_grid_action_title_adm_more_actions', 'settings', 1, 0, 3);
 
 -- UPLOADERS
 

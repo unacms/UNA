@@ -790,9 +790,10 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             } else {
                 return bx_process_output($aRow[$sKey]);
             }
-        } else {
-            return _t('_undefined');
         }
+
+        // a row without this field (a menu with no set) shows an empty cell
+        return '';
     }
 
     protected function _cmp ($r1, $r2)

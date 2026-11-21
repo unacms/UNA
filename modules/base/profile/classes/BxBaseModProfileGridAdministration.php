@@ -136,7 +136,7 @@ class BxBaseModProfileGridAdministration extends BxBaseModGeneralGridAdministrat
             if(!$oForm->update($aProfileInfo['id']))
                 $aResult = ['msg' => _t('_sys_txt_error_profile_update')];
             else
-                $aResult = ['msg' => _t('_' . $sFormDisplay . '_successfully_submitted')];
+                $aResult = ['toast' => _t('_' . $sFormDisplay . '_successfully_submitted')];
 
             return echoJson($aResult);
         }

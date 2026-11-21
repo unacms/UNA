@@ -7,7 +7,7 @@ import { decodeText, getRandomColor } from 'app/lib/util';
 
 export type TabIconSource = { uri: string; width: number; height: number; scale: number };
 
-type LetterAvatarUser = { id?: string | number; display_name?: string } | null | undefined;
+type LetterAvatarUser = { id?: string | number; display_name?: string; color?: string } | null | undefined;
 
 const iconCache = new Map<string, TabIconSource>();
 
@@ -19,8 +19,11 @@ const iconCache = new Map<string, TabIconSource>();
  */
 export function useLetterTabIcon(user: LetterAvatarUser, sizePt: number): { icon: TabIconSource | null; capture: ReactNode } {
     const letter = user?.display_name ? decodeText(String(user.display_name)).slice(0, 1).toUpperCase() : '';
-    const background = useNativeTokenColor(`bg-${getRandomColor(user?.id)}-500`) as string | undefined;
-    const foreground = useNativeTokenColor('text-card') as string | undefined;
+    // UNA's colour for the profile with a white letter, as the site draws it; older UNAs send none.
+    const tokenBackground = useNativeTokenColor(`bg-${getRandomColor(user?.id)}-500`) as string | undefined;
+    const tokenForeground = useNativeTokenColor('text-card') as string | undefined;
+    const background = user?.color || tokenBackground;
+    const foreground = user?.color ? '#ffffff' : tokenForeground;
     const key = user && letter && background && foreground ? `${letter}|${background}|${foreground}|${sizePt}` : '';
     const [icons, setIcons] = useState<Record<string, TabIconSource>>({});
     const svgRef = useRef<Svg | null>(null);

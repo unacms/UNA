@@ -206,6 +206,19 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
                     $sResult = $sJs;
                 break;
 
+            case 'pusher_js':
+                // Pusher's client talks to the sockets server: none is set up on a fresh install
+                if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled())
+                    $sResult = 'pusher/pusher.min.js';
+                break;
+
+            case 'atwho_js':
+            case 'atwho_css':
+                // at.js (mentions while typing) is for members: guests write nothing
+                if(isLogged())
+                    $sResult = $sName == 'atwho_js' ? 'at.js/js/jquery.atwho.min.js' : '{dir_plugins_public}at.js/css/|jquery.atwho.min.css';
+                break;
+
             case 'datetime_js':
                 $sResult = $this->_getPreloaderMoment(bx_lang_code_with_country());
                 break;
