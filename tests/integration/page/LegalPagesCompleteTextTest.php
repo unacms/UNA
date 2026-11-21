@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('integration')]
 class LegalPagesCompleteTextTest extends BxDolIntegrationTestCase
 {
-    private const MIGRATION = 'migrations/2026112181_default_terms_privacy_complete.php';
+    private const MIGRATION = 'migrations/2026112381_default_terms_privacy_complete.php';
 
     private const KEYS = ['_sys_page_lang_block_terms', '_sys_page_lang_block_privacy'];
 
