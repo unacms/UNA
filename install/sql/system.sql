@@ -747,6 +747,7 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_account_join', '_adm_stg_cpt_option_sys_account_join', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_join_modes";s:5:"class";s:18:"BaseServiceAccount";}', 'JoinMode', '_adm_stg_err_option_sys_account_join', 0),
 (@iCategoryId, 'sys_account_online_time', '_adm_stg_cpt_option_sys_account_online_time', '5', 'digit', '', 'Avail', '_adm_stg_err_option_sys_account_online_time', 1),
 (@iCategoryId, 'sys_account_autoapproval', '_adm_stg_cpt_option_sys_account_autoapproval', 'on', 'checkbox', '', '', '', 10),
 (@iCategoryId, 'sys_account_confirmation_type', '_adm_stg_cpt_option_sys_account_confirmation_type', 'email', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:22:"get_confirmation_types";s:5:"class";s:18:"BaseServiceAccount";}', '', '', 11),
@@ -765,7 +766,6 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_account_reset_password_redirect_custom', '_adm_stg_cpt_option_sys_account_reset_password_redirect_custom', '', 'digit', '', '', '', 32),
 
 (@iCategoryId, 'sys_account_disable_login_form', '_adm_stg_cpt_option_sys_account_disable_login_form', '', 'checkbox', '', '', '', 40),
-(@iCategoryId, 'sys_account_disable_join_form', '_adm_stg_cpt_option_sys_account_disable_join_form', '', 'checkbox', '', '', '', 42),
 
 (@iCategoryId, 'sys_account_allow_plus_in_email', '_adm_stg_cpt_option_sys_allow_plus_in_email', 'on', 'checkbox', '', '', '', 50),
 
@@ -5225,7 +5225,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_onboarding_operator', 'system', 'profile', '_sys_menu_item_title_system_onboarding_profile', '_sys_menu_item_title_onboarding_profile', '_sys_menu_item_info_onboarding_profile', 'page.php?i=account-profile-switcher', '', '', 'circle-user-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:7:"profile";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 1),
 ('sys_onboarding_operator', 'system', 'logo', '_sys_menu_item_title_system_onboarding_logo', '_sys_menu_item_title_onboarding_logo', '_sys_menu_item_info_onboarding_logo', '{url_studio}designer.php?page=logo', '', '', 'target', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"logo";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 2),
 ('sys_onboarding_operator', 'system', 'cover', '_sys_menu_item_title_system_onboarding_cover', '_sys_menu_item_title_onboarding_cover', '_sys_menu_item_info_onboarding_cover', '{url_studio}designer.php?page=cover', '', '', 'gallery-vertical', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"is_onboarding_step_available";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 0, 1, 3),
-('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-round-plus', '', 2147483646, '', 1, 0, 1, 10);
+('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-round-plus', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"join";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 10);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
 ('sys_homepage_submenu', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'bolt', '', '', 2147483647, '', 0, 1, 1),
@@ -5320,7 +5320,7 @@ UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_na
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
-('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 2147483647, 0, 1, 2),
+('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 192, 0, 1, 2),
 ('sys_account_dashboard', 'system', 'dashboard-subscriptions', '_sys_menu_item_title_system_subscriptions', '_sys_menu_item_title_subscriptions', 'subscriptions.php', '', '', 'credit-card col-blue3', '', '', 2147483646, 1, 1, 3),
 ('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'shopping-cart col-green3', '', '', 2147483646, 1, 1, 4),
 ('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'receipt col-green3', '', '', 2147483646, 1, 1, 5),

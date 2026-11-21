@@ -6,6 +6,7 @@ import {
     menuItemsByName,
     menuItemsByNameNew,
     getHeaderToolbarNeoButtonDefaults,
+    decodeText,
 } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
@@ -81,11 +82,13 @@ export default function MenuAccount({ buttonProps, children }) {
         )
     }
 
+    // The button shows the viewer's avatar, so it is named after them, as on UNA's site.
+    const accountName = currentUser?.display_name ? decodeText(String(currentUser.display_name)) : t('Dashboard')
     const defaultButtonProps = {
         ...getHeaderToolbarNeoButtonDefaults(isDesktop),
-        tooltip: t('Dashboard'),
+        tooltip: accountName,
         borderShape: 'circle',
-        accessibilityLabel: t('Dashboard'),
+        accessibilityLabel: accountName,
         children: profile,
     }
 

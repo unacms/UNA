@@ -116,11 +116,17 @@ export default JotsPanel;
 export function ChatEmptyState() {
     const { t } = useTranslation();
     return (
-        <View className="flex-1 items-center justify-center">
-            <View className="gap-y-2 items-center opacity-80 justify-center py-4 px-8">
-                <Icon icon="MessagesSquare" size={28} className="text-muted-foreground" />
-                <Text className="text-center text-base text-muted-foreground font-medium">
-                    {t('Select a conversation')}
+        // UNA's words (`_bx_messenger_empty_history_*`); the list beside it has the New message action.
+        <View className="flex-1 items-center justify-center px-6">
+            <View className="gap-2 items-center max-w-sm" role="status">
+                <View className="w-12 h-12 mb-1 rounded-full items-center justify-center bg-button" aria-hidden>
+                    <Icon icon="MessageCircle" size={24} className="text-secondary-foreground" />
+                </View>
+                <Text className="text-center text-base font-semibold text-foreground">
+                    {t('No messages here yet')}
+                </Text>
+                <Text className="text-center text-sm text-secondary-foreground">
+                    {t('Choose a conversation, or start a new one.')}
                 </Text>
             </View>
         </View>

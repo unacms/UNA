@@ -332,7 +332,8 @@ function navbarShownItems(tabs, fitCount, moreItem) {
 /** The current page's tab, or More when that tab is among the `overflow` tabs at the top of More; -1 for neither. */
 /** The tab (or More row) of the page at `url` / `uri`. */
 function isCurrentTab(item, url, uri) {
-    return (item?.link === '/' + url) || (item?.link === '/' && uri === 'home');
+    // No url (a 404): no tab is the current page.
+    return (url != null && item?.link === '/' + url) || (item?.link === '/' && uri === 'home');
 }
 
 /** More's rows, the current page's marked `current` (drawn as the current tab, topmenu.tsx). */
