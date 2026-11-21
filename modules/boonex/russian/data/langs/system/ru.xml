@@ -3341,7 +3341,7 @@
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[Этот эл. адрес уже кем-то используется.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[Этот номер телефона уже кем-то используется.]]></string>
 	<string name="_sys_form_account_input_name"><![CDATA[Ваше имя]]></string>
-	<string name="_sys_form_account_input_name_error"><![CDATA[Имя аккаунта обязательно для заполнения и не должно начинаться с @.]]></string>
+	<string name="_sys_form_account_input_name_error"><![CDATA[Введите ваше имя. Оно не может начинаться с @.]]></string>
 	<string name="_sys_form_account_input_password"><![CDATA[Создать пароль]]></string>
 	<string name="_sys_form_account_input_password_confirm"><![CDATA[Подтвердить пароль]]></string>
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Не удалось подтвердить пароль]]></string>

@@ -3370,7 +3370,7 @@
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[This email is already used by someone.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[This phone number is already used by someone.]]></string>
 	<string name="_sys_form_account_input_name"><![CDATA[Your name]]></string>
-	<string name="_sys_form_account_input_name_error"><![CDATA[Account name is mandatory and and cannot start with @]]></string>
+	<string name="_sys_form_account_input_name_error"><![CDATA[Enter your name. It can't start with @.]]></string>
 	<string name="_sys_form_account_input_password"><![CDATA[Create a password]]></string>
 	<string name="_sys_form_account_input_password_confirm"><![CDATA[Confirm a password]]></string>
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Password confirmation failed]]></string>

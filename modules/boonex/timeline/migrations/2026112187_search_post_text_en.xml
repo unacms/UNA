@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Searchable fields: the post's text. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_timeline_txt_text"><![CDATA[Text]]></string_add>
+</resources>
