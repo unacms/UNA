@@ -16,6 +16,21 @@ class SplashSiteShellTest extends BxDolTestCase
         return $s;
     }
 
+    /** What 2026112483_splash_type_and_dark_art.sql replaces: the previous declaration => the default's. */
+    private const TYPE_AND_DARK_ART = [
+        '--bx-landing-accent: #172554;' => '--bx-landing-accent: #1e3a8a;',
+        '--bx-landing-accent-fg: #60a5fa;' => '--bx-landing-accent-fg: #93c5fd;',
+        'max-width: 48rem;' => 'max-width: 36rem;',
+        'line-height: 1.5rem;' => 'line-height: 1.5;',
+        'line-height: 1.75rem;' => 'line-height: 1.5556;',
+    ];
+
+    /** The install default as it was before that migration. */
+    private static function defaultCodeBeforeTypeAndDarkArt(): string
+    {
+        return str_replace(array_values(self::TYPE_AND_DARK_ART), array_keys(self::TYPE_AND_DARK_ART), self::defaultCode());
+    }
+
     private static function defaultCode(): string
     {
         if (!preg_match("/\\(@iCategoryId, 'sys_site_splash_code', '', '(.*)', 'text', '', '', '', \\d+\\),/", self::read('install/sql/system.sql'), $aMatch))
@@ -89,8 +104,31 @@ class SplashSiteShellTest extends BxDolTestCase
         $this->assertStringContainsString('<span>&copy; {site_title}</span>', $aSecond[1]);
         $this->assertSame(substr($aFirst[0], strpos($aFirst[0], 'UPDATE `sys_options`')), substr($aSecond[0], strpos($aSecond[0], 'UPDATE `sys_options`')), 'It gives the same code.');
 
-        // And that code is the install default, before 2026112382 made its tagline the site's description.
-        $sDefault = str_replace('<p class="bx-landing-text">{site_description}</p>', '<p class="bx-landing-text"><bx_text:_sys_txt_splash_slogan /></p>', self::defaultCode());
+        // And that code is the install default, before 2026112382 made its tagline the site's description and
+        // 2026112483 changed its dark illustration colours and the text's measure and line height.
+        $sDefault = str_replace('<p class="bx-landing-text">{site_description}</p>', '<p class="bx-landing-text"><bx_text:_sys_txt_splash_slogan /></p>', self::defaultCodeBeforeTypeAndDarkArt());
         $this->assertStringContainsString("SET `value` = '" . str_replace(["\n", "'"], ['\r\n', "\\'"], $sDefault) . "'", $sSecond);
+    }
+
+    /**
+     * 2026112483 gives the dark illustration the apps' accent pair, the text a 36rem measure and a unitless line height.
+     * It changes only a splash that is still the previous default (its MD5 without carriage returns), one declaration
+     * at a time, and what it gives is the install default.
+     */
+    public function testTypeAndDarkArtMigrationChangesOnlyThePreviousDefault(): void
+    {
+        $s = self::read('migrations/2026112483_splash_type_and_dark_art.sql');
+        $sBefore = self::defaultCodeBeforeTypeAndDarkArt();
+
+        $this->assertNotSame(self::defaultCode(), $sBefore);
+        $this->assertSame(1, substr_count($s, 'UPDATE `sys_options`'));
+        $this->assertStringContainsString("WHERE `name` = 'sys_site_splash_code' AND MD5(REPLACE(`value`, '\\r', '')) = '" . md5($sBefore) . "';", $s);
+
+        foreach (self::TYPE_AND_DARK_ART as $sOld => $sNew) {
+            $this->assertStringContainsString("'" . $sOld . "', '" . $sNew . "')", $s);
+            $this->assertStringContainsString($sOld, $sBefore);
+            $this->assertStringNotContainsString($sOld, self::defaultCode(), 'The default has the new declaration only.');
+        }
+        $this->assertSame(self::defaultCode(), str_replace(array_keys(self::TYPE_AND_DARK_ART), array_values(self::TYPE_AND_DARK_ART), $sBefore));
     }
 }
