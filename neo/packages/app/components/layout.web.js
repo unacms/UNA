@@ -4,12 +4,12 @@ import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/misc/suggestions';
 import AsyncWorker from 'app/ui/molecules/system/async-worker';
+import PushPrompt from 'app/ui/molecules/system/push-prompt-host';
 import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 import { appSetting, storageClear, decodeText, isChatLayout } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
-import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import { useThemeName, useThemeValue } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import PopupModal from 'app/ui/molecules/dialogs/popup-modal'
@@ -66,6 +66,7 @@ const MemoizedContent = React.memo(({ currentUser, layoutName, data, children, b
             </a>
             <Suggestions />
             <AsyncWorker />
+            <PushPrompt />
             {hasSidebar && <AppSidebar pageData={data} />}
             <HeaderOptionsProvider>
                 <PageHeader layoutName={layoutName} pageData={data} />
@@ -119,32 +120,6 @@ export default function Layout(props) {
         };
 
     }, [handlePageShow]);
-
-    useEffect(() => {
-        if (!currentUser?.id) {
-            return;
-        }
-
-        const addLinkTag = (rel, href, crossOrigin) => {
-            const exists = document.querySelector(`link[rel="${rel}"][href="${href}"]`);
-            if (exists) return;
-
-            const link = document.createElement('link');
-            link.rel = rel;
-            link.href = href;
-            if (crossOrigin) link.crossOrigin = crossOrigin;
-            document.head.appendChild(link);
-        };
-
-        addLinkTag('preconnect', 'https://onesignal.com', 'anonymous');
-        addLinkTag('preconnect', 'https://cdn.onesignal.com', 'anonymous');
-        addLinkTag('dns-prefetch', 'https://onesignal.com');
-
-        return scheduleOneSignalSubscription(currentUser, {
-            askPermission: appSetting('notifications', 'onesignal_request_on_load') ?? appSetting('native', 'onesignal_request_on_load'),
-        });
-    }, [currentUser?.id]);
-
 
     function getFullOffsetTop(element) {
         let offsetTop = 0;
