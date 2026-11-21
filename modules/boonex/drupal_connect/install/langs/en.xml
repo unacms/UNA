@@ -4,17 +4,17 @@
 	<string name="_bx_drupal"><![CDATA[Drupal Connect]]></string>
 	<string name="_bx_drupal_settings"><![CDATA[Drupal Connect]]></string>
 	<string name="_bx_drupal_information_block"><![CDATA[
-        <p>This module can be used to log in to this site using Drupal credentials.</p>]]></string>
+        <p>This module can be used to sign in to this site using Drupal credentials.</p>]]></string>
 	<string name="_bx_drupal_profile_error_api_keys"><![CDATA[Please configure the module in admin panel (can't define Client ID and Secret)]]></string>
     <string name="_bx_drupal_auth_title"><![CDATA[Continue with Drupal]]></string>
     <string name="_bx_drupal_json_decode_failed"><![CDATA[JSON decode failed]]></string>	
     <string name="_bx_drupal_wrong_username_or_pass"><![CDATA[Wrong username or password]]></string>	
 
-	<string name="_bx_drupal_form_login"><![CDATA[Drupal Login Form]]></string>
-    <string name="_bx_drupal_display_login"><![CDATA[Drupal Login Form]]></string>
+	<string name="_bx_drupal_form_login"><![CDATA[Drupal sign-in form]]></string>
+    <string name="_bx_drupal_display_login"><![CDATA[Drupal sign-in form]]></string>
 
-	<string name="_bx_drupal_block_system_title_login"><![CDATA[Drupal Login Form]]></string>
-	<string name="_bx_drupal_block_title_login"><![CDATA[Login]]></string>
+	<string name="_bx_drupal_block_system_title_login"><![CDATA[Drupal sign-in form]]></string>
+	<string name="_bx_drupal_block_title_login"><![CDATA[Sign in]]></string>
 
     <string name="_bx_drupal_adm_stg_cpt_type"><![CDATA[Drupal Connect]]></string>
     <string name="_bx_drupal_option_login_url"><![CDATA[Drupal JSON API login URL]]></string>

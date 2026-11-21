@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "context" in member-facing strings becomes "community" (una-vocabulary skill). Studio wording keeps "context". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_tasks_grid_column_title_tm_context_id"><![CDATA[Community]]></string_upd>
+    <string_upd name="_bx_tasks_grid_action_confirm_pv_delete"><![CDATA[This action will remove the item from all tasks in every community and it cannot be undone. Do you want to proceed?]]></string_upd>
+</resources>

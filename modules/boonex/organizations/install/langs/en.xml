@@ -237,7 +237,7 @@
     <string name="_bx_orgs_page_block_title_fans_link"><![CDATA[Members of <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_orgs_page_block_title_fans"><![CDATA[Members]]></string>
     <string name="_bx_orgs_page_block_title_system_fans"><![CDATA[Members]]></string>
-    <string name="_bx_orgs_page_block_title_system_fans_manage"><![CDATA[Manage fans]]></string>
+    <string name="_bx_orgs_page_block_title_system_fans_manage"><![CDATA[Manage members]]></string>
     <string name="_bx_orgs_page_block_title_invites"><![CDATA[Invites]]></string>
     <string name="_bx_orgs_page_block_title_system_invites_manage"><![CDATA[Invites]]></string>
     <string name="_bx_orgs_page_block_title_profile_location"><![CDATA[Location]]></string>
@@ -430,7 +430,7 @@
     <string name="_bx_orgs_grid_filter_item_title_adm_suspended"><![CDATA[Suspended]]></string>
     <string name="_bx_orgs_grid_column_title_adm_active"><![CDATA[Active]]></string>
     <string name="_bx_orgs_grid_column_title_adm_fullname"><![CDATA[Name]]></string>
-    <string name="_bx_orgs_grid_column_title_adm_last_online"><![CDATA[Last Logged]]></string>
+    <string name="_bx_orgs_grid_column_title_adm_last_online"><![CDATA[Last sign-in]]></string>
     <string name="_bx_orgs_grid_column_title_adm_account"><![CDATA[Account]]></string>
     <string name="_bx_orgs_grid_action_title_adm_delete_with_content"><![CDATA[Delete With Content]]></string>
     <string name="_bx_orgs_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string>

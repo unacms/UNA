@@ -485,7 +485,7 @@
     <string name="_bx_tasks_grid_txt_account_manager"><![CDATA[Redirect to manage account.]]></string>
 
     <string name="_bx_tasks_grid_column_title_tm_author_id"><![CDATA[Profile]]></string>
-    <string name="_bx_tasks_grid_column_title_tm_context_id"><![CDATA[Context]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_context_id"><![CDATA[Community]]></string>
     <string name="_bx_tasks_grid_column_title_tm_context_module"><![CDATA[Module]]></string>
     <string name="_bx_tasks_grid_column_title_tm_object_id"><![CDATA[Task]]></string>
     <string name="_bx_tasks_grid_column_title_tm_text"><![CDATA[Note]]></string>
@@ -521,7 +521,7 @@
     <string name="_bx_tasks_grid_action_title_pv_activate"><![CDATA[Activate]]></string>
     <string name="_bx_tasks_grid_action_title_pv_deactivate"><![CDATA[Deactivate]]></string>
     <string name="_bx_tasks_grid_action_title_pv_delete"><![CDATA[Delete]]></string>
-    <string name="_bx_tasks_grid_action_confirm_pv_delete"><![CDATA[This action will remove the item from all tasks across the contexts and it cannot be undone. Do you want to preceed?]]></string>
+    <string name="_bx_tasks_grid_action_confirm_pv_delete"><![CDATA[This action will remove the item from all tasks in every community and it cannot be undone. Do you want to proceed?]]></string>
     <string name="_bx_tasks_grid_filter_item_title_pv_select_one_list"><![CDATA[Select list...]]></string>
 
 

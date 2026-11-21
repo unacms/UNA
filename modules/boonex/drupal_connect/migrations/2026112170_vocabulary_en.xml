@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_drupal_information_block"><![CDATA[
+        <p>This module can be used to sign in to this site using Drupal credentials.</p>]]></string_upd>
+    <string_upd name="_bx_drupal_form_login"><![CDATA[Drupal sign-in form]]></string_upd>
+    <string_upd name="_bx_drupal_display_login"><![CDATA[Drupal sign-in form]]></string_upd>
+    <string_upd name="_bx_drupal_block_system_title_login"><![CDATA[Drupal sign-in form]]></string_upd>
+    <string_upd name="_bx_drupal_block_title_login"><![CDATA[Sign in]]></string_upd>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_massmailer"><![CDATA[Email campaigns]]></string_upd>
+    <string_upd name="_bx_massmailer_adm_stg_cpt_type"><![CDATA[Email campaigns]]></string_upd>
+    <string_upd name="_bx_massmailer_menu_item_title_system_admt_mailer"><![CDATA[Email campaigns]]></string_upd>
+    <string_upd name="_bx_massmailer_menu_item_title_admt_mailer"><![CDATA[Email campaigns]]></string_upd>
+    <string_upd name="_bx_massmailer_menu_title_submenu"><![CDATA[Email campaigns submenu]]></string_upd>
+    <string_upd name="_bx_massmailer_menu_set_title_submenu"><![CDATA[Email campaigns submenu]]></string_upd>
+    <string_upd name="_bx_massmailer_email_name"><![CDATA[Email campaign message]]></string_upd>
+    <string_upd name="_bx_massmailer_email_subject"><![CDATA[Email campaign message]]></string_upd>
+</resources>

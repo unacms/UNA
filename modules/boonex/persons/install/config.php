@@ -16,7 +16,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_persons',
-    'title' => 'Persons',
+    'title' => 'People',
     'note' => 'People, members, users, profiles',
     'version' => '15.0.7.DEV',
     'vendor' => 'UNA INC',

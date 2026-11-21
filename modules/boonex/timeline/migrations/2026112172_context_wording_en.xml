@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "context" in member-facing strings becomes "community" (una-vocabulary skill). Studio wording keeps "context". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_timeline_form_filters_input_by_contexts"><![CDATA[Communities:]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_item_repost_to"><![CDATA[Repost to a community]]></string_upd>
+    <string_upd name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to a community]]></string_upd>
+</resources>

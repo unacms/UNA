@@ -258,7 +258,7 @@
     <string name="_bx_events_page_block_title_calendar_in_context"><![CDATA[Events Calendar in <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_events_page_block_title_sys_calendar_in_context"><![CDATA[Events Calendar]]></string>
     <string name="_bx_events_page_block_title_calendar_for_context"><![CDATA[Events Calendar]]></string>
-    <string name="_bx_events_page_block_title_browse_for_context"><![CDATA[Events in context]]></string>
+    <string name="_bx_events_page_block_title_browse_for_context"><![CDATA[Events in this community]]></string>
     <string name="_bx_events_page_block_title_sys_favorites_entries"><![CDATA[Favorite List]]></string>
     <string name="_bx_events_page_block_title_favorites_entries"><![CDATA["{title}" List]]></string>
     <string name="_bx_events_page_block_title_favorites_entries_info"><![CDATA[Info]]></string>
@@ -292,7 +292,7 @@
     <string name="_bx_events_page_block_title_fans_link"><![CDATA[Going to <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_events_page_block_title_fans"><![CDATA[Going]]></string>
     <string name="_bx_events_page_block_title_system_fans"><![CDATA[Going]]></string>
-    <string name="_bx_events_page_block_title_system_fans_manage"><![CDATA[Manage fans]]></string>
+    <string name="_bx_events_page_block_title_system_fans_manage"><![CDATA[Manage members]]></string>
     <string name="_bx_events_page_block_title_invites"><![CDATA[Invites]]></string>
     <string name="_bx_events_page_block_title_system_invites_manage"><![CDATA[Manage invites]]></string>
     <string name="_bx_events_page_block_title_subscribers_link"><![CDATA[Interested in <a href="{profile_link}">{display_name}</a>]]></string>
