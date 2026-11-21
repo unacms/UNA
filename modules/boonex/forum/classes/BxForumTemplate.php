@@ -118,7 +118,7 @@ class BxForumTemplate extends BxBaseModTextTemplate
         }
 
         if ($aVarsPopup['bx_repeat:participants']) {
-            $aVars['bx_if:participants_more']['content']['popup'] = BxTemplFunctions::getInstance()->transBox('', '<div class="bx-def-padding">' . $this->parseHtmlByName('participants.html', $aVarsPopup) . '</div>');
+            $aVars['bx_if:participants_more']['content']['popup'] = BxTemplFunctions::getInstance()->popupBox('', _t('_bx_forum_page_block_title_entry_participants'), $this->parseHtmlByName('participants.html', $aVarsPopup));
         }
 
         return $this->parseHtmlByName('participants.html', $aVars);

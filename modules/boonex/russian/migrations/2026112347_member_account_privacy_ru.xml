@@ -62,6 +62,6 @@
 {email_footer}]]></string_add>
     <string_upd name="_sys_txt_forgot_pasword_check_email"><![CDATA[Если этот email есть у аккаунта, мы отправили на него ссылку для сброса пароля.]]></string_upd>
     <string_upd name="_sys_txt_forgot_pasword_check_phone"><![CDATA[Если этот номер есть у аккаунта, мы отправили на него SMS со ссылкой для сброса пароля.]]></string_upd>
-    <string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Пароль изменён]]></string_upd>
-    <string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Настройки email сохранены]]></string_upd>
+    <string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Настройки email сохранены.]]></string_upd>
+    <string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Пароль изменён.]]></string_upd>
 </resources>

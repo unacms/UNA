@@ -50,7 +50,6 @@ import url(../../../../../../../template/css/forms.css);
     flex-wrap: nowrap;
 
     line-height: 1.25rem;
-    text-transform: uppercase;
 }
 
 .bx-form-section-header .bx-form-section-title .sys-icon {

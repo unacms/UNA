@@ -59,8 +59,12 @@ BxTimelineRepost.prototype.repostItem = function(oLink, iOwnerId, sType, sAction
 
             if(oData && oData.message != undefined && oData.message.length > 0 && !bCounter)
                 bx_alert(oData.message, fContinue);
-            else
+            else {
+                if(oData?.toast?.length > 0)
+                    bx_toast(oData.toast);
+
                 fContinue();
+            }
         },
         'json'
     );
@@ -76,17 +80,13 @@ BxTimelineRepost.prototype.repostItemWith = function(oLink, iOwnerId, sType, sAc
         object_id: iId
     });   
 
-    $(window).dolPopupAjax({
-        id: {value: this._aHtmlIds['with_popup'], force: true}, 
-        url: bx_append_url_params(this._sActionsUri + 'repost_with/', oData),
-        closeOnOuterClick: false,
-        removeOnClose: true,
-        onBeforeShow: function() {
-            $this.loadingIn(oLink, false);
+    // the dialog comes back as a titled popup (processJsonData opens it)
+    jQuery.get(bx_append_url_params(this._sActionsUri + 'repost_with/', oData), function(oResponse) {
+        $this.loadingIn(oLink, false);
+        $(oLink).parents('.bx-popup-applied:visible:first').dolPopupHide();
 
-            $(oLink).parents(".bx-popup-applied:visible:first").dolPopupHide();
-        }
-    });
+        processJsonData(oResponse);
+    }, 'json');
 
     return false;
 };
@@ -101,17 +101,13 @@ BxTimelineRepost.prototype.repostItemTo = function(oLink, iReposterId, sType, sA
         object_id: iId
     });   
 
-    $(window).dolPopupAjax({
-        id: {value: this._aHtmlIds['to_popup'], force: true}, 
-        url: bx_append_url_params(this._sActionsUri + 'repost_to/', oData),
-        closeOnOuterClick: false,
-        removeOnClose: true,
-        onBeforeShow: function() {
-            $this.loadingIn(oLink, false);
+    // the dialog comes back as a titled popup (processJsonData opens it)
+    jQuery.get(bx_append_url_params(this._sActionsUri + 'repost_to/', oData), function(oResponse) {
+        $this.loadingIn(oLink, false);
+        $(oLink).parents('.bx-popup-applied:visible:first').dolPopupHide();
 
-            $(oLink).parents(".bx-popup-applied:visible:first").dolPopupHide();
-        }
-    });
+        processJsonData(oResponse);
+    }, 'json');
 
     return false;
 };

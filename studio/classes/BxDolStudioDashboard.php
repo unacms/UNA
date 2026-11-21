@@ -206,7 +206,7 @@ class BxDolStudioDashboard extends BxTemplStudioWidget
                     foreach($aActions as $sQuery)
                         BxDolDb::getInstance()->query($sQuery);
 
-                    $aResult = array('code' => 0, 'message' => _t('_adm_dbd_msg_q_clean_success'), 'data' => $this->getQueuesChartData(false));
+                    $aResult = array('code' => 0, 'toast' => _t('_adm_dbd_msg_q_clean_success'), 'data' => $this->getQueuesChartData(false));
                     break;
 
                 case 'run_audit':

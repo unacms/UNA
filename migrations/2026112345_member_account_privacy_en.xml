@@ -60,8 +60,6 @@
     <string_add name="_sys_txt_account_email_change_sent"><![CDATA[We sent a confirmation link to {0}. Until you open it, you sign in with {1}.]]></string_add>
     <string_add name="_sys_txt_profile_not_available_text"><![CDATA[It may be waiting for review or turned off for now.]]></string_add>
     <string_add name="_sys_txt_profile_not_available_title"><![CDATA[This profile isn't available]]></string_add>
-    <string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Email settings saved]]></string_upd>
-    <string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Password changed]]></string_upd>
     <string_upd name="_sys_form_account_input_password_current"><![CDATA[Current password]]></string_upd>
     <string_upd name="_sys_txt_forgot_pasword_check_email"><![CDATA[If an account uses this email, we sent it a link to reset the password.]]></string_upd>
     <string_upd name="_sys_txt_forgot_pasword_check_phone"><![CDATA[If an account uses this phone number, we sent it a text message with a link to reset the password.]]></string_upd>
