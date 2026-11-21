@@ -363,7 +363,9 @@
     <string name="_bx_courses_menu_item_title_system_sm_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_bx_courses_menu_item_title_sm_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_members"><![CDATA[Студенты]]></string>
-    <string name="_bx_courses_menu_item_title_sm_members"><![CDATA[{0} студенты]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members"><![CDATA[{0} студентов]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members_few"><![CDATA[{0} студента]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members_one"><![CDATA[{0} студент]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_join"><![CDATA[Посетить]]></string>
     <string name="_bx_courses_menu_item_title_sm_join"><![CDATA[Посетить]]></string>
     <string name="_bx_courses_menu_item_title_sm_join_paid"><![CDATA[Оплатить и посетить]]></string>

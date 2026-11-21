@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Operator level, notifications to the person they are about, plain errors and option captions, Share on X. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_adm_prm_txt_level_administrator"><![CDATA[Operator]]></string_upd>
+    <string_upd name="_sys_tour_launcher_accounts_txt"><![CDATA[Manage member accounts and choose who is an operator or a moderator. Moderators look after content and profiles on the site itself, not in Studio.]]></string_upd>
+    <string_upd name="_ATT_REJECTED_E"><![CDATA[Your profile was not approved because some information is missing or not allowed. If you have questions, <a target=_blank href="contact.php">contact us</a> and mention your profile ID.]]></string_upd>
+    <string_upd name="_ATT_SUSPENDED_E"><![CDATA[Your profile is suspended for now. You can activate it <a target=_blank href="change_status.php">here</a>. If you have questions, <a target=_blank href="contact.php">contact us</a>.]]></string_upd>
+    <string_upd name="_sys_acl_action_pending"><![CDATA[Your account is waiting for approval. Once it is approved you can <b>{1}</b>. Questions? <a href="mailto:{7}">Email us</a>.]]></string_upd>
+    <string_upd name="_sys_acl_action_suspended"><![CDATA[You cannot {1} because your profile is suspended. If you don't know why, <a href="mailto:{7}">email us</a>.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_email_sent_failed"><![CDATA[The confirmation email could not be sent. Please try again later.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[The text message could not be sent. Please try again later.]]></string_upd>
+    <string_upd name="_sys_txt_forgot_pasword_error_occured"><![CDATA[The password reset email could not be sent. Please try again later.]]></string_upd>
+    <string_upd name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[The sign-in code could not be sent. Please try again later.]]></string_upd>
+    <string_upd name="_sys_txt_unsubscribe_error_occured"><![CDATA[This unsubscribe link does not work. Sign in and change your email settings, or contact us and we will unsubscribe you.]]></string_upd>
+    <string_upd name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> sent you a friend request]]></string_upd>
+    <string_upd name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> accepted your friend request]]></string_upd>
+    <string_upd name="_sys_profile_subscription_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> followed you]]></string_upd>
+    <string_upd name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} mentioned you in a {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string_upd>
+    <string_upd name="_sys_form_account_input_password_error"><![CDATA[Use at least 8 characters, with at least one uppercase letter, one lowercase letter and one digit.]]></string_upd>
+    <string_upd name="_sys_location_status_undef"><![CDATA[Choose a country to find the address]]></string_upd>
+    <string_upd name="_adm_api_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+    <string_upd name="_adm_err_operation_failed"><![CDATA[The operation failed. Please try again, and check the logs if it fails again.]]></string_upd>
+    <string_upd name="_adm_str_err_download_failed"><![CDATA[The download failed. Please try again.]]></string_upd>
+    <string_upd name="_cmt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+    <string_upd name="_sys_manage_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Largest file a member with this level can upload, in any app (0 = no limit; other system limits may apply).]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_quota_number"><![CDATA[How many files a member with this level can upload (0 = no limit).]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_password_expired"><![CDATA[Days after which the password must be changed (0 = never).]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_password_expired_notify"><![CDATA[Days before the password expires to start reminding the member (0 = no reminders).]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_quota_size"><![CDATA[How much storage a member with this level can use across all apps (0 = no limit).]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Resize images before upload to this width (0 = don't resize)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Resize images before upload to this height (0 = don't resize)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[2FA code lifetime, seconds (0 = send a code at each sign-in)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Maximum profiles per account (0 = no limit)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Maximum sign-in attempts (0 = no limit)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Embed lifetime, days (0 = no limit)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[CSRF token lifetime, seconds (0 = no limit)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Block content after this many reports (0 = never block)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Maximum hashtags per post]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Maximum mentions per post]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Maximum attached links per post (0 = no limit)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Background jobs: maximum parallel workers]]></string_upd>
+    <string_upd name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on X]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on X]]></string_upd>
+    <string_add name="_view_n_views_one"><![CDATA[{0} view]]></string_add>
+    <string_add name="_vote_n_votes_one"><![CDATA[{0} vote]]></string_add>
+    <string_add name="_cmt_txt_n_comments_one"><![CDATA[{0} comment]]></string_add>
+    <string_add name="_report_n_reports_one"><![CDATA[{0} report]]></string_add>
+    <string_add name="_sys_conn_friends_counter_one"><![CDATA[{0} friend]]></string_add>
+    <string_add name="_sys_conn_subscriptions_counter_one"><![CDATA[{0} follower]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_friends_one"><![CDATA[{0} friend]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_friends_mutual_one"><![CDATA[{0} mutual friend]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_members_one"><![CDATA[{0} member]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_subscribers_one"><![CDATA[{0} follower]]></string_add>
+    <string_add name="_sys_menu_item_title_sm_relations_one"><![CDATA[{0} relation]]></string_add>
+    <string_add name="_sys_txt_profile_joined_sample"><![CDATA[joined]]></string_add>
+    <string_add name="_sys_profile_joined_ntfs"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> joined]]></string_add>
+    <string_upd name="_sys_txt_confirm_email_success"><![CDATA[Your email address is confirmed.]]></string_upd>
+    <string_upd name="_sys_conn_msg_success"><![CDATA[Done.]]></string_upd>
+</resources>
