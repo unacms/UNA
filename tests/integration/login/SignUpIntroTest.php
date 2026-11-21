@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\Group;
 /**
  * The Sign up page shows a picture, a title and a line of text beside its form, as a block of the page (Studio >
  * Pages > Sign up): `system:create_account_intro`. The site and the apps draw it from the same block, the apps from
- * its `intro` item, whose picture comes as shapes. The sign-in and sign-up blocks have large padding, and the box of
+ * its `static` item that names `page_intro`, whose picture comes as shapes. The sign-in and sign-up blocks have large padding, and the box of
  * the guest splash's form on the site follows the home page's block, which the apps' splash draws.
  */
 #[Group('integration')]
@@ -111,8 +111,10 @@ class SignUpIntroTest extends BxDolIntegrationTestCase
 
         $this->assertCount(1, $aBlock['content']);
         $aItem = $aBlock['content'][0];
-        $this->assertSame('intro', $aItem['type']);
-        $this->assertSame(['name', 'title', 'text', 'picture'], array_keys($aItem['data']));
+        // A type every app knows: one from before the block finds no `page_intro` and draws nothing.
+        $this->assertSame('static', $aItem['type']);
+        $this->assertSame(['element', 'name', 'title', 'text', 'picture'], array_keys($aItem['data']));
+        $this->assertSame('page_intro', $aItem['data']['element']);
         $this->assertSame('create_account', $aItem['data']['name']);
         $this->assertSame(_t('_sys_txt_join_title'), $aItem['data']['title']);
         $this->assertSame(_t('_sys_txt_join_text'), $aItem['data']['text']);

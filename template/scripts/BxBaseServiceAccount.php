@@ -277,9 +277,10 @@ class BxBaseServiceAccount extends BxDol
      * (create_account_illustration.html), a title, which is the page's heading, and a line of text. Where people sign up
      * by invitation and the visitor has none, the words ask to request one. Nothing where nobody can sign up.
      *
-     * The apps get one `intro` item: `name` (`create_account`, or `create_account_invite` with the words about an
-     * invitation), `title`, `text` and `picture` (BxDolIllustration::getAPI: the shapes to draw, false for a picture
-     * they cannot draw).
+     * The apps get one `static` item that names the `page_intro` element, with what to draw: `name`
+     * (`create_account`, or `create_account_invite` with the words about an invitation), `title`, `text` and `picture`
+     * (BxDolIllustration::getAPI: the shapes to draw, false for a picture they cannot draw). `static` is a type every
+     * app knows: one built before this block finds no `page_intro` of its own and draws nothing in its place.
      */
     /**
      * @ref bx_system_general-create_account_intro "create_account_intro"
@@ -301,7 +302,8 @@ class BxBaseServiceAccount extends BxDol
 
         // The apps show the words as plain text; the site shows the language strings as they are.
         if($bApi)
-            return [bx_api_get_block('intro', [
+            return [bx_api_get_block('static', [
+                'element' => 'page_intro',
                 // which intro it is, for an app that has words or a picture of its own for it
                 'name' => $bInvite ? 'create_account_invite' : 'create_account',
                 'title' => trim(html_entity_decode(strip_tags($sTitle), ENT_QUOTES | ENT_HTML5, 'UTF-8')),

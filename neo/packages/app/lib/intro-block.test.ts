@@ -84,7 +84,10 @@ test("a project's own words and picture for the Sign up intro", () => {
 });
 
 test('an intro content item', () => {
-    assert.equal(isIntroItem({ type: 'intro', data: {} }), true);
+    assert.equal(isIntroItem({ type: 'static', data: { element: 'page_intro', title: 'Time to join!' } }), true);
+    assert.equal(isIntroItem({ type: 'static', data: { element: 'footer' } }), false);
+    assert.equal(isIntroItem({ type: 'static' }), false);
+    assert.equal(isIntroItem({ type: 'intro', data: { element: 'page_intro' } }), false);
     assert.equal(isIntroItem({ type: 'form' }), false);
     assert.equal(isIntroItem(null), false);
     assert.equal(isIntroItem('intro'), false);

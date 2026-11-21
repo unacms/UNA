@@ -1,8 +1,10 @@
 /**
- * UNA's `intro` block: a picture, a title (the page's heading) and a line of text, as the Sign up page has beside its
- * form (`system:create_account_intro`, BxBaseServiceAccount::serviceCreateAccountIntro). UNA sends the picture as
- * shapes (BxDolIllustration::getAPI), because iOS and Android have no web view to show its SVG file: each shape is a
- * path and the name of its colour, which the apps draw in their own theme colours (`Illustration`).
+ * UNA's intro block: a picture, a title (the page's heading) and a line of text, as the Sign up page has beside its
+ * form (`system:create_account_intro`, BxBaseServiceAccount::serviceCreateAccountIntro). It comes as a `static` item
+ * that names the `page_intro` element, a type every app knows: one built before the block draws nothing for it. UNA
+ * sends the picture as shapes (BxDolIllustration::getAPI), because iOS and Android have no web view to show its SVG
+ * file: each shape is a path and the name of its colour, which the apps draw in their own theme colours
+ * (`Illustration`).
  *
  * No app imports, so `node --test packages/app/lib/intro-block.test.ts` runs it from the NEO root.
  */
@@ -67,7 +69,7 @@ export type IntroOwn = {
 
 /**
  * What a project built on NEO may have of its own for the intro UNA names `name`, from before UNA sent the block:
- * the Sign up page's words and picture. Its own win over UNA's (`landingText`, `ElementIntro`). Null for an intro
+ * the Sign up page's words and picture. Its own win over UNA's (`landingText`, `PageIntro`). Null for an intro
  * the apps never drew themselves.
  */
 const OWN: Record<string, IntroOwn> = {
@@ -83,7 +85,12 @@ export function introOwn(name: unknown): IntroOwn | null {
     return typeof name === 'string' && Object.hasOwn(OWN, name) ? (OWN[name] ?? null) : null;
 }
 
+/** The element UNA's intro names in its `static` item (components/elements/static.js). */
+export const INTRO_ELEMENT = 'page_intro';
+
 /** A block content item is UNA's intro. */
 export function isIntroItem(item: unknown): boolean {
-    return Boolean(item) && typeof item === 'object' && (item as { type?: unknown }).type === 'intro';
+    if (!item || typeof item !== 'object') return false;
+    const { type, data } = item as { type?: unknown; data?: { element?: unknown } | null };
+    return type === 'static' && data?.element === INTRO_ELEMENT;
 }
