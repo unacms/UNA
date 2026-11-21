@@ -843,7 +843,7 @@ class BxBaseGrid extends BxDolGrid
         // a grid that hides its Add action (no permission) or disables it (a filter to choose first) leaves it out here too
         if(method_exists($this, '_getActionAdd')) {
             $sAction = $this->_getActionAdd('independent', 'add', $a);
-            if($sAction === '' || strpos($sAction, 'bx-btn-disabled') !== false)
+            if($sAction === '' || str_contains($sAction, 'bx-btn-disabled'))
                 return [];
         }
 

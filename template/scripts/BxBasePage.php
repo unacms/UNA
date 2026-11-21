@@ -1763,7 +1763,7 @@ class BxBasePage extends BxDolPage
 
             // The page keeps its name in the title bar; a title with markers would name the content, so it is left out.
             $sTitle = _t($this->_aObject['title']);
-            if ($sTitle !== '' && strpos($sTitle, '{') === false)
+            if ($sTitle !== '' && !str_contains($sTitle, '{'))
                 BxDolTemplate::getInstance()->setPageHeader($sTitle);
         }
 

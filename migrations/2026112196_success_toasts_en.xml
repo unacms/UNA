@@ -24,10 +24,8 @@
     <string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Email settings saved.]]></string_upd>
     <string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Password changed.]]></string_upd>
     <string_upd name="_sys_account_settings_info_successfully_submitted"><![CDATA[Account settings saved.]]></string_upd>
-    <string_upd name="_sys_conn_msg_success"><![CDATA[Done.]]></string_upd>
     <string_upd name="_sys_profile_cf_set_successfully_submitted"><![CDATA[Content filter updated.]]></string_upd>
     <string_upd name="_sys_profile_cf_manage_successfully_submitted"><![CDATA[Content filter updated.]]></string_upd>
     <string_upd name="_sys_txt_account_profile_context_changed_success"><![CDATA[You switched to <b>{0}</b>.]]></string_upd>
-    <string_upd name="_sys_txt_confirm_email_success"><![CDATA[Your email address is confirmed.]]></string_upd>
     <string_upd name="_sys_wiki_block_deleted"><![CDATA[Block deleted.]]></string_upd>
 </resources>
