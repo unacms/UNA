@@ -194,6 +194,24 @@ html.dark {
 #bx-content-with-toolbar-wrapper > #bx-content-main {
     flex-grow: 3;
 }
+/* The guest splash (.bx-landing, Studio > Designer > Splash) fills the screen between the header and the footer, as
+   in the apps: every wrapper from main down to it is a column that grows, so the footer stays in view. The splash's
+   own "first screen" height (in its code, for a page without these wrappers) gives way here: with it the page's
+   margins and the footer ended up below the fold. */
+#bx-content-main:has(.bx-landing),
+#bx-content-main :has(.bx-landing) {
+    display: flex;
+    flex-direction: column;
+}
+#bx-content-main :has(.bx-landing),
+#bx-content-main .bx-landing {
+    flex: 1 1 auto;
+    box-sizing: border-box;
+    width: 100%;
+}
+#bx-content-main .bx-landing {
+    min-height: 0;
+}
 
 #bx-content-wrapper.htmx-added {
     opacity: 0;
