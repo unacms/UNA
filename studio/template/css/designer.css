@@ -436,25 +436,6 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     line-height: 1.25rem;
     vertical-align: 1px;
 }
-.adm-dsg-template-icon {
-    display: block;
-    width: 4rem;
-    height: 4rem;
-    border-radius: var(--bx-radius-2xl);
-    object-fit: cover;
-}
-.adm-dsg-template-letter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 4rem;
-    height: 4rem;
-    border-radius: var(--bx-radius-2xl);
-    background-color: #71717a;
-    color: #fff;
-    font-size: 1.75rem;
-    font-weight: 600;
-}
 
 /* Page layout sketches: header, side menu, content and footer as blocks, shown or hidden per layout. */
 .adm-dsg-pt {
@@ -935,23 +916,6 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
     font-size: 0.875rem;
     line-height: 1.25rem;
 }
-.adm-dsg-tmpl-footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
-}
-.adm-dsg-tmpl-footer-text {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: #52525b;
-}
-/* The pinned footer is one row: on narrow screens the button alone (the Default badge names the template). */
-@media (max-width: 40rem) {
-    .adm-dsg-tmpl-footer-text {
-        display: none;
-    }
-}
 .dark .adm-dsg-tmpl-card {
     background-color: rgba(255, 255, 255, 0.05);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -962,8 +926,7 @@ html:has(dialog.adm-dsg-fullscreen[open]) {
 .dark .adm-dsg-tmpl-title {
     color: #f4f4f5;
 }
-.dark .adm-dsg-tmpl-meta,
-.dark .adm-dsg-tmpl-footer-text {
+.dark .adm-dsg-tmpl-meta {
     color: #a1a1aa;
 }
 

@@ -13,12 +13,24 @@ function BxDolStudioDesigner(oOptions) {
     this.iAnimationSpeed = oOptions.iAnimationSpeed == undefined ? 'slow' : oOptions.iAnimationSpeed;
 }
 
-BxDolStudioDesigner.prototype.makeDefault = function(sUri) {
+/**
+ * Designer > Template: a card's "Make default" button makes its template the site's one, after a confirmation
+ * (the button's data-confirm). The page then reloads with the Default badge on it.
+ */
+BxDolStudioDesigner.prototype.makeDefault = function(sUri, oButton) {
     var $this = this;
+
+    bx_confirm($(oButton).attr('data-confirm'), function() {
+        $this._makeDefault(sUri, $(oButton).parents('form:first').find('input[name=csrf_token]').val());
+    });
+};
+
+BxDolStudioDesigner.prototype._makeDefault = function(sUri, sCsrfToken) {
     var oDate = new Date();
     var aParams = {_t: oDate.getTime()};
     aParams[this.sParamPrefix + '_action'] = 'make_default';
     aParams[this.sParamPrefix + '_value'] = sUri;
+    aParams['csrf_token'] = sCsrfToken;
 
     $.post(
         this.sActionsUrl,

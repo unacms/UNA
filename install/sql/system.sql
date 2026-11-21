@@ -368,8 +368,13 @@ CREATE TABLE `sys_options_types` (
 --
 -- Dumping data for tables `sys_options_types`
 --
+-- Global: what the operator sets up first (Site, Account, Security...). Advanced, right after it in the side menu:
+-- server settings (cache engines, storage, push and SMS providers, sockets).
 INSERT INTO `sys_options_types`(`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'system', '_adm_stg_cpt_type_system', 'mi-cog.svg', 1);
 SET @iTypeId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options_types`(`group`, `name`, `caption`, `icon`, `order`) VALUES ('system', 'advanced', '_adm_stg_cpt_type_advanced', 'mi-server-cog.svg', 2);
+SET @iTypeIdAdvanced = LAST_INSERT_ID();
 
 --
 -- CATEGORY (HIDDEN): Hidden
@@ -617,7 +622,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: System (General)
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'general', '_adm_stg_cpt_category_general', 0, 5);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'general', '_adm_stg_cpt_category_general', 0, 5);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -648,7 +653,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: Cache
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'cache', '_adm_stg_cpt_category_cache', 0, 6);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'cache', '_adm_stg_cpt_category_cache', 0, 6);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -680,7 +685,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: Permalinks
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'permalinks', '_adm_stg_cpt_category_permalinks', 0, 9);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'permalinks', '_adm_stg_cpt_category_permalinks', 0, 9);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -694,7 +699,7 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `e
 --
 -- CATEGORY: Security
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'security', '_adm_stg_cpt_category_security', 0, 11);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'security', '_adm_stg_cpt_category_security', 0, 19);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -723,7 +728,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 --
 -- CATEGORY: Storage
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'storage', '_adm_stg_cpt_category_storage', 0, 13);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'storage', '_adm_stg_cpt_category_storage', 0, 13);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -804,7 +809,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 --
 -- CATEGORY: Push Notifications
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'notifications_push', '_adm_stg_cpt_category_notifications_push', 0, 17);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'notifications_push', '_adm_stg_cpt_category_notifications_push', 0, 17);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -826,7 +831,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 --
 -- CATEGORY: Twilio gate settings
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'sms', '_adm_stg_cpt_category_sms', 0, 18);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'sms', '_adm_stg_cpt_category_sms', 0, 18);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -875,7 +880,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 --
 -- CATEGORY: Sockets
 --
-INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'sockets', '_adm_stg_cpt_category_sockets', 0, 22);
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeIdAdvanced, 'sockets', '_adm_stg_cpt_category_sockets', 0, 22);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
@@ -944,15 +949,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_api_cookie_secure', '_adm_stg_cpt_option_sys_api_cookie_secure', '', 'checkbox', '', '', '', 42),
 (@iCategoryId, 'sys_api_cookie_samesite', '_adm_stg_cpt_option_sys_api_cookie_samesite', 'Lax', 'select', 'None,Lax,Strict', '', '', 44),
 (@iCategoryId, 'sys_api_url_root_email', '_adm_stg_cpt_option_sys_api_url_root_email', '', 'digit', '', '', '', 50),
-(@iCategoryId, 'sys_api_url_root_push', '_adm_stg_cpt_option_sys_api_url_root_push', '', 'digit', '', '', '', 51),
-(@iCategoryId, 'sys_api_v2_enable', '_adm_stg_cpt_option_sys_api_v2_enable', '', 'checkbox', '', '', '', 59),
-(@iCategoryId, 'sys_api_v2_rate_limit', '_adm_stg_cpt_option_sys_api_v2_rate_limit', 'on', 'checkbox', '', '', '', 60),
-(@iCategoryId, 'sys_api_v2_rate_limit_general', '_adm_stg_cpt_option_sys_api_v2_rate_limit_general', '600', 'digit', '', '', '', 61),
-(@iCategoryId, 'sys_api_v2_rate_limit_write', '_adm_stg_cpt_option_sys_api_v2_rate_limit_write', '120', 'digit', '', '', '', 62),
-(@iCategoryId, 'sys_api_v2_rate_limit_search', '_adm_stg_cpt_option_sys_api_v2_rate_limit_search', '120', 'digit', '', '', '', 63),
-(@iCategoryId, 'sys_api_v2_rate_limit_preview', '_adm_stg_cpt_option_sys_api_v2_rate_limit_preview', '30', 'digit', '', '', '', 64),
-(@iCategoryId, 'sys_api_v2_rate_limit_agent', '_adm_stg_cpt_option_sys_api_v2_rate_limit_agent', '20', 'digit', '', '', '', 65),
-(@iCategoryId, 'sys_api_v2_rate_limit_upload', '_adm_stg_cpt_option_sys_api_v2_rate_limit_upload', '120', 'digit', '', '', '', 66);
+(@iCategoryId, 'sys_api_url_root_push', '_adm_stg_cpt_option_sys_api_url_root_push', '', 'digit', '', '', '', 51);
 
 
 --
@@ -968,9 +965,26 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_api_context_switcher', '_adm_stg_cpt_option_sys_api_context_switcher', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:32:"get_options_api_context_switcher";s:5:"class";s:13:"TemplServices";}', '', '', 6),
 (@iCategoryId, 'sys_api_context_connection', '_adm_stg_cpt_option_sys_api_context_connection', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:34:"get_options_api_context_connection";s:5:"class";s:13:"TemplServices";}', '', '', 7),
 (@iCategoryId, 'sys_api_comments_flat', '_adm_stg_cpt_option_sys_api_comments_flat', '', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'sys_api_search_sections', '_adm_stg_cpt_option_sys_api_search_sections', 'bx_posts,bx_persons,bx_groups', 'digit', '', '', '', 20),
+(@iCategoryId, 'sys_api_search_sections', '_adm_stg_cpt_option_sys_api_search_sections', 'bx_posts,bx_persons,bx_groups', 'list', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_options_api_search_sections";s:5:"class";s:13:"TemplServices";}', '', '', 20),
 (@iCategoryId, 'sys_api_extended_units', '_adm_stg_cpt_option_sys_api_extended_units', '', 'checkbox', '', '', '', 30),
 (@iCategoryId, 'sys_api_conn_in_prof_units', '_adm_stg_cpt_option_sys_api_conn_in_prof_units', '', 'checkbox', '', '', '', 31);
+
+
+--
+-- CATEGORY (HIDDEN): API (preview): API v2, which is not for production yet
+--
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'api_preview', '_adm_stg_cpt_category_api_preview', 1, 4);
+SET @iCategoryId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_api_v2_enable', '_adm_stg_cpt_option_sys_api_v2_enable', '', 'checkbox', '', '', '', 59),
+(@iCategoryId, 'sys_api_v2_rate_limit', '_adm_stg_cpt_option_sys_api_v2_rate_limit', 'on', 'checkbox', '', '', '', 60),
+(@iCategoryId, 'sys_api_v2_rate_limit_general', '_adm_stg_cpt_option_sys_api_v2_rate_limit_general', '600', 'digit', '', '', '', 61),
+(@iCategoryId, 'sys_api_v2_rate_limit_write', '_adm_stg_cpt_option_sys_api_v2_rate_limit_write', '120', 'digit', '', '', '', 62),
+(@iCategoryId, 'sys_api_v2_rate_limit_search', '_adm_stg_cpt_option_sys_api_v2_rate_limit_search', '120', 'digit', '', '', '', 63),
+(@iCategoryId, 'sys_api_v2_rate_limit_preview', '_adm_stg_cpt_option_sys_api_v2_rate_limit_preview', '30', 'digit', '', '', '', 64),
+(@iCategoryId, 'sys_api_v2_rate_limit_agent', '_adm_stg_cpt_option_sys_api_v2_rate_limit_agent', '20', 'digit', '', '', '', 65),
+(@iCategoryId, 'sys_api_v2_rate_limit_upload', '_adm_stg_cpt_option_sys_api_v2_rate_limit_upload', '120', 'digit', '', '', '', 66);
 
 --
 -- CATEGORY (HIDDEN): API (config)

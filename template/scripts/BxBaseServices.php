@@ -1653,6 +1653,26 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return $aResults;
     }
 
+    /**
+     * Studio > API > Settings > Search sections: the site's search sections (sys_objects_search with GlobalSearch on),
+     * by name, with their titles. A name already saved that isn't one of them any more is kept, under its own name, so
+     * saving the form doesn't drop it.
+     */
+    public function serviceGetOptionsApiSearchSections()
+    {
+        // getSections() keeps one cache for all its filters, so the GlobalSearch filter is applied here.
+        $aResults = [];
+        foreach(BxDolSearch::getSections() as $sName => $aSection)
+            if((int)$aSection['GlobalSearch'] == 1)
+                $aResults[$sName] = _t($aSection['title']);
+
+        foreach(explode(',', (string)getParam('sys_api_search_sections')) as $sName)
+            if(($sName = trim($sName)) !== '' && !isset($aResults[$sName]))
+                $aResults[$sName] = $sName;
+
+        return $aResults;
+    }
+
     public function serviceGetOptionsApiContextSwitcher()
     {
         $aContexts = bx_srv('system', 'get_modules_by_type', ['context']);

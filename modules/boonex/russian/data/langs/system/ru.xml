@@ -805,6 +805,7 @@
 	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Просмотр на весь экран]]></string>
 	<string name="_adm_dsg_btn_tmpl_choose_default"><![CDATA[Выбрать шаблон по умолчанию]]></string>
 	<string name="_adm_dsg_btn_tmpl_fullscreen"><![CDATA[На весь экран]]></string>
+	<string name="_adm_dsg_btn_tmpl_make_default"><![CDATA[Сделать основным]]></string>
 	<string name="_adm_dsg_btn_tmpl_preview"><![CDATA[Предпросмотр]]></string>
 	<string name="_adm_dsg_btn_tmpl_reload"><![CDATA[Обновить]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Удалить это изображение? Оно будет удалено безвозвратно.]]></string>
@@ -873,9 +874,11 @@
 	<string name="_adm_dsg_lnk_logo_template"><![CDATA[Открыть настройки логотипа {0}]]></string>
 	<string name="_adm_dsg_lnk_splash_open"><![CDATA[Открыть в новой вкладке]]></string>
 	<string name="_adm_dsg_lnk_tmpl_open"><![CDATA[Открыть сайт с ним]]></string>
+	<string name="_adm_dsg_lnk_tmpl_page"><![CDATA[Открыть «Дизайнер › Шаблон»]]></string>
 	<string name="_adm_dsg_scs_save"><![CDATA[Изменения удачно сохранены]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG-код]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[Нет. В тёмной теме показывается логотип светлой темы.]]></string>
+        <string name="_adm_dsg_txt_logo_note_designer"><![CDATA[Логотип задаётся в «Дизайнер › Лого», для всех шаблонов.]]></string>
         <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[Превью показывают, что рисует шаблон сайта, {0}.]]></string>
         <string name="_adm_dsg_txt_logo_note_system"><![CDATA[Эти логотипы используют все шаблоны. Шаблон может заменить их в своих настройках логотипа.]]></string>
         <string name="_adm_dsg_txt_logo_note_template"><![CDATA[Логотипы здесь заменяют логотипы из «Дизайнер › Лого», только для шаблона {0}.]]></string>
@@ -944,6 +947,7 @@
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Шаблон сайта]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[Используется]]></string>
+	<string name="_adm_dsg_txt_settings_template_note"><![CDATA[Шаблон сайта выбирается в «Дизайнер › Шаблон».]]></string>
 	<string name="_adm_dsg_txt_settings_template_version"><![CDATA[Версия]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Текст лого]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Стандартная обложка страницы]]></string>
@@ -975,6 +979,7 @@
 	<string name="_adm_dsg_txt_tmpl_default"><![CDATA[По умолчанию]]></string>
 	<string name="_adm_dsg_txt_tmpl_footer"><![CDATA[Все видят шаблон {0}, если сами не выбрали другой.]]></string>
 	<string name="_adm_dsg_txt_tmpl_frame"><![CDATA[Предпросмотр сайта]]></string>
+	<string name="_adm_dsg_txt_tmpl_make_default_confirm"><![CDATA[Сделать {0} шаблоном сайта? Все увидят его, если сами не выбрали другой.]]></string>
 	<string name="_adm_dsg_txt_tmpl_page"><![CDATA[Страница]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_about"><![CDATA[О сайте]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Обзор]]></string>
@@ -1912,7 +1917,7 @@
     <string name="_adm_stg_cpt_category_languages"><![CDATA[Языки]]></string>
     <string name="_adm_stg_cpt_category_permalinks"><![CDATA[Пермалинки]]></string>
     <string name="_adm_stg_cpt_category_security"><![CDATA[Безопасность]]></string>
-    <string name="_adm_stg_cpt_category_site_settings"><![CDATA[Общие]]></string>
+    <string name="_adm_stg_cpt_category_site_settings"><![CDATA[Сайт]]></string>
     <string name="_adm_stg_cpt_category_storage"><![CDATA[Дисковое пространство]]></string>
     <string name="_adm_stg_cpt_category_system"><![CDATA[Система]]></string>
     <string name="_adm_stg_cpt_category_templates"><![CDATA[Темы]]></string>
@@ -1921,6 +1926,7 @@
     <string name="_adm_stg_cpt_category_social_settings"><![CDATA[Социальные]]></string>
     <string name="_adm_stg_cpt_category_api_general"><![CDATA[Общие]]></string>
     <string name="_adm_stg_cpt_category_api_layout"><![CDATA[Планировка]]></string>
+    <string name="_adm_stg_cpt_category_api_preview"><![CDATA[Предварительная версия API v2]]></string>
     <string name="_adm_stg_cpt_category_agents_general"><![CDATA[Общие]]></string>
     <string name="_adm_stg_cpt_category_agents_usage"><![CDATA[Помощники]]></string>
     <string name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Изменять ширину картинки перед загрузкой (0 - отключить)]]></string>
@@ -2339,6 +2345,7 @@
     <string name="_adm_stg_cpt_option_sys_maintenance_mode"><![CDATA[Режим технического обслуживания]]></string>
     <string name="_adm_stg_cpt_option_sys_maintenance_mode_html"><![CDATA[Пользовательский HTML-код для режима обслуживания]]></string>
     
+    <string name="_adm_stg_cpt_type_advanced"><![CDATA[Дополнительно]]></string>
     <string name="_adm_stg_cpt_type_system"><![CDATA[Глобальные]]></string>
     <string name="_adm_stg_scs_save"><![CDATA[Настройки удачно сохранены]]></string>
     <string name="_adm_stg_err_save_error_message"><![CDATA[Ошибка в '{0}': {1}]]></string>
