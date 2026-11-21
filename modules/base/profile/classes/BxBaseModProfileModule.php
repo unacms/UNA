@@ -1202,7 +1202,11 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             $CNF = &$this->_oConfig->CNF;
 
             $aContentInfo['cover'] = $this->serviceGetCover($iContentId);
-            $aContentInfo['image'] = $this->serviceGetThumb($iContentId);            
+            $aContentInfo['image'] = $this->serviceGetThumb($iContentId);
+
+            // The template's own art the site shows on a profile without a cover picture, light and dark.
+            list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri(BxDolTemplate::getInstance()->getCode()));
+            $aContentInfo['cover_default'] = ['light' => $sArtLight, 'dark' => $sArtDark ? $sArtDark : $sArtLight];
 
             $sKey = 'OBJECT_MENU_VIEW_ENTRY_META';
             if(!empty($CNF[$sKey]) && ($oMetaMenu = BxTemplMenu::getObjectInstance($CNF[$sKey])) !== false)

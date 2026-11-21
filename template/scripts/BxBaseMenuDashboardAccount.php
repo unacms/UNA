@@ -22,13 +22,14 @@ class BxBaseMenuDashboardAccount extends BxTemplMenuCustom
     public function __construct ($aObject, $oTemplate)
     {
         parent::__construct ($aObject, $oTemplate);
-
-        $this->_oProfile = BxDolProfile::getInstance();
     }
 
+    /**
+     * Nothing without a profile: an account without one has "Create your profile" on the dashboard instead.
+     */
     public function getCode ()
     {
-        if(!$this->_oProfile)
+        if(!($this->_oProfile = $this->_getProfile()))
             return '';
 
         return parent::getCode();
@@ -36,10 +37,21 @@ class BxBaseMenuDashboardAccount extends BxTemplMenuCustom
 
     public function getCodeAPI ()
     {
-        if(!$this->_oProfile)
+        if(!($this->_oProfile = $this->_getProfile()))
             return [];
 
         return parent::getCodeAPI();
+    }
+
+    /**
+     * The member's profile in use; an account's own (system) profile doesn't count.
+     */
+    protected function _getProfile ()
+    {
+        if(!BxDolTours::getInstance()->hasProfile())
+            return false;
+
+        return BxDolProfile::getInstance();
     }
 
     /**

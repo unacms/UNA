@@ -7,6 +7,7 @@ import { useCurrentUser } from 'app/context/user'
 import { useScreenTier } from 'app/context/measure'
 import { appSetting, cn } from 'app/lib/util'
 import { buildMenuSections, type MenuSectionItem } from 'app/lib/menu-sections'
+import { DashboardSettingsMenu } from 'app/components/elements/dashboard-stat'
 
 type SettingsMenuItem = MenuSectionItem & {
     id?: string | number
@@ -89,6 +90,8 @@ export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: Sett
                     </View>
                 </View>
             ))}
+            {/* The app's own preferences (language, theme, feed, sounds), which the dashboard had as tiles. */}
+            <DashboardSettingsMenu settingsLink={false} layouts={false} title={t('Preferences')} />
         </View>
     )
 }

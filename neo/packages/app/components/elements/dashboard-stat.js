@@ -324,21 +324,26 @@ function DashboardManageMenu({ items }) {
     )
 }
 
-function DashboardSettingsMenu() {
+/**
+ * The app's own preferences as buttons: Settings (`dashboard.settings_url`), language, theme, layout, feed units and
+ * sounds, each while the app offers a choice. The Settings section shows them without the Settings link and the
+ * layout switcher (`settingsLink`, `layouts`).
+ */
+export function DashboardSettingsMenu({ settingsLink = true, layouts = true, title = '' }) {
     const { layoutSettings, updateLayoutSettings, setLayoutName, layoutName } = useLayoutSettings()
     const { t } = useTranslation()
     const langs = appSetting('layout', 'avaliable_langs')
     const showLangs = langs.length > 1
     const showTheme = !!appSetting('dashboard', 'switch_theme')
-    const showLayouts = appSetting('layout', 'avaliable_layouts').length > 1
+    const showLayouts = layouts && appSetting('layout', 'avaliable_layouts').length > 1
     const showFeedUnits = appSetting('layout', 'avaliable_feed_units').length > 1
     const { available: showSounds, level: soundLevel, setLevel: setSoundLevel } = useSoundsLevel()
     const currentSoundLevel = SOUND_LEVEL_ITEMS.find((option) => option.id === soundLevel) ?? SOUND_LEVEL_ITEMS[0]
     // The account settings pages (email, password, notifications ...): elsewhere only the desktop member menu links them.
-    const settingsUrl = appSetting('dashboard', 'settings_url')
+    const settingsUrl = settingsLink ? appSetting('dashboard', 'settings_url') : ''
     if (!(settingsUrl || showLangs || showTheme || showLayouts || showFeedUnits || showSounds)) return null
 
-    return (
+    const grid = (
         <View className={DASHBOARD_GRID}>
             {settingsUrl ? (
                 <View className="w-full min-w-0">
@@ -436,6 +441,17 @@ function DashboardSettingsMenu() {
                     </DropdownMenu>
                 </View>
             ) : null}
+        </View>
+    )
+
+    if (!title) return grid
+
+    return (
+        <View className="w-full gap-2">
+            <Text className="px-4 text-sm font-semibold text-muted-foreground" numberOfLines={1}>
+                {title}
+            </Text>
+            {grid}
         </View>
     )
 }
