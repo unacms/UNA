@@ -2476,6 +2476,18 @@
         return list;
     };
 
+    /**
+     * A new talk has a title only with two people or more: a direct message to one person is named after them.
+     */
+    oMessenger.prototype.updateTalkTitleField = function () {
+        const { talkTitle } = window.oMessengerSelectors.TEXT_AREA,
+            bGroup = this.getParticipantsList().length > 1;
+
+        $(talkTitle).toggle(bGroup);
+        if (!bGroup)
+            $(talkTitle).val('');
+    };
+
     oMessenger.prototype.stopActiveSound = function () {
         if (this.oActiveAudioInstance) {
             this.oActiveAudioInstance.stop();
@@ -4475,6 +4487,7 @@
                 }
 
                 $(oUser).remove();
+                _oMessenger.updateTalkTitleField();
             }
         },
         loadTalksList: function (oMenu, mixedGroup) {
@@ -4574,6 +4587,7 @@
 
             $(`input[value=${iId}]`, selectedUsersArea).remove();
             $(oElement).remove();
+            _oMessenger.updateTalkTitleField();
         },
         closeEditForm: function () {
             _oMessenger.disableCreateList();

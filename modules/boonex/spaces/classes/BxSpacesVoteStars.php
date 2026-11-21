@@ -37,7 +37,7 @@ class BxSpacesVoteStars extends BxTemplVoteStars
 
     protected function _getCounterLabel($iCount, $aParams = [])
     {
-        return _t('_bx_spaces_txt_vote_starts_counter', $iCount);
+        return _tn('_bx_spaces_txt_vote_starts_counter', $iCount);
     }
 }
 

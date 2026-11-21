@@ -25,6 +25,12 @@ class IconsetLucideLoadingTest extends BxDolTestCase
         return $aMatch[1];
     }
 
+    public function testEmojiIconsAreNotLucideNames(): void
+    {
+        // <i class="sys-icon sys-icon-emoji">...</i> holds an emoji: read as a name it is "-emoji", which Lucide warns about
+        $this->assertStringContainsString("querySelectorAll('i.sys-icon:not(.sys-icon-emoji)')", self::method('template/scripts/BxBaseIconsetLucide.php', 'getCode'));
+    }
+
     public function testTheSetGivesThePreloaderNoScript(): void
     {
         $this->assertMatchesRegularExpression('/^\s*return false;\s*$/', self::method('template/scripts/BxBaseIconsetLucide.php', 'getPreloaderJs'));
