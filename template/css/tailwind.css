@@ -974,7 +974,7 @@
         @apply active:text-gray-900 dark:active:text-gray-100;
     }
     .bx-btn {
-        @apply relative inline-flex items-center min-h-11 px-4 py-2 touch-manipulation;
+        @apply relative inline-flex items-center justify-center min-h-11 px-4 py-2 touch-manipulation; /* the label or icon in the middle, as NEO's buttons: an icon-only button (.bx-btn-icon) is wider than its icon */
         @apply bx-btn-shadow;
         @apply bx-btn-bg;
         @apply bx-btn-border rounded-xl; /* 12px, as NEO's regular button and the rows of a dropdown menu */
