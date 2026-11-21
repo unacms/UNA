@@ -244,6 +244,15 @@ fn set_status<R: Runtime>(app: &AppHandle<R>, status: Status) {
     }
 }
 
+/// The connection is gone; the channels stay as they were (they are what the windows want).
+/// The channels are read before set_status locks: a guard taken inside its argument would be held
+/// through the call, and the second lock of the same mutex waited for ever, freezing every command
+/// that locks it too (the window's realtime_watch on the main thread, so the whole app).
+fn set_disconnected<R: Runtime>(app: &AppHandle<R>) {
+    let channels = app.state::<RealtimeState>().lock().status.channels.clone();
+    set_status(app, Status { connected: false, channels });
+}
+
 /// Why a connection ended.
 enum Ended {
     /// The session, the network or the acting profile changed: connect again at once.
@@ -269,7 +278,7 @@ pub fn start<R: Runtime>(app: AppHandle<R>) {
         let mut backoff = Duration::ZERO;
         loop {
             let ended = connect_once(&app, &client).await;
-            set_status(&app, Status { connected: false, channels: app.state::<RealtimeState>().lock().status.channels.clone() });
+            set_disconnected(&app);
             match ended {
                 Ok(Some(Ended::Changed)) => backoff = Duration::ZERO,
                 Ok(Some(Ended::Dropped(why))) => {
@@ -502,6 +511,24 @@ mod tests {
         assert_eq!(next_backoff(Duration::ZERO), BACKOFF_MIN);
         assert_eq!(next_backoff(Duration::from_secs(4)), Duration::from_secs(8));
         assert_eq!(next_backoff(Duration::from_secs(50)), BACKOFF_MAX);
+    }
+
+    /// A connection that ends marks the status disconnected and keeps its channels, and the
+    /// state can be locked afterwards (it once locked its own mutex twice and froze the app).
+    #[test]
+    fn a_connection_that_ends_leaves_the_state_free() {
+        let app = tauri::test::mock_builder().build(crate::context()).unwrap();
+        app.manage(RealtimeState::default());
+        let handle = app.handle().clone();
+        handle.state::<RealtimeState>().lock().status = Status { connected: true, channels: [("activities".to_string(), "bx_timeline_0".to_string())].into() };
+
+        let (done, finished) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            set_disconnected(&handle);
+            let _ = done.send(handle.state::<RealtimeState>().lock().status.clone());
+        });
+        let status = finished.recv_timeout(Duration::from_secs(5)).expect("set_disconnected returns and the state is free");
+        assert_eq!(status, Status { connected: false, channels: [("activities".to_string(), "bx_timeline_0".to_string())].into() });
     }
 
     #[test]
