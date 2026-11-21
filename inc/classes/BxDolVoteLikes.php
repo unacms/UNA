@@ -50,7 +50,7 @@ class BxDolVoteLikes extends BxTemplVote
 
     protected function _getIconDo($bVoted)
     {
-    	return $bVoted && $this->isUndo() ? 'fas thumbs-up' : 'far thumbs-up';
+    	return $bVoted ? 'thumbs-up sys-icon-filled' : 'thumbs-up'; // filled while it is liked
     }
 
     protected function _getEmojiDo($bVoted)

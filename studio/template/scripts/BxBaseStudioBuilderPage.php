@@ -1709,7 +1709,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         $sResult = '';
         switch($aBlock['type']) {
             case BX_DOL_STUDIO_BP_BLOCK_RAW:
-            	$sResult = 'far file-alt';
+            	$sResult = 'file-text';
             	break;
 
             case BX_DOL_STUDIO_BP_BLOCK_HTML:
@@ -1729,7 +1729,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
             	break;
 
             case BX_DOL_STUDIO_BP_BLOCK_IMAGE:
-            	$sResult = 'far image';
+            	$sResult = 'image';
             	break;
 
             case BX_DOL_STUDIO_BP_BLOCK_LANG:

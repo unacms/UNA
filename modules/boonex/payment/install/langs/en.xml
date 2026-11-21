@@ -61,9 +61,9 @@
     <string name="_bx_payment_page_title_response"><![CDATA[Payment Response]]></string>
     <string name="_bx_payment_page_title_error"><![CDATA[Payment Error]]></string>
 
-    <string name="_bx_payment_page_title_sys_join"><![CDATA[Join]]></string>
-    <string name="_bx_payment_page_title_join"><![CDATA[Join]]></string>
-    <string name="_bx_payment_page_block_title_join"><![CDATA[Join]]></string>
+    <string name="_bx_payment_page_title_sys_join"><![CDATA[Sign up]]></string>
+    <string name="_bx_payment_page_title_join"><![CDATA[Sign up]]></string>
+    <string name="_bx_payment_page_block_title_join"><![CDATA[Sign up]]></string>
 
     <string name="_bx_payment_page_title_sys_invoices"><![CDATA[Invoices]]></string>
     <string name="_bx_payment_page_title_invoices"><![CDATA[Invoices]]></string>

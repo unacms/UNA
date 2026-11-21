@@ -48,7 +48,7 @@ BxDolFeature.prototype.onFeature = function(oData, oElement)
             return;
 
         if(oData && oData.label_icon)
-            $(oElement).find('.sys-action-do-icon .sys-icon').attr('class', 'sys-icon ' + oData.label_icon);
+            bx_set_icon($(oElement).find('.sys-action-do-icon .sys-icon'), oData.label_icon);
 
         if(oData && oData.label_title) {
             $(oElement).attr('title', oData.label_title);

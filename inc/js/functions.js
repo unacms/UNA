@@ -2936,6 +2936,26 @@ function bx_is_selector_in_stylesheet(sSel)
     return -1 !== a.indexOf(sSel);
 }
 
+/**
+ * Show another icon in place of one: a new `<i class="sys-icon ...">` (with an emoji inside, if given) replaces it,
+ * and the icon set draws it. The Lucide set has replaced each <i> with an <svg>, so changing the classes of what
+ * is there now changes nothing on screen.
+ * @param oIcons - the icon elements (a jQuery set, an element or a selector)
+ * @param sClasses - the icon's classes after sys-icon: its name and its own classes (`thumbs-up sys-icon-filled`)
+ * @param sHtml - an emoji to show instead of a drawing
+ */
+function bx_set_icon(oIcons, sClasses, sHtml)
+{
+    var bChanged = false;
+    $(oIcons).each(function() {
+        $(this).replaceWith($('<i>').attr('class', 'sys-icon ' + sClasses).html(sHtml || ''));
+        bChanged = true;
+    });
+
+    if(bChanged && typeof window.bx_iconset_init_lucide === 'function')
+        bx_iconset_init_lucide();
+}
+
 function bx_copy_to_clipboard(s, onSuccess, onFail)
 {
     if ("undefined" === typeof(onSuccess))

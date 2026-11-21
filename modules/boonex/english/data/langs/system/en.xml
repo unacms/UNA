@@ -2691,7 +2691,7 @@
   <string name="_sys_acl_action_comments_remove_in_group_context"><![CDATA[Comments Remove All In Context for Context's admins]]></string>
 	<string name="_sys_acl_action_comments_remove_own"><![CDATA[Comments Remove Own]]></string>
 	<string name="_sys_acl_action_connect"><![CDATA[Connect (befriend, follow, etc)]]></string>
-	<string name="_sys_acl_action_create_account"><![CDATA[Create Account]]></string>
+	<string name="_sys_acl_action_create_account"><![CDATA[Create account]]></string>
 	<string name="_sys_acl_action_create_account_desc"><![CDATA[It make sense for guests only, you can temporary disable it or set limit by time for example.]]></string>
 	<string name="_sys_acl_action_delete_account"><![CDATA[Delete Account]]></string>
 	<string name="_sys_acl_action_delete_account_desc"><![CDATA[Delete account also deletes account's content.]]></string>
@@ -2766,8 +2766,8 @@
     <string name="_sys_agents_connectors_txt_tools"><![CDATA[Tools for AI assistants]]></string>
     <string name="_sys_agents_connectors_txt_tools_info"><![CDATA[Which agent tools AI assistants get through MCP. Operator tools act on the whole site. Member tools act as the member, with their permissions on the site, and only tools made for that can be given to members. A tool turned off on the Tools tab is not given.]]></string>
     <string name="_sys_agents_mcp_txt_tool_off"><![CDATA[off]]></string>
-    <string name="_sys_agents_mcp_txt_operators"><![CDATA[MCP for Operators]]></string>
-    <string name="_sys_agents_mcp_txt_members"><![CDATA[MCP for Users]]></string>
+    <string name="_sys_agents_mcp_txt_operators"><![CDATA[MCP for operators]]></string>
+    <string name="_sys_agents_mcp_txt_members"><![CDATA[MCP for members]]></string>
     <string name="_sys_agents_mcp_txt_operators_only"><![CDATA[Operators only]]></string>
     <string name="_sys_agents_mcp_err_not_for_members"><![CDATA[This tool is not made for members: it would act on the whole site.]]></string>
     <string name="_sys_agents_tools_txt_agents"><![CDATA[Agents]]></string>
@@ -3352,8 +3352,8 @@
         <string name="_sys_file_handlers_videos_viewer"><![CDATA[Videos Player]]></string>
 	<string name="_sys_form_account"><![CDATA[Account]]></string>
 	<string name="_sys_form_account_input_agreement"><![CDATA[]]></string>
-	<string name="_sys_form_account_input_agreement_value"><![CDATA[By signing up, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
-	<string name="_sys_form_account_input_captcha"><![CDATA[Security Image]]></string>
+	<string name="_sys_form_account_input_agreement_value"><![CDATA[By signing up, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string>
+	<string name="_sys_form_account_input_captcha"><![CDATA[Security image]]></string>
 	<string name="_sys_form_account_input_captcha_error"><![CDATA[Security image input failed. Please try again.]]></string>
 	<string name="_sys_form_account_input_captcha_label_text_image"><![CDATA[Type the text:]]></string>
 	<string name="_sys_form_account_input_captcha_label_text_audio"><![CDATA[Type the text you hear:]]></string>
@@ -3379,14 +3379,14 @@
 	<string name="_sys_form_account_input_password"><![CDATA[Create a password]]></string>
 	<string name="_sys_form_account_input_password_confirm"><![CDATA[Confirm a password]]></string>
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Password confirmation failed]]></string>
-	<string name="_sys_form_account_input_password_current"><![CDATA[Current Password]]></string>
+	<string name="_sys_form_account_input_password_current"><![CDATA[Current password]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[This password has already been used before, use a different one]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to sign in to this site.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[Use at least 8 characters, with at least one uppercase letter, one lowercase letter and one digit.]]></string>
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Email me news and announcements]]></string>
-	<string name="_sys_form_account_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
+	<string name="_sys_form_account_input_receive_updates"><![CDATA[Receive site updates]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Submit]]></string>
-        <string name="_sys_form_account_input_publish"><![CDATA[Create account]]></string>
+        <string name="_sys_form_account_input_publish"><![CDATA[Sign up]]></string>
         <string name="_sys_form_account_input_caption_system_picture"><![CDATA[Account Picture]]></string>
         <string name="_sys_form_account_input_picture"><![CDATA[Upload an account picture]]></string>
 	<string name="_sys_form_checkbox_value_off"><![CDATA[No]]></string>
@@ -3411,7 +3411,7 @@
 	<string name="_sys_form_confirm_email"><![CDATA[Email Confirmation]]></string>
 	<string name="_sys_form_confirm_email_input_caption_system_code"><![CDATA[Verification Code]]></string>
 	<string name="_sys_form_confirm_email_input_caption_system_do_submit"><![CDATA[Submit]]></string>
-	<string name="_sys_form_confirm_email_input_code"><![CDATA[Verification Code]]></string>
+	<string name="_sys_form_confirm_email_input_code"><![CDATA[Verification code]]></string>
 	<string name="_sys_form_confirm_email_input_code_error"><![CDATA[Verification code is invalid or expired, please sign in to your account and resend verification email.]]></string>
 	<string name="_sys_form_confirm_email_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_confirm_phone"><![CDATA[Phone Confirmation]]></string>
@@ -3429,7 +3429,7 @@
 	<string name="_sys_form_confirm_phone_input_code_error_empty"><![CDATA[Cannot be empty.]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Phone is not valid]]></string>
-	<string name="_sys_form_display_account_create"><![CDATA[Create Account]]></string>
+	<string name="_sys_form_display_account_create"><![CDATA[Create account]]></string>
 	<string name="_sys_form_display_account_settings_delete"><![CDATA[Delete Account]]></string>
 	<string name="_sys_form_display_account_settings_email"><![CDATA[Email Settings]]></string>
 	<string name="_sys_form_display_account_settings_info"><![CDATA[Edit Account]]></string>
@@ -3626,8 +3626,8 @@
   
 	<string name="_sys_form_report"><![CDATA[Report]]></string>
 	<string name="_sys_form_report_input_caption_submit"><![CDATA[Post]]></string>
-	<string name="_sys_form_report_input_caption_text"><![CDATA[Report Text]]></string>
-	<string name="_sys_form_report_input_caption_type"><![CDATA[Report Type]]></string>
+	<string name="_sys_form_report_input_caption_text"><![CDATA[Report text]]></string>
+	<string name="_sys_form_report_input_caption_type"><![CDATA[Report type]]></string>
 	<string name="_sys_form_report_input_caption_system_action"><![CDATA[Action]]></string>
 	<string name="_sys_form_report_input_caption_system_object_id"><![CDATA[Object ID]]></string>	
 	<string name="_sys_form_report_input_caption_system_id"><![CDATA[Report ID]]></string>
@@ -3660,7 +3660,7 @@
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_news"><![CDATA[Receive Newsletters]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_unsubscribe_input_receive_news"><![CDATA[Email me news and announcements]]></string>
-	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
+	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive site updates]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[The field should have unique value]]></string>
 	<string name="_sys_form_txt_optional"><![CDATA[(optional)]]></string>
@@ -3962,10 +3962,10 @@
     <string name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Connectors]]></string>
     <string name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string>
-    <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_menu_item_title_public_menu"><![CDATA[Browse]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Add...]]></string>
-    <string name="_sys_menu_item_title_cart"><![CDATA[Shopping Cart]]></string>
+    <string name="_sys_menu_item_title_cart"><![CDATA[Shopping cart]]></string>
     <string name="_sys_menu_item_title_cmts_administration"><![CDATA[Comments]]></string>
     <string name="_sys_menu_item_title_audit_administration"><![CDATA[Audit]]></string>
     <string name="_sys_menu_item_title_cmts_item_delete"><![CDATA[Delete]]></string>
@@ -3979,7 +3979,7 @@
     <string name="_sys_menu_item_title_cmts_item_vote"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_cmts_item_more"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_connections"><![CDATA[Connections]]></string>
-    <string name="_sys_menu_item_title_dashboard"><![CDATA[Dash]]></string>
+    <string name="_sys_menu_item_title_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_menu_item_title_home"><![CDATA[Home]]></string>
     <string name="_sys_menu_item_title_invoices"><![CDATA[Invoices]]></string>
     <string name="_sys_menu_item_title_join"><![CDATA[Sign up]]></string>
@@ -4024,7 +4024,7 @@
     <string name="_sys_menu_item_title_sm_unfriend"><![CDATA[Unfriend]]></string>
     <string name="_sys_menu_item_title_sm_unfriend_cancel"><![CDATA[Cancel request]]></string>
     <string name="_sys_menu_item_title_sm_unfriend_reject"><![CDATA[Reject friend request]]></string>
-    <string name="_sys_menu_item_title_sm_join_paid"><![CDATA[Pay & Join]]></string>
+    <string name="_sys_menu_item_title_sm_join_paid"><![CDATA[Pay & join]]></string>
     <string name="_sys_menu_item_title_sm_join_requested_short"><![CDATA[Request sent]]></string>
     <string name="_sys_menu_item_title_sm_join_short"><![CDATA[Join]]></string>
     <string name="_sys_menu_item_title_sm_join"><![CDATA[Join]]></string>
@@ -4320,8 +4320,8 @@
     <string name="_sys_menu_title_wiki"><![CDATA[Wiki]]></string>
     <string name="_sys_menu_set_title_sys_wiki"><![CDATA[Wiki]]></string>
     <string name="_sys_menu_item_title_wiki_edit"><![CDATA[Edit]]></string>
-    <string name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Delete Version]]></string>
-    <string name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Delete Block]]></string>
+    <string name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Delete version]]></string>
+    <string name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Delete block]]></string>
     <string name="_sys_menu_item_title_wiki_translate"><![CDATA[Translate]]></string>
     <string name="_sys_menu_item_title_wiki_history"><![CDATA[History]]></string>
     <string name="_sys_menu_title_favorite_list"><![CDATA[Favorite list]]></string>
@@ -4337,12 +4337,12 @@
     <string name="_sys_menu_item_title_sa_account"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Visit Web App]]></string>
     <string name="_sys_menu_item_title_system_sa_sounds"><![CDATA[Sounds]]></string>
-    <string name="_sys_menu_item_title_sa_site"><![CDATA[Visit Web App]]></string>
+    <string name="_sys_menu_item_title_sa_site"><![CDATA[Visit web app]]></string>
     <string name="_sys_menu_item_title_sa_sounds"><![CDATA[Sounds]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Manage Apps]]></string>
-    <string name="_sys_menu_item_title_sa_edit"><![CDATA[Manage Apps]]></string>
+    <string name="_sys_menu_item_title_sa_edit"><![CDATA[Manage apps]]></string>
     <string name="_sys_menu_item_title_system_sa_tour"><![CDATA[Introduction Tour]]></string>
-    <string name="_sys_menu_item_title_sa_tour"><![CDATA[Introduction Tour]]></string>
+    <string name="_sys_menu_item_title_sa_tour"><![CDATA[Introduction tour]]></string>
     <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_system_sa_language"><![CDATA[Language]]></string>
@@ -4357,9 +4357,9 @@
     <string name="_sys_menu_title_con_submenu"><![CDATA[Connections]]></string>
     <string name="_sys_menu_title_public_con_submenu"><![CDATA[Connections]]></string>
     <string name="_sys_menu_set_title_con_submenu"><![CDATA[Connections]]></string>
-    <string name="_sys_menu_item_title_con_friends"><![CDATA[All Friends]]></string>
-    <string name="_sys_menu_item_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
-    <string name="_sys_menu_item_title_con_friend_requested"><![CDATA[Sent Requests]]></string>
+    <string name="_sys_menu_item_title_con_friends"><![CDATA[All friends]]></string>
+    <string name="_sys_menu_item_title_con_friend_requests"><![CDATA[Friend requests]]></string>
+    <string name="_sys_menu_item_title_con_friend_requested"><![CDATA[Sent requests]]></string>
     <string name="_sys_menu_item_title_con_following"><![CDATA[Following]]></string>
     <string name="_sys_menu_item_title_con_followers"><![CDATA[Followers]]></string>
     <string name="_sys_menu_item_title_recom_friends"><![CDATA[Suggestions]]></string>
@@ -4411,20 +4411,20 @@
     <string name="_sys_page_block_title_about"><![CDATA[About]]></string>
     <string name="_sys_page_block_title_account_profile_create"><![CDATA[Create your profile]]></string>
     <string name="_sys_page_block_title_account_profile_switcher"><![CDATA[Use site as ...]]></string>
-    <string name="_sys_page_block_title_account_settings_delete"><![CDATA[Delete Account]]></string>
+    <string name="_sys_page_block_title_account_settings_delete"><![CDATA[Delete account]]></string>
     <string name="_sys_page_block_title_account_settings_connectors"><![CDATA[Connectors]]></string>
-    <string name="_sys_page_block_title_account_settings_email"><![CDATA[Email Settings]]></string>
-    <string name="_sys_page_block_title_account_settings_info"><![CDATA[Edit Account]]></string>
+    <string name="_sys_page_block_title_account_settings_email"><![CDATA[Email settings]]></string>
+    <string name="_sys_page_block_title_account_settings_info"><![CDATA[Edit account]]></string>
     <string name="_sys_page_block_title_account_settings_menu"><![CDATA[Account Settings]]></string>
-    <string name="_sys_page_block_title_account_settings_pwd"><![CDATA[Change Password]]></string>
-    <string name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_page_block_title_account_settings_pwd"><![CDATA[Change password]]></string>
+    <string name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_page_block_title_add_content"><![CDATA[Add Content]]></string>
-    <string name="_sys_page_block_title_chart_growth"><![CDATA[Growth Charts]]></string>
+    <string name="_sys_page_block_title_chart_growth"><![CDATA[Growth charts]]></string>
     <string name="_sys_page_block_title_chart_stats"><![CDATA[Content]]></string>
-    <string name="_sys_page_block_title_cmts_administration"><![CDATA[Manage Comments]]></string>
+    <string name="_sys_page_block_title_cmts_administration"><![CDATA[Manage comments]]></string>
     <string name="_sys_page_block_title_audit_administration"><![CDATA[Audit]]></string>
-    <string name="_sys_page_block_title_confirm_email"><![CDATA[Email Confirmation]]></string>
-    <string name="_sys_page_block_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
+    <string name="_sys_page_block_title_confirm_email"><![CDATA[Email confirmation]]></string>
+    <string name="_sys_page_block_title_confirm_phone"><![CDATA[Phone confirmation]]></string>
     <string name="_sys_page_block_title_system_cooperator"><![CDATA[Cooperator (for App only)]]></string>
     <string name="_sys_page_block_title_system_create_profile"><![CDATA[Create your profile (accounts without a profile)]]></string>
     <string name="_sys_page_block_title_cooperator"><![CDATA[Cooperator]]></string>
@@ -4436,12 +4436,12 @@
     <string name="_sys_page_block_title_ai_agent"><![CDATA[AI Agent]]></string>
     <string name="_sys_page_block_title_ai_agent_operator"><![CDATA[Agent]]></string>
     <string name="_sys_page_block_title_con_friends"><![CDATA[Friends]]></string>
-    <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
-    <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent Friend Requests]]></string>
+    <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend requests]]></string>
+    <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent friend requests]]></string>
     <string name="_sys_page_block_title_con_following"><![CDATA[Following]]></string>
     <string name="_sys_page_block_title_con_followers"><![CDATA[Followers]]></string>
     <string name="_sys_page_block_title_sys_recom_friends"><![CDATA[Recommended Friends]]></string>
-    <string name="_sys_page_block_title_recom_friends"><![CDATA[Friend Suggestions]]></string>
+    <string name="_sys_page_block_title_recom_friends"><![CDATA[Friend suggestions]]></string>
     <string name="_sys_page_block_title_sys_recom_subscriptions"><![CDATA[Recommended Subscriptions]]></string>
     <string name="_sys_page_block_title_recom_subscriptions"><![CDATA[Who to follow]]></string>
     <string name="_sys_page_block_title_ntfs_context_invitations"><![CDATA[Invitations]]></string>
@@ -4459,8 +4459,8 @@
     <string name="_sys_page_block_title_homepage_menu"><![CDATA[Content modules menu]]></string>
     <string name="_sys_page_block_title_homepage_splash"><![CDATA[Splash]]></string>
     <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot password]]></string>
-    <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search Form]]></string>
-    <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
+    <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search form]]></string>
+    <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search result]]></string>
     <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Your membership]]></string>
@@ -4471,15 +4471,15 @@
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Sign in - step2]]></string>
     <string name="_sys_page_block_system_title_login_step3"><![CDATA[Sign in - step3]]></string>
     <string name="_sys_page_block_system_title_login_only"><![CDATA[Sign in]]></string>
-    <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - Content]]></string>
+    <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - content]]></string>
     <string name="_sys_page_block_title_dashboard_profiles"><![CDATA[Your profiles]]></string>
-    <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - Audit]]></string>
+    <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - audit]]></string>
     <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Dashboard - Administration (for App only)]]></string>
     <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Your profiles (dashboard)]]></string>
     <string name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string>
     <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
-    <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - Reports]]></string>
+    <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - reports]]></string>
     <string name="_sys_page_block_title_system_cmts_view"><![CDATA[View Comment]]></string>
     <string name="_sys_page_block_title_system_cmts_view_author"><![CDATA[Comment Author]]></string>
     <string name="_sys_page_block_title_system_cmts_view_content"><![CDATA[Commented Content]]></string>
@@ -4490,25 +4490,25 @@
     <string name="_sys_page_block_title_login_step2"><![CDATA[Sign in - step 2]]></string>
     <string name="_sys_page_block_title_login_step3"><![CDATA[Sign in - step 3]]></string>
     <string name="_sys_page_block_title_manage_tools"><![CDATA[Manage]]></string>
-    <string name="_sys_page_block_title_privacy"><![CDATA[Privacy Policy]]></string>
+    <string name="_sys_page_block_title_privacy"><![CDATA[Privacy policy]]></string>
     <string name="_sys_page_block_title_profile_stats"><![CDATA[Profile stats]]></string>
     <string name="_sys_page_block_title_profile_avatar"><![CDATA[Profile avatar]]></string>
     <string name="_sys_page_block_title_profile_menu"><![CDATA[Profile menu]]></string>
     <string name="_sys_page_block_title_profile_followings"><![CDATA[Profile followings]]></string>
     <string name="_sys_page_block_title_profile_membership"><![CDATA[Membership]]></string>
-    <string name="_sys_page_block_title_unsubscribe_news"><![CDATA[Unsubscribe From Site Newsletters]]></string>
-    <string name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Unsubscribe From Site Notifications]]></string>
+    <string name="_sys_page_block_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string>
+    <string name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string>
     <string name="_sys_page_block_title_std_dash_version"><![CDATA[Updates]]></string>
     <string name="_sys_page_block_title_std_dash_space"><![CDATA[Space]]></string>
     <string name="_sys_page_block_title_std_dash_host_tools"><![CDATA[Server]]></string>
     <string name="_sys_page_block_title_std_dash_cache"><![CDATA[Cache]]></string>
     <string name="_sys_page_block_title_std_dash_queues"><![CDATA[Queues]]></string>
     <string name="_sys_page_block_title_std_dash_users"><![CDATA[Users]]></string>
-    <string name="_sys_page_block_title_terms"><![CDATA[Terms of Service]]></string>
+    <string name="_sys_page_block_title_terms"><![CDATA[Terms of service]]></string>
     <string name="_sys_page_block_title_sys_std_site_submenu"><![CDATA[Site submenu]]></string>
     <string name="_sys_page_block_title_std_site_submenu"><![CDATA[Site submenu]]></string>
-    <string name="_sys_page_block_title_wiki_pages_list"><![CDATA[Pages List]]></string>
-    <string name="_sys_page_block_title_wiki_page_contents"><![CDATA[Page Contents]]></string>
+    <string name="_sys_page_block_title_wiki_pages_list"><![CDATA[Pages list]]></string>
+    <string name="_sys_page_block_title_wiki_page_contents"><![CDATA[Page contents]]></string>
 
     <string name="_sys_page_description_hashtag"><![CDATA[Hashtag "{0}" search results]]></string>
     <string name="_sys_page_description_hashtag_in_section"><![CDATA[Hashtag "{0}" search results in "{1}" section]]></string>
@@ -4631,18 +4631,18 @@
 <p>Last updated: [date].</p>]]></string>
     <string name="_sys_page_meta_description_default"><![CDATA[{site_title} is an online community where people share, discuss and stay in touch with others who care about the same things.]]></string>
     <string name="_sys_page_title_about"><![CDATA[About]]></string>
-    <string name="_sys_page_title_account_profile_switcher"><![CDATA[My Profiles]]></string>
-    <string name="_sys_page_title_account_settings_delete"><![CDATA[Delete Account]]></string>
+    <string name="_sys_page_title_account_profile_switcher"><![CDATA[My profiles]]></string>
+    <string name="_sys_page_title_account_settings_delete"><![CDATA[Delete account]]></string>
     <string name="_sys_page_title_account_settings_connectors"><![CDATA[Connectors]]></string>
-    <string name="_sys_page_title_account_settings_email"><![CDATA[Email Settings]]></string>
-    <string name="_sys_page_title_account_settings_info"><![CDATA[Edit Account]]></string>
-    <string name="_sys_page_title_account_settings_pwd"><![CDATA[Change Password]]></string>
-    <string name="_sys_page_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_page_title_account_settings_email"><![CDATA[Email settings]]></string>
+    <string name="_sys_page_title_account_settings_info"><![CDATA[Edit account]]></string>
+    <string name="_sys_page_title_account_settings_pwd"><![CDATA[Change password]]></string>
+    <string name="_sys_page_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_page_title_add_content"><![CDATA[Add Content]]></string>
-    <string name="_sys_page_title_cmts_administration"><![CDATA[Manage Comments]]></string>
+    <string name="_sys_page_title_cmts_administration"><![CDATA[Manage comments]]></string>
     <string name="_sys_page_title_audit_administration"><![CDATA[Audit]]></string>
-    <string name="_sys_page_title_confirm_email"><![CDATA[Email Confirmation]]></string>
-    <string name="_sys_page_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
+    <string name="_sys_page_title_confirm_email"><![CDATA[Email confirmation]]></string>
+    <string name="_sys_page_title_confirm_phone"><![CDATA[Phone confirmation]]></string>
     <string name="_sys_page_title_create_account"><![CDATA[Sign up]]></string>
     <string name="_sys_page_title_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_page_title_forgot_password"><![CDATA[Forgot password]]></string>
@@ -4652,11 +4652,11 @@
     <string name="_sys_page_title_login"><![CDATA[Sign in]]></string>
     <string name="_sys_page_title_login_step2"><![CDATA[Sign in - step 2]]></string>
     <string name="_sys_page_title_login_step3"><![CDATA[Sign in - step 3]]></string>
-    <string name="_sys_page_title_privacy"><![CDATA[Privacy Policy]]></string>
+    <string name="_sys_page_title_privacy"><![CDATA[Privacy policy]]></string>
     <string name="_sys_page_title_explore"><![CDATA[Explore]]></string>
     <string name="_sys_page_title_updates"><![CDATA[Updates]]></string>
     <string name="_sys_page_title_trends"><![CDATA[Trends]]></string>
-    <string name="_sys_page_title_terms"><![CDATA[Terms of Service]]></string>
+    <string name="_sys_page_title_terms"><![CDATA[Terms of service]]></string>
     <string name="_sys_page_title_system_about"><![CDATA[Info - About]]></string>
     <string name="_sys_page_title_system_account_profile_switcher"><![CDATA[Account - My Profiles]]></string>
     <string name="_sys_page_title_system_account_settings_delete"><![CDATA[Account - Delete]]></string>
@@ -4686,7 +4686,7 @@
     <string name="_sys_page_title_system_forgot_password"><![CDATA[Sign in - forgot password]]></string>
     <string name="_sys_page_title_system_search_keyword"><![CDATA[Search by Keyword]]></string>
     <string name="_sys_page_title_system_settings"><![CDATA[Settings]]></string>
-    <string name="_sys_page_title_search_keyword"><![CDATA[Search by Keyword]]></string>
+    <string name="_sys_page_title_search_keyword"><![CDATA[Search by keyword]]></string>
     <string name="_sys_page_title_settings"><![CDATA[Settings]]></string>
     <string name="_sys_page_title_system_home"><![CDATA[Homepage]]></string>
     <string name="_sys_page_title_system_login"><![CDATA[Sign in - step 1]]></string>
@@ -4700,28 +4700,28 @@
     <string name="_sys_page_title_system_unsubscribe_news"><![CDATA[Unsubscribe From Newsletters]]></string>
     <string name="_sys_page_title_system_unsubscribe_notifications"><![CDATA[Unsubscribe From Notifications]]></string>
     <string name="_sys_page_title_system_studio_dashboard"><![CDATA[Studio Dashboard]]></string>
-    <string name="_sys_page_title_unsubscribe_news"><![CDATA[Unsubscribe From Site Newsletters]]></string>
-    <string name="_sys_page_title_unsubscribe_notifications"><![CDATA[Unsubscribe From Site Notifications]]></string>
-    <string name="_sys_page_title_studio_dashboard"><![CDATA[Studio Dashboard]]></string>
+    <string name="_sys_page_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string>
+    <string name="_sys_page_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string>
+    <string name="_sys_page_title_studio_dashboard"><![CDATA[Studio dashboard]]></string>
     <string name="_sys_page_title_sys_wiki_add_page"><![CDATA[Wiki: Add Page]]></string>
-    <string name="_sys_page_title_wiki_add_page"><![CDATA[Add Page]]></string>
-    <string name="_sys_page_block_title_wiki_add_page"><![CDATA[Add Page]]></string>
+    <string name="_sys_page_title_wiki_add_page"><![CDATA[Add page]]></string>
+    <string name="_sys_page_block_title_wiki_add_page"><![CDATA[Add page]]></string>
     <string name="_sys_page_title_sys_wiki_pages_list"><![CDATA[Wiki: Menu (pages list)]]></string>
     <string name="_sys_page_title_wiki_pages_list"><![CDATA[Menu]]></string>
     <string name="_sys_page_title_sys_wiki_page_contents"><![CDATA[Wiki: Table of Contents (for current page)]]></string>
-    <string name="_sys_page_title_wiki_page_contents"><![CDATA[Table of Contents]]></string>
+    <string name="_sys_page_title_wiki_page_contents"><![CDATA[Table of contents]]></string>
     <string name="_sys_page_title_system_con_friends"><![CDATA[Connections - Friends]]></string>
     <string name="_sys_page_title_con_friends"><![CDATA[Friends]]></string>
     <string name="_sys_page_title_system_con_friend_requests"><![CDATA[Connections - Friend Requests]]></string>
-    <string name="_sys_page_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
+    <string name="_sys_page_title_con_friend_requests"><![CDATA[Friend requests]]></string>
     <string name="_sys_page_title_system_con_friend_requested"><![CDATA[Connections - Sent Friend Requests]]></string>
-    <string name="_sys_page_title_con_friend_requested"><![CDATA[Sent Friend Requests]]></string>
+    <string name="_sys_page_title_con_friend_requested"><![CDATA[Sent friend requests]]></string>
     <string name="_sys_page_title_system_con_following"><![CDATA[Connections - Following]]></string>
     <string name="_sys_page_title_con_following"><![CDATA[Following]]></string>
     <string name="_sys_page_title_system_con_followers"><![CDATA[Connections - Followers]]></string>
     <string name="_sys_page_title_con_followers"><![CDATA[Followers]]></string>
     <string name="_sys_page_title_system_recom_friends"><![CDATA[Recommendations - Friends]]></string>
-    <string name="_sys_page_title_recom_friends"><![CDATA[Friend Suggestions]]></string>
+    <string name="_sys_page_title_recom_friends"><![CDATA[Friend suggestions]]></string>
     <string name="_sys_page_title_system_recom_subscriptions"><![CDATA[Recommendations - Subscriptions]]></string>
     <string name="_sys_page_title_recom_subscriptions"><![CDATA[Who to follow]]></string>
     <string name="_sys_page_title_system_ntfs_context_invitations"><![CDATA[Notifications - Context Invitations]]></string>
@@ -4944,7 +4944,7 @@
     <string name="_sys_tour_back"><![CDATA[Back]]></string>
     <string name="_sys_tour_close"><![CDATA[Close tour]]></string>
 
-    <string name="_sys_txt_api_key"><![CDATA[API Key]]></string>
+    <string name="_sys_txt_api_key"><![CDATA[API key]]></string>
     <string name="_sys_txt_auth_or"><![CDATA[or]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Access denied]]></string>
     <string name="_sys_txt_access_denied_text"><![CDATA[You don't have access to this.]]></string>
@@ -5045,7 +5045,7 @@
 	
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[The sign-in code could not be sent. Please try again later.]]></string>
-    <string name="_sys_txt_login_agreement"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
+    <string name="_sys_txt_login_agreement"><![CDATA[By signing in, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string>
     <string name="_sys_txt_join_closed"><![CDATA[Sign-up is closed on this site.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Sign in]]></string>
@@ -5295,7 +5295,7 @@
     <string name="_sys_queue_push"><![CDATA[PUSH]]></string>
     <string name="_sys_queue_transcoding"><![CDATA[Video transcoding]]></string>
     <string name="_sys_queue_storage"><![CDATA[File deletions]]></string>
-    <string name="_sys_page_title_redirect"><![CDATA[Redirect Confirmation]]></string>
+    <string name="_sys_page_title_redirect"><![CDATA[Redirect confirmation]]></string>
     <string name="_sys_page_block_title_redirect"><![CDATA[Confirm redirect]]></string>
     <string name="_sys_redirect_confirmation"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a link outside {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
     <string name="_sys_redirect_confirmation_harmful"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a potentially <b>harmful</b> link {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
