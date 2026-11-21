@@ -64,10 +64,10 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
 
     public function testDashboardBlockInAppHasNoBackgroundOnPhones(): void
     {
-        // The dashboard block is already a stack of cards, so on phones NEO draws it straight on the page, with the
+        // "Your account" on the dashboard is already a stack of cards, so on phones NEO draws it straight on the page, with the
         // block's padding; tablets and desktops keep the background.
         $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-pages.sql');
-        $bFound = preg_match("/UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='([^']*)' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';/", (string)$sSql, $aMatch);
+        $bFound = preg_match("/UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='([^']*)' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_account';/", (string)$sSql, $aMatch);
 
         $this->assertSame(1, $bFound, 'enable-app-pages.sql sets the App config of the dashboard block.');
         $aConfig = json_decode($aMatch[1], true);

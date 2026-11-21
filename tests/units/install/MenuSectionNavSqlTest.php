@@ -29,7 +29,8 @@ class MenuSectionNavSqlTest extends PHPUnit\Framework\TestCase
         $this->assertStringContainsString("`section_nav_small` varchar(16) NOT NULL DEFAULT ''", $sSql);
         $this->assertStringContainsString("UPDATE `sys_objects_menu` SET `section_nav`='sidebar', `section_nav_small`='list' WHERE `object`='sys_account_settings_submenu';", $sSql);
 
-        $this->assertStringNotContainsString("'page.php?i=settings', '', '', 'cog'", $sSql, 'The settings page is not an item of its own menu.');
+        // The account menu (sys_account_notifications) links to the section; the section's own menu doesn't list it.
+        $this->assertDoesNotMatchRegularExpression("/\\('sys_account_settings', [^\\n]*'page\\.php\\?i=settings', '', '', 'cog'/", $sSql, 'The settings page is not an item of its own menu.');
         $this->assertStringNotContainsString("('sys_settings', 1, 'system'", $sSql, 'The settings page has no blocks.');
         $this->assertLessThan(
             strpos($sSql, "('sys_account_settings', 'system', 'account-profile-switcher'"),
