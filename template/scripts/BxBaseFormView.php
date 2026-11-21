@@ -1194,11 +1194,20 @@ BLAH;
             'caption' => _t($sTxtAge),
         ]);
 
-        if(bx_is_api())
+        if(bx_is_api()) {
+            $iAge = bx_birthday2age($aInput['value'] ?? '');
+
+            // No birthday: the site leaves the row out (genCustomViewRowValueBirthday), so the API leaves out the input.
+            if($iAge <= 0) {
+                $aInput['visible_for_levels'] = 0;
+                return '';
+            }
+
             $aInput = array_merge($aInput, [
                 'type' => 'text',
-                'value' => bx_birthday2age($aInput['value'])
+                'value' => $iAge
             ]);
+        }
 
         return $this->genViewRowWrapped($aInput);
     }
@@ -1216,10 +1225,8 @@ BLAH;
 
     protected function genCustomViewRowValueBirthday(&$aInput)
     {
-        if(!isset($aInput['value']) || !$aInput['value'] || in_array($aInput['value'], array('0000-00-00', '0000-00-00 00:00:00', '0000-00-00Z', '0000-00-00 00:00:00Z')))
-            return null;
-
-        return bx_birthday2age($aInput['value']);
+        $iAge = bx_birthday2age($aInput['value'] ?? '');
+        return $iAge > 0 ? $iAge : null;
     }
 
     /**
@@ -1237,7 +1244,7 @@ BLAH;
 
         $sRequired = $this->genRequiredMark($aInput, $isOneLine);
         
-        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
+        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon circle-question-mark"></i></a> ' : '';
 
         $sClassAdd = !empty($aInput['error']) ? ' bx-form-error' : '';
         $sInfoIcon = !empty($aInput['info']) ? $this->genInfoIcon($aInput['info']) : '';
@@ -1425,7 +1432,7 @@ BLAH;
 
         $sRequired = $this->genRequiredMark($aInput);
         
-        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon question-circle"></i></a> ' : '';
+        $sHelp = !empty($aInput['help']) ? ' <a href="javascript:void(0)" onclick="javascript:' . $this->getJsObjectName() . '.showHelp(this, \'' . $aInput['name'] . '\')"><i class="sys-icon circle-question-mark"></i></a> ' : '';
 
         $sClassAdd = !empty($aInput['error']) ? ' bx-form-error' : '';
         $sInfoIcon = !empty($aInput['info']) ? $this->genInfoIcon($aInput['info']) : '';

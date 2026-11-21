@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Toxicity score at which a text counts as toxic (0 to 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Toxicity threshold (0 to 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Threat threshold (0 to 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Identity attack threshold (0 to 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Profanity threshold (0 to 100)]]></string_upd>
+</resources>

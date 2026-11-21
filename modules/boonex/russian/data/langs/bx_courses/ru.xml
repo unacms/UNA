@@ -363,7 +363,9 @@
     <string name="_bx_courses_menu_item_title_system_sm_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_bx_courses_menu_item_title_sm_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_members"><![CDATA[Студенты]]></string>
-    <string name="_bx_courses_menu_item_title_sm_members"><![CDATA[{0} студенты]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members"><![CDATA[{0} студентов]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members_few"><![CDATA[{0} студента]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members_one"><![CDATA[{0} студент]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_join"><![CDATA[Посетить]]></string>
     <string name="_bx_courses_menu_item_title_sm_join"><![CDATA[Посетить]]></string>
     <string name="_bx_courses_menu_item_title_sm_join_paid"><![CDATA[Оплатить и посетить]]></string>
@@ -502,7 +504,7 @@
 
     <string name="_bx_courses_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_courses_err_price_duplicate"><![CDATA[Аналогичный ценовой план уже существует.]]></string>
-    <string name="_bx_courses_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_courses_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_courses_alert_action_fan_added"><![CDATA[присоединение нового студента]]></string>
     <string name="_bx_courses_txt_ntfs_fan_added"><![CDATA[К курсу <b class="bx-ntfs-content-profile">{owner_name}</b> присоединился <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

@@ -54,11 +54,11 @@
     <string name="_bx_timeline_option_hot_sources_content"><![CDATA[Add content]]></string>
     <string name="_bx_timeline_option_hot_sources_comment"><![CDATA[Add comment]]></string>
     <string name="_bx_timeline_option_hot_sources_vote"><![CDATA[Add vote]]></string>
-    <string name="_bx_timeline_option_hot_threshold_age"><![CDATA[Maximum age of commented/voted post that gets included in Hot feed (in days, 0 - no limit)]]></string>
+    <string name="_bx_timeline_option_hot_threshold_age"><![CDATA[Maximum age of a commented or voted post that can be in the Hot feed, days (0 = no limit)]]></string>
     <string name="_bx_timeline_option_hot_threshold_comment"><![CDATA[Minimum number of comments for content to appear in Hot feed]]></string>
     <string name="_bx_timeline_option_hot_threshold_vote"><![CDATA[Minimum number of votes for content to appear in Hot feed]]></string>
-    <string name="_bx_timeline_option_hot_interval"><![CDATA[Interval of time (in hours) to get Hot events (0 - no limit)]]></string>
-    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Adjustment coefficient related to content age (0 - no adjustment)]]></string>
+    <string name="_bx_timeline_option_hot_interval"><![CDATA[Time window for Hot events, hours (0 = no limit)]]></string>
+    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Content age adjustment coefficient (0 = no adjustment)]]></string>
     <string name="_bx_timeline_option_enable_cache_item"><![CDATA[Enable item cache]]></string>
     <string name="_bx_timeline_option_cache_item_engine"><![CDATA[Item cache engine (other than File option may require custom server setup)]]></string>
     <string name="_bx_timeline_option_cache_item_lifetime"><![CDATA[Item cache lifetime]]></string>
@@ -67,7 +67,7 @@
     <string name="_bx_timeline_option_enable_editor_toolbar"><![CDATA[Enable post form editor toolbar]]></string>
     <string name="_bx_timeline_option_editor_auto_attach_insertion"><![CDATA[Treat images inserted in the editor as attachments]]></string>
     <string name="_bx_timeline_option_enable_media_priority"><![CDATA[Enable priority of media content over links in attachments]]></string>
-    <string name="_bx_timeline_option_limit_attach_links"><![CDATA[Limit number of attached links (0 - no limit)]]></string>
+    <string name="_bx_timeline_option_limit_attach_links"><![CDATA[Maximum attached links (0 = no limit)]]></string>
     <string name="_bx_timeline_option_extenals_every_public"><![CDATA[Show external event as every N-th in public timeline]]></string>
     <string name="_bx_timeline_option_extenals_every_owner"><![CDATA[Show external event as every N-th in context (profile) timeline]]></string>
     <string name="_bx_timeline_option_extenals_every_feed"><![CDATA[Show external event as every N-th in context (profile) + subscriptions timeline]]></string>
@@ -116,7 +116,7 @@
     <string name="_bx_timeline_form_post_input_date_published_info"><![CDATA[Leave empty to publish immediately.]]></string>
     <string name="_bx_timeline_form_post_input_sys_link"><![CDATA[Link]]></string>
     <string name="_bx_timeline_form_post_input_link_alt"><![CDATA[Add Link]]></string>
-    <string name="_bx_timeline_form_post_input_link_err_delete"><![CDATA[Cannot remove the link. Please report.]]></string>
+    <string name="_bx_timeline_form_post_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string>
     <string name="_bx_timeline_form_post_input_sys_photo"><![CDATA[Photo]]></string>
     <string name="_bx_timeline_form_post_input_photo"><![CDATA[]]></string>
     <string name="_bx_timeline_form_post_input_photo_alt"><![CDATA[Add Photo]]></string>
@@ -428,7 +428,7 @@
     <string name="_bx_timeline_txt_msg_posted"><![CDATA[Posted successfully.]]></string>
     <string name="_bx_timeline_grid_action_err_delete"><![CDATA[Cannot delete the selected timeline events(s).]]></string>
     <string name="_bx_timeline_txt_err_cannot_perform_insertion"><![CDATA[Cannot perform insertion.]]></string>
-    <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+    <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_timeline_txt_err_empty_post"><![CDATA[The post is empty.]]></string>
     <string name="_bx_timeline_txt_err_attach_links"><![CDATA[The maximum allowed number of attached links has been reached.]]></string>
     <string name="_bx_timeline_txt_file_alt"><![CDATA[File]]></string>
@@ -493,7 +493,7 @@
     <string name="_bx_timeline_txt_repost_counter"><![CDATA[{0}]]></string>
     <string name="_bx_timeline_txt_reposted"><![CDATA[Reposted {0}'s {1}.]]></string>
     <string name="_bx_timeline_txt_reposted_by"><![CDATA[Reposted by]]></string>
-    <string name="_bx_timeline_txt_err_cannot_repost"><![CDATA[Cannot repost. Please report.]]></string>
+    <string name="_bx_timeline_txt_err_cannot_repost"><![CDATA[The post could not be reposted. Please try again.]]></string>
     <string name="_bx_timeline_txt_err_already_reposted"><![CDATA[You already reposted the item.]]></string>
     <string name="_bx_timeline_txt_msg_success_repost"><![CDATA[The item was successfully reposted.]]></string>
     <string name="_bx_timeline_txt_object_reposted"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> reposted a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
@@ -502,6 +502,7 @@
     <string name="_bx_timeline_txt_poll_view_results"><![CDATA[results]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_do_by"><![CDATA[Voted for]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_counter"><![CDATA[{0} votes]]></string>
+    <string name="_bx_timeline_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <!-- EMAIL TEMPLATES -->

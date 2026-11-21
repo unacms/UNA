@@ -238,7 +238,7 @@ function bx_form_textarea_init(e) {
                 oLink.toggleClass('password-show password-hide');
                 // Markup with one icon swaps it; with both (form_field_password.html) the button's class shows the right one.
                 if(!oLink.find('.bx-pw-eye').length)
-                    oLink.find('i').toggleClass('eye eye-slash');
+                    oLink.find('i').toggleClass('eye eye-closed');
             });
 
             $(this).addClass(sClassInited);

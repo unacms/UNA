@@ -415,10 +415,11 @@
     <string name="_bx_spaces_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>
     <string name="_bx_spaces_txt_empty_title"><![CDATA[No spaces yet]]></string>
     <string name="_bx_spaces_txt_vote_starts_counter"><![CDATA[{0} ratings]]></string>
+    <string name="_bx_spaces_txt_vote_starts_counter_one"><![CDATA[{0} rating]]></string>
 
     <string name="_bx_spaces_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_spaces_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
-    <string name="_bx_spaces_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_spaces_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 	
     <string name="_bx_spaces_alert_action_fan_added"><![CDATA[member joined]]></string>
     <string name="_bx_spaces_txt_ntfs_fan_added"><![CDATA[Space <b class="bx-ntfs-content-profile">{owner_name}</b> has got a member <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

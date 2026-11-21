@@ -307,7 +307,7 @@ class BxBaseModGeneralGridAdministration extends BxBaseModGeneralGrid
                     'name' => bx_process_output($aField['name']),
                     'title' => bx_process_output($aField['title']),
                     'width' => $aField['width']
-                ] : preg_replace ('/<a(.*?)>(.*?)<\/a>/', '<a$1 title="' . bx_html_attribute(_t('_sys_txt_reports_title')) . '"><i class="sys-icon exclamation-triangle"></i></a>', $s);
+                ] : preg_replace ('/<a(.*?)>(.*?)<\/a>/', '<a$1 title="' . bx_html_attribute(_t('_sys_txt_reports_title')) . '"><i class="sys-icon triangle-exclamation-point"></i></a>', $s);
         
     }
     

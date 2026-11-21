@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Operator level, notifications to the person they are about, plain errors and option captions, Share on X. -->
+<resources name="ru" flag="ru" title="Russian" category="Posts">
+    <string_add name="_bx_posts_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string_add>
+    <string_add name="_bx_posts_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string_add>
+</resources>

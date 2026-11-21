@@ -555,7 +555,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         // add button width popup
         $sId = 'bx-str-limit-' . rand(1, PHP_INT_MAX);
         $sTitle = bx_html_attribute(_t('_sys_str_limit_show'));
-        $sPopup = '<button type="button" class="bx-str-limit pl-2" title="' . $sTitle . '" aria-label="' . $sTitle . '" onclick="$(\'#' . $sId . '\').dolPopup({pointer:{el:$(this), offset:\'10 1\'}})"><i class="sys-icon ellipsis-h"></i></button>';
+        $sPopup = '<button type="button" class="bx-str-limit pl-2" title="' . $sTitle . '" aria-label="' . $sTitle . '" onclick="$(\'#' . $sId . '\').dolPopup({pointer:{el:$(this), offset:\'10 1\'}})"><i class="sys-icon ellipsis"></i></button>';
         $sPopup .= BxTemplFunctions::getInstance()->transBox($sId, '<div class="bx-def-padding">' . ($sPopupString ?? $sStrOriginal) . '</div>', true);
 
         return $bReturnString ? $sResult . $sPopup : [$sResult, $sPopup];
@@ -1322,27 +1322,12 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * The profile's letter avatar colour (BxDolTemplate::getColorCode, as on the site) as hex,
-     * since some email clients ignore rgba(). Darkened just enough to keep the white letter
-     * at 3:1, the WCAG AA level for large bold text.
+     * The profile's letter avatar colour (BxDolTemplate::getColorCode, as on the site, AA with the white letter)
+     * as hex, since some email clients ignore rgba().
      */
     protected function _getEmailAvatarColor($iProfileId)
     {
         $aRgb = array_map('intval', array_slice(BxDolTemplate::getColorCode($iProfileId), 0, 3));
-
-        $fnLuminance = function($aRgb) {
-            $aLinear = array_map(function($i) {
-                $f = $i / 255;
-                return $f <= 0.04045 ? $f / 12.92 : pow(($f + 0.055) / 1.055, 2.4);
-            }, $aRgb);
-
-            return 0.2126 * $aLinear[0] + 0.7152 * $aLinear[1] + 0.0722 * $aLinear[2];
-        };
-
-        for($i = 0; $i < 20 && 1.05 / ($fnLuminance($aRgb) + 0.05) < 3; $i++)
-            $aRgb = array_map(function($c) {
-                return (int)floor($c * 0.95);
-            }, $aRgb);
 
         return sprintf('#%02x%02x%02x', $aRgb[0], $aRgb[1], $aRgb[2]);
     }

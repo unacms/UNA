@@ -38,7 +38,7 @@ BxDolUploaderBase.prototype.init = function (sUploaderObject, sStorageObject, sU
     this._sFormContainerId = 'bx-form-input-files-' + sUniqId + '-form-cont';
 
     this._sTemplateGhost = options.template_ghost ? options.template_ghost : '<div id="' + this._getFileContainerId('{file_id}') + '"><input type="hidden" name="f[]" value="{file_id}" />{file_name} (<a href="javascript:void(0);" onclick="{js_instance_name}.deleteGhost(\'{file_id}\')">delete</a>)</div>';
-    this._sTemplateReorder = options.template_reorder ? options.template_reorder : '<div class="bx-uploader-ghost-reorder bx-btn bx-btn-small"><i class="sys-icon bars"></i></div>';
+    this._sTemplateReorder = options.template_reorder ? options.template_reorder : '<div class="bx-uploader-ghost-reorder bx-btn bx-btn-small"><i class="sys-icon menu"></i></div>';
     this._sTemplateError = options.template_error_msg ? options.template_error_msg : '<div>{error}</div>' ;
     this._sTemplateErrorGhosts = options.template_error_ghosts ? options.template_error_ghosts : this._sTemplateError;
 
@@ -880,6 +880,9 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
                 type: 'canvas',
                 size: 'original',
                 format: 'jpeg',
+                // the square picture: a round viewport only shows where the circle is, CSS rounds the picture
+                // (a circle would be saved on black corners, as JPEG has no transparency)
+                circle: false,
                 quality: '0.85',
             }).then(function(resp) {
                 var fd = new FormData();
@@ -1305,17 +1308,17 @@ BxDolImageTweak.prototype.uploadComplete = function(obj){
 
 BxDolImageTweak.prototype.changePosition = function (){
     var $this = this;
-    $(".bx-image-edit-source-" + $this._sUniqueId).parent().append("<div class='bx-image-edit-move-info'><i class='sys-icon sys-colored arrows-alt '></i>" + _t('_sys_uploader_image_reposition_info') + "</div>");
+    $(".bx-image-edit-source-" + $this._sUniqueId).parent().append("<div class='bx-image-edit-move-info'><i class='sys-icon sys-colored move '></i>" + _t('_sys_uploader_image_reposition_info') + "</div>");
     $(".bx-image-edit-source-" + $this._sUniqueId).addClass('bx-image-edit-move').bind('dragover', function(e){
         $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
+        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
     });
     if (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0)) {
         $('body').css('overflow', 'hidden')
         $(".bx-image-edit-source-" + $this._sUniqueId).bind('touchmove', function(e){
             var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
             $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
+            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
         });
     }
     with ($this._oContainerButtons) {

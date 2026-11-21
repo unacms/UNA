@@ -1815,7 +1815,7 @@ function bx_autocomplete_fields(iId, sUrl, sName, bShowImg, bOnlyOnce, onSelect)
 			else if(bShowImg && item.thumb != undefined)
 				sImage = '<img class="bx-def-thumb bx-def-icon-size bx-def-margin-sec-right" src="' + item.thumb + '">';
 
-			$(this).before('<b class="val bx-def-color-bg-hl bx-def-round-corners">' + sImage + item.label + '<i class="sys-icon times ltr:ml-1 rtl:mr-1"></i><input type="hidden" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="' + sName + (bOnlyOnce ? '' : '[]') + '" value="' + item.value + '" /></b>');
+			$(this).before('<b class="val bx-def-color-bg-hl bx-def-round-corners">' + sImage + item.label + '<i class="sys-icon x ltr:ml-1 rtl:mr-1"></i><input type="hidden" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="' + sName + (bOnlyOnce ? '' : '[]') + '" value="' + item.value + '" /></b>');
 		}
 
 		if (!bOnlyOnce)
@@ -2562,15 +2562,15 @@ function bx_sound_toggle(oSwitch)
 }
 
 /**
- * Show the visitor's level on every Sounds control: the account menu item's name and icon (volume-up, volume-down,
- * volume-mute; the Lucide iconset redraws it from a new <i>), and the checked option of Studio's radio group. Where
+ * Show the visitor's level on every Sounds control: the account menu item's name and icon (volume-2, volume-1,
+ * volume-x; the Lucide iconset redraws it from a new <i>), and the checked option of Studio's radio group. Where
  * sounds are off for everyone, the item goes away.
  */
 function bx_sound_mark_switches()
 {
     var oConfig = glBxSounds.config;
     var sLevel = bx_sound_level();
-    var sIcon = {full: 'volume-up', quiet: 'volume-down', off: 'volume-mute'}[sLevel];
+    var sIcon = {full: 'volume-2', quiet: 'volume-1', off: 'volume-x'}[sLevel];
     var bRedraw = false;
 
     $('[data-bx-sounds-switch]').each(function() {
@@ -2581,12 +2581,12 @@ function bx_sound_mark_switches()
 
         $(this).attr({'aria-label': oConfig.labels[sLevel], title: oConfig.labels[sLevel]});
 
-        $(this).find('.sys-icon.volume-up, .sys-icon.volume-down, .sys-icon.volume-mute').each(function() {
+        $(this).find('.sys-icon.volume-2, .sys-icon.volume-1, .sys-icon.volume-x').each(function() {
             if($(this).hasClass(sIcon))
                 return;
 
             if(this.tagName.toLowerCase() == 'i')
-                $(this).removeClass('volume-up volume-down volume-mute').addClass(sIcon);
+                $(this).removeClass('volume-2 volume-1 volume-x').addClass(sIcon);
             else {
                 $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
                 bRedraw = true;

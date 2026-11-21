@@ -127,7 +127,7 @@
     <string name="_bx_ads_form_entry_input_files"><![CDATA[]]></string>
     <string name="_bx_ads_form_entry_input_sys_polls"><![CDATA[Polls]]></string>
     <string name="_bx_ads_form_entry_input_sys_link"><![CDATA[Links]]></string>
-    <string name="_bx_ads_form_entry_input_link_err_delete"><![CDATA[Cannot remove the link. Please report.]]></string>
+    <string name="_bx_ads_form_entry_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string>
     <string name="_bx_ads_form_entry_input_sys_allow_view_to"><![CDATA[Visibility]]></string>
     <string name="_bx_ads_form_entry_input_allow_view_to"><![CDATA[Visibility]]></string>
     <string name="_bx_ads_form_entry_input_allow_view_favorite_list"><![CDATA[Visibility]]></string>
@@ -662,12 +662,13 @@
     <string name="_bx_ads_txt_err_offer_accepted"><![CDATA[Your offer was already accepted.]]></string>
     <string name="_bx_ads_txt_err_your_own"><![CDATA[You cannot do the action because it's your own ad.]]></string>
     <string name="_bx_ads_txt_err_duplicate"><![CDATA[You already performed the action.]]></string>
-    <string name="_bx_ads_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+    <string name="_bx_ads_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_ads_txt_poll_view_answers"><![CDATA[poll]]></string>
     <string name="_bx_ads_txt_poll_view_results"><![CDATA[results]]></string>
     <string name="_bx_ads_txt_poll_answer_vote_do_by"><![CDATA[Voted for]]></string>
     <string name="_bx_ads_txt_poll_answer_vote_counter"><![CDATA[{0} votes]]></string>
+    <string name="_bx_ads_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string>
     <string name="_bx_ads_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <string name="_bx_ads_alert_action_doInterest_personal"><![CDATA[Someone interested in your ad]]></string>

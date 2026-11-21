@@ -348,7 +348,7 @@ class BxTemplFunctions extends BxBaseFunctions
                 'link' => 'javascript:void(0)',
                 'onclick' => "javascript:oBxArtificerUtils.setColorScheme(" . $iCode . "); $('#" . $sId . "').dolPopupHide();",
                 'target' => '_self',
-                'icon' => $sIcon,
+                'icon' => $sIcon == 'desktop' ? 'monitor' : $sIcon,
                 'title' => _t('_bx_artificer_txt_color_scheme_' . $sTitle),
                 'attrs_add' => 'data-bx-color-scheme="' . $iCode . '"',
             ];
