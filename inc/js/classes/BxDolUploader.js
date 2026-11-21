@@ -1311,14 +1311,14 @@ BxDolImageTweak.prototype.changePosition = function (){
     $(".bx-image-edit-source-" + $this._sUniqueId).parent().append("<div class='bx-image-edit-move-info'><i class='sys-icon sys-colored arrows-alt '></i>" + _t('_sys_uploader_image_reposition_info') + "</div>");
     $(".bx-image-edit-source-" + $this._sUniqueId).addClass('bx-image-edit-move').bind('dragover', function(e){
         $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
+        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
     });
     if (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0)) {
         $('body').css('overflow', 'hidden')
         $(".bx-image-edit-source-" + $this._sUniqueId).bind('touchmove', function(e){
             var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
             $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
+            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
         });
     }
     with ($this._oContainerButtons) {
