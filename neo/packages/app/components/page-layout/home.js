@@ -212,19 +212,6 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     let dUser = Object.assign({}, currentUser)
     dUser.url_avatar = dUser.avatar
     dUser.url = appSetting('dashboard', 'url')
-    const headerBlocks = (
-        <>
-            {topBlocks?.map((item, index) => {
-                return (
-                    <View className='mb-0.5 sm:mb-3' key={'block_' + index}><BlockByName
-                        name={item.block}
-                        data={data}
-                        {...item.block.props}
-                    /></View>
-                )
-            })}
-        </>
-    )
     
     // UNA's home cover (Studio > Pages > Home > Cover, sent as `cover_home`) and the blocks of the top cell (the home
     // menu). On the web the side columns are fixed to the window, so whatever is above them would slide under them:
@@ -244,6 +231,24 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 />
             )
         })}</View> : null
+
+    // Native: the feed list owns the scrolling and the space under the floating header, so the cover and the center
+    // blocks go at the top of the list, with the top cell's blocks. Above the list they would sit under the header.
+    const centerInFeed = !isWeb && hasFeed && !hasSideColumns
+    const headerBlocks = (
+        <>
+            {centerInFeed ? BlocksCenter : null}
+            {topBlocks?.map((item, index) => {
+                return (
+                    <View className='mb-0.5 sm:mb-3' key={'block_' + index}><BlockByName
+                        name={item.block}
+                        data={data}
+                        {...item.block.props}
+                    /></View>
+                )
+            })}
+        </>
+    )
 
     const MenuItemSubmenu = components['menu-item']['submenu'];
 
@@ -475,7 +480,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
             <PageHeaderOptions sub={subHeader} band mobileOnly />
             {/* The home cover is the page's heading: no title in the header over it. */}
             {data?.cover_home ? <PageHeaderOptions showTitle={false} /> : null}
-            {hasSideColumns ? null : BlocksCenter}
+            {hasSideColumns || centerInFeed ? null : BlocksCenter}
         
             {hasFeed || hasSideColumns ? <PanelGroup
                 ref={groupRef}

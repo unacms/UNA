@@ -33,6 +33,8 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_cooperator' AND
 
 UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='{"designbox": {"bg": ["tablet", "desktop"]}}' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_account';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system` IN ('_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_system_create_profile');
+-- "Get started" is for the web app only: its steps (logo, cover, who can join) are set in Studio. Hidden on: mobile app (BX_DB_HIDDEN_MOBILE).
+UPDATE `sys_pages_blocks` SET `hidden_on`=CAST(`hidden_on` AS UNSIGNED) | 8 WHERE `module`='system' AND `title_system` IN ('_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_system_onboarding');
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_membership_stats';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_admin' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_admin' AND `title`='_sys_page_block_title_dashboard_admin';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_content' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_content';

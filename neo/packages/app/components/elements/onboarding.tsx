@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { View } from 'app/design/view';
+import { useState, type ReactNode } from 'react';
+import { View, Pressable } from 'app/design/view';
+import emitter, { EVENTS } from 'app/context/emitter';
+import { useRouter } from 'app/lib/hooks/router';
 import { Text } from 'app/design/typography';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import { Icon } from 'app/ui/atoms/icon';
@@ -75,7 +77,30 @@ function OnboardingStep({ item }: Readonly<{ item: OnboardingItem }>) {
         </View>
     );
 
+    // "Write the first post" opens the page's post composer (MultiPostForm listens), as the site's step does
+    // (bx_onboarding_post); a page without one goes to the step's page, the home page.
+    if (href && item.name === 'post')
+        return <PostStep href={href}>{row}</PostStep>;
+
     return href ? <Link href={href} className="rounded-xl web:hover:bg-button">{row}</Link> : row;
+}
+
+function PostStep({ href, children }: Readonly<{ href: string; children: ReactNode }>) {
+    const router = useRouter();
+    return (
+        <Pressable
+            role="button"
+            className="rounded-xl web:hover:bg-button"
+            onPress={() => {
+                if (emitter.listeners(EVENTS.composer).length > 0)
+                    emitter.emit(EVENTS.composer, { action: 'open' });
+                else
+                    router.push(href);
+            }}
+        >
+            {children}
+        </Pressable>
+    );
 }
 
 /**
