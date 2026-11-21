@@ -418,14 +418,6 @@ export function usePageHeaderBase(pageData) {
 let __lastHeaderLayout = null;
 let __lastSiteLogo = null;
 
-/** The header row's place in the window: the main menu centres its tabs on it. Same object while it didn't move. */
-function nextHeaderBox(prev, layout) {
-    const x = layout?.x || 0;
-    const width = layout?.width || 0;
-    if (prev && prev.x === x && prev.width === width) return prev;
-    return { x, width };
-}
-
 export const PageHeaderBody = memo(({
     contentClassName,
     currentUser,
@@ -461,7 +453,6 @@ export const PageHeaderBody = memo(({
     }, [pageData?.logo]);
     // The link around it names it (Home), so the image itself is decorative.
     const logoProps = { sources: siteLogo, alt: '' };
-    const [headerBox, setHeaderBox] = useState(null);
     // Logo variant per breakpoint. Web picks it with classes (SSR-safe);
     // native renders only the matching one, since `display: none` subtrees of
     // native (Expo UI) buttons trip Fabric's layout ownership assert in debug
@@ -605,7 +596,7 @@ export const PageHeaderBody = memo(({
 
     const headerRow = (
         <>
-                <View className={' ' + appSetting('layout', 'header', 'content_left')}>
+                <View className={`${appSetting('layout', 'header', 'content_left')} ${appSetting('layout', 'header', 'content_left_align')?.[headerLayout.align] ?? ''}`}>
                     <Row className='min-w-0 shrink items-center gap-3'>
                         {/* The start of the header. Native: Menu, which opens the drawer, on a tab's first page; a page
                             pushed over it has Back there. Web: the Application layout's sidebar as a drawer, below `xl`. */}
@@ -619,8 +610,8 @@ export const PageHeaderBody = memo(({
                     </Row>
                 </View>
                 {/* A 404 borrows the home page's data for its chrome: no tab is the current page there. */}
-                {isWeb && <MenuTop url={is404 ? null : pageData?.url} uri={is404 ? null : pageData?.uri} align={headerLayout.align} headerBox={headerBox} />}
-                <View className={' ' + appSetting('layout', 'header', 'content_right')}>
+                {isWeb && <MenuTop url={is404 ? null : pageData?.url} uri={is404 ? null : pageData?.uri} align={headerLayout.align} />}
+                <View className={`${appSetting('layout', 'header', 'content_right')} ${appSetting('layout', 'header', 'content_right_align')?.[headerLayout.align] ?? ''}`}>
                 
                     {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} />}
                 
@@ -632,12 +623,10 @@ export const PageHeaderBody = memo(({
         <>
             <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
                 {/* Web: the row is as wide as the page's content or the window (`layout.header.content_width`); the
-                    header's background stays full width. */}
+                    header's background stays full width. From `lg` its sides share the room the main menu leaves
+                    (`content_left_align`, `content_right_align`), which centres the menu on the header. */}
                 {isWeb ? (
-                    <Row
-                        className={`flex-1 min-w-0 self-stretch items-center justify-between gap-4 mx-auto w-full ${appSetting('layout', 'header', 'content_width')?.[headerLayout.width] ?? ''}`}
-                        onLayout={(e) => setHeaderBox((prev) => nextHeaderBox(prev, e?.nativeEvent?.layout))}
-                    >
+                    <Row className={`flex-1 min-w-0 self-stretch items-center justify-between gap-4 mx-auto w-full ${appSetting('layout', 'header', 'content_width')?.[headerLayout.width] ?? ''}`}>
                         {headerRow}
                     </Row>
                 ) : headerRow}

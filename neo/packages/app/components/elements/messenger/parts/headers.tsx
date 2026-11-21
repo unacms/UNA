@@ -184,7 +184,7 @@ type MobileListActionsProps = {
 export function MobileListActions({ searchOpen, onSearchToggle, addButtons }: Readonly<MobileListActionsProps>) {
     const { t } = useTranslation();
     return (
-        <Row className="items-center gap-3">
+        <Row className="items-center gap-2">
             <NeoButton
                 style="glass"
                 selected={searchOpen}
