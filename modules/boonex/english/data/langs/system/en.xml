@@ -3149,7 +3149,7 @@
     <string name="_sys_conn_err_connection_does_not_exists"><![CDATA[Connection doesn't exist]]></string>
     <string name="_sys_conn_err_connection_is_awaiting_confirmation"><![CDATA[Connection request is awaiting confirmation]]></string>
     <string name="_sys_conn_err_input_data_is_not_defined"><![CDATA[Input data isn't defined]]></string>
-    <string name="_sys_conn_msg_success"><![CDATA[Operation has beed successfully completed]]></string>
+    <string name="_sys_conn_msg_success"><![CDATA[Done.]]></string>
 
     <string name="_sys_connect_information"><![CDATA[Configuration info]]></string>
     <string name="_sys_connect_error_join_unavailable"><![CDATA[Sorry, sign-up is unavailable now. Please try again later.]]></string>
