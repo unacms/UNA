@@ -20,7 +20,7 @@ $aConfig = array(
     'note' => 'Feedback, suggestions, reports',
     'version' => '11.0.0.DEV',
     'vendor' => 'UNA INC',
-    'help_url' => 'http://feed.una.io/?section={module_name}',
+    'help_url' => '',
 
     'compatible_with' => array(
         '11.0.x'

@@ -2146,7 +2146,6 @@
     <string name="_adm_stg_cpt_option_sys_audit_report"><![CDATA[Last server audit report]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start"><![CDATA[Number of messages to send from Push queue per run]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient"><![CDATA[Number of messages to send from Push queue per run to some recipient]]></string>
-    <string name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Alerts/hooks logger]]></string>
     <string name="_adm_stg_cpt_option_sys_alerts_stats"><![CDATA[Alerts/hooks stats]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_default"><![CDATA[Provider]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_twilio_sid"><![CDATA[Twilio: Account SID]]></string>
@@ -2201,6 +2200,7 @@
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Set the maximum number of results displayed per page in Profile Search.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_buttons"><![CDATA[Submit and other buttons. In the apps, buttons answer with haptics only.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_choices"><![CDATA[Tabs, menu items, switches, checkboxes, radio buttons.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[When this is off, visitors who haven't signed in hear nothing, and their pages don't load the sounds.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_level"><![CDATA[Everyone can pick Full, Quiet or Off for themselves: in the account menu on the site and in Studio, in the footer and the dashboard of the apps.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_menus"><![CDATA[Menus, popups, drawers and sections opening and closing.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_navigation"><![CDATA[The apps' tab bar and back buttons, opening Studio apps.]]></string>
@@ -2347,6 +2347,7 @@
     <string name="_adm_stg_cpt_option_sys_sounds_choices"><![CDATA[Sound for choices]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_main"><![CDATA[Main sound set]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_off"><![CDATA[No sound]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Play for guests too]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level"><![CDATA[Level for people who haven't chosen]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_full"><![CDATA[Full]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_off"><![CDATA[Off]]></string>
@@ -2566,7 +2567,6 @@
         <string name="_adm_txt_settings"><![CDATA[Settings]]></string>
 	<string name="_adm_txt_show_actions"><![CDATA[Actions]]></string>
 	<string name="_adm_txt_show_help"><![CDATA[Help]]></string>
-	<string name="_adm_txt_show_help_content_empty"><![CDATA[Help is not available]]></string>
 	<string name="_adm_txt_uninstall"><![CDATA[Uninstall]]></string>
         <string name="_adm_wgt_cpt_api"><![CDATA[API]]></string>
         <string name="_adm_wgt_cpt_agents"><![CDATA[Agents]]></string>
@@ -2723,6 +2723,7 @@
         <string name="_sys_acl_action_pending"><![CDATA[Your account is waiting for approval. Once it is approved you can <b>{1}</b>. Questions? <a href="mailto:{7}">Email us</a>.]]></string>
 	<string name="_sys_acl_action_post_links"><![CDATA[Post links]]></string>
 	<string name="_sys_acl_action_post_links_desc"><![CDATA[Post links in text and textarea form fields]]></string>
+	<string name="_sys_acl_action_use_connectors"><![CDATA[Use connectors (access tokens for assistants and apps)]]></string>
 	<string name="_sys_acl_action_use_macros"><![CDATA[Use Macros]]></string>
         <string name="_sys_acl_action_use_macros_desc"><![CDATA[Use special constructions to insert dynamic content almost anywhere]]></string>
 	<string name="_sys_acl_action_set_acl_level"><![CDATA[Set membership level]]></string>
@@ -3026,6 +3027,7 @@
   <string name="_sys_audit_action_account_resend_confirmation_email"><![CDATA[Confirmation email re-sended]]></string>
   <string name="_sys_audit_action_account_deleted_with_content"><![CDATA[Removed with content]]></string>
   <string name="_sys_audit_action_account_deleted"><![CDATA[Removed]]></string>
+  <string name="_sys_audit_action_account_email_change_requested"><![CDATA[Email change requested]]></string>
   <string name="_sys_audit_action_account_email_changed"><![CDATA[Email changed]]></string>
   <string name="_sys_audit_action_account_activated"><![CDATA[Activated]]></string>
   <string name="_sys_audit_action_account_suspended"><![CDATA[Suspended]]></string>
@@ -3048,8 +3050,6 @@
   <string name="_sys_add_friend"><![CDATA[Add friend]]></string>
         <string name="_sys_add_relation"><![CDATA[Add relationship]]></string>
 	<string name="_sys_adm_installed"><![CDATA[Installed]]></string>
-	<string name="_sys_admin_apply"><![CDATA[Apply]]></string>
-	<string name="_sys_admin_filter"><![CDATA[Filter:]]></string>
   <string name="_sys_audit_filter_profile_select"><![CDATA[Select Profile]]></string>
   <string name="_sys_audit_filter_action_select"><![CDATA[Select Action]]></string>
 	<string name="_sys_audit_cron_jobs"><![CDATA[Cron jobs]]></string>
@@ -3200,6 +3200,14 @@
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{reply_text}</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">View and reply here: <a href="{page_url}">{page_title}</a>.</p>
 {email_footer}]]></string>
+    <string name="_sys_et_txt_body_confirm_email_change"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Confirm {new_email} as the email of your account on {site_name} with this link:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">or enter this code:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Until you confirm it, you sign in with {email}. If you didn't ask for this, ignore this email.</p>
+{email_footer}]]></string>
     <string name="_sys_et_txt_body_system_reported"><![CDATA[{email_header}
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New <b>{report_type}</b> report received:</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{report_text}</p>
@@ -3230,6 +3238,21 @@
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Module: <b>{Module}</b></p>
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Uninstallation result: {Result}</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+{email_footer}]]></string>
+    <string name="_sys_et_txt_body_email_change_requested"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Someone asked to change the email of your account on {site_name} to {new_email}. It changes when the new address is confirmed. Until then you sign in with this one.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, sign in and change your password.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{account_settings_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Change password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string>
+    <string name="_sys_et_txt_body_email_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The email of your account on {site_name} is now {new_email}. This address no longer signs in.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reply to this email or contact {site_name}.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_forgot"><![CDATA[{email_header}
 <h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
@@ -3310,16 +3333,30 @@
 {email_footer}]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_success"><![CDATA[<b>{0}</b> module: up to {1} version.<br />]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_failed"><![CDATA[<b>{0}</b> module: {1}<br />]]></string>
+	<string name="_sys_et_txt_body_password_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The password of your account on {site_name} was changed.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reset your password now.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Reset password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string>
 	<string name="_sys_et_txt_name_system_admin_email"><![CDATA[Message sending from the Admin Panel]]></string>
 	<string name="_sys_et_txt_name_system_comment_replied"><![CDATA[The letter is sent to members whose comment was replied]]></string>
+	<string name="_sys_et_txt_name_system_confirm_email_change"><![CDATA[New email confirmation]]></string>
 	<string name="_sys_et_txt_name_system_reported"><![CDATA[New report notification]]></string>
 	<string name="_sys_et_txt_name_system_confirmation"><![CDATA[Profile email confirmation message]]></string>
         <string name="_sys_et_txt_name_system_welcome"><![CDATA[Welcome message]]></string>
 	<string name="_sys_et_txt_name_system_delayed_module_uninstall"><![CDATA[Delayed module uninstall notification]]></string>
+	<string name="_sys_et_txt_name_system_email_change_requested"><![CDATA[Email change requested notice]]></string>
+	<string name="_sys_et_txt_name_system_email_changed"><![CDATA[Email changed notice]]></string>
 	<string name="_sys_et_txt_name_system_forgot"><![CDATA[Reset password message]]></string>
 	<string name="_sys_et_txt_name_system_mem_changed"><![CDATA[The letter is sent to members whose membership level was changed]]></string>
         <string name="_sys_et_txt_name_system_mem_prolonged"><![CDATA[The letter is sent to members whose membership level was prolonged]]></string>
 	<string name="_sys_et_txt_name_system_mem_expiration"><![CDATA[Membership expiration letter sent to members whose membership level expires]]></string>
+	<string name="_sys_et_txt_name_system_password_changed"><![CDATA[Password changed notice]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_active"><![CDATA[Profile status changed to active]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_pending"><![CDATA[Profile status changed to pending]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_suspended"><![CDATA[Profile status changed to suspended]]></string>
@@ -3336,14 +3373,18 @@
 	<string name="_sys_et_txt_name_bg_operation_failed"><![CDATA[Background operation failed]]></string>
 	<string name="_sys_et_txt_subject_admin_email"><![CDATA[Message from <SiteName> Admin: <MessageSubject>]]></string>
 	<string name="_sys_et_txt_subject_comment_replied"><![CDATA[User {sender_display_name} replied to your comment.]]></string>
+	<string name="_sys_et_txt_subject_confirm_email_change"><![CDATA[Confirm your new email address]]></string>
 	<string name="_sys_et_txt_subject_system_reported"><![CDATA[New report notification]]></string>
 	<string name="_sys_et_txt_subject_confirmation"><![CDATA[Confirm your email address]]></string>
         <string name="_sys_et_txt_subject_welcome"><![CDATA[You are welcome to {site_name}]]></string>
 	<string name="_sys_et_txt_subject_delayed_module_uninstall"><![CDATA[Delayed {Module} module uninstall: {Result}]]></string>
+	<string name="_sys_et_txt_subject_email_change_requested"><![CDATA[Your email address is changing]]></string>
+	<string name="_sys_et_txt_subject_email_changed"><![CDATA[Your email address was changed]]></string>
 	<string name="_sys_et_txt_subject_forgot"><![CDATA[Reset your password]]></string>
 	<string name="_sys_et_txt_subject_mem_changed"><![CDATA[Your membership level was changed]]></string>
         <string name="_sys_et_txt_subject_mem_prolonged"><![CDATA[Your membership level was prolonged]]></string>
 	<string name="_sys_et_txt_subject_mem_expiration"><![CDATA[Your membership is about to expire]]></string>
+	<string name="_sys_et_txt_subject_password_changed"><![CDATA[Your password was changed]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_active"><![CDATA[Profile activated]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_pending"><![CDATA[Profile pending review]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_suspended"><![CDATA[Profile suspended]]></string>
@@ -3386,6 +3427,7 @@
 	<string name="_sys_form_account_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
 	<string name="_sys_form_account_input_email"><![CDATA[Email]]></string>
 	<string name="_sys_form_account_input_email_error"><![CDATA[Email is not valid]]></string>
+	<string name="_sys_form_account_input_email_info_pending"><![CDATA[Waiting for confirmation: {0}. Open the link we sent there. To cancel, save your current email.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error"><![CDATA[This email address is already registered. Please use <a href="{0}">Forgot password</a> to restore access to your account.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[This email is already used by someone.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[This phone number is already used by someone.]]></string>
@@ -3396,6 +3438,8 @@
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Password confirmation failed]]></string>
 	<string name="_sys_form_account_input_password_current"><![CDATA[Current password]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[This password has already been used before, use a different one]]></string>
+	<string name="_sys_form_account_input_password_new"><![CDATA[New password]]></string>
+	<string name="_sys_form_account_input_password_new_confirm"><![CDATA[Confirm new password]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to sign in to this site.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[Use at least 8 characters, with at least one uppercase letter, one lowercase letter and one digit.]]></string>
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Email me news and announcements]]></string>
@@ -3495,6 +3539,7 @@
         <string name="_sys_form_input_labels_placeholder"><![CDATA[Add Label]]></string>
         <string name="_sys_form_input_password_show"><![CDATA[Show password]]></string>
         <string name="_sys_form_input_password_hide"><![CDATA[Hide password]]></string>
+        <string name="_sys_form_input_privacy_label"><![CDATA[Who can see it: {0}]]></string>
         <string name="_sys_form_input_textarea_editor"><![CDATA[Editor:]]></string>
         <string name="_sys_form_labels"><![CDATA[Labels]]></string>
         <string name="_sys_form_labels_display_select"><![CDATA[Select labels display]]></string>
@@ -3929,6 +3974,7 @@
     <string name="_sys_location_ph_number"><![CDATA[Number]]></string>
     <string name="_sys_location_ph_street"><![CDATA[Street]]></string>
     <string name="_sys_location_ph_city"><![CDATA[City / District]]></string>
+    <string name="_sys_location_ph_country"><![CDATA[Country]]></string>
     <string name="_sys_location_ph_state"><![CDATA[State / Province]]></string>
     <string name="_sys_location_ph_zip"><![CDATA[Postal Code]]></string>
     <string name="_sys_location_status_undef"><![CDATA[Choose a country to find the address]]></string>
@@ -3973,6 +4019,7 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Account]]></string>
+    <string name="_sys_menu_item_title_account_settings_privacy"><![CDATA[Privacy]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Connectors]]></string>
     <string name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Account]]></string>
@@ -4097,6 +4144,7 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Account]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_privacy"><![CDATA[Privacy]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_system_account_settings_connectors"><![CDATA[Connectors]]></string>
     <string name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Account (section)]]></string>
@@ -4433,6 +4481,7 @@
     <string name="_sys_page_block_title_account_settings_email"><![CDATA[Email settings]]></string>
     <string name="_sys_page_block_title_account_settings_info"><![CDATA[Edit account]]></string>
     <string name="_sys_page_block_title_account_settings_menu"><![CDATA[Account Settings]]></string>
+    <string name="_sys_page_block_title_account_settings_privacy"><![CDATA[Who can see and contact you]]></string>
     <string name="_sys_page_block_title_account_settings_pwd"><![CDATA[Change password]]></string>
     <string name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_page_block_title_add_content"><![CDATA[Add Content]]></string>
@@ -4653,6 +4702,7 @@
     <string name="_sys_page_title_account_settings_connectors"><![CDATA[Connectors]]></string>
     <string name="_sys_page_title_account_settings_email"><![CDATA[Email settings]]></string>
     <string name="_sys_page_title_account_settings_info"><![CDATA[Edit account]]></string>
+    <string name="_sys_page_title_account_settings_privacy"><![CDATA[Privacy]]></string>
     <string name="_sys_page_title_account_settings_pwd"><![CDATA[Change password]]></string>
     <string name="_sys_page_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_page_title_add_content"><![CDATA[Add Content]]></string>
@@ -4680,6 +4730,7 @@
     <string name="_sys_page_title_system_account_settings_connectors"><![CDATA[Account - connectors]]></string>
     <string name="_sys_page_title_system_account_settings_email"><![CDATA[Account - email settings]]></string>
     <string name="_sys_page_title_system_account_settings_info"><![CDATA[Account - edit]]></string>
+    <string name="_sys_page_title_system_account_settings_privacy"><![CDATA[Account - Privacy]]></string>
     <string name="_sys_page_title_system_account_settings_pwd"><![CDATA[Account - change password]]></string>
     <string name="_sys_page_title_system_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_page_title_system_add_content"><![CDATA[Add Content]]></string>
@@ -4979,6 +5030,9 @@
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Your password has been expired. Please <a href="{0}">change your password</a>.]]></string>
     <string name="_sys_txt_account_cannot_delete"><![CDATA[Cannot delete the only Operator account]]></string>
     <string name="_sys_txt_account_deletion_scheduled"><![CDATA[Account deletion was scheduled and would be done in a few minutes.]]></string>
+    <string name="_sys_txt_account_email_change_confirmed"><![CDATA[Your new email is confirmed]]></string>
+    <string name="_sys_txt_account_email_change_failed"><![CDATA[This link no longer works, or another account uses this email now. Change your email again to get a new link.]]></string>
+    <string name="_sys_txt_account_email_change_sent"><![CDATA[We sent a confirmation link to {0}. Until you open it, you sign in with {1}.]]></string>
     
     <string name="_sys_txt_agent_inactive"><![CDATA[Agent isn't activated]]></string>
     <string name="_sys_txt_captcha_not_available"><![CDATA[CAPTCHA not available]]></string>
@@ -5038,8 +5092,8 @@
     <string name="_sys_txt_field_created"><![CDATA[Created:]]></string>
     <string name="_sys_txt_field_updated"><![CDATA[Updated:]]></string>
     <string name="_sys_txt_forgot_pasword"><![CDATA[Forgot password?]]></string>
-    <string name="_sys_txt_forgot_pasword_check_email"><![CDATA[Email was sent, please follow instructions in the email message.]]></string>
-    <string name="_sys_txt_forgot_pasword_check_phone"><![CDATA[SMS was sent, please follow instructions in the SMS.]]></string>
+    <string name="_sys_txt_forgot_pasword_check_email"><![CDATA[If an account uses this email, we sent it a link to reset the password.]]></string>
+    <string name="_sys_txt_forgot_pasword_check_phone"><![CDATA[If an account uses this phone number, we sent it a text message with a link to reset the password.]]></string>
     <string name="_sys_txt_forgot_pasword_desc"><![CDATA[Enter your account email address to get a password-reset link.]]></string>
     <string name="_sys_txt_forgot_pasword_by_both_desc"><![CDATA[Enter your account email address or phone to get a password-reset link.]]></string>
     <string name="_sys_txt_forgot_pasword_by_phone_desc"><![CDATA[Enter your account phone to get a password-reset link.]]></string>
@@ -5093,6 +5147,8 @@
     <string name="_sys_txt_powered_by"><![CDATA[Powered by UNA Community Management System]]></string>
     <string name="_sys_txt_powered_by_una"><![CDATA[Powered by UNA]]></string>
   <string name="_sys_txt_profile_joined_sample"><![CDATA[joined]]></string>
+  <string name="_sys_txt_profile_not_available_text"><![CDATA[It may be waiting for review or turned off for now.]]></string>
+  <string name="_sys_txt_profile_not_available_title"><![CDATA[This profile isn't available]]></string>
   <string name="_sys_txt_report_status_0"><![CDATA[New]]></string>
   <string name="_sys_txt_report_status_1"><![CDATA[In-process]]></string>
   <string name="_sys_txt_report_status_2"><![CDATA[Processed]]></string>

@@ -181,8 +181,20 @@ BxDolForm.prototype.pgcOnSelectGroup = function(oData)
     if(oData && parseInt(oData.code) != 0)
         return;
 
-    if(oData.form_id && oData.chooser_id && oData.icon)
-        $('#' + oData.form_id + ' #' + oData.chooser_id + ' .bx-form-input-pgc-current .sys-icon').removeClass().addClass('sys-icon ' + oData.icon);
+    if(!oData.form_id || !oData.chooser_id)
+        return;
+
+    var oChooser = $('#' + oData.form_id + ' #' + oData.chooser_id);
+    if(oData.icon) {
+        // a Lucide icon is an svg by now: put a new icon in its place and let the iconset draw it
+        oChooser.find('.bx-form-input-pgc-current .sys-icon').replaceWith($('<i></i>').addClass('sys-icon ' + oData.icon));
+        if(typeof(bx_iconset_init_lucide) === 'function')
+            bx_iconset_init_lucide();
+    }
+    if(oData.title)
+        oChooser.find('.bx-form-input-pgc-title').text(oData.title);
+    if(oData.label)
+        oChooser.find('button.bx-form-input-pgc-current').attr({'aria-label': oData.label, 'title': oData.label});
 };
 
 BxDolForm.prototype._getDefaultParams = function() 

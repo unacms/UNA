@@ -19,7 +19,7 @@ $aConfig = array(
     'note' => 'Facebook login, join with a Facebook account',
     'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
-    'help_url' => 'http://feed.una.io/?section={module_name}',
+    'help_url' => '',
 
     'compatible_with' => array(
         '15.0.x'

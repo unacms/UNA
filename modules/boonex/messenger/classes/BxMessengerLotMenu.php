@@ -149,6 +149,10 @@ class BxMessengerLotMenu extends BxBaseModTextMenu
                 $this->addMarkers(array('id' => $this->_iContentId));
                 return true;
             case 'video_call':
+                // calls stay hidden until the operator turns them on with a server of their choice
+                if (!$oModule->_oConfig->CNF['ENABLE-JITSI'])
+                    return false;
+
                 if (empty($aLotInfo) || $oModule->_oConfig->isJitsiAllowed($aLotInfo[$CNF['FIELD_TYPE']])) {
                     if (!empty($aLotInfo)) {
                         $aJVC = $oModule->_oDb->getJVC($this->_iContentId);

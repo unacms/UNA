@@ -1367,16 +1367,37 @@ class BxDolForm extends BxDol implements iBxDolReplaceable
         return $sResult;
     }
     
-    protected function _getPrivacyGroup($sPrivacyObject, $iInputId, $iAuthorId = false)
+    /**
+     * The name of a privacy group, as the chooser of a field's privacy says who sees the field.
+     */
+    protected function _getPrivacyTitle($mixedPrivacy)
+    {
+        if(!is_numeric($mixedPrivacy))
+            return '';
+
+        $aGroup = (new BxDolPrivacyQuery())->getGroupsBy(['type' => 'id', 'id' => (int)$mixedPrivacy]);
+        return !empty($aGroup['title']) ? _t($aGroup['title']) : '';
+    }
+
+    protected function _getPrivacyGroup($sPrivacyObject, $iInputId, $iAuthorId = false, $aInput = [])
     {
         if(!$iAuthorId)
             $iAuthorId = bx_get_logged_profile_id();
 
         $mixedPrivacyGroup = BxDolFormQuery::getInputPrivacy($iInputId, $iAuthorId, BxDolPrivacy::getFieldName($sPrivacyObject));
         if(empty($mixedPrivacyGroup))
-            $mixedPrivacyGroup = $this->_sPrivacyGroupDefault;
+            $mixedPrivacyGroup = $this->_getPrivacyGroupDefault($aInput);
 
         return $mixedPrivacyGroup;
+    }
+
+    /**
+     * Who sees a field with privacy until its author chooses: the field's own default (Studio > Forms > a field),
+     * else everybody, @see BxDolFormQuery::getFormArray
+     */
+    protected function _getPrivacyGroupDefault($aInput = [])
+    {
+        return !empty($aInput['privacy_default']) ? $aInput['privacy_default'] : $this->_sPrivacyGroupDefault;
     }
 }
 
@@ -1738,7 +1759,7 @@ class BxDolFormCheckerHelper
     }
     static public function checkDateRange ($s, $iMin, $iMax, $bRequired = false)
     {
-        if (!$bRequired && (empty($s) || '0000-00-00' == $s || '0000-00-00Z' == $s))
+        if (!$bRequired && (empty($s) || in_array($s, ['0000-00-00', '0000-00-00Z', '0000-00-00 00:00:00', '0000-00-00 00:00:00Z'])))
             return true;   
         if (self::checkPreg ($s, '#^\d+\-\d+\-\d+$#')){
             $dDate = new DateTime($s);

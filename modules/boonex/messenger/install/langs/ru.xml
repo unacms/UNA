@@ -208,10 +208,10 @@
 	<string name="_bx_messenger_jitsi_vc_into_title"><![CDATA[Сообщение было отправлено в конференции, созданной {0}, в {1}]]></string>
 	<string name="_bx_messenger_jitsi_vc_join"><![CDATA[Присоединиться]]></string>
 	<string name="_bx_messenger_are_you_sure_close_jisti"><![CDATA[Вы уверены, что хотите покинуть конференцию?]]></string>
-	<string name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Разрешить создавать Jitsi конвенции]]></string>
+	<string name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Видеозвонки]]></string>
 	<string name="_bx_messenger_jisti_connection_error"><![CDATA[Не могу подсоединиться в серверу конференций. Пожалуйста, проверьте интернет соединение или попробуете позже.]]></string>
 	<string name="_bx_messenger_jisti_not_active_conference"><![CDATA[Нет активных конференций. Пожалуйста, перезагрузите страницу или создайте собственную конференцию.]]></string>
-	<string name="_bx_messenger_jitsi_server"><![CDATA[Использовать этот домен в качестве Jitsi сервера]]></string>
+	<string name="_bx_messenger_jitsi_server"><![CDATA[Домен сервера Jitsi, например meet.example.com. Пока он не указан, видеозвонки выключены.]]></string>
 	<string name="_bx_messenger_jitsi_chat_enable"><![CDATA[Включить встроенный Jitsi чат внутри Jitsi конференции]]></string>
 	<string name="_bx_messenger_jitsi_chat_sync"><![CDATA[Синхронизировать Jitsi чат с историей Месенджера (в этом случае все сообщение из Jitsi чата будут дублироваться в Месенджере)]]></string>
 	<string name="_bx_messenger_jitsi_hide_info"><![CDATA[Показывать информацию о чате (в этом случае пользователи смогут видеть ссылку на чат, зная которую, можно присоединиться к конференции не зарегистрированным пользователям)]]></string>
