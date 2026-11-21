@@ -74,7 +74,7 @@ class BxBaseModTextMenuCategories extends BxTemplMenu
             ),
             'bx_if:icon' => array (
                 'condition' => $this->_bExtendedMode,
-                'content' => ['icon' => 'swatchbook'],
+                'content' => ['icon' => 'swatch-book'],
             ),
             'bx_if:icon-a' => array (
                 'condition' => false,

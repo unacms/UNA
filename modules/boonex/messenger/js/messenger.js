@@ -2395,7 +2395,7 @@
                             .find('time img')
                             .replaceWith(
                                 $(`<a href="javascript:void(0);" class="bx-messenger-send-retry bx-form-warn">
-									<i class="sys-icon exclamation-circle"></i>
+									<i class="sys-icon circle-exclamation-point"></i>
 							  		</a>`)
                                     .on('click', function () {
                                         if (_this.oSendPool.has(sTmp)) {
@@ -4131,7 +4131,7 @@
                             .html(
                                 oObject
                                     .append(
-                                        $(`<i class="sys-icon times"></i>`)
+                                        $(`<i class="sys-icon x"></i>`)
                                             .on('click', function () {
                                                 $(this)
                                                     .closest(giphyWrapper)

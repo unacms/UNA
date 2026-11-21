@@ -1,13 +1,13 @@
 
 <div class="bx-form-input-agent-button __name__ relative">
-    <a class="flex absolute -top-7 right-0 space-x-2" href="#"><i class="sys-icon magic"></i></a>
+    <a class="flex absolute -top-7 right-0 space-x-2" href="#"><i class="sys-icon wand-sparkles"></i></a>
 </div>
 <script>
     $(document).ready(function() {
         $('.bx-form-input-agent-button.__name__ a').click(function() {
             bx_prompt("__popup_text__", '', (o) => {
                 if(o.getValue()) {
-                    $('.bx-form-input-agent-button.__name__ .sys-icon').removeClass('magic').addClass('sync animate-spin');
+                    $('.bx-form-input-agent-button.__name__ .sys-icon').removeClass('wand-sparkles').addClass('refresh-ccw animate-spin');
                     $.ajax({
                         url: sUrlRoot + 'r.php?_q=sys-agent-form-input/__agent_id__',
                         type: 'POST',
@@ -19,7 +19,7 @@
                             values: Object.fromEntries(new FormData($('#__form_id__')[0]))
                         }),
                         success: function(data) {
-                            $('.bx-form-input-agent-button.__name__ .sys-icon').addClass('magic').removeClass('sync animate-spin');
+                            $('.bx-form-input-agent-button.__name__ .sys-icon').addClass('wand-sparkles').removeClass('refresh-ccw animate-spin');
 
                             if (__html__) {
                                 var sEditorId = $('__input__[name="__name__"]').attr('id');
