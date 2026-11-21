@@ -993,9 +993,6 @@ ul.bx-menu-btns-icon-hor li:last-child .bx-btn {
     -webkit-justify-content: space-between;
     justify-content: space-between;
 }
-.bx-menu-ver.bx-menu-object-sys_profile_followings li .bx-menu-item-link > a {
-    text-transform: uppercase;
-}
 .bx-menu-ver.bx-menu-object-sys_profile_followings li a {
     -webkit-flex-grow: 3;
     flex-grow: 3;

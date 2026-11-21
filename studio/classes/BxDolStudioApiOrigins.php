@@ -14,6 +14,11 @@ class BxDolStudioApiOrigins extends BxDolStudioApiKeys
         parent::__construct ($aOptions, $oTemplate);
     }
 
+    protected function _getAddPopupTitle()
+    {
+        return _t('_adm_api_popup_title_add_origin');
+    }
+
     public function performActionAdd()
     {
         $aForm = array(
@@ -40,19 +45,11 @@ class BxDolStudioApiOrigins extends BxDolStudioApiKeys
                     ),
                 ),
 
+                // the popup's own close button closes it: one button here
                 'submit' => array(
-                    'type' => 'input_set',
-                    0 => array (
-                        'type' => 'submit',
-                        'name' => 'do_submit',
-                        'value' => _t('_sys_submit'),
-                    ),
-                    1 => array (
-                        'type' => 'reset',
-                        'name' => 'close',
-                        'value' => _t('_sys_close'),
-                        'attrs' => array('class' => 'bx-def-margin-sec-left', 'onclick' => '$(\'.bx-popup-applied:visible\').dolPopupHide();'),
-                    ),
+                    'type' => 'submit',
+                    'name' => 'do_submit',
+                    'value' => _t('_adm_form_btn_field_add'),
                 ),
 
             ),

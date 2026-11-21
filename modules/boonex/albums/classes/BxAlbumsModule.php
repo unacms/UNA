@@ -849,7 +849,7 @@ class BxAlbumsModule extends BxBaseModTextModule
         $mixedResult = $this->serviceEditMediaForm($iMediaId);
         if($mixedResult instanceof BxDolForm)
             $mixedResult = ['popup' => [
-                'html' => BxTemplStudioFunctions::getInstance()->transBox('bx-albums-edit-media-popup', $this->_oTemplate->parseHtmlByName('media-edit.html', [
+                'html' => BxTemplFunctions::getInstance()->popupBox('bx-albums-edit-media-popup', _t('_bx_albums_page_block_title_edit_media'), $this->_oTemplate->parseHtmlByName('media-edit.html', [
                     'form_id' => $mixedResult->aFormAttrs['id'],
                     'form' => $mixedResult->getCode(true)
                 ])), 
@@ -864,7 +864,7 @@ class BxAlbumsModule extends BxBaseModTextModule
         $mixedResult = $this->serviceMoveMediaForm($iMediaId);
         if($mixedResult instanceof BxDolForm)
             $mixedResult = ['popup' => [
-                'html' => BxTemplStudioFunctions::getInstance()->transBox('bx-albums-move-media-popup', $this->_oTemplate->parseHtmlByName('media-edit.html', [
+                'html' => BxTemplFunctions::getInstance()->popupBox('bx-albums-move-media-popup', _t('_bx_albums_page_block_title_move_media'), $this->_oTemplate->parseHtmlByName('media-edit.html', [
                     'form_id' => $mixedResult->aFormAttrs['id'],
                     'form' => $mixedResult->getCode(true)
                 ])), 
@@ -879,7 +879,7 @@ class BxAlbumsModule extends BxBaseModTextModule
         $mixedResult = $this->serviceDeleteMediaForm($iMediaId);
         if($mixedResult instanceof BxDolForm)
             $mixedResult = ['popup' => [
-                'html' => BxTemplStudioFunctions::getInstance()->transBox('bx-albums-delete-media-popup', $this->_oTemplate->parseHtmlByName('media-edit.html', [
+                'html' => BxTemplFunctions::getInstance()->popupBox('bx-albums-delete-media-popup', _t('_bx_albums_page_block_title_delete_media'), $this->_oTemplate->parseHtmlByName('media-edit.html', [
                     'form_id' => $mixedResult->aFormAttrs['id'],
                     'form' => $mixedResult->getCode(true)
                 ])), 
