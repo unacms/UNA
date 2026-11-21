@@ -216,6 +216,9 @@ class ToursTest extends BxDolIntegrationTestCase
         $this->assertMatchesRegularExpression('/^\d+ of \d+ done$/', $mBlock['description']);
         $this->assertStringContainsString('bx-menu-list-desc', $mBlock['content'], 'drawn by the "List with descriptions" menu template');
         $this->assertStringContainsString('bx_onboarding_hide', $mBlock['buttons'][0]['onclick'], 'Hide is the block\'s own button');
+        $this->assertSame('x', $mBlock['buttons'][0]['icon'], 'Hide is an icon-only close button');
+        $this->assertSame('_sys_onboarding_hide', $mBlock['buttons'][0]['area_label'], 'named Hide for screen readers');
+        $this->assertEmpty($mBlock['buttons'][0]['title'] ?? '');
 
         $this->assertTrue(BxDolService::call('system', 'is_safe_service', ['onboarding_hide'], 'TemplServices'));
         $this->assertSame(['code' => 0], BxDolService::call('system', 'onboarding_hide', [BxDolTours::ONBOARDING_OPERATOR], 'TemplServiceAccount', true));

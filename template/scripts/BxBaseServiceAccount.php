@@ -76,6 +76,7 @@ class BxBaseServiceAccount extends BxDol
                     'menu' => $mixedMenu,
                     'hide' => [
                         'title' => $sHide,
+                        'icon' => 'X',
                         'request_url' => 'system/onboarding_hide/TemplServiceAccount&params[]=' . $sMenu,
                     ],
                 ])],
@@ -84,8 +85,9 @@ class BxBaseServiceAccount extends BxDol
         return [
             'description' => $sDescription,
             'content' => $mixedMenu,
+            // Hide is the block's own close button: an X in the header's actions, named "Hide" for screen readers.
             'buttons' => [
-                ['title' => $sHide, 'onclick' => "bx_onboarding_hide(this, '" . $sMenu . "')"],
+                ['icon' => 'x', 'class' => 'bx-btn-icon', 'area_label' => '_sys_onboarding_hide', 'onclick' => "bx_onboarding_hide(this, '" . $sMenu . "')"],
             ],
         ];
     }
