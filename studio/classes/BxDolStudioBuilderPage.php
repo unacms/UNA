@@ -16,6 +16,9 @@ define('BX_DOL_STUDIO_BP_TYPE_CUSTOM', BX_DOL_STUDIO_MODULE_CUSTOM);
 define('BX_DOL_STUDIO_BP_TYPE_MODULES', 'modules');
 define('BX_DOL_STUDIO_BP_TYPE_DEFAULT', BX_DOL_STUDIO_BP_TYPE_SYSTEM);
 
+// The page Studio > Pages opens on when none is chosen: the Homepage.
+define('BX_DOL_STUDIO_BP_PAGE_DEFAULT', 'sys_home');
+
 define('BX_DOL_STUDIO_BP_BLOCK_RAW', 'raw');
 define('BX_DOL_STUDIO_BP_BLOCK_HTML', 'html');
 define('BX_DOL_STUDIO_BP_BLOCK_CREATIVE', 'creative');
@@ -57,6 +60,18 @@ class BxDolStudioBuilderPage extends BxTemplStudioWidget
                 $this->aPageRebuild = array();
             }
         }
+    }
+
+    /**
+     * The page to open when the builder is opened with a type and no page: the Homepage for the system pages,
+     * none for the other types (their list is short, or picks the app first).
+     */
+    public static function getDefaultPage($sType = '')
+    {
+        if($sType !== '' && $sType !== BX_DOL_STUDIO_BP_TYPE_SYSTEM)
+            return '';
+
+        return BX_DOL_STUDIO_BP_PAGE_DEFAULT;
     }
 
     public function checkAction()

@@ -26,6 +26,10 @@ if($sPage === false)
     $sPage = bx_get('bp_page');
 $sPage = $sPage !== false ? bx_process_url_param($sPage) : '';
 
+// Opened without a page: show the Homepage rather than an empty list to pick from.
+if($sPage === '' && bx_get('bp_action') === false)
+    $sPage = BxTemplStudioBuilderPage::getDefaultPage($sType);
+
 $oPage = new BxTemplStudioBuilderPage($sType, $sPage);
 BxDolStudioTemplate::getInstance()->displayPage($oPage);
 /** @} */

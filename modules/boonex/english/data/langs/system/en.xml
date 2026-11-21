@@ -576,6 +576,7 @@
 	<string name="_adm_bp_scs_save"><![CDATA[The changes were successfully saved]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Show on the site]]></string>
         <string name="_adm_bp_txt_block_active_api"><![CDATA[Show in the apps]]></string>
+	<string name="_adm_bp_txt_block_advanced"><![CDATA[Advanced]]></string>
 	<string name="_adm_bp_txt_block_async"><![CDATA[Asynchronous Mode]]></string>
 	<string name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Background hidden on]]></string>
 	<string name="_adm_bp_txt_block_cache_lifetime"><![CDATA[Block Cache Lifetime (in seconds)]]></string>
@@ -1860,7 +1861,7 @@
 	<string name="_adm_prm_txt_level_quota_size"><![CDATA[Storage Limit(Mb)]]></string>
 	<string name="_adm_prm_txt_level_standard"><![CDATA[Standard]]></string>
 	<string name="_adm_prm_txt_level_suspended"><![CDATA[Suspended]]></string>
-	<string name="_adm_prm_txt_level_unauthenticated"><![CDATA[Unauthenticated]]></string>
+	<string name="_adm_prm_txt_level_unauthenticated"><![CDATA[Guests]]></string>
 	<string name="_adm_prm_txt_level_unconfirmed"><![CDATA[Unconfirmed]]></string>
 	<string name="_adm_prm_txt_manage_actions"><![CDATA[Manage actions]]></string>
 	<string name="_adm_prm_txt_max_file_size"><![CDATA[Max File Size]]></string>
@@ -4464,6 +4465,7 @@
     <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Your profiles (dashboard)]]></string>
     <string name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string>
     <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string>
+    <string name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Profile menu (apps)]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
     <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - Reports]]></string>
     <string name="_sys_page_block_title_system_cmts_view"><![CDATA[View Comment]]></string>

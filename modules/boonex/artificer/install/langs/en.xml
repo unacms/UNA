@@ -33,6 +33,7 @@
     <!-- Pages -->
     <string name="_bx_artificer_page_block_title_splash"><![CDATA[Splash]]></string>
     <string name="_bx_artificer_page_block_title_splash_lite"><![CDATA[Explore]]></string>
+    <string name="_bx_artificer_page_block_title_system_splash"><![CDATA[Splash with stats]]></string>
 
     <!-- Menus -->
     <string name="_bx_artificer_lmi_cpt_styles"><![CDATA[Styles]]></string>
