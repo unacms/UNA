@@ -21,7 +21,7 @@ function CardSection({
         defPadding = cardTheme['u-card-padding'];
     }
     if (baseClass === 'u-card-feed') {
-        defPadding = cardTheme['u-card-list-padding'];
+        defPadding = cardTheme['u-card-feed-padding'] || cardTheme['u-card-list-padding'];
     }
     if (baseClass === 'u-card-list') {
         defPadding = listFlush

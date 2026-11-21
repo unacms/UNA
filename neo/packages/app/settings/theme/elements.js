@@ -169,6 +169,7 @@ export const settingsElements = {
         // Feed posts sit in the page's column beside blocks (the composer, Get started), so they take the block's surface:
         // its outline (shadow-block-outline) and 22px corners (rounded-block), as UNA's timeline posts. Edge to edge on mobile.
         'u-card-feed': ' u-card-list u-card-feed bg-card/60 sm:shadow-block-outline sm:dark:shadow-block-outline-deep sm:rounded-block ',
+        'u-card-feed-padding': 'p-4 sm:rounded-block',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
         // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
         // the Messages and Notifications rows.
