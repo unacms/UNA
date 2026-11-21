@@ -4,7 +4,7 @@
 	<string name="_bx_azrb2c"><![CDATA[Azure AD B2C Connect]]></string>
 	<string name="_bx_azrb2c_settings"><![CDATA[Azure AD B2C Connect]]></string>
 	<string name="_bx_azrb2c_information_block"><![CDATA[
-        <p>This module can be used to log in to this site using Azure AD B2C accounts.</p>
+        <p>This module can be used to sign in to this site using Azure AD B2C accounts.</p>
         <p>To make it work make new registration in <a target="_blank" href="https://portal.azure.com/">Azure portal</a> then goto Azure AD B2C service. <br />
         When asked specify the following Redirect URI:<br />
             <ul>
@@ -27,7 +27,7 @@
     <string name="_bx_azrb2c_option_tenant_id"><![CDATA[Directory (Tenant) ID]]></string>
     <string name="_bx_azrb2c_option_client_id"><![CDATA[Application (Client) ID]]></string>
     <string name="_bx_azrb2c_option_secret"><![CDATA[Client Secret Value]]></string>
-    <string name="_bx_azrb2c_option_group"><![CDATA[Allow to join/login only for members of this group]]></string>
+    <string name="_bx_azrb2c_option_group"><![CDATA[Only members of this group can sign up or sign in]]></string>
 
 	<string name="_bx_azrb2c_et_password_generated"><![CDATA[Azure AD B2C connect temporary password]]></string>
 	<string name="_bx_azrb2c_et_password_generated_subject"><![CDATA[Temporary password]]></string>

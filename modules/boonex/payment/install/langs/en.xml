@@ -390,7 +390,7 @@
     <string name="_bx_payment_err_not_accept_payments"><![CDATA[The vendor does not accept payments.]]></string>
     <string name="_bx_payment_err_nothing_selected"><![CDATA[You need to select at least one item.]]></string>
     <string name="_bx_payment_err_self_purchase"><![CDATA[Buying from your own store is not permitted.]]></string>
-    <string name="_bx_payment_err_required_login"><![CDATA[You need to log in.]]></string>
+    <string name="_bx_payment_err_required_login"><![CDATA[You need to sign in.]]></string>
     <string name="_bx_payment_err_unknown_vendor"><![CDATA[Unknown vendor.]]></string>
     <string name="_bx_payment_err_wrong_vendor"><![CDATA[Incorrect vendor.]]></string>
     <string name="_bx_payment_err_wrong_data"><![CDATA[Incorrect input data.]]></string>

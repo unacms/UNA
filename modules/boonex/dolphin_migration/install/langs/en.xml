@@ -84,10 +84,10 @@
 	<string name="_bx_dolphin_migration_started_migration_quotes_finished"><![CDATA[{0} Quotes were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_quotes_error"><![CDATA[Error occurred. Record Id is {0}]]></string>
 	<string name="_bx_dolphin_migration_started_migration_groups"><![CDATA[Groups Migration was started]]></string>
-	<string name="_bx_dolphin_migration_started_migration_groups_finished"><![CDATA[{0} groups with fans were transferred]]></string>
+	<string name="_bx_dolphin_migration_started_migration_groups_finished"><![CDATA[{0} groups with members were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_groups_error"><![CDATA[Error occurred. Record Id is {0}]]></string>
 	<string name="_bx_dolphin_migration_started_migration_events"><![CDATA[Events Migration was started]]></string>
-	<string name="_bx_dolphin_migration_started_migration_events_finished"><![CDATA[{0} events with fans were transferred]]></string>
+	<string name="_bx_dolphin_migration_started_migration_events_finished"><![CDATA[{0} events with members were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_error"><![CDATA[Error occurred. Record Id is {0}]]></string>
 	<string name="_bx_dolphin_migration_started_migration_conv"><![CDATA[Conversations Migration was started]]></string>
 	<string name="_bx_dolphin_migration_started_migration_conv_finished"><![CDATA[{0} conversations with messages were transferred]]></string>
@@ -120,7 +120,7 @@
 	<string name="_bx_dolphin_migration_nothing_removed"><![CDATA[Nothing was removed!]]></string>
 	<string name="_bx_dolphin_migration_remove_profile_content_confirmation"><![CDATA[If you remove profiles, it will remove all transferred profiles' content also. Continue?]]></string>
 	<string name="_bx_dolphin_migration_cpt_overwrite"><![CDATA[If account with the same NickName or Email already exists, then to overwrite its info.
-	<br/><b>This option is useful if you already have account on current version with the same Nickname as in Dolphin. If you enable this option all existed on UNA accounts will be updated using profiles' info from Dolphin and don't forget that info of your current logged member may be also updated and you can be logged out.</b>]]></string>
+	<br/><b>This option is useful if you already have account on current version with the same Nickname as in Dolphin. If you enable this option all existed on UNA accounts will be updated using profiles' info from Dolphin and don't forget that info of your current signed-in member may be also updated and you can be signed out.</b>]]></string>
 	<string name="_bx_dolphin_migration_cpt_clean"><![CDATA[Clear]]></string>
 	<string name="_bx_dolphin_migration_cpt_use_nickname"><![CDATA[Use NickName instead of Profile's FullName]]></string>
 	<string name="_bx_dolphin_migration_cpt_empty_albums"><![CDATA[Transfer photo albums even if they are empty]]></string>

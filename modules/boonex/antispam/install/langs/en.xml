@@ -29,8 +29,8 @@ This antispam method scan submitted content for the URLs and check them if any o
 <table style="width:100%;"><tr>
     <td>DNSBL: {0}</td>
     <td>URI DNSBL: {1}</td>
-    <td>Login behavior: {2}</td>
-    <td>Join behavior: {3}</td>
+    <td>Sign-in behavior: {2}</td>
+    <td>Sign-up behavior: {3}</td>
 </tr></table>
 ]]></string>
     <string name="_bx_antispam_ip_table_status"><![CDATA[IP table mode: {0}]]></string>
@@ -131,15 +131,15 @@ This antispam method scan submitted content for the URLs and check them if any o
 	<string name="_bx_antispam_option_report"><![CDATA[Send report to admin if spam content discovered]]></string>
 	<string name="_bx_antispam_option_ip_list_type"><![CDATA[IP table mode]]></string>
 	<string name="_bx_antispam_option_dnsbl_enable"><![CDATA[Enable DNS Block Lists]]></string>
-	<string name="_bx_antispam_option_dnsbl_behaviour_login"><![CDATA[User login behaviour if listed in DNS Block Lists]]></string>
-	<string name="_bx_antispam_option_dnsbl_behaviour_join"><![CDATA[User join behaviour if listed in DNS Block Lists]]></string>
+	<string name="_bx_antispam_option_dnsbl_behaviour_login"><![CDATA[Sign-in behavior if listed in DNS block lists]]></string>
+	<string name="_bx_antispam_option_dnsbl_behaviour_join"><![CDATA[Sign-up behavior if listed in DNS block lists]]></string>
 	<string name="_bx_antispam_option_uridnsbl_enable"><![CDATA[Enable URI DNS Block Lists]]></string>
 	<string name="_bx_antispam_option_akismet_enable"><![CDATA[Enable Akismet]]></string>
 	<string name="_bx_antispam_option_akismet_api_key"><![CDATA[Akismet API Key]]></string>
 	<string name="_bx_antispam_option_stopforumspam_enable"><![CDATA[Enable "Stop Forum Spam"]]></string>
     <string name="_bx_antispam_option_stopforumspam_api_key"><![CDATA["Stop Forum Spam" API Key]]></string> 
 	<string name="_bx_antispam_option_disposable_email_domains_mode"><![CDATA[Mode]]></string>
-	<string name="_bx_antispam_option_disposable_email_domains_behaviour_join"><![CDATA[Join behaviour]]></string>
+	<string name="_bx_antispam_option_disposable_email_domains_behaviour_join"><![CDATA[Sign-up behavior]]></string>
   <string name="_bx_antispam_option_profanity_filter_enable"><![CDATA[Enable Profanity filter]]></string>
   <string name="_bx_antispam_option_profanity_filter_dicts"><![CDATA[Dictionaries]]></string>
   <string name="_bx_antispam_option_profanity_filter_bad_words_list"><![CDATA[Bad words list (comma separated)]]></string>

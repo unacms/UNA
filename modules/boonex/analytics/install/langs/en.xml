@@ -715,7 +715,7 @@
 	<string name="_bx_analytics_action_comment"><![CDATA[Comment]]></string>
 	<string name="_bx_analytics_action_connection"><![CDATA[Connection]]></string>
 	<string name="_bx_analytics_action_content_add"><![CDATA[Content created]]></string>
-	<string name="_bx_analytics_action_login"><![CDATA[Login]]></string>
+	<string name="_bx_analytics_action_login"><![CDATA[Sign in]]></string>
 	<string name="_bx_analytics_action_profile_add"><![CDATA[Profile created]]></string>
 	<string name="_bx_analytics_action_purchase"><![CDATA[Purchase]]></string>
 	<string name="_bx_analytics_action_renewal"><![CDATA[Renewal]]></string>

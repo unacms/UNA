@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
 
-	<string name="_bx_cnv"><![CDATA[Conversations]]></string>
-	<string name="_bx_convos"><![CDATA[Conversations]]></string>
+	<string name="_bx_cnv"><![CDATA[Private messages]]></string>
+	<string name="_bx_convos"><![CDATA[Private messages]]></string>
 
 	<string name="_bx_cnv_option_preview_messages_num"><![CDATA[Number of preview messages]]></string>
 
-	<string name="_bx_cnv_form_entry"><![CDATA[Conversations]]></string>
+	<string name="_bx_cnv_form_entry"><![CDATA[Private messages]]></string>
 	<string name="_bx_cnv_form_entry_display_add"><![CDATA[New conversation]]></string>
 	<string name="_bx_cnv_form_entry_display_edit"><![CDATA[Edit conversation]]></string>
 	<string name="_bx_cnv_form_entry_display_delete"><![CDATA[Delete conversation]]></string>
@@ -50,14 +50,14 @@
     <string name="_bx_cnv_page_title_sys_folder"><![CDATA[Conversations in folder]]></string>
     <string name="_bx_cnv_page_title_folder"><![CDATA[Folder: {folder}]]></string>
     <string name="_bx_cnv_page_block_title_folder"><![CDATA[Folder: {folder}]]></string>
-    <string name="_bx_cnv_page_block_title_convos"><![CDATA[Conversations]]></string>
+    <string name="_bx_cnv_page_block_title_convos"><![CDATA[Private messages]]></string>
     <string name="_bx_cnv_page_title_sys_edit_entry"><![CDATA[Edit conversation]]></string>
     <string name="_bx_cnv_page_title_edit_entry"><![CDATA[Edit conversation]]></string>
     <string name="_bx_cnv_page_block_title_edit_entry"><![CDATA[Edit conversation]]></string>
 
     <string name="_bx_cnv_menu_set_title_view_entry"><![CDATA[Conversation Actions]]></string>
     <string name="_bx_cnv_menu_title_view_entry"><![CDATA[Conversation Actions]]></string>
-    <string name="_bx_cnv_menu_title_submenu"><![CDATA[Conversations Submenu]]></string>
+    <string name="_bx_cnv_menu_title_submenu"><![CDATA[Private messages submenu]]></string>
     <string name="_bx_cnv_menu_set_title_submenu"><![CDATA[Conversations Submenu]]></string>
     <string name="_bx_cnv_menu_title_folders_more"><![CDATA[Conversations folders]]></string>
     <string name="_bx_cnv_menu_set_title_submenu"><![CDATA[Conversations folders]]></string>
@@ -85,8 +85,8 @@
     <string name="_bx_cnv_menu_item_title_folder_trash"><![CDATA[Trash]]></string>
     <string name="_bx_cnv_menu_item_title_system_folder_more"><![CDATA[More]]></string>
     <string name="_bx_cnv_menu_item_title_folder_more"><![CDATA[More]]></string>
-    <string name="_bx_cnv_menu_item_title_system_convos"><![CDATA[Conversations]]></string>
-    <string name="_bx_cnv_menu_item_title_convos"><![CDATA[Conversations]]></string>
+    <string name="_bx_cnv_menu_item_title_system_convos"><![CDATA[Private messages]]></string>
+    <string name="_bx_cnv_menu_item_title_convos"><![CDATA[Private messages]]></string>
     <string name="_bx_cnv_menu_item_title_system_unread_messages"><![CDATA[Unread messages number]]></string>
     <string name="_bx_cnv_menu_item_title_unread_messages"><![CDATA[Unread messages]]></string>
 

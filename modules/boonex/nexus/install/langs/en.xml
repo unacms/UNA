@@ -8,7 +8,7 @@
     <string name="_bx_nexus_adm_stg_cpt_category_general"><![CDATA[General]]></string>
     <string name="_bx_nexus_option_styles"><![CDATA[Custom CSS styles for mobile apps]]></string>
     <string name="_bx_nexus_option_guest_pages"><![CDATA[Comma-separated list of page URIs available to guests]]></string>
-    <string name="_bx_nexus_option_custom_homepage"><![CDATA[Display custom homepage with login form only]]></string>
+    <string name="_bx_nexus_option_custom_homepage"><![CDATA[Display custom homepage with the sign-in form only]]></string>
     <string name="_bx_nexus_option_main_menu"><![CDATA[Main menu]]></string>
     <string name="_bx_nexus_option_main_menu_value"><![CDATA[{0}: {1}]]></string>
     <string name="_bx_nexus_option_push_notifications_count"><![CDATA[Send number of notifications with each PUSH notification]]></string>

@@ -194,7 +194,7 @@
     <string name="_bx_groups_page_block_title_fans_link"><![CDATA[Members of <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_groups_page_block_title_fans"><![CDATA[Members]]></string>
     <string name="_bx_groups_page_block_title_system_fans"><![CDATA[Members]]></string>
-    <string name="_bx_groups_page_block_title_system_fans_manage"><![CDATA[Manage fans]]></string>
+    <string name="_bx_groups_page_block_title_system_fans_manage"><![CDATA[Manage members]]></string>
     <string name="_bx_groups_page_block_title_invites"><![CDATA[Invites]]></string>
     <string name="_bx_groups_page_block_title_system_invites_manage"><![CDATA[Invites]]></string>
     <string name="_bx_groups_page_block_title_bans"><![CDATA[Bans]]></string>
@@ -304,8 +304,8 @@
     <string name="_bx_groups_menu_item_title_unfriend_cancel_request"><![CDATA[Cancel friend request]]></string>
     <string name="_bx_groups_menu_item_title_unfriend_reject_request"><![CDATA[Reject friend request]]></string>
 
-    <string name="_bx_groups_menu_item_title_system_fans"><![CDATA[Fans]]></string>
-    <string name="_bx_groups_menu_item_title_fans"><![CDATA[Fans]]></string>
+    <string name="_bx_groups_menu_item_title_system_fans"><![CDATA[Members]]></string>
+    <string name="_bx_groups_menu_item_title_fans"><![CDATA[Members]]></string>
     <string name="_bx_groups_menu_item_title_system_become_fan"><![CDATA[Join Group]]></string>
     <string name="_bx_groups_menu_item_title_become_fan"><![CDATA[Join Group]]></string>
     <string name="_bx_groups_menu_item_title_become_fan_sent"><![CDATA[Join Group (requested)]]></string>
@@ -475,7 +475,7 @@
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was confirmed by the group admin.</p>
 {email_footer}]]></string>
 
-    <string name="_bx_groups_email_fan_remove"><![CDATA[Profile was removed from group fans]]></string>
+    <string name="_bx_groups_email_fan_remove"><![CDATA[Profile was removed from group members]]></string>
     <string name="_bx_groups_email_fan_remove_subject"><![CDATA[Your profile was removed from the group]]></string>
     <string name="_bx_groups_email_fan_remove_body"><![CDATA[{email_header}
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> group by the group admin.</p>

@@ -298,7 +298,7 @@
     <string name="_bx_workspaces_grid_filter_item_title_adm_unconfirmed"><![CDATA[Unconfirmed]]></string>
     <string name="_bx_workspaces_grid_column_title_adm_active"><![CDATA[Active]]></string>
     <string name="_bx_workspaces_grid_column_title_adm_fullname"><![CDATA[Name]]></string>
-    <string name="_bx_workspaces_grid_column_title_adm_last_online"><![CDATA[Last Logged]]></string>
+    <string name="_bx_workspaces_grid_column_title_adm_last_online"><![CDATA[Last sign-in]]></string>
     <string name="_bx_workspaces_grid_column_title_adm_account"><![CDATA[Account]]></string>
     <string name="_bx_workspaces_grid_action_title_adm_delete_with_content"><![CDATA[Delete With Content]]></string>
     <string name="_bx_workspaces_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string>

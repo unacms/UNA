@@ -303,7 +303,7 @@
     <string name="_bx_credits_msg_action_performed"><![CDATA[The action was performed successfully.]]></string>
     <string name="_bx_credits_msg_action_withdrawals_disabled"><![CDATA[Withdrawals are disabled.]]></string>
     <string name="_bx_credits_err_profile_not_found"><![CDATA[Profile wasn't found.]]></string>
-    <string name="_bx_credits_err_login_required"><![CDATA[Login required.]]></string>
+    <string name="_bx_credits_err_login_required"><![CDATA[Please sign in.]]></string>
     <string name="_bx_credits_err_wrong_amont"><![CDATA[The amount of credits must be greater than zero.]]></string>
     <string name="_bx_credits_err_low_balance"><![CDATA[Low balance.]]></string>
     <string name="_bx_credits_err_withdrawal_not_found"><![CDATA[Withdrawal request wasn't found.]]></string>
@@ -348,7 +348,7 @@
     <string name="_bx_credits_txt_subscribe_trial"><![CDATA[Trial:]]></string>
     <string name="_bx_credits_txt_subscribe_trial_mask"><![CDATA[{0} {1}]]></string>
 
-    <string name="_bx_credits_err_unknown_buyer"><![CDATA[Login required.]]></string>
+    <string name="_bx_credits_err_unknown_buyer"><![CDATA[Please sign in.]]></string>
     <string name="_bx_credits_err_unknown_seller"><![CDATA[Unknown seller.]]></string>
     <string name="_bx_credits_err_incorrect_data"><![CDATA[Incorrect input data. Please report.]]></string>
 </resources>

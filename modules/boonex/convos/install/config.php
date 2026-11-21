@@ -16,7 +16,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_convos',
-    'title' => 'Conversations',
+    'title' => 'Private messages',
     'note' => 'Conversations, private messages, inbox',
     'version' => '15.0.5.DEV',
     'vendor' => 'UNA INC',

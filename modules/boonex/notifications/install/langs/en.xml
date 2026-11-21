@@ -107,9 +107,9 @@
     <string name="_bx_ntfs_alert_action_group_info_score_down_personal"><![CDATA[A member gave your content a 'Down' vote.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_score_down_follow_member"><![CDATA[Someone you follow gave a 'Down' vote to some content.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_score_down_follow_context"><![CDATA[Someone gave a 'Down' vote to content in a space you follow.]]></string>
-    <string name="_bx_ntfs_alert_action_group_info_fan_personal"><![CDATA[Someone became a fan of your profile, page, or group.]]></string>
-    <string name="_bx_ntfs_alert_action_group_info_fan_follow_member"><![CDATA[Someone you follow gained new fans.]]></string>
-    <string name="_bx_ntfs_alert_action_group_info_fan_follow_context"><![CDATA[A space you follow gained new fans.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_fan_personal"><![CDATA[Someone joined your group, page or organization.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_fan_follow_member"><![CDATA[Someone you follow gained new members.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_fan_follow_context"><![CDATA[A space you follow gained new members.]]></string>
     <string name="_bx_ntfs_alert_action_group_info_invite"><![CDATA[You have been invited to join a space (group, event, etc.).]]></string>
     <string name="_bx_ntfs_alert_action_group_info_join_personal"><![CDATA[Someone requested to join your space (group, event, etc.).]]></string>
     <string name="_bx_ntfs_alert_action_group_info_join_follow_member"><![CDATA[Someone you follow received a new join request for their space.]]></string>
@@ -147,9 +147,9 @@
     <string name="_bx_ntfs_alert_action_doVoteDown_personal"><![CDATA[New 'Down' votes]]></string>
     <string name="_bx_ntfs_alert_action_doVoteDown_follow_member"><![CDATA[New 'Down' votes]]></string>
     <string name="_bx_ntfs_alert_action_doVoteDown_follow_context"><![CDATA[New 'Down' votes]]></string>
-    <string name="_bx_ntfs_alert_action_fan_added_personal"><![CDATA[New fans]]></string>
-    <string name="_bx_ntfs_alert_action_fan_added_follow_member"><![CDATA[New fans]]></string>
-    <string name="_bx_ntfs_alert_action_fan_added_follow_context"><![CDATA[New fans]]></string>
+    <string name="_bx_ntfs_alert_action_fan_added_personal"><![CDATA[New members]]></string>
+    <string name="_bx_ntfs_alert_action_fan_added_follow_member"><![CDATA[New members]]></string>
+    <string name="_bx_ntfs_alert_action_fan_added_follow_context"><![CDATA[New members]]></string>
     <string name="_bx_ntfs_alert_action_join_request_personal"><![CDATA[New join requests]]></string>
     <string name="_bx_ntfs_alert_action_join_request_follow_member"><![CDATA[New join requests]]></string>
     <string name="_bx_ntfs_alert_action_join_request_follow_context"><![CDATA[New join requests]]></string>
