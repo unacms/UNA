@@ -880,6 +880,9 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
                 type: 'canvas',
                 size: 'original',
                 format: 'jpeg',
+                // the square picture: a round viewport only shows where the circle is, CSS rounds the picture
+                // (a circle would be saved on black corners, as JPEG has no transparency)
+                circle: false,
                 quality: '0.85',
             }).then(function(resp) {
                 var fd = new FormData();
