@@ -33,9 +33,9 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
     const STEP_LOCKED = 'locked';
     const STEP_NOTE = 'note';
 
-    const JOIN_OPEN = 'open';
-    const JOIN_INVITE = 'invite';
-    const JOIN_CLOSED = 'closed';
+    const JOIN_OPEN = BxDolAccount::JOIN_OPEN;
+    const JOIN_INVITE = BxDolAccount::JOIN_INVITE;
+    const JOIN_CLOSED = BxDolAccount::JOIN_CLOSED;
 
     protected $_oQuery;
 
@@ -111,28 +111,18 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * Who can join the site: anyone (JOIN_OPEN), only people with an invitation (JOIN_INVITE) or nobody,
-     * because the sign-up form is off (JOIN_CLOSED).
+     * Who can join the site (BxDolAccount::getJoinMode): JOIN_OPEN, JOIN_INVITE or JOIN_CLOSED.
      */
     public function getJoinMode()
     {
-        if(getParam('sys_account_disable_join_form') == 'on')
-            return self::JOIN_CLOSED;
-
-        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites') && getParam('bx_invites_enable_reg_by_inv') == 'on')
-            return self::JOIN_INVITE;
-
-        return self::JOIN_OPEN;
+        return BxDolAccount::getJoinMode();
     }
 
     /**
-     * Where the operator changes who can join.
+     * Where the operator changes who can join: "Who can join", the first option of Studio > Settings > Account.
      */
     public function getJoinSettingsUrl()
     {
-        if($this->getJoinMode() == self::JOIN_INVITE)
-            return BX_DOL_URL_STUDIO . 'module.php?name=bx_invites&page=settings';
-
         return BX_DOL_URL_STUDIO . 'settings.php?page=system_members&category=account';
     }
 
@@ -171,7 +161,7 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
 
     /**
      * The state of one of the built-in steps of the operators' checklist, for its menu item's add-on: STEP_DONE,
-     * STEP_TODO, STEP_LOCKED (it needs an earlier step) or STEP_NOTE (it tells, it isn't a task: who can join).
+     * STEP_TODO or STEP_LOCKED (it needs an earlier step). "join" is done once the operator has chosen who can join.
      */
     public function getStepState($sStep)
     {
@@ -186,7 +176,7 @@ class BxDolTours extends BxDolFactory implements iBxDolSingleton
                 return (int)getParam('sys_site_cover_common') ? self::STEP_DONE : self::STEP_TODO;
 
             case 'join':
-                return self::STEP_NOTE;
+                return BxDolAccount::isJoinModeChosen() ? self::STEP_DONE : self::STEP_TODO;
         }
 
         return '';

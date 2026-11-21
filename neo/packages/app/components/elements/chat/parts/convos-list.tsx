@@ -2,6 +2,7 @@ import { memo, useCallback, useMemo, useState, type ReactNode } from 'react';
 import { Platform, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
+import { Icon } from 'app/ui/atoms/icon';
 import UniList from 'app/ui/atoms/unilist';
 import { getBreakpoint } from 'app/lib/util';
 import type { UniListRenderItem } from 'app/ui/atoms/unilist/shared';
@@ -38,8 +39,18 @@ type ConvosListProps = {
     // The host owns the rows, title and empty state.
     renderItem: UniListRenderItem;
     title: string;
+    /** The empty list's title. */
     emptyText: string;
-    /** Rendered under the empty text. */
+    /** A line under the title. */
+    emptyDescription?: string;
+    /** Lucide icon over the title, in a circle. */
+    emptyIcon?: string;
+    /** Title and line while a search found nothing (defaults to the empty list's). */
+    emptySearchText?: string;
+    emptySearchDescription?: string;
+    /** A search kept outside the list (the small-screen header's) is on. */
+    searching?: boolean;
+    /** Rendered under the empty text, when no search is on. */
     emptyAction?: (helpers: { resetSearch: () => void }) => ReactNode;
 };
 
@@ -49,6 +60,35 @@ type ConvosListProps = {
  * behind. On small screens that chrome lives in the injected page header (see
  * MobileListHeader).
  */
+/**
+ * An empty list as UNA's site shows one (BxDolEmptyState): a neutral icon in a circle, the title, one line and one
+ * labelled action, in plain text on the page, not a grey box.
+ */
+function ListEmptyState({ headerInset, icon, title, description, action }: {
+    headerInset: number;
+    icon?: string;
+    title: string;
+    description?: string;
+    action?: ReactNode;
+}) {
+    return (
+        <View className="items-center w-full h-full px-6" style={{ paddingTop: headerInset }}>
+            <View className="items-center gap-2 pt-8 max-w-sm" role="status">
+                {icon ? (
+                    <View className="w-12 h-12 mb-1 rounded-full items-center justify-center bg-button" aria-hidden>
+                        <Icon icon={icon} size={24} className="text-secondary-foreground" />
+                    </View>
+                ) : null}
+                <Text className="text-center text-base font-semibold text-foreground">{title}</Text>
+                {description ? (
+                    <Text className="text-center text-sm text-secondary-foreground">{description}</Text>
+                ) : null}
+                {action ? <View className="pt-2">{action}</View> : null}
+            </View>
+        </View>
+    );
+}
+
 const ConvosList = memo(function ConvosList({
     data,
     panelHeight,
@@ -63,9 +103,15 @@ const ConvosList = memo(function ConvosList({
     renderItem,
     title,
     emptyText,
+    emptyDescription,
+    emptyIcon,
+    emptySearchText,
+    emptySearchDescription,
+    searching: searchingOutside = false,
     emptyAction,
 }: ConvosListProps) {
     const search = useDebouncedSearch(onSearch);
+    const searching = !!search.value || searchingOutside;
     const [chromeHeight, setChromeHeight] = useState(DEFAULT_CHROME_HEIGHT);
 
     const handleChromeLayout = useCallback((event: LayoutChangeEvent) => {
@@ -117,16 +163,13 @@ const ConvosList = memo(function ConvosList({
             {...listOverlayProps}
         />
     ) : (
-        <View className="items-center justify-center w-full h-full" style={{ paddingTop: headerInset }}>
-            <View className="pt-8">
-                <View className="gap-y-2 items-center opacity-80 justify-center mx-auto my-auto py-4 px-8 rounded-2xl bg-muted-foreground/10">
-                    <Text className="text-center text-lg text-secondary-foreground lg:text-xl font-semibold">
-                        {emptyText}
-                    </Text>
-                    {emptyAction?.({ resetSearch: search.reset })}
-                </View>
-            </View>
-        </View>
+        <ListEmptyState
+            headerInset={headerInset}
+            icon={emptyIcon}
+            title={searching ? (emptySearchText ?? emptyText) : emptyText}
+            description={searching ? (emptySearchDescription ?? emptyDescription) : emptyDescription}
+            action={searching ? null : emptyAction?.({ resetSearch: search.reset })}
+        />
     );
 
     return (

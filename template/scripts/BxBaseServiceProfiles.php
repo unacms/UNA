@@ -390,10 +390,13 @@ class BxBaseServiceProfiles extends BxDol
         if(!$oMenu)
             return $bApi ? [] : '';
 
+        // The block says what the "You don't have a profile yet" message says, on the site and in the apps (the page's
+        // `user.informer` is built after its blocks).
+        BxDolInformer::hide('sys-account-profile-system');
+
         if($bApi)
             return [bx_api_get_block('menu', ['title' => _t('_sys_page_block_title_account_profile_create'), 'content' => $oMenu->getCodeAPI()])];
 
-        // The block says what the "You don't have a profile yet" message says.
         if(($oInformer = BxDolInformer::getInstance(BxDolTemplate::getInstance())))
             $oInformer->remove('sys-account-profile-system');
 
@@ -1113,6 +1116,7 @@ class BxBaseServiceProfiles extends BxDol
                 // What the apps show when there are none (BxDolEmptyState); a page block's app config can change it.
                 if(!$aDataApi) {
                     $aBlockData['empty_state'] = BxDolEmptyState::forApi([
+                        'icon' => 'mail',
                         'title' => '_sys_txt_empty_invitations_title',
                         'text' => '_sys_txt_empty_invitations_text',
                     ]);

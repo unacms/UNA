@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "Who can join" in Studio > Settings > Account, sign-up closed message, "You're set up" in Get started. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Who can join]]></string_add>
+    <string_add name="_adm_stg_err_option_sys_account_join"><![CDATA[Invitation only needs the Invitations app, and it could not be added. Add it in App Store, then save again.]]></string_add>
+    <string_add name="_sys_acc_join_open"><![CDATA[Anyone]]></string_add>
+    <string_add name="_sys_acc_join_invite"><![CDATA[Invitation only]]></string_add>
+    <string_add name="_sys_acc_join_invite_add"><![CDATA[Invitation only (adds the Invitations app)]]></string_add>
+    <string_add name="_sys_acc_join_closed"><![CDATA[Nobody]]></string_add>
+    <string_add name="_sys_txt_join_closed"><![CDATA[Sign-up is closed on this site.]]></string_add>
+    <string_add name="_sys_onboarding_done"><![CDATA[You're set up]]></string_add>
+</resources>

@@ -21,7 +21,8 @@ class ModuleInstallDefaultsSqlTest extends \PHPUnit\Framework\TestCase
     {
         $sSql = self::read('modules/boonex/invites/install/sql/enable.sql');
 
-        $this->assertMatchesRegularExpression("/^\\('bx_invites_enable_reg_by_inv', '', /m", $sSql, 'Sign-up by invitation only is off until the site turns it on.');
+        $this->assertStringNotContainsString('sys_account_join', $sSql, 'Installing Invitations doesn\'t change who can join.');
+        $this->assertStringNotContainsString('bx_invites_enable_reg_by_inv', $sSql, '"Who can join" in Studio > Settings > Account decides it.');
     }
 
     public function testFontAwesomeLeavesTheIconSetAlone(): void
