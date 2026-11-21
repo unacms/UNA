@@ -1311,8 +1311,9 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
 
         bx_import('BxDolConnection');
         $s = $this->serviceBrowseConnectionsQuick ($aContentInfo['profile_id'], 'sys_profiles_friends', BX_CONNECTIONS_CONTENT_TYPE_CONTENT, true);
+        // No friends: no block, rather than an empty box on the profile.
         if (!$s)
-            return MsgBox(_t('_sys_txt_empty'));
+            return false;
 
         return $s;
     }

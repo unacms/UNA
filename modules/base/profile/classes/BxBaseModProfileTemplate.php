@@ -466,8 +466,9 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
                     'subtitle' => $sSubtitle
                 ]
             ],
+            // A card without actions (a guest's, your own) has no "View" button: the name and the picture open the profile.
             'bx_if:show_view' => [
-                'condition' => !$bButtons,
+                'condition' => !$bButtons && $bOwn,
                 'content' => [
                     'content_url' => $aVars['content_url'],
                     'content_click' => $aVars['content_click'],

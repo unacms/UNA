@@ -17,7 +17,6 @@ UPDATE `sys_pages_blocks` SET `config_api`='{"designbox": {"bg": true, "padding"
 
 -- 'active_api' switch
 -- Home: the apps show the home menu as the site does; the sign-in and join blocks stay off, the splash gets them anyway (BxDolSplash::AUTH_BLOCKS)
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `type`='menu' AND `content`='sys_homepage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system` IN ('_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_system_onboarding');
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title`='_sys_page_block_title_profile_menu';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';
