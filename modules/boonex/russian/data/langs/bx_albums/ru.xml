@@ -316,7 +316,7 @@
 
     <string name="_bx_albums_txt_msg_status_hidden"><![CDATA[Данный альбом был скрыт.]]></string>
     <string name="_bx_albums_txt_msg_status_pending"><![CDATA[Данный альбом ожидает утверждения.]]></string>
-    <string name="_bx_albums_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_albums_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_albums_alert_action_medias_added"><![CDATA[добавить изображения]]></string>
     <string name="_bx_albums_alert_action_medias_added_follow_member"><![CDATA[Новые изображения]]></string>

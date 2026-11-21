@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_orgs_form_profile_input_org_name_err"><![CDATA[Name is required and cannot start with @.]]></string_upd>
+    <string_upd name="_bx_orgs_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+</resources>

@@ -102,7 +102,7 @@
     <string name="_bx_donations_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_donations_err_price_duplicate"><![CDATA[Similar donation plan is already exists.]]></string>
     <string name="_bx_donations_err_min_value"><![CDATA[The value should exceed {0}.]]></string>
-    <string name="_bx_donations_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_donations_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <!-- Other -->
     <string name="_bx_donations_txt_btype_single"><![CDATA[one-time]]></string>
