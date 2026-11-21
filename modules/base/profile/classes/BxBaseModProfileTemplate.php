@@ -455,6 +455,8 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         // "View profile"; a group, an event or a space names itself (View group)
         $CNF = &$this->_oConfig->CNF;
         $sView = !empty($CNF['T']['txt_unit_view']) ? $CNF['T']['txt_unit_view'] : '_sys_profile_unit_view';
+        // A person's card has no button of its own: it would only repeat the name's link, as an icon.
+        $bViewButton = !empty($CNF['T']['txt_unit_view']);
 
         // a line under the name: an event's date
         $sSubtitle = !empty($aVars['date_start_f']) ? $aVars['date_start_f'] : '';
@@ -466,14 +468,18 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
                     'subtitle' => $sSubtitle
                 ]
             ],
-            // A card without actions (a guest's, your own) has no "View" button: the name and the picture open the profile.
             'bx_if:show_view' => [
-                'condition' => !$bButtons && $bOwn,
+                'condition' => !$bButtons && ($bViewButton || $bOwn),
                 'content' => [
-                    'content_url' => $aVars['content_url'],
-                    'content_click' => $aVars['content_click'],
-                    'view' => _t($sView),
-                    'view_icon' => $this->_sUnitCardViewIcon,
+                    'bx_if:show_view_button' => [
+                        'condition' => $bViewButton,
+                        'content' => [
+                            'content_url' => $aVars['content_url'],
+                            'content_click' => $aVars['content_click'],
+                            'view' => _t($sView),
+                            'view_icon' => $this->_sUnitCardViewIcon,
+                        ]
+                    ],
                     'bx_if:show_you' => [
                         'condition' => $bOwn,
                         'content' => [
