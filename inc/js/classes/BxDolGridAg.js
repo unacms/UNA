@@ -295,7 +295,7 @@ BxDolGridAg.prototype._columns = function () {
  * What the narrow, fixed columns share: the arrow that opens a row and the drag handle.
  */
 BxDolGridAg.prototype._columnFixed = function (sName, oMore) {
-    return Object.assign({
+    return {
         colId: sName,
         field: sName,
         headerName: '',
@@ -305,8 +305,9 @@ BxDolGridAg.prototype._columnFixed = function (sName, oMore) {
         resizable: false,
         suppressHeaderMenuButton: true,
         cellDataType: false,
-        cellRenderer: BxDolGridAgCell
-    }, oMore);
+        cellRenderer: BxDolGridAgCell,
+        ...oMore
+    };
 };
 
 BxDolGridAg.prototype._columnExpand = function () {
@@ -352,12 +353,12 @@ BxDolGridAg.prototype._columnData = function (oCol) {
         oDef.sort = sSortDir;
 
     if (!oCol.controls)
-        return Object.assign(oDef, this._size(oCol.width));
+        return { ...oDef, ...this._size(oCol.width) };
 
     if (oCol.name === 'actions')
-        return Object.assign(oDef, { width: 168, minWidth: 96, flex: 0 });
+        return { ...oDef, width: 168, minWidth: 96, flex: 0 };
 
-    return Object.assign(oDef, { width: 88, minWidth: 64, flex: 0 });
+    return { ...oDef, width: 88, minWidth: 64, flex: 0 };
 };
 
 BxDolGridAg.prototype._size = function (sWidth) {
@@ -528,32 +529,33 @@ BxDolGridAg.prototype.toggleExpand = function (sId, node) {
 };
 
 /**
- * The items of an opened row, all of them: the first request asks for 500, and a longer list is
- * asked for once more by its total. The server caps what one request returns.
+ * The items of an opened row, all of them: asked for 500 at a time (what one request may
+ * return), until the total the server reports is here.
  */
 BxDolGridAg.prototype._fetchItems = function (oMeta, fDone) {
-    const fLoad = (iPer, bAgain) => {
-        this._getJson(this._itemsQuery(oMeta, iPer))
+    const iPer = 500;
+    const aAll = [];
+    const fLoad = (iStart) => {
+        this._getJson(this._itemsQuery(oMeta, iStart, iPer))
             .done((o) => {
                 const a = o?.data || [];
-                const n = Number.parseInt(o?.total, 10) || a.length;
-                if (bAgain && a.length && a.length < n) {
-                    fLoad(n, false);
-                    return;
-                }
-                fDone(a);
+                aAll.push(...a);
+                if (a.length && aAll.length < (Number.parseInt(o?.total, 10) || 0))
+                    fLoad(aAll.length);
+                else
+                    fDone(aAll);
             })
-            .fail(() => fDone([]));
+            .fail(() => fDone(aAll));
     };
-    fLoad(500, true);
+    fLoad(0);
 };
 
-BxDolGridAg.prototype._itemsQuery = function (oMeta, iPer) {
+BxDolGridAg.prototype._itemsQuery = function (oMeta, iStart, iPer) {
     const oCfg = this._oExpand;
     const o = { o: oCfg.object, a: 'data_ag' };
     o.set = oMeta[oCfg.set] || '';
     o.module = oMeta[oCfg.module] || '';
-    o.start = 0;
+    o.start = iStart;
     o.per_page = iPer;
     if (this._oBx?._sCsrfToken)
         o.csrf_token = this._oBx._sCsrfToken;
@@ -581,6 +583,11 @@ BxDolGridAg.prototype._itemsBx = function (oMeta) {
             columns: 1
         });
         this._oItemsBx.setOnReload(() => this._reloadExpanded());
+
+        // The items' forms and popups answer to glGrids[<items grid>], as on the items' own page.
+        // This page has no such grid, so the one made here stands in for it.
+        if (globalThis.glGrids && globalThis.glGrids[oCfg.object] === undefined)
+            globalThis.glGrids[oCfg.object] = this._oItemsBx;
     }
     this._oItemsBx._oQueryAppend = {
         set: oMeta[oCfg.set] || '',
@@ -632,6 +639,11 @@ BxDolGridAg.prototype._reorderQuery = function (sObject, aIds) {
 
 BxDolGridAg.prototype._onRowDragEnd = function (e) {
     if (!this._oBx || !this._oApi || e?.node?.rowIndex == null || e.overIndex == null || e.overIndex < 0)
+        return;
+
+    // Under a search or a sorted column the rows shown are not the whole list in its saved order:
+    // numbering them 1, 2, 3 would move them ahead of the rows not shown.
+    if (this._oBx._sFilter || this._sAppliedField)
         return;
 
     const iFrom = e.node.rowIndex;
@@ -1140,32 +1152,8 @@ BxDolGridAgCell.prototype._actions = function (eGui, aActions, params, oAg) {
  * BxDolGrid reads, and the disabled look of an action the row does not allow now.
  */
 BxDolGridAgCell.prototype._action = function (oAction, sId, oAg) {
-    const eBtn = document.createElement('button');
-    eBtn.type = 'button';
-    eBtn.className = 'bx-btn bx-btn-small bx-def-margin-thd';
-    const sLabel = oAction.title || oAction.label || '';
-    if (sLabel) {
-        eBtn.title = sLabel;
-        eBtn.setAttribute('aria-label', sLabel);
-    }
-    if (oAction.icon)
-        this._actionIcon(eBtn, oAction.icon);
-    if (!Number.parseInt(oAction.icon_only, 10) && oAction.title) {
-        const eLabel = document.createElement('u');
-        eLabel.textContent = oAction.title;
-        eBtn.appendChild(eLabel);
-    }
-
     const oAttr = oAction.attr && typeof oAction.attr === 'object' ? oAction.attr : {};
-    for (const sKeep of ['bx_grid_action_single', 'bx_grid_action_data', 'bx_grid_action_confirm', 'bx_grid_action_reset_paginate', 'bx_grid_permanent_state', 'bx-popup-id']) {
-        if (oAttr[sKeep] != null && oAttr[sKeep] !== '')
-            eBtn.setAttribute(sKeep, oAttr[sKeep]);
-    }
-    if (!eBtn.getAttribute('bx_grid_action_data') && sId !== '')
-        eBtn.setAttribute('bx_grid_action_data', sId);
-
-    if (Number(oAction.disabled))
-        this._disable(eBtn, true);
+    const eBtn = this._actionButton(oAction, oAttr, sId);
 
     // A settings button carries the classic onclick that opens its menu. Calling the action
     // instead would skip that menu. The attribute comes from the grid's own action definition.
@@ -1190,6 +1178,39 @@ BxDolGridAgCell.prototype._action = function (oAction, sId, oAg) {
 
     if (sOnClick)
         eBtn.setAttribute('onclick', sOnClick);
+
+    return eBtn;
+};
+
+/**
+ * The button itself: label, icon, the bx_grid_* attributes and the disabled look.
+ */
+BxDolGridAgCell.prototype._actionButton = function (oAction, oAttr, sId) {
+    const eBtn = document.createElement('button');
+    eBtn.type = 'button';
+    eBtn.className = 'bx-btn bx-btn-small bx-def-margin-thd';
+    const sLabel = oAction.title || oAction.label || '';
+    if (sLabel) {
+        eBtn.title = sLabel;
+        eBtn.setAttribute('aria-label', sLabel);
+    }
+    if (oAction.icon)
+        this._actionIcon(eBtn, oAction.icon);
+    if (!Number.parseInt(oAction.icon_only, 10) && oAction.title) {
+        const eLabel = document.createElement('u');
+        eLabel.textContent = oAction.title;
+        eBtn.appendChild(eLabel);
+    }
+
+    for (const sKeep of ['bx_grid_action_single', 'bx_grid_action_data', 'bx_grid_action_confirm', 'bx_grid_action_reset_paginate', 'bx_grid_permanent_state', 'bx-popup-id']) {
+        if (oAttr[sKeep] != null && oAttr[sKeep] !== '')
+            eBtn.setAttribute(sKeep, oAttr[sKeep]);
+    }
+    if (!eBtn.getAttribute('bx_grid_action_data') && sId !== '')
+        eBtn.setAttribute('bx_grid_action_data', sId);
+
+    if (Number(oAction.disabled))
+        this._disable(eBtn, true);
 
     return eBtn;
 };
@@ -1230,20 +1251,20 @@ BxDolGridAgCell.prototype._svgNode = function (sMarkup) {
 };
 
 BxDolGridAgCell.prototype._svgCopy = function (eFrom) {
-    const aTags = ['svg', 'path', 'circle', 'rect', 'g', 'line', 'polyline', 'polygon', 'ellipse', 'title'];
-    const aAttrs = [
+    const oTags = new Set(['svg', 'path', 'circle', 'rect', 'g', 'line', 'polyline', 'polygon', 'ellipse', 'title']);
+    const oAttrs = new Set([
         'viewBox', 'width', 'height', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
         'd', 'cx', 'cy', 'r', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'rx', 'ry', 'points', 'transform',
         'xmlns', 'fill-rule', 'clip-rule', 'opacity'
-    ];
+    ]);
 
     const sTag = (eFrom.tagName || '').toLowerCase();
-    if (!aTags.includes(sTag))
+    if (!oTags.has(sTag))
         return null;
 
     const e = document.createElementNS('http://www.w3.org/2000/svg', sTag);
     for (const oAttr of eFrom.attributes) {
-        if (aAttrs.includes(oAttr.name) && !/javascript:|url\s*\(/i.test(oAttr.value))
+        if (oAttrs.has(oAttr.name) && !/javascript:|url\s*\(/i.test(oAttr.value))
             e.setAttribute(oAttr.name, oAttr.value);
     }
     for (const eNode of eFrom.children) {

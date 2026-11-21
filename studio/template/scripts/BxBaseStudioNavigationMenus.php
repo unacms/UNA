@@ -155,6 +155,9 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
         echoJson($iAffected ? array('grid' => $this->getCode(false), 'blink' => $aIdsAffected) : array('msg' => _t('_adm_nav_err_menus_delete')));
     }
 
+    protected $_sAgItemsObject = 'sys_studio_nav_items'; ///< the grid whose rows an opened menu row lists (engine 'ag')
+    protected $_bAgExpandsItems = null; ///< whether menu rows open onto their items, once asked (_agExpandsItems)
+
     function getJsObject()
     {
         return 'oBxDolStudioNavigationMenus';
@@ -166,8 +169,32 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
             'content' => parent::getCode($isDisplayHeader),
             'js_object' => $this->getJsObject(),
             'grid_object' => $this->_sObject,
-            'params_divider' => $this->sParamsDivider
+            'params_divider' => $this->sParamsDivider,
+            // An opened menu row lists its items, and their edit form calls the items page's script object.
+            'bx_if:expand_items' => array(
+                'condition' => $this->_agExpandsItems(),
+                'content' => array(
+                    'items_js_object' => 'oBxDolStudioNavigationItems',
+                    'items_grid_object' => $this->_sAgItemsObject,
+                    'params_divider' => $this->sParamsDivider,
+                ),
+            ),
         ));
+    }
+
+    /**
+     * A menu row opens onto its items only while both grids are drawn by AG Grid: the items come
+     * from the items grid's data_ag action, which a classic grid refuses.
+     */
+    protected function _agExpandsItems()
+    {
+        if($this->_bAgExpandsItems === null) {
+            $aItems = $this->_isAgEngine() ? BxDolGridQuery::getGridObject($this->_sAgItemsObject) : false;
+
+            $this->_bAgExpandsItems = !empty($aItems) && is_array($aItems) && isset($aItems['engine']) && $aItems['engine'] === 'ag';
+        }
+
+        return $this->_bAgExpandsItems;
     }
 
     protected function _agRowMeta($aRow)
@@ -180,9 +207,13 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
 
     protected function _agExtraConfig()
     {
+        if(!$this->_agExpandsItems()) {
+            return array();
+        }
+
         return array(
             'expand' => array(
-                'object' => 'sys_studio_nav_items',
+                'object' => $this->_sAgItemsObject,
                 'field_id' => 'id',
                 'set' => 'set_name',
                 'module' => 'module',
@@ -194,6 +225,9 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
     {
         parent::_addJsCss();
         $this->_oTemplate->addJs(array('jquery.form.min.js', 'navigation_menus.js'));
+        if($this->_agExpandsItems()) {
+            $this->_oTemplate->addJs('navigation_items.js');
+        }
 
         $oForm = new BxTemplStudioFormView(array());
         $oForm->addCssJs();

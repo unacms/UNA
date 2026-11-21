@@ -544,7 +544,7 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
 
 .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"] {
     order: 1;
-    color: #b91c1c; /* red-700: 5.9:1 on the button */
+    color: #b91c1c; /* red-700: 5.0:1 on the button in the bar (red-600 is under 4.5:1) */
 }
 
 .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"]:first-of-type,
@@ -586,7 +586,7 @@ html.dark .bx-grid-ag-bulk-count,
 
 html.dark .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"],
 .dark .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"] {
-    color: #fca5a5; /* red-300: 6:1 on the button in the dark bar (red-400 is 3.8:1) */
+    color: #fca5a5; /* red-300: 5.6:1 on the button in the dark bar (red-400 is 3.8:1) */
 }
 
 html.dark .bx-grid-ag-bulk-clear,
