@@ -3340,13 +3340,14 @@
 	<string name="_sys_form_account_input_email_uniq_error"><![CDATA[Этот эл. адрес уже зарегистрирован. Пожалуйста, воспользуйтесь ссылкой <a href="{0}">Забыли пароль?</a>, чтобы восстановить доступ к своему аккаунту.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[Этот эл. адрес уже кем-то используется.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[Этот номер телефона уже кем-то используется.]]></string>
-	<string name="_sys_form_account_input_name"><![CDATA[Имя пользователя]]></string>
+	<string name="_sys_form_account_input_name"><![CDATA[Ваше имя]]></string>
 	<string name="_sys_form_account_input_name_error"><![CDATA[Имя аккаунта обязательно для заполнения и не должно начинаться с @.]]></string>
 	<string name="_sys_form_account_input_password"><![CDATA[Создать пароль]]></string>
 	<string name="_sys_form_account_input_password_confirm"><![CDATA[Подтвердить пароль]]></string>
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Не удалось подтвердить пароль]]></string>
 	<string name="_sys_form_account_input_password_current"><![CDATA[Текущий пароль]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[Этот пароль уже был использован ранее, используйте другой]]></string>
+	<string name="_sys_form_account_input_password_info"><![CDATA[Не меньше 8 символов, с заглавной и строчной латинскими буквами и цифрой.]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Неправильный текущий пароль. Введите пароль, который Вы используете для доступа к этому сайту.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[Используйте не меньше 8 символов: хотя бы одну заглавную букву, одну строчную и одну цифру.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Это обязательное поле.]]></string>

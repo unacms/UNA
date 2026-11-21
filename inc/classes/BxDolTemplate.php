@@ -2270,7 +2270,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'cover':
             	$oCover = BxDolCover::getInstance($this);
 
-            	$bCover = $oCover->isEnabled();
+            	$bCover = $oCover->isEnabled() && !$oCover->isPageCoverOff();
             	if($bCover && ($oPage = BxDolPage::getObjectInstanceByURI()) !== false) {
                     $bCover = $oPage->isPageCover();
                     if($bCover && !$oCover->isCover()) {
@@ -4172,8 +4172,17 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 
         // A state (see BxBaseFunctions::msgBox) shows an icon, the text and actions; a denial of BxDolAcl gets its own.
         $sContent = MsgBox($bArray && !empty($s['state']) ? $s['state'] : $sContent);
-        if($iPage == BX_PAGE_DEFAULT)
+        if($iPage == BX_PAGE_DEFAULT) {
             $sContent = DesignBoxContent($sTitle, $sContent, $iDesignBox);
+
+            // One shell for every message: no cover of the page that couldn't be shown, and the box's title is the
+            // page's heading.
+            $oCover = BxDolCover::getInstance();
+            $oCover->setPageCoverOff();
+            $sContent = preg_replace('#<h2 class="bx-dbt-ttl">(.*?)</h2>#s', '<h1 class="bx-dbt-ttl">$1</h1>', $sContent, 1, $iHeadings);
+            if($iHeadings)
+                $oCover->setPageHasHeading();
+        }
 
         $oTemplate = BxDolTemplate::getInstance();
         $oTemplate->resetPageMeta();

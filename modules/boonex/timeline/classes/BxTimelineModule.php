@@ -1588,9 +1588,11 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if(isset($aResult['text']))
             unset($aResult['text']);
 
+        // A post's text is in `content`: the title has only its start, the description a sample ("added a post").
         return array_merge($aResult, [
             $CNF['FIELD_TITLE'] => _t('_bx_timeline_txt_title'),
             $CNF['FIELD_TEXT'] => _t('_bx_timeline_txt_description'),
+            'content' => _t('_bx_timeline_txt_text'),
         ]);
     }
 

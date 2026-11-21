@@ -71,6 +71,9 @@ class BxBaseFormForgotPassword extends BxTemplFormView
         parent::__construct($aInfo, $oTemplate);
 
         $this->aParams['checker_errors']['summary']['disabled'] = true;
+
+        $this->_setAutocomplete(['email' => 'email', 'password' => 'new-password', 'phone' => 'tel']);
+        $this->_setEmailInputs(['email']);
     }
 
 }

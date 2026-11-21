@@ -3369,13 +3369,14 @@
 	<string name="_sys_form_account_input_email_uniq_error"><![CDATA[This email address is already registered. Please use <a href="{0}">Forgot password</a> to restore access to your account.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[This email is already used by someone.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[This phone number is already used by someone.]]></string>
-	<string name="_sys_form_account_input_name"><![CDATA[Account name]]></string>
+	<string name="_sys_form_account_input_name"><![CDATA[Your name]]></string>
 	<string name="_sys_form_account_input_name_error"><![CDATA[Account name is mandatory and and cannot start with @]]></string>
 	<string name="_sys_form_account_input_password"><![CDATA[Create a password]]></string>
 	<string name="_sys_form_account_input_password_confirm"><![CDATA[Confirm a password]]></string>
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Password confirmation failed]]></string>
 	<string name="_sys_form_account_input_password_current"><![CDATA[Current Password]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[This password has already been used before, use a different one]]></string>
+	<string name="_sys_form_account_input_password_info"><![CDATA[At least 8 characters, with an uppercase letter, a lowercase letter and a digit.]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to sign in to this site.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[Use at least 8 characters, with at least one uppercase letter, one lowercase letter and one digit.]]></string>
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Email me news and announcements]]></string>

@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `bx_timeline_events` (
   KEY `date_id` (`date`, `id`),
   KEY `promoted` (`promoted`),
   KEY `source` (`source`),
-  FULLTEXT KEY `search_fields` (`title`, `description`)
+  FULLTEXT KEY `search_fields` (`title`, `description`),
+  FULLTEXT KEY `search_text` (`title`, `content`)
 );
 
 CREATE TABLE IF NOT EXISTS `bx_timeline_events_slice` (
@@ -90,7 +91,8 @@ CREATE TABLE IF NOT EXISTS `bx_timeline_events_slice` (
   KEY `date_id` (`date`, `id`),
   KEY `promoted` (`promoted`),
   KEY `source` (`source`),
-  FULLTEXT KEY `search_fields` (`title`, `description`)
+  FULLTEXT KEY `search_fields` (`title`, `description`),
+  FULLTEXT KEY `search_text` (`title`, `content`)
 );
 
 CREATE TABLE IF NOT EXISTS `bx_timeline_events2users` (

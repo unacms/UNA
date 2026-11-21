@@ -446,6 +446,7 @@
     <string name="_bx_timeline_txt_image_alt_title_n"><![CDATA[{0}, изображение {1} из {2}]]></string>
     <string name="_bx_timeline_txt_pinned"><![CDATA[Приколотое событие]]></string>
     <string name="_bx_timeline_txt_sticked"><![CDATA[Событие приколотое для всех]]></string>
+    <string name="_bx_timeline_txt_text"><![CDATA[Текст]]></string>
     <string name="_bx_timeline_txt_promoted"><![CDATA[Рекламируемое]]></string>
     <string name="_bx_timeline_txt_note_approve_pending"><![CDATA[Обновление будет опубликовано, как только пройдет проверку модератором.]]></string>
     <string name="_bx_timeline_txt_note_scheduled_awaiting"><![CDATA[Дата публикации: {0}]]></string>

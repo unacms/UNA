@@ -27,6 +27,9 @@ class BxBasePage extends BxDolPage
 
     protected $_bStickyColumns = false;
 
+    /** A block's title already stands as the page's heading (_setBlockTitleAsHeading). */
+    protected $_bHeadingBlock = false;
+
     protected $_bSubPage = false;
 
     protected $_aMetaImages = []; //--- Size and twitter card of page meta images by url, @see _getMetaImage
@@ -381,6 +384,32 @@ class BxBasePage extends BxDolPage
      * Is page cover enabled.
      * @return string
      */
+    /**
+     * A page without a cover whose block is titled as the page (Sign in, Sign up, Forgot password) has one heading:
+     * the block's title becomes the page's `<h1>`, in place of the hidden one the empty cover gives (BxBaseCover).
+     * @param array $aBlock the block
+     * @param string $sCode the block's code in its design box
+     * @return string the code
+     */
+    protected function _setBlockTitleAsHeading($aBlock, $sCode)
+    {
+        if($this->_bHeadingBlock || $this->isPageCover())
+            return $sCode;
+
+        $sPageTitle = mb_strtolower(trim(strip_tags($this->_getPageTitle())));
+        $sBlockTitle = mb_strtolower(trim(strip_tags($this->getBlockTitle($aBlock))));
+        if($sPageTitle === '' || $sPageTitle !== $sBlockTitle)
+            return $sCode;
+
+        $sCode = preg_replace('#<h2 class="bx-dbt-ttl">(.*?)</h2>#s', '<h1 class="bx-dbt-ttl">$1</h1>', $sCode, 1, $iCount);
+        if($iCount) {
+            $this->_bHeadingBlock = true;
+            BxDolCover::getInstance()->setPageHasHeading();
+        }
+
+        return $sCode;
+    }
+
     public function isPageCover()
     {
         $bResult = false;
@@ -1042,6 +1071,8 @@ class BxBasePage extends BxDolPage
                 $this->processPageBlock($aBlock, false);
 
                 $sContentWithBox = $this->_getBlockCodeWithCache($aBlock, $aBlock['async']);
+                if($sContentWithBox)
+                    $sContentWithBox = $this->_setBlockTitleAsHeading($aBlock, $sContentWithBox);
 
             	$sClassAdd = '';
                 if(!empty($aBlock['class']))
