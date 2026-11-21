@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "Enable registration by invitation only" is "Who can join" in Studio > Settings > Account now. -->
+<resources name="en" flag="gb" title="English">
+    <string_del name="_bx_invites_option_enable_reg_by_inv"></string_del>
+</resources>

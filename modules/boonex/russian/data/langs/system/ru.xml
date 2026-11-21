@@ -1966,11 +1966,13 @@
     <string name="_adm_stg_cpt_option_sys_account_welcome_letter"><![CDATA[Включить приветственное письмо]]></string>
     <string name="_adm_stg_cpt_option_sys_account_confirmation_type"><![CDATA[Аккаунт подтвержден когда]]></string>
     <string name="_adm_stg_cpt_option_sys_account_hide_unconfirmed_accounts"><![CDATA[Скрывать профили у неподтвержденных аккаунтов]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Кто может зарегистрироваться]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_enable"><![CDATA[Включить двухфакторную аутентификацию]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[Срок жизни 2FA-кода, секунд (0 = отправлять код при каждом входе)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_autoapproval"><![CDATA[Автоматическая активация аккаунта после создания]]></string>
     <string name="_adm_stg_cpt_option_sys_account_auto_profile_creation"><![CDATA[Автоматическое создание профайла из аккаунта]]></string>
     <string name="_adm_stg_cpt_option_sys_account_online_time"><![CDATA[Временные рамки статуса "онлайн" (минуты)]]></string>
+    <string name="_adm_stg_err_option_sys_account_join"><![CDATA[Для режима «Только по приглашению» нужно приложение «Приглашения», но его не удалось добавить. Добавьте его в магазине приложений и сохраните снова.]]></string>
     <string name="_adm_stg_err_option_sys_account_online_time"><![CDATA[Вам необходимо ввести значение больше нуля.]]></string>
     <string name="_adm_stg_cpt_option_sys_account_default_profile_type"><![CDATA[Тип профиля по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Максимум профилей в аккаунте (0 = без ограничений)]]></string>
@@ -1983,7 +1985,6 @@
     <string name="_adm_stg_cpt_option_value_sys_account_reset_password_redirect_custom"><![CDATA[Пользовательская страница]]></string>
     <string name="_adm_stg_cpt_option_sys_account_reset_password_redirect_custom"><![CDATA[URL для перенаправления 'Пользовательская страница']]></string>
     <string name="_adm_stg_cpt_option_sys_account_disable_login_form"><![CDATA[Скрыть форму авторизации]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_disable_join_form"><![CDATA[Скрыть форму регистрации]]></string>
     <string name="_adm_stg_cpt_option_sys_allow_plus_in_email"><![CDATA[Разрешить использование знака плюс ("+") в адресе электронной почты]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning"><![CDATA[Удалять учетные записи]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning_interval"><![CDATA[Период удаления учетных записей (в днях)]]></string>
@@ -2648,6 +2649,10 @@
 	<string name="_sys_acc_confirmation_type_phone"><![CDATA[телефон подтвержден]]></string>
 	<string name="_sys_acc_confirmation_type_email_and_phone"><![CDATA[email и телефон подтвержден]]></string>
   <string name="_sys_acc_confirmation_type_email_or_phone"><![CDATA[email или телефон подтвержден]]></string>
+	<string name="_sys_acc_join_closed"><![CDATA[Никто]]></string>
+	<string name="_sys_acc_join_invite"><![CDATA[Только по приглашению]]></string>
+	<string name="_sys_acc_join_invite_add"><![CDATA[Только по приглашению (добавит приложение «Приглашения»)]]></string>
+	<string name="_sys_acc_join_open"><![CDATA[Все]]></string>
 	<string name="_sys_acc_profile_requirement_optional"><![CDATA[Необязателен: напоминание вверху каждой страницы]]></string>
 	<string name="_sys_acc_profile_requirement_prompt"><![CDATA[Предлагать после входа: окно «Создайте профайл» на первой странице]]></string>
 	<string name="_sys_acc_profile_requirement_required"><![CDATA[Обязателен: сначала направлять к созданию профайла]]></string>
@@ -4967,6 +4972,7 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Не удалось отправить код для входа. Попробуйте ещё раз позже.]]></string>
     <string name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
+    <string name="_sys_txt_join_closed"><![CDATA[Регистрация на сайте закрыта.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string>
@@ -5220,6 +5226,7 @@
   <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string>
   <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string>
+  <string name="_sys_onboarding_done"><![CDATA[Всё готово]]></string>
   <string name="_sys_onboarding_hide"><![CDATA[Скрыть]]></string>
   <string name="_sys_onboarding_join_closed"><![CDATA[Присоединиться к сайту нельзя: форма регистрации выключена.]]></string>
   <string name="_sys_onboarding_join_invite"><![CDATA[Присоединиться к сайту могут только приглашённые.]]></string>

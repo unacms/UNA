@@ -26,7 +26,7 @@ class BxDolInstallSiteConfig
         'timeline', 'posts', 'photos', 'videos', 'albums',
         'forum', 'groups', 'events',
         'notifications', 'messenger',
-        'antispam', 'editor', 'analytics',
+        'antispam', 'editor', 'analytics', 'accounts',
     );
 
     /**
