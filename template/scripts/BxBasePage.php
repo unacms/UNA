@@ -96,6 +96,8 @@ class BxBasePage extends BxDolPage
                     'img_url_encoded' => '',
                     'title_encoded' => ''
                 ]);
+                // in the popup each service is a row with its mark and name, as in other popup menus
+                $oMenu->setTemplateById(6); // menu_vertical.html
                 $sMenu = $oMenu->getCode();
             }
         }

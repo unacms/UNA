@@ -27,3 +27,8 @@ i.sys-icon:empty:not([data-lucide]) {
     width: 1rem;
     height: 1rem;
 }
+
+/* An action that is on (liked, saved, featured) fills its icon: `sys-icon-filled` with the icon's name. */
+.sys-icon.sys-icon-filled {
+    fill: currentColor;
+}
