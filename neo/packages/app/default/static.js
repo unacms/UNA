@@ -21,11 +21,12 @@ const isWeb = Platform.OS === 'web'
 
 // Illustration, title and text: one stack with gap-6, no margins or padding of their own
 // (`isfirst` / `islast` turn off the H1's prose spacing). The same stack as the join page.
+// The illustration is 12rem, which grows with the reader's text size: never wider than its column.
 const SplashTextComponent = ({ texts }) => {
     const { t, i18n } = useTranslation()
     return (
         <View className="items-center lg:items-start gap-6 my-auto flex-auto w-full">
-            <View className="h-48 w-48">
+            <View className="aspect-square w-48 max-w-full">
                 <Illustration name="splash" />
             </View>
             <H1 isfirst islast className="text-center lg:text-start" fontFamily="font-title">
@@ -52,7 +53,7 @@ export const SplashTextBuiltIn = SplashTextComponent
 
 const JoinTextComponent = (props) => {
     return (
-        <View className="h-48 w-48">
+        <View className="aspect-square w-48 max-w-full">
             <Illustration name="join" />
         </View>
     )
