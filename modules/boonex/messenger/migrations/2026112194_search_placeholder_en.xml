@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The conversations search field's placeholder: "Search", not "Search..". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_messenger_title_search"><![CDATA[Search]]></string_upd>
+</resources>

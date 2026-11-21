@@ -21,11 +21,10 @@ const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 export type LayoutSettings = {
     /** `light` / `dark` / `auto`. */
     theme?: 'light' | 'dark' | 'auto' | string;
-    /** Layout variant name. */
-    name?: string;
-    density?: string;
     /** Language code or `auto` (device language). */
     lang?: string;
+    /** The home feed's cards: `default` or `small` (see `feedUnit`). */
+    feed_unit?: string;
     /** The user's level of interface sounds; unset follows UNA's settings. `false` (older builds) is `off`. */
     sounds?: SoundLevel | boolean;
     [key: string]: unknown;
@@ -76,6 +75,19 @@ const getDeviceLangCode = (): string => {
     if (Platform.OS === 'web' && typeof window === 'undefined') return getDefaultLangCode();
     if (deviceLangCode === null) deviceLangCode = getDefaultLangCode();
     return deviceLangCode;
+};
+
+/**
+ * The stored feed unit as one of `layout.avaliable_feed_units`. Builds from July to November 2026 stored the
+ * labels ("Full feed", "Compact feed") instead of the ids; anything else is `default`.
+ */
+const LEGACY_FEED_UNITS: Record<string, string> = { 'Compact feed': 'small', 'Full feed': 'default' };
+
+export const resolveFeedUnit = (value: unknown): string => {
+    const stored = typeof value === 'string' ? value : '';
+    const id = LEGACY_FEED_UNITS[stored] ?? stored;
+    const units = appSetting('layout', 'avaliable_feed_units');
+    return Array.isArray(units) && units.includes(id) ? id : 'default';
 };
 
 const resolveLangCode = (value: string | undefined): string => value && value != 'auto' ? value : getDeviceLangCode();
@@ -226,11 +238,6 @@ export const useLayoutSettings = () => {
         }, [isWeb]
     );
 
-    const setLayoutName = useCallback(
-        async (value: any) => {
-            await useLayoutSettingsStore.getState().updateLayoutSettings({ name: value });
-        }, []
-    );
 
     const setSoundLevel = useCallback(
         async (value: SoundLevel) => {
@@ -238,11 +245,6 @@ export const useLayoutSettings = () => {
         }, []
     );
 
-    const setDensity = useCallback(
-        async (value: any) => {
-            await useLayoutSettingsStore.getState().updateLayoutSettings({ density: value });
-        }, []
-    );
 
     const setLang = useCallback(
         async (value: any) => {
@@ -272,12 +274,13 @@ export const useLayoutSettings = () => {
         }
     }, [hydrated]);
 
-    const { density, name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
+    const { theme: themeName, lang } = layoutSettings ?? {};
+    const feedUnit = resolveFeedUnit(layoutSettings?.feed_unit);
     const langCode = resolveLangCode(lang);
     // The language `auto` picks, whatever is chosen now (the footer's System option names it).
     const autoLangCode = getDeviceLangCode();
     const storedSounds = layoutSettings?.sounds;
     const ownSoundLevel: SoundLevel | undefined = storedSounds === false ? 'off' : typeof storedSounds === 'string' ? storedSounds : undefined;
 
-    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode, autoLangCode, ownSoundLevel, setSoundLevel };
+    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, themeName, setThemeName, feedUnit, setLang, lang, langCode, autoLangCode, ownSoundLevel, setSoundLevel };
 };

@@ -455,9 +455,6 @@ class BxBaseFormView extends BxDolForm
             if($this->isViewMode() && isset($aInput['name']) && !empty($aInput['privacy']) && !$this->isInputVisible($aInput))
                 continue;
 
-            // nor a birthday nobody entered
-            if($this->isViewMode() && isset($aInput['name']) && 'birthday' == $aInput['name'] && $this->genCustomViewRowValueBirthday($aInput) === null)
-                continue;
 
             if(isset($aInput['type']) && in_array($aInput['name'], ['captcha'])) 
                 continue;
@@ -1206,13 +1203,17 @@ BLAH;
         ]);
 
         if(bx_is_api()) {
-            $mixedAge = $this->genCustomViewRowValueBirthday($aInput);
-            if($mixedAge === null)
+            $iAge = bx_birthday2age($aInput['value'] ?? '');
+
+            // No birthday: the site leaves the row out (genCustomViewRowValueBirthday), so the API leaves out the input.
+            if($iAge <= 0) {
+                $aInput['visible_for_levels'] = 0;
                 return '';
+            }
 
             $aInput = array_merge($aInput, [
                 'type' => 'text',
-                'value' => $mixedAge
+                'value' => $iAge
             ]);
         }
 
@@ -1232,10 +1233,8 @@ BLAH;
 
     protected function genCustomViewRowValueBirthday(&$aInput)
     {
-        if(!isset($aInput['value']) || !$aInput['value'] || in_array($aInput['value'], array('0000-00-00', '0000-00-00 00:00:00', '0000-00-00Z', '0000-00-00 00:00:00Z')))
-            return null;
-
-        return bx_birthday2age($aInput['value']);
+        $iAge = bx_birthday2age($aInput['value'] ?? '');
+        return $iAge > 0 ? $iAge : null;
     }
 
     /**

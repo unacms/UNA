@@ -8,18 +8,9 @@
         bx_clicked_stack_register();
     });
 
-    __service_worker__
-
-    (function(w) {
-        var dpr = (w.devicePixelRatio === undefined ? 1 : Math.round(w.devicePixelRatio));
-        if ($.cookie('devicePixelRatio') == dpr || dpr < 2 || (typeof(bIgnorePixelRatio) != "undefined" && bIgnorePixelRatio) || !navigator.cookieEnabled) 
-            return;
-        $.cookie('devicePixelRatio', dpr, {expires: 365, path: '/'});
-        if (1 != localStorage.getItem("dpr")) {
-            localStorage.setItem("dpr", 1);
-            window.location.reload();
-        }
-    })(window);
+    // the PWA's service worker, when Studio > Designer > PWA turns it on
+    if (__service_worker__ && navigator.serviceWorker)
+        navigator.serviceWorker.register('sw.js.php');
 
     var oMediaPhone = window.matchMedia('__css_media_phone__');
     var oMediaPhone2 = window.matchMedia('__css_media_phone2__');
