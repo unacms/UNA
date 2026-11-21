@@ -2659,7 +2659,7 @@
   <string name="_sys_acl_action_comments_remove_in_group_context"><![CDATA[Комментарии - Удалять в контексте для администраторов контекста]]></string>
 	<string name="_sys_acl_action_comments_remove_own"><![CDATA[Комментарии - Удалить Собственные]]></string>
 	<string name="_sys_acl_action_connect"><![CDATA[Установить связь (подружиться, следить и т.п.)]]></string>
-	<string name="_sys_acl_action_create_account"><![CDATA[Создать Аккаунт]]></string>
+	<string name="_sys_acl_action_create_account"><![CDATA[Создать аккаунт]]></string>
 	<string name="_sys_acl_action_create_account_desc"><![CDATA[Это имеет смысл только для гостей. Например, Вы можете временно отключить или задать лимит по времени для этого пункта.]]></string>
 	<string name="_sys_acl_action_delete_account"><![CDATA[Удалить Аккаунт]]></string>
 	<string name="_sys_acl_action_delete_account_desc"><![CDATA[Удалить аккаунт, также удалить содержимое аккаунта.]]></string>
@@ -3399,7 +3399,7 @@
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Отправить]]></string>
-        <string name="_sys_form_account_input_publish"><![CDATA[Создать аккаунт]]></string>
+        <string name="_sys_form_account_input_publish"><![CDATA[Зарегистрироваться]]></string>
         <string name="_sys_form_account_input_caption_system_picture"><![CDATA[Изображение аккаунта]]></string>
         <string name="_sys_form_account_input_picture"><![CDATA[Загрузить изображение аккаунта]]></string>
 	<string name="_sys_form_checkbox_value_off"><![CDATA[Нет]]></string>
