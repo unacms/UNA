@@ -335,12 +335,8 @@ class BxBaseStudioPolyglotKeys extends BxDolStudioPolyglotKeys
         $aCategories = $aCounter = array();
         $this->oDb->getCategoriesBy(array('type' => 'all'), $aCategories, false);
         $this->oDb->getKeysBy(array('type' => 'counter_by_category'), $aCounter, false);
-        $aCaptions = $this->oDb->getCategoryCaptions();
-        usort($aCategories, function($a, $b) use ($aCaptions) {
-            return strnatcasecmp($aCaptions[$a['name']] ?? $a['name'], $aCaptions[$b['name']] ?? $b['name']);
-        });
         foreach($aCategories as $aCategory)
-            $aInputModules['values']['id-' . $aCategory['id']] = ($aCaptions[$aCategory['name']] ?? $aCategory['name']) . " (" . (isset($aCounter[$aCategory['id']]) ? $aCounter[$aCategory['id']] : "0") . ")";;
+            $aInputModules['values']['id-' . $aCategory['id']] = $aCategory['name'] . " (" . (isset($aCounter[$aCategory['id']]) ? $aCounter[$aCategory['id']] : "0") . ")";;
 
         $aInputModules['values'] = array_merge(array('id-0' => _t('_adm_pgt_txt_all_modules')), $aInputModules['values']);
 
