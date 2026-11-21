@@ -2005,19 +2005,61 @@ function bx_onboarding_hide(oButton, sMenu)
 }
 
 /*
- * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form further
- * down the same page (the "Add new..." block) instead of reloading it; without the form the link is followed.
+ * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form of the
+ * "Add new..." block on the same page instead of reloading it. That block loads when it scrolls into view, so it is
+ * scrolled to and its form is opened once it is there. A page without the block goes to the homepage, which opens it.
  */
-function bx_onboarding_post()
+function bx_onboarding_post(bStay)
 {
-    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
-    if(!oForm)
-        return true;
+    var bReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fOpen = function(oForm) {
+        oForm.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+        oForm.click();
+    };
 
-    oForm.scrollIntoView({block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
-    oForm.click();
+    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
+    if(oForm) {
+        fOpen(oForm);
+        return false;
+    }
+
+    // the block is still a placeholder (block_async_create_post.html)
+    var oPlaceholder = document.querySelector('.sys-cpf-placeholder');
+    var oBlock = oPlaceholder ? oPlaceholder.closest('.bx-page-block-container') : null;
+    if(oBlock) {
+        oPlaceholder.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+
+        var oObserver = new MutationObserver(function() {
+            var oLoaded = oBlock.querySelector('.sys-cpf-default');
+            if(!oLoaded)
+                return;
+
+            oObserver.disconnect();
+            fOpen(oLoaded);
+        });
+        oObserver.observe(oBlock, {childList: true, subtree: true});
+        setTimeout(function() {
+            oObserver.disconnect();
+        }, 10000);
+
+        return false;
+    }
+
+    if(!bStay)
+        location.href = sUrlRoot + '#bx-compose';
     return false;
 }
+
+/*
+ * The homepage opened from "Write the first post" on another page (#bx-compose): opens the post form there.
+ */
+$(document).ready(function() {
+    if(location.hash != '#bx-compose')
+        return;
+
+    history.replaceState(null, '', location.pathname + location.search);
+    bx_onboarding_post(true);
+});
 
 /*
  * Introduction tours (BxDolTours): the Studio tour, built on Shepherd (plugins_public/shepherd). A step is drawn as a
