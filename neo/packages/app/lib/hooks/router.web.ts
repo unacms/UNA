@@ -6,6 +6,8 @@ export {
 
 export { default as Link } from 'next/link'
 import { useSyncExternalStore } from 'react';
+import { UNA_URL } from 'app/config';
+import { unaAppPath } from 'app/lib/navigation/una-app-path';
 import type { NavigationLike, RouterLike, SafeAreaInsets } from './router.types';
 
 
@@ -77,9 +79,18 @@ export function useLocalSearchParams(): { url: string } {
 }
 
 
-/** Web: full navigation (reloads page JSON and the session from the server). */
+/**
+ * Web: full navigation (reloads page JSON and the session from the server). A URL of
+ * UNA's own pages opens that page in NEO, even when UNA names it by its own absolute
+ * site URL; any other http(s) site is left for, and nothing else (no script URL) is opened.
+ */
 export function redirectTo(_router: RouterLike, url: string, _tabname?: string): void {
     if (!url) return;
-    const normalized = url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
-    window.location.assign(normalized);
+    const appPath = unaAppPath(url, UNA_URL);
+    if (appPath) {
+        window.location.assign(appPath);
+    } else if (/^(https?|mailto|tel):/i.test(url.trim())) {
+        // Another site; never a script or data URL.
+        window.location.assign(url.trim());
+    }
 }
