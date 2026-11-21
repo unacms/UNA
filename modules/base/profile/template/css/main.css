@@ -17,12 +17,17 @@
     overflow: visible;
 }
 
+/* A picture's plate is the card colour: white, gray-800 in dark. A :where(.dark) twin keeps the light rule's specificity. */
 .bx-def-unit-img .bx-base-pofile-unit-thumb {
     background: rgba(255, 255, 255, 1.0);
     background-clip: padding-box;
     border-width: 0px;
     border-color: rgba(255, 255, 255, 1.0);
     box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+:where(.dark) .bx-def-unit-img .bx-base-pofile-unit-thumb {
+    background-color: #27272a;
+    border-color: #27272a;
 }
 
 /* Badges in unit */
@@ -120,6 +125,9 @@ img.bx-base-pofile-unit-thumb {
     display: block;
 
     background-color: #ffffff;
+}
+:where(.dark) img.bx-base-pofile-unit-thumb {
+    background-color: #27272a;
 }
 
 p.bx-base-pofile-unit-thumb {
@@ -246,13 +254,18 @@ a.bx-base-pofile-cover-image:hover {
     height:100%;
     text-decoration:none;
 
-    background-color: #eee;
+    background-color: #e4e4e7;
     background-repeat: no-repeat;
     background-position: center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+:where(.dark) a.bx-base-pofile-cover-image,
+:where(.dark) p.bx-base-pofile-cover-image,
+:where(.dark) a.bx-base-pofile-cover-image:hover {
+    background-color: #27272a;
 }
 p.bx-base-pofile-cover-image img {
     position: relative;
@@ -316,6 +329,9 @@ a.bx-base-pofile-cover-thumb img {
 a.bx-base-pofile-cover-thumb img {
     background-color: #fff;
 }
+:where(.dark) a.bx-base-pofile-cover-thumb img {
+    background-color: #18181b;
+}
 
 a.bx-base-pofile-cover-thumb p.bx-base-pofile-unit-thumb,
 a.bx-base-pofile-cover-thumb img.bx-base-pofile-unit-thumb {
@@ -323,6 +339,12 @@ a.bx-base-pofile-cover-thumb img.bx-base-pofile-unit-thumb {
     background-clip: padding-box;
     border: 5px solid rgba(255, 255, 255, 1.0);
     box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+/* On the cover the ring is gray-900 in dark, as cover.html's ring-white dark:ring-gray-900. */
+:where(.dark) a.bx-base-pofile-cover-thumb p.bx-base-pofile-unit-thumb,
+:where(.dark) a.bx-base-pofile-cover-thumb img.bx-base-pofile-unit-thumb {
+    background-color: #18181b;
+    border-color: #18181b;
 }
 a.bx-base-pofile-cover-thumb p.bx-base-pofile-unit-thumb.bx-def-ava-big-size {
     font-size: 5.0rem;

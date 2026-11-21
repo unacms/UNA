@@ -54,7 +54,7 @@ class BxBaseStudioPolyglotKeys extends BxDolStudioPolyglotKeys
                     'type' => 'select',
                     'name' => 'category_id',
                     'caption' => _t('_adm_pgt_txt_nkp_module'),
-                    'values' => $this->oDb->getCategories(),
+                    'values' => $this->oDb->getCategoryTitles(),
                     'value' => BX_DOL_STUDIO_PK_CATEGORY_CUSTOM,
                     'db' => array (
                         'pass' => 'Int',
@@ -332,11 +332,11 @@ class BxBaseStudioPolyglotKeys extends BxDolStudioPolyglotKeys
             )
         );
 
-        $aCategories = $aCounter = array();
-        $this->oDb->getCategoriesBy(array('type' => 'all'), $aCategories, false);
+        $aCounter = array();
         $this->oDb->getKeysBy(array('type' => 'counter_by_category'), $aCounter, false);
-        foreach($aCategories as $aCategory)
-            $aInputModules['values']['id-' . $aCategory['id']] = $aCategory['name'] . " (" . (isset($aCounter[$aCategory['id']]) ? $aCounter[$aCategory['id']] : "0") . ")";;
+        foreach($this->oDb->getCategoryTitles() as $iCategoryId => $sCategoryTitle) {
+            $aInputModules['values']['id-' . $iCategoryId] = $sCategoryTitle . " (" . (isset($aCounter[$iCategoryId]) ? $aCounter[$iCategoryId] : "0") . ")";
+        }
 
         $aInputModules['values'] = array_merge(array('id-0' => _t('_adm_pgt_txt_all_modules')), $aInputModules['values']);
 

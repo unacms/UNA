@@ -2782,19 +2782,7 @@
     .bx-std .bx-std-segment:disabled {
         @apply opacity-50 cursor-default;
     }
-    /* Switches: translucent tracks instead of the site's tinted grays (the knob keeps its colours). */
-    .bx-std .bx-switcher-cont.off button {
-        @apply bg-black/10 dark:bg-white/10;
-    }
-    .bx-std .bx-switcher-cont.on button {
-        @apply bg-white dark:bg-white/10;
-    }
-    .bx-std .bx-switcher-cont.on button span {
-        @apply bg-green-500;
-    }
-    .bx-std .bx-switcher-cont.off button span {
-        @apply bg-white dark:bg-gray-500;
-    }
+    /* Switches are the site's ("Common elements: Forms: Switcher Input"): one look in Studio and on the site. */
     .bx-std .bx-theme-toggle {
         @apply flex p-0.5 rounded-full bg-black/5 dark:bg-white/5;
     }

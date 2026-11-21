@@ -19,9 +19,9 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `info`, `t
 ('bx_events_per_page_browse_showcase', '32', @iCategId, '_sys_option_per_page_browse_showcase', '', 'digit', '', '', '', 15),
 ('bx_events_per_page_browse_recommended', '10', @iCategId, '_sys_option_per_page_browse_recommended', '', 'digit', '', '', '', 16),
 ('bx_events_per_page_for_favorites_lists', '5', @iCategId, '_bx_events_option_per_page_for_favorites_lists', '', 'digit', '', '', '', 17),
-('bx_events_time_format', 'H:i', @iCategId, '_bx_events_option_time_format', '', 'digit', '', '', '', 20),
-('bx_events_short_date_format', 'j/n/Y', @iCategId, '_bx_events_option_short_date_format', '', 'digit', '', '', '', 22),
-('bx_events_datetime_format', 'j/n/Y H:i', @iCategId, '_bx_events_option_datetime_format', '', 'digit', '', '', '', 23),
+('bx_events_time_format', 'g:i A', @iCategId, '_bx_events_option_time_format', '', 'digit', '', '', '', 20),
+('bx_events_short_date_format', 'M j, Y', @iCategId, '_bx_events_option_short_date_format', '', 'digit', '', '', '', 22),
+('bx_events_datetime_format', 'M j, Y g:i A', @iCategId, '_bx_events_option_datetime_format', '', 'digit', '', '', '', 23),
 ('bx_events_summary_chars', '700', @iCategId, '_bx_events_option_summary_chars', '', 'digit', '', '', '', 25),
 ('bx_events_searchable_fields', 'event_name,event_desc', @iCategId, '_bx_events_option_searchable_fields', '', 'list', 'a:2:{s:6:"module";s:9:"bx_events";s:6:"method";s:21:"get_searchable_fields";}', '', '', 30),
 ('bx_events_members_mode', '', @iCategId, '_bx_events_option_members_mode', '', 'select', 'a:2:{s:6:"module";s:9:"bx_events";s:6:"method";s:24:"get_options_members_mode";}', '', '', 40),
@@ -277,6 +277,11 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 1, 'bx_events', '', '_bx_events_page_block_title_latest_profiles', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:9:"bx_events";s:6:"method";s:22:"browse_recent_profiles";}', 1, 0, 0, IFNULL(@iBlockOrder, 0) + 1),
 ('sys_home', 1, 'bx_events', '_bx_events_page_block_title_sys_recommended_entries_view_showcase', '_bx_events_page_block_title_recommended_entries_view_showcase', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:9:"bx_events";s:6:"method";s:18:"browse_recommended";}', 1, 0, 0, IFNULL(@iBlockOrder, 0) + 2);
 
+-- PAGE: explore
+SET @iBlockOrder = (SELECT `order` FROM `sys_pages_blocks` WHERE `object` = 'sys_explore' AND `cell_id` = 1 ORDER BY `order` DESC LIMIT 1);
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('sys_explore', 1, 'bx_events', '', '_bx_events_page_block_title_latest_profiles', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:9:"bx_events";s:6:"method";s:22:"browse_recent_profiles";s:6:"params";a:2:{i:0;b:0;i:1;b:0;}}', 0, 1, 1, IFNULL(@iBlockOrder, 0) + 1);
+
 -- PAGE: service blocks
 SET @iBlockOrder = (SELECT `order` FROM `sys_pages_blocks` WHERE `object` = '' AND `cell_id` = 0 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `order`) VALUES
@@ -430,8 +435,8 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_events_submenu', 'bx_events', 'events-past', '_bx_events_menu_item_title_system_entries_past', '_bx_events_menu_item_title_entries_past', 'page.php?i=events-past', '', '', '', '', 2147483647, 1, 1, 4),
 ('bx_events_submenu', 'bx_events', 'events-calendar', '_bx_events_menu_item_title_system_calendar', '_bx_events_menu_item_title_calendar', 'page.php?i=events-calendar', '', '', '', '', 2147483647, 1, 1, 5),
 ('bx_events_submenu', 'bx_events', 'events-search', '_bx_events_menu_item_title_system_entries_search', '_bx_events_menu_item_title_entries_search', 'page.php?i=events-search', '', '', '', '', 2147483647, 1, 1, 6),
-('bx_events_submenu', 'bx_events', 'events-joined', '_bx_events_menu_item_title_system_entries_joined', '_bx_events_menu_item_title_entries_joined', 'page.php?i=events-joined', '', '', '', '', 2147483647, 1, 1, 7),
-('bx_events_submenu', 'bx_events', 'events-followed', '_bx_events_menu_item_title_system_entries_followed', '_bx_events_menu_item_title_entries_followed', 'page.php?i=events-followed', '', '', '', '', 2147483647, 1, 1, 8),
+('bx_events_submenu', 'bx_events', 'events-joined', '_bx_events_menu_item_title_system_entries_joined', '_bx_events_menu_item_title_entries_joined', 'page.php?i=events-joined', '', '', '', '', 2147483646, 1, 1, 7),
+('bx_events_submenu', 'bx_events', 'events-followed', '_bx_events_menu_item_title_system_entries_followed', '_bx_events_menu_item_title_entries_followed', 'page.php?i=events-followed', '', '', '', '', 2147483646, 1, 1, 8),
 ('bx_events_submenu', 'bx_events', 'events-manage', '_bx_events_menu_item_title_system_entries_manage', '_bx_events_menu_item_title_entries_manage', 'page.php?i=events-manage', '', '', '', '', 2147483646, 1, 1, 9);
 
 -- MENU: view submenu

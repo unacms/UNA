@@ -77,3 +77,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' AND `module`='bx_photos' AND `name`='photos-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_snippet_meta' AND `module`='bx_photos' AND `name`='rating';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_snippet_meta' AND `module`='bx_photos' AND `name`='comments';
+
+-- PAGE: explore
+UPDATE `sys_pages_blocks` SET `active_api` = 1, `config_api` = '{"content_type":"browse_simple","header_more_url":"/photos-home","view":"row"}' WHERE `object` = 'sys_explore' AND `module` = 'bx_photos' AND `title` = '_bx_photos_page_block_title_recent_entries';

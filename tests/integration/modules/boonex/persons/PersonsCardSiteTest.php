@@ -148,9 +148,9 @@ class PersonsCardSiteTest extends BxDolIntegrationTestCase
 
         $sCard = $this->card((int)$oProfile->getContentId());
 
+        // "You" stays; no "View profile" button repeats the name's link.
         $this->assertStringContainsString('bx-base-pofile-card-view', $sCard);
-        $this->assertStringContainsString('<u>' . _t('_sys_profile_unit_view') . '</u>', $sCard);
-        $this->assertStringContainsString('sys-icon user-circle', $sCard, 'The apps\' icon: circle-user-round.');
+        $this->assertStringNotContainsString('<u>' . _t('_sys_profile_unit_view') . '</u>', $sCard);
         $this->assertStringContainsString('bx-base-pofile-card-you', $sCard);
         $this->assertStringContainsString(_t('_sys_profile_unit_you'), $sCard);
         $this->assertStringNotContainsString('bx-menu-item-button', $sCard, 'No action on the viewer\'s own card.');
@@ -167,7 +167,9 @@ class PersonsCardSiteTest extends BxDolIntegrationTestCase
 
         $sCard = $this->card($iOtherContentId);
 
-        $this->assertStringContainsString('bx-base-pofile-card-view', $sCard);
+        // The name and the picture open the profile: no icon-only "View profile" button repeats them.
+        $this->assertStringNotContainsString('bx-base-pofile-card-view', $sCard);
+        $this->assertStringContainsString('bx-base-pofile-card-title', $sCard);
         $this->assertStringNotContainsString('bx-base-pofile-card-you', $sCard);
         $this->assertStringNotContainsString('bx-menu-item-button', $sCard);
     }

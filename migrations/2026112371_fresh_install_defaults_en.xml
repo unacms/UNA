@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The "Play for guests too" sounds option is added. The "Alerts/hooks logger" option (no code read it) and Studio's empty-help message (the help feed is gone) are removed, and so are the labels of the old filter panel that nothing used. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Play for guests too]]></string_add>
+    <string_add name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[When this is off, visitors who haven't signed in hear nothing, and their pages don't load the sounds.]]></string_add>
+    <string_del name="_adm_stg_cpt_option_sys_alerts_logger"></string_del>
+    <string_del name="_adm_txt_show_help_content_empty"></string_del>
+    <string_del name="_sys_admin_apply"></string_del>
+    <string_del name="_sys_admin_filter"></string_del>
+</resources>

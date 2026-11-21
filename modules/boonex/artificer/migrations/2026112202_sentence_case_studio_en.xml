@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_artificer_stg_cpt_option_switcher_name"><![CDATA[Name in template switcher]]></string_upd>
+    <string_upd name="_bx_artificer_stg_cpt_option_color_scheme"><![CDATA[Color scheme]]></string_upd>
+    <string_upd name="_bx_artificer_stg_cpt_option_styles_custom"><![CDATA[Custom styles]]></string_upd>
+    <string_upd name="_bx_artificer_stg_cpt_option_images_custom"><![CDATA[Custom images]]></string_upd>
+</resources>

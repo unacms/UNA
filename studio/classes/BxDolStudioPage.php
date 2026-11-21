@@ -23,10 +23,6 @@ class BxDolStudioPage extends BxDol
     protected $sPageUrl;
     protected $sPageSelected;
 
-    protected $sPageRssHelpObject;
-    protected $sPageRssHelpUrl;
-    protected $iPageRssHelpLength;
-    protected $sPageRssHelpId;
 
     protected $_sTypesPreList;
 
@@ -51,10 +47,6 @@ class BxDolStudioPage extends BxDol
         $this->bPage = false;
         $this->bPageMultiple = false;
         $this->sPageSelected = '';       
-
-        $this->sPageRssHelpObject = 'sys_studio_page_help';
-        $this->sPageRssHelpUrl = 'http://feed.una.io/?section={page_name}';
-        $this->iPageRssHelpLength = 5;
 
         $this->_sTypesPreList = 'sys_studio_widget_types';
 
@@ -121,11 +113,6 @@ class BxDolStudioPage extends BxDol
         return bx_append_url_params($sUrl, array(
             'type' => $this->aPage['wid_type']
         ));
-    }
-
-    public function getRssHelpUrl()
-    {
-    	return bx_replace_markers($this->sPageRssHelpUrl, $this->aMarkers);
     }
 
     public function getPageTypes($bFullInfo = true)    

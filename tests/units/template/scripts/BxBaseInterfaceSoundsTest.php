@@ -7,6 +7,54 @@
  */
 class BxBaseInterfaceSoundsTest extends BxDolTestCase
 {
+    private $sGuestsPrior;
+
+    protected function setUp(): void
+    {
+        // These tests run without a signed-in member; guests hear sounds only with "Play for guests too".
+        $this->sGuestsPrior = getParam('sys_sounds_guests');
+        setParam('sys_sounds_guests', 'on');
+    }
+
+    protected function tearDown(): void
+    {
+        setParam('sys_sounds_guests', $this->sGuestsPrior);
+    }
+
+    public function testGuestsHearNothingAndLoadNothingByDefault(): void
+    {
+        $this->withOptions(['sys_sounds_guests' => '', 'sys_sounds_platforms' => 'site,studio,neo_web,ios,android'], function () {
+            $this->assertFalse(isLogged(), 'The suite runs as a guest.');
+            $this->assertSame([], BxDolSounds::getInstance()->getPlatforms());
+            $this->assertFalse(BxDolSounds::getInstance()->isOn('site'));
+            $this->assertSame([], BxDolSounds::getInstance()->getConfig()['platforms'], 'The apps get no platform either, so guests there are silent too.');
+            $this->assertSame('', $this->callProtected(BxTemplFunctions::getInstance(), 'getInjHeadSounds'), 'Guest pages do not load Cuelume.');
+        });
+    }
+
+    public function testMembersHearSoundsWhileGuestsDoNot(): void
+    {
+        $iProfileId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_profiles` WHERE `type` <> 'system' AND `status` = 'active' ORDER BY `id` LIMIT 1");
+        if (!$iProfileId)
+            $this->markTestSkipped('No active profile to sign in as.');
+
+        $mixedPrior = $GLOBALS['glForceCurrentProfileId'] ?? null;
+        $GLOBALS['glForceCurrentProfileId'] = $iProfileId;
+        try {
+            $this->withOptions(['sys_sounds_guests' => '', 'sys_sounds_platforms' => 'site,ios'], function () {
+                $this->assertTrue(isLogged());
+                $this->assertSame(['site', 'ios'], BxDolSounds::getInstance()->getPlatforms());
+                $this->assertStringContainsString('bx_sound_init(', $this->callProtected(BxTemplFunctions::getInstance(), 'getInjHeadSounds'));
+            });
+        }
+        finally {
+            if ($mixedPrior === null)
+                unset($GLOBALS['glForceCurrentProfileId']);
+            else
+                $GLOBALS['glForceCurrentProfileId'] = $mixedPrior;
+        }
+    }
+
     private function withOption(string $sName, string $sValue, callable $fTest)
     {
         $sPrior = getParam($sName);
@@ -224,6 +272,7 @@ class BxBaseInterfaceSoundsTest extends BxDolTestCase
         foreach (BxDolSounds::GROUPS as $sGroup)
             $this->assertMatchesRegularExpression("/\\(@iCategoryId, 'sys_sounds_" . $sGroup . "', '_adm_stg_cpt_option_sys_sounds_" . $sGroup . "', '_adm_stg_inf_option_sys_sounds_" . $sGroup . "', '', 'select',/", $sSql);
 
+        $this->assertStringContainsString("(@iCategoryId, 'sys_sounds_guests', '_adm_stg_cpt_option_sys_sounds_guests', '_adm_stg_inf_option_sys_sounds_guests', '', 'checkbox',", $sSql, 'Guests hear no sounds on a new site.');
         $this->assertStringNotContainsString('sys_ui_sounds', $sSql);
         $this->assertStringContainsString("('sys_account_notifications', 'system', 'sounds',", $sSql);
         $this->assertStringContainsString("('sys_studio_account_popup', 'system', 'sounds',", $sSql);

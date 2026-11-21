@@ -103,7 +103,10 @@ class SettingsPageTest extends BxDolIntegrationTestCase
         $this->assertNotContains('account-settings-section-account', $aNames);
         $this->assertNotContains('account-settings-section-profile', $aNames);
         $this->assertSame('account-settings-info', $aNames[0] ?? null);
-        $this->assertSame('account-settings-delete', end($aNames));
+        // the last tab is Delete; on phones the site puts the tabs that don't fit under More, its own item after it
+        $this->assertSame('more-auto', end($aNames));
+        $this->assertSame('account-settings-delete', $aNames[count($aNames) - 2] ?? null);
+        $this->assertTrue($oMenu instanceof BxBaseMenuMoreAuto && $oMenu->isMoreAuto());
 
         $iEmail = array_search('account-settings-email', $aNames, true);
         $iPassword = array_search('account-settings-password', $aNames, true);

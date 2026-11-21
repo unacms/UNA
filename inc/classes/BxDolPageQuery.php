@@ -200,6 +200,17 @@ class BxDolPageQuery extends BxDolDb
         return $aRet;
     }
 
+    /**
+     * The page's text blocks (`lang`, `html`) shown on the site, or in the apps, in the order of the page.
+     */
+    public function getPageTextBlocks($bIsApi = false)
+    {
+        return $this->getAll("SELECT `id`, `type`, `content`, `visible_for_levels` FROM `sys_pages_blocks` WHERE `object` = :object AND `cell_id` BETWEEN 1 AND :cells AND `type` IN ('lang', 'html') AND " . ($bIsApi ? "`active_api` = 1" : "`active` = 1") . " ORDER BY `cell_id` ASC, `order` ASC", [
+            'object' => $this->_aObject['object'],
+            'cells' => (int)$this->_aObject['cells_number'],
+        ]);
+    }
+
     public function getPageBlock($iBlockId)
     {
         $sQuery = $this->prepare("SELECT * FROM `sys_pages_blocks` WHERE `object` = ? AND `id` = ?", $this->_aObject['object'], $iBlockId);

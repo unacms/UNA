@@ -19,7 +19,7 @@ $aConfig = array(
     'note' => 'SocialEngine migration, import from SocialEngine',
     'version' => '9.0.0',
     'vendor' => 'UNA INC',
-    'help_url' => 'http://feed.una.io/?section={module_name}',
+    'help_url' => '',
 
     'compatible_with' => array(
         '9.0.x'

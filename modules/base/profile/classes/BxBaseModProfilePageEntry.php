@@ -185,6 +185,23 @@ class BxBaseModProfilePageEntry extends BxBaseModGeneralPageEntry
         return $this->getMetaImageDefault();
     }
 
+    /**
+     * A profile that exists but isn't active (waiting for review, suspended, or its account unconfirmed) says so,
+     * where a page that doesn't exist says "Page not found".
+     */
+    protected function _getPageNotFoundMsg ($mixedMsg = false)
+    {
+        if(!$this->_oProfile || bx_is_api())
+            return parent::_getPageNotFoundMsg($mixedMsg);
+
+        $this->_oTemplate->displayPageNotFound([
+            'title' => _t('_sys_txt_profile_not_available_title'),
+            'content' => _t('_sys_txt_profile_not_available_text'),
+            'state' => ['icon' => 'user-x', 'title' => '', 'text' => _t('_sys_txt_profile_not_available_text')],
+        ]);
+        exit;
+    }
+
     protected function _isAvailablePage($a)
     {
         // check if profile is active

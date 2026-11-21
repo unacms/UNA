@@ -34,6 +34,9 @@ class BxDolCover extends BxDolFactory implements iBxDolSingleton
     protected $_aOptiondDefault = array();
     protected $_bPageHasHeading = false;
 
+    /** The page shows a message in place of its content (not found, no access): no cover of the page. */
+    protected $_bPageCoverOff = false;
+
     protected function __construct()
     {
         if (isset($GLOBALS['bxDolClasses']['BxDolCover']))
@@ -157,6 +160,20 @@ class BxDolCover extends BxDolFactory implements iBxDolSingleton
     public function setPageHasHeading($bHasHeading = true)
     {
         $this->_bPageHasHeading = (bool)$bHasHeading;
+    }
+
+    /**
+     * The page shows a message in place of its content (BxDolTemplate::displayMsg): the page's own cover, an entry's
+     * picture and title, is not drawn, only the empty cover.
+     */
+    public function setPageCoverOff($bOff = true)
+    {
+        $this->_bPageCoverOff = (bool)$bOff;
+    }
+
+    public function isPageCoverOff()
+    {
+        return $this->_bPageCoverOff;
     }
 
     /**
