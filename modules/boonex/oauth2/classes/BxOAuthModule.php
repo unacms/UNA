@@ -483,9 +483,14 @@ class BxOAuthModule extends BxDolModule
 
             case 'login':
                 require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
-                $sForceRelocate = BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth/?' . http_build_query($this->getAuthorizeParams());
-                bx_login_form(false, false, $sForceRelocate);
+                bx_login_form(false, false, $this->getAuthorizeUrl());
                 break;
+
+            case 'create_profile':
+                // back here once the profile is made: profile modules send a new profile's account to `custom-referrer`
+                BxDolSession::getInstance()->setValue('custom-referrer', $this->getAuthorizeUrl());
+                header('Location: ' . BxDolPage::getProfileRequiredUrl());
+                exit;
 
             case 'consent':
                 $oPage = BxDolPage::getObjectInstanceByURI('oauth-authorization');
@@ -505,8 +510,11 @@ class BxOAuthModule extends BxDolModule
      * confidential client (one with a secret, so a code is of no use to anyone else) is approved:
      * for a profile that was connected to it before, or for the only profile of the account.
      *
-     * @return string 'error' (invalid request), 'login' (guest), 'consent' (show the consent form)
-     *         or 'response' ($oResponse holds the redirect to the client)
+     * An account with no profile to connect as gets the consent form with Create profile, a link to this request
+     * with `create_profile`: that GET goes to profile creation and back here (actionAuth).
+     *
+     * @return string 'error' (invalid request), 'login' (guest), 'consent' (show the consent form),
+     *         'create_profile' (go to profile creation) or 'response' ($oResponse holds the redirect to the client)
      */
     public function processAuthorizeRequest($oRequest, $oResponse)
     {
@@ -518,6 +526,10 @@ class BxOAuthModule extends BxDolModule
 
         $sClientId = $this->_oServer->getAuthorizeController()->getClientId();
         $aProfiles = $this->_getAuthorizeProfiles();
+
+        if (!$aProfiles && 'GET' == $oRequest->server('REQUEST_METHOD') && $oRequest->query('create_profile')) {
+            return 'create_profile';
+        }
 
         if ('POST' == $oRequest->server('REQUEST_METHOD') && null !== ($mixedProfileId = $oRequest->request('profile_id'))) {
             // the answer from the consent form
@@ -594,6 +606,8 @@ class BxOAuthModule extends BxDolModule
         if ($aScopes)
             $sText .= ' ' . _t('_bx_oauth_authorize_can');
 
+        $aProfileRows = $this->_getAuthorizeProfileRows();
+
         $aVars = array(
             'text' => $sText,
             'bx_if:scopes' => array(
@@ -618,7 +632,18 @@ class BxOAuthModule extends BxDolModule
                     'code_challenge_method' => $this->_escapeAttribute($aParams['code_challenge_method'] ?? ''),
                 ),
             ),
-            'bx_repeat:profiles' => $this->_getAuthorizeProfileRows(),
+            'bx_if:profiles' => array(
+                'condition' => !empty($aProfileRows),
+                'content' => array('bx_repeat:profiles' => $aProfileRows),
+            ),
+            // an account with no profile yet can't connect: what to do, and a way back here once it's done
+            'bx_if:no_profiles' => array(
+                'condition' => empty($aProfileRows),
+                'content' => array(
+                    'no_profile_text' => _t('_bx_oauth_authorize_no_profile', $this->_escapeAttribute($sTitle)),
+                    'create_profile_url' => $this->_escapeAttribute($this->getAuthorizeUrl(array('create_profile' => 1))),
+                ),
+            ),
             'footer' => BxTemplFunctions::getInstance()->designBoxFooter(BxDolService::call('system', 'get_agreement', array('_bx_oauth_authorize_agreement'), 'TemplServiceLogin')),
         );
 
@@ -651,6 +676,15 @@ class BxOAuthModule extends BxDolModule
         }
 
         return $aParams;
+    }
+
+    /**
+     * This authorize request again, as the OAuth library accepted it: where sign-in and profile creation come back to.
+     * Call it only after a successful validateAuthorizeRequest.
+     */
+    public function getAuthorizeUrl($aExtra = array())
+    {
+        return BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth/?' . http_build_query(array_merge($this->getAuthorizeParams(), $aExtra));
     }
 
     /**
