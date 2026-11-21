@@ -6,7 +6,7 @@ import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import { useScreenTier } from 'app/context/measure'
 import { appSetting, cn } from 'app/lib/util'
-import { buildMenuSections, type MenuSectionItem } from 'app/lib/menu-sections'
+import { buildMenuSections, type MenuSection, type MenuSectionItem } from 'app/lib/menu-sections'
 import { DashboardSettingsMenu } from 'app/components/elements/dashboard-stat'
 
 type SettingsMenuItem = MenuSectionItem & {
@@ -37,6 +37,30 @@ function SettingsRow({ item, first, danger }: Readonly<{ item: SettingsMenuItem;
                 {danger ? null : <Icon icon="ChevronRight" size={18} className="shrink-0 text-muted-foreground" />}
             </Pressable>
         </Link>
+    )
+}
+
+type SettingsSectionData = MenuSection<SettingsMenuItem>
+
+function SettingsSection({ section }: Readonly<{ section: SettingsSectionData }>) {
+    return (
+        <View className="w-full gap-2">
+            {section.title ? (
+                <Text className="px-4 text-sm font-semibold text-muted-foreground" numberOfLines={1}>
+                    {section.title}
+                </Text>
+            ) : null}
+            <View className={CARD}>
+                {section.entries.map((item, index) => (
+                    <SettingsRow
+                        key={String(item.id || item.name || index)}
+                        item={item}
+                        first={index === 0}
+                        danger={section.danger}
+                    />
+                ))}
+            </View>
+        </View>
     )
 }
 
@@ -71,27 +95,10 @@ export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: Sett
         // section's tab pane has no inset of its own, so the list keeps the page's 16px on every side,
         // and it is the page itself there (the section's list), centred on a tablet.
         <View className="mx-auto w-full max-w-2xl gap-6 p-4 lg:mx-0 lg:p-0">
-            {sections.map((section) => (
-                <View key={section.key} className="w-full gap-2">
-                    {section.title ? (
-                        <Text className="px-4 text-sm font-semibold text-muted-foreground" numberOfLines={1}>
-                            {section.title}
-                        </Text>
-                    ) : null}
-                    <View className={CARD}>
-                        {section.entries.map((item, index) => (
-                            <SettingsRow
-                                key={String(item.id || item.name || index)}
-                                item={item}
-                                first={index === 0}
-                                danger={section.danger}
-                            />
-                        ))}
-                    </View>
-                </View>
-            ))}
-            {/* The app's own preferences (language, theme, feed, sounds), which the dashboard had as tiles. */}
+            {sections.filter((section) => !section.danger).map((section) => <SettingsSection key={section.key} section={section} />)}
+            {/* The app's own preferences (language, theme, feed, sounds), which the dashboard had as tiles; deleting the account stays last. */}
             <DashboardSettingsMenu settingsLink={false} layouts={false} title={t('Preferences')} />
+            {sections.filter((section) => section.danger).map((section) => <SettingsSection key={section.key} section={section} />)}
         </View>
     )
 }
