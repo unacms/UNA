@@ -143,6 +143,7 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
         : null;
     const { indicatorStyle, isIndicatorShown, isIndicatorRevealed } = useNavbarIndicator(target, activeIndex);
     const indicatorTransitions = __menuTopIndicatorTransitions;
+    const indicatorLineClass = appSetting('layout', 'header', 'active_item_indicator');
 
     const MenuTopItem = components['menu-item']['topmenu'];
 
@@ -187,20 +188,24 @@ export default function MenuTop({ url, uri, align = 'center', headerBox = null }
                 }}
             />
 
-            <View
-                className={`${appSetting('layout', 'header', 'active_item_indicator')}`}
-                style={{
-                    width: indicatorStyle.width,
-                    transform: `translateX(${indicatorStyle.translateX}px)`,
-                    // The line rises 4px into place as it first fades in; after that it keeps its height (a tab switch
-                    // can hide it for a frame while the new tab is measured, and it must not dip then).
-                    translate: isIndicatorRevealed ? '0 0' : '0 4px',
-                    opacity: isIndicatorShown ? 1 : 0,
-                    pointerEvents: 'none',
-                    zIndex: 0,
-                    transition: indicatorTransitions.line
-                }}
-            />
+            {/* The line under the current tab, where the theme draws one (`active_item_indicator`; none by default:
+                the fill above marks the tab, as on UNA's site). */}
+            {indicatorLineClass ? (
+                <View
+                    className={indicatorLineClass}
+                    style={{
+                        width: indicatorStyle.width,
+                        transform: `translateX(${indicatorStyle.translateX}px)`,
+                        // The line rises 4px into place as it first fades in; after that it keeps its height (a tab switch
+                        // can hide it for a frame while the new tab is measured, and it must not dip then).
+                        translate: isIndicatorRevealed ? '0 0' : '0 4px',
+                        opacity: isIndicatorShown ? 1 : 0,
+                        pointerEvents: 'none',
+                        zIndex: 0,
+                        transition: indicatorTransitions.line
+                    }}
+                />
+            ) : null}
             <MenuTopProbe items={[...tabs, moreItem || navbarMoreItem([])]} t={t} onWidth={handleTabWidth} />
             {shownItems.map((item, index) => {
                 const isActive = index === activeIndex;

@@ -153,6 +153,7 @@ export default function MenuAccount({ buttonProps, children }) {
         <>
             <Redirect ref={redirectdRef} />
             <DropdownMenu
+                align="auto"
                 onOpenChange={setMenuOpen}
                 items={updatedMenu.map((item, index) => {
                     let sTitle = t(item.title)

@@ -147,9 +147,12 @@ export const settingsLayout = {
             content_width: { page: 'lg:max-w-8xl', full: '' },
             // The tabs in the bar per place. In the middle they are centred on the header (components/nav/menu-top.js).
             content_center_align: { start: 'justify-start', center: 'justify-center', end: 'justify-end' },
-            // 10px under the 44px tabs: on the bottom edge of the 64px header.
-            active_item_indicator: 'absolute -bottom-2.5 left-0 h-0.5 rounded-full flex-none bg-ring',
-            active_item_indicator_bg: 'absolute bottom-0 left-0 h-11 w-full overflow-hidden rounded-xl flex-none',
+            // The current page's tab: a line under it (none by default; e.g. 10px under the 44px tabs, on the bottom
+            // edge of the 64px header: 'absolute -bottom-2.5 left-0 h-0.5 rounded-full flex-none bg-ring') and the fill
+            // behind it, which slides from tab to tab: the accent row of UNA's current tab and More's current row
+            // (accent-200 at 60%, accent-900 in dark; Artificer tailwind.css `#bx-toolbar .bx-menu-main`).
+            active_item_indicator: '',
+            active_item_indicator_bg: 'absolute bottom-0 left-0 h-11 w-full overflow-hidden rounded-xl flex-none bg-accent-200/60 dark:bg-accent-900/60',
             /**
              * Band behind the header at rest on phones and tablets (below lg): part of the
              * content, so it scrolls away with it while the header's glass buttons stay.

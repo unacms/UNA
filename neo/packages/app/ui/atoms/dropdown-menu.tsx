@@ -11,7 +11,7 @@ import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import { MENU_HIGHLIGHT_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
-import DropdownPopup, { DropdownMenuOpenContext, type DropdownButtonProps } from 'app/ui/atoms/dropdown-popup'
+import DropdownPopup, { DropdownMenuOpenContext, type DropdownButtonProps, type DropdownPopupAlign } from 'app/ui/atoms/dropdown-popup'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { components } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
@@ -55,6 +55,8 @@ export type DropdownMenuProps = {
     title?: string;
     variant?: DropdownMenuVariant;
     showOnTop?: boolean;
+    /** Web popup: the trigger's edge the popup lines up with (`auto`: the right one in the window's right half). */
+    align?: DropdownPopupAlign;
     /** Rendered above the items (popup only). */
     header?: ReactNode;
     /** Rendered under the items (popup only). */
@@ -158,6 +160,7 @@ function DropdownMenuPopup({
     buttonProps,
     variant,
     showOnTop,
+    align,
     header,
     footer,
     tabsOverflowSize,
@@ -320,6 +323,7 @@ function DropdownMenuPopup({
                 buttonProps={buttonProps}
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
                 showOnTop={showOnTop}
+                align={align}
                 minPopupWidth={popupMinWidth}
                 maxPopupWidth={popupMaxWidth}
                 openOnFocus={
@@ -684,6 +688,7 @@ export default function DropdownMenu({
     title,
     variant,
     showOnTop,
+    align,
     header,
     footer,
     cancelable = true,
@@ -710,6 +715,7 @@ export default function DropdownMenu({
         return (
             <DropdownMenuPopup
                 showOnTop={showOnTop}
+                align={align}
                 items={items}
                 onSelect={onSelect}
                 children={children}

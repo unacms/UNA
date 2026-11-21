@@ -24,8 +24,8 @@ export const settingsMenus = {
         // Most tabs after Home in a navbar built from `objects.site`; 0: as many as fit. The tabs that don't fit go
         // under More, as on UNA's site; the site menu's "Persistent items" (Studio) never do.
         menu_navbar_site_tabs: 0,
-        // Columns in the navbar's dropdowns (More); an item's own `columns` wins.
-        menu_navbar_more_columns: 2,
+        // Columns in the navbar's dropdowns (More); an item's own `columns` wins. 1: one list, as UNA's More.
+        menu_navbar_more_columns: 1,
         iconset: {
             'profile-check-in': 'Check',
             'edit-event-questionnaire': 'List',

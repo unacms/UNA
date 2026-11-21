@@ -50,6 +50,7 @@ export default function MenuAdd({ buttonProps, children }) {
         <>
             <FormModal pageData={pageData} setPageData={setPageData} url={pageData?.url} />
             <DropdownMenu
+                align="auto"
                 onSelect={(oItem, event) => { setPageData('loading'); handleFormModal(oItem, event, setPageData) }}
                 items={flattenMenuItemsForDropdown(menu_add_items).map((item, index) => {
                     if (item.type === 'group_header') {

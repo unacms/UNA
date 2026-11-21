@@ -43,6 +43,7 @@ export default function MenuLauncher({ buttonProps }) {
 
     return (
         <DropdownMenu
+            align="auto"
             variant="grid"
             items={flattenMenuItemsForDropdown(menu_launcher_items).flatMap((item, index) => {
                 if (item.type === 'group_header' || item.type === 'separator') return [];
