@@ -71,8 +71,12 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
     const isLinked = !!(oProps.url && bShowLinks && !hoverCardWrapper)
     const avatarContent =
         <View className={cn(`${sSize} relative overflow-hidden bg-muted rounded-full`, oProps.avatarClassName, !isLinked && oProps.className)}>
-            {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + (oProps.id? getRandomColor(oProps.id)+'-500': 'primary/50')}>
-                <Text className={`${sSizeFontLetter} text-card uppercase`}>{name}</Text>
+            {/* UNA's colour for the profile (`color`), white letter, as the site draws it; older UNAs send none. */}
+            {!oProps.url_avatar && <View
+                className={'h-full items-center justify-center' + (oProps.color ? '' : ' bg-' + (oProps.id? getRandomColor(oProps.id)+'-500': 'primary/50'))}
+                style={oProps.color ? { backgroundColor: oProps.color } : undefined}
+            >
+                <Text className={`${sSizeFontLetter} ${oProps.color ? 'text-white' : 'text-card'} uppercase`}>{name}</Text>
             </View>}
             {!!oProps.url_avatar && <Image
                 sizes={iSizeWidth + "px"}

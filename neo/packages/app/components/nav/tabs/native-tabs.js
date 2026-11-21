@@ -44,6 +44,7 @@ function TabBarIcon({ tab, tabUrl, currentUser, color, focused, isAvatar, routeN
                     <Profile
                         {...currentUser}
                         url_avatar={currentUser?.avatar}
+                        color={currentUser?.color}
                         url={tabUrl}
                         showLinks={false}
                         displayType="unit_wo_info"

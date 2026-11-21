@@ -25,6 +25,18 @@ class LetterAvatarTest extends BxDolIntegrationTestCase
         $this->assertNotFalse(simplexml_load_string($sSvg), 'The image is well-formed SVG.');
     }
 
+    public function testAppsGetTheSameColour(): void
+    {
+        $aRgb = array_slice(BxDolTemplate::getColorCode(7), 0, 3);
+        $this->assertSame(vsprintf('#%02x%02x%02x', $aRgb), BxDolTemplate::getColorHex(7));
+        $this->assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', BxDolTemplate::getColorHex(0));
+
+        $iProfileId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_profiles` ORDER BY `id` LIMIT 1");
+        if (!$iProfileId)
+            $this->markTestSkipped('No profiles.');
+        $this->assertSame(BxDolTemplate::getColorHex($iProfileId), BxDolProfile::getData($iProfileId)['color'], 'Profile data in the API carries the colour the site draws the letter on.');
+    }
+
     public function testNameIsEscapedAndNeverEmpty(): void
     {
         $this->assertStringContainsString('>&lt;</text>', self::svg(BxDolTemplate::getLetterAvatarUrl('<b>', 1)));

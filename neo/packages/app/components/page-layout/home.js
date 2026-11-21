@@ -353,6 +353,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                                 <Profile
                                     {...currentUser}
                                     url_avatar={currentUser.avatar}
+                                    color={currentUser.color}
                                     displayType="unit_wo_info"
                                     displaySize="sm"
                                     showLinks={false}

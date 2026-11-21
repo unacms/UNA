@@ -445,6 +445,7 @@ export const PageHeaderBody = memo(({
 }) => {
     const { t } = useTranslation();
     // UNA's Designer sets the header per page layout: its width and where the main menu sits (lib/header-layout.ts).
+    const is404 = pageData?.page_status == 404;
     const headerLayout = resolveHeaderLayout(pageData?.header, {
         width: appSetting('layout', 'header', 'width'),
         align: appSetting('layout', 'header', 'align'),
@@ -609,7 +610,8 @@ export const PageHeaderBody = memo(({
                         {contextSelectorElement}
                     </Row>
                 </View>
-                {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} align={headerLayout.align} headerBox={headerBox} />}
+                {/* A 404 borrows the home page's data for its chrome: no tab is the current page there. */}
+                {isWeb && <MenuTop url={is404 ? '' : pageData?.url} uri={is404 ? '' : pageData?.uri} align={headerLayout.align} headerBox={headerBox} />}
                 <View className={' ' + appSetting('layout', 'header', 'content_right')}>
                 
                     {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} />}

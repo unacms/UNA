@@ -6307,6 +6307,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     public function getEmptyStateApi()
     {
         $aState = [
+            'icon' => 'newspaper',
             'title' => '_bx_timeline_txt_empty_feed_title',
             'text' => isLogged() ? '_bx_timeline_txt_empty_feed_text' : '',
         ];

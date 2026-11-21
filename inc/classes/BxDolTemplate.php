@@ -640,6 +640,24 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The colour getColorCode picks for a name or an id, as `#rrggbb`: for clients that draw a letter avatar
+     * themselves (the apps), so a profile has the same colour there as on the site.
+     * @param $mixedName the getColorCode key: an account or profile id
+     * @return string
+     */
+    public static function getColorHex($mixedName)
+    {
+        // Lists send it for every profile, and getColorPalette runs a hook each time.
+        static $aCache = [];
+
+        $sKey = (string)$mixedName;
+        if(!isset($aCache[$sKey]))
+            $aCache[$sKey] = vsprintf('#%02x%02x%02x', array_map('intval', array_slice(self::getColorCode($mixedName), 0, 3)));
+
+        return $aCache[$sKey];
+    }
+
+    /**
      * A letter avatar as an image URL (an SVG data URI), for code that needs a picture URL where there is no picture:
      * the first letter of the name, white on the name's colour from the palette, as the letter avatars in the units
      * (account_unit*.html, the profile units) draw it in markup.

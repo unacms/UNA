@@ -1,3 +1,4 @@
+import Script from 'next/script'
 import { Providers } from './providers'
 import { resolveServerLangCode } from '../lib/resolve-lang'
 import { loadUnaSharedData } from '../lib/una-shared-data'
@@ -29,11 +30,11 @@ export default async function RootLayout({ children }) {
             style={cornerSmooth.style}
             suppressHydrationWarning
         >
-            <head>
-                {/* The Application sidebar's stored state on <html> before the first paint (app-sidebar-prepaint). */}
-                <script dangerouslySetInnerHTML={{ __html: SIDEBAR_PREPAINT }} />
-            </head>
             <body className={appSetting('layout', 'body')}>
+                {/* The Application sidebar's stored state on <html> before the first paint (app-sidebar-prepaint).
+                    Next puts a beforeInteractive script in <head>; a plain <script> here made React warn whenever the
+                    tree rendered on the client (a 404). */}
+                <Script id="neo-sidebar-prepaint" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: SIDEBAR_PREPAINT }} />
                 <Providers initialLang={langCode} initialResources={initialResources} initialMenus={initialMenus} trackerConfig={trackerConfig} onVercel={!!process.env.VERCEL}>{children}</Providers>
             </body>
         </html>
