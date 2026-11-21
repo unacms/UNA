@@ -1722,23 +1722,48 @@ class BxBasePage extends BxDolPage
         if(($aCover = $this->getPageCoverImage()) && ($sUrl = $this->_getMetaImage($aCover)))
             return $sUrl;
 
-        // Any of the icons through the biggest (512px) icon transcoder: Facebook and others don't show one under 200px.
-        foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
-            if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iIcon, 'transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH], false)))
-                return $sUrl;
+        $aImage = static::getSiteMetaImage();
+        if(empty($aImage['url']))
+            return '';
 
-        // The uploaded logo (not an SVG, which previews don't show), else the template's own 512px icon, so a shared
-        // link always has a picture.
-        if(($iLogo = (int)getParam('sys_site_logo')) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iLogo, 'object' => 'sys_images_custom'], false)))
-            return $sUrl;
+        $this->_aMetaImages[$aImage['url']] = ['width' => $aImage['width'], 'height' => $aImage['height'], 'card' => $aImage['card']];
+        return $aImage['url'];
+    }
 
-        // A real address: the template may inline a small image as a data: URL, which previews can't fetch.
-        $sUrl = $this->_oTemplate->getIconUrl('android-icon-512.png');
-        if(!$sUrl || str_starts_with($sUrl, 'data:'))
-            $sUrl = BX_DOL_URL_ROOT . 'template/images/icons/android-icon-512.png';
+    /**
+     * The site's picture for link previews, for pages without one of their own and scripts that aren't pages (the
+     * splash): an uploaded icon through the biggest (512px) icon transcoder, as Facebook and others show none under
+     * 200px, else the uploaded logo (not an SVG, which previews don't show), else the template's own 512px icon, so a
+     * shared link always has a picture. Shown small and square.
+     * @return array 'url', 'width', 'height' (0 when unknown) and 'card'
+     */
+    public static function getSiteMetaImage()
+    {
+        $aResult = false;
 
-        $this->_aMetaImages[$sUrl] = ['width' => 512, 'height' => 512, 'card' => 'summary'];
-        return $sUrl;
+        if(($oTranscoder = BxDolTranscoder::getObjectInstance(BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH)) !== false)
+            foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
+                if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($aResult = $oTranscoder->getFileMetaImage($iIcon)) && !empty($aResult['url']))
+                    break;
+
+        if(empty($aResult['url']) && ($iLogo = (int)getParam('sys_site_logo')) != 0 && ($oStorage = BxDolStorage::getObjectInstance('sys_images_custom')) !== false) {
+            $aFile = $oStorage->getFile($iLogo);
+            if($aFile && !$aFile['private'] && strncmp($aFile['mime_type'], 'image/', 6) === 0 && !$oStorage->isMimeTypeSvg($aFile['mime_type'])) {
+                $aSize = !empty($aFile['dimensions']) ? explode('x', $aFile['dimensions']) : [];
+                $aResult = ['url' => $oStorage->getFileUrlById($iLogo), 'width' => (int)($aSize[0] ?? 0), 'height' => (int)($aSize[1] ?? 0)];
+            }
+        }
+
+        if(empty($aResult['url'])) {
+            // A real address: the template may inline a small image as a data: URL, which previews can't fetch.
+            $sUrl = BxDolTemplate::getInstance()->getIconUrl('android-icon-512.png');
+            if(!$sUrl || str_starts_with($sUrl, 'data:'))
+                $sUrl = BX_DOL_URL_ROOT . 'template/images/icons/android-icon-512.png';
+
+            $aResult = ['url' => $sUrl, 'width' => 512, 'height' => 512];
+        }
+
+        return ['url' => $aResult['url'], 'width' => (int)$aResult['width'], 'height' => (int)$aResult['height'], 'card' => 'summary'];
     }
 
     /**

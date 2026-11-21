@@ -1578,9 +1578,18 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 <meta name="geo.position" content="' . $this->aPage['location']['lat'] . ';' . $this->aPage['location']['lng'] . '" />
                 <meta name="geo.region" content="' . bx_html_attribute($this->aPage['location']['country']) . '" />';
 
-        // A page without an image of its own gets the page or site cover, or the site icon, @see BxBasePage::getMetaImageDefault
-        if(empty($this->aPage['image']) && $bPage && method_exists($oPage, 'getMetaImageDefault') && ($sImage = $oPage->getMetaImageDefault()))
-            $this->addPageMetaImage($sImage, $oPage->getMetaImageInfo($sImage));
+        // A page without an image of its own gets the page or site cover, or the site icon, @see BxBasePage::getMetaImageDefault;
+        // a script that stands in for a page (the splash) the site's icon or logo. Not found and other messages get none.
+        $bNoIndex = !empty($this->aPage['robots']) && is_string($this->aPage['robots']) && str_contains($this->aPage['robots'], 'noindex');
+        if(empty($this->aPage['image']) && !$bNoIndex) {
+            if($bPage && method_exists($oPage, 'getMetaImageDefault')) {
+                if(($sImage = $oPage->getMetaImageDefault()))
+                    $this->addPageMetaImage($sImage, $oPage->getMetaImageInfo($sImage));
+            }
+            else if(!$bPage && ($aImage = BxTemplPage::getSiteMetaImage()) && !empty($aImage['url'])) {
+                $this->addPageMetaImage($aImage['url'], ['width' => $aImage['width'], 'height' => $aImage['height'], 'card' => $aImage['card']]);
+            }
+        }
 
         // Open Graph, which X and others read too; a big picture card needs a big landscape image
         $bPageImage = !empty($this->aPage['image']);

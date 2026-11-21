@@ -60,6 +60,26 @@ class GuestFirstImpressionTest extends BxDolIntegrationTestCase
             $this->assertSame(1, (int)$oDb->getOne("SELECT COUNT(*) FROM `sys_pages_blocks` WHERE `object` = 'sys_explore' AND `module` = 'bx_posts' AND `active` = 1"));
     }
 
+    public function testShareImageWithoutUploadsIsTheTemplatesIcon(): void
+    {
+        $aBackup = [];
+        foreach (['sys_site_icon_android_splash', 'sys_site_icon_android', 'sys_site_icon_apple', 'sys_site_logo'] as $sName) {
+            $aBackup[$sName] = getParam($sName);
+            setParam($sName, '0');
+        }
+
+        try {
+            $aImage = BxTemplPage::getSiteMetaImage();
+            $this->assertStringStartsWith(BX_DOL_URL_ROOT, $aImage['url'], 'A real address, not a data: URL.');
+            $this->assertStringEndsWith('android-icon-512.png', $aImage['url']);
+            $this->assertSame([512, 512, 'summary'], [$aImage['width'], $aImage['height'], $aImage['card']]);
+        }
+        finally {
+            foreach ($aBackup as $sName => $sValue)
+                setParam($sName, $sValue);
+        }
+    }
+
     /** An option's value as install/sql/system.sql sets it. */
     private function _installDefault(string $sName): string
     {
