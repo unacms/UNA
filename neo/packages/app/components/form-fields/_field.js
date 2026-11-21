@@ -387,7 +387,8 @@ export default function Field({
                         '@5xl/form-container:flex-row @5xl/form-container:items-start gap-y-1 z-10',
                         // A wrapping row: the label and the link share the first line (the link goes
                         // under the label when both don't fit), the control takes the next one.
-                        linkOrdered && 'flex-row flex-wrap items-center justify-between gap-x-3'
+                        // No column gap in a wide form: the label and the control fill the row there.
+                        linkOrdered && 'flex-row flex-wrap items-center justify-between gap-x-3 @5xl/form-container:gap-x-0'
                     )}
                 >
                     {captionElement}

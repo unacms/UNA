@@ -52,7 +52,7 @@ class SignInBlockParityTest extends BxDolTestCase
         $this->assertStringContainsString('const captionAccessory = captionAccessoryProp ?? (isWeb ? null : linkOnLabelLine)', $sField, 'On web the link is not in the label\'s row, which is before the input.');
         $this->assertMatchesRegularExpression('/\{control\}\s*<\/View>\s*\{linkOrdered \? \([^<]*<View className="order-2 max-w-full /', $sField, 'After the control in the page, before it on screen.');
         $this->assertStringContainsString("linkOrdered && 'order-3'", $sField);
-        $this->assertStringContainsString("linkOrdered && 'flex-row flex-wrap items-center justify-between gap-x-3'", $sField, 'The link wraps under the label when both don\'t fit, so they never overlap.');
+        $this->assertStringContainsString("linkOrdered && 'flex-row flex-wrap items-center justify-between gap-x-3 @5xl/form-container:gap-x-0'", $sField, 'The link wraps under the label when both don\'t fit, so they never overlap.');
         $this->assertStringNotContainsString('tabIndex', $sField, 'The order comes from the page, not from tabindex.');
     }
 
