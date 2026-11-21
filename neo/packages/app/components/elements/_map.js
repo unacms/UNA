@@ -72,6 +72,7 @@ const CourseStructure = dynamic(() => import('./course-structure'), { loading: D
 const EditCourseContent = dynamic(() => import('./edit-course-content'), { loading: DynamicFallback });
 const ModuleStructure = dynamic(() => import('./module-structure'), { loading: DynamicFallback });
 const DashboardStat = dynamic(() => import('./dashboard-stat'), { loading: DynamicFallback });
+const AccountDashboard = dynamic(() => import('./account-dashboard'), { loading: DynamicFallback });
 const Invite = dynamic(() => import('./invite'), { loading: DynamicFallback });
 const InviteInContext = dynamic(() => import('./invite-in-context'), { loading: DynamicFallback });
 const NotificationsSettings = dynamic(() => import('./notifications-settings'), { loading: DynamicFallback });
@@ -158,6 +159,7 @@ export const componentsMapDefault = {
     feed_item: FeedItem,
     notifications_settings: NotificationsSettings,
     dashboard_stat: DashboardStat,
+    account_dashboard: AccountDashboard,
     categories_list: CategoriesList,
     course_structure: CourseStructure,
     edit_course_content: EditCourseContent,

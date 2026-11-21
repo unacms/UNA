@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Dashboard: "Your account" (profile and switcher, stats as tiles, preferences, Sign out) and the Tiles menu template. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_menu_template_title_tiles"><![CDATA[Плитки]]></string_add>
+    <string_add name="_sys_menu_title_profile_stats_tiles"><![CDATA[Профиль - Статистика плитками]]></string_add>
+    <string_add name="_sys_menu_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string_add>
+    <string_add name="_sys_menu_title_account_preferences"><![CDATA[Предпочтения]]></string_add>
+    <string_add name="_sys_menu_set_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string_add>
+    <string_add name="_sys_menu_set_title_account_preferences"><![CDATA[Предпочтения]]></string_add>
+    <string_add name="_sys_menu_item_title_system_da_profile"><![CDATA[Профиль и переключатель]]></string_add>
+    <string_add name="_sys_menu_item_title_system_da_stats"><![CDATA[Статистика]]></string_add>
+    <string_add name="_sys_menu_item_title_system_da_preferences"><![CDATA[Предпочтения]]></string_add>
+    <string_add name="_sys_menu_item_title_color_scheme"><![CDATA[Тема]]></string_add>
+    <string_add name="_sys_page_block_title_system_dashboard_account"><![CDATA[Ваш аккаунт (панель)]]></string_add>
+    <string_add name="_sys_page_block_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string_add>
+</resources>

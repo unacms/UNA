@@ -1950,8 +1950,8 @@
         @apply rounded-xl;
     }
     /* Header: the current page's tab is in the accent colours, NEO's open and current buttons (blue-200 at 60% and blue-700,
-       blue-900 at 60% and blue-300 in dark), as the toolbar buttons that are current or open. NEO marks its tab with the accent label and a
-       sliding underline instead. */
+       blue-900 at 60% and blue-300 in dark), as the toolbar buttons that are current or open. NEO fills its current tab the same way.
+       */
     #bx-toolbar .bx-menu-main > .bx-menu-item.bx-menu-tab-active > .bx-stl-mil {
         @apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300 ring-0;
     }

@@ -3996,6 +3996,7 @@
     <string name="_sys_menu_item_title_search"><![CDATA[Поиск]]></string>
     <string name="_sys_menu_item_title_switch_language"><![CDATA[Язык]]></string>
     <string name="_sys_menu_item_title_switch_language_current"><![CDATA[Язык: {0}]]></string>
+    <string name="_sys_menu_item_title_color_scheme"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_switch_language_mask"><![CDATA[{1} {0}]]></string>
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Дизайн]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
@@ -4115,6 +4116,9 @@
     <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Администрирование]]></string>
     <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Администрирование]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_active"><![CDATA[Активный профиль]]></string>
+    <string name="_sys_menu_item_title_system_da_profile"><![CDATA[Профиль и переключатель]]></string>
+    <string name="_sys_menu_item_title_system_da_stats"><![CDATA[Статистика]]></string>
+    <string name="_sys_menu_item_title_system_da_preferences"><![CDATA[Предпочтения]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_notifications"><![CDATA[Меню уведомлений]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_switcher"><![CDATA[Мои профили]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_create"><![CDATA[Создать профиль]]></string>
@@ -4253,6 +4257,8 @@
     <string name="_sys_menu_set_title_profile_followings"><![CDATA[Отслеживаемые контексты]]></string>
     <string name="_sys_menu_set_title_profile_memberships"><![CDATA[Членство профиля]]></string>
     <string name="_sys_menu_set_title_profile_stats"><![CDATA[Профиль - Статистика]]></string>
+    <string name="_sys_menu_set_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string>
+    <string name="_sys_menu_set_title_account_preferences"><![CDATA[Предпочтения]]></string>
     <string name="_sys_menu_set_title_site"><![CDATA[Сайт]]></string>
     <string name="_sys_menu_set_title_application"><![CDATA[Приложение]]></string>
     <string name="_sys_menu_set_title_apps_menu"><![CDATA[Меню приложений]]></string>
@@ -4281,6 +4287,7 @@
     <string name="_sys_menu_template_title_interactive_vertical"><![CDATA[Интерактивные вертикальные ссылки]]></string>
     <string name="_sys_menu_template_title_list_desc"><![CDATA[Список с описаниями]]></string>
     <string name="_sys_menu_template_title_list_desc_cards"><![CDATA[Карточки с описаниями]]></string>
+    <string name="_sys_menu_template_title_tiles"><![CDATA[Плитки]]></string>
     <string name="_sys_menu_template_title_empty"><![CDATA[Пустое меню]]></string>
     <string name="_sys_menu_template_title_main"><![CDATA[Навигация по сайту - Меню]]></string>
     <string name="_sys_menu_template_title_main_submenu"><![CDATA[Навигация по сайту - Подменю]]></string>
@@ -4334,6 +4341,9 @@
     <string name="_sys_menu_title_profile_followings"><![CDATA[Профиль - Подписки]]></string>
     <string name="_sys_menu_title_profile_memberships"><![CDATA[Членство профиля]]></string>
     <string name="_sys_menu_title_profile_stats"><![CDATA[Профиль - Статистика]]></string>
+    <string name="_sys_menu_title_profile_stats_tiles"><![CDATA[Профиль - Статистика плитками]]></string>
+    <string name="_sys_menu_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string>
+    <string name="_sys_menu_title_account_preferences"><![CDATA[Предпочтения]]></string>
     <string name="_sys_menu_title_tags_cloud"><![CDATA[Облако тегов]]></string>
     <string name="_sys_menu_title_rss"><![CDATA[RSS]]></string>
     <string name="_sys_menu_title_set_acl_level"><![CDATA[Уровни доступа]]></string>
@@ -4510,6 +4520,8 @@
 	<string name="_sys_page_block_system_title_login_only"><![CDATA[Вход]]></string>
         <string name="_sys_page_block_title_dashboard_content"><![CDATA[Панель - контент]]></string>
         <string name="_sys_page_block_title_dashboard_profiles"><![CDATA[Ваши профили]]></string>
+        <string name="_sys_page_block_title_system_dashboard_account"><![CDATA[Ваш аккаунт (панель)]]></string>
+        <string name="_sys_page_block_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string>
         <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Панель - аудит]]></string>
 
         <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Панель - Администрирование (только для App-а)]]></string>

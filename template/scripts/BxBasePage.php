@@ -673,6 +673,8 @@ class BxBasePage extends BxDolPage
             'page_width' => BxDolTemplate::getPageWidth($this->getType()),
             // The favicons uploaded in Designer (fav, svg, dark: '' for each one not uploaded), for the apps' browser tabs.
             'icons' => BxTemplFunctions::getUploadedFaviconUrls(),
+            // The site's own mark and logo, light and dark (null for each the site has none of: the apps draw UNA's).
+            'logo' => BxBaseApiV2System::logos(),
             // The accent Designer picked (step => "r g b", NEO's --accent-*), or null for the default blue.
             'accent' => BxDolDesigns::getAccentScale() ?: null,
             'layout' => $bSplash ? 'splash' : str_replace('.html', '', $this->_aObject['template']),

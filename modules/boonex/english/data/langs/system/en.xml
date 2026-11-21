@@ -4026,6 +4026,7 @@
     <string name="_sys_menu_item_title_search"><![CDATA[Search]]></string>
     <string name="_sys_menu_item_title_switch_language"><![CDATA[Language]]></string>
     <string name="_sys_menu_item_title_switch_language_current"><![CDATA[Language: {0}]]></string>
+    <string name="_sys_menu_item_title_color_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_switch_language_mask"><![CDATA[{1} {0}]]></string>
     <string name="_sys_menu_item_title_switch_template"><![CDATA[Design]]></string>
     <string name="_sys_menu_item_title_switch_template_mask"><![CDATA[{0}]]></string>
@@ -4156,6 +4157,9 @@
     <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Administration]]></string>
     <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Administration]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_active"><![CDATA[Active profile]]></string>
+    <string name="_sys_menu_item_title_system_da_profile"><![CDATA[Profile and switcher]]></string>
+    <string name="_sys_menu_item_title_system_da_stats"><![CDATA[Stats]]></string>
+    <string name="_sys_menu_item_title_system_da_preferences"><![CDATA[Preferences]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_notifications"><![CDATA[Notifications menu]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_switcher"><![CDATA[Profile Switcher]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_create"><![CDATA[Create profile]]></string>
@@ -4296,6 +4300,8 @@
     <string name="_sys_menu_set_title_profile_followings"><![CDATA[Followed Contexts]]></string>
     <string name="_sys_menu_set_title_profile_memberships"><![CDATA[Profile Memberships]]></string>
     <string name="_sys_menu_set_title_profile_stats"><![CDATA[Profile Stats]]></string>
+    <string name="_sys_menu_set_title_dashboard_account"><![CDATA[Your account]]></string>
+    <string name="_sys_menu_set_title_account_preferences"><![CDATA[Preferences]]></string>
     <string name="_sys_menu_set_title_site"><![CDATA[Site]]></string>
     <string name="_sys_menu_set_title_application"><![CDATA[Application]]></string>
     <string name="_sys_menu_set_title_apps_menu"><![CDATA[Apps Menu]]></string>
@@ -4324,6 +4330,7 @@
     <string name="_sys_menu_template_title_interactive_vertical"><![CDATA[Interactive Vertical Links]]></string>
     <string name="_sys_menu_template_title_list_desc"><![CDATA[List with descriptions]]></string>
     <string name="_sys_menu_template_title_list_desc_cards"><![CDATA[Cards with descriptions]]></string>
+    <string name="_sys_menu_template_title_tiles"><![CDATA[Tiles]]></string>
     <string name="_sys_menu_template_title_empty"><![CDATA[Empty Menu]]></string>
     <string name="_sys_menu_template_title_main"><![CDATA[Site Navigation Menu]]></string>
     <string name="_sys_menu_template_title_main_submenu"><![CDATA[Site Navigation Submenu]]></string>
@@ -4377,6 +4384,9 @@
     <string name="_sys_menu_title_profile_followings"><![CDATA[Profile Following]]></string>
     <string name="_sys_menu_title_profile_memberships"><![CDATA[Profile Memberships]]></string>
     <string name="_sys_menu_title_profile_stats"><![CDATA[Profile Stats]]></string>
+    <string name="_sys_menu_title_profile_stats_tiles"><![CDATA[Profile Stats as tiles]]></string>
+    <string name="_sys_menu_title_dashboard_account"><![CDATA[Your account]]></string>
+    <string name="_sys_menu_title_account_preferences"><![CDATA[Preferences]]></string>
     <string name="_sys_menu_title_tags_cloud"><![CDATA[Tags Cloud]]></string>
     <string name="_sys_menu_title_rss"><![CDATA[RSS]]></string>
     <string name="_sys_menu_title_set_acl_level"><![CDATA[ACL Levels]]></string>
@@ -4561,6 +4571,8 @@
     <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - audit]]></string>
     <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Dashboard - Administration (for App only)]]></string>
     <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Your profiles (dashboard)]]></string>
+    <string name="_sys_page_block_title_system_dashboard_account"><![CDATA[Your account (dashboard)]]></string>
+    <string name="_sys_page_block_title_dashboard_account"><![CDATA[Your account]]></string>
     <string name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string>
     <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string>
     <string name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Profile menu (apps)]]></string>

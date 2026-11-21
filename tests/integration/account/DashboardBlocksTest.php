@@ -26,6 +26,9 @@ class DashboardBlocksTest extends BxDolAccountTestCase
     {
         $_GET = $this->_aGetBackup ?? [];
         unset($GLOBALS['bxDolClasses']['BxDolInformer']);
+        // Menus keep the mode (site or API) they were made in.
+        foreach (['sys_dashboard_account', 'sys_account_preferences', 'sys_profile_stats', 'sys_profile_stats_tiles'] as $sMenu)
+            unset($GLOBALS['bxDolClasses']['BxDolMenu!' . $sMenu]);
         parent::tearDown();
     }
 
@@ -40,12 +43,14 @@ class DashboardBlocksTest extends BxDolAccountTestCase
         $this->assertSame(3, (int)$aByTitle['_sys_page_block_title_membership_stats']['cell_id'], '"Your membership" is in the right column.');
         $this->assertSame(1, (int)$aByTitle['_sys_page_block_title_membership_stats']['active_api'], 'The apps show it too.');
 
-        foreach (['_sys_page_block_title_system_onboarding_operator' => 2, '_sys_page_block_title_system_create_profile' => 2, '_sys_page_block_title_system_dashboard_profiles' => 3] as $sTitle => $iCell) {
+        foreach (['_sys_page_block_title_system_onboarding_operator' => 2, '_sys_page_block_title_system_create_profile' => 2, '_sys_page_block_title_system_dashboard_account' => 2] as $sTitle => $iCell) {
             $this->assertArrayHasKey($sTitle, $aByTitle);
             $this->assertSame($iCell, (int)$aByTitle[$sTitle]['cell_id'], $sTitle);
             $this->assertSame(1, (int)$aByTitle[$sTitle]['active'], $sTitle);
         }
-        $this->assertSame(0, (int)$aByTitle['_sys_page_block_title_system_dashboard_profiles']['active_api'], 'The apps\' dashboard has its own profile switcher.');
+        $this->assertSame(1, (int)$aByTitle['_sys_page_block_title_system_dashboard_account']['active_api'], 'The apps draw "Your account" too.');
+        $this->assertSame(0, (int)$aByTitle['_sys_page_block_title_system_dashboard_profiles']['active'], 'The profile switcher is in "Your account".');
+        $this->assertSame(0, (int)$aByTitle['_sys_page_block_title_dash_stats']['active_api'], 'The apps\' own stats block gives way to "Your account".');
         $this->assertNotSame('Membership Limits', _t('_sys_page_block_title_membership_stats'));
     }
 
@@ -110,6 +115,59 @@ class DashboardBlocksTest extends BxDolAccountTestCase
             $this->markTestSkipped('The test user has no profile.');
 
         $this->assertSame('', BxDolService::call('system', 'create_profile_block', [], 'TemplServiceProfiles'));
+    }
+
+    public function testYourAccountOnTheSite(): void
+    {
+        $this->bxLoginAsUser();
+        if (!bx_get_logged_profile_id())
+            $this->markTestSkipped('The test user has no profile.');
+
+        $s = BxDolService::call('system', 'account_dashboard', [], 'TemplServiceProfiles', true);
+        $this->assertIsString($s);
+        $this->assertStringContainsString('bx-menu-object-sys_dashboard_account', $s);
+        $this->assertStringContainsString('bx-mda-profile', $s, 'The profile and its switcher.');
+        $this->assertStringContainsString('bx-menu-tiles', $s, 'The stats as tiles.');
+        $this->assertStringContainsString('bx-menu-object-sys_account_preferences', $s, 'The preferences.');
+        $this->assertStringContainsString('logout', $s, 'Sign out.');
+        $this->assertStringNotContainsString('bx-psmi-show-more', $s, 'Tiles show every item: no Show more.');
+    }
+
+    public function testYourAccountForTheApps(): void
+    {
+        $this->bxLoginAsUser();
+        if (!bx_get_logged_profile_id())
+            $this->markTestSkipped('The test user has no profile.');
+
+        $_GET['api'] = 1;
+        $a = (new BxTemplServiceProfiles())->serviceAccountDashboard();
+        $this->assertSame('account_dashboard', $a[0]['type'] ?? null);
+
+        $aParts = array_column($a[0]['data']['items'], null, 'name');
+        $this->assertSame(['profile', 'stats', 'preferences', 'logout'], array_keys($aParts));
+        $this->assertSame(bx_get_logged_profile_id(), (int)$aParts['profile']['profile']['id']);
+        $this->assertArrayHasKey('switcher', $aParts['profile']);
+        $this->assertSame('sys_profile_stats_tiles', $aParts['stats']['menu']['object']);
+        $this->assertContains('settings', array_column($aParts['preferences']['menu']['items'], 'name'));
+    }
+
+    public function testNoYourAccountWithoutAProfile(): void
+    {
+        $this->bxSignInMemberWithoutProfile();
+
+        $this->assertSame('', BxDolService::call('system', 'account_dashboard', [], 'TemplServiceProfiles', true));
+    }
+
+    public function testPersonalMenuForTheApps(): void
+    {
+        $this->bxLoginAsUser();
+        if (!bx_get_logged_profile_id())
+            $this->markTestSkipped('The test user has no profile.');
+
+        $_GET['api'] = 1;
+        $a = (new BxTemplServiceProfiles())->serviceProfileMenu();
+        $this->assertSame('profile_menu', $a[0]['type'] ?? null);
+        $this->assertSame('sys_profile_stats', $a[0]['data']['object'], 'The home\'s left column is the member\'s own menu, as on the site, not the main menu.');
     }
 
     protected function bxSignInMemberWithoutProfile(): BxDolAccount

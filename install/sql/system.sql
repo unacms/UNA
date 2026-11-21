@@ -5020,7 +5020,8 @@ INSERT INTO `sys_menu_templates` (`id`, `template`, `title`, `visible`) VALUES
 (33, 'menu_toolbar_left.html', '_sys_menu_template_title_toolbar_left', 0),
 (34, 'menu_toolbar_right.html', '_sys_menu_template_title_toolbar_right', 0),
 (35, 'menu_list_desc.html', '_sys_menu_template_title_list_desc', 1),
-(36, 'menu_list_desc_cards.html', '_sys_menu_template_title_list_desc_cards', 1);
+(36, 'menu_list_desc_cards.html', '_sys_menu_template_title_list_desc_cards', 1),
+(37, 'menu_tiles.html', '_sys_menu_template_title_tiles', 1);
 
 CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -5074,6 +5075,9 @@ INSERT INTO `sys_objects_menu` (`object`, `title`, `title_public`, `set_name`, `
 ('sys_account_popup', '_sys_menu_title_account_popup', '', 'sys_account_popup', 'system', 12, 0, 1, 'BxTemplMenuAccountPopup', ''),
 ('sys_account_notifications', '_sys_menu_title_account_notifications', '', 'sys_account_notifications', 'system', 19, 0, 1, 'BxTemplMenuAccountNotifications', ''),
 ('sys_profile_stats', '_sys_menu_title_profile_stats', '', 'sys_profile_stats', 'system', 21, 0, 1, 'BxTemplMenuProfileStats', ''),
+('sys_profile_stats_tiles', '_sys_menu_title_profile_stats_tiles', '', 'sys_profile_stats', 'system', 37, 0, 1, 'BxTemplMenuProfileStats', ''),
+('sys_dashboard_account', '_sys_menu_title_dashboard_account', '', 'sys_dashboard_account', 'system', 20, 0, 1, 'BxTemplMenuDashboardAccount', ''),
+('sys_account_preferences', '_sys_menu_title_account_preferences', '', 'sys_account_preferences', 'system', 9, 0, 1, 'BxTemplMenuAccountPreferences', ''),
 ('sys_tags_cloud', '_sys_menu_title_tags_cloud', '', '', 'system', 21, 0, 1, 'BxTemplMenuTagsCloud', ''),
 ('sys_profile_followings', '_sys_menu_title_profile_followings', '', 'sys_profile_followings', 'system', 27, 0, 1, 'BxTemplMenuProfileFollowings', ''),
 ('sys_profile_memberships', '_sys_menu_title_profile_memberships', '', 'sys_profile_memberships', 'system', 27, 0, 1, 'BxTemplMenuProfileMemberships', ''),
@@ -5103,7 +5107,7 @@ UPDATE `sys_objects_menu` SET `section_nav`='sidebar' WHERE `object`='sys_con_su
 UPDATE `sys_objects_menu` SET `section_nav`='sidebar', `section_nav_small`='list' WHERE `object`='sys_account_settings_submenu';
 
 UPDATE `sys_objects_menu` SET `cache` = 'per_acl' WHERE `object` IN('sys_site', 'sys_account_notifications', 'sys_add_content', 'sys_toolbar_site', 'sys_footer', 'sys_site_submenu', 'sys_homepage_submenu', 'sys_homepage', 'sys_application', 'sys_site_in_panel');
-UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` IN('sys_toolbar_member', 'sys_profile_stats');
+UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` IN('sys_toolbar_member', 'sys_profile_stats', 'sys_profile_stats_tiles');
 -- the apps' menu has the viewer's own profile link: its items for API v2 GET /navigation are kept per profile
 UPDATE `sys_objects_menu` SET `cache` = 'per_user' WHERE `object` = 'sys_apps_menu';
 
@@ -5139,6 +5143,8 @@ INSERT INTO `sys_menu_sets` (`set_name`, `module`, `title`, `deletable`) VALUES
 ('sys_account_settings', 'system', '_sys_menu_set_title_account_settings', 0),
 ('sys_profiles_create', 'system', '_sys_menu_set_title_profile_create_links', 0),
 ('sys_profile_stats', 'system', '_sys_menu_set_title_profile_stats', 0),
+('sys_dashboard_account', 'system', '_sys_menu_set_title_dashboard_account', 0),
+('sys_account_preferences', 'system', '_sys_menu_set_title_account_preferences', 0),
 ('sys_profile_followings', 'system', '_sys_menu_set_title_profile_followings', 0),
 ('sys_profile_memberships', 'system', '_sys_menu_set_title_profile_memberships', 0),
 ('sys_apps_sidebar', 'system', '_sys_menu_set_title_apps_sidebar', 0),
@@ -5307,6 +5313,19 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'user-round',  '', '', 0, 1, 0, 1, 0, 2),
 ('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-round-plus',  '', '', 0, 1, 0, 1, 0, 3);
 
+-- "Your account" on the dashboard: the profile with the switcher, the stats as tiles, the preferences and Sign out
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_dashboard_account', 'system', 'profile', '_sys_menu_item_title_system_da_profile', '', '', '', '', '', '', '', 2147483646, 1, 0, 1),
+('sys_dashboard_account', 'system', 'stats', '_sys_menu_item_title_system_da_stats', '', '', '', '', '', '', 'sys_profile_stats_tiles', 2147483646, 1, 0, 2),
+('sys_dashboard_account', 'system', 'preferences', '_sys_menu_item_title_system_da_preferences', '', '', '', '', '', '', 'sys_account_preferences', 2147483646, 1, 0, 3),
+('sys_dashboard_account', 'system', 'logout', '_sys_menu_item_title_system_logout', '_sys_menu_item_title_logout', 'page.php?i=logout', '', '', 'log-out', '', '', 2147483646, 1, 1, 4);
+
+-- the member's preferences in "Your account": Settings, language and theme
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
+('sys_account_preferences', 'system', 'settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=settings', '', '', 'settings', '', '', 2147483646, 1, 1, 1),
+('sys_account_preferences', 'system', 'switch-language', '_sys_menu_item_title_system_switch_language', '_sys_menu_item_title_switch_language', 'javascript:void(0);', 'bx_menu_popup(''sys_switch_language_popup'', this, {pointer: {flip: true}});', '', 'languages', '', '', 2147483646, 1, 0, 2),
+('sys_account_preferences', 'system', 'color-scheme', '_sys_menu_item_title_system_color_scheme', '_sys_menu_item_title_color_scheme', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-account-preferences-color-scheme'', this, {pointer: {flip: true}});', '', 'eclipse', '', '', 2147483646, 1, 0, 3);
+
 -- account popup menu; its own profile list (profile-switcher) is off on the site: the account menu's switch-profile item shows it
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_popup', 'system', 'profile-active', '_sys_menu_item_title_system_ap_profile_active', '', '', '', '', '', '', '', 2147483646, 1, 1, 1),
@@ -5319,7 +5338,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_notifications', 'system', 'switch-profile', '_sys_menu_item_title_system_switch_profile', '_sys_menu_item_title_switch_profile', '{switch_profile}', '', '', 'users-round', '', '', 2147483646, 1, 1, 0),
 ('sys_account_notifications', 'system', 'dashboard', '_sys_menu_item_title_system_dashboard', '_sys_menu_item_title_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
 ('sys_account_notifications', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{own_profile_url}', '', '', 'user-round', '', '', 2147483644, 1, 1, 2),
-('sys_account_notifications', 'system', 'account-settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=account-settings-email', '', '', 'settings', '', '', 2147483646, 1, 1, 3),
+('sys_account_notifications', 'system', 'account-settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=settings', '', '', 'settings', '', '', 2147483646, 1, 1, 3),
 ('sys_account_notifications', 'system', 'add-content', '_sys_menu_item_title_system_add_content', '_sys_menu_item_title_add_content', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_add_content\', $(\'#bx-menu-toolbar-item-add-content a\').get(0), \'site\');', '', 'plus', '', '', 2147483646, 1, 1, 4),
 ('sys_account_notifications', 'system', 'studio', '_sys_menu_item_title_system_studio', '_sys_menu_item_title_studio', '{studio_url}', '', '', 'wrench', '', '', 2147483646, 1, 0, 5),
 ('sys_account_notifications', 'system', 'cart', '_sys_menu_item_title_system_cart', '_sys_menu_item_title_cart', 'cart.php', '', '', 'shopping-cart', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_cart_items_count";s:6:"params";a:0:{}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 1, 1, 6),
@@ -6692,7 +6711,8 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_dashboard', 2, 'system', '_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_onboarding', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_block_onboarding";s:6:"params";a:1:{i:0;s:23:"sys_onboarding_operator";}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
 ('sys_dashboard', 2, 'system', '_sys_page_block_title_system_create_profile', '_sys_page_block_title_account_profile_create', 11, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"create_profile_block";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
 ('sys_dashboard', 3, 'system', '', '_sys_page_block_title_membership_stats', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:24:"profile_membership_stats";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1),
-('sys_dashboard', 3, 'system', '_sys_page_block_title_system_dashboard_profiles', '_sys_page_block_title_dashboard_profiles', 11, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_profile_switcher_all";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
+('sys_dashboard', 2, 'system', '_sys_page_block_title_system_dashboard_account', '_sys_page_block_title_dashboard_account', 13, 0, 0, 2147483646, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"account_dashboard";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 0),
+('sys_dashboard', 3, 'system', '_sys_page_block_title_system_dashboard_profiles', '_sys_page_block_title_dashboard_profiles', 11, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_profile_switcher_all";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 0, 2),
 ('sys_dashboard', 2, 'system', '', '_sys_page_block_title_chart_stats', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_chart_stats";s:6:"params";a:0:{}s:5:"class";s:18:"TemplChartServices";}', 0, 1, 1, 3),
 
 ('sys_dashboard_content', 1, 'system', '', '_sys_page_block_title_dashboard_content', 11, 1, 0, 192, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"manage_content";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', 0, 1, 1, 1),

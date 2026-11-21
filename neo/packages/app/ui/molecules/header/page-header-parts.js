@@ -238,7 +238,7 @@ export const PageHeaderSmall = ({ pageData }) => {
     return (
         <Row className="w-full justify-between gap-2">
             <Link href="/home" alt={t('Home')} className="items-center">
-                {appStatic('logo')}
+                {appStatic('logo', { sources: pageData?.logo || __lastSiteLogo, alt: '' })}
             </Link>
             <HeaderElement url={pageData?.url} uri={pageData?.uri} />
         </Row>
@@ -416,6 +416,7 @@ export function usePageHeaderBase(pageData) {
 
 // The header the last page with one had: a page whose data has none yet keeps it, so the header doesn't jump.
 let __lastHeaderLayout = null;
+let __lastSiteLogo = null;
 
 /** The header row's place in the window: the main menu centres its tabs on it. Same object while it didn't move. */
 function nextHeaderBox(prev, layout) {
@@ -453,6 +454,13 @@ export const PageHeaderBody = memo(({
     useEffect(() => {
         if (pageData?.header) __lastHeaderLayout = { width: headerLayout.width, align: headerLayout.align };
     }, [pageData?.header, headerLayout.width, headerLayout.align]);
+    // The site's own logo (Studio > Designer), kept from the last page that sent one.
+    const siteLogo = pageData?.logo || __lastSiteLogo;
+    useEffect(() => {
+        if (pageData?.logo) __lastSiteLogo = pageData.logo;
+    }, [pageData?.logo]);
+    // The link around it names it (Home), so the image itself is decorative.
+    const logoProps = { sources: siteLogo, alt: '' };
     const [headerBox, setHeaderBox] = useState(null);
     // Logo variant per breakpoint. Web picks it with classes (SSR-safe);
     // native renders only the matching one, since `display: none` subtrees of
@@ -514,7 +522,7 @@ export const PageHeaderBody = memo(({
                     contentInsets={{ x: 6 }}
                     accessibilityLabel={t('Home')}
                 >
-                    {appStatic('logo')}
+                    {appStatic('logo', logoProps)}
                 </NeoButtonLink>
             </View>}
             {(isWeb || logoSize === 'tablet') && <View className="hidden sm:flex lg:hidden">
@@ -527,7 +535,7 @@ export const PageHeaderBody = memo(({
                     contentInsets={{ x: 12}}
                     accessibilityLabel={t('Home')}
                 >
-                    {appStatic('logo')}
+                    {appStatic('logo', logoProps)}
                 </NeoButtonLink>
             </View>}
             {/* Desktop: the logo at 40px as in UNA, 2px inside the link (p-0.5), so its 40px mark sits in a 44px
@@ -535,7 +543,7 @@ export const PageHeaderBody = memo(({
                 the page title's icon) and as tall as the header's buttons. */}
             {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex neo-header-logo">
                 <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center p-0.5">
-                    {appStatic('logo', { mode: 'full', height: 40 })}
+                    {appStatic('logo', { ...logoProps, mode: 'full', height: 40 })}
                 </Link>
             </View>}
         </>

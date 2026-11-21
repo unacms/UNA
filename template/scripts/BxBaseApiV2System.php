@@ -81,14 +81,7 @@ class BxBaseApiV2System
 
         $sDescription = BxDolApiV2Map::text((string)$aPwa['description']['used']);
 
-        // the logos' proportions, as the template measured them from the uploaded files (once per upload,
-        // BxBaseModTemplateConfig::getLogoValues), so the site's header and the apps draw them alike
-        $aAspect = [];
-        foreach (['logo', 'logo_dark'] as $sType) {
-            $fRatio = $oDesigns->getSiteLogoAspectRatio($sType);
-            $bUploaded = in_array($aSources[$sType]['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true);
-            $aAspect[$sType] = $bUploaded && $fRatio > 0 ? round($fRatio, 4) : null;
-        }
+        $aAspect = static::logoAspects($aSources);
 
         // the 180x180 home screen icon, as BxBaseFunctions::getMetaIcons picks it
         $sIcon = '';
@@ -112,6 +105,48 @@ class BxBaseApiV2System
             // near-white) colours the browser's title bar and is no brand colour of the site's
             'accent' => static::brandingColour((string)$aPwa['theme_color']['value']),
         ];
+    }
+
+    /**
+     * The community's own mark and logo, light and dark, as the site's header picks them (see branding): a URL each,
+     * or null where it has none of its own and a client draws UNA's. API v1 sends them with every page (`logo`).
+     */
+    public static function logos()
+    {
+        $oTemplate = BxDolTemplate::getInstance();
+        $aSources = BxDolDesigns::getInstance()->getSiteLogoSources(function ($sFile) use ($oTemplate) {
+            return $oTemplate->getImageUrl($sFile);
+        });
+
+        $aAspect = static::logoAspects($aSources);
+
+        return [
+            'mark' => static::brandingImage($aSources['mark']),
+            'mark_dark' => static::brandingImage($aSources['mark_dark']),
+            'logo' => static::brandingImage($aSources['logo']),
+            'logo_dark' => static::brandingImage($aSources['logo_dark']),
+            'logo_aspect' => $aAspect['logo'],
+            'logo_dark_aspect' => $aAspect['logo_dark'],
+        ];
+    }
+
+    /**
+     * The logos' proportions, as the template measured them from the uploaded files (once per upload,
+     * BxBaseModTemplateConfig::getLogoValues), so the site's header and the apps draw them alike: null for a logo
+     * that is not an upload.
+     */
+    protected static function logoAspects($aSources)
+    {
+        $oDesigns = BxDolDesigns::getInstance();
+
+        $aAspect = [];
+        foreach (['logo', 'logo_dark'] as $sType) {
+            $fRatio = $oDesigns->getSiteLogoAspectRatio($sType);
+            $bUploaded = in_array($aSources[$sType]['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true);
+            $aAspect[$sType] = $bUploaded && $fRatio > 0 ? round($fRatio, 4) : null;
+        }
+
+        return $aAspect;
     }
 
     /**
