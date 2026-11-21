@@ -12,7 +12,6 @@ import { appStatic } from 'app/lib/app-static'
 import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import { useThemeName, useThemeValue } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
-import { useLayoutSettings } from 'app/context/layout-settings';
 import PopupModal from 'app/ui/molecules/dialogs/popup-modal'
 import { PageHeader } from 'app/ui/molecules/header/page-header';
 import { HeaderOptionsProvider } from 'app/ui/molecules/header/options';
@@ -24,7 +23,7 @@ import Script from 'next/script';
 // The layout the previous page had: a page whose data has none yet keeps the shell as it is.
 let __lastPageLayout = null;
 
-const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, data, children, blocks }) => {
+const MemoizedContent = React.memo(({ currentUser, layoutName, data, children, blocks }) => {
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
     useEffect(() => {
@@ -69,7 +68,7 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
             <AsyncWorker />
             {hasSidebar && <AppSidebar pageData={data} />}
             <HeaderOptionsProvider>
-                <PageHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />
+                <PageHeader layoutName={layoutName} pageData={data} />
                 <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} />
             </HeaderOptionsProvider>
             <Footer />
@@ -183,7 +182,6 @@ export default function Layout(props) {
         el.style.left = '';
     }
 
-    const { layoutName: pageLayoutName } = useLayoutSettings();
 
     useEffect(() => {
         if (data?.title) {
@@ -227,7 +225,7 @@ export default function Layout(props) {
     if (data?.empty)
         return <>{children}</>
 
-    return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
+    return <MemoizedContent blocks={blocks} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
 const Content = React.memo(({ children, currentUser, layoutName, url }) => {

@@ -2,12 +2,10 @@ export const settingsLayout = {
     layout: {
         body: ' bg-background ',
         defaults: {
-            name: 'hor',
             theme: 'auto',
             lang: 'en',
             feed_unit: 'default',
         },
-        avaliable_layouts: ['hor', 'ver', 'mixed'],
         avaliable_feed_units: ['Full feed', 'Compact feed'],
         avaliable_langs: ['auto', 'en', 'ru', 'es', 'de', 'fr'],
         screen: ' w-full  ',
