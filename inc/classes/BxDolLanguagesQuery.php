@@ -369,7 +369,7 @@ class BxDolLanguagesQuery extends BxDolDb implements iBxDolSingleton
      *
      * @return array category name => caption, only for categories that belong to a module
      */
-    function getCategoryCaptions()
+    public function getCategoryCaptions()
     {
         if($this->_aCategoryCaptions !== null)
             return $this->_aCategoryCaptions;
