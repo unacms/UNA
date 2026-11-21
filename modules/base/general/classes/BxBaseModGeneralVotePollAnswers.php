@@ -145,7 +145,7 @@ class BxBaseModGeneralVotePollAnswers extends BxTemplVoteLikes
 
     protected function _getIconDo($bVoted)
     {
-    	return $bVoted ?  'far dot-circle' : 'far circle';
+    	return $bVoted ? 'circle-dot' : 'circle';
     }
 
     protected function _getTitleDo($bVoted)

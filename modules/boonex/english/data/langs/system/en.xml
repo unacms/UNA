@@ -3988,7 +3988,7 @@
     <string name="_sys_menu_item_title_studio"><![CDATA[Studio]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Subscriptions]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share on Facebook]]></string>
-    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on Twitter]]></string>
+    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on X]]></string>
     <string name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string>
     <string name="_sys_menu_item_title_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string>
@@ -4141,7 +4141,7 @@
     <string name="_sys_menu_item_title_social_sharing"><![CDATA[Share]]></string>
     <string name="_sys_menu_item_title_system_social_sharing"><![CDATA[Share]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Share on Facebook]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on Twitter]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on X]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string>
     <string name="_sys_menu_item_title_system_sm_in_reply_to"><![CDATA[In reply to]]></string>
     <string name="_sys_menu_item_title_system_sm_author"><![CDATA[Author]]></string>

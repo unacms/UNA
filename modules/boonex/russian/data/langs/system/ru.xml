@@ -3958,7 +3958,7 @@
     <string name="_sys_menu_item_title_studio"><![CDATA[Студия]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Подписки]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
-    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в Twitter]]></string>
+    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в X]]></string>
     <string name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Поделиться в Pinterest]]></string>
     <string name="_sys_menu_item_title_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_sm_in_reply_to"><![CDATA[В ответ к]]></string>
@@ -4103,7 +4103,7 @@
     <string name="_sys_menu_item_title_va_more_auto"><![CDATA[Ещё]]></string>
     <string name="_sys_menu_item_title_va_more_auto_empty"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в Twitter]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в X]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Поделиться в Pinterest]]></string>
     <string name="_sys_menu_item_title_system_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_system_sm_in_reply_to"><![CDATA[В ответ к]]></string>
