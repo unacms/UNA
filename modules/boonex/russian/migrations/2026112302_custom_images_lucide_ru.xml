@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Artificer > Styles: custom image icons are Lucide names, not Font Awesome. -->
+<resources name="ru" flag="ru" title="Russian" category="Boonex Artificer Template">
+    <string_upd name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Каждая строка — одно изображение: <b>имя</b> => <b>значение</b> => <b>тип</b> => <b>класс</b>. <b>тип</b> и <b>класс</b> можно опустить. Типы: <b>ic</b> — значок (имя значка Lucide, как на lucide.dev), <b>im</b> — изображение (имя файла или URL), <b>sc</b> — код SVG.<br />Чтобы увидеть изменения, очистите кеш шаблонов (если он включён).]]></string_upd>
+</resources>

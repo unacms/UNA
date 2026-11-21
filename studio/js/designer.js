@@ -630,4 +630,24 @@ BxDolStudioDesigner.prototype.checkLogoContrast = function() {
     });
 };
 
+/**
+ * Designer > Settings > Accent color: Studio takes the picked preset at once (its --bx-accent-* variables, which every
+ * blue-* class reads), so the choice can be seen before it is saved. The select carries the presets in data-presets.
+ */
+BxDolStudioDesigner.prototype.previewAccent = function(oSelect) {
+    var oPresets = {};
+    try {
+        oPresets = JSON.parse(oSelect.getAttribute('data-presets') || '{}');
+    }
+    catch(e) {
+        return;
+    }
+
+    var oScale = oPresets[oSelect.value];
+    if(!oScale)
+        return;
+
+    for(var sStep in oScale)
+        document.documentElement.style.setProperty('--bx-accent-' + sStep, oScale[sStep]);
+};
 /** @} */
