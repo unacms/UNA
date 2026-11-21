@@ -4224,6 +4224,10 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             header('Content-Security-Policy: frame-ancestors ' . getParam('sys_csp_frame_ancestors'));
 
         $sResult = $oTemplate->parsePageByName('page_' . $oTemplate->getPageNameIndex() . '.html', $oTemplate->getPageContent());
+
+        // the drawings of the icons the page names go into the icon set's code (BxBaseIconsetLucide::fillPageIcons)
+        if(($oIconset = BxDolIconset::getObjectInstance()) && method_exists($oIconset, 'fillPageIcons'))
+            $sResult = $oIconset->fillPageIcons($sResult);
         
         /**
          * @hooks

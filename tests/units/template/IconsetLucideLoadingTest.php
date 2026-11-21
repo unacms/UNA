@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Lucide's script (every icon as data) is not one of the scripts each page waits for in <head>: the set gives the
- * preloader no script, prints an async tag in <head> that draws the icons when it loads, and reserves each icon's room
- * in CSS so nothing moves when they arrive.
+ * The Lucide set loads no script of icons (Lucide's own is every icon as data, about 118 KB compressed, for a page that
+ * shows a few dozen): the page's code carries the drawings of the icons the page names (fillPageIcons, called with the
+ * page's HTML before it goes out) and loads the file of an icon that comes later. Each icon's room is kept in CSS so
+ * nothing moves when it is drawn.
  */
 class IconsetLucideLoadingTest extends BxDolTestCase
 {
@@ -25,36 +26,55 @@ class IconsetLucideLoadingTest extends BxDolTestCase
         return $aMatch[1];
     }
 
-    public function testTheSetGivesThePreloaderNoScript(): void
+    private static function iconset(): BxBaseIconsetLucide
+    {
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide');
+        self::assertInstanceOf(BxBaseIconsetLucide::class, $oIconset);
+
+        return $oIconset;
+    }
+
+    public function testNoScriptOfIconsLoads(): void
     {
         $this->assertMatchesRegularExpression('/^\s*return false;\s*$/', self::method('template/scripts/BxBaseIconsetLucide.php', 'getPreloaderJs'));
+        $this->assertFalse(self::iconset()->getCodeHead(), 'Nothing in <head>.');
+        $this->assertFileDoesNotExist(__DIR__ . '/../../../template/iconset_lucide_head.html');
+        $this->assertStringNotContainsString('lucide.min.js', self::read('template/scripts/BxBaseIconsetLucide.php'));
     }
 
-    public function testTheScriptTagIsAsyncAndDrawsTheIconsOnLoad(): void
+    public function testThePageCarriesTheDrawingsOfItsIcons(): void
     {
-        $s = self::read('template/iconset_lucide_head.html');
+        $oIconset = self::iconset();
+        $sCode = $oIconset->getCode();
+        $this->assertStringContainsString('const oSvgs = ' . BxBaseIconsetLucide::PAGE_ICONS . ';', $sCode);
 
-        $this->assertSame(1, preg_match_all('/<script\b[^>]*>/', $s, $aMatches));
-        $this->assertMatchesRegularExpression('/\ssrc="__url__"/', $aMatches[0][0]);
-        $this->assertMatchesRegularExpression('/\sasync[\s>]/', $aMatches[0][0]);
-        $this->assertStringContainsString('onload="window.bx_iconset_init_lucide && bx_iconset_init_lucide()"', $aMatches[0][0]);
+        $sHtml = '<i class="sys-icon cog"></i><span class="bx-std-star sys-icon star"></span><i class="sys-icon UserRoundKey"></i>'
+            . '<i class="sys-icon brand-x"></i><i class="sys-icon no-such-icon"></i>' . $sCode;
+        $sPage = $oIconset->fillPageIcons($sHtml);
 
-        $this->assertStringContainsString("parseHtmlByName('iconset_lucide_head.html'", self::method('template/scripts/BxBaseIconsetLucide.php', 'getCodeHead'));
-        $this->assertStringContainsString('lucide/lucide.min.js', self::method('template/scripts/BxBaseIconsetLucide.php', 'getCodeHead'));
+        $this->assertStringNotContainsString(BxBaseIconsetLucide::PAGE_ICONS, $sPage);
+        $this->assertSame(1, preg_match('/const oSvgs = (\{.*?\});\n/s', $sPage, $aMatch));
+        $aSvgs = json_decode($aMatch[1], true);
+        $this->assertSame(['settings', 'star', 'user-round-key', 'brand-x'], array_keys($aSvgs), 'Mapped, PascalCase and brand names are found; unknown ones are left to the script.');
+        $this->assertStringStartsWith('<svg class="lucide lucide-settings"', $aSvgs['settings']);
+        $this->assertStringStartsWith('<svg class="sys-icon-brand"', $aSvgs['brand-x']);
+        $this->assertStringNotContainsString('</script>', $aMatch[1], 'The drawings cannot close the script.');
     }
 
-    public function testTheHeadPrintsTheSetsCodeAndOtherSetsHaveNone(): void
+    public function testThePageCodeFillsTheIcons(): void
     {
-        $this->assertStringContainsString('->getCodeHead()', self::method('template/scripts/BxBaseFunctions.php', 'getInjHeadIcons'));
-        $this->assertMatchesRegularExpression('/^\s*return false;\s*$/', self::method('template/scripts/BxBaseIconset.php', 'getCodeHead'));
+        $this->assertStringContainsString('$sResult = $oIconset->fillPageIcons($sResult);', self::read('inc/classes/BxDolTemplate.php'));
     }
 
-    public function testTheCodeAtThePagesEndStillDrawsAndWaitsForTheScript(): void
+    public function testIconsThatComeLaterLoadFromTheirFiles(): void
     {
-        $s = self::read('template/scripts/BxBaseIconsetLucide.php');
+        $sCode = self::iconset()->getCode();
 
-        $this->assertStringContainsString('if(!window.lucide || !lucide.icons)', $s, 'Without the script yet, the call returns and the tag\'s onload draws.');
-        $this->assertStringContainsString('bx_iconset_init_lucide();', $s);
+        $this->assertStringContainsString("lucide/icons/", $sCode);
+        $this->assertStringContainsString("template/images/brands/", $sCode);
+        $this->assertStringContainsString("fetch((bBrand ?", $sCode);
+        $this->assertStringContainsString('bx_iconset_init_lucide();', $sCode);
+        $this->assertStringContainsString('glOnProcessHtml.push(', $sCode);
     }
 
     public function testPlaceholdersKeepTheIconsRoom(): void

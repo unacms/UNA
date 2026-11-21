@@ -151,9 +151,9 @@ class StoredIconNamesTest extends BxDolIntegrationTestCase
 
     public function testTheScriptDrawsBrandMarks(): void
     {
-        $sCode = self::iconset()->getCode();
+        $oIconset = self::iconset();
 
-        $this->assertStringContainsString('"brand-x":"<svg class=\"sys-icon sys-icon-brand\"', $sCode);
-        $this->assertStringContainsString("oSvg.setAttribute('class', 'sys-icon-brand ' + el.getAttribute('class'));", $sCode);
+        $this->assertSame('<svg class="sys-icon-brand"', substr((string)$oIconset->getSvg('brand-x'), 0, 27));
+        $this->assertStringContainsString("oSvg.setAttribute('class', (bBrand ? 'sys-icon-brand ' : 'lucide lucide-' + sName + ' ') + el.getAttribute('class'));", $oIconset->getCode());
     }
 }
