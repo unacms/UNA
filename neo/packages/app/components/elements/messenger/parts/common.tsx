@@ -764,9 +764,15 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     const errorOffset = listError ? 60 : 0;
     const convosListProps = {
         title: t('Messages'),
-        emptyText: t('No conversations found'),
+        // UNA's words for an empty inbox (`_bx_messenger_empty_inbox_*`), with its one action.
+        emptyText: t('No conversations yet'),
+        emptyDescription: t('Conversations you start or are added to show up here.'),
+        emptyIcon: 'MessagesSquare',
+        emptySearchText: t('No conversations found'),
+        emptySearchDescription: t('Try another name or word.'),
+        searching: isSmallScreen && !!listSearch.value,
         emptyAction: ({ resetSearch }: { resetSearch: () => void }) => (
-            Array.isArray(addButtons) && addButtons.length > 0 ? <CreateConvoButton variant="secondary" onSave={onSave} onShow={resetSearch} /> : null
+            Array.isArray(addButtons) && addButtons.length > 0 ? <CreateConvoButton size="regular" onSave={onSave} onShow={resetSearch} /> : null
         ),
         // Small screens show the list or the chat, never both, so a "current" row
         // would only linger after Back. Desktop keeps it highlighted next to the open chat.

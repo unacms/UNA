@@ -160,6 +160,7 @@ jobs:
           bx_persons \
           bx_notifications \
           bx_timeline \
+          bx_accounts \
           bx_ai_proxy \
           bx_albums \
           bx_analytics \

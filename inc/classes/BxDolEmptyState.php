@@ -81,7 +81,16 @@ class BxDolEmptyState
             $aResult['buttons'] = $aButtons;
         }
 
-        return empty($aResult) ? null : $aResult;
+        if (empty($aResult)) {
+            return null;
+        }
+
+        // An icon name as the site names its icons (Lucide: `bell`, `user-plus`), drawn over the title.
+        if (isset($aState['icon']) && is_string($aState['icon']) && preg_match('/^[a-z0-9-]{1,64}$/', $aState['icon'])) {
+            $aResult = ['icon' => $aState['icon']] + $aResult;
+        }
+
+        return $aResult;
     }
 
     /**

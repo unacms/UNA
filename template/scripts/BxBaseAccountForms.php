@@ -60,6 +60,10 @@ class BxBaseAccountForms extends BxDolProfileForms
     {
         $bIsApi = bx_is_api();
 
+        // nobody can join (Studio > Settings > Account > Who can join): no form, and a submitted one isn't taken
+        if (BxDolAccount::getJoinMode() == BxDolAccount::JOIN_CLOSED)
+            return MsgBox(_t('_sys_txt_join_closed'));
+
         // check access
         if (CHECK_ACTION_RESULT_ALLOWED !== ($sMsg = BxDolAccount::isAllowedCreate (0)))
             return MsgBox($sMsg);

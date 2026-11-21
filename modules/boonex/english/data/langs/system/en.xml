@@ -1993,11 +1993,13 @@
     <string name="_adm_stg_cpt_option_sys_account_welcome_letter"><![CDATA[Enable welcome letter]]></string>
     <string name="_adm_stg_cpt_option_sys_account_confirmation_type"><![CDATA[Account is confirmed when]]></string>
     <string name="_adm_stg_cpt_option_sys_account_hide_unconfirmed_accounts"><![CDATA[Hide profiles which have unconfirmed account]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Who can join]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_enable"><![CDATA[Enable 2 Factor Authentication]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[2FA code lifetime, seconds (0 = send a code at each sign-in)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_autoapproval"><![CDATA[Automatic account activation after creation]]></string>
     <string name="_adm_stg_cpt_option_sys_account_auto_profile_creation"><![CDATA[Automatic profile creation from account name]]></string>
     <string name="_adm_stg_cpt_option_sys_account_online_time"><![CDATA[Online status timeframe (minutes)]]></string>
+    <string name="_adm_stg_err_option_sys_account_join"><![CDATA[Invitation only needs the Invitations app, and it could not be added. Add it in App Store, then save again.]]></string>
     <string name="_adm_stg_err_option_sys_account_online_time"><![CDATA[You need to enter a value greater than zero.]]></string>
     <string name="_adm_stg_cpt_option_sys_account_default_profile_type"><![CDATA[Default profile type]]></string>
     <string name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Maximum profiles per account (0 = no limit)]]></string>
@@ -2005,7 +2007,6 @@
     <string name="_adm_stg_cpt_option_sys_account_reset_password_key_lifetime"><![CDATA[Reset password key lifetime (in seconds)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_reset_password_redirect"><![CDATA[Redirect after reset password to]]></string>
     <string name="_adm_stg_cpt_option_sys_account_disable_login_form"><![CDATA[Disable sign-in form]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_disable_join_form"><![CDATA[Disable sign-up form]]></string>
     <string name="_adm_stg_cpt_option_sys_allow_plus_in_email"><![CDATA[Allow to use plus sign ("+") in email address]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning"><![CDATA[Accounts pruning]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning_interval"><![CDATA[Accounts pruning period (in days)]]></string>
@@ -2675,6 +2676,10 @@
 	<string name="_sys_acc_confirmation_type_phone"><![CDATA[phone is confirmed]]></string>
 	<string name="_sys_acc_confirmation_type_email_and_phone"><![CDATA[email and phone are confirmed]]></string>
   <string name="_sys_acc_confirmation_type_email_or_phone"><![CDATA[email or phone is confirmed]]></string>
+	<string name="_sys_acc_join_closed"><![CDATA[Nobody]]></string>
+	<string name="_sys_acc_join_invite"><![CDATA[Invitation only]]></string>
+	<string name="_sys_acc_join_invite_add"><![CDATA[Invitation only (adds the Invitations app)]]></string>
+	<string name="_sys_acc_join_open"><![CDATA[Anyone]]></string>
 	<string name="_sys_acc_profile_requirement_optional"><![CDATA[Optional: a reminder bar on every page]]></string>
 	<string name="_sys_acc_profile_requirement_prompt"><![CDATA[Ask after sign-in: a “Create your profile” window on the first page]]></string>
 	<string name="_sys_acc_profile_requirement_required"><![CDATA[Required: send to profile creation before anything else]]></string>
@@ -5104,6 +5109,7 @@
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
     <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[The sign-in code could not be sent. Please try again later.]]></string>
     <string name="_sys_txt_login_agreement"><![CDATA[By signing in, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string>
+    <string name="_sys_txt_join_closed"><![CDATA[Sign-up is closed on this site.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Sign in]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Signing up is quick and easy. Create your own community account to get started.]]></string>
@@ -5368,6 +5374,7 @@
     <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string>
     <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string>
     <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string>
+    <string name="_sys_onboarding_done"><![CDATA[You're set up]]></string>
     <string name="_sys_onboarding_hide"><![CDATA[Hide]]></string>
     <string name="_sys_onboarding_join_closed"><![CDATA[Nobody can sign up: the sign-up form is off.]]></string>
     <string name="_sys_onboarding_join_invite"><![CDATA[Only people you invite can sign up.]]></string>

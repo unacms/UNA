@@ -335,6 +335,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const displayProfile = exProps?.item?.author_data || {
         ...currentUser,
         url_avatar: currentUser.avatar,
+        color: currentUser.color,
         url: null,
     };
 

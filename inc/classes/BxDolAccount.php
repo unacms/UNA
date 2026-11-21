@@ -20,6 +20,14 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
     const PROFILE_REQUIRED = 'on';
 
     /**
+     * Who can join the site (sys_account_join, Studio > Settings > Account): anyone, only people with an invitation
+     * (the Invitations app checks it) or nobody, the sign-up form is off. An empty value is "anyone", not chosen yet.
+     */
+    const JOIN_OPEN = 'open';
+    const JOIN_INVITE = 'invite';
+    const JOIN_CLOSED = 'closed';
+
+    /**
      * Session value set at sign-in: the next page asks the account to create a profile (see isProfilePromptDue).
      */
     const PROFILE_PROMPT_SESSION_KEY = 'sys_account_profile_prompt';
@@ -1039,6 +1047,31 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
      * the first page after sign-in (BxBaseInformer), the apps get `profile_prompt` in the viewer's data and say when
      * they showed it (system/account_profile_prompt_seen).
      */
+    /**
+     * Who can join the site: JOIN_OPEN, JOIN_INVITE or JOIN_CLOSED (sys_account_join). Invitation only needs the
+     * Invitations app; without it the site is treated as open, as nothing could check an invitation.
+     */
+    public static function getJoinMode ()
+    {
+        $sMode = getParam('sys_account_join');
+        if($sMode == self::JOIN_CLOSED)
+            return self::JOIN_CLOSED;
+
+        if($sMode == self::JOIN_INVITE && BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites'))
+            return self::JOIN_INVITE;
+
+        return self::JOIN_OPEN;
+    }
+
+    /**
+     * Whether the operator has chosen who can join (saved Studio > Settings > Account once): the "Choose who can
+     * join" step of the "Get started" checklist.
+     */
+    public static function isJoinModeChosen ()
+    {
+        return getParam('sys_account_join') !== '';
+    }
+
     public static function isProfilePromptDue ()
     {
         if(!isLogged() || getParam('sys_account_require_profile') !== self::PROFILE_PROMPT || defined('BX_DOL_CRON_EXECUTE'))

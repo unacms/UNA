@@ -3524,6 +3524,11 @@ function bx_api_get_msg($sMessage, $aParams = [])
     $sMessage = $sMessage != '' ? _t($sMessage) : '';
 
     if (($aState = BxDolAcl::getDenialState($sMessage)) && !isset($aParams['ext']['empty_state'])) {
+        // "Create a profile first": the informer's "You don't have a profile yet" bar would say it twice, as on the
+        // site (BxBaseFunctions::msgBoxState).
+        if (($aState['level'] ?? 0) == MEMBERSHIP_ID_ACCOUNT)
+            BxDolInformer::hide('sys-account-profile-system');
+
         $aEmptyState = BxDolEmptyState::resolve($aState);
         if ($aEmptyState) {
             $aParams['ext'] = array_merge($aParams['ext'] ?? [], ['empty_state' => $aEmptyState]);
