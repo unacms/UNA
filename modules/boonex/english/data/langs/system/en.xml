@@ -3900,9 +3900,9 @@
         <string name="_sys_layout_topbottom_area_col1_col5"><![CDATA[Top&bottom areas with 2 columns (1:5) in the middle]]></string>
         <string name="_sys_layout_topbottom_area_col2_col5_col3"><![CDATA[Top&bottom areas with 3 columns (2:5:3) in the middle]]></string>
 	<string name="_sys_loading"><![CDATA[Loading...]]></string>
-	<string name="_sys_location_country"><![CDATA[<i class="sys-icon location-arrow"></i> {0}]]></string>
-	<string name="_sys_location_country_city"><![CDATA[<i class="sys-icon location-arrow"></i> {2}, {1}, {0}]]></string>
-        <string name="_sys_location_country_city_street"><![CDATA[<i class="sys-icon location-arrow"></i> {4} {3}, {2}, {1}, {0} ]]></string>
+	<string name="_sys_location_country"><![CDATA[<i class="sys-icon map-pin"></i> {0}]]></string>
+	<string name="_sys_location_country_city"><![CDATA[<i class="sys-icon map-pin"></i> {2}, {1}, {0}]]></string>
+        <string name="_sys_location_country_city_street"><![CDATA[<i class="sys-icon map-pin"></i> {4} {3}, {2}, {1}, {0} ]]></string>
 	<string name="_sys_location_determining"><![CDATA[Determining location...]]></string>
 	<string name="_sys_location_geolocation_not_supported_by_browser"><![CDATA[Geolocation is not supported by this browser]]></string>
 	<string name="_sys_location_undefined"><![CDATA[Location undefined]]></string>

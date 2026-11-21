@@ -111,7 +111,7 @@
     <string name="_bx_invites_option_enable_request_invite"><![CDATA[Разрешить запросы на приглашение]]></string>
     <string name="_bx_invites_option_requests_email"><![CDATA[Эл. адреса для посылки запросов на приглашение (разделенение запятой)]]></string>
     <string name="_bx_invites_option_context_auto_join"><![CDATA[Включить автоматическое присоединение при использовании функции «Пригласить в контекст»]]></string>
-    <string name="_bx_invites_option_context_key_length"><![CDATA[Длина ключа для функции «Пригласить в контекст» (0 - длина по умолчанию)]]></string>
+    <string name="_bx_invites_option_context_key_length"><![CDATA[Длина ключа для приглашений в сообщества (0 = длина по умолчанию)]]></string>
 
 
     <!-- ACL -->
@@ -186,7 +186,7 @@
     <string name="_bx_invites_msg_invitation"><![CDATA[Привет! Этот сайт может оказаться интересным для Вас.]]></string>
     <string name="_bx_invites_msg_invitation_sent"><![CDATA[Сообщение с приглашением было поставлено в очередь для отправки по {0} эл. адресам из списка.]]></string>
     <string name="_bx_invites_msg_request_sent"><![CDATA[Запрос на приглашение получен. Мы вышлем приглашение, когда придет ваша очередь.]]></string>
-    <string name="_bx_invites_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_invites_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_bx_invites_err_limit_reached"><![CDATA[Число посланных Вами приглашений достигло лимита.]]></string>
     <string name="_bx_invites_err_not_available"><![CDATA[Эта функция сейчас недоступна. Пожалуйста, попытайтесь ещё раз позднее.]]></string>
     <string name="_bx_invites_err_invite"><![CDATA[Невозможно послать приглашение по запросу.]]></string>

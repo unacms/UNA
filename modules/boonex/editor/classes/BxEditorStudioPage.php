@@ -22,8 +22,8 @@ class BxEditorStudioPage extends BxTemplStudioModule
         parent::__construct($sModule, $mixedPageName, $sPage);
 
         $this->aMenuItems = array(
-            'settings' => array('name' => 'mini', 'icon' => 'battery-empty', 'title' => '_bx_editor_mini'),
-            'standard' => array('name' => 'standard', 'icon' => 'battery-half', 'title' => '_bx_editor_standard'),
+            'settings' => array('name' => 'mini', 'icon' => 'battery', 'title' => '_bx_editor_mini'),
+            'standard' => array('name' => 'standard', 'icon' => 'battery-medium', 'title' => '_bx_editor_standard'),
             'full' => array('name' => 'full', 'icon' => 'battery-full', 'title' => '_bx_editor_full'),
         );
     }

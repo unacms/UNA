@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_messenger_send_message_save_error"><![CDATA[The message was not sent. Please try again.]]></string_upd>
+    <string_upd name="_bx_messenger_send_message_no_data"><![CDATA[Write a message or attach a file first.]]></string_upd>
+    <string_upd name="_bx_messenger_not_found"><![CDATA[This chat was not found.]]></string_upd>
+    <string_upd name="_bx_messenger_save_part_failed"><![CDATA[Add at least one participant.]]></string_upd>
+    <string_upd name="_bx_messenger_can_not_delete"><![CDATA[You cannot delete this chat.]]></string_upd>
+    <string_upd name="_bx_messenger_not_participant"><![CDATA[You are not in this chat.]]></string_upd>
+    <string_upd name="_bx_messenger_successfully_left"><![CDATA[You left the chat.]]></string_upd>
+    <string_upd name="_bx_messenger_cant_leave"><![CDATA[You cannot leave a chat you started.]]></string_upd>
+    <string_upd name="_bx_messenger_upload_invalid_file_type"><![CDATA[This type of file cannot be sent.]]></string_upd>
+    <string_upd name="_bx_messenger_post_file_can_not_be_delete"><![CDATA[You cannot remove this file.]]></string_upd>
+    <string_upd name="_bx_messenger_post_file_not_found"><![CDATA[File not found.]]></string_upd>
+    <string_upd name="_bx_messenger_max_files_upload_error"><![CDATA[You can send up to {0} files in one message.]]></string_upd>
+    <string_upd name="_bx_messenger_send_message_no_video"><![CDATA[There is no video to send.]]></string_upd>
+    <string_upd name="_bx_messenger_max_video_file_exceeds"><![CDATA[Videos can be up to {0} minutes long.]]></string_upd>
+    <string_upd name="_bx_messenger_wait_for_uploading"><![CDATA[Please wait until all files are uploaded.]]></string_upd>
+    <string_upd name="_bx_messenger_file_type_is_not_allowed"><![CDATA[This type of file is not allowed.]]></string_upd>
+    <string_upd name="_bx_messenger_send_message_not_allowed"><![CDATA[Your account cannot send messages.]]></string_upd>
+    <string_upd name="_bx_messenger_profile_not_found"><![CDATA[Profile not found.]]></string_upd>
+    <string_upd name="_bx_messenger_disable_contact_privacy"><![CDATA[Ignore profiles' contact privacy settings. <b>Note</b>: when this is on, anyone can message anyone.]]></string_upd>
+    <string_upd name="_bx_messenger_video_recorder_is_blocked"><![CDATA[To record video, allow {0} to use your camera.]]></string_upd>
+    <string_upd name="_bx_messenger_nothing_has_been_saved"><![CDATA[Nothing was saved.]]></string_upd>
+    <string_upd name="_bx_messenger_talk_is_not_allowed"><![CDATA[This chat is not available to you.]]></string_upd>
+    <string_upd name="_bx_messenger_lot_parts_empty"><![CDATA[Choose at least one person to chat with.]]></string_upd>
+    <string_upd name="_bx_messenger_files_can_not_be_uploaded"><![CDATA[Files cannot be uploaded to this chat.]]></string_upd>
+    <string_upd name="_bx_messenger_not_allowed_to_read"><![CDATA[You cannot read this message because you are not in this chat.]]></string_upd>
+    <string_upd name="_bx_messenger_not_found_to_read"><![CDATA[The chat with this message was not found. Check the link.]]></string_upd>
+    <string_upd name="_bx_messenger_no_criteria_available"><![CDATA[There are no filters to choose from.]]></string_upd>
+</resources>
