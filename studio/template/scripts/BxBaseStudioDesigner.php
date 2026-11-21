@@ -121,11 +121,19 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'condition' => $sUri == $sDefault,
                     'content' => [],
                 ],
+                // The site's template is set here only: Designer > Settings links to this page.
+                'bx_if:make_default' => [
+                    'condition' => $sUri != $sDefault,
+                    'content' => [
+                        'js_object' => $sJsObject,
+                        'uri' => $sUri,
+                        'title_attr' => bx_html_attribute($aModule['title']),
+                        'confirm' => bx_html_attribute(_t('_adm_dsg_txt_tmpl_make_default_confirm', $aModule['title'])),
+                    ],
+                ],
             ];
         }
 
-        $sDesignerUrl = BX_DOL_URL_STUDIO . 'designer.php?page=';
-        $sDefaultTitle = isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault;
         $aForm = [
             'form_attrs' => [
                 'id' => $this->sTemplatesFormId,
@@ -176,15 +184,14 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'name' => 'preview',
                     'content' => $this->getTemplateViewer($sDefault, isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault),
                 ],
-                'header_footer' => [ // the last section is the block's pinned footer (page.css): where the default is chosen
+                'header_footer' => [ // the last section is the block's pinned footer (page.css): which template everyone sees
                     'type' => 'block_header',
                 ],
                 'footer' => [
                     'type' => 'custom',
                     'name' => 'footer',
-                    'content' => $oTemplate->parseHtmlByName('dsr_templates_footer.html', [
-                        'text' => _t('_adm_dsg_txt_tmpl_footer', htmlspecialchars_adv($sDefaultTitle)),
-                        'settings_url' => $sDesignerUrl . BX_DOL_STUDIO_DSG_TYPE_SETTINGS,
+                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', [
+                        'text' => _t('_adm_dsg_txt_tmpl_footer', bx_process_output(isset($aTemplates[$sDefault]) ? $aTemplates[$sDefault]['title'] : $sDefault)),
                     ]),
                 ],
             ]
@@ -433,7 +440,8 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             if(!empty($sTemplate))
                 $sText .= ' ' . _t('_adm_dsg_txt_logo_note_previews', $sTemplate);
             $sLink = $sUrl = '';
-            if(!empty($aTemplate) && $this->getLogoTemplateParams()) {
+            // The template's own logo page is a note pointing here, unless it has a logo of its own to change or remove.
+            if(!empty($aTemplate) && $this->isLogoTemplateSet()) {
                 $sLink = _t('_adm_dsg_lnk_logo_template', $sTemplate);
                 $sUrl = bx_append_url_params(BX_DOL_URL_STUDIO . 'design.php', ['name' => $aTemplate['name'], 'page' => BX_DOL_STUDIO_DSG_TYPE_LOGO]);
             }
@@ -1647,15 +1655,10 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'name' => 'template_section',
                     'caption' => _t('_adm_dsg_txt_settings_section_template'),
                 ],
-                'template_info' => [
-                    'type' => 'custom',
-                    'name' => 'template_info',
-                    'content' => $oTemplate->parseHtmlByName('dsr_logo_section_info.html', ['text' => _t('_adm_dsg_inf_settings_section_template')]),
-                ],
                 'template' => [
                     'type' => 'custom',
                     'name' => 'template',
-                    'content' => $this->getSettingsTemplates(),
+                    'content' => $this->getSettingsTemplateNote(),
                 ],
                 'layout_section' => [
                     'type' => 'block_header',
@@ -1763,39 +1766,23 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
     }
 
     /**
-     * The site template as a choice of cards: each enabled template with its Studio icon, the one in use checked.
+     * The site template is chosen in Designer > Template (makeDefault): here a note with the one in use and a link there.
      */
-    protected function getSettingsTemplates()
+    protected function getSettingsTemplateNote()
     {
-        $sCurrent = getParam('template');
+        $sTemplate = getParam('template');
+        $aTemplates = $this->getSettingsTemplateList();
+        $sTitle = isset($aTemplates[$sTemplate]) ? $aTemplates[$sTemplate]['title'] : $sTemplate;
 
-        $aCards = [];
-        foreach($this->getSettingsTemplateList() as $sUri => $aModule) {
-            $sIcon = 'template/images/icons/std-icon.svg';
-            $bIcon = file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . $sIcon);
-
-            $aCards[] = [
-                'uri' => bx_html_attribute($sUri),
-                'title' => bx_process_output($aModule['title']),
-                'version' => bx_process_output($aModule['version']),
-                'checked' => $sUri == $sCurrent ? 'checked="checked"' : '',
-                'bx_if:show_icon' => [
-                    'condition' => $bIcon,
-                    'content' => ['icon_url' => BX_DOL_URL_MODULES . $aModule['path'] . $sIcon]
-                ],
-                'bx_if:show_letter' => [
-                    'condition' => !$bIcon,
-                    'content' => ['letter' => bx_process_output(get_mb_substr($aModule['title'], 0, 1))]
-                ],
-                'bx_if:show_current' => [
-                    'condition' => $sUri == $sCurrent,
-                    'content' => []
-                ],
-            ];
-        }
-
-        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_settings_templates.html', [
-            'bx_repeat:templates' => $aCards
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('dsr_logo_note.html', [
+            'text' => _t('_adm_dsg_txt_tmpl_footer', bx_process_output($sTitle)) . ' ' . _t('_adm_dsg_txt_settings_template_note'),
+            'bx_if:show_link' => [
+                'condition' => true,
+                'content' => [
+                    'url' => BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_GENERAL,
+                    'link' => _t('_adm_dsg_lnk_tmpl_page'),
+                ]
+            ],
         ]);
     }
 

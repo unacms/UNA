@@ -814,6 +814,7 @@
 	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Preview in full screen]]></string>
 	<string name="_adm_dsg_btn_tmpl_choose_default"><![CDATA[Choose the default template]]></string>
 	<string name="_adm_dsg_btn_tmpl_fullscreen"><![CDATA[Full screen]]></string>
+	<string name="_adm_dsg_btn_tmpl_make_default"><![CDATA[Make default]]></string>
 	<string name="_adm_dsg_btn_tmpl_preview"><![CDATA[Preview]]></string>
 	<string name="_adm_dsg_btn_tmpl_reload"><![CDATA[Reload]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Remove this image? It will be deleted.]]></string>
@@ -883,10 +884,12 @@
 	<string name="_adm_dsg_lnk_logo_template"><![CDATA[Open {0} logo settings]]></string>
 	<string name="_adm_dsg_lnk_splash_open"><![CDATA[Open in a new tab]]></string>
 	<string name="_adm_dsg_lnk_tmpl_open"><![CDATA[Open the site with it]]></string>
+	<string name="_adm_dsg_lnk_tmpl_page"><![CDATA[Open Designer › Template]]></string>
 	<string name="_adm_dsg_scs_save"><![CDATA[Changes saved.]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG code]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[None. Dark mode shows the light mode logo.]]></string>
         <string name="_adm_dsg_txt_logo_low_contrast_dark"><![CDATA[This logo is hard to see on a dark background. Upload a light version for dark mode.]]></string>
+        <string name="_adm_dsg_txt_logo_note_designer"><![CDATA[The logo is set in Designer › Logo, for every template.]]></string>
         <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[The previews show what the site's template, {0}, draws.]]></string>
         <string name="_adm_dsg_txt_logo_note_system"><![CDATA[These logos are used by every template. A template can replace them in its own logo settings.]]></string>
         <string name="_adm_dsg_txt_logo_note_template"><![CDATA[Logos here replace the ones in Designer › Logo, for {0} only.]]></string>
@@ -964,6 +967,7 @@
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Page layout]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Site template]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[In use]]></string>
+	<string name="_adm_dsg_txt_settings_template_note"><![CDATA[The site template is chosen in Designer › Template.]]></string>
 	<string name="_adm_dsg_txt_settings_template_version"><![CDATA[Version]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Logo Text]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Default pages cover]]></string>
@@ -995,6 +999,7 @@
 	<string name="_adm_dsg_txt_tmpl_default"><![CDATA[Default]]></string>
 	<string name="_adm_dsg_txt_tmpl_footer"><![CDATA[Everyone sees {0} unless they pick another template themselves.]]></string>
 	<string name="_adm_dsg_txt_tmpl_frame"><![CDATA[Site preview]]></string>
+	<string name="_adm_dsg_txt_tmpl_make_default_confirm"><![CDATA[Make {0} the site template? Everyone sees it unless they pick another template themselves.]]></string>
 	<string name="_adm_dsg_txt_tmpl_page"><![CDATA[Page]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_about"><![CDATA[About]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Explore]]></string>
@@ -1964,7 +1969,7 @@
     <string name="_adm_stg_cpt_category_languages"><![CDATA[Languages]]></string>
     <string name="_adm_stg_cpt_category_permalinks"><![CDATA[Permalinks]]></string>
     <string name="_adm_stg_cpt_category_security"><![CDATA[Security]]></string>
-    <string name="_adm_stg_cpt_category_site_settings"><![CDATA[General]]></string>
+    <string name="_adm_stg_cpt_category_site_settings"><![CDATA[Site]]></string>
     <string name="_adm_stg_cpt_category_storage"><![CDATA[Storage]]></string>
     <string name="_adm_stg_cpt_category_system"><![CDATA[System]]></string>
     <string name="_adm_stg_cpt_category_templates"><![CDATA[Templates]]></string>
@@ -1973,6 +1978,7 @@
     <string name="_adm_stg_cpt_category_social_settings"><![CDATA[Social]]></string>
     <string name="_adm_stg_cpt_category_api_general"><![CDATA[General]]></string>
     <string name="_adm_stg_cpt_category_api_layout"><![CDATA[Layout]]></string>
+    <string name="_adm_stg_cpt_category_api_preview"><![CDATA[API v2 preview]]></string>
     <string name="_adm_stg_cpt_category_agents_general"><![CDATA[General]]></string>
     <string name="_adm_stg_cpt_category_agents_usage"><![CDATA[Assistants]]></string>
     <string name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Resize images before upload to this width (0 = don't resize)]]></string>
@@ -2037,7 +2043,7 @@
     <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_delete"><![CDATA[Delete accounts with no sign-in within N days]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_suspend"><![CDATA[Suspend accounts with no sign-in within N days]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_confirm_delete"><![CDATA[Delete accounts which didn't confirm email within N days]]></string>
-    <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_profile_delete"><![CDATA[Delete accounts which didn't created any profiles within N days]]></string>
+    <string name="_adm_stg_cpt_option_value_sys_account_pruning_no_profile_delete"><![CDATA[Delete accounts that created no profile within N days]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_reset_password_redirect_home"><![CDATA[Home page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_reset_password_redirect_profile"><![CDATA[View profile page]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_reset_password_redirect_profile_edit"><![CDATA[Edit profile page]]></string>
@@ -2395,6 +2401,7 @@
     <string name="_adm_stg_cpt_option_sys_maintenance_mode"><![CDATA[Maintenance mode]]></string>
     <string name="_adm_stg_cpt_option_sys_maintenance_mode_html"><![CDATA[Maintenance mode custom HTML code]]></string>
 
+	<string name="_adm_stg_cpt_type_advanced"><![CDATA[Advanced]]></string>
 	<string name="_adm_stg_cpt_type_system"><![CDATA[Global]]></string>
 	<string name="_adm_stg_scs_save"><![CDATA[Settings saved.]]></string>
 	<string name="_adm_stg_err_save_error_message"><![CDATA[Error in '{0}': {1}]]></string>
