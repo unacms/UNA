@@ -25,7 +25,6 @@ import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { NeoButtonLink } from 'app/design/controls';
 import HomeCover from 'app/components/elements/covers/home-cover';
 import { PageFooter } from 'app/components/nav/menu-footer';
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {
     const map = {
@@ -85,9 +84,9 @@ const defineCells = (blocks, data) => {
  * pinned to the window: the member's profile and feed menu or left blocks, right blocks) and a feed (a guest's home
  * has none unless UNA gives guests a timeline block).
  */
-const homeColumns = ({ isWeb, layoutName, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks }) => {
+const homeColumns = ({ isWeb, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks }) => {
     const hasProfile = Boolean(appSetting('layout', 'show_profile_info') && currentUser)
-    const hasLeftColumn = layoutName == 'hor' && (hasProfile || feedList.length > 1 || navBarBlocks.length > 0)
+    const hasLeftColumn = (hasProfile || feedList.length > 1 || navBarBlocks.length > 0)
     return {
         hasSideColumns: isWeb && (hasLeftColumn || sideBarBlocks.length > 0),
         hasFeed: timelineBlocks.length > 0 || feedList.some(item => blocks?.[item.name + '_feed']),
@@ -179,7 +178,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
-    const { layoutName, layoutSettings } = useLayoutSettings();
+    const { feedUnit } = useLayoutSettings();
 
     const headerHeight = useHeaderHeight();
     const [sideBarWidth, setSideBarWidth] = useState(undefined);
@@ -231,7 +230,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     // menu). On the web the side columns are fixed to the window, so whatever is above them would slide under them:
     // with side columns these go at the top of the middle column, above the feed; without any (a guest's home), across
     // the page's content width above it, as UNA's site shows them.
-    const { hasSideColumns, hasFeed } = homeColumns({ isWeb, layoutName, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks })
+    const { hasSideColumns, hasFeed } = homeColumns({ isWeb, currentUser, feedList, blocks, navBarBlocks, sideBarBlocks, timelineBlocks })
     const hasTop = Boolean(data?.cover_home) || centerBlocks?.length > 0
     const BlocksCenter = hasTop ? <View className={topBlocksClassName(hasSideColumns)}>
         <HomeCover cover={data?.cover_home} hiddenOn={data?.cover_hidden_on} />
@@ -272,11 +271,6 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
 
     const FeedContent = (
         <>
-            {layoutName == 'ver' && (
-                <View className={`hidden ${TABLET_MODE_FROM}:flex`}>
-                    {subHeader}
-                </View>
-            )}
 
             {feedList.map((item, index) => {
                 if (feedType == item.name) {
@@ -292,7 +286,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                             <BlockByName
                                 data={data}
                                 name={timelineBlocks.length ? getTimelineBlock(item.name, timelineBlocks) : blocks?.[item.name + '_feed']}
-                                unitMode={layoutSettings.feed_unit}
+                                unitMode={feedUnit}
                                 exProps={{
                                     headerBlocks: headerBlocks,
                                 }}
@@ -491,7 +485,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 className={`${appSetting('layout', 'page_content_width_default')} ns--panel-group-- mx-auto flex-auto flex-row ne--`}
                 onLayout={onLayout}
             >
-                {layoutName == 'hor' && isWeb && (
+                {isWeb && (
                     <>
                         <Panel className={`hidden ${leftBreakpoint}:block sm:w-full `} {...leftPanelProps}>
                             <View onLayout={handleSideBarLayout} className="flex-auto h-full w-full">

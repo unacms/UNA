@@ -329,12 +329,10 @@ function DashboardManageMenu({ items }) {
 
 function DashboardSettingsMenu() {
     const {
-        layoutSettings,
         updateLayoutSettings,
+        feedUnit,
         themeName,
         setThemeName,
-        setLayoutName,
-        layoutName,
         lang,
         setLang,
     } = useLayoutSettings()
@@ -342,13 +340,12 @@ function DashboardSettingsMenu() {
     const langs = appSetting('layout', 'avaliable_langs')
     const showLangs = langs.length > 1
     const showTheme = !!appSetting('dashboard', 'switch_theme')
-    const showLayouts = appSetting('layout', 'avaliable_layouts').length > 1
     const showFeedUnits = appSetting('layout', 'avaliable_feed_units').length > 1
     const { available: showSounds, level: soundLevel, setLevel: setSoundLevel } = useSoundsLevel()
     const currentSoundLevel = SOUND_LEVEL_ITEMS.find((option) => option.id === soundLevel) ?? SOUND_LEVEL_ITEMS[0]
     // The account settings pages (email, password, notifications ...): elsewhere only the desktop member menu links them.
     const settingsUrl = appSetting('dashboard', 'settings_url')
-    if (!(settingsUrl || showLangs || showTheme || showLayouts || showFeedUnits || showSounds)) return null
+    if (!(settingsUrl || showLangs || showTheme || showFeedUnits || showSounds)) return null
 
     return (
         <View className={DASHBOARD_GRID}>
@@ -417,48 +414,23 @@ function DashboardSettingsMenu() {
                     </DropdownMenu>
                 </View>
             ) : null}
-            {showLayouts ? (
-                <View className="w-full min-w-0">
-                    <DropdownMenu
-                        triggerClassName="w-full"
-                        items={appSetting('layout', 'avaliable_layouts').map((lang) => ({
-                            id: lang,
-                            key: lang,
-                            name: lang,
-                            title: t('format_' + lang),
-                        }))}
-                        onSelect={(oItem) => {
-                            setLayoutName(oItem.id)
-                        }}
-                    >
-                        <NeoButton
-                            label={t('format_' + layoutName)}
-                            style="bordered"
-                            controlSize="large"
-                            image="Layout"
-                            width="fill"
-                            align="start"
-                            interactive
-                        />
-                    </DropdownMenu>
-                </View>
-            ) : null}
             {showFeedUnits ? (
                 <View className="w-full min-w-0">
                     <DropdownMenu
                         triggerClassName="w-full"
-                        items={appSetting('layout', 'avaliable_feed_units').map((feed_unit) => ({
-                            id: feed_unit,
-                            key: feed_unit,
-                            name: feed_unit,
-                            title: t(feed_unit),
+                        items={appSetting('layout', 'avaliable_feed_units').map((unit) => ({
+                            id: unit,
+                            key: unit,
+                            name: unit,
+                            title: t('feed_unit_' + unit),
+                            selected: feedUnit === unit,
                         }))}
                         onSelect={(oItem) => {
                             updateLayoutSettings({ feed_unit: oItem.id })
                         }}
                     >
                         <NeoButton
-                            label={t(layoutSettings.feed_unit)}
+                            label={t('feed_unit_' + feedUnit)}
                             style="bordered"
                             controlSize="large"
                             image="Rows2"
