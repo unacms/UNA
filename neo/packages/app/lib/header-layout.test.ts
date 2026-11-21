@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { HEADER_LAYOUT_DEFAULT, resolveHeaderLayout, resolvePageLayout, resolvePageWidth } from './header-layout.ts';
+import { FOOTER_WIDTH_DEFAULT, HEADER_LAYOUT_DEFAULT, resolveFooterWidth, resolveHeaderLayout, resolvePageLayout, resolvePageWidth } from './header-layout.ts';
 
 test('UNA decides when the app has no setting of its own', () => {
     assert.deepEqual(resolveHeaderLayout({ layout: 'standard', width: 'page', align: 'start' }, { width: null, align: null }), { width: 'page', align: 'start' });
@@ -46,4 +46,25 @@ test("the page's layout is UNA's unless the app sets one, and a page without one
     assert.equal(resolvePageLayout(undefined, null, 'application'), 'application');
     assert.equal(resolvePageLayout(undefined), 'standard');
     assert.equal(resolvePageLayout({ layout: 'dashboard' }, 'wide'), 'standard');
+});
+
+test("the footer's width is UNA's unless the app sets one", () => {
+    assert.equal(resolveFooterWidth({ width: 'page' }, null), 'page');
+    assert.equal(resolveFooterWidth({ width: 'full' }), 'full');
+    assert.equal(resolveFooterWidth({ width: 'page' }, 'full'), 'full');
+    assert.equal(resolveFooterWidth({ width: 'full' }, 'page'), 'page');
+});
+
+test('a page without a footer keeps the previous one, and an older UNA the footer across the window', () => {
+    assert.equal(resolveFooterWidth(undefined, null, 'page'), 'page');
+    assert.equal(resolveFooterWidth({}, null, 'page'), 'page');
+    assert.equal(resolveFooterWidth(undefined, null, null), FOOTER_WIDTH_DEFAULT);
+    assert.equal(resolveFooterWidth('', undefined), 'full');
+    assert.equal(FOOTER_WIDTH_DEFAULT, 'full');
+});
+
+test('unknown footer widths are skipped', () => {
+    assert.equal(resolveFooterWidth({ width: 'wide' }, 'huge'), FOOTER_WIDTH_DEFAULT);
+    assert.equal(resolveFooterWidth({ width: 1280 }, null, 'page'), 'page');
+    assert.equal(resolveFooterWidth({ width: 'page' }, 'window'), 'page');
 });

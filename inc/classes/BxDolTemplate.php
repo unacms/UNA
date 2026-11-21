@@ -154,6 +154,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     public const HEADER_WIDTHS = ['page', 'full'];
     /** Where the main menu sits in the header: next to the logo, in the middle or next to the toolbar. */
     public const HEADER_ALIGNS = ['start', 'center', 'end'];
+    /** How wide the footer is, its separator included: as the page's content (Page width) or the window. */
+    public const FOOTER_WIDTHS = ['page', 'full'];
     /** The page layouts with a header of their own: Application, and Standard for every other layout. */
     public const HEADER_LAYOUTS = ['standard', 'application'];
     /** Who the header is for: visitors (guests) and members (signed in). */
@@ -1010,6 +1012,26 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             $sAlign = $sLayout == 'application' ? 'start' : 'center';
 
         return ['layout' => $sLayout, 'width' => $sWidth, 'align' => $sAlign];
+    }
+
+    /**
+     * The footer of a page of this type, as Designer sets it per layout and audience (Designer > Settings > Page,
+     * header and footer), as the header is. Templates may override it on the site (BxBaseFunctions::getFooterLayout);
+     * the apps get Designer's.
+     * @param int $iType page type, Default is resolved for the current viewer
+     * @param bool|null $bMember whose footer: a member's or a visitor's; null is the current viewer's
+     * @return array ['width' => 'page' or 'full']
+     */
+    public static function getFooterLayout($iType, $bMember = null)
+    {
+        [$sLayout, $sSuffix] = self::_getLayoutAudience($iType, $bMember);
+
+        // As the footer was before the setting: under the page's content on Standard pages, across the content's block on Application's.
+        $sWidth = getParam('sys_footer_width_' . $sSuffix);
+        if(!in_array($sWidth, self::FOOTER_WIDTHS, true))
+            $sWidth = $sLayout == 'application' ? 'full' : 'page';
+
+        return ['width' => $sWidth];
     }
 
     /**

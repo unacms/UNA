@@ -53,6 +53,20 @@ export const settingsLayout = {
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl p-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
+        /**
+         * The site footer (PageFooter). Its width, as UNA's Designer sets it per page layout and audience (Designer >
+         * Settings > Page, header and footer) and sends it with each page (`footer`; lib/header-layout.ts). null
+         * follows UNA; a fork can fix it for the app: `page` (as wide as the page's content, its separator included)
+         * or `full` (the window).
+         */
+        footer: {
+            width: null,
+            // The footer's box at each width: `page` is as wide as the page's content (`page_content_width_default`)
+            // with its 16px sides, from desktop width; phones and tablets keep the footer across the screen.
+            content_width: { page: 'mx-auto lg:max-w-8xl lg:px-4', full: '' },
+            // The footer's row (its separator and links) in that box: at `page` the box has the side padding.
+            content: { page: 'lg:px-0', full: '' },
+        },
         // The site footer at the end of pages in the iOS / Android apps (PageFooter). Off: the tab bar
         // holds the pages and the member menu the footer's links. Web always shows it.
         native_page_footer: false,
