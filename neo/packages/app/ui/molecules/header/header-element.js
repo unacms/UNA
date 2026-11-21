@@ -125,8 +125,10 @@ export default function HeaderElement({ url, uri }) {
         .map((item, index) => ({ item, index, slot: ((isWeb ? item.web : item.native) ?? true) ? slotOf(item) : SLOT.hidden }))
         .filter(({ slot }) => slot !== SLOT.hidden)
 
+    // The buttons are 8px apart, as in UNA's site toolbar (Artificer menu_toolbar.html, `gap-2`); a slot's placeholder
+    // is a child of the same row.
     return (
-        <Row className="justify-end gap-3 items-center">
+        <Row className="justify-end gap-2 items-center">
             {shownItems.map(({ item, index, slot }) => (
                 <View key={index} className={item.className}>
                     {(() => {
@@ -142,7 +144,7 @@ export default function HeaderElement({ url, uri }) {
                                 return <NotificationButton uri={uri} buttonProps={tierButtonProps(item)} />
                             case "account":
                                 return (
-                                    <Row className="items-center gap-3">
+                                    <Row className="items-center gap-2">
                                         <OperatorAgentHeaderButton />
                                         <MenuAccount buttonProps={tierButtonProps(item)} />
                                     </Row>
