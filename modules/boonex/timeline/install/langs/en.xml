@@ -176,7 +176,7 @@
     <string name="_bx_timeline_form_repost_input_sys_do_cancel"><![CDATA[Cancel]]></string>
     <string name="_bx_timeline_form_repost_input_do_cancel"><![CDATA[Cancel]]></string>
 
-    <string name="_bx_timeline_form_filters_input_by_contexts"><![CDATA[Contexts:]]></string>
+    <string name="_bx_timeline_form_filters_input_by_contexts"><![CDATA[Communities:]]></string>
     <string name="_bx_timeline_form_filters_input_by_contexts_any"><![CDATA[Any]]></string>
     <string name="_bx_timeline_form_filters_input_by_modules"><![CDATA[Content:]]></string>
     <string name="_bx_timeline_form_filters_input_by_modules_all"><![CDATA[All]]></string>
@@ -319,7 +319,7 @@
     <string name="_bx_timeline_menu_item_title_system_item_repost_with"><![CDATA[Repost with Text]]></string>
     <string name="_bx_timeline_menu_item_title_item_repost_with"><![CDATA[Repost with Text]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_repost_to"><![CDATA[Repost to Context]]></string>
-    <string name="_bx_timeline_menu_item_title_item_repost_to"><![CDATA[Repost to Context]]></string>
+    <string name="_bx_timeline_menu_item_title_item_repost_to"><![CDATA[Repost to a community]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_send"><![CDATA[Send]]></string>
     <string name="_bx_timeline_menu_item_title_item_send"><![CDATA[Send to Friend]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_copy"><![CDATA[Copy to clipboard]]></string>
@@ -486,7 +486,7 @@
 
     <string name="_bx_timeline_txt_do_repost"><![CDATA[Repost]]></string>
     <string name="_bx_timeline_txt_do_repost_with"><![CDATA[Repost with Text]]></string>
-    <string name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to Context]]></string>
+    <string name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to a community]]></string>
     <string name="_bx_timeline_txt_empty_feed_create"><![CDATA[Create new…]]></string>
     <string name="_bx_timeline_txt_empty_feed_text"><![CDATA[Write a new post or follow someone to get started.]]></string>
     <string name="_bx_timeline_txt_empty_feed_title"><![CDATA[Nothing here yet]]></string>

@@ -193,7 +193,7 @@
     <string name="_bx_jobs_page_block_title_favorites_of_author"><![CDATA[Favorite Jobs]]></string>
     <string name="_bx_jobs_page_block_title_sys_favorites_of_author"><![CDATA[Favorite Jobs]]></string>
     <string name="_bx_jobs_page_block_title_entries_in_context_link"><![CDATA[Jobs in <a href="{profile_link}">{display_name}</a>]]></string>
-    <string name="_bx_jobs_page_block_title_entries_in_context"><![CDATA[Jobs in context]]></string>
+    <string name="_bx_jobs_page_block_title_entries_in_context"><![CDATA[Jobs in this community]]></string>
     <string name="_bx_jobs_page_block_title_sys_entries_in_context"><![CDATA[Jobs in context]]></string>
     <string name="_bx_jobs_page_block_title_sys_joined_entries"><![CDATA[Joined Jobs]]></string>
     <string name="_bx_jobs_page_block_title_joined_entries"><![CDATA[Joined Jobs]]></string>

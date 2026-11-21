@@ -197,7 +197,7 @@
     <string name="_bx_invites_err_used"><![CDATA[The invitation link isn't available or already used.]]></string>
     <string name="_bx_invites_err_code_not_found"><![CDATA[The invitation code is invalid.]]></string>
     <string name="_bx_invites_err_code_not_applicable"><![CDATA[The invitation code isn't applicable.]]></string>
-    <string name="_bx_invites_err_context_not_found"><![CDATA[The invitation code isn't associated with any context.]]></string>
+    <string name="_bx_invites_err_context_not_found"><![CDATA[The invitation code isn't associated with any community.]]></string>
     <string name="_bx_invites_err_already_send"><![CDATA[The request already sent for this email.]]></string>
     <string name="_bx_invites_err_already_registed"><![CDATA[User with this email already registered. Please use <a href="{0}">forgot password</a> to restore access to your account.]]></string>
     <string name="_bx_invites_request_status_new"><![CDATA[New]]></string>
