@@ -119,11 +119,13 @@ class LegalPagesCompleteTextTest extends BxDolIntegrationTestCase
         })(BX_DIRECTORY_PATH_ROOT . self::MIGRATION);
     }
 
-    /** The migration writes the option with SQL, as BxDolMigrations runs it: read it again. */
+    /**
+     * The migration writes the option with SQL, as BxDolMigrations runs it (and then clears the caches): put the
+     * stored value into the options cache with setParam, which keeps the other options there.
+     */
     private function _clearOptionsCache(): void
     {
-        BxDolDb::getInstance()->cacheParamsClear();
-        getParam('sys_page_lang_blocks_review', false);
+        setParam('sys_page_lang_blocks_review', (string)BxDolDb::getInstance()->getOne("SELECT `value` FROM `sys_options` WHERE `name` = 'sys_page_lang_blocks_review'"));
     }
 
     /** The template a site had before this change (2026110510), kept as fixtures. */

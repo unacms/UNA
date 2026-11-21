@@ -19,8 +19,9 @@ class GuestFirstImpressionTest extends BxDolIntegrationTestCase
         $this->assertSame(trim(strip_tags(BxDolPage::getMetaDescriptionByObject('sys_home'))), $sDescription);
         $this->assertStringNotContainsString('{site_title}', $sDescription);
 
-        // The default code uses the marker, and the apps get the words in its place.
-        $this->assertStringContainsString('{site_description}', $this->_installDefault('sys_site_splash_code'));
+        // The default code (a fresh install, or 2026112382 on an installed one) uses the marker, and the apps get the
+        // words in its place.
+        $this->assertStringContainsString('{site_description}', (string)getParam('sys_site_splash_code'));
         $sCode = $oSplash->getCodeForApp('<p class="bx-landing-text">{site_description}</p>');
         $this->assertStringContainsString(htmlspecialchars($sDescription, ENT_NOQUOTES | ENT_HTML5), $sCode);
         $this->assertStringNotContainsString('{site_description}', $sCode);
@@ -44,7 +45,12 @@ class GuestFirstImpressionTest extends BxDolIntegrationTestCase
 
     public function testFreshInstallShowsTheSplashOnTheSite(): void
     {
-        $this->assertSame('on', $this->_installDefault('sys_site_splash_enabled'));
+        // install/ is gone once a site is installed: read the install SQL when it is there, else the installed value.
+        $sSql = BX_DIRECTORY_PATH_ROOT . 'install/sql/system.sql';
+        if (!is_file($sSql))
+            $this->assertSame('on', getParam('sys_site_splash_enabled'));
+        else
+            $this->assertSame('on', $this->_installDefault('sys_site_splash_enabled'));
     }
 
     public function testHomeHasNoGridOfLinksAndExploreNoHomeCover(): void

@@ -192,7 +192,8 @@ class BxDolSitemap extends BxDolFactory implements iBxDolSingleton
         $oXml->openMemory();
         $oXml->startDocument('1.0', 'UTF-8');
         $oXml->startElement('urlset');
-        $oXml->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+        // A namespace name, not an address to fetch: the protocol defines it with http.
+        $oXml->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9'); // NOSONAR
 
         foreach($this->getUrls() as $aUrl) {
             $oXml->startElement('url');
