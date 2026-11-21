@@ -36,7 +36,11 @@ html.dark {
 .bx-toolbar-item.bx-ti-logo a:hover {
     text-decoration: none;
 }
+/* SVG code as the logo or the mark: as tall as its wrapper's height (Designer's logo height, set inline), and as wide as
+   its viewBox makes it. inherit, not 100%: the wrapper is an inline span where no class makes it a block, and an inline
+   box has no height for a percentage. max-height alone gave an SVG with only a viewBox no size at all. */
 .bx-toolbar-item.bx-ti-logo .bx-logo-inline svg {
+    height: inherit;
     max-height: 100%;
     width: auto;
 }
