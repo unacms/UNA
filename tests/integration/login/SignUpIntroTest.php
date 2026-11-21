@@ -35,6 +35,7 @@ class SignUpIntroTest extends BxDolIntegrationTestCase
             $oDb->query("UPDATE `sys_pages_blocks` SET `padding_size` = :p, `title_size` = :t WHERE `id` = :id", ['p' => $aRow['padding_size'], 't' => $aRow['title_size'], 'id' => $aRow['id']]);
 
         setParam('sys_account_join', $this->_sJoinBackup);
+        unset($GLOBALS['bxDolClasses']['BxInvModule']);
         $_GET = $this->_aGetBackup;
 
         BxDolCover::getInstance()->setPageHasHeading(false);
@@ -166,8 +167,11 @@ class SignUpIntroTest extends BxDolIntegrationTestCase
         if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites'))
             $this->markTestSkipped('Invitations is not installed.');
 
+        // Invitations reads the setting when it is made: make it again.
         setParam('sys_account_join', BxDolAccount::JOIN_INVITE);
-        if (BxDolAccount::getJoinMode() != BxDolAccount::JOIN_INVITE || BxDolService::call('bx_invites', 'account_add_form_check', [], 'Module', true) == '')
+        unset($GLOBALS['bxDolClasses']['BxInvModule']);
+        $this->assertSame(BxDolAccount::JOIN_INVITE, BxDolAccount::getJoinMode());
+        if (BxDolService::call('bx_invites', 'account_add_form_check', [], 'Module', true) == '')
             $this->markTestSkipped('This visitor has an invitation.');
 
         $aItem = $this->intro(true)[0];
