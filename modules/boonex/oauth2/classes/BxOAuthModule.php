@@ -527,8 +527,9 @@ class BxOAuthModule extends BxDolModule
         $sClientId = $this->_oServer->getAuthorizeController()->getClientId();
         $aProfiles = $this->_getAuthorizeProfiles();
 
-        if (!$aProfiles && 'GET' == $oRequest->server('REQUEST_METHOD') && $oRequest->query('create_profile'))
+        if (!$aProfiles && 'GET' == $oRequest->server('REQUEST_METHOD') && $oRequest->query('create_profile')) {
             return 'create_profile';
+        }
 
         if ('POST' == $oRequest->server('REQUEST_METHOD') && null !== ($mixedProfileId = $oRequest->request('profile_id'))) {
             // the answer from the consent form
