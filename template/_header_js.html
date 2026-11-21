@@ -8,7 +8,9 @@
         bx_clicked_stack_register();
     });
 
-    __service_worker__
+    // the PWA's service worker, when Studio > Designer > PWA turns it on
+    if (__service_worker__ && navigator.serviceWorker)
+        navigator.serviceWorker.register('sw.js.php');
 
     var oMediaPhone = window.matchMedia('__css_media_phone__');
     var oMediaPhone2 = window.matchMedia('__css_media_phone2__');

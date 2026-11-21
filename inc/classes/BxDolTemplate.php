@@ -2361,9 +2361,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 $sRet = $aData[$sKey];
                 break;
             case 'service_worker':
-                if(getParam('sys_pwa_sw_enable') != 'on')
-                    break;
-                $sRet = "if(navigator && navigator.serviceWorker) navigator.serviceWorker.register('sw.js.php');";
+                // a JS boolean: _header_js.html registers the PWA's service worker when it is true
+                $sRet = getParam('sys_pwa_sw_enable') == 'on' ? 'true' : 'false';
                 break;
             case 'socket_engine':
                 $sRet = BxDolSockets::getInstance()->getJsCode();
