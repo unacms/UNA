@@ -491,7 +491,7 @@ BxDolStudioDashboard.prototype.clearQueue = function(sType, oButton) {
 /**
  * Server block: show one tab's panel. Audit and permissions panels fetch their report the first time they open.
  */
-BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab) {
+BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab, onLoaded) {
     var $this = this;
     var sDivId = 'bx-dbd-htools';
     var oBlock = $('#' + sDivId).closest('.bx-std-block');
@@ -507,10 +507,13 @@ BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab) {
     oPanel.prop('hidden', false);
 
     var sAction = oPanel.data('action');
-    if(!sAction || oPanel.data('loaded'))
+    if(!sAction || oPanel.data('loaded')) {
+        if(typeof onLoaded == 'function' && !oPanel.data('loading'))
+            onLoaded(oPanel);
         return;
+    }
 
-    oPanel.data('loaded', true).html($this.getLoader());
+    oPanel.data('loaded', true).data('loading', true).html($this.getLoader());
     $this.loading(sDivId, true);
 
     $.get(
@@ -523,18 +526,39 @@ BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab) {
             $this.loading(sDivId, false);
 
             if(!sData.length) {
-                oPanel.data('loaded', false).empty();
+                oPanel.data('loaded', false).data('loading', false).empty();
                 return;
             }
 
-            oPanel.html(sData).bxProcessHtml();
+            oPanel.data('loading', false).html(sData).bxProcessHtml();
             $this.bindChartTips(oPanel);
+
+            if(typeof onLoaded == 'function')
+                onLoaded(oPanel);
         },
         'html'
     ).fail(function() {
         // the tab can be tried again after a failed request
         $this.loading(sDivId, false);
-        oPanel.data('loaded', false).empty();
+        oPanel.data('loaded', false).data('loading', false).empty();
+    });
+};
+
+/**
+ * Server block, Status tab: a section with warnings or failures opens the Audit tab with that section's rows unfolded,
+ * its heading in view and focused.
+ */
+BxDolStudioDashboard.prototype.auditOpen = function(sSection) {
+    this.hostToolsTab('audit', null, function(oPanel) {
+        var oToggle = oPanel.find('[aria-controls="bx-dbd-audit-' + sSection + '"]');
+        if(!oToggle.length)
+            return;
+
+        if(oToggle.attr('aria-expanded') != 'true')
+            oToggle.trigger('click');
+
+        oToggle.get(0).scrollIntoView({block: 'nearest'});
+        oToggle.trigger('focus');
     });
 };
 

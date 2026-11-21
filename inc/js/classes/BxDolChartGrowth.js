@@ -22,14 +22,44 @@ function BxDolChartGrowth (oOptions) {
     this._sDateFormat = 'yy-mm-dd';
     this._oChart = null;
     this._oChartOptionsDefault = {};
-    this._sChartColorBorder = undefined == oOptions.sChartColorBorder ? 'rgba(74, 144, 226, 1.0)' : oOptions.sChartColorBorder;
-    this._sChartColorBackground = undefined == oOptions.sChartColorBackground ? 'rgba(74, 144, 226, 0.4)' : oOptions.sChartColorBackground;
+    // the site's accent, the first chart series (bx_chart_series_colors), unless the options give colours
+    this._sChartColorBorder = oOptions.sChartColorBorder;
+    this._sChartColorBackground = oOptions.sChartColorBackground;
+    this._sDateFromDefault = oOptions.sDateFrom;
+    this._sDateToDefault = oOptions.sDateTo;
 
     var $this = this;
     $(document).ready(function() {
+        $this._useLocalDates();
     	$this.loadData();
     });
 }
+
+/**
+ * The default range ends today on the server's clock, which can be yesterday or tomorrow for the viewer: while the
+ * fields still have the defaults, they show the viewer's own last 30 days up to today.
+ */
+BxDolChartGrowth.prototype._useLocalDates = function()
+{
+    var fIso = function(oDate) {
+        return oDate.getFullYear() + '-' + ('0' + (oDate.getMonth() + 1)).slice(-2) + '-' + ('0' + oDate.getDate()).slice(-2);
+    };
+    var fSet = function(sId, sDefault, oDate) {
+        var oInput = document.getElementById(sId);
+        if(!oInput || !sDefault || oInput.value != sDefault)
+            return;
+
+        if(oInput._flatpickr)
+            oInput._flatpickr.setDate(oDate, false);
+        else
+            oInput.value = fIso(oDate);
+    };
+
+    var oTo = new Date();
+    var oFrom = new Date(oTo.getTime() - 30 * 24 * 60 * 60 * 1000);
+    fSet(this._sKeyDateTo, this._sDateToDefault, oTo);
+    fSet(this._sKeyDateFrom, this._sDateFromDefault, oFrom);
+};
 
 BxDolChartGrowth.prototype.loadData = function()
 {
@@ -92,6 +122,7 @@ BxDolChartGrowth.prototype.loadData = function()
             if($this._oChart)
             	$this._oChart.destroy();
 
+            bx_chart_theme_defaults();
 	    	$this._oChart = new Chart(oGraph, {
 	    		type: oData.type != undefined ? oData.type : 'line',
 	    		data: {
@@ -99,8 +130,9 @@ BxDolChartGrowth.prototype.loadData = function()
 	            	datasets: [{
 	            		label: oData.title,
 	            		data: oChartData,
-	            		borderColor: $this._sChartColorBorder,
-	            		backgroundColor: $this._sChartColorBackground
+	            		borderColor: $this._sChartColorBorder || bx_chart_series_colors(1)[0],
+	            		backgroundColor: $this._sChartColorBackground || bx_chart_series_colors(1, 0.15)[0],
+	            		fill: true
 	            	}]
 	            },
 	    		options: $.extend({}, $this._oChartOptionsDefault, oChartOptions)

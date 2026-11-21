@@ -444,7 +444,7 @@
 	<string name="_bx_analytics_txt_not_available"><![CDATA[n/a]]></string>
 	<string name="_bx_analytics_txt_not_enough_data"><![CDATA[Not enough data]]></string>
 	<string name="_bx_analytics_txt_now"><![CDATA[now]]></string>
-	<string name="_bx_analytics_txt_online_now"><![CDATA[online in the last {0} minutes]]></string>
+	<string name="_bx_analytics_txt_online_now"><![CDATA[visitors in the last {0} minutes]]></string>
 	<string name="_bx_analytics_txt_open_analytics"><![CDATA[Open analytics]]></string>
 	<string name="_bx_analytics_txt_p75"><![CDATA[75th percentile]]></string>
 	<string name="_bx_analytics_txt_page_of"><![CDATA[Page {0} of {1}]]></string>

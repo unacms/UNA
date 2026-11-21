@@ -882,6 +882,7 @@
 	<string name="_adm_dsg_scs_save"><![CDATA[The changes were successfully saved]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG code]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[None. Dark mode shows the light mode logo.]]></string>
+        <string name="_adm_dsg_txt_logo_low_contrast_dark"><![CDATA[This logo is hard to see on a dark background. Upload a light version for dark mode.]]></string>
         <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[The previews show what the site's template, {0}, draws.]]></string>
         <string name="_adm_dsg_txt_logo_note_system"><![CDATA[These logos are used by every template. A template can replace them in its own logo settings.]]></string>
         <string name="_adm_dsg_txt_logo_note_template"><![CDATA[Logos here replace the ones in Designer › Logo, for {0} only.]]></string>

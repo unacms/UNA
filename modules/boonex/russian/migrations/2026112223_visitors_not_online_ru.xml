@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "Online" is what Studio's Users block counts (accounts signed in within the online time); Analytics counts visitors. -->
+<resources name="ru" flag="ru" title="Russian" category="Analytics">
+    <string_upd name="_bx_analytics_txt_online_now"><![CDATA[посетителей за последние {0} мин.]]></string_upd>
+</resources>

@@ -458,8 +458,6 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 .bx-dbd-gauge-label {
     font-size: 0.75rem;
     line-height: 1.25rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
     color: rgb(82 82 91); /* gray-600: gray-500 misses 4.5:1 on white */
 }
 /* Status rows: 52px rows with 2px between them; a row with a note grows to fit it. */
@@ -577,6 +575,7 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
     margin-top: 0.625rem; /* hero to list: 10px, as in the chart blocks */
 }
 .bx-dbd-audit-toggle,
+.bx-dbd-htools-item-link,
 .bx-dbd-chart-link {
     width: calc(100% + 1rem);
     margin: 0 -0.5rem;
@@ -591,14 +590,17 @@ div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
 }
 /* Hover as the page sidebar's items (.bx-std-pmen-item, tailwind.css): black/5, white/5 in the dark scheme. */
 .bx-dbd-audit-toggle:hover,
+.bx-dbd-htools-item-link:hover,
 .bx-dbd-chart-link:hover {
     background: rgb(0 0 0 / 0.05);
 }
 .dark .bx-dbd-audit-toggle:hover,
+.dark .bx-dbd-htools-item-link:hover,
 .dark .bx-dbd-chart-link:hover {
     background: rgb(255 255 255 / 0.05);
 }
 .bx-dbd-audit-toggle:focus-visible,
+.bx-dbd-htools-item-link:focus-visible,
 .bx-dbd-chart-link:focus-visible {
     outline: 2px solid rgb(59 130 246);
     outline-offset: 2px;

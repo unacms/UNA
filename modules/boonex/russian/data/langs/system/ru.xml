@@ -876,6 +876,7 @@
 	<string name="_adm_dsg_scs_save"><![CDATA[Изменения удачно сохранены]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG-код]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[Нет. В тёмной теме показывается логотип светлой темы.]]></string>
+        <string name="_adm_dsg_txt_logo_low_contrast_dark"><![CDATA[Этот логотип плохо виден на тёмном фоне. Загрузите светлую версию для тёмной темы.]]></string>
         <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[Превью показывают, что рисует шаблон сайта, {0}.]]></string>
         <string name="_adm_dsg_txt_logo_note_system"><![CDATA[Эти логотипы используют все шаблоны. Шаблон может заменить их в своих настройках логотипа.]]></string>
         <string name="_adm_dsg_txt_logo_note_template"><![CDATA[Логотипы здесь заменяют логотипы из «Дизайнер › Лого», только для шаблона {0}.]]></string>
