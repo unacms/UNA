@@ -6,6 +6,10 @@ import { isWeb } from './layout';
 import { appSetting } from './settings';
 import type { TFunction } from 'i18next';
 
+/**
+ * @deprecated The push layer (`app/lib/push`) asks for the permission and links the device now.
+ * Kept because projects call it from `customization/`; native only, OneSignal only.
+ */
 export async function subscribeOneSignal(currentUser: { id: number | string; hash?: string }, askPermission = false): Promise<void> {
     if (isWeb) return;
     const { LogLevel, OneSignal } = await import('react-native-onesignal');

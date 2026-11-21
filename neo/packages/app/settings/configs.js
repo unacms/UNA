@@ -85,8 +85,10 @@ export const settingsConfigs = {
         // NEO's own dialog (`push_prompt` molecule) asks a member to turn notifications on, then the
         // system asks. false: never ask (members who allowed them stay linked to their device).
         push_prompt: true,
-        // How long after a member's first page the dialog shows, and how long "Not now" keeps it away.
-        push_prompt_delay_ms: 2 * 60 * 1000,
+        // How long after a member's first page of a visit the dialog shows. null: two minutes, or the
+        // older `onesignal_prompt_delay_ms` where a project still sets it.
+        push_prompt_delay_ms: null,
+        // How long "Not now" keeps the dialog away on that device.
         push_prompt_snooze_days: 14,
     },
     messenger: {

@@ -24,6 +24,10 @@ export interface PushProvider {
     requestPermission(): Promise<boolean>;
     /** Links this device's subscription with the member, for UNA to send to them. */
     login(member: PushMember): Promise<void>;
-    /** Unlinks the device on sign-out, so the next account isn't sent the previous one's notifications. */
+    /**
+     * Unlinks the device, so the next account isn't sent the previous one's notifications. Called on
+     * sign-out and also whenever a session starts (the first page with a member, a switch of account),
+     * before `login`: answer at once when there is nothing to unlink, without loading the SDK.
+     */
     logout(): Promise<void>;
 }
