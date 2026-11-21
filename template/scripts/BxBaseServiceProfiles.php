@@ -127,19 +127,17 @@ class BxBaseServiceProfiles extends BxDol
         return $oTemplate->parseHtmlByName('profile_avatar.html', $aVars);
     }
 
+    /**
+     * The member's own menu (Profile stats: their profile, connections and content), on the site and in the apps,
+     * which used to get the site's main menu here.
+     */
     public function serviceProfileMenu ($iProfileId = 0)
     {
-        if(bx_is_api()){
-            $oMenu = BxDolMenu::getObjectInstance('sys_site');
-                return [
-                    bx_api_get_block ('profile_menu', $oMenu->getCodeAPI())
-                ];
-        }
-        if(($oMenu = BxDolMenu::getObjectInstance('sys_profile_stats')) !== false) {
-            return $oMenu->getCode();
-        }
-        else
-            return '';
+        $oMenu = BxDolMenu::getObjectInstance('sys_profile_stats');
+        if(bx_is_api())
+            return $oMenu ? [bx_api_get_block ('profile_menu', $oMenu->getCodeAPI())] : [];
+
+        return $oMenu ? $oMenu->getCode() : '';
     }
 
     public function serviceProfileFollowings ($iProfileId = 0)

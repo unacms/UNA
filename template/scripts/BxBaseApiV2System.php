@@ -81,14 +81,7 @@ class BxBaseApiV2System
 
         $sDescription = BxDolApiV2Map::text((string)$aPwa['description']['used']);
 
-        // the logo's proportions, from the sizes Designer keeps for an uploaded logo
-        $fAspect = null;
-        if (in_array($aSources['logo']['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true)) {
-            $iWidth = (int)$oDesigns->getSiteLogoWidth();
-            $iHeight = (int)$oDesigns->getSiteLogoHeight();
-            if ($iWidth > 0 && $iHeight > 0)
-                $fAspect = round($iWidth / $iHeight, 4);
-        }
+        $fAspect = static::logoAspect($aSources);
 
         // the 180x180 home screen icon, as BxBaseFunctions::getMetaIcons picks it
         $sIcon = '';
@@ -111,6 +104,41 @@ class BxBaseApiV2System
             // near-white) colours the browser's title bar and is no brand colour of the site's
             'accent' => static::brandingColour((string)$aPwa['theme_color']['value']),
         ];
+    }
+
+    /**
+     * The community's own mark and logo, light and dark, as the site's header picks them (see branding): a URL each,
+     * or null where it has none of its own and a client draws UNA's. API v1 sends them with every page (`logo`).
+     */
+    public static function logos()
+    {
+        $oTemplate = BxDolTemplate::getInstance();
+        $aSources = BxDolDesigns::getInstance()->getSiteLogoSources(function ($sFile) use ($oTemplate) {
+            return $oTemplate->getImageUrl($sFile);
+        });
+
+        return [
+            'mark' => static::brandingImage($aSources['mark']),
+            'mark_dark' => static::brandingImage($aSources['mark_dark']),
+            'logo' => static::brandingImage($aSources['logo']),
+            'logo_dark' => static::brandingImage($aSources['logo_dark']),
+            'logo_aspect' => static::logoAspect($aSources),
+        ];
+    }
+
+    /**
+     * The logo's proportions, from the sizes Designer keeps for an uploaded logo; null for any other.
+     */
+    protected static function logoAspect($aSources)
+    {
+        if (!in_array($aSources['logo']['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true))
+            return null;
+
+        $oDesigns = BxDolDesigns::getInstance();
+        $iWidth = (int)$oDesigns->getSiteLogoWidth();
+        $iHeight = (int)$oDesigns->getSiteLogoHeight();
+
+        return $iWidth > 0 && $iHeight > 0 ? round($iWidth / $iHeight, 4) : null;
     }
 
     /**

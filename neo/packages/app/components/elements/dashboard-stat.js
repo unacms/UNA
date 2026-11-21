@@ -57,7 +57,7 @@ function GrowthChip({ value, icon }) {
     )
 }
 
-function DashboardStatTile({ href, icon, title, count, trailing }) {
+export function DashboardStatTile({ href, icon, title, count, trailing }) {
     const hasCount = count != null && count !== ''
 
     return (
@@ -160,7 +160,7 @@ export default function DashboardStatComponent(props) {
     )
 }
 
-function DashboardStatHeader() {
+export function DashboardStatHeader({ switcher = true }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
 
@@ -193,7 +193,7 @@ function DashboardStatHeader() {
                         />
                     </View>
                 </BlockName>
-                <BlockActions>
+                {switcher ? <BlockActions>
                     <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
                         <NeoButton
                             style="bordered"
@@ -202,7 +202,7 @@ function DashboardStatHeader() {
                             interactive
                         />
                     </ProfileSwitcher>
-                </BlockActions>
+                </BlockActions> : null}
             </BlockHeader>
         </View>
     )
@@ -325,16 +325,7 @@ function DashboardManageMenu({ items }) {
 }
 
 function DashboardSettingsMenu() {
-    const {
-        layoutSettings,
-        updateLayoutSettings,
-        themeName,
-        setThemeName,
-        setLayoutName,
-        layoutName,
-        lang,
-        setLang,
-    } = useLayoutSettings()
+    const { layoutSettings, updateLayoutSettings, setLayoutName, layoutName } = useLayoutSettings()
     const { t } = useTranslation()
     const langs = appSetting('layout', 'avaliable_langs')
     const showLangs = langs.length > 1
@@ -362,58 +353,8 @@ function DashboardSettingsMenu() {
                     />
                 </View>
             ) : null}
-            {showLangs ? (
-                <View className="w-full min-w-0">
-                    <DropdownMenu
-                        triggerClassName="w-full"
-                        items={langs.map((lang) => ({
-                            id: lang,
-                            key: lang,
-                            name: lang,
-                            title: t('lang_' + lang),
-                        }))}
-                        onSelect={(oItem) => {
-                            setLang(oItem.id)
-                        }}
-                    >
-                        <NeoButton
-                            label={t('lang_' + lang)}
-                            style="bordered"
-                            controlSize="large"
-                            image="Languages"
-                            width="fill"
-                            align="start"
-                            interactive
-                        />
-                    </DropdownMenu>
-                </View>
-            ) : null}
-            {showTheme ? (
-                <View className="w-full min-w-0">
-                    <DropdownMenu
-                        triggerClassName="w-full"
-                        items={['dark', 'light', 'auto'].map((theme) => ({
-                            key: theme,
-                            id: theme,
-                            name: theme,
-                            title: t('theme_' + theme),
-                        }))}
-                        onSelect={(oItem) => {
-                            setThemeName(oItem.id)
-                        }}
-                    >
-                        <NeoButton
-                            label={t('theme_' + themeName)}
-                            style="bordered"
-                            controlSize="large"
-                            image="Moon"
-                            width="fill"
-                            align="start"
-                            interactive
-                        />
-                    </DropdownMenu>
-                </View>
-            ) : null}
+            {showLangs ? <DashboardLanguageButton /> : null}
+            {showTheme ? <DashboardThemeButton /> : null}
             {showLayouts ? (
                 <View className="w-full min-w-0">
                     <DropdownMenu
@@ -495,6 +436,75 @@ function DashboardSettingsMenu() {
                     </DropdownMenu>
                 </View>
             ) : null}
+        </View>
+    )
+}
+
+/** The language switcher, a bordered button naming the language in use; its menu lists the app's languages. */
+export function DashboardLanguageButton({ label }) {
+    const { lang, setLang } = useLayoutSettings()
+    const { t } = useTranslation()
+    const langs = appSetting('layout', 'avaliable_langs')
+
+    return (
+        <View className="w-full min-w-0">
+            <DropdownMenu
+                triggerClassName="w-full"
+                items={langs.map((sLang) => ({
+                    id: sLang,
+                    key: sLang,
+                    name: sLang,
+                    title: t('lang_' + sLang),
+                    selected: sLang === lang,
+                }))}
+                onSelect={(oItem) => {
+                    setLang(oItem.id)
+                }}
+            >
+                <NeoButton
+                    label={label || t('lang_' + lang)}
+                    style="bordered"
+                    controlSize="large"
+                    image="Languages"
+                    width="fill"
+                    align="start"
+                    interactive
+                />
+            </DropdownMenu>
+        </View>
+    )
+}
+
+/** The theme switcher: Dark, Light or the device's own. */
+export function DashboardThemeButton() {
+    const { themeName, setThemeName } = useLayoutSettings()
+    const { t } = useTranslation()
+
+    return (
+        <View className="w-full min-w-0">
+            <DropdownMenu
+                triggerClassName="w-full"
+                items={['dark', 'light', 'auto'].map((theme) => ({
+                    key: theme,
+                    id: theme,
+                    name: theme,
+                    title: t('theme_' + theme),
+                    selected: theme === themeName,
+                }))}
+                onSelect={(oItem) => {
+                    setThemeName(oItem.id)
+                }}
+            >
+                <NeoButton
+                    label={t('theme_' + themeName)}
+                    style="bordered"
+                    controlSize="large"
+                    image="Moon"
+                    width="fill"
+                    align="start"
+                    interactive
+                />
+            </DropdownMenu>
         </View>
     )
 }

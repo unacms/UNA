@@ -642,6 +642,8 @@ class BxBasePage extends BxDolPage
             'page_width' => BxDolTemplate::getPageWidth($this->getType()),
             // The favicons uploaded in Designer (fav, svg, dark: '' for each one not uploaded), for the apps' browser tabs.
             'icons' => BxTemplFunctions::getUploadedFaviconUrls(),
+            // The site's own mark and logo, light and dark (null for each the site has none of: the apps draw UNA's).
+            'logo' => BxBaseApiV2System::logos(),
             'layout' => $bSplash ? 'splash' : str_replace('.html', '', $this->_aObject['template']),
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',

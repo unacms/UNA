@@ -103,6 +103,7 @@ export default function MenuAccount({ buttonProps, children }) {
             }))
             .slice(0, 3) || []
 
+    // "See all profiles" only when there is another profile to see: with one profile it would open a list of one.
     if (data?.profiles?.length > 3) {
         profileList = [
             ...profileList,
@@ -110,8 +111,8 @@ export default function MenuAccount({ buttonProps, children }) {
             { link: '{switch_profile_selector}' },
         ]
     }
-    else{
-         profileList = [
+    else if (profileList.length > 0) {
+        profileList = [
             ...profileList,
             { link: '{switch_profile_selector}' },
         ]
@@ -119,14 +120,11 @@ export default function MenuAccount({ buttonProps, children }) {
 
     const updatedMenu = menu_account_items.flatMap((item) =>
         item.link === '{switch_profile}'
-            ? profileList
-                ? [
-                    { ...currentUser, link: '{switch_profile}' },
-                    { link: '{separator}' },
-                    ...profileList,
-                    { link: '{separator}' },
-                ]
-                : []
+            ? [
+                { ...currentUser, link: '{switch_profile}' },
+                { link: '{separator}' },
+                ...(profileList.length ? [...profileList, { link: '{separator}' }] : []),
+            ]
             : item
     )
 
