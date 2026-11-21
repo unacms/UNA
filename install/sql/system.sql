@@ -567,7 +567,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_page_width_standard_visitor', '_adm_stg_cpt_option_sys_page_width_standard_visitor', '1280', 'text', '', '', '', 24),
 (@iCategoryId, 'sys_page_width_standard_member', '_adm_stg_cpt_option_sys_page_width_standard_member', '1280', 'text', '', '', '', 25),
 (@iCategoryId, 'sys_page_width_application_visitor', '_adm_stg_cpt_option_sys_page_width_application_visitor', '1280', 'text', '', '', '', 26),
-(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27);
+(@iCategoryId, 'sys_page_width_application_member', '_adm_stg_cpt_option_sys_page_width_application_member', '1280', 'text', '', '', '', 27),
+-- Accent color (Studio > Designer > Settings): a preset of BxDolDesigns::getAccentPresets for the site, Studio and NEO.
+(@iCategoryId, 'sys_design_accent', '_adm_stg_cpt_option_sys_design_accent', 'blue', 'select', 'blue,indigo,violet,rose,orange,green,teal,graphite', '', '', 28);
 
 --
 -- CATEGORY: General (Site Settings)
@@ -747,6 +749,7 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_account_join', '_adm_stg_cpt_option_sys_account_join', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_join_modes";s:5:"class";s:18:"BaseServiceAccount";}', 'JoinMode', '_adm_stg_err_option_sys_account_join', 0),
 (@iCategoryId, 'sys_account_online_time', '_adm_stg_cpt_option_sys_account_online_time', '5', 'digit', '', 'Avail', '_adm_stg_err_option_sys_account_online_time', 1),
 (@iCategoryId, 'sys_account_autoapproval', '_adm_stg_cpt_option_sys_account_autoapproval', 'on', 'checkbox', '', '', '', 10),
 (@iCategoryId, 'sys_account_confirmation_type', '_adm_stg_cpt_option_sys_account_confirmation_type', 'email', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:22:"get_confirmation_types";s:5:"class";s:18:"BaseServiceAccount";}', '', '', 11),
@@ -765,7 +768,6 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_account_reset_password_redirect_custom', '_adm_stg_cpt_option_sys_account_reset_password_redirect_custom', '', 'digit', '', '', '', 32),
 
 (@iCategoryId, 'sys_account_disable_login_form', '_adm_stg_cpt_option_sys_account_disable_login_form', '', 'checkbox', '', '', '', 40),
-(@iCategoryId, 'sys_account_disable_join_form', '_adm_stg_cpt_option_sys_account_disable_join_form', '', 'checkbox', '', '', '', 42),
 
 (@iCategoryId, 'sys_account_allow_plus_in_email', '_adm_stg_cpt_option_sys_allow_plus_in_email', 'on', 'checkbox', '', '', '', 50),
 
@@ -5231,7 +5233,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_onboarding_operator', 'system', 'profile', '_sys_menu_item_title_system_onboarding_profile', '_sys_menu_item_title_onboarding_profile', '_sys_menu_item_info_onboarding_profile', 'page.php?i=account-profile-switcher', '', '', 'circle-user-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:7:"profile";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 1),
 ('sys_onboarding_operator', 'system', 'logo', '_sys_menu_item_title_system_onboarding_logo', '_sys_menu_item_title_onboarding_logo', '_sys_menu_item_info_onboarding_logo', '{url_studio}designer.php?page=logo', '', '', 'target', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"logo";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 2),
 ('sys_onboarding_operator', 'system', 'cover', '_sys_menu_item_title_system_onboarding_cover', '_sys_menu_item_title_onboarding_cover', '_sys_menu_item_info_onboarding_cover', '{url_studio}designer.php?page=cover', '', '', 'gallery-vertical', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"is_onboarding_step_available";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 0, 1, 3),
-('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-round-plus', '', 2147483646, '', 1, 0, 1, 10);
+('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-round-plus', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"join";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 10);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
 ('sys_homepage_submenu', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'bolt', '', '', 2147483647, '', 0, 1, 1),
@@ -5339,7 +5341,7 @@ UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_na
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
-('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 2147483647, 0, 1, 2),
+('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 192, 0, 1, 2),
 ('sys_account_dashboard', 'system', 'dashboard-subscriptions', '_sys_menu_item_title_system_subscriptions', '_sys_menu_item_title_subscriptions', 'subscriptions.php', '', '', 'credit-card col-blue3', '', '', 2147483646, 1, 1, 3),
 ('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'shopping-cart col-green3', '', '', 2147483646, 1, 1, 4),
 ('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'receipt col-green3', '', '', 2147483646, 1, 1, 5),
@@ -5380,7 +5382,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- social sharing menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_social_sharing', 'system', 'social-sharing-facebook', '_sys_menu_item_title_system_social_sharing_facebook', '_sys_menu_item_title_social_sharing_facebook', 'https://www.facebook.com/sharer/sharer.php?u={url_encoded}', '', '_blank', 'brand-facebook', '', 2147483647, 1, 1, 1),
-('sys_social_sharing', 'system', 'social-sharing-twitter', '_sys_menu_item_title_system_social_sharing_twitter', '_sys_menu_item_title_social_sharing_twitter', 'https://twitter.com/share?url={url_encoded}', '', '_blank', 'brand-x', '', 2147483647, 1, 1, 2),
+('sys_social_sharing', 'system', 'social-sharing-twitter', '_sys_menu_item_title_system_social_sharing_twitter', '_sys_menu_item_title_social_sharing_twitter', 'https://x.com/intent/post?url={url_encoded}', '', '_blank', 'brand-x', '', 2147483647, 1, 1, 2),
 ('sys_social_sharing', 'system', 'social-sharing-pinterest', '_sys_menu_item_title_system_social_sharing_pinterest', '_sys_menu_item_title_social_sharing_pinterest', 'http://pinterest.com/pin/create/button/?url={url_encoded}&media={img_url_encoded}&description={title_encoded}', '', '_blank', 'brand-pinterest', '', 2147483647, 1, 1, 3),
 ('sys_social_sharing', 'system', 'social-sharing-linked_in', '_sys_menu_item_title_system_social_sharing_linked_in', '_sys_menu_item_title_social_sharing_linked_in',  'https://www.linkedin.com/shareArticle?mini=true&url={url_encoded}', '', '_blank', 'brand-linkedin', '', 2147483647, 1, 1, 4),
 ('sys_social_sharing', 'system', 'social-sharing-whatsapp', '_sys_menu_item_title_system_social_sharing_whatsapp', '_sys_menu_item_title_social_sharing_whatsapp', 'https://wa.me/?text={url_encoded}', '', '_blank', 'brand-whatsapp', '', 2147483647, 1, 1, 5);
@@ -7604,7 +7606,7 @@ CREATE TABLE IF NOT EXISTS `sys_preloader` (
 
 INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALUES
 ('system', 'css_system', '{dir_plugins_public}marka/|marka.min.css', 1, 1),
-('system', 'css_system', '{dir_plugins_public}at.js/css/|jquery.atwho.min.css', 1, 2),
+('system', 'css_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:9:"atwho_css";}s:5:"class";s:12:"BaseServices";}', 1, 2),
 ('system', 'css_system', '{dir_plugins_public}prism/|prism.css', 1, 3),
 ('system', 'css_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:8:"tailwind";}s:5:"class";s:12:"BaseServices";}', 1, 4),
 ('system', 'css_system', 'common.css', 1, 10),
@@ -7626,7 +7628,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'css_system', 'vote.css', 1, 36),
 ('system', 'css_system', '{dir_plugins_public}spin.js/|spin.css', 1, 37),
 
-('system', 'js_system', 'pusher/pusher.min.js', 1, 0),
+('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:9:"pusher_js";}s:5:"class";s:12:"BaseServices";}', 1, 0),
 ('system', 'js_system', 'jquery/jquery.min.js', 1, 1),
 ('system', 'js_system', 'jquery/jquery-migrate.min.js', 1, 2),
 ('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:12:"jquery_ui_js";}s:5:"class";s:12:"BaseServices";}', 1, 3),
@@ -7637,7 +7639,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:11:"datetime_js";}s:5:"class";s:12:"BaseServices";}', 1, 8),
 ('system', 'js_system', 'marka/marka.min.js', 1, 9),
 ('system', 'js_system', 'headroom.min.js', 1, 10),
-('system', 'js_system', 'at.js/js/jquery.atwho.min.js', 1, 11),
+('system', 'js_system', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"get_preloader_content";s:6:"params";a:1:{i:0;s:8:"atwho_js";}s:5:"class";s:12:"BaseServices";}', 1, 11),
 ('system', 'js_system', 'prism/prism.js', 1, 12),
 ('system', 'js_system', 'htmx/htmx.min.js', 1, 13),
 ('system', 'js_system', 'htmx/head-support.min.js', 1, 14),

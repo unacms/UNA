@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_events_form_profile_input_initial_members"><![CDATA[Invite members]]></string_upd>
+    <string_upd name="_bx_events_form_profile_input_event_name"><![CDATA[Event name]]></string_upd>
+    <string_upd name="_bx_events_form_profile_input_cover"><![CDATA[Upload new cover picture]]></string_upd>
+    <string_upd name="_bx_events_page_title_joined"><![CDATA[Profile events]]></string_upd>
+    <string_upd name="_bx_events_page_title_joined_entries"><![CDATA[Profile events]]></string_upd>
+    <string_upd name="_bx_events_page_title_create_profile"><![CDATA[Create event]]></string_upd>
+    <string_upd name="_bx_events_page_title_edit_profile"><![CDATA[Edit event]]></string_upd>
+    <string_upd name="_bx_events_page_title_delete_profile"><![CDATA[Delete event]]></string_upd>
+    <string_upd name="_bx_events_page_title_join_profile"><![CDATA[Join event]]></string_upd>
+    <string_upd name="_bx_events_page_title_recent"><![CDATA[New events]]></string_upd>
+    <string_upd name="_bx_events_page_title_manage"><![CDATA[Manage events]]></string_upd>
+    <string_upd name="_bx_events_page_title_top"><![CDATA[Top events]]></string_upd>
+    <string_upd name="_bx_events_page_title_upcoming"><![CDATA[Upcoming events]]></string_upd>
+    <string_upd name="_bx_events_page_title_past"><![CDATA[Past events]]></string_upd>
+    <string_upd name="_bx_events_page_title_calendar"><![CDATA[Events calendar]]></string_upd>
+    <string_upd name="_bx_events_page_title_invite_to_group"><![CDATA[Invite members to the event]]></string_upd>
+    <string_upd name="_bx_events_page_title_entries_favorites"><![CDATA[Favorite events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_favorites_of_author"><![CDATA[Favorite events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_joined_entries"><![CDATA[Joined events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_joined_calendar"><![CDATA[Joined events calendar]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_create_profile"><![CDATA[Create event]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_edit_profile"><![CDATA[Edit event]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_delete_profile"><![CDATA[Delete event]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_join_profile"><![CDATA[Join event]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_featured_profiles"><![CDATA[Featured events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_latest_profiles"><![CDATA[New events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_manage"><![CDATA[Manage events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_top_profiles"><![CDATA[Top events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_upcoming_profiles"><![CDATA[Upcoming events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_past_profiles"><![CDATA[Past events]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_invite_to_group"><![CDATA[Invite members to the event]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+    <string_upd name="_bx_events_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_edit_profile"><![CDATA[Edit event]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_delete_profile"><![CDATA[Delete event]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_add_content"><![CDATA[Add content]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_check_in"><![CDATA[Check in]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_ical_export"><![CDATA[Sync to calendar]]></string_upd>
+    <string_upd name="_bx_events_grid_action_title_adm_delete_with_content"><![CDATA[Delete with content]]></string_upd>
+    <string_upd name="_bx_events_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+    <string_upd name="_bx_events_txt_set_role"><![CDATA[Set role]]></string_upd>
+</resources>

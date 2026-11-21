@@ -61,9 +61,9 @@
     <string name="_bx_payment_page_title_response"><![CDATA[Результат оплаты]]></string>
     <string name="_bx_payment_page_title_error"><![CDATA[Ошибка в процессе оплаты]]></string>
 
-    <string name="_bx_payment_page_title_sys_join"><![CDATA[Присоединиться]]></string>
-    <string name="_bx_payment_page_title_join"><![CDATA[Присоединиться]]></string>
-    <string name="_bx_payment_page_block_title_join"><![CDATA[Присоединиться]]></string>
+    <string name="_bx_payment_page_title_sys_join"><![CDATA[Регистрация]]></string>
+    <string name="_bx_payment_page_title_join"><![CDATA[Регистрация]]></string>
+    <string name="_bx_payment_page_block_title_join"><![CDATA[Регистрация]]></string>
 
     <string name="_bx_payment_page_title_sys_invoices"><![CDATA[Счета]]></string>
     <string name="_bx_payment_page_title_invoices"><![CDATA[Счета]]></string>

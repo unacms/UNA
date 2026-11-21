@@ -259,7 +259,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         echoJson([
             'code' => 0,
-            'message' => _t('_bx_timeline_txt_msg_performed_action')
+            'toast' => _t('_bx_timeline_txt_msg_performed_action')
         ]);
     }
 
@@ -328,7 +328,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             'object_author_id' => $this->_oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $aEvent['owner_id'] : $aEvent['object_id']
         ]);
 
-        echoJson(array('code' => 0, 'message' => _t('_bx_timeline_txt_msg_performed_action'), 'reload' => 1));
+        echoJson(array('code' => 0, 'toast' => _t('_bx_timeline_txt_msg_performed_action'), 'reload' => 1));
     }
 
     function actionDelete()
@@ -375,7 +375,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         echoJson([
             'code' => 0, 
-            'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+            'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
             'count' => $aReposted['reposts'], 
             'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts'], $aParams) : '',
             'counter' => $this->_oTemplate->getRepostCounter($aReposted, $aParams),
@@ -409,7 +409,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if($oForm->isSubmitted()) {
             if(!$oForm->isValid())
                 return echoJson(['popup' => [
-                    'html' => BxTemplFunctions::getInstance()->transBox($this->_oConfig->getHtmlIds('repost', 'with_popup'), $this->_oTemplate->getRepostWith($oForm)), 
+                    'html' => $this->_getRepostPopup('with', $oForm), 
                     'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]
                 ]]);
 
@@ -423,14 +423,14 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
             return echoJson([
                 'code' => 0, 
-                'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+                'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
                 'count' => $aReposted['reposts'], 
                 'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts']) : '',
                 'counter' => $this->_oTemplate->getRepostCounter($aReposted),
             ]);
         }
 
-        echo $this->_oTemplate->getRepostTo($oForm);
+        echoJson(['popup' => ['html' => $this->_getRepostPopup('with', $oForm), 'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]]]);
     }
 
     public function actionRepostTo()
@@ -454,7 +454,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if($oForm->isSubmitted()) {
             if(!$oForm->isValid())
                 return echoJson(['popup' => [
-                    'html' => BxTemplFunctions::getInstance()->transBox($this->_oConfig->getHtmlIds('repost', 'to_popup'), $this->_oTemplate->getRepostTo($oForm)), 
+                    'html' => $this->_getRepostPopup('to', $oForm), 
                     'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]
                 ]]);
 
@@ -483,14 +483,28 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
             return echoJson([
                 'code' => 0, 
-                'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+                'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
                 'count' => $aReposted['reposts'], 
                 'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts']) : '',
                 'counter' => $this->_oTemplate->getRepostCounter($aReposted),
             ]);
         }
 
-        echo $this->_oTemplate->getRepostTo($oForm);
+        echoJson(['popup' => ['html' => $this->_getRepostPopup('to', $oForm), 'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]]]);
+    }
+
+    /**
+     * The Repost with text / Repost to dialog: a titled popup with the form.
+     */
+    protected function _getRepostPopup($sType, $oForm)
+    {
+        $bWith = $sType == 'with';
+
+        return BxTemplFunctions::getInstance()->popupBox(
+            $this->_oConfig->getHtmlIds('repost', $bWith ? 'with_popup' : 'to_popup'),
+            _t($bWith ? '_bx_timeline_txt_do_repost_with' : '_bx_timeline_txt_do_repost_to'),
+            $bWith ? $this->_oTemplate->getRepostWith($oForm) : $this->_oTemplate->getRepostTo($oForm)
+        );
     }
 
     function actionGetView()
@@ -6307,6 +6321,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     public function getEmptyStateApi()
     {
         $aState = [
+            'icon' => 'newspaper',
             'title' => '_bx_timeline_txt_empty_feed_title',
             'text' => isLogged() ? '_bx_timeline_txt_empty_feed_text' : '',
         ];

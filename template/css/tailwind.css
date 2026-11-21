@@ -31,6 +31,20 @@
         --bx-radius-xl: calc(0.75rem * var(--bx-radius-scale));
         --bx-radius-2xl: min(calc(0.875rem * var(--bx-radius-scale)), var(--bx-radius-max-row));
         --bx-radius-3xl: min(calc(1.375rem * var(--bx-radius-scale)), var(--bx-radius-max));
+
+        /* The accent: Tailwind's blue as "r g b", which every blue-* class reads (tailwind.config.js). Studio > Designer >
+           Settings > Accent color puts another preset's scale here (design_accent.html, BxDolDesigns::getAccentPresets). */
+        --bx-accent-50: 239 246 255;
+        --bx-accent-100: 219 234 254;
+        --bx-accent-200: 191 219 254;
+        --bx-accent-300: 147 197 253;
+        --bx-accent-400: 96 165 250;
+        --bx-accent-500: 59 130 246;
+        --bx-accent-600: 37 99 235;
+        --bx-accent-700: 29 78 216;
+        --bx-accent-800: 30 64 175;
+        --bx-accent-900: 30 58 138;
+        --bx-accent-950: 23 37 84;
     }
 }
 
@@ -3057,9 +3071,14 @@
     .bx-std .bx-btn.bx-btn-primary:hover:not(:is(.dark *))::after {
         --tw-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), inset 0 0 0 2px rgb(255 255 255 / 0.05);
     }
-    /* Studio notices: a message box (the grid's EMPTY notice, MsgBox()) is a black/5 (white/5 in dark) plate with 60% text instead of the site's gray plate. */
-    .bx-std .bx-msg-box {
+    /* Studio notices: a plain message box (MsgBox()) is a black/5 (white/5 in dark) plate with 60% text instead of the site's gray plate.
+       A state (an empty list, a denial) has no plate. */
+    .bx-std .bx-msg-box-container > .bx-msg-box {
         @apply bg-black/5 dark:bg-white/5 text-black/60 dark:text-white/60;
+    }
+    /* A state's icon follows its circle's neutral grey, not the iconset's blue. */
+    .bx-std .bx-msg-box-state .sys-icon {
+        @apply text-inherit;
     }
     /* Disabled: the same plate in the flat translucent tone (black/5, white/5 in dark) instead of the gradient, the label at 40%, the hairlines kept,
        no press. !important because the site's .bx-btn-disabled rule above forces its gray-50 / gray-700 plate the same way. */
@@ -3251,7 +3270,7 @@
         @apply my-1 border-t border-black/10 dark:border-white/10;
     }
     .bx-std .bx-std-cm-label {
-        @apply px-2.5 pt-2 pb-1 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400;
+        @apply px-2.5 pt-2 pb-1 text-xs font-medium text-gray-500 dark:text-gray-400;
     }
     .bx-std [data-bx-context-menu] {
         -webkit-touch-callout: none; /* a long press opens the menu, not the browser's link sheet */

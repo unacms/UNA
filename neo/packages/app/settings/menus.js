@@ -201,6 +201,17 @@ export const settingsMenus = {
             'location-arrow': 'Navigation',
             robot: 'Bot',
             world: 'Globe',
+            // Brands: UNA's brand marks (`brand-x` arrives as BrandX); its older data names them in Font Awesome.
+            facebook: 'BrandFacebook',
+            'facebook-f': 'BrandFacebook',
+            'facebook-square': 'BrandFacebook',
+            twitter: 'BrandX',
+            'x-twitter': 'BrandX',
+            linkedin: 'BrandLinkedin',
+            'linkedin-in': 'BrandLinkedin',
+            pinterest: 'BrandPinterest',
+            'pinterest-p': 'BrandPinterest',
+            whatsapp: 'BrandWhatsapp',
         },
     },
 }

@@ -80,4 +80,36 @@ class CmtsElementApiCountTest extends BxDolIntegrationTestCase
         $this->assertSame((int)$oCmts->getCommentsCountAll(), $aCounter['count']);
         $this->assertIsArray($aCounter['authors']);
     }
+
+    public function testReplyToANewCommentCarriesTheCounter(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline'))
+            $this->markTestSkipped('Timeline is not installed.');
+
+        $oDb = BxDolDb::getInstance();
+        $sTable = $oDb->getOne("SELECT `Table` FROM `sys_objects_cmts` WHERE `Name` = 'bx_timeline'");
+        $aCmt = $sTable ? $oDb->getRow("SELECT `cmt_id`, `cmt_object_id` FROM `" . $sTable . "` ORDER BY `cmt_id` DESC LIMIT 1") : [];
+        if (empty($aCmt))
+            $this->markTestSkipped('There are no timeline comments.');
+        $iCmtId = (int)$aCmt['cmt_id'];
+
+        $this->bxLoginAsAdmin();
+        $_GET['api'] = 1;
+
+        $oCmts = new BxTemplCmts('bx_timeline', (int)$aCmt['cmt_object_id']);
+        if (!$oCmts->isEnabled())
+            $this->markTestSkipped('Timeline comments are not enabled.');
+
+        $oServices = new BxTemplCmtsServices();
+        $aRv = $oServices->serviceGetCommentsApi($oCmts, ['comment_id' => (string)$iCmtId]);
+
+        // The apps show the comment and update the object's counter beside the list from it.
+        $this->assertSame([$iCmtId], array_map('intval', $aRv['new']));
+        $this->assertSame('comments', $aRv['element']['type']);
+        $this->assertSame('bx_timeline', $aRv['element']['system']);
+        $this->assertSame($oCmts->getId(), (int)$aRv['element']['object_id']);
+        $this->assertSame((int)$oCmts->getCommentsCountAll(), (int)($aRv['element']['counter']['count'] ?? $aRv['element']['action']['count']));
+
+        $this->assertArrayNotHasKey('element', $oServices->serviceGetCommentsApi($oCmts, []), 'A plain page of comments goes without it.');
+    }
 }

@@ -149,7 +149,8 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
             </Row>
             <Row className="pb-4 gap-2 px-1">
                 <Input
-                    placeholder={"Select users..."}
+                    placeholder={t('Type a name')}
+                    accessibilityLabel={t('Type a name')}
                     className="px-2 mr-2  w-full"
                     onChangeText={onChangeText}
                     role="textbox"

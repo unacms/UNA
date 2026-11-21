@@ -27,7 +27,7 @@
     <string name="_bx_artificer_stg_cpt_category_styles_custom"><![CDATA[Пользовательские стили]]></string>
     <string name="_bx_artificer_stg_cpt_option_styles_custom"><![CDATA[Пользовательские стили]]></string>
     <string name="_bx_artificer_stg_cpt_option_images_custom"><![CDATA[Пользовательские изображения]]></string>
-    <string name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Каждая строка представляет изображение. Формат строки: <b>имя</b> => <b>значение</b> => <b>тип</b> => <b>класс</b><br />Где <b>тип </b> и/или <b>class</b> можно опустить. Доступные типы: <b>ic</b> — значок (Font Awesome), <b>im</b> — изображение (имя файла или URL-адрес), <b>sc</b> — исходный код (SVG). <br />Не забудьте очистить кеш шаблонов (если он включен), чтобы увидеть изменения.]]></string>
+    <string name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Каждая строка — одно изображение: <b>имя</b> => <b>значение</b> => <b>тип</b> => <b>класс</b>. <b>тип</b> и <b>класс</b> можно опустить. Типы: <b>ic</b> — значок (имя значка Lucide, как на lucide.dev), <b>im</b> — изображение (имя файла или URL), <b>sc</b> — код SVG.<br />Чтобы увидеть изменения, очистите кеш шаблонов (если он включён).]]></string>
 
     <!-- Pages -->
     <string name="_bx_artificer_page_block_title_splash"><![CDATA[Титульная страница]]></string>
@@ -58,6 +58,6 @@
     <string name="_bx_artificer_txt_splash_stats_c2"><![CDATA[посты]]></string>
     <string name="_bx_artificer_txt_splash_stats_c3"><![CDATA[комментарии]]></string>
     <string name="_bx_artificer_txt_splash_login_title"><![CDATA[Войти в свой аккаунт]]></string>
-    <string name="_bx_artificer_txt_splash_login_join"><![CDATA[Создать новый аккаунт]]></string>
+    <string name="_bx_artificer_txt_splash_login_join"><![CDATA[Зарегистрироваться]]></string>
     <string name="_bx_artificer_txt_splash_login_agreement"><![CDATA[Выполняя вход, вы соглашаетесь с нашими <a href="{0}" class="font-medium text-gray-900 dark:text-white hover:underline">Условиями использования</a> и <a href= "{1}" class="dark:text-white font-medium text-gray-900 hover:underline">Политикой конфиденциальности</a>.]]></string>
 </resources>

@@ -118,7 +118,7 @@ class BxDolStudioPolyglot extends BxTemplStudioWidget
         if(!$bResult)
             return $this->getJsResult('_adm_pgt_err_et_hf_save');
 
-        return $this->getJsResult('_adm_pgt_scs_et_hf_save', true, true, BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
+        return $this->getJsToast('_adm_pgt_scs_et_hf_save', BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
     }
     
     public function submitEtemplatesHtml(&$oForm)
@@ -136,7 +136,7 @@ class BxDolStudioPolyglot extends BxTemplStudioWidget
         if(!$bResult)
             return $this->getJsResult('_adm_pgt_err_et_hf_save');
 
-        return $this->getJsResult('_adm_pgt_scs_et_hf_save', true, true, BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
+        return $this->getJsToast('_adm_pgt_scs_et_hf_save', BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
     }
 }
 

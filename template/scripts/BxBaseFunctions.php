@@ -164,6 +164,9 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         if(is_array($mixedText)) {
             $aState = $mixedText;
         }
+        elseif($iTimer <= 0 && $this->isEmptyText($mixedText)) {
+            return $this->emptyState();
+        }
         elseif($iTimer <= 0) {
             $aState = BxDolAcl::getDenialState($mixedText);
         }
@@ -193,6 +196,36 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             ),
             'bx_if:state' => array('condition' => false, 'content' => array()),
         ));
+    }
+
+    /**
+     * The empty state of a list or a block, the same on the site and in Studio: an icon, one line in muted text and
+     * an optional action, in place of the grey "Nothing here yet" plate.
+     *
+     * @param string $sText translated line; "Nothing here yet" when empty
+     * @param array $aButton optional action: ['title' => translated, 'link' => url] and/or 'onclick' => js; a button
+     *  with only 'onclick' is a <button>
+     * @param string $sIcon Lucide icon name
+     */
+    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox')
+    {
+        return $this->msgBoxState('bx-empty-' . bin2hex(random_bytes(4)), [
+            'icon' => $sIcon,
+            'text' => $sText !== '' ? $sText : _t('_Empty'),
+            'buttons' => !empty($aButton) ? [$aButton] : [],
+        ]);
+    }
+
+    /**
+     * Whether a message box says only that there is nothing here: it is then shown as an empty state.
+     */
+    protected function isEmptyText($mixedText)
+    {
+        if(!is_string($mixedText) || ($mixedText = trim($mixedText)) === '') {
+            return false;
+        }
+
+        return in_array($mixedText, [_t('_Empty'), _t('_sys_txt_empty')], true);
     }
 
     /**
@@ -253,15 +286,28 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     {
         $aButtons = [];
         foreach(is_array($mixedButtons) ? $mixedButtons : [] as $aButton) {
-            if(empty($aButton['title']) || empty($aButton['link'])) {
+            $bOnclick = !empty($aButton['onclick']) && is_string($aButton['onclick']);
+            if(empty($aButton['title']) || (empty($aButton['link']) && !$bOnclick)) {
                 continue;
             }
 
-            $aButtons[] = [
+            $aVars = [
                 'class' => empty($aButtons) ? 'bx-btn-primary' : '',
-                'link' => bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))),
                 'title' => bx_process_output($aButton['title']),
-                'attrs' => !empty($aButton['onclick']) && is_string($aButton['onclick']) ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
+                'attrs' => $bOnclick ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
+            ];
+
+            // a link, or a button when the action happens on the page and has no address
+            $bLink = !empty($aButton['link']);
+            $aButtons[] = [
+                'bx_if:link' => [
+                    'condition' => $bLink,
+                    'content' => array_merge($aVars, ['link' => $bLink ? bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))) : '']),
+                ],
+                'bx_if:button' => [
+                    'condition' => !$bLink,
+                    'content' => $aVars,
+                ],
             ];
         }
 
@@ -1400,8 +1446,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * The icon set's code for <head> (BxBaseIconset::getCodeHead): Lucide loads its script here, beside the page's
-     * own scripts.
+     * The icon set's code for <head> (BxBaseIconset::getCodeHead), for a set that loads a script there.
      */
     protected function getInjHeadIcons()
     {
@@ -1441,6 +1486,25 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 'condition' => $bSmooth,
                 'content' => ['factor' => rtrim(rtrim(number_format($fFactor, 2, '.', ''), '0'), '.')],
             ],
+        ]);
+    }
+
+    /**
+     * The accent color Studio > Designer > Settings picks, when it isn't the default blue: its scale as the
+     * --bx-accent-* variables that every blue-* class reads (template/css/tailwind.css, BxDolDesigns::getAccentPresets).
+     */
+    protected function getInjHeadDesignAccent()
+    {
+        $aScale = BxDolDesigns::getAccentScale();
+        if(empty($aScale))
+            return '';
+
+        $aSteps = [];
+        foreach($aScale as $iStep => $sRgb)
+            $aSteps[] = ['step' => (int)$iStep, 'rgb' => preg_replace('/[^0-9 ]/', '', $sRgb)];
+
+        return $this->_oTemplate->parseHtmlByName('design_accent.html', [
+            'bx_repeat:steps' => $aSteps,
         ]);
     }
 
