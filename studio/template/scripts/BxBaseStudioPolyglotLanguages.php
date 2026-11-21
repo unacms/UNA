@@ -28,8 +28,9 @@ class BxBaseStudioPolyglotLanguages extends BxDolStudioPolyglotLanguages
      */
     protected function _getCellTitle($mixedValue, $sKey, $aField, $aRow)
     {
-        if(!$this->_bIsApi && ($sUrl = $this->getLanguageUrl($aRow)) !== '')
+        if(!$this->_bIsApi && ($sUrl = $this->getLanguageUrl($aRow)) !== '') {
             $mixedValue = '<a href="' . bx_html_attribute($sUrl) . '">' . $mixedValue . '</a>';
+        }
 
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }

@@ -27,8 +27,9 @@ class BxDolStudioPolyglotLanguages extends BxTemplStudioGrid
      */
     public function getStatusKey($aRow)
     {
-        if($aRow['name'] == $this->sLanguageDefault)
+        if($aRow['name'] == $this->sLanguageDefault) {
             return '_adm_pgt_txt_status_default';
+        }
 
         return (int)$aRow['enabled'] != 0 ? '_adm_pgt_txt_status_on' : '_adm_pgt_txt_status_off';
     }

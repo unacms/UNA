@@ -496,8 +496,9 @@ class BxBaseStudioStore extends BxDolStudioStore
         //--- Prepare modules: Install is the card's button, Delete is in its More menu (one menu for every card).
         $sMoreMenuId = 'bx-std-str-downloaded-menu';
         $sMoreIcon = '';
-        if(($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml('ellipsis')) !== false)
+        if(($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml('ellipsis')) !== false) {
             $sMoreIcon = $sSvg;
+        }
 
         $bCacheImage = getParam('sys_template_cache_image_enable') == 'on';
         foreach($aProducts['modules'] as $aModule) {
@@ -604,8 +605,9 @@ class BxBaseStudioStore extends BxDolStudioStore
     protected function getDownloadedMenu($sId)
     {
         $sIcon = '';
-        if(($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml('trash-2')) !== false)
+        if(($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml('trash-2')) !== false) {
             $sIcon = $sSvg;
+        }
 
         $sMenu = BxDolStudioTemplate::getInstance()->parseHtmlByName('menu_context.html', [
             'label' => bx_html_attribute(_t('_adm_txt_show_actions')),

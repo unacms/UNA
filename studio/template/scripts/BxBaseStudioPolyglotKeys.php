@@ -334,8 +334,9 @@ class BxBaseStudioPolyglotKeys extends BxDolStudioPolyglotKeys
 
         $aCounter = array();
         $this->oDb->getKeysBy(array('type' => 'counter_by_category'), $aCounter, false);
-        foreach($this->oDb->getCategoryTitles() as $iCategoryId => $sCategoryTitle)
+        foreach($this->oDb->getCategoryTitles() as $iCategoryId => $sCategoryTitle) {
             $aInputModules['values']['id-' . $iCategoryId] = $sCategoryTitle . " (" . (isset($aCounter[$iCategoryId]) ? $aCounter[$iCategoryId] : "0") . ")";
+        }
 
         $aInputModules['values'] = array_merge(array('id-0' => _t('_adm_pgt_txt_all_modules')), $aInputModules['values']);
 
