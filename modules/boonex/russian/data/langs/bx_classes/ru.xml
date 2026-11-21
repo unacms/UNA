@@ -302,5 +302,7 @@
   <string name="_bx_classes_txt_poll_view_results"><![CDATA[результаты]]></string>
   <string name="_bx_classes_txt_poll_answer_vote_do_by"><![CDATA[Проголосовали за]]></string>
   <string name="_bx_classes_txt_poll_answer_vote_counter"><![CDATA[{0} голосов]]></string>
+  <string name="_bx_classes_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string>
+  <string name="_bx_classes_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string>
   <string name="_bx_classes_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 </resources>

@@ -164,7 +164,7 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
         if(empty($CNF['FIELD_VIEWS']) || (empty($this->_aContentInfo[$CNF['FIELD_VIEWS']]) && !$this->_bShowZeros))
             return false;
 
-        $sTitle = _t('_view_n_views', $this->_aContentInfo[$CNF['FIELD_VIEWS']]);
+        $sTitle = _tn('_view_n_views', $this->_aContentInfo[$CNF['FIELD_VIEWS']]);
 
         if($this->_bIsApi)
             return $this->_getMenuItemAPI($aItem, 'text', [
@@ -208,7 +208,7 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
         if(empty($CNF['FIELD_VOTES']) || (empty($this->_aContentInfo[$CNF['FIELD_VOTES']]) && !$this->_bShowZeros))
             return false;
 
-        $sTitle = _t('_vote_n_votes', $this->_aContentInfo[$CNF['FIELD_VOTES']]);
+        $sTitle = _tn('_vote_n_votes', $this->_aContentInfo[$CNF['FIELD_VOTES']]);
 
         if($this->_bIsApi)
             return $this->_getMenuItemAPI($aItem, 'text', [
@@ -363,7 +363,7 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
         if(!$oComments || !$oComments->isEnabled())
             return false;
         
-        $sTitle = _t('_cmt_txt_n_comments', $oComments->getCommentsCountAll(0, true));
+        $sTitle = _tn('_cmt_txt_n_comments', $oComments->getCommentsCountAll(0, true));
         $sLink =  $oComments->getListUrl();
 
         if($this->_bIsApi)

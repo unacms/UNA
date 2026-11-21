@@ -4,8 +4,8 @@
     <string name="_ADM_PROFILE_SEND_MSG"><![CDATA[Сообщение было удачно отправлено]]></string>
     <string name="_ATT_ACTIVE_E"><![CDATA[Вы полноправный член нашего Сообщества. Но Вы можете заблокировать свой профиль, чтобы он был временно недоступен для других.]]></string>
     <string name="_ATT_APPROVAL_E"><![CDATA[Активация Вашего профиля в процессе. Обычно это занимает до 24 часов. Спасибо за Ваше терпение.]]></string>
-    <string name="_ATT_REJECTED_E"><![CDATA[Ваш профиль быт отвергнут системным администратором, потому что он содержит неразрешённую или недостаточную информацию. Если у Вас есть вопросы, пожалуйста, <a target=_blank href="contact.php">напишите нам</a>. Не забудьте указать ID своего профиля.]]></string>
-    <string name="_ATT_SUSPENDED_E"><![CDATA[Ваш профиль временно не обслуживается {0} системой. Вы можете его активировать <a target=_blank href="change_status.php">здесь</a>. Если у Вас есть вопросы, пожалуйста, <a target=_blank href="contact.php">напишите Администратору</a>.]]></string>
+    <string name="_ATT_REJECTED_E"><![CDATA[Ваш профиль не одобрен: в нём не хватает сведений или есть недопустимые. Если у вас есть вопросы, <a target=_blank href="contact.php">напишите нам</a> и укажите ID профиля.]]></string>
+    <string name="_ATT_SUSPENDED_E"><![CDATA[Ваш профиль временно заблокирован. Вы можете активировать его <a target=_blank href="change_status.php">здесь</a>. Если у вас есть вопросы, <a target=_blank href="contact.php">напишите нам</a>.]]></string>
     <string name="_ATT_UNCONFIRMED_E"><![CDATA[Вам нужно нажать на ссылку, присланную в эл. сообщении, чтобы запросить активацию своего аккаунта. <br />Прислать мне <a target=_blank href="activation_email.php">письмо с подтверждением</a>.]]></string>
     <string name="_Access denied"><![CDATA[Доступ запрещён]]></string>
     <string name="_Action"><![CDATA[Действие]]></string>
@@ -110,6 +110,8 @@
         <string name="_report_status_all"><![CDATA[Все]]></string>
 	<string name="_report_counter"><![CDATA[{0}]]></string>
         <string name="_report_n_reports"><![CDATA[{0} жалоб]]></string>
+	<string name="_report_n_reports_few"><![CDATA[{0} жалобы]]></string>
+	<string name="_report_n_reports_one"><![CDATA[{0} жалоба]]></string>
 	<string name="_report_do_report"><![CDATA[Пожаловаться]]></string>
         <string name="_report_do_report_with_sample"><![CDATA[Пожаловаться]]></string>
         <string name="_report_do_unreport"><![CDATA[Отменить жалобу]]></string>
@@ -479,7 +481,7 @@
         <string name="_adm_api_btn_export_all"><![CDATA[Экспортировать настройки всех приложений]]></string>
         <string name="_adm_api_err_action_file_not_found"><![CDATA[Файл не найден.]]></string>
         <string name="_adm_api_err_action_handler_not_found"><![CDATA[Невозможно выполнить действие. Отсутствует связанный обработчик.]]></string>
-        <string name="_adm_api_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+        <string name="_adm_api_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
         <string name="_adm_api_msg_applied"><![CDATA[Настройки были применены.]]></string>
         <string name="_adm_api_msg_applied_for"><![CDATA[Настройки всех приложений были применены.]]></string>
         <string name="_adm_api_msg_export_empty"><![CDATA[Настройки для экспорта отсутствуют.]]></string>
@@ -1080,7 +1082,7 @@
 	<string name="_adm_err_oauth_cannot_get_token"><![CDATA[Невозможно соединиться с <b>UNA</b>. Пожалуйста, попробуйте позднее.]]></string>
 	<string name="_adm_err_oauth_cannot_read_answer"><![CDATA[Невозможно получить отклик от <b>UNA</b>. Пожалуйста, попробуйте позднее.]]></string>
 	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[Нужно ввести Key и Secret, предоставленные <b>UNA</b> в Настройки -> Общие.]]></string>
-	<string name="_adm_err_operation_failed"><![CDATA[Операция не удалась. Пожалуйста, оповестите нас.]]></string>
+	<string name="_adm_err_operation_failed"><![CDATA[Операция не удалась. Попробуйте ещё раз, а если снова не получится, загляните в журналы.]]></string>
 	<string name="_adm_form_btn_displays_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_form_btn_displays_edit"><![CDATA[Редактировать дисплей]]></string>
 	<string name="_adm_form_btn_displays_save"><![CDATA[Сохранить]]></string>
@@ -1784,9 +1786,9 @@
 	<string name="_adm_prm_dsc_level_icon"><![CDATA[Здесь можно использовать иконку шрифта]]></string>
 	<string name="_adm_prm_dsc_level_icon_image"><![CDATA[или загрузить изображение.]]></string>
 	<string name="_adm_prm_dsc_level_name"><![CDATA[Короткое название для членства (например, Premium, Gold, Newcomer, и т.д.)]]></string>
-	<string name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Ограничить макс размер файлов для пользователей данного членства во всех модулях (0 - без ограничений, могут быть задействованы другие системные ограничения).]]></string>
-	<string name="_adm_prm_dsc_level_quota_number"><![CDATA[Ограничить количество файлов для пользователей данного членства (0 - без ограничений).]]></string>
-	<string name="_adm_prm_dsc_level_quota_size"><![CDATA[Ограничить дисковое пространство для пользователей данного членства во всех модулях (0 - без ограничений).]]></string>
+	<string name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Самый большой файл, который может загрузить участник с этим членством, в любом приложении (0 = без ограничений; могут действовать другие системные ограничения).]]></string>
+	<string name="_adm_prm_dsc_level_quota_number"><![CDATA[Сколько файлов может загрузить участник с этим членством (0 = без ограничений).]]></string>
+	<string name="_adm_prm_dsc_level_quota_size"><![CDATA[Сколько места может занять участник с этим членством во всех приложениях (0 = без ограничений).]]></string>
 	<string name="_adm_prm_dsc_price_add_days"><![CDATA[Используйте 0 для отсутствия ограничений]]></string>
         <string name="_adm_prm_err_action_edit"><![CDATA[Невозможно обновить параметры действия членства]]></string>
 	<string name="_adm_prm_err_level_create"><![CDATA[Невозможно создать членство]]></string>
@@ -1815,7 +1817,7 @@
 	<string name="_adm_prm_txt_icon"><![CDATA[Иконка]]></string>
 	<string name="_adm_prm_txt_level_account"><![CDATA[Аккаунт]]></string>
 	<string name="_adm_prm_txt_level_actions_copy"><![CDATA[Скопировать действия из]]></string>
-	<string name="_adm_prm_txt_level_administrator"><![CDATA[Администратор]]></string>
+	<string name="_adm_prm_txt_level_administrator"><![CDATA[Оператор]]></string>
         <string name="_adm_prm_txt_level_unavailable_to"><![CDATA[Недоступно для]]></string>
 	<string name="_adm_prm_txt_level_create_popup"><![CDATA[Добавить новый уровень]]></string>
 	<string name="_adm_prm_txt_level_description"><![CDATA[Описание]]></string>
@@ -1924,8 +1926,8 @@
     <string name="_adm_stg_cpt_category_api_layout"><![CDATA[Планировка]]></string>
     <string name="_adm_stg_cpt_category_agents_general"><![CDATA[Общие]]></string>
     <string name="_adm_stg_cpt_category_agents_usage"><![CDATA[Помощники]]></string>
-    <string name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Изменять ширину картинки перед загрузкой (0 - отключить)]]></string>
-    <string name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Изменять высоту картинки перед загрузкой (0 - отключить)]]></string>    
+    <string name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Уменьшать картинки перед загрузкой до этой ширины (0 = не уменьшать)]]></string>
+    <string name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Уменьшать картинки перед загрузкой до этой высоты (0 = не уменьшать)]]></string>    
     <string name="_adm_stg_cpt_option_currency_code"><![CDATA[Код валюты (для платёжных систем)]]></string>
     <string name="_adm_stg_err_option_currency_code"><![CDATA[Не должно быть пустым.]]></string>
     <string name="_adm_stg_cpt_option_currency_sign"><![CDATA[Знак валюты (только для отображения)]]></string>
@@ -1962,14 +1964,14 @@
     <string name="_adm_stg_cpt_option_sys_account_confirmation_type"><![CDATA[Аккаунт подтвержден когда]]></string>
     <string name="_adm_stg_cpt_option_sys_account_hide_unconfirmed_accounts"><![CDATA[Скрывать профили у неподтвержденных аккаунтов]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_enable"><![CDATA[Включить двухфакторную аутентификацию]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[Срок жизни 2FA кода, в секундах (0 - отправлять код при каждой авторизации)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[Срок жизни 2FA-кода, секунд (0 = отправлять код при каждом входе)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_autoapproval"><![CDATA[Автоматическая активация аккаунта после создания]]></string>
     <string name="_adm_stg_cpt_option_sys_account_auto_profile_creation"><![CDATA[Автоматическое создание профайла из аккаунта]]></string>
     <string name="_adm_stg_cpt_option_sys_account_online_time"><![CDATA[Временные рамки статуса "онлайн" (минуты)]]></string>
     <string name="_adm_stg_err_option_sys_account_online_time"><![CDATA[Вам необходимо ввести значение больше нуля.]]></string>
     <string name="_adm_stg_cpt_option_sys_account_default_profile_type"><![CDATA[Тип профиля по умолчанию]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Ограничить число профилей (0 - без ограничений)]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Количество попыток ввода пароля (0 - без ограничений)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Максимум профилей в аккаунте (0 = без ограничений)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Максимум попыток входа (0 = без ограничений)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_reset_password_key_lifetime"><![CDATA[Время жизни ключа для сброса пароля (в секундах)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_reset_password_redirect"><![CDATA[После сброса пароля перенаправить на]]></string>
     <string name="_adm_stg_cpt_option_value_sys_account_reset_password_redirect_home"><![CDATA[Главная страница]]></string>
@@ -2059,7 +2061,7 @@
     <string name="_adm_stg_cpt_option_sys_location_normalize_names"><![CDATA[Нормализация географических названий]]></string>
     <string name="_adm_stg_cpt_option_sys_maps_api_key"><![CDATA[Ключ Google Maps API]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_default"><![CDATA[Поставщик встраиваемого кода]]></string>
-    <string name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Срок действия сгенерированного встраивания в днях (0 - время не отслеживать)]]></string>
+    <string name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Срок действия встраивания, дней (0 = без ограничений)]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_system"><![CDATA[Системный]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_microlink"><![CDATA[Microlink]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_peekalink"><![CDATA[Peekalink]]></string>
@@ -2120,12 +2122,12 @@
     <string name="_adm_stg_cpt_option_sys_relations"><![CDATA[Разрешить связи между]]></string>
     <string name="_adm_stg_cpt_option_sys_revision"><![CDATA[Номер ревизии]]></string>
     <string name="_adm_stg_cpt_option_sys_security_form_token_enable"><![CDATA[Задействовать CSRF токен в формах]]></string>
-    <string name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[CSRF token - срок жизни в секундах (0 - не вести отчёт времени)]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[Срок жизни CSRF-токена, секунд (0 = без ограничений)]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_block"><![CDATA[Общий порог угрозы бесопасности перед тем, как послать отчёт и заблокировать агрессора]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_log"><![CDATA[Общий порог угрозы бесопасности перед тем, как послать отчёт]]></string>
     <string name="_adm_stg_cpt_option_sys_security_upload_token_enable"><![CDATA[Включить токены безопасности загрузки]]></string>
     <string name="_adm_stg_cpt_option_sys_security_upload_token_lifetime"><![CDATA[Время жизни токена безопасности загрузки]]></string>
-    <string name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Блокировать контент после N жалоб (0 - не блокировать)]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Блокировать контент после стольких жалоб (0 = не блокировать)]]></string>
     <string name="_adm_stg_cpt_option_sys_site_logo_aspect_ratio"><![CDATA[Соотношение сторон лого]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_default"><![CDATA[Основной движок хранения (отличный от Local может потребовать дополнительную настройку)]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_s3_access_key"><![CDATA[AWS - ключ доступа]]></string>
@@ -2207,9 +2209,9 @@
     <string name="_adm_stg_cpt_option_sys_quill_toolbar_standard"><![CDATA[Quill кнопки для стандартного редактора]]></string>
     <string name="_adm_stg_cpt_option_sys_quill_toolbar_full"><![CDATA[Quill buttons кнопки для полного редактора]]></string>
     <string name="_adm_stg_cpt_option_sys_metatags_hashtags_only"><![CDATA[Отфильтровать ярлыки из списка предлагаемых хэштегов]]></string>
-    <string name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Максимальное число хэш-тагов в одной публикации]]></string>
-    <string name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Максимальное число упоминаний кого-либо в одной публикации]]></string>
-    <string name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Максимальное число присоединенных ссылок к одной публикации (0 - без ограничений)]]></string>
+    <string name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Максимум хештегов в публикации]]></string>
+    <string name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Максимум упоминаний в публикации]]></string>
+    <string name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Максимум прикреплённых ссылок в публикации (0 = без ограничений)]]></string>
     <string name="_adm_stg_cpt_option_sys_enable_post_to_context_for_privacy"><![CDATA[Включить возможность добавления контента в контекст, используя поле "Конфиденциальность"]]></string>
     <string name="_adm_stg_cpt_option_sys_hide_post_to_context_for_privacy"><![CDATA[Скрыть из поля "Конфиденциальность" возможность добавления контента в контекст модулей]]></string>
     <string name="_adm_stg_cpt_option_sys_treat_cxt_in_cxt_as_cnt"><![CDATA[Рассматривать контекст, размещенный в контексте, как контент]]></string>
@@ -2334,7 +2336,7 @@
     <string name="_adm_stg_cpt_option_sys_std_pgt_etemplates_editor"><![CDATA[Полиглот в Студии: Включить визуальный редактор]]></string>
 
     <string name="_adm_stg_cpt_option_sys_bg_jobs_process_per_run"><![CDATA[Фоновые задачи: Количество заданий для обработки за один запуск]]></string>
-    <string name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Фоновые задачи: Максимальное количество параллельных работников]]></string>
+    <string name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Фоновые задачи: максимум параллельных обработчиков]]></string>
     <string name="_adm_stg_cpt_option_sys_bg_jobs_cleanup_timeout"><![CDATA[Фоновые задачи: Удаление заданий с ошибками через (в днях)]]></string>
 
     <string name="_adm_stg_cpt_option_sys_maintenance_mode"><![CDATA[Режим технического обслуживания]]></string>
@@ -2364,7 +2366,7 @@
     <string name="_adm_str_err_cannot_unzip_package"><![CDATA[Невозможно распаковать ZIP-архив.]]></string>
     <string name="_adm_str_err_cannot_write"><![CDATA[Невозможно сохранить скачанный файл.]]></string>
     <string name="_adm_str_err_destination_not_valid"><![CDATA[Папка назначения FTP не является корневой папкой для скрипта.]]></string>
-    <string name="_adm_str_err_download_failed"><![CDATA[Скачка не удалась. Пожалуйста, оповестите нас.]]></string>
+    <string name="_adm_str_err_download_failed"><![CDATA[Скачать не удалось. Попробуйте ещё раз.]]></string>
     <string name="_adm_str_err_files_copy_failed"><![CDATA[Загрузка файла не удалась. Пожалуйста, проверьте разрешение на запись.]]></string>
     <string name="_adm_str_err_no_ftp_info"><![CDATA[Реквизиты доступа к FTP не указаны. Вы можете их ввести в Настройки -> Общие.]]></string>
     <string name="_adm_str_err_no_product_info"><![CDATA[Невозможно загрузить информацию о товаре. Попробуйте позднее.]]></string>
@@ -2548,7 +2550,7 @@
 	<string name="_cmt_browse_tail"><![CDATA[Новейшие]]></string>
 	<string name="_cmt_display_flat"><![CDATA[Целиком]]></string>
 	<string name="_cmt_display_threaded"><![CDATA[Поэтапно]]></string>
-	<string name="_cmt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+	<string name="_cmt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 	<string name="_cmt_msg_login_required"><![CDATA[Чтобы оставить комментарий, вам необходимо <a href="{0}">войти</a> или <a href="{1}">зарегистрироваться</a>.]]></string>
 	<string name="_cmt_page_view_header"><![CDATA[Комментарий '{comment_snippet}' к '{object_title}']]></string>
 	<string name="_cmt_page_view_title"><![CDATA[Комментарий к <a href="{object_url}">{object_title}</a>]]></string>
@@ -2577,6 +2579,8 @@
         <string name="_cmt_txt_sample_vote_single"><![CDATA[голос за комментарий]]></string>
         <string name="_cmt_txt_added_sample_custom"><![CDATA[Добавил <a href="{sample_url}">{sample}</a> к <a href="{psample_url}">{psample}</a>]]></string>
 	<string name="_cmt_txt_n_comments"><![CDATA[{0} комментариев]]></string>	
+        <string name="_cmt_txt_n_comments_few"><![CDATA[{0} комментария]]></string>
+        <string name="_cmt_txt_n_comments_one"><![CDATA[{0} комментарий]]></string>
         <string name="_cmt_txt_do"><![CDATA[Комментировать]]></string>
         <string name="_cmt_txt_counter"><![CDATA[{0}]]></string>
 	<string name="_cmt_txt_counter_empty"><![CDATA[Комментировать]]></string>
@@ -2670,7 +2674,7 @@
 	<string name="_sys_acl_action_not_allowed"><![CDATA[Ваше членство ({2}) не включает «{1}».]]></string>
 	<string name="_sys_acl_action_not_allowed_after"><![CDATA[Ваше текущее членство ({2}) более не позволяет '{1}' {5}.]]></string>
 	<string name="_sys_acl_action_not_allowed_before"><![CDATA[Ваше текущее членство ({2}) позволит '{1}' {6}.]]></string>
-        <string name="_sys_acl_action_pending"><![CDATA[В данный момент вы неактивный пользователь. Пожалуйста, попросите <a href="mailto:{7}">администратора сайта</a> активировать Вас, чтобы Вы могли <b>{1}</b>.]]></string>
+        <string name="_sys_acl_action_pending"><![CDATA[Ваш аккаунт ждёт одобрения. После одобрения вы сможете <b>{1}</b>. Есть вопросы? <a href="mailto:{7}">Напишите нам</a>.]]></string>
 	<string name="_sys_acl_action_post_links"><![CDATA[Публикация ссылок]]></string>
         <string name="_sys_acl_action_post_links_desc"><![CDATA[Публикация ссылок в формах]]></string>
 	<string name="_sys_acl_action_use_macros"><![CDATA[Использовать макросы]]></string>
@@ -2689,7 +2693,7 @@
 	<string name="_sys_acl_action_set_acl_as_privacy_desc"><![CDATA[Использовать уровень членства в настройках приватности в формах добавления контента]]></string>
         <string name="_sys_acl_action_set_form_fields_privacy"><![CDATA[Назначение приватности для полей форм]]></string>
 	<string name="_sys_acl_action_set_form_fields_privacy_desc"><![CDATA[Разрешать менять приватность для полей форм]]></string>
-	<string name="_sys_acl_action_suspended"><![CDATA[Вы не можете '{1}', потому что Ваш профайл заблокирован. Если Вы не знаете, почему, постарайтесь связаться с <a href="mailto:{7}">администратором</a>.]]></string>
+	<string name="_sys_acl_action_suspended"><![CDATA[Вы не можете {1}, потому что ваш профиль заблокирован. Если вы не знаете почему, <a href="mailto:{7}">напишите нам</a>.]]></string>
 	<string name="_sys_acl_action_unauthenticated"><![CDATA[Войдите или зарегистрируйтесь, чтобы использовать «{1}».]]></string>
 	<string name="_sys_acl_action_unconfirmed"><![CDATA[Вы не подтвердили свой профиль. Пожалуйста, проверьте эл. сообщение со ссылкой на активацию профиля. Неподтверждённые пользователи не могут <b>{1}</b>.]]></string>
 	<string name="_sys_acl_action_vote"><![CDATA[Голосовать]]></string>
@@ -3112,7 +3116,7 @@
     <string name="_sys_conn_err_connection_does_not_exists"><![CDATA[Связь не существует]]></string>
     <string name="_sys_conn_err_connection_is_awaiting_confirmation"><![CDATA[Запрос на связь ожидает подтверждения]]></string>
     <string name="_sys_conn_err_input_data_is_not_defined"><![CDATA[Входные данные не определены]]></string>
-    <string name="_sys_conn_msg_success"><![CDATA[Операция удачно завершена]]></string>
+    <string name="_sys_conn_msg_success"><![CDATA[Готово.]]></string>
 
     <string name="_sys_connect_information"><![CDATA[Информация о настройке]]></string>
     <string name="_sys_connect_error_join_unavailable"><![CDATA[Извините, но регистрация на данный момент недоступна. Пожалуйста попробуйте снова попозже.]]></string>
@@ -3345,7 +3349,7 @@
 	<string name="_sys_form_account_input_password_current"><![CDATA[Текущий пароль]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[Этот пароль уже был использован ранее, используйте другой]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Неправильный текущий пароль. Введите пароль, который Вы используете для доступа к этому сайту.]]></string>
-	<string name="_sys_form_account_input_password_error"><![CDATA[Пароль должен иметь как минимум 8 символов, содержать 1 заглавную латинскую букву, 1 строчную букву и 1 число.]]></string>
+	<string name="_sys_form_account_input_password_error"><![CDATA[Используйте не меньше 8 символов: хотя бы одну заглавную букву, одну строчную и одну цифру.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Это обязательное поле.]]></string>
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string>
 	<string name="_sys_form_account_input_receive_updates"><![CDATA[Получать обновления сайта]]></string>
@@ -3878,7 +3882,7 @@
     <string name="_sys_location_ph_city"><![CDATA[Город]]></string>
     <string name="_sys_location_ph_state"><![CDATA[Область]]></string>
     <string name="_sys_location_ph_zip"><![CDATA[Почтовый код]]></string>
-    <string name="_sys_location_status_undef"><![CDATA[Адрес не задан]]></string>
+    <string name="_sys_location_status_undef"><![CDATA[Выберите страну, чтобы найти адрес]]></string>
     <string name="_sys_location_status_ok"><![CDATA[Адрес найден]]></string>
     <string name="_sys_location_status_fail"><![CDATA[Адрес не найден]]></string>
     <string name="_sys_log_debug"><![CDATA[Система: отладка]]></string>
@@ -3896,7 +3900,7 @@
     <string name="_sys_manage_popup_approve_title"><![CDATA[Одобрить]]></string>
     <string name="_sys_manage_txt_approved"><![CDATA[Контент был одобрен.]]></string>
     <string name="_sys_manage_txt_sent"><![CDATA[Сообщение было отправлено.]]></string>
-    <string name="_sys_manage_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_sys_manage_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_sys_menu_item_info_audit_administration"><![CDATA[Для модерации контента.]]></string>
     <string name="_sys_menu_item_info_onboarding_cover"><![CDATA[Она видна вверху главной страницы, которую гости видят первой.]]></string>
     <string name="_sys_menu_item_info_onboarding_join"><![CDATA[Присоединиться к сайту может любой.]]></string>
@@ -3959,7 +3963,7 @@
     <string name="_sys_menu_item_title_studio"><![CDATA[Студия]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Подписки]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
-    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в Twitter]]></string>
+    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в X]]></string>
     <string name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Поделиться в Pinterest]]></string>
     <string name="_sys_menu_item_title_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_sm_in_reply_to"><![CDATA[В ответ к]]></string>
@@ -4104,7 +4108,7 @@
     <string name="_sys_menu_item_title_va_more_auto"><![CDATA[Ещё]]></string>
     <string name="_sys_menu_item_title_va_more_auto_empty"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в Twitter]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в X]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Поделиться в Pinterest]]></string>
     <string name="_sys_menu_item_title_system_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_system_sm_in_reply_to"><![CDATA[В ответ к]]></string>
@@ -4325,7 +4329,7 @@
     <string name="_sys_menu_item_title_onboarding_join"><![CDATA[Выберите, кто может присоединиться]]></string>
     <string name="_sys_menu_item_title_onboarding_logo"><![CDATA[Добавьте логотип]]></string>
     <string name="_sys_menu_item_title_onboarding_profile"><![CDATA[Создайте свой профиль]]></string>
-    <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} - упоминание о <b class="bx-ntfs-content-entry">{entry_caption}</b> в {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
+    <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} упоминает вас: {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
     <string name="_sys_mobile_friends"><![CDATA[Друзья]]></string>
     <string name="_sys_mobile_info"><![CDATA[Инфо]]></string>
     <string name="_sys_mobile_mail"><![CDATA[Сообщения]]></string>
@@ -4721,9 +4725,10 @@
         <string name="_sys_pre_lists_studio_widget_types_favorites"><![CDATA[Избранное]]></string>
 	<string name="_sys_profile_sample_single"><![CDATA[профиль]]></string>
         <string name="_sys_profile_with_type"><![CDATA[{0} ({1})]]></string>
-        <string name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> предложил дружбу <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-	<string name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> и <b class="bx-ntfs-content-entry">{entry_caption}</b> теперь друзья]]></string>
-	<string name="_sys_profile_subscription_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> следит за <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+        <string name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> предлагает вам дружбу]]></string>
+	<string name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> и вы теперь друзья]]></string>
+	<string name="_sys_profile_joined_ntfs"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> теперь с нами]]></string>
+	<string name="_sys_profile_subscription_added"><![CDATA[У вас новый подписчик: <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
 	<string name="_sys_profile_unit_view"><![CDATA[Смотреть профиль]]></string>
 	<string name="_sys_profile_unit_you"><![CDATA[Вы]]></string>
 	<string name="_sys_profile_status_active"><![CDATA[Активный]]></string>
@@ -4848,7 +4853,7 @@
     <string name="_sys_tour_launcher_designer_title"><![CDATA[Дизайнер]]></string>
     <string name="_sys_tour_launcher_designer_txt"><![CDATA[Задайте логотип, выберите шаблон и измените обложку, которую гости видят первой.]]></string>
     <string name="_sys_tour_launcher_accounts_title"><![CDATA[Аккаунты]]></string>
-    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте администраторов и модераторов. Они следят за контентом и профилями на самом сайте, не в Студии.]]></string>    
+    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте операторов и модераторов. Модераторы следят за контентом и профилями на самом сайте, не в Студии.]]></string>    
     <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Страницы]]></string>
     <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Добавляйте, удаляйте и переставляйте блоки на любой странице или создавайте новые страницы. Здесь же настройки видимости и SEO.]]></string>
     <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Навигация]]></string>
@@ -4886,12 +4891,12 @@
     <string name="_sys_txt_confirm_email_desc"><![CDATA[Пожалуйста, введите код подтверждения, который был послан на Ваш эл. адрес, или просто перейдите по ссылке в присланном сообщении.]]></string>
     <string name="_sys_txt_confirm_email_error_occured"><![CDATA[Произошла ошибка, пожалуйста, войдите в свой аккаунт и снова запросите письмо верификации.]]></string>
     <string name="_sys_txt_confirm_email_sent"><![CDATA[Письмо верификации было отослано, пожалуйста, проверьте свой эл. ящик.]]></string>
-    <string name="_sys_txt_confirm_email_sent_failed"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
-    <string name="_sys_txt_confirm_email_success"><![CDATA[Ваш эл. адрес был удачно подтверждён.]]></string>
+    <string name="_sys_txt_confirm_email_sent_failed"><![CDATA[Не удалось отправить письмо с подтверждением. Попробуйте ещё раз позже.]]></string>
+    <string name="_sys_txt_confirm_email_success"><![CDATA[Ваш email подтверждён.]]></string>
 
     <string name="_sys_txt_confirm_phone_already_confirmed"><![CDATA[Ваш телефон уже подтверждён.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_error_occured"><![CDATA[Произошла ошибка, пожалуйста, войдите в свой аккаунт и снова перейдите на страничку верификации.]]></string>
-    <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
+    <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Не удалось отправить SMS. Попробуйте ещё раз позже.]]></string>
     <string name="_sys_txt_confirm_phone_sms_text"><![CDATA[Ваш код проверки телефона - {0}.]]></string>
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Ваш телефон успешно подтверждён.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Пожалуйста, введите телефонный номер на который будет отправлено SMS с кодом подтверждения.]]></string>
@@ -4938,7 +4943,7 @@
     <string name="_sys_txt_forgot_pasword_by_both_desc"><![CDATA[Введите эл. адрес или телефон своего аккаунта, чтобы запросить ссылку на изменение пароля.]]></string>
     <string name="_sys_txt_forgot_pasword_by_phone_desc"><![CDATA[Введите телефон своего аккаунта, чтобы запросить ссылку на изменение пароля.]]></string>
     <string name="_sys_txt_forgot_pasword_email_send_failed"><![CDATA[Не удалось отослать email, пожалуйста, попытайтесь позднее.]]></string>
-    <string name="_sys_txt_forgot_pasword_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
+    <string name="_sys_txt_forgot_pasword_error_occured"><![CDATA[Не удалось отправить письмо для сброса пароля. Попробуйте ещё раз позже.]]></string>
     <string name="_sys_txt_forgot_pasword_sms_text"><![CDATA[Чтобы восстановить пароль нажмите на ссылку {0}]]></string>
 
     <string name="_sys_txt_form_entry_input_picture_copy"><![CDATA[Скопировать ссылку]]></string>
@@ -4954,7 +4959,7 @@
     <string name="_sys_txt_login_2fa_description"><![CDATA[Двухэтапная авторизация включена. В дополнении к email-у и паролю, Вам нужно будет ввести код проверки, который мы вышлем вам в SMS.]]></string>
     <string name="_sys_txt_login_2fa_description_phone"><![CDATA[Включена двухфакторная аутентификация: мы отправим код подтверждения на телефон ниже.]]></string>
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Ваш код проверки {0}.]]></string>
-    <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Произошла ошибка, пожалуйста, уведомите о ней администратора сайта.]]></string>
+    <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Не удалось отправить код для входа. Попробуйте ещё раз позже.]]></string>
     <string name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Войти]]></string>
@@ -4982,6 +4987,7 @@
     <string name="_sys_txt_one_mutual_friend"><![CDATA[<a href="{0}">{1}</a> общий друг]]></string>
     <string name="_sys_txt_powered_by"><![CDATA[Сделано с помощью UNA - системя для управления сообществами]]></string>
     <string name="_sys_txt_powered_by_una"><![CDATA[Работает на UNA]]></string>
+    <string name="_sys_txt_profile_joined_sample"><![CDATA[теперь с нами]]></string>
     <string name="_sys_txt_report_status_0"><![CDATA[Новая]]></string>
     <string name="_sys_txt_report_status_1"><![CDATA[В обработке]]></string>
     <string name="_sys_txt_report_status_2"><![CDATA[Обработана]]></string>
@@ -5008,7 +5014,7 @@
         <string name="_sys_txt_splash_create_text"><![CDATA[Создай свой профайл, изменяй статус, пиши заметки, создавай голосования и загружай медиа альбомы.]]></string>
         <string name="_sys_txt_switch_profile_context"><![CDATA[Переключиться]]></string>
 	<string name="_sys_txt_unsubscribe_email_settings_update_success"><![CDATA[Ваши настройки электронной почты обновлены.]]></string>
-	<string name="_sys_txt_unsubscribe_error_occured"><![CDATA[Произошла ошибка, пожалуйста, зайдите в свой аккаунт и обновите email-установки или свяжитесь с администратором сайта, чтобы он Вас отписал вручную.]]></string>
+	<string name="_sys_txt_unsubscribe_error_occured"><![CDATA[Эта ссылка для отписки не работает. Войдите и измените настройки email или напишите нам, и мы отпишем вас.]]></string>
 	<string name="_sys_txt_unsubscribe_info"><![CDATA[Обновить email-установки для <b>{0}</b>]]></string>
         <string name="_sys_txt_unsubscribe_wrong_link"><![CDATA[Ссылка отписки неправильная.]]></string>
         <string name="_sys_txt_user_n"><![CDATA[Пользователь #{0}]]></string>
@@ -5095,6 +5101,8 @@
 	<string name="_view_do_view_by"><![CDATA[Просмотрено]]></string>
 	<string name="_view_do_view_by_counter"><![CDATA[{0} просмотров]]></string>
 	<string name="_view_n_views"><![CDATA[{0} просмотров]]></string>
+	<string name="_view_n_views_few"><![CDATA[{0} просмотра]]></string>
+	<string name="_view_n_views_one"><![CDATA[{0} просмотр]]></string>
 	<string name="_vote_counter"><![CDATA[{0}]]></string>
 	<string name="_vote_do_like"><![CDATA[Нравится]]></string>
 	<string name="_vote_do_unlike"><![CDATA[Нравится]]></string>
@@ -5107,6 +5115,8 @@
 	<string name="_vote_err_reactions_limit"><![CDATA[Можно поставить не больше {0} реакций.]]></string>
 	<string name="_vote_err_duplicate_vote"><![CDATA[Повторный голос]]></string>
         <string name="_vote_n_votes"><![CDATA[{0} голосов]]></string>
+	<string name="_vote_n_votes_few"><![CDATA[{0} голоса]]></string>
+	<string name="_vote_n_votes_one"><![CDATA[{0} голос]]></string>
 	<string name="_week_fri"><![CDATA[Пятница]]></string>
 	<string name="_week_mon"><![CDATA[Понедельник]]></string>
 	<string name="_week_sat"><![CDATA[Суббота]]></string>

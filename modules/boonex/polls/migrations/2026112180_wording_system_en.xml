@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Operator level, notifications to the person they are about, plain errors and option captions, Share on X. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_polls_txt_subentry_vote_counter_one"><![CDATA[{0} vote]]></string_add>
+</resources>

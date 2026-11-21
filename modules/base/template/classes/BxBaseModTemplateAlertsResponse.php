@@ -34,11 +34,11 @@ class BxBaseModTemplateAlertsResponse extends BxDolAlertsResponse
     {
         $sPrefix = $this->_oModule->_oConfig->getPrefix('option');
 
-        switch($oAlert->aExtras['option']) {
-            case $sPrefix . 'site_logo':
-                setParam($sPrefix . 'site_logo_aspect_ratio', '');
-                break;
-        }
+        // A new image in the template's own logo settings is measured again on the next page
+        // (an UPDATE of an option the template doesn't have changes nothing).
+        foreach(['site_logo', 'site_logo_dark', 'site_mark', 'site_mark_dark'] as $sName)
+            if($oAlert->aExtras['option'] == $sPrefix . $sName)
+                setParam($sPrefix . $sName . '_aspect_ratio', '');
     }
 
     protected function _processSystemChangeLogo($oAlert)

@@ -56,4 +56,26 @@ class MessengerLookTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("getEmptyState('inbox'", $sTemplate);
         $this->assertStringContainsString("getEmptyState('history'", $sTemplate);
     }
+
+    public function testLeftColumnIconsTakeTheTextColour(): void
+    {
+        preg_match_all("/^\(CONCAT\(@sName, '_nav_menu'\), @sName, '([a-z_]+)',.*$/m", self::read('install/sql/enable.sql'), $aItems, PREG_SET_ORDER);
+        $this->assertNotEmpty($aItems);
+        foreach ($aItems as $aItem)
+            $this->assertDoesNotMatchRegularExpression("/'[a-z-]+ col-[a-z0-9-]+'/", $aItem[0], $aItem[1] . ' has a colour of its own.');
+    }
+
+    public function testDirectMessagesHaveNoTitle(): void
+    {
+        // the title field is hidden until a new talk has two people or more (oMessenger.updateTalkTitleField)
+        $this->assertMatchesRegularExpression('/<input [^>]*id="bx-messenger-talk-title"[^>]*style="display:none"/', self::read('template/text-area.html'));
+        $sJs = self::read('js/messenger.js');
+        $this->assertStringContainsString('bGroup = this.getParticipantsList().length > 1;', $sJs);
+        $this->assertSame(2, substr_count($sJs, '_oMessenger.updateTalkTitleField();'), 'Adding and removing a person.');
+    }
+
+    public function testSearchPlaceholderHasNoDots(): void
+    {
+        $this->assertStringContainsString('<string name="_bx_messenger_title_search"><![CDATA[Search]]></string>', self::read('install/langs/en.xml'));
+    }
 }

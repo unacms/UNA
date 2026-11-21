@@ -18,8 +18,13 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
     const LOGO_SOURCE_BUILTIN = 'builtin'; // the image the template ships with
     const LOGO_SOURCE_NONE = 'none'; // nothing: another image stands in, or the site name as text
 
-    public static $fLogoAspectRatioDefault = 1.0;
-    public static $fMarkAspectRatioDefault = 1.0;
+    /**
+     * The aspect ratio of a logo image that can't be measured: 0 = unknown, the image gets a height only
+     * and the browser takes the width from the file. A ratio below 0 is stored for an image that was measured
+     * and gave no size, so it isn't measured on every page.
+     */
+    public static $fLogoAspectRatioDefault = 0.0;
+    public static $fMarkAspectRatioDefault = 0.0;
 
     /**
      * Built-in images, by logo type, that a template can ship in its images folder.
@@ -249,6 +254,15 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
         return ($iResult = $this->getSiteLogoValue('logo_dark_height')) !== false ? $iResult : 0;
     }
 
+    /**
+     * Width / height of an uploaded logo image (logo, logo_dark, mark, mark_dark), 0 when it isn't known.
+     */
+    public function getSiteLogoAspectRatio($sType = 'logo')
+    {
+        $fResult = (float)$this->getSiteLogoValue($sType . '_aspect_ratio');
+        return $fResult > 0 ? $fResult : 0.0;
+    }
+
     public function getSiteMarkWidth()
     {
     	return ($iResult = $this->getSiteLogoValue('mark_width')) !== false ? $iResult : 0;
@@ -292,9 +306,11 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
 
     protected static function _readImageFileSize($sPath)
     {
+        // Stored files may have no extension: an image getimagesize can't read is tried as SVG.
         if(!preg_match('/\.svg$/i', $sPath)) {
             $a = @getimagesize($sPath);
-            return $a && $a[0] > 0 && $a[1] > 0 ? [(int)$a[0], (int)$a[1]] : [];
+            if($a && $a[0] > 0 && $a[1] > 0)
+                return [(int)$a[0], (int)$a[1]];
         }
 
         $sHead = (string)file_get_contents($sPath, false, null, 0, 4096);
@@ -311,6 +327,35 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
         }
 
         return $fWidth > 0 && $fHeight > 0 ? [(int)round($fWidth), (int)round($fHeight)] : [];
+    }
+
+    /**
+     * Width / height of an image in the logo storage (Studio > Designer > Logo and the templates' own logo settings).
+     * The stored file is read from the disk; a storage engine that keeps files elsewhere (S3) is downloaded once.
+     * The site's own URL is never requested: that fails in Docker, behind a CDN or basic auth.
+     * @param int $iFileId file id in the logo storage
+     * @return float the ratio, 0 when it isn't known
+     */
+    public static function getLogoFileAspectRatio($iFileId)
+    {
+        $iFileId = (int)$iFileId;
+        $oStorage = BxDolStorage::getObjectInstance('sys_images_custom');
+        if(!$iFileId || !$oStorage || !($aFile = $oStorage->getFile($iFileId)))
+            return 0.0;
+
+        $aSize = [];
+        if(($sPath = $oStorage->getFileLocalPath($iFileId)))
+            $aSize = static::getImageFileSize($sPath);
+        else if(($sUrl = $oStorage->getFileUrlById($iFileId)) && ($sData = bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 10)) !== false) {
+            $sExt = preg_replace('/[^a-z0-9]/', '', strtolower((string)$aFile['ext']));
+            $sTmp = BX_DIRECTORY_PATH_TMP . 'logo_size_' . $iFileId . '_' . genRndPwd(8, false) . ($sExt !== '' ? '.' . $sExt : '');
+            if(file_put_contents($sTmp, $sData) !== false) {
+                $aSize = static::_readImageFileSize($sTmp);
+                @unlink($sTmp);
+            }
+        }
+
+        return !empty($aSize) ? $aSize[0] / $aSize[1] : 0.0;
     }
 
     /**

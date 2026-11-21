@@ -4,7 +4,6 @@ import { DataByName } from 'app/components/block';
 import { SearchPanel } from 'app/ui/molecules/sections/search';
 import { parseUrl, parseQueryString} from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user'
-import { useLayoutSettings } from 'app/context/layout-settings';
 
 export default function PageLayout(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -40,11 +39,6 @@ export default function PageLayout(props) {
         object:'search',
         items:menuItems
     }
-     const { layoutSettings } = useLayoutSettings();
-
-
-    const { layoutName: layout } = useLayoutSettings();
-    const leftSideBar = layout != 'hor' ? false : true
 
     return (<Conductor 
         layoutName={props.layoutName}
@@ -56,7 +50,6 @@ export default function PageLayout(props) {
         data={props.data} 
         blocks={props.blocks}
         useSectionAsMenu={true}
-        leftSideBar={leftSideBar}
         onChangeRoute={changeRoute}
     />)
 }
