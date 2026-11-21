@@ -387,7 +387,8 @@ class BxBasePage extends BxDolPage
     /**
      * A page without a cover whose block is titled as the page (Sign in, Sign up, Forgot password) has one heading:
      * the block's title becomes the page's `<h1>`, in place of the hidden one the empty cover gives (BxBaseCover).
-     * A block before it with an `<h1>` in its content is the heading instead, and the titled block keeps its `<h2>`.
+     * Not where a block of the page has an `<h1>` in its content (_setHeadingBlockByContent, called first): that
+     * block is the heading, and the titled block keeps its `<h2>`.
      * @param array $aBlock the block
      * @param string $sCode the block's code in its design box
      * @return string the code
@@ -396,13 +397,6 @@ class BxBasePage extends BxDolPage
     {
         if($this->_bHeadingBlock || $this->isPageCover())
             return $sCode;
-
-        // A block that draws a heading of its own (the Sign up page's picture and words) is the page's heading.
-        if(preg_match('/<h1[\s>]/i', $sCode)) {
-            $this->_bHeadingBlock = true;
-            BxDolCover::getInstance()->setPageHasHeading();
-            return $sCode;
-        }
 
         $sPageTitle = mb_strtolower(trim(strip_tags($this->_getPageTitle())));
         $sBlockTitle = mb_strtolower(trim(strip_tags($this->getBlockTitle($aBlock))));
@@ -1059,6 +1053,28 @@ class BxBasePage extends BxDolPage
     }
 
     /**
+     * A block that draws a heading of its own (the Sign up page's picture and words) is the page's heading, wherever
+     * it stands on the page: the blocks' code is looked through before any block's title is made the heading
+     * (_setBlockTitleAsHeading), so a block titled as the page keeps its `<h2>` also when it comes first, as after an
+     * operator moves the blocks in Studio.
+     * @param array $aCodes the code of the page's blocks in their design boxes
+     */
+    protected function _setHeadingBlockByContent($aCodes)
+    {
+        if($this->_bHeadingBlock || $this->isPageCover())
+            return;
+
+        foreach($aCodes as $sCode) {
+            if(!is_string($sCode) || !preg_match('/<h1[\s>]/i', $sCode))
+                continue;
+
+            $this->_bHeadingBlock = true;
+            BxDolCover::getInstance()->setPageHasHeading();
+            return;
+        }
+    }
+
+    /**
      * Get page code vars
      * @return string
      */
@@ -1079,12 +1095,22 @@ class BxBasePage extends BxDolPage
             )
         );
         $aBlocks = $this->_oQuery->getPageBlocks();
+        // Every block's code first: which block holds the page's heading is known only once all are drawn.
+        $aCodes = [];
         foreach ($aBlocks as $sKey => $aCell) {
-            $sCell = '';
-            foreach ($aCell as $aBlock) {
+            foreach ($aCell as $i => $aBlock) {
                 $this->processPageBlock($aBlock, false);
 
-                $sContentWithBox = $this->_getBlockCodeWithCache($aBlock, $aBlock['async']);
+                $aBlocks[$sKey][$i] = $aBlock;
+                $aCodes[$sKey . ':' . $i] = $this->_getBlockCodeWithCache($aBlock, $aBlock['async']);
+            }
+        }
+        $this->_setHeadingBlockByContent($aCodes);
+
+        foreach ($aBlocks as $sKey => $aCell) {
+            $sCell = '';
+            foreach ($aCell as $i => $aBlock) {
+                $sContentWithBox = $aCodes[$sKey . ':' . $i];
                 if($sContentWithBox)
                     $sContentWithBox = $this->_setBlockTitleAsHeading($aBlock, $sContentWithBox);
 

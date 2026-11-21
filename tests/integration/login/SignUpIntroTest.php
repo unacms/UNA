@@ -183,7 +183,7 @@ class SignUpIntroTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString(_t('_sys_txt_join_title_invite') . '</h1>', $this->intro(false));
     }
 
-    public function testABlockWithItsOwnHeadingIsThePagesHeading(): void
+    public function testABlockWithItsOwnHeadingIsThePagesHeadingWhereverItStands(): void
     {
         $oPage = BxDolPage::getObjectInstance('sys_create_account');
         $this->assertInstanceOf(BxBasePage::class, $oPage);
@@ -191,18 +191,71 @@ class SignUpIntroTest extends BxDolIntegrationTestCase
             $this->markTestSkipped('The page has a cover, which holds its heading.');
 
         $oProperty = new ReflectionProperty(BxBasePage::class, '_bHeadingBlock');
-        $oProperty->setValue($oPage, false);
-        $oMethod = new ReflectionMethod(BxBasePage::class, '_setBlockTitleAsHeading');
+        $oByContent = new ReflectionMethod(BxBasePage::class, '_setHeadingBlockByContent');
+        $oByTitle = new ReflectionMethod(BxBasePage::class, '_setBlockTitleAsHeading');
 
-        // The intro comes first and has the heading; the form's block, titled as the page, keeps its <h2>.
         $sIntro = '<div><h1 class="sys-join-intro-title">Time to join!</h1></div>';
-        $this->assertSame($sIntro, $oMethod->invoke($oPage, ['title' => '_sys_page_block_title_create_account_intro'], $sIntro));
-        $this->assertTrue($oProperty->getValue($oPage));
-
         $sForm = '<div><h2 class="bx-dbt-ttl">' . _t('_sys_page_title_create_account') . '</h2></div>';
-        $this->assertSame($sForm, $oMethod->invoke($oPage, ['title' => '_sys_page_title_create_account'], $sForm));
+        $aForm = ['id' => 0, 'title' => '_sys_page_title_create_account'];
+
+        // As installed, and after an operator moved the intro under the form in Studio: the intro has the heading
+        // and the form's block, titled as the page, keeps its <h2>. One <h1> either way.
+        foreach ([[$sIntro, $sForm], [$sForm, $sIntro]] as $aCodes) {
+            $oProperty->setValue($oPage, false);
+            BxDolCover::getInstance()->setPageHasHeading(false);
+
+            $oByContent->invoke($oPage, $aCodes);
+            $this->assertTrue($oProperty->getValue($oPage));
+
+            $sPage = '';
+            foreach ($aCodes as $sCode)
+                $sPage .= $oByTitle->invoke($oPage, $sCode === $sForm ? $aForm : ['id' => 0, 'title' => '_sys_page_block_title_create_account_intro'], $sCode);
+            $this->assertSame(1, preg_match_all('/<h1\b/', $sPage));
+            $this->assertStringContainsString($sForm, $sPage);
+        }
+
+        // Without the intro (an operator turned it off) the form's title is the heading again.
+        $oProperty->setValue($oPage, false);
+        $oByContent->invoke($oPage, [$sForm, '', false]);
+        $this->assertFalse($oProperty->getValue($oPage));
+        $this->assertStringContainsString('<h1 class="bx-dbt-ttl">', $oByTitle->invoke($oPage, $aForm, $sForm));
 
         $oProperty->setValue($oPage, false);
+    }
+
+    public function testTheSitesSignUpPageHasOneHeadingInEitherOrder(): void
+    {
+        $oDb = BxDolDb::getInstance();
+        $aRows = $oDb->getAll("SELECT `id`, `cell_id`, `order` FROM `sys_pages_blocks` WHERE `object` = 'sys_create_account'");
+
+        try {
+            foreach (['as installed' => false, 'the intro under the form' => true] as $sCase => $bSwap) {
+                if ($bSwap) {
+                    $oDb->query("UPDATE `sys_pages_blocks` SET `cell_id` = 2, `order` = 2 WHERE `object` = 'sys_create_account' AND `title` = '_sys_page_block_title_create_account_intro'");
+                    $oDb->cleanMemoryAll();
+                }
+
+                unset($GLOBALS['bxDolClasses']['BxDolPage!sys_create_account']);
+                // BxDolService::call keeps results per params within a process: this page view is a new one.
+                (new ReflectionProperty(BxDolService::class, '_aMemoryCache'))->setValue(null, []);
+                BxDolCover::getInstance()->setPageHasHeading(false);
+                $_GET = ['i' => 'create-account'];
+                $oPage = BxDolPage::getObjectInstance('sys_create_account');
+                if ($oPage->isPageCover())
+                    $this->markTestSkipped('The page has a cover, which holds its heading.');
+
+                $sCode = $oPage->getCode();
+                $this->assertSame(1, preg_match_all('/<h1\b/', $sCode), $sCase);
+                $this->assertStringContainsString(_t('_sys_txt_join_title') . '</h1>', $sCode, $sCase);
+                $this->assertGreaterThan(0, preg_match('/<h2 class="bx-dbt-ttl">/', $sCode), $sCase . ': the form\'s title is an <h2>');
+            }
+        }
+        finally {
+            foreach ($aRows as $aRow)
+                $oDb->query("UPDATE `sys_pages_blocks` SET `cell_id` = :c, `order` = :o WHERE `id` = :id", ['c' => $aRow['cell_id'], 'o' => $aRow['order'], 'id' => $aRow['id']]);
+            $oDb->cleanMemoryAll();
+            unset($GLOBALS['bxDolClasses']['BxDolPage!sys_create_account']);
+        }
     }
 
     public function testAuthBlocksHaveLargePadding(): void
