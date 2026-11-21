@@ -29,7 +29,7 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
         if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites'))
             $this->markTestSkipped('Invites are not installed.');
 
-        foreach (['bx_invites_enable_reg_by_inv', 'bx_invites_enable_request_invite'] as $sName)
+        foreach (['sys_account_join', 'bx_invites_enable_request_invite'] as $sName)
             $this->_aParamsBackup[$sName] = getParam($sName);
 
         $this->bxBecomeGuest();
@@ -66,7 +66,7 @@ class InvitesRegistrationApiTest extends BxDolIntegrationTestCase
      */
     protected function bxInvites(bool $bByInvitation, bool $bRequest, bool $bApi = true): BxInvModule
     {
-        $this->bxSetParamCache('bx_invites_enable_reg_by_inv', $bByInvitation ? 'on' : '');
+        $this->bxSetParamCache('sys_account_join', $bByInvitation ? BxDolAccount::JOIN_INVITE : BxDolAccount::JOIN_OPEN);
         $this->bxSetParamCache('bx_invites_enable_request_invite', $bRequest ? 'on' : '');
 
         if ($bApi)

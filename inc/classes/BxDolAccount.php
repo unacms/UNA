@@ -20,6 +20,14 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
     const PROFILE_REQUIRED = 'on';
 
     /**
+     * Who can join the site (sys_account_join, Studio > Settings > Account): anyone, only people with an invitation
+     * (the Invitations app checks it) or nobody, the sign-up form is off. An empty value is "anyone", not chosen yet.
+     */
+    const JOIN_OPEN = 'open';
+    const JOIN_INVITE = 'invite';
+    const JOIN_CLOSED = 'closed';
+
+    /**
      * Session value set at sign-in: the next page asks the account to create a profile (see isProfilePromptDue).
      */
     const PROFILE_PROMPT_SESSION_KEY = 'sys_account_profile_prompt';
@@ -526,6 +534,136 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The new email address waiting for its confirmation, '' when there is none.
+     */
+    public function getEmailPending($iAccountId = false)
+    {
+        $aInfo = $this->getInfo((int)$iAccountId ? (int)$iAccountId : false);
+        return !empty($aInfo['email_pending']) ? $aInfo['email_pending'] : '';
+    }
+
+    /**
+     * Change the email of an account with a confirmed email: the account keeps its current email,
+     * for signing in and password recovery, until the new address is confirmed with the code or
+     * link sent there. The current address gets a notice. An account that has no confirmed email,
+     * or a site that doesn't confirm emails, changes it at once, @see BxBaseAccountForms::_editAccountForm
+     * @param  string $sEmail - new email address
+     * @return true when the confirmation was sent
+     */
+    public function requestEmailChange($sEmail)
+    {
+        $aInfo = $this->getInfo();
+        if (empty($aInfo) || !$sEmail)
+            return false;
+
+        if (!$this->_oQuery->updateEmailPending($sEmail, $this->_iAccountID))
+            return false;
+        $this->_aInfo = false;
+
+        if (!$this->sendEmailChangeConfirmation())
+            return false;
+
+        $this->sendEmailChangeNotice('t_EmailChangeRequested', $aInfo['email'], ['new_email' => $sEmail]);
+        $this->doAudit($this->_iAccountID, '_sys_audit_action_account_email_change_requested');
+
+        return true;
+    }
+
+    /**
+     * Forget the new email address waiting for its confirmation.
+     */
+    public function cancelEmailChange()
+    {
+        if (!$this->getEmailPending())
+            return true;
+
+        $this->_aInfo = false;
+        return (bool)$this->_oQuery->updateEmailPending('', $this->_iAccountID);
+    }
+
+    /**
+     * Send the code and link which confirm the new email address, to that address.
+     */
+    public function sendEmailChangeConfirmation()
+    {
+        $aInfo = $this->getInfo();
+        if (empty($aInfo) || empty($aInfo['email_pending']))
+            return false;
+
+        $oKey = BxDolKey::getInstanceWithScope(BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM);
+        $sCode = $oKey->getNewKeyNumeric(['account_id' => $this->_iAccountID, 'email' => $aInfo['email_pending']]);
+        $sFormLink = BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=confirm-email');
+
+        return $this->sendEmailChangeNotice('t_ConfirmEmailChange', $aInfo['email_pending'], [
+            'new_email' => $aInfo['email_pending'],
+            'conf_code' => $sCode,
+            'conf_link' => bx_append_url_params($sFormLink, ['code' => $sCode]),
+            'conf_form_link' => $sFormLink,
+        ]);
+    }
+
+    /**
+     * Make the pending email the account's email, once it is confirmed, and tell the previous address.
+     * @param  string $sEmail - the address the confirmation key was sent to
+     * @return true on success, false when the address isn't the pending one or another account uses it now
+     */
+    public function confirmEmailChange($sEmail)
+    {
+        $aInfo = $this->getInfo();
+        if (empty($aInfo) || !$sEmail || $sEmail !== $aInfo['email_pending'])
+            return false;
+
+        if (!$this->_oQuery->applyEmailPending($aInfo['email_pending'], $this->_iAccountID))
+            return false;
+        $this->_aInfo = false;
+
+        $this->sendEmailChangeNotice('t_EmailChanged', $aInfo['email'], ['new_email' => $aInfo['email_pending']]);
+        $this->doAudit($this->_iAccountID, '_sys_audit_action_account_email_changed');
+
+        bx_alert('account', 'edited', $this->_iAccountID, $this->_iAccountID, ['action' => 'change_email', 'email_old' => $aInfo['email']]);
+
+        return true;
+    }
+
+    /**
+     * Send an account email template to an address of the account's choosing, as the current or the new email.
+     * @param  string $sTemplate - email template name
+     * @param  string $sEmail    - recipient address
+     * @param  array  $aVars     - template markers, `name` and `email` (the current email) are added
+     */
+    public function sendEmailChangeNotice($sTemplate, $sEmail, $aVars = [])
+    {
+        $aInfo = $this->getInfo();
+        $oEmailTemplates = BxDolEmailTemplates::getInstance();
+        if (empty($aInfo) || !$sEmail || !$oEmailTemplates)
+            return false;
+
+        $aTemplate = $oEmailTemplates->parseTemplate($sTemplate, array_merge([
+            'name' => $this->getDisplayName(),
+            'email' => $aInfo['email'],
+            'account_settings_url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=account-settings-password')),
+        ], $aVars), $this->_iAccountID, (int)$aInfo['profile_id']);
+        if (!$aTemplate)
+            return false;
+
+        return sendMail($sEmail, $aTemplate['Subject'], $aTemplate['Body'], 0, [], BX_EMAIL_SYSTEM);
+    }
+
+    /**
+     * Tell the account's email that its password was changed.
+     */
+    public function sendPasswordChangedNotice()
+    {
+        $aInfo = $this->getInfo();
+        if (empty($aInfo))
+            return false;
+
+        return $this->sendEmailChangeNotice('t_PasswordChanged', $aInfo['email'], [
+            'forgot_password_url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password')),
+        ]);
+    }
+
+    /**
      * Send "welcome" email
      */
     public function sendWelcomeEmail($iAccountId = false)
@@ -909,6 +1047,31 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
      * the first page after sign-in (BxBaseInformer), the apps get `profile_prompt` in the viewer's data and say when
      * they showed it (system/account_profile_prompt_seen).
      */
+    /**
+     * Who can join the site: JOIN_OPEN, JOIN_INVITE or JOIN_CLOSED (sys_account_join). Invitation only needs the
+     * Invitations app; without it the site is treated as open, as nothing could check an invitation.
+     */
+    public static function getJoinMode ()
+    {
+        $sMode = getParam('sys_account_join');
+        if($sMode == self::JOIN_CLOSED)
+            return self::JOIN_CLOSED;
+
+        if($sMode == self::JOIN_INVITE && BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites'))
+            return self::JOIN_INVITE;
+
+        return self::JOIN_OPEN;
+    }
+
+    /**
+     * Whether the operator has chosen who can join (saved Studio > Settings > Account once): the "Choose who can
+     * join" step of the "Get started" checklist.
+     */
+    public static function isJoinModeChosen ()
+    {
+        return getParam('sys_account_join') !== '';
+    }
+
     public static function isProfilePromptDue ()
     {
         if(!isLogged() || getParam('sys_account_require_profile') !== self::PROFILE_PROMPT || defined('BX_DOL_CRON_EXECUTE'))

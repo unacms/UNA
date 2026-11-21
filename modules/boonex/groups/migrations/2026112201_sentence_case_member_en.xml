@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_groups_form_profile_input_initial_members"><![CDATA[Invite members]]></string_upd>
+    <string_upd name="_bx_groups_form_profile_input_group_name"><![CDATA[Group name]]></string_upd>
+    <string_upd name="_bx_groups_form_profile_input_cover"><![CDATA[Upload new cover picture]]></string_upd>
+    <string_upd name="_bx_groups_page_title_joined_entries"><![CDATA[Profile groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_create_profile"><![CDATA[Create group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_edit_profile"><![CDATA[Edit group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_edit_profile_settings"><![CDATA[Edit settings]]></string_upd>
+    <string_upd name="_bx_groups_page_title_delete_profile"><![CDATA[Delete group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_join_profile"><![CDATA[Join group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_recent"><![CDATA[New groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_manage"><![CDATA[Manage groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_top"><![CDATA[Top groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_joined"><![CDATA[Joined groups]]></string_upd>
+    <string_upd name="_bx_groups_page_title_invite_to_group"><![CDATA[Invite members to the group]]></string_upd>
+    <string_upd name="_bx_groups_page_title_entries_favorites"><![CDATA[Favorite groups]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_favorites_of_author"><![CDATA[Favorite groups]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_joined_entries"><![CDATA[Joined groups]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_create_profile"><![CDATA[Create group]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_edit_profile"><![CDATA[Edit group]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_edit_profile_settings"><![CDATA[Edit settings]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_delete_profile"><![CDATA[Delete group]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_join_profile"><![CDATA[Join group]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_featured_profiles"><![CDATA[Featured groups]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_latest_profiles"><![CDATA[New groups]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_manage"><![CDATA[Manage groups]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_top_profiles"><![CDATA[Top groups]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_invite_to_group"><![CDATA[Invite members to the group]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+    <string_upd name="_bx_groups_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_edit_pricing"><![CDATA[Edit pricing]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_edit_profile"><![CDATA[Edit group]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_edit_settings"><![CDATA[Edit settings]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_delete_profile"><![CDATA[Delete group]]></string_upd>
+    <string_upd name="_bx_groups_menu_item_title_add_content"><![CDATA[Add content]]></string_upd>
+    <string_upd name="_bx_groups_grid_action_title_adm_delete_with_content"><![CDATA[Delete with content]]></string_upd>
+    <string_upd name="_bx_groups_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+    <string_upd name="_bx_groups_txt_set_role"><![CDATA[Set role]]></string_upd>
+</resources>

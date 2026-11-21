@@ -251,7 +251,7 @@
     
     <string name="_bx_forum_menu_item_title_system_add_link"><![CDATA[Добавить ссылку]]></string>
     <string name="_bx_forum_menu_item_title_add_link"><![CDATA[Добавить ссылку]]></string>
-    <string name="_bx_forum_form_post_input_link_err_delete"><![CDATA[Невозможно удалить ссылку. Пожалуйста, оповестите нас о проблеме.]]></string>
+    <string name="_bx_forum_form_post_input_link_err_delete"><![CDATA[Не удалось удалить ссылку. Попробуйте ещё раз.]]></string>
     <string name="_bx_forum_form_post_input_sys_link"><![CDATA[Ссылка]]></string>
     <string name="_bx_forum_form_post_input_link_alt"><![CDATA[Добавить ссылку]]></string>
     <string name="_bx_forum_form_attach_link"><![CDATA[Прикрепить ссылку]]></string>
@@ -443,6 +443,8 @@
     <string name="_bx_forum_txt_poll_view_results"><![CDATA[результаты]]></string>
     <string name="_bx_forum_txt_poll_answer_vote_do_by"><![CDATA[Проголосовали за]]></string>
     <string name="_bx_forum_txt_poll_answer_vote_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_forum_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string>
+    <string name="_bx_forum_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string>
     <string name="_bx_forum_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <string name="_bx_forum_txt_all_entries_in"><![CDATA[<a href="{0}">Все обсуждения в {1} ({2})</a>]]></string>

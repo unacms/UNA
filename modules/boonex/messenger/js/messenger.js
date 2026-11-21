@@ -1052,7 +1052,12 @@
             return false;
 
         $.post('modules/?r=messenger/leave', { lot: iLotId }, function (oData) {
-            bx_alert(oData.message);
+            // leaving is a success that doesn't block; a refusal (code 1) is a dialog
+            if (!parseInt(oData.code))
+                bx_toast(oData.message);
+            else
+                bx_alert(oData.message);
+
             if (!parseInt(oData.code))
                 _this.searchByItems(() => $(talksListItems).length ? $(talksListItems).first().click() : '');
         }, 'json');
@@ -2395,7 +2400,7 @@
                             .find('time img')
                             .replaceWith(
                                 $(`<a href="javascript:void(0);" class="bx-messenger-send-retry bx-form-warn">
-									<i class="sys-icon exclamation-circle"></i>
+									<i class="sys-icon circle-exclamation-point"></i>
 							  		</a>`)
                                     .on('click', function () {
                                         if (_this.oSendPool.has(sTmp)) {
@@ -2474,6 +2479,18 @@
         }
 
         return list;
+    };
+
+    /**
+     * A new talk has a title only with two people or more: a direct message to one person is named after them.
+     */
+    oMessenger.prototype.updateTalkTitleField = function () {
+        const { talkTitle } = window.oMessengerSelectors.TEXT_AREA,
+            bGroup = this.getParticipantsList().length > 1;
+
+        $(talkTitle).toggle(bGroup);
+        if (!bGroup)
+            $(talkTitle).val('');
     };
 
     oMessenger.prototype.stopActiveSound = function () {
@@ -4131,7 +4148,7 @@
                             .html(
                                 oObject
                                     .append(
-                                        $(`<i class="sys-icon times"></i>`)
+                                        $(`<i class="sys-icon x"></i>`)
                                             .on('click', function () {
                                                 $(this)
                                                     .closest(giphyWrapper)
@@ -4475,6 +4492,7 @@
                 }
 
                 $(oUser).remove();
+                _oMessenger.updateTalkTitleField();
             }
         },
         loadTalksList: function (oMenu, mixedGroup) {
@@ -4574,6 +4592,7 @@
 
             $(`input[value=${iId}]`, selectedUsersArea).remove();
             $(oElement).remove();
+            _oMessenger.updateTalkTitleField();
         },
         closeEditForm: function () {
             _oMessenger.disableCreateList();

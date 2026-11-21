@@ -8,6 +8,7 @@
  */
 
 define('BX_DOL_LINK_CLASS', 'bx-link'); ///< class to add to every link in user content
+define('BX_DOL_FILE_TRANSFER_TIMEOUT', 300); ///< timeout in seconds for requests that download files or packages, sys_default_curl_timeout is for everything else
 
 define('BX_DATA_TEXT', 1); ///< regular text data type
 define('BX_DATA_TEXT_MULTILINE', 2); ///< regular multiline text data type
@@ -222,7 +223,8 @@ function bx_process_output ($mixedData, $iDataType = BX_DATA_TEXT, $mixedParams 
     case BX_DATA_DATETIME:
         return $mixedData;
     case BX_DATA_DATE_UTC:
-        if (!preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $mixedData, $m))
+        // a zero date ('0000-00-00', what an empty date column keeps) is no date: a date picker shows it empty
+        if (!preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $mixedData, $m) || !(int)$m[1])
             return '';
         return sprintf("%04d-%02d-%02d 00:00:00Z", $m[1], $m[2], $m[3]);
         return $mixedData . "Z";
@@ -3198,9 +3200,13 @@ function bx_log($sObject, $mixed, $iLevel = BX_LOG_DEBUG)
         return false;
 }
 
+/**
+ * Age in full years on a birthday (YYYY-MM-DD, with an optional time).
+ * @return int the age, 0 for an empty date (0000-00-00, as MySQL stores it), one that can't be read or one in the future
+ */
 function bx_birthday2age($sBirthday)
 {
-    if(!$sBirthday)
+    if(!$sBirthday || !is_string($sBirthday))
         return 0;
 
     $iPosSpace = strpos($sBirthday, ' ');
@@ -3208,6 +3214,8 @@ function bx_birthday2age($sBirthday)
         $sBirthday = trim(substr($sBirthday, 0, $iPosSpace));
 
     $aDate = explode('-', $sBirthday);
+    if(!preg_match('/^\d{4}$/', $aDate[0]) || (int)$aDate[0] < 1)
+        return 0;
 
     $iCdYear = (int)date('Y');
     $iCdMonth = (int)date('n');
@@ -3219,7 +3227,7 @@ function bx_birthday2age($sBirthday)
     if((isset($aDate[1]) && $iCdMonth < (int)$aDate[1]) || (isset($aDate[1], $aDate[2]) && $iCdMonth == (int)$aDate[1] && $iCdDay < (int)$aDate[2]))
         $iResult -= 1;
 
-    return $iResult;
+    return max(0, $iResult);
 }
 
 function bx_setcookie($sName, $sValue = "", $oExpiresOrOptions = 0, $sPath = 'auto', $sDomain = '', $bSecure = 'auto', $bHttpOnly = false)
@@ -3517,6 +3525,11 @@ function bx_api_get_msg($sMessage, $aParams = [])
     $sMessage = $sMessage != '' ? _t($sMessage) : '';
 
     if (($aState = BxDolAcl::getDenialState($sMessage)) && !isset($aParams['ext']['empty_state'])) {
+        // "Create a profile first": the informer's "You don't have a profile yet" bar would say it twice, as on the
+        // site (BxBaseFunctions::msgBoxState).
+        if (($aState['level'] ?? 0) == MEMBERSHIP_ID_ACCOUNT)
+            BxDolInformer::hide('sys-account-profile-system');
+
         $aEmptyState = BxDolEmptyState::resolve($aState);
         if ($aEmptyState) {
             $aParams['ext'] = array_merge($aParams['ext'] ?? [], ['empty_state' => $aEmptyState]);

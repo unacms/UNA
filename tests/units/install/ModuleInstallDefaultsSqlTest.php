@@ -21,7 +21,8 @@ class ModuleInstallDefaultsSqlTest extends \PHPUnit\Framework\TestCase
     {
         $sSql = self::read('modules/boonex/invites/install/sql/enable.sql');
 
-        $this->assertMatchesRegularExpression("/^\\('bx_invites_enable_reg_by_inv', '', /m", $sSql, 'Sign-up by invitation only is off until the site turns it on.');
+        $this->assertStringNotContainsString('sys_account_join', $sSql, 'Installing Invitations doesn\'t change who can join.');
+        $this->assertStringNotContainsString('bx_invites_enable_reg_by_inv', $sSql, '"Who can join" in Studio > Settings > Account decides it.');
     }
 
     public function testFontAwesomeLeavesTheIconSetAlone(): void
@@ -34,5 +35,28 @@ class ModuleInstallDefaultsSqlTest extends \PHPUnit\Framework\TestCase
         preg_match_all('/^\s*UPDATE[^;]*sys_iconset_default[^;]*;/mi', $sDisable, $aMatches);
         $this->assertCount(1, $aMatches[0]);
         $this->assertStringContainsString("AND `value` = 'bx_fontawesome'", $aMatches[0][0], 'Disabling it changes the icon set only of a site that uses it.');
+    }
+
+    public function testMessengerVideoCallsWaitForAServer(): void
+    {
+        $sSql = self::read('modules/boonex/messenger/install/sql/enable.sql');
+
+        $this->assertMatchesRegularExpression("/^\\('bx_messenger_jitsi_enable', '', /m", $sSql, 'Video calls are off on a new site.');
+        $this->assertMatchesRegularExpression("/^\\('bx_messenger_jitsi_server', '', /m", $sSql, 'No public Jitsi server is preset.');
+    }
+
+    public function testEventsDatesMatchTheSite(): void
+    {
+        $sSql = self::read('modules/boonex/events/install/sql/enable.sql');
+
+        $this->assertMatchesRegularExpression("/^\\('bx_events_time_format', 'g:i A', /m", $sSql);
+        $this->assertMatchesRegularExpression("/^\\('bx_events_short_date_format', 'M j, Y', /m", $sSql);
+        $this->assertMatchesRegularExpression("/^\\('bx_events_datetime_format', 'M j, Y g:i A', /m", $sSql);
+    }
+
+    public function testNoModulePointsAtTheRetiredHelpFeed(): void
+    {
+        foreach (glob(self::ROOT . 'modules/*/*/install/config.php') as $sFile)
+            $this->assertStringNotContainsString('feed.una.io', (string)file_get_contents($sFile), $sFile);
     }
 }

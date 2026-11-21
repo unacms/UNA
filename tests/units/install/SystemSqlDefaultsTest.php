@@ -93,8 +93,8 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
     {
         // Icon-only items (no title) that open their menus above them: BxBaseMenuFooter renders the menus and shows
         // the Theme item only where the template has a colour scheme, the Sounds item where sounds play on the site.
-        foreach (['color_scheme' => 'adjust', 'sounds' => 'volume-up'] as $sName => $sIcon) {
-            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z-]+)',/", self::systemSql(), $aMatch);
+        foreach (['color_scheme' => 'eclipse', 'sounds' => 'volume-2'] as $sName => $sIcon) {
+            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z0-9-]+)',/", self::systemSql(), $aMatch);
 
             $this->assertSame(1, $bFound, "system.sql adds the footer's " . $sName . ' item.');
             $this->assertStringContainsString("bx_menu_popup_inline(''#bx-menu-footer-" . str_replace('_', '-', $sName) . "'', this, {pointer: {flip: true}});", $aMatch[0]);
@@ -346,5 +346,38 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
     {
         // The home page's menu block (the grid of sections) shows to guests only (level 1, MEMBERSHIP_ID_NON_MEMBER).
         $this->assertMatchesRegularExpression("/\\('sys_home', 1, 'system', '', '_sys_page_block_title_homepage_menu', 13, 0, 0, 1, 'menu', 'sys_homepage',/", self::systemSql());
+    }
+
+    public function testOperationalDefaultsSuitANewSite(): void
+    {
+        $sSql = self::systemSql();
+        $fValue = function (string $sName) use ($sSql): ?string {
+            return preg_match("/\\(@iCategoryId, '" . $sName . "', '[^']*', '([^']*)',/", $sSql, $aMatch) ? $aMatch[1] : null;
+        };
+
+        $this->assertSame('ERROR', $fValue('sys_logs_level'), 'Logs keep errors only.');
+        $this->assertSame('30', $fValue('sys_default_curl_timeout'), 'Outgoing requests do not hold a worker for minutes.');
+        $this->assertSame('v4', $fValue('sys_storage_s3_sig_ver'), 'AWS takes only signature v4 for new buckets.');
+        $this->assertSame('', $fValue('sys_storage_s3_acl_enable'), 'New AWS buckets refuse object ACLs.');
+        $this->assertSame('hd', $fValue('sys_player_default_format'));
+        $this->assertStringNotContainsString("'sys_alerts_logger'", $sSql, 'Nothing reads it.');
+    }
+
+    public function testDatesFollowTheVisitorsLanguage(): void
+    {
+        // moment.js locale formats: "Nov 21, 2026", "2:30 PM", "Nov 21, 2026 2:30 PM" in English, 24-hour where the
+        // language uses it.
+        $sSql = self::systemSql();
+        $this->assertStringContainsString("'sys_format_date', '_adm_stg_cpt_option_sys_format_date', 'll',", $sSql);
+        $this->assertStringContainsString("'sys_format_time', '_adm_stg_cpt_option_sys_format_time', 'LT',", $sSql);
+        $this->assertStringContainsString("'sys_format_datetime', '_adm_stg_cpt_option_sys_format_datetime', 'lll',", $sSql);
+    }
+
+    public function testStudioHelpFeedIsGone(): void
+    {
+        $sSql = self::systemSql();
+        $this->assertStringNotContainsString('sys_studio_page_help', $sSql);
+        $this->assertStringNotContainsString('sys_studio_module_help', $sSql);
+        $this->assertFileDoesNotExist(__DIR__ . '/../../../studio/classes/BxDolStudioRssPageHelp.php');
     }
 }

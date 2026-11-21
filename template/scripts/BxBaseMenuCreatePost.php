@@ -81,7 +81,7 @@ class BxBaseMenuCreatePost extends BxTemplMenuCustom
                 'title_system' => '_sys_menu_item_title_system_va_more_auto', //--- names the icon-only trigger, see BxBaseMenu::_getMenuTitle
                 'title' => '_sys_menu_item_title_va_more_auto_empty', 
                 'href' => 'javascript:void(0)', 
-                'icon' => 'ellipsis-v',
+                'icon' => 'ellipsis-vertical',
                 'active' => 1
             ];
 

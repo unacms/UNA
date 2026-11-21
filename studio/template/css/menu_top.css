@@ -298,7 +298,7 @@ div.bx-std-menu-top .bx-menu-top-center li a {
     width: auto;
 }
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active a {
-    border-color: rgba(59, 130, 246, 0.5);
+    border-color: rgb(var(--bx-accent-500) / 0.5);
 }
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active .bx-mi-bg {
     display: block;
@@ -468,9 +468,8 @@ div.bx-std-menu-top-right li.bx-menu-tab-active i.sys-icon {
     text-shadow: 0 0 4px #ffe900;
 }
 
-/*--- Account, Actions, Help and Settings popups ---*/
+/*--- Account, Actions and Settings popups ---*/
 body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
-#bx-std-pcap-menu-popup-help,
 #bx-std-pcap-menu-popup-assistant,
 #bx-std-pcap-menu-popup-actions,
 #bx-std-pcap-menu-popup-account,
@@ -478,14 +477,12 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
     overflow: visible;
 }
 .bx-std-mod-popup-settings-wrapper .bx-popup-gap,
-#bx-std-pcap-menu-popup-help .bx-popup-gap,
 #bx-std-pcap-menu-popup-assistant .bx-popup-gap,
 #bx-std-pcap-menu-popup-actions .bx-popup-gap,
 #bx-std-pcap-menu-popup-account .bx-popup-gap,
 #bx-std-pmenu-popup-actions .bx-popup-gap {
     margin: 8px 0 0; /* with the script's 8px this puts the box 16px under the 36px trigger: flush with the header bar's bottom edge */
 }
-#bx-std-pcap-menu-popup-help .bx-popup,
 #bx-std-pcap-menu-popup-actions .bx-popup,
 .bx-std-mod-popup-settings-wrapper.bx-popup-applied:not(.bx-popup-chain) .bx-popup {
     margin: 0;
@@ -497,18 +494,12 @@ body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
 }
 
 .bx-std-mod-popup-settings-wrapper,
-#bx-std-pcap-menu-popup-help .bx-popup,
-#bx-std-pcap-menu-popup-help .bx-popup a,
-#bx-std-pcap-menu-popup-help .bx-popup .sys-icon,
 #bx-std-pcap-menu-popup-actions .bx-popup {
     color: rgba(0, 0, 0, 0.7);
 }
 #bx-std-pcap-menu-popup-account .bx-popup li > a > svg,
 #bx-std-pcap-menu-popup-account .bx-popup li > div > svg {
     opacity: 0.7;
-}
-#bx-std-pcap-menu-popup-help .bx-popup a:hover {
-    color: rgba(0, 0, 0, 0.85);
 }
 #bx-std-pcap-menu-popup-account .bx-popup li:hover > a > svg,
 #bx-std-pcap-menu-popup-account .bx-popup li:hover > div > svg,

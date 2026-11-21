@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_videos_form_entry_input_video_source"><![CDATA[Video source]]></string_upd>
+    <string_upd name="_bx_videos_form_entry_input_video_embed"><![CDATA[Video embed link]]></string_upd>
+    <string_upd name="_bx_videos_page_title_create_entry"><![CDATA[New video]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_create_entry"><![CDATA[New video]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_featured_entries_view_extended"><![CDATA[Featured videos]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_recent_entries_view_extended"><![CDATA[Latest videos]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_entry_all_actions"><![CDATA[All actions]]></string_upd>
+    <string_upd name="_bx_videos_page_title_entries_popular"><![CDATA[Popular videos]]></string_upd>
+    <string_upd name="_bx_videos_page_title_entries_top"><![CDATA[Top videos]]></string_upd>
+    <string_upd name="_bx_videos_page_title_entries_updated"><![CDATA[Updated videos]]></string_upd>
+    <string_upd name="_bx_videos_page_title_entries_favorites"><![CDATA[Favorite videos]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_popular_entries"><![CDATA[Popular videos]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_top_entries"><![CDATA[Top videos]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_updated_entries"><![CDATA[Updated videos]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_popular_keywords"><![CDATA[Popular hashtags]]></string_upd>
+    <string_upd name="_bx_videos_page_block_title_cats"><![CDATA[Video categories]]></string_upd>
+    <string_upd name="_bx_videos_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+</resources>

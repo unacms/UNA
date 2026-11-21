@@ -343,7 +343,7 @@ class BxBaseCmtsServices extends BxDol
             '_cache' => $bCache,
             'owner_id' => $iOwnerId,
             'object_owner_id' => $iAuthorId,
-            'icon' => 'comments',
+            'icon' => 'messages-square',
             'sample' => $sSample,
             'sample_wo_article' => $sSampleWoArticle,
             'sample_action' => $sAction,
@@ -770,6 +770,12 @@ class BxBaseCmtsServices extends BxDol
         
         if (isset($aParams['comment_id'])){
             $aRv['new'] = $aParams['comment_id'];
+
+            // The object's comments action and counter with the new count, as its page shows them: the apps update
+            // the counter beside the list from it, with no socket server.
+            $aElement = $oCmts->getElementAPI();
+            if (is_array($aElement) && isset($aElement['system'], $aElement['counter']))
+                $aRv['element'] = $aElement;
         }
        
         return $aRv;

@@ -54,11 +54,11 @@
     <string name="_bx_timeline_option_hot_sources_content"><![CDATA[Добавление контента]]></string>
     <string name="_bx_timeline_option_hot_sources_comment"><![CDATA[Добавление комментария]]></string>
     <string name="_bx_timeline_option_hot_sources_vote"><![CDATA[Добавление голоса]]></string>
-    <string name="_bx_timeline_option_hot_threshold_age"><![CDATA[Максимальный возраст поста, получившего комментарии/голоса, который включается в 'горячую' хронику (в днях, 0 - без ограничений)]]></string>
+    <string name="_bx_timeline_option_hot_threshold_age"><![CDATA[Максимальный возраст поста с комментариями или голосами, который может попасть в 'горячую' ленту, дней (0 = без ограничений)]]></string>
     <string name="_bx_timeline_option_hot_threshold_comment"><![CDATA[Минимальное количество комментариев, необходимое для появления контента в 'горячей' хронике]]></string>
     <string name="_bx_timeline_option_hot_threshold_vote"><![CDATA[Минимальное количество голосов, необходимое для появления контента в 'горячей' хронике]]></string>
-    <string name="_bx_timeline_option_hot_interval"><![CDATA[Интервал времени (в часах) для получения 'горячих' событий (0 – без ограничений)]]></string>
-    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Коэффициент корректировки, связанный с возрастом контента (0 – без корректировки)]]></string>
+    <string name="_bx_timeline_option_hot_interval"><![CDATA[Период для 'горячих' событий, часов (0 = без ограничений)]]></string>
+    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Коэффициент поправки на возраст контента (0 = без поправки)]]></string>
     <string name="_bx_timeline_option_enable_cache_item"><![CDATA[Включить кэш элемента]]></string>
     <string name="_bx_timeline_option_cache_item_engine"><![CDATA[Механизм кэширования элемента (отличный от FileHtml может потребовать дополнительную настройку сервера)]]></string>
     <string name="_bx_timeline_option_cache_item_lifetime"><![CDATA[Время жизни кэша элемента]]></string>
@@ -67,7 +67,7 @@
     <string name="_bx_timeline_option_enable_editor_toolbar"><![CDATA[Включить панель инструментов в форме создания сообщения]]></string>
     <string name="_bx_timeline_option_editor_auto_attach_insertion"><![CDATA[Обрабатывать изображения, вставленные в редактор, как вложения]]></string>
     <string name="_bx_timeline_option_enable_media_priority"><![CDATA[Включить приоритет медиаконтента над ссылками во вложениях]]></string>
-    <string name="_bx_timeline_option_limit_attach_links"><![CDATA[Ограничить число присоединенных линок (0 - без ограничений)]]></string>
+    <string name="_bx_timeline_option_limit_attach_links"><![CDATA[Максимум прикреплённых ссылок (0 = без ограничений)]]></string>
     <string name="_bx_timeline_option_extenals_every_public"><![CDATA[Показывать внешнее событие как каждое N-е в публичной ленте.]]></string>
     <string name="_bx_timeline_option_extenals_every_owner"><![CDATA[Показывать внешнее событие как каждое N-е в ленте контекста (профиля)]]></string>
     <string name="_bx_timeline_option_extenals_every_feed"><![CDATA[Показывать внешнее событие как каждое N-е в ленте контекст (профиль) + подписки]]></string>
@@ -116,7 +116,7 @@
     <string name="_bx_timeline_form_post_input_date_published_info"><![CDATA[Оставьте пустым, чтобы опубликовать немедленно.]]></string>
     <string name="_bx_timeline_form_post_input_sys_link"><![CDATA[Ссылка]]></string>
     <string name="_bx_timeline_form_post_input_link_alt"><![CDATA[Добавить ссылку]]></string>
-    <string name="_bx_timeline_form_post_input_link_err_delete"><![CDATA[Невозможно удалить ссылку. Пожалуйста, оповестите нас о проблеме.]]></string>
+    <string name="_bx_timeline_form_post_input_link_err_delete"><![CDATA[Не удалось удалить ссылку. Попробуйте ещё раз.]]></string>
     <string name="_bx_timeline_form_post_input_sys_photo"><![CDATA[Фото]]></string>
     <string name="_bx_timeline_form_post_input_photo"><![CDATA[]]></string>
     <string name="_bx_timeline_form_post_input_photo_alt"><![CDATA[Добавить фото]]></string>
@@ -421,7 +421,7 @@
     <string name="_bx_timeline_txt_msg_performed_action"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_timeline_txt_msg_posted"><![CDATA[Успешно опубликовано.]]></string>
     <string name="_bx_timeline_txt_err_cannot_perform_insertion"><![CDATA[Невозможно выполнить вставку.]]></string>
-    <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_bx_timeline_txt_err_empty_post"><![CDATA[Сообщение пусто.]]></string>
     <string name="_bx_timeline_txt_err_attach_links"><![CDATA[Достигнуто максимально допустимое количество прикрепленных ссылок.]]></string>
     <string name="_bx_timeline_txt_file_alt"><![CDATA[Файл]]></string>
@@ -486,7 +486,7 @@
     <string name="_bx_timeline_txt_repost_counter"><![CDATA[{0}]]></string>
     <string name="_bx_timeline_txt_reposted"><![CDATA[Сделал репост {0} {1}.]]></string>
     <string name="_bx_timeline_txt_reposted_by"><![CDATA[Сделал репост]]></string>
-    <string name="_bx_timeline_txt_err_cannot_repost"><![CDATA[Невозможно сделать репост. Пожалуйста, сообщите нам об этой проблеме.]]></string>
+    <string name="_bx_timeline_txt_err_cannot_repost"><![CDATA[Не удалось сделать репост. Попробуйте ещё раз.]]></string>
     <string name="_bx_timeline_txt_err_already_reposted"><![CDATA[Вы уже сделали репост этого элемента.]]></string>
     <string name="_bx_timeline_txt_msg_success_repost"><![CDATA[Репост данного элемента был сделан успешно.]]></string>
     <string name="_bx_timeline_txt_object_reposted"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]> (репост)</string>
@@ -495,6 +495,8 @@
     <string name="_bx_timeline_txt_poll_view_results"><![CDATA[результаты]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_do_by"><![CDATA[Проголосовали за]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_timeline_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string>
+    <string name="_bx_timeline_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <!-- EMAIL TEMPLATES -->

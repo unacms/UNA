@@ -271,6 +271,8 @@
     <string name="_bx_jobs_menu_set_title_view_profile_meta"><![CDATA[Здание - Мета инфо]]></string>
     <string name="_bx_jobs_menu_item_title_system_sm_members"><![CDATA[Исполнители]]></string>
     <string name="_bx_jobs_menu_item_title_sm_members"><![CDATA[{0} исполнителей]]></string>
+    <string name="_bx_jobs_menu_item_title_sm_members_few"><![CDATA[{0} исполнителя]]></string>
+    <string name="_bx_jobs_menu_item_title_sm_members_one"><![CDATA[{0} исполнитель]]></string>
     <string name="_bx_jobs_menu_set_title_view_profile_submenu"><![CDATA[Подменю просмотра задания]]></string>
     <string name="_bx_jobs_menu_title_view_profile_submenu"><![CDATA[Подменю просмотра задания]]></string>
     <string name="_bx_jobs_menu_title_entries_my"><![CDATA[Задания профиля - Меню действий]]></string>
@@ -474,7 +476,7 @@
 
     <string name="_bx_jobs_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_jobs_err_price_duplicate"><![CDATA[Аналогичный ценовой план уже существует.]]></string>
-    <string name="_bx_jobs_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_jobs_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_jobs_alert_action_fan_added"><![CDATA[присоединение нового участника]]></string>
     <string name="_bx_jobs_txt_ntfs_fan_added"><![CDATA[К заданию <b class="bx-ntfs-content-profile">{owner_name}</b> присоединился <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>

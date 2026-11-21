@@ -38,7 +38,7 @@ BxDolUploaderBase.prototype.init = function (sUploaderObject, sStorageObject, sU
     this._sFormContainerId = 'bx-form-input-files-' + sUniqId + '-form-cont';
 
     this._sTemplateGhost = options.template_ghost ? options.template_ghost : '<div id="' + this._getFileContainerId('{file_id}') + '"><input type="hidden" name="f[]" value="{file_id}" />{file_name} (<a href="javascript:void(0);" onclick="{js_instance_name}.deleteGhost(\'{file_id}\')">delete</a>)</div>';
-    this._sTemplateReorder = options.template_reorder ? options.template_reorder : '<div class="bx-uploader-ghost-reorder bx-btn bx-btn-small"><i class="sys-icon bars"></i></div>';
+    this._sTemplateReorder = options.template_reorder ? options.template_reorder : '<div class="bx-uploader-ghost-reorder bx-btn bx-btn-small"><i class="sys-icon menu"></i></div>';
     this._sTemplateError = options.template_error_msg ? options.template_error_msg : '<div>{error}</div>' ;
     this._sTemplateErrorGhosts = options.template_error_ghosts ? options.template_error_ghosts : this._sTemplateError;
 
@@ -880,6 +880,9 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
                 type: 'canvas',
                 size: 'original',
                 format: 'jpeg',
+                // the square picture: a round viewport only shows where the circle is, CSS rounds the picture
+                // (a circle would be saved on black corners, as JPEG has no transparency)
+                circle: false,
                 quality: '0.85',
             }).then(function(resp) {
                 var fd = new FormData();
@@ -944,6 +947,41 @@ BxDolUploaderCrop.prototype._readFile = function (oFile, onRead) {
         onRead(e.target.result);
     };
     oReader.readAsDataURL(oFile);
+};
+
+/**
+ * The cropper opens with a picture: the file picker comes first, then the titled popup (BxBaseUploaderCrop::getUploaderForm)
+ * with the chosen picture in the cropper.
+ */
+BxDolUploaderCrop.prototype.showUploaderForm = function () {
+    if (!this._oPendingFile) {
+        if (!this._eChooser)
+            this._eChooser = $('<input type="file" accept="image/*" class="hidden" tabindex="-1" aria-hidden="true" />').on('change', (oEvent) => {
+                this.onPictureChosen(oEvent.currentTarget);
+            }).appendTo('body');
+
+        this._eChooser.val('').trigger('click');
+        return;
+    }
+
+    var sUrl = this._getUrlWithStandardParams() + '&a=show_uploader_form&m=' + (this._isMultiple ? 1 : 0) + '&c=' + this._iContentId + '&p=' + this._isPrivate + '&_t=' + Date.now();
+    $.get(sUrl, (sHtml) => {
+        $('#' + this._sPopupContainerId).remove();
+
+        // its script starts the cropper once the popup is in the page
+        var oPopup = $(sHtml.trim());
+        oPopup.hide().prependTo('body').bxProcessHtml();
+
+        oPopup.dolPopup({
+            closeElement: false,
+            closeOnOuterClick: false,
+            onBeforeShow: () => {
+                oPopup.find('.bx-popup-element-close').on('click', () => {
+                    this.onClickCancel();
+                });
+            }
+        });
+    }, 'html');
 };
 
 /**
@@ -1305,17 +1343,17 @@ BxDolImageTweak.prototype.uploadComplete = function(obj){
 
 BxDolImageTweak.prototype.changePosition = function (){
     var $this = this;
-    $(".bx-image-edit-source-" + $this._sUniqueId).parent().append("<div class='bx-image-edit-move-info'><i class='sys-icon sys-colored arrows-alt '></i>" + _t('_sys_uploader_image_reposition_info') + "</div>");
+    $(".bx-image-edit-source-" + $this._sUniqueId).parent().append("<div class='bx-image-edit-move-info'><i class='sys-icon sys-colored move '></i>" + _t('_sys_uploader_image_reposition_info') + "</div>");
     $(".bx-image-edit-source-" + $this._sUniqueId).addClass('bx-image-edit-move').bind('dragover', function(e){
         $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
+        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
     });
     if (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0)) {
         $('body').css('overflow', 'hidden')
         $(".bx-image-edit-source-" + $this._sUniqueId).bind('touchmove', function(e){
             var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
             $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
+            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
         });
     }
     with ($this._oContainerButtons) {

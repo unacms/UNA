@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Messenger: video call settings say that calls need a Jitsi server. -->
+<resources name="ru" flag="ru" title="Russian" category="Messenger">
+    <string_upd name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Видеозвонки]]></string_upd>
+    <string_upd name="_bx_messenger_jitsi_server"><![CDATA[Домен сервера Jitsi, например meet.example.com. Пока он не указан, видеозвонки выключены.]]></string_upd>
+</resources>

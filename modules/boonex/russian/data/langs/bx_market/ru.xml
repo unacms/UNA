@@ -392,7 +392,7 @@
     <string name="_bx_market_grid_action_title_lcs_edit"><![CDATA[Редактировать]]></string>
     <string name="_bx_market_grid_action_title_lcs_reset"><![CDATA[Сбросить]]></string>
     <string name="_bx_market_grid_action_title_lcs_delete"><![CDATA[Удалить]]></string>
-    <string name="_bx_market_grid_action_err_cannot_perform"><![CDATA[Не могу выполнить действие. Пожалуйста, сообщите.]]></string>
+    <string name="_bx_market_grid_action_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_bx_market_grid_txt_lcs_type_single"><![CDATA[постоянная]]></string>
     <string name="_bx_market_grid_txt_lcs_type_recurring"><![CDATA[подписка]]></string>
     <string name="_bx_market_grid_txt_lcs_never"><![CDATA[никогда]]></string>
@@ -451,7 +451,9 @@
     <string name="_bx_market_cat_duration_month"><![CDATA[ежемесячно]]></string>
     <string name="_bx_market_cat_duration_year"><![CDATA[ежегодно]]></string>
 
-    <string name="_bx_market_vote_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_market_vote_counter"><![CDATA[{0} оценок]]></string>
+    <string name="_bx_market_vote_counter_few"><![CDATA[{0} оценки]]></string>
+    <string name="_bx_market_vote_counter_one"><![CDATA[{0} оценка]]></string>
 
     <string name="_bx_market_txt_msg_status_hidden"><![CDATA[Данный продукт был скрыт.]]></string>
     <string name="_bx_market_txt_msg_status_pending"><![CDATA[Данный продукт ожидает утверждения.]]></string>

@@ -64,7 +64,7 @@ class BxBaseAuditGrid extends BxDolAuditGrid
         $sLinkExtras = '';
         $aExtras = unserialize($aRow['extras']);
         if (isset($aExtras['display_info'])){
-            $sLinkExtras = $this->_oTemplate->parseLink('javascript:void(0)',' <i class="sys-icon info-circle"></i>' , array(
+            $sLinkExtras = $this->_oTemplate->parseLink('javascript:void(0)',' <i class="sys-icon info"></i>' , array(
                 'title' => '',
                 'bx_grid_action_single' => 'show_stat',
                 'bx_grid_action_data' => json_encode($aExtras)

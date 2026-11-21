@@ -32,8 +32,6 @@ class BxDolStudioModule extends BxTemplStudioWidget
         $this->sLangPrefix = 'mod';
         $this->sParamPrefix = 'mod';
 
-        $this->sPageRssHelpObject = 'sys_studio_module_help'; 
-
         $this->sModule = '';
         if(is_string($sModule) && !empty($sModule))
             $this->sModule = $sModule;
@@ -78,9 +76,6 @@ class BxDolStudioModule extends BxTemplStudioWidget
         if(empty($this->aModule) || !is_array($this->aModule))
             BxDolStudioTemplate::getInstance()->displayPageNotFound();
 
-        $this->sPageRssHelpUrl = $this->aModule['help_url'];
-        $this->sPageRssHelpId = $this->aModule['name'];
-
         $this->addMarkers(array(
             'module_name' => $this->aModule['name'],
             'module_uri' => $this->aModule['uri'],
@@ -104,7 +99,7 @@ class BxDolStudioModule extends BxTemplStudioWidget
                 'type' => 'button',
                 'name' => 'uninstall',
                 'caption' => '_adm_txt_uninstall',
-                'icon' => 'trash-2',
+                'icon' => 'trash',
                 'danger' => true,
                 'context_only' => true,
                 'onclick' => "javascript:" . $this->getPageJsObject() . ".uninstall('" . $this->aPage['name'] . "', " . (int)$this->aPage['wid_id'] . ", 0)"

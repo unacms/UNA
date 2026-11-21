@@ -126,7 +126,7 @@
     <string name="_bx_ads_form_entry_input_files"><![CDATA[]]></string>
     <string name="_bx_ads_form_entry_input_sys_polls"><![CDATA[Голосования]]></string>
     <string name="_bx_ads_form_entry_input_sys_link"><![CDATA[Ссылки]]></string>
-    <string name="_bx_ads_form_entry_input_link_err_delete"><![CDATA[Невозможно удалить ссылку. Пожалуйста, оповестите нас о проблеме.]]></string>
+    <string name="_bx_ads_form_entry_input_link_err_delete"><![CDATA[Не удалось удалить ссылку. Попробуйте ещё раз.]]></string>
     <string name="_bx_ads_form_entry_input_sys_allow_view_to"><![CDATA[Видимость]]></string>
     <string name="_bx_ads_form_entry_input_allow_view_to"><![CDATA[Видимость]]></string>
     <string name="_bx_ads_form_entry_input_allow_view_favorite_list"><![CDATA[Видимость]]></string>
@@ -649,12 +649,14 @@
     <string name="_bx_ads_txt_err_offer_accepted"><![CDATA[Ваше предложение уже принято.]]></string>
     <string name="_bx_ads_txt_err_your_own"><![CDATA[Вы не можете выполнить действие, т.к. это ваше объявление.]]></string>
     <string name="_bx_ads_txt_err_duplicate"><![CDATA[Вы уже выполнили действие.]]></string>
-    <string name="_bx_ads_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, сообщите.]]></string>
+    <string name="_bx_ads_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_ads_txt_poll_view_answers"><![CDATA[опрос]]></string>
     <string name="_bx_ads_txt_poll_view_results"><![CDATA[результаты]]></string>
     <string name="_bx_ads_txt_poll_answer_vote_do_by"><![CDATA[Проголосовали за]]></string>
     <string name="_bx_ads_txt_poll_answer_vote_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_ads_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string>
+    <string name="_bx_ads_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string>
     <string name="_bx_ads_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <string name="_bx_ads_alert_action_doInterest_personal"><![CDATA[Кто-то заинтересовался вашим объявлением]]></string>

@@ -37,6 +37,13 @@ class EmptyStateApiTest extends BxDolIntegrationTestCase
         $this->assertNull(BxDolEmptyState::resolve(['title' => '', 'buttons' => []]), 'Nothing to say is null.');
     }
 
+    public function testIconIsPassedOnOnlyAsAName(): void
+    {
+        $this->assertSame('bell', BxDolEmptyState::resolve(['icon' => 'bell', 'title' => '_Empty'])['icon']);
+        $this->assertArrayNotHasKey('icon', BxDolEmptyState::resolve(['icon' => '<svg onload=x>', 'title' => '_Empty']), 'Only an icon name, never markup.');
+        $this->assertNull(BxDolEmptyState::resolve(['icon' => 'bell']), 'An icon alone says nothing.');
+    }
+
     public function testOnlyKnownActionsArePassedOn(): void
     {
         $a = BxDolEmptyState::resolve(['buttons' => [

@@ -41,7 +41,7 @@ trait BxDolApiTokensGrid
 
     public function performActionAdd()
     {
-        if (!$this->_iAccountId)
+        if (!$this->_iAccountId || !BxDolApiTokens::isAllowed())
             return $this->_getActionResult(['msg' => _t('_sys_txt_access_denied')]);
 
         $sAction = 'add';

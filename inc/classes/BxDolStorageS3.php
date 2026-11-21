@@ -102,7 +102,7 @@ class BxDolStorageS3 extends BxDolStorage
             $sTmpFilePath = BX_DIRECTORY_PATH_TMP . 'dwnld_'.$sRemoteId;
             if (!file_exists($sTmpFilePath)) {
                 $sHttpCode = null;
-                @file_put_contents($sTmpFilePath, bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], 0, [], true));
+                @file_put_contents($sTmpFilePath, bx_file_get_contents($sUrl, [], 'get', [], $sHttpCode, [], BX_DOL_FILE_TRANSFER_TIMEOUT, [], true));
             }
 
             // read from a local storage to be able to send it as attachment and give it a proper name

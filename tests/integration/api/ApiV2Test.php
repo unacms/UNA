@@ -201,18 +201,19 @@ class ApiV2Test extends ApiV2TestCase
         $oStorage = BxDolStorage::getObjectInstance('sys_images_custom');
         // the options this test changes: Designer's marks and logos, every template's own (which
         // win over them), the icon and the theme colour
-        $aOptions = BxDolDb::getInstance()->getColumn("SELECT `name` FROM `sys_options` WHERE `name` REGEXP '_site_(mark|logo)(_dark)?(_inline)?$'");
+        $aOptions = BxDolDb::getInstance()->getColumn("SELECT `name` FROM `sys_options` WHERE `name` REGEXP '_site_(mark|logo)(_dark)?(_inline|_aspect_ratio)?$'");
         $aOptions[] = 'sys_site_icon_apple';
         $aOptions[] = 'sys_pwa_manifest_theme_color';
         $aWas = [];
         foreach ($aOptions as $sOption)
             $aWas[$sOption] = getParam($sOption);
         $iFileId = 0;
+        $aFiles = [];
 
         try {
             foreach ($aOptions as $sOption)
                 if ($sOption !== 'sys_pwa_manifest_theme_color')
-                    setParam($sOption, str_ends_with($sOption, '_inline') ? '' : '0');
+                    setParam($sOption, str_ends_with($sOption, '_inline') || str_ends_with($sOption, '_aspect_ratio') ? '' : '0');
 
             // nothing uploaded: still a name, and the template's icon
             $a = $this->http('GET', '');
@@ -265,6 +266,20 @@ class ApiV2Test extends ApiV2TestCase
             $aFile = $this->raw('GET', rtrim($sUri, '&'));
             $this->assertSame(200, $aFile['status'], 'it serves');
             $this->assertSame(self::png(8, 8), $aFile['body'], 'the image that was uploaded');
+            $this->assertNull($aBranding['logo_aspect'], 'no logo uploaded');
+
+            // an uploaded wide logo: its proportions, measured from the stored file
+            $sPath = tempnam(sys_get_temp_dir(), 'logo') . '.png';
+            file_put_contents($sPath, self::png(40, 10));
+            $iLogoId = (int)$oStorage->storeFileFromPath($sPath, false, 0, 0);
+            @unlink($sPath);
+            $this->assertGreaterThan(0, $iLogoId, 'the logo was stored');
+            $aFiles[] = $iLogoId;
+            setParam('sys_site_logo', (string)$iLogoId);
+            setParam('sys_site_logo_dark', (string)$iLogoId);
+            $aBranding = $this->http('GET', '')['json']['branding'];
+            $this->assertEquals(4, $aBranding['logo_aspect'], 'a 40x10 logo');
+            $this->assertEquals(4, $aBranding['logo_dark_aspect'], 'and its dark version');
 
             // the theme colour as #RRGGBB, or null
             foreach (['#0f766e' => '#0F766E', '#AbC' => '#AABBCC', '#0f766e80' => '#0F766E', 'teal' => null, '' => null] as $sColour => $mAccent) {
@@ -279,6 +294,8 @@ class ApiV2Test extends ApiV2TestCase
                 setParam($sOption, $sValue);
             if ($iFileId)
                 $oStorage->deleteFile($iFileId);
+            foreach ($aFiles as $iId)
+                $oStorage->deleteFile($iId);
         }
     }
 

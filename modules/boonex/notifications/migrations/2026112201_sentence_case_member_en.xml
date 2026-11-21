@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_ntfs_page_title_settings"><![CDATA[Notification settings]]></string_upd>
+    <string_upd name="_bx_ntfs_menu_item_title_notifications_all"><![CDATA[All notifications]]></string_upd>
+    <string_upd name="_bx_ntfs_menu_item_title_notifications_site"><![CDATA[On site]]></string_upd>
+</resources>

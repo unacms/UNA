@@ -2757,6 +2757,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
      */
     public function serviceIsVideoConferenceAllowed($mixedObject)
     {
+        if (!$this->_oConfig->CNF['ENABLE-JITSI'])
+            return false;
+
         if (!$this->_iProfileId || !$this->onCheckContact($this->_iProfileId, (int) $mixedObject))
             return false;
 
@@ -2832,7 +2835,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
         header('Content-type: text/html; charset=utf-8');
 
         $sContent = '';
-        if (!$oProfile)
+        if (!$this->_oConfig->CNF['ENABLE-JITSI'])
+            $sContent = MsgBox(_t('_bx_messenger_jitsi_err_can_join_conference'));
+        else if (!$oProfile)
             $sContent = MsgBox(_t('_bx_messenger_profile_not_found'));
         else {
             $aInfo = $oProfile->getInfo();
@@ -3234,7 +3239,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
         foreach ($aModules as $sKey => $aModule) {
             if (!$aModule['icon']) {
                 $aResult[$sKey] = array(
-                    'icon' => 'world',
+                    'icon' => 'globe',
                     'icon_color' => 'green'
                 );
                 continue;
@@ -3482,7 +3487,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
 
     public function actionGetJitsiConferenceForm($iLotId = 0)
     {
-        if (!$this->_iProfileId) {
+        if (!$this->_iProfileId || !$this->_oConfig->CNF['ENABLE-JITSI']) {
             echo MsgBox(_t('_bx_messenger_jitsi_err_can_join_conference'));
             exit;
         }

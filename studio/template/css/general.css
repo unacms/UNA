@@ -92,14 +92,6 @@ div.bx-std-pcap-mp-right {
 	right: 10px;
 }
 
-div.bx-std-pcap-help .sys-rss-feed-wrapper {
-	padding-top: 0px;
-}
-div.bx-std-pcap-help .bx-loading-ajax {
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-
 div.bx-std-pcap-action {
 	position: relative;
 	float: left;

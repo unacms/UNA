@@ -178,7 +178,7 @@ class BxBaseModGeneralTemplate extends BxDolModuleTemplate
             return '';
 
         // get summary
-        $sLinkMore = ' <a title="' . bx_html_attribute(_t('_sys_read_more', $sTitle)) . '" href="' . $sUrl . '"><i class="sys-icon ellipsis-h"></i></a>';
+        $sLinkMore = ' <a title="' . bx_html_attribute(_t('_sys_read_more', $sTitle)) . '" href="' . $sUrl . '"><i class="sys-icon ellipsis"></i></a>';
         return strmaxtextlen($sText, (int)getParam($CNF['PARAM_CHARS_SUMMARY']), $sLinkMore);
     }
 
@@ -1362,7 +1362,8 @@ class BxBaseModGeneralTemplate extends BxDolModuleTemplate
     {
         $sCoverSettings = '';
         if(($aCoverData = json_decode($sSettings, true)) && is_array($aCoverData))
-            $sCoverSettings = 'background-position: ' . $aCoverData['x'] . '% ' . $aCoverData['y'] . '%';
+            // Reposition moves a picture up and down only; across it is centred, for a cover narrower than its picture (a phone).
+            $sCoverSettings = 'background-position: 50% ' . (float)$aCoverData['y'] . '%';
 
         return $sCoverSettings;
     }

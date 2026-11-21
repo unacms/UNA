@@ -56,25 +56,12 @@ class BxBaseStudioWidget extends BxDolStudioWidget
         if(false && ($sActions = $this->getPageCaptionActions()) && ($bActions = strlen($sActions)) > 0)    //--- Hidden for now.
             $sActions = $oFunctions->transBox('bx-std-pcap-menu-popup-actions', $sActions, true);
 
-        $sHelp = '';
-        $bHelp = false;
-        if(false && ($sHelp = $this->getPageCaptionHelp()) && ($bHelp = strlen($sHelp)) > 0)    //--- Hidden for now.
-            $sHelp = $oFunctions->transBox('bx-std-pcap-menu-popup-help', $sHelp, true);
-
-        if($bActions || $bHelp)
-            $oTemplate->addInjection('injection_header', 'text', $sActions . $sHelp);
+        if($bActions)
+            $oTemplate->addInjection('injection_header', 'text', $sActions);
 
         //--- Menu Right ---//
         $aItemsRight = [];
 
-        if($bHelp)
-            $aItemsRight['help'] = [
-                'name' => 'help',
-                'icon' => 'tmi-help.svg',
-                'onclick' => BX_DOL_STUDIO_PAGE_JS_OBJECT . ".togglePopup('help', this)",
-                'title' => '_adm_txt_show_help'
-            ];
-        
         if($this->_bShowHeaderRightAssistant)
             $aItemsRight['assistant'] = [
                 'name' => 'assistant',

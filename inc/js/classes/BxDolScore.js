@@ -103,7 +103,7 @@ BxDolScore.prototype._onVote = function(oLink, oData, onComplete)
         return;
 
     if(oData && oData.label_icon)
-        $(oLink).find('.sys-action-do-icon .sys-icon').attr('class', 'sys-icon ' + oData.label_icon);
+        bx_set_icon($(oLink).find('.sys-action-do-icon .sys-icon'), oData.label_icon);
 
     if(oData && oData.label_title) {
         $(oLink).attr('title', oData.label_title);

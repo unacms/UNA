@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="en" title="English">
     <string name="_api_create_context"><![CDATA[Create {0}]]></string>
-    <string name="_ADM_PROFILE_SEND_MSG"><![CDATA[Message was successfully sent.]]></string>
+    <string name="_ADM_PROFILE_SEND_MSG"><![CDATA[Message sent.]]></string>
     <string name="_ATT_ACTIVE_E"><![CDATA[You are a full-featured member of our community. You can, however, suspend your profile to become temporarily unavailable for others.]]></string>
     <string name="_ATT_APPROVAL_E"><![CDATA[Your profile activation is in progress. Usually it takes up to 24 hours. Thank you for your patience.]]></string>
-    <string name="_ATT_REJECTED_E"><![CDATA[Your profile was rejected by the system administrator because it contains illegal information or is missing some information. If you have any questions, please, <a target=_blank href="contact.php">contact us</a>, and don't forget to specify your profile ID.]]></string>
-    <string name="_ATT_SUSPENDED_E"><![CDATA[Your profile is temporarily out of {0} system services. You can activate it <a target=_blank href="change_status.php">here</a>. If you have any questions, please <a target=_blank href="contact.php">contact the administrators</a>.]]></string>
+    <string name="_ATT_REJECTED_E"><![CDATA[Your profile was not approved because some information is missing or not allowed. If you have questions, <a target=_blank href="contact.php">contact us</a> and mention your profile ID.]]></string>
+    <string name="_ATT_SUSPENDED_E"><![CDATA[Your profile is suspended for now. You can activate it <a target=_blank href="change_status.php">here</a>. If you have questions, <a target=_blank href="contact.php">contact us</a>.]]></string>
     <string name="_ATT_UNCONFIRMED_E"><![CDATA[You will need to follow the link supplied in the email to get your account submitted for approval. <br />Send me <a target=_blank href="activation_email.php">confirmation email</a>.]]></string>
     <string name="_Access denied"><![CDATA[Access denied]]></string>
     <string name="_access_denied_page_title"><![CDATA[Page Not Available]]></string>
@@ -31,7 +31,7 @@
         <string name="_Contents"><![CDATA[Contents]]></string>
         <string name="_Context"><![CDATA[Context]]></string>
 	<string name="_Count"><![CDATA[Count]]></string>
-	<string name="_DELETE_SUCCESS"><![CDATA[Your account was successfully deleted]]></string>
+	<string name="_DELETE_SUCCESS"><![CDATA[Your account was deleted.]]></string>
 	<string name="_DELETE_TEXT"><![CDATA[All your content will be deleted. Are you sure you want to delete your account?]]></string>
 	<string name="_Date"><![CDATA[Date]]></string>
 	<string name="_Delete"><![CDATA[Delete]]></string>
@@ -112,6 +112,7 @@
         <string name="_report_status_all"><![CDATA[All]]></string>
 	<string name="_report_counter"><![CDATA[{0}]]></string>
         <string name="_report_n_reports"><![CDATA[{0} reports]]></string>
+	<string name="_report_n_reports_one"><![CDATA[{0} report]]></string>
 	<string name="_report_do_report"><![CDATA[Report]]></string>
         <string name="_report_do_report_with_sample"><![CDATA[Report {0}]]></string>
         <string name="_report_do_unreport"><![CDATA[Cancel report]]></string>
@@ -482,7 +483,7 @@
         <string name="_adm_api_btn_export_all"><![CDATA[Export All Apps Settings]]></string>
         <string name="_adm_api_err_action_file_not_found"><![CDATA[File not found.]]></string>
         <string name="_adm_api_err_action_handler_not_found"><![CDATA[Cannot process action. It does not have an associated handler.]]></string>
-        <string name="_adm_api_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+        <string name="_adm_api_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
         <string name="_adm_api_msg_applied"><![CDATA[Settings were applied.]]></string>
         <string name="_adm_api_msg_applied_for"><![CDATA[All apps settings were applied.]]></string>
         <string name="_adm_api_msg_export_empty"><![CDATA[There are no settings to export.]]></string>
@@ -490,6 +491,8 @@
         <string name="_adm_api_msg_removed"><![CDATA[Settings were removed.]]></string>
         <string name="_adm_api_msg_removed_for"><![CDATA[All apps settings were removed.]]></string>
         <string name="_adm_api_popup_import"><![CDATA[Import Settings]]></string>
+        <string name="_adm_api_popup_title_add_key"><![CDATA[Add API key]]></string>
+        <string name="_adm_api_popup_title_add_origin"><![CDATA[Add origin]]></string>
         <string name="_adm_api_ttl_module"><![CDATA[Module]]></string>
         <string name="_adm_api_ttl_sync_api"><![CDATA[Keep in sync]]></string>
 	<string name="_adm_block_cpt_categories"><![CDATA[Categories]]></string>
@@ -573,7 +576,7 @@
 	<string name="_adm_bp_mi_page_options"><![CDATA[Options]]></string>
 	<string name="_adm_bp_mi_page_seo"><![CDATA[SEO]]></string>
 	<string name="_adm_bp_mi_page_visibility"><![CDATA[Visibility]]></string>
-	<string name="_adm_bp_scs_save"><![CDATA[The changes were successfully saved]]></string>
+	<string name="_adm_bp_scs_save"><![CDATA[Changes saved.]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Show on the site]]></string>
         <string name="_adm_bp_txt_block_active_api"><![CDATA[Show in the apps]]></string>
 	<string name="_adm_bp_txt_block_async"><![CDATA[Asynchronous Mode]]></string>
@@ -764,7 +767,7 @@
 	<string name="_adm_dbd_txt_q_clear_item"><![CDATA[Clear {0} queue]]></string>
 	<string name="_adm_dbd_txt_q_queued"><![CDATA[{0} queued]]></string>
 	<string name="_adm_dbd_txt_q_failed"><![CDATA[{0} failed]]></string>
-	<string name="_adm_dbd_msg_q_clean_success"><![CDATA[Queue was successfully cleared]]></string>
+	<string name="_adm_dbd_msg_q_clean_success"><![CDATA[Queue cleared.]]></string>
 	<string name="_adm_dbd_txt_c_content"><![CDATA[Content]]></string>
 	<string name="_adm_dbd_txt_c_clear_content"><![CDATA[Clear content cache]]></string>
 	<string name="_adm_dbd_txt_c_db"><![CDATA[DB]]></string>
@@ -785,7 +788,7 @@
         <string name="_adm_dbd_txt_c_clear_opcache"><![CDATA[Clear Opcache]]></string>
         <string name="_adm_dbd_err_c_clean_failed"><![CDATA[Failed to clear cache]]></string>
         <string name="_adm_dbd_err_c_clean_unsupported"><![CDATA[Cache clearing is unsupported]]></string>
-        <string name="_adm_dbd_msg_c_clean_success"><![CDATA[Cache was successfully cleared]]></string>
+        <string name="_adm_dbd_msg_c_clean_success"><![CDATA[Cache cleared.]]></string>
         <string name="_adm_dbd_msg_c_all_disabled"><![CDATA[All caches are disabled]]></string>
         <string name="_adm_dsn_cnf_uninstall"><![CDATA[<h3>Uninstall "{0}" template?</h3><p>Uninstalling "{0}" template will also delete all of its data. Do you want to continue?</p>]]></string>
 	<string name="_adm_dsg_btn_code_fullscreen"><![CDATA[Edit in full screen]]></string>
@@ -863,6 +866,7 @@
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Draws corners as a smooth curve in browsers that support it, such as Chrome. Other browsers keep round corners.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[A smooth corner looks smaller than a round one of the same radius. Where corners are smooth, radii are multiplied by this number, from 1 to 2.]]></string>
+	<string name="_adm_dsg_inf_settings_section_accent"><![CDATA[The color of links, buttons, switches and focus rings, on the site, in Studio and in the apps. Every preset keeps text readable (WCAG AA) in light and dark mode.]]></string>
 	<string name="_adm_dsg_inf_settings_section_corners"><![CDATA[How round the corners of blocks, buttons, fields and popups are, on the site and in Studio. Pills and circles keep their shape.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string>
 	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[How wide pages are, how wide the header is and where the main menu sits in it, for each page layout, for visitors and for members. The site and the apps follow these; a template can set its own in its settings.]]></string>
@@ -879,7 +883,7 @@
 	<string name="_adm_dsg_lnk_logo_template"><![CDATA[Open {0} logo settings]]></string>
 	<string name="_adm_dsg_lnk_splash_open"><![CDATA[Open in a new tab]]></string>
 	<string name="_adm_dsg_lnk_tmpl_open"><![CDATA[Open the site with it]]></string>
-	<string name="_adm_dsg_scs_save"><![CDATA[The changes were successfully saved]]></string>
+	<string name="_adm_dsg_scs_save"><![CDATA[Changes saved.]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG code]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[None. Dark mode shows the light mode logo.]]></string>
         <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[The previews show what the site's template, {0}, draws.]]></string>
@@ -923,6 +927,14 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Use a service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Offline page]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Window color]]></string>
+	<string name="_adm_dsg_txt_settings_accent_blue"><![CDATA[Blue]]></string>
+	<string name="_adm_dsg_txt_settings_accent_graphite"><![CDATA[Graphite]]></string>
+	<string name="_adm_dsg_txt_settings_accent_green"><![CDATA[Green]]></string>
+	<string name="_adm_dsg_txt_settings_accent_indigo"><![CDATA[Indigo]]></string>
+	<string name="_adm_dsg_txt_settings_accent_orange"><![CDATA[Orange]]></string>
+	<string name="_adm_dsg_txt_settings_accent_rose"><![CDATA[Rose]]></string>
+	<string name="_adm_dsg_txt_settings_accent_teal"><![CDATA[Teal]]></string>
+	<string name="_adm_dsg_txt_settings_accent_violet"><![CDATA[Violet]]></string>
 	<string name="_adm_dsg_txt_settings_header_align"><![CDATA[Main menu]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_center"><![CDATA[Center]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_end"><![CDATA[End]]></string>
@@ -944,6 +956,7 @@
 	<string name="_adm_dsg_txt_settings_radius_large"><![CDATA[Large]]></string>
 	<string name="_adm_dsg_txt_settings_radius_none"><![CDATA[None]]></string>
 	<string name="_adm_dsg_txt_settings_radius_small"><![CDATA[Small]]></string>
+	<string name="_adm_dsg_txt_settings_section_accent"><![CDATA[Colors]]></string>
 	<string name="_adm_dsg_txt_settings_section_corners"><![CDATA[Corners]]></string>
 	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Forms]]></string>
 	<string name="_adm_dsg_txt_settings_section_header"><![CDATA[Page and header]]></string>
@@ -1085,7 +1098,7 @@
 	<string name="_adm_err_oauth_cannot_get_token"><![CDATA[Cannot connect to <b>UNA</b>. Please try again later.]]></string>
 	<string name="_adm_err_oauth_cannot_read_answer"><![CDATA[Cannot get a valid answer from <b>UNA</b>. Please try again later.]]></string>
 	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[You need to enter Key and Secret provided by <b>UNA</b> in Settings -> General.]]></string>
-	<string name="_adm_err_operation_failed"><![CDATA[Operation failed. Please report.]]></string>
+	<string name="_adm_err_operation_failed"><![CDATA[The operation failed. Please try again, and check the logs if it fails again.]]></string>
 	<string name="_adm_form_btn_displays_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_form_btn_displays_edit"><![CDATA[Edit display]]></string>
 	<string name="_adm_form_btn_displays_save"><![CDATA[Save]]></string>
@@ -1239,6 +1252,8 @@
   <string name="_adm_form_txt_badges_module"><![CDATA[Module]]></string>
   <string name="_adm_form_txt_badges_add_popup"><![CDATA[Add New Badge]]></string>
   <string name="_adm_form_txt_badges_edit_popup"><![CDATA[Edit "{0}" badge]]></string>
+  <string name="_adm_form_txt_badges_empty"><![CDATA[No badges yet]]></string>
+  <string name="_adm_form_txt_badges_empty_select_module"><![CDATA[No badges yet. Choose a module to add one.]]></string>
   <string name="_adm_pgt_txt_badges_text"><![CDATA[Text]]></string>
   <string name="_adm_pgt_txt_badges_icon"><![CDATA[Icon]]></string>
 
@@ -1524,13 +1539,13 @@
     <string name="_adm_mod_err_only_admin_can_perform_operations_with_modules"><![CDATA[Only admin can perform operations with modules]]></string>
 	<string name="_adm_mod_err_process_operation_failed"><![CDATA[Cannot {0} module from "{1}" directory]]></string>
 	<string name="_adm_mod_msg_process_operation_scheduled"><![CDATA[Operation was scheduled and will be performed in a few minutes. Please wait.]]></string>	
-	<string name="_adm_msg_modules_success_added_to_cart"><![CDATA[The product was successfully added to shopping cart.]]></string>
-	<string name="_adm_msg_modules_success_checkouted"><![CDATA[The payment was successfully accepted and should be processed automatically in a few minutes. Then the purchased product(s) will be available in Apps -> Purchases. If it doesn't happen for some reason, please contact product's vendor with your payment details.]]></string>
-	<string name="_adm_msg_modules_success_delete"><![CDATA[The package was deleted successfully]]></string>
-	<string name="_adm_msg_modules_success_disable"><![CDATA[The package was disabled successfully]]></string>
-	<string name="_adm_msg_modules_success_enable"><![CDATA[The package was enabled successfully]]></string>
-	<string name="_adm_msg_modules_success_install"><![CDATA[The package was installed successfully]]></string>
-	<string name="_adm_msg_modules_success_uninstall"><![CDATA[The package was uninstalled successfully]]></string>
+	<string name="_adm_msg_modules_success_added_to_cart"><![CDATA[Added to the cart.]]></string>
+	<string name="_adm_msg_modules_success_checkouted"><![CDATA[Payment accepted. The purchased apps show up in Apps -&gt; Purchases within a few minutes. If they don't, contact the vendor with your payment details.]]></string>
+	<string name="_adm_msg_modules_success_delete"><![CDATA[The package was deleted.]]></string>
+	<string name="_adm_msg_modules_success_disable"><![CDATA[The app was disabled.]]></string>
+	<string name="_adm_msg_modules_success_enable"><![CDATA[The app was enabled.]]></string>
+	<string name="_adm_msg_modules_success_install"><![CDATA[The app was installed.]]></string>
+	<string name="_adm_msg_modules_success_uninstall"><![CDATA[The app was uninstalled.]]></string>
 	<string name="_adm_msg_oauth_need_authorize"><![CDATA[You need to sign in to your <b>UNA</b> account to get data: <a href="{0}">sign in to UNA</a>.]]></string>
         <string name="_adm_msg_oauth_non_owner_logged"><![CDATA[WARNING: You are signed in to an <a href="{0}">UNA.IO</a> account which is different from the account that generated UNA Key & Secret for your domain.]]></string>
 	<string name="_adm_nav_btn_current_icon_image_delete"><![CDATA[Delete]]></string>
@@ -1757,8 +1772,8 @@
 	<string name="_adm_pgt_err_etemplates_subject"><![CDATA[Enter subject]]></string>
 	<string name="_adm_pgt_err_last_active"><![CDATA[You need to have at least one active language.]]></string>
 	<string name="_adm_pgt_err_save"><![CDATA[Cannot save changes]]></string>
-	<string name="_adm_pgt_scs_recompiled"><![CDATA[Language(s) was successfully recompiled.]]></string>
-	<string name="_adm_pgt_scs_restored"><![CDATA[Language(s) was successfully restored.]]></string>
+	<string name="_adm_pgt_scs_recompiled"><![CDATA[Languages recompiled.]]></string>
+	<string name="_adm_pgt_scs_restored"><![CDATA[Languages restored.]]></string>
 	<string name="_adm_pgt_txt_all_modules"><![CDATA[All Modules]]></string>
 	<string name="_adm_pgt_txt_etemplates_body"><![CDATA[Body]]></string>
 	<string name="_adm_pgt_txt_etemplates_edit_popup"><![CDATA[Edit "{0}" Template]]></string>
@@ -1779,7 +1794,7 @@
 	<string name="_adm_pgt_txt_et_hf_inf"><![CDATA[Note, that improper use of HTML may break the email message's layout. Also make sure that {unsubscribe} marker presents in at least one of the templates (header and/or footer).]]></string>
         <string name="_adm_pgt_btn_et_hf_editor"><![CDATA[Use visual editor]]></string>
 	<string name="_adm_pgt_btn_et_hf_submit"><![CDATA[Submit]]></string>
-	<string name="_adm_pgt_scs_et_hf_save"><![CDATA[The changes were successfully saved.]]></string>
+	<string name="_adm_pgt_scs_et_hf_save"><![CDATA[Changes saved.]]></string>
 	<string name="_adm_pgt_err_et_hf_save"><![CDATA[Cannot save changes.]]></string>
 	<string name="_adm_pgt_err_et_hf_save_unsubscribe"><![CDATA[Cannot save changes, because {unsubscribe} marker was removed from both templates, header and footer.]]></string>
 	<string name="_adm_prm_btn_actions_cancel"><![CDATA[Cancel]]></string>
@@ -1805,11 +1820,11 @@
 	<string name="_adm_prm_dsc_level_icon"><![CDATA[You may use font icon here]]></string>
 	<string name="_adm_prm_dsc_level_icon_image"><![CDATA[or upload an image.]]></string>
 	<string name="_adm_prm_dsc_level_name"><![CDATA[Short name for the membership level (i.e Premium, Gold, Newcomer, etc.)]]></string>
-	<string name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Limit max file size for user with this level across all modules (0 - unlimited, other system limits may apply).]]></string>
-	<string name="_adm_prm_dsc_level_quota_number"><![CDATA[Limit amount of files a user with this level can upload (0 - unlimited).]]></string>
-        <string name="_adm_prm_dsc_level_password_expired"><![CDATA[Period after which the password must be changed, in days (0 - unlimited).]]></string>
-        <string name="_adm_prm_dsc_level_password_expired_notify"><![CDATA[The period for which the notification of an expired password will be sent, in days (0 - unlimited).]]></string>    
-	<string name="_adm_prm_dsc_level_quota_size"><![CDATA[Limit how much space can be used by user with this level across all modules (0 - unlimited).]]></string>
+	<string name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Largest file a member with this level can upload, in any app (0 = no limit; other system limits may apply).]]></string>
+	<string name="_adm_prm_dsc_level_quota_number"><![CDATA[How many files a member with this level can upload (0 = no limit).]]></string>
+        <string name="_adm_prm_dsc_level_password_expired"><![CDATA[Days after which the password must be changed (0 = never).]]></string>
+        <string name="_adm_prm_dsc_level_password_expired_notify"><![CDATA[Days before the password expires to start reminding the member (0 = no reminders).]]></string>    
+	<string name="_adm_prm_dsc_level_quota_size"><![CDATA[How much storage a member with this level can use across all apps (0 = no limit).]]></string>
 	<string name="_adm_prm_dsc_price_add_days"><![CDATA[Use 0 for life-time]]></string>
 	<string name="_adm_prm_err_action_edit"><![CDATA[Cannot update membership action's options]]></string>
         <string name="_adm_prm_err_level_create"><![CDATA[Cannot create membership level]]></string>
@@ -1840,7 +1855,7 @@
 	<string name="_adm_prm_txt_icon"><![CDATA[Icon]]></string>
 	<string name="_adm_prm_txt_level_account"><![CDATA[Account]]></string>
 	<string name="_adm_prm_txt_level_actions_copy"><![CDATA[Copy actions from]]></string>
-	<string name="_adm_prm_txt_level_administrator"><![CDATA[Administrator]]></string>
+	<string name="_adm_prm_txt_level_administrator"><![CDATA[Operator]]></string>
         <string name="_adm_prm_txt_level_unavailable_to"><![CDATA[Unavailable for]]></string>
 	<string name="_adm_prm_txt_level_create_popup"><![CDATA[Add New Level]]></string>
 	<string name="_adm_prm_txt_level_description"><![CDATA[Description]]></string>
@@ -1951,8 +1966,8 @@
     <string name="_adm_stg_cpt_category_api_layout"><![CDATA[Layout]]></string>
     <string name="_adm_stg_cpt_category_agents_general"><![CDATA[General]]></string>
     <string name="_adm_stg_cpt_category_agents_usage"><![CDATA[Assistants]]></string>
-    <string name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Image width to resize before upload (0 - disable)]]></string>
-    <string name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Image height to resize before upload (0 - disable)]]></string>
+    <string name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Resize images before upload to this width (0 = don't resize)]]></string>
+    <string name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Resize images before upload to this height (0 = don't resize)]]></string>
     <string name="_adm_stg_cpt_option_currency_code"><![CDATA[Currency code (for checkout system)]]></string>
     <string name="_adm_stg_err_option_currency_code"><![CDATA[Cannot be empty.]]></string>
     <string name="_adm_stg_cpt_option_currency_sign"><![CDATA[Currency sign (for display purposes only)]]></string>
@@ -1988,19 +2003,20 @@
     <string name="_adm_stg_cpt_option_sys_account_welcome_letter"><![CDATA[Enable welcome letter]]></string>
     <string name="_adm_stg_cpt_option_sys_account_confirmation_type"><![CDATA[Account is confirmed when]]></string>
     <string name="_adm_stg_cpt_option_sys_account_hide_unconfirmed_accounts"><![CDATA[Hide profiles which have unconfirmed account]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Who can join]]></string>
     <string name="_adm_stg_cpt_option_sys_account_2fa_enable"><![CDATA[Enable 2 Factor Authentication]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[2FA code lifetime, in seconds (0 - send code at each sign-in)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[2FA code lifetime, seconds (0 = send a code at each sign-in)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_autoapproval"><![CDATA[Automatic account activation after creation]]></string>
     <string name="_adm_stg_cpt_option_sys_account_auto_profile_creation"><![CDATA[Automatic profile creation from account name]]></string>
     <string name="_adm_stg_cpt_option_sys_account_online_time"><![CDATA[Online status timeframe (minutes)]]></string>
+    <string name="_adm_stg_err_option_sys_account_join"><![CDATA[Invitation only needs the Invitations app, and it could not be added. Add it in App Store, then save again.]]></string>
     <string name="_adm_stg_err_option_sys_account_online_time"><![CDATA[You need to enter a value greater than zero.]]></string>
     <string name="_adm_stg_cpt_option_sys_account_default_profile_type"><![CDATA[Default profile type]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Limit number of profiles (0 - no limit)]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Max number of logins attempts (0 - no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Maximum profiles per account (0 = no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Maximum sign-in attempts (0 = no limit)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_reset_password_key_lifetime"><![CDATA[Reset password key lifetime (in seconds)]]></string>
     <string name="_adm_stg_cpt_option_sys_account_reset_password_redirect"><![CDATA[Redirect after reset password to]]></string>
     <string name="_adm_stg_cpt_option_sys_account_disable_login_form"><![CDATA[Disable sign-in form]]></string>
-    <string name="_adm_stg_cpt_option_sys_account_disable_join_form"><![CDATA[Disable sign-up form]]></string>
     <string name="_adm_stg_cpt_option_sys_allow_plus_in_email"><![CDATA[Allow to use plus sign ("+") in email address]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning"><![CDATA[Accounts pruning]]></string>
     <string name="_adm_stg_cpt_option_sys_accounts_pruning_interval"><![CDATA[Accounts pruning period (in days)]]></string>
@@ -2087,7 +2103,7 @@
     <string name="_adm_stg_cpt_option_sys_location_normalize_names"><![CDATA[Normalize geographic names]]></string>
     <string name="_adm_stg_cpt_option_sys_maps_api_key"><![CDATA[Google Maps API key]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_default"><![CDATA[Embeds provider]]></string>
-    <string name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Generated embed lifetime in days (0 - do not track time)]]></string>
+    <string name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Embed lifetime, days (0 = no limit)]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_system"><![CDATA[System]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_microlink"><![CDATA[Microlink]]></string>
     <string name="_adm_stg_cpt_option_sys_embed_peekalink"><![CDATA[Peekalink]]></string>
@@ -2130,7 +2146,6 @@
     <string name="_adm_stg_cpt_option_sys_audit_report"><![CDATA[Last server audit report]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start"><![CDATA[Number of messages to send from Push queue per run]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient"><![CDATA[Number of messages to send from Push queue per run to some recipient]]></string>
-    <string name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Alerts/hooks logger]]></string>
     <string name="_adm_stg_cpt_option_sys_alerts_stats"><![CDATA[Alerts/hooks stats]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_default"><![CDATA[Provider]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_twilio_sid"><![CDATA[Twilio: Account SID]]></string>
@@ -2148,12 +2163,12 @@
     <string name="_adm_stg_cpt_option_sys_relations"><![CDATA[Allow relationships between]]></string>
     <string name="_adm_stg_cpt_option_sys_revision"><![CDATA[Revision number]]></string>
     <string name="_adm_stg_cpt_option_sys_security_form_token_enable"><![CDATA[Enable CSRF token in forms]]></string>
-    <string name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[CSRF token lifetime in seconds(0 - do not track time)]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[CSRF token lifetime, seconds (0 = no limit)]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_block"><![CDATA[Total security impact threshold to send report and block aggressor]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_log"><![CDATA[Total security impact threshold to send report]]></string>
     <string name="_adm_stg_cpt_option_sys_security_upload_token_enable"><![CDATA[Enable upload security tokens]]></string>
     <string name="_adm_stg_cpt_option_sys_security_upload_token_lifetime"><![CDATA[Upload security token lifetime]]></string>
-    <string name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Block content after N reports (0 - do not block)]]></string>
+    <string name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Block content after this many reports (0 = never block)]]></string>
     <string name="_adm_stg_cpt_option_sys_site_logo_aspect_ratio"><![CDATA[Logo aspect ratio]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_default"><![CDATA[Default storage engine (other than Local may require custom/additional setup)]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_s3_access_key"><![CDATA[AWS access key]]></string>
@@ -2185,6 +2200,7 @@
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Set the maximum number of results displayed per page in Profile Search.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_buttons"><![CDATA[Submit and other buttons. In the apps, buttons answer with haptics only.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_choices"><![CDATA[Tabs, menu items, switches, checkboxes, radio buttons.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[When this is off, visitors who haven't signed in hear nothing, and their pages don't load the sounds.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_level"><![CDATA[Everyone can pick Full, Quiet or Off for themselves: in the account menu on the site and in Studio, in the footer and the dashboard of the apps.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_menus"><![CDATA[Menus, popups, drawers and sections opening and closing.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_navigation"><![CDATA[The apps' tab bar and back buttons, opening Studio apps.]]></string>
@@ -2205,6 +2221,7 @@
     <string name="_adm_stg_cpt_option_sys_session_auth"><![CDATA[Session authentication]]></string>
     <string name="_adm_stg_cpt_option_sys_default_curl_timeout"><![CDATA[cURL - default timeout]]></string>
     <string name="_adm_stg_cpt_option_sys_default_socket_timeout"><![CDATA[HTTP context read timeout (in seconds, -1 - unlimit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_design_accent"><![CDATA[Accent color]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius"><![CDATA[Corner size]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Smooth corners]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Smooth corner multiplier]]></string>
@@ -2235,9 +2252,9 @@
     <string name="_adm_stg_cpt_option_sys_quill_toolbar_standard"><![CDATA[Quill buttons for standard editor]]></string>
     <string name="_adm_stg_cpt_option_sys_quill_toolbar_full"><![CDATA[Quill buttons for full editor]]></string>
     <string name="_adm_stg_cpt_option_sys_metatags_hashtags_only"><![CDATA[Filter out labels from hashtag suggestion list]]></string>
-    <string name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Max number of hashtags per post]]></string>
-    <string name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Max number of mentions per post]]></string>
-    <string name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Max number of attached links per post (0 - no limit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Maximum hashtags per post]]></string>
+    <string name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Maximum mentions per post]]></string>
+    <string name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Maximum attached links per post (0 = no limit)]]></string>
     <string name="_adm_stg_cpt_option_sys_enable_post_to_context_for_privacy"><![CDATA[Allow to post to context using Privacy field]]></string>
     <string name="_adm_stg_cpt_option_sys_hide_post_to_context_for_privacy"><![CDATA[Hide post to context for modules in Privacy field]]></string>
     <string name="_adm_stg_cpt_option_sys_treat_cxt_in_cxt_as_cnt"><![CDATA[Treat context posted in context as content]]></string>
@@ -2330,6 +2347,7 @@
     <string name="_adm_stg_cpt_option_sys_sounds_choices"><![CDATA[Sound for choices]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_main"><![CDATA[Main sound set]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_off"><![CDATA[No sound]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Play for guests too]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level"><![CDATA[Level for people who haven't chosen]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_full"><![CDATA[Full]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_off"><![CDATA[Off]]></string>
@@ -2362,14 +2380,14 @@
     <string name="_adm_stg_cpt_option_sys_std_pgt_etemplates_editor"><![CDATA[Studio Polyglot: Enable visual editor]]></string>
 
     <string name="_adm_stg_cpt_option_sys_bg_jobs_process_per_run"><![CDATA[Background jobs: Number of jobs to process per run]]></string>
-    <string name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Background jobs: Max number of parallel workers]]></string>
+    <string name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Background jobs: maximum parallel workers]]></string>
     <string name="_adm_stg_cpt_option_sys_bg_jobs_cleanup_timeout"><![CDATA[Background jobs: Cleanup jobs with errors after (in days)]]></string>
 
     <string name="_adm_stg_cpt_option_sys_maintenance_mode"><![CDATA[Maintenance mode]]></string>
     <string name="_adm_stg_cpt_option_sys_maintenance_mode_html"><![CDATA[Maintenance mode custom HTML code]]></string>
 
 	<string name="_adm_stg_cpt_type_system"><![CDATA[Global]]></string>
-	<string name="_adm_stg_scs_save"><![CDATA[Settings were successfully saved]]></string>
+	<string name="_adm_stg_scs_save"><![CDATA[Settings saved.]]></string>
 	<string name="_adm_stg_err_save_error_message"><![CDATA[Error in '{0}': {1}]]></string>
 	<string name="_adm_stg_err_cannot_perform"><![CDATA[Cannot perform the action.]]></string>
 	<string name="_adm_stg_err_mix_already_exists"><![CDATA[Mix with the same name already exists.]]></string>
@@ -2393,7 +2411,7 @@
 	<string name="_adm_str_err_cannot_unzip_package"><![CDATA[Cannot unarchive ZIP package.]]></string>
 	<string name="_adm_str_err_cannot_write"><![CDATA[Cannot save downloaded file.]]></string>
 	<string name="_adm_str_err_destination_not_valid"><![CDATA[Destination FTP folder doesn't look like a valid the script root folder.]]></string>
-	<string name="_adm_str_err_download_failed"><![CDATA[Download failed. Please report.]]></string>
+	<string name="_adm_str_err_download_failed"><![CDATA[The download failed. Please try again.]]></string>
 	<string name="_adm_str_err_files_copy_failed"><![CDATA[File transfer failed, please check write permissions.]]></string>
 	<string name="_adm_str_err_no_ftp_info"><![CDATA[FTP access info was not specified. You may enter it via Settings -> General.]]></string>
 	<string name="_adm_str_err_no_product_info"><![CDATA[Cannot load product info. Try again later.]]></string>
@@ -2401,8 +2419,8 @@
 	<string name="_adm_str_err_zip_not_available"><![CDATA[ZIP library is not available.]]></string>
 	<string name="_adm_str_msg_download_scheduled"><![CDATA[Download was scheduled, in a few minutes downloaded package will be available to install via Apps &gt; Downloaded]]></string>
 	<string name="_adm_str_msg_download_and_install_scheduled"><![CDATA[Download and subsequent installation were scheduled, it may take a few minutes]]></string>
-	<string name="_adm_str_msg_download_successfully"><![CDATA[Download was successfully finished, you may install it via Apps &gt; Downloaded]]></string>
-	<string name="_adm_str_msg_download_and_install_successfully"><![CDATA[Download and subsequent installation were successfully finished]]></string>
+	<string name="_adm_str_msg_download_successfully"><![CDATA[Downloaded. You can install it in Apps &gt; Downloaded.]]></string>
+	<string name="_adm_str_msg_download_and_install_successfully"><![CDATA[Downloaded and installed.]]></string>
 	<string name="_adm_str_txt_discount_csign"><![CDATA[({0}{1} for Premium)]]></string>
 	<string name="_adm_str_txt_items_by"><![CDATA[item(s) by]]></string>
 	<string name="_adm_str_txt_or"><![CDATA[or]]></string>
@@ -2550,7 +2568,6 @@
         <string name="_adm_txt_settings"><![CDATA[Settings]]></string>
 	<string name="_adm_txt_show_actions"><![CDATA[Actions]]></string>
 	<string name="_adm_txt_show_help"><![CDATA[Help]]></string>
-	<string name="_adm_txt_show_help_content_empty"><![CDATA[Help is not available]]></string>
 	<string name="_adm_txt_uninstall"><![CDATA[Uninstall]]></string>
         <string name="_adm_wgt_cpt_api"><![CDATA[API]]></string>
         <string name="_adm_wgt_cpt_agents"><![CDATA[Agents]]></string>
@@ -2577,7 +2594,7 @@
 	<string name="_cmt_browse_tail"><![CDATA[Newest]]></string>
 	<string name="_cmt_display_flat"><![CDATA[Flat]]></string>
 	<string name="_cmt_display_threaded"><![CDATA[Threaded]]></string>
-	<string name="_cmt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+	<string name="_cmt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
 	<string name="_cmt_msg_login_required"><![CDATA[<a href="{0}">Sign in</a> or <a href="{1}">sign up</a> to comment.]]></string>
 	<string name="_cmt_page_view_header"><![CDATA[Comment '{comment_snippet}' to '{object_title}']]></string>
 	<string name="_cmt_page_view_title"><![CDATA[Comment to <a href="{object_url}">{object_title}</a>]]></string>
@@ -2606,6 +2623,7 @@
         <string name="_cmt_txt_sample_vote_single"><![CDATA[vote to comment]]></string>
         <string name="_cmt_txt_added_sample_custom"><![CDATA[Added <a href="{sample_url}">{sample}</a> to <a href="{psample_url}">{psample}</a>]]></string>
 	<string name="_cmt_txt_n_comments"><![CDATA[{0} comments]]></string>
+        <string name="_cmt_txt_n_comments_one"><![CDATA[{0} comment]]></string>
         <string name="_cmt_txt_do"><![CDATA[Comment]]></string>
         <string name="_cmt_txt_counter"><![CDATA[{0}]]></string>
 	<string name="_cmt_txt_counter_empty"><![CDATA[Comment]]></string>
@@ -2662,14 +2680,18 @@
 	<string name="_sys_access_denied_to_private_content"><![CDATA[Access denied. This is private content.]]></string>
 	<string name="_sys_actions"><![CDATA[Actions]]></string>
 	<string name="_sys_active"><![CDATA[Active]]></string>
-  <string name="_sys_account_settings_email_successfully_submitted"><![CDATA[Email settings were successfully saved]]></string>
-  <string name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Password was successfully changed]]></string>
-  <string name="_sys_account_settings_info_successfully_submitted"><![CDATA[Account settings were successfully saved]]></string>
+  <string name="_sys_account_settings_email_successfully_submitted"><![CDATA[Email settings saved.]]></string>
+  <string name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Password changed.]]></string>
+  <string name="_sys_account_settings_info_successfully_submitted"><![CDATA[Account settings saved.]]></string>
 	<string name="_sys_acc_confirmation_type_none"><![CDATA[No confirmation]]></string>
 	<string name="_sys_acc_confirmation_type_email"><![CDATA[email is confirmed]]></string>
 	<string name="_sys_acc_confirmation_type_phone"><![CDATA[phone is confirmed]]></string>
 	<string name="_sys_acc_confirmation_type_email_and_phone"><![CDATA[email and phone are confirmed]]></string>
   <string name="_sys_acc_confirmation_type_email_or_phone"><![CDATA[email or phone is confirmed]]></string>
+	<string name="_sys_acc_join_closed"><![CDATA[Nobody]]></string>
+	<string name="_sys_acc_join_invite"><![CDATA[Invitation only]]></string>
+	<string name="_sys_acc_join_invite_add"><![CDATA[Invitation only (adds the Invitations app)]]></string>
+	<string name="_sys_acc_join_open"><![CDATA[Anyone]]></string>
 	<string name="_sys_acc_profile_requirement_optional"><![CDATA[Optional: a reminder bar on every page]]></string>
 	<string name="_sys_acc_profile_requirement_prompt"><![CDATA[Ask after sign-in: a “Create your profile” window on the first page]]></string>
 	<string name="_sys_acc_profile_requirement_required"><![CDATA[Required: send to profile creation before anything else]]></string>
@@ -2685,7 +2707,7 @@
   <string name="_sys_acl_action_comments_remove_in_group_context"><![CDATA[Comments Remove All In Context for Context's admins]]></string>
 	<string name="_sys_acl_action_comments_remove_own"><![CDATA[Comments Remove Own]]></string>
 	<string name="_sys_acl_action_connect"><![CDATA[Connect (befriend, follow, etc)]]></string>
-	<string name="_sys_acl_action_create_account"><![CDATA[Create Account]]></string>
+	<string name="_sys_acl_action_create_account"><![CDATA[Create account]]></string>
 	<string name="_sys_acl_action_create_account_desc"><![CDATA[It make sense for guests only, you can temporary disable it or set limit by time for example.]]></string>
 	<string name="_sys_acl_action_delete_account"><![CDATA[Delete Account]]></string>
 	<string name="_sys_acl_action_delete_account_desc"><![CDATA[Delete account also deletes account's content.]]></string>
@@ -2699,9 +2721,10 @@
 	<string name="_sys_acl_action_not_allowed"><![CDATA[Your membership ({2}) doesn't include “{1}”.]]></string>
 	<string name="_sys_acl_action_not_allowed_after"><![CDATA[Your current membership ({2}) stopped to allow you to '{1}' {5}.]]></string>
 	<string name="_sys_acl_action_not_allowed_before"><![CDATA[Your current membership ({2}) will allow you to '{1}' {6}.]]></string>
-        <string name="_sys_acl_action_pending"><![CDATA[You are currently not an active member. Please ask the site <a href="mailto:{7}">administrator</a> to make you an active member so you would be able to <b>{1}</b>.]]></string>
+        <string name="_sys_acl_action_pending"><![CDATA[Your account is waiting for approval. Once it is approved you can <b>{1}</b>. Questions? <a href="mailto:{7}">Email us</a>.]]></string>
 	<string name="_sys_acl_action_post_links"><![CDATA[Post links]]></string>
 	<string name="_sys_acl_action_post_links_desc"><![CDATA[Post links in text and textarea form fields]]></string>
+	<string name="_sys_acl_action_use_connectors"><![CDATA[Use connectors (access tokens for assistants and apps)]]></string>
 	<string name="_sys_acl_action_use_macros"><![CDATA[Use Macros]]></string>
         <string name="_sys_acl_action_use_macros_desc"><![CDATA[Use special constructions to insert dynamic content almost anywhere]]></string>
 	<string name="_sys_acl_action_set_acl_level"><![CDATA[Set membership level]]></string>
@@ -2718,7 +2741,7 @@
 	<string name="_sys_acl_action_set_acl_as_privacy_desc"><![CDATA[Choose membership level as privacy in add content forms]]></string>
         <string name="_sys_acl_action_set_form_fields_privacy"><![CDATA[Set form fields privacy]]></string>
 	<string name="_sys_acl_action_set_form_fields_privacy_desc"><![CDATA[Allow to set privacy for form fields]]></string>
-	<string name="_sys_acl_action_suspended"><![CDATA[You can't '{1}' because your profile was suspended, if you don't know why - try to send message to <a href="mailto:{7}">administrator</a>.]]></string>
+	<string name="_sys_acl_action_suspended"><![CDATA[You cannot {1} because your profile is suspended. If you don't know why, <a href="mailto:{7}">email us</a>.]]></string>
 	<string name="_sys_acl_action_unauthenticated"><![CDATA[Sign in or sign up to use “{1}”.]]></string>
 	<string name="_sys_acl_action_unconfirmed"><![CDATA[You didn't confirm your profile. Please check your email with profile activation link. Unconfirmed members can't <b>{1}</b>.]]></string>
 	<string name="_sys_acl_action_vote"><![CDATA[Vote]]></string>
@@ -2760,8 +2783,8 @@
     <string name="_sys_agents_connectors_txt_tools"><![CDATA[Tools for AI assistants]]></string>
     <string name="_sys_agents_connectors_txt_tools_info"><![CDATA[Which agent tools AI assistants get through MCP. Operator tools act on the whole site. Member tools act as the member, with their permissions on the site, and only tools made for that can be given to members. A tool turned off on the Tools tab is not given.]]></string>
     <string name="_sys_agents_mcp_txt_tool_off"><![CDATA[off]]></string>
-    <string name="_sys_agents_mcp_txt_operators"><![CDATA[MCP for Operators]]></string>
-    <string name="_sys_agents_mcp_txt_members"><![CDATA[MCP for Users]]></string>
+    <string name="_sys_agents_mcp_txt_operators"><![CDATA[MCP for operators]]></string>
+    <string name="_sys_agents_mcp_txt_members"><![CDATA[MCP for members]]></string>
     <string name="_sys_agents_mcp_txt_operators_only"><![CDATA[Operators only]]></string>
     <string name="_sys_agents_mcp_err_not_for_members"><![CDATA[This tool is not made for members: it would act on the whole site.]]></string>
     <string name="_sys_agents_tools_txt_agents"><![CDATA[Agents]]></string>
@@ -3005,6 +3028,7 @@
   <string name="_sys_audit_action_account_resend_confirmation_email"><![CDATA[Confirmation email re-sended]]></string>
   <string name="_sys_audit_action_account_deleted_with_content"><![CDATA[Removed with content]]></string>
   <string name="_sys_audit_action_account_deleted"><![CDATA[Removed]]></string>
+  <string name="_sys_audit_action_account_email_change_requested"><![CDATA[Email change requested]]></string>
   <string name="_sys_audit_action_account_email_changed"><![CDATA[Email changed]]></string>
   <string name="_sys_audit_action_account_activated"><![CDATA[Activated]]></string>
   <string name="_sys_audit_action_account_suspended"><![CDATA[Suspended]]></string>
@@ -3027,8 +3051,6 @@
   <string name="_sys_add_friend"><![CDATA[Add friend]]></string>
         <string name="_sys_add_relation"><![CDATA[Add relationship]]></string>
 	<string name="_sys_adm_installed"><![CDATA[Installed]]></string>
-	<string name="_sys_admin_apply"><![CDATA[Apply]]></string>
-	<string name="_sys_admin_filter"><![CDATA[Filter:]]></string>
   <string name="_sys_audit_filter_profile_select"><![CDATA[Select Profile]]></string>
   <string name="_sys_audit_filter_action_select"><![CDATA[Select Action]]></string>
 	<string name="_sys_audit_cron_jobs"><![CDATA[Cron jobs]]></string>
@@ -3130,11 +3152,13 @@
     <string name="_sys_confirmed"><![CDATA[Confirmed]]></string>
     <string name="_sys_conn_do_by"><![CDATA[Connected by]]></string>
     <string name="_sys_conn_friends_counter"><![CDATA[{0} friends]]></string>
+    <string name="_sys_conn_friends_counter_one"><![CDATA[{0} friend]]></string>
     <string name="_sys_conn_friends_done_initiator"><![CDATA[Request sent]]></string>
     <string name="_sys_conn_friends_done_initiator_mutual"><![CDATA[Friends]]></string>
     <string name="_sys_conn_friends_do_content"><![CDATA[Respond]]></string>
     <string name="_sys_conn_subscriptions_do_initiator"><![CDATA[Following]]></string>
     <string name="_sys_conn_subscriptions_counter"><![CDATA[{0} followers]]></string>
+    <string name="_sys_conn_subscriptions_counter_one"><![CDATA[{0} follower]]></string>
     <string name="_sys_conn_relations_do_initiator"><![CDATA[Add Relationship]]></string>
     <string name="_sys_conn_relations_do_initiator_done"><![CDATA[Relations]]></string>
     <string name="_sys_conn_relations_do_initiator_undo"><![CDATA[Remove Relationship]]></string>
@@ -3142,7 +3166,7 @@
     <string name="_sys_conn_err_connection_does_not_exists"><![CDATA[Connection doesn't exist]]></string>
     <string name="_sys_conn_err_connection_is_awaiting_confirmation"><![CDATA[Connection request is awaiting confirmation]]></string>
     <string name="_sys_conn_err_input_data_is_not_defined"><![CDATA[Input data isn't defined]]></string>
-    <string name="_sys_conn_msg_success"><![CDATA[Operation has beed successfully completed]]></string>
+    <string name="_sys_conn_msg_success"><![CDATA[Done.]]></string>
 
     <string name="_sys_connect_information"><![CDATA[Configuration info]]></string>
     <string name="_sys_connect_error_join_unavailable"><![CDATA[Sorry, sign-up is unavailable now. Please try again later.]]></string>
@@ -3177,6 +3201,14 @@
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{reply_text}</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">View and reply here: <a href="{page_url}">{page_title}</a>.</p>
 {email_footer}]]></string>
+    <string name="_sys_et_txt_body_confirm_email_change"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Confirm {new_email} as the email of your account on {site_name} with this link:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">or enter this code:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Until you confirm it, you sign in with {email}. If you didn't ask for this, ignore this email.</p>
+{email_footer}]]></string>
     <string name="_sys_et_txt_body_system_reported"><![CDATA[{email_header}
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New <b>{report_type}</b> report received:</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{report_text}</p>
@@ -3207,6 +3239,21 @@
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Module: <b>{Module}</b></p>
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Uninstallation result: {Result}</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+{email_footer}]]></string>
+    <string name="_sys_et_txt_body_email_change_requested"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Someone asked to change the email of your account on {site_name} to {new_email}. It changes when the new address is confirmed. Until then you sign in with this one.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, sign in and change your password.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{account_settings_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Change password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string>
+    <string name="_sys_et_txt_body_email_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The email of your account on {site_name} is now {new_email}. This address no longer signs in.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reply to this email or contact {site_name}.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_forgot"><![CDATA[{email_header}
 <h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
@@ -3287,16 +3334,30 @@
 {email_footer}]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_success"><![CDATA[<b>{0}</b> module: up to {1} version.<br />]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_failed"><![CDATA[<b>{0}</b> module: {1}<br />]]></string>
+	<string name="_sys_et_txt_body_password_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The password of your account on {site_name} was changed.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reset your password now.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Reset password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string>
 	<string name="_sys_et_txt_name_system_admin_email"><![CDATA[Message sending from the Admin Panel]]></string>
 	<string name="_sys_et_txt_name_system_comment_replied"><![CDATA[The letter is sent to members whose comment was replied]]></string>
+	<string name="_sys_et_txt_name_system_confirm_email_change"><![CDATA[New email confirmation]]></string>
 	<string name="_sys_et_txt_name_system_reported"><![CDATA[New report notification]]></string>
 	<string name="_sys_et_txt_name_system_confirmation"><![CDATA[Profile email confirmation message]]></string>
         <string name="_sys_et_txt_name_system_welcome"><![CDATA[Welcome message]]></string>
 	<string name="_sys_et_txt_name_system_delayed_module_uninstall"><![CDATA[Delayed module uninstall notification]]></string>
+	<string name="_sys_et_txt_name_system_email_change_requested"><![CDATA[Email change requested notice]]></string>
+	<string name="_sys_et_txt_name_system_email_changed"><![CDATA[Email changed notice]]></string>
 	<string name="_sys_et_txt_name_system_forgot"><![CDATA[Reset password message]]></string>
 	<string name="_sys_et_txt_name_system_mem_changed"><![CDATA[The letter is sent to members whose membership level was changed]]></string>
         <string name="_sys_et_txt_name_system_mem_prolonged"><![CDATA[The letter is sent to members whose membership level was prolonged]]></string>
 	<string name="_sys_et_txt_name_system_mem_expiration"><![CDATA[Membership expiration letter sent to members whose membership level expires]]></string>
+	<string name="_sys_et_txt_name_system_password_changed"><![CDATA[Password changed notice]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_active"><![CDATA[Profile status changed to active]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_pending"><![CDATA[Profile status changed to pending]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_suspended"><![CDATA[Profile status changed to suspended]]></string>
@@ -3313,14 +3374,18 @@
 	<string name="_sys_et_txt_name_bg_operation_failed"><![CDATA[Background operation failed]]></string>
 	<string name="_sys_et_txt_subject_admin_email"><![CDATA[Message from <SiteName> Admin: <MessageSubject>]]></string>
 	<string name="_sys_et_txt_subject_comment_replied"><![CDATA[User {sender_display_name} replied to your comment.]]></string>
+	<string name="_sys_et_txt_subject_confirm_email_change"><![CDATA[Confirm your new email address]]></string>
 	<string name="_sys_et_txt_subject_system_reported"><![CDATA[New report notification]]></string>
 	<string name="_sys_et_txt_subject_confirmation"><![CDATA[Confirm your email address]]></string>
         <string name="_sys_et_txt_subject_welcome"><![CDATA[You are welcome to {site_name}]]></string>
 	<string name="_sys_et_txt_subject_delayed_module_uninstall"><![CDATA[Delayed {Module} module uninstall: {Result}]]></string>
+	<string name="_sys_et_txt_subject_email_change_requested"><![CDATA[Your email address is changing]]></string>
+	<string name="_sys_et_txt_subject_email_changed"><![CDATA[Your email address was changed]]></string>
 	<string name="_sys_et_txt_subject_forgot"><![CDATA[Reset your password]]></string>
 	<string name="_sys_et_txt_subject_mem_changed"><![CDATA[Your membership level was changed]]></string>
         <string name="_sys_et_txt_subject_mem_prolonged"><![CDATA[Your membership level was prolonged]]></string>
 	<string name="_sys_et_txt_subject_mem_expiration"><![CDATA[Your membership is about to expire]]></string>
+	<string name="_sys_et_txt_subject_password_changed"><![CDATA[Your password was changed]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_active"><![CDATA[Profile activated]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_pending"><![CDATA[Profile pending review]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_suspended"><![CDATA[Profile suspended]]></string>
@@ -3344,8 +3409,8 @@
         <string name="_sys_file_handlers_videos_viewer"><![CDATA[Videos Player]]></string>
 	<string name="_sys_form_account"><![CDATA[Account]]></string>
 	<string name="_sys_form_account_input_agreement"><![CDATA[]]></string>
-	<string name="_sys_form_account_input_agreement_value"><![CDATA[By signing up, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
-	<string name="_sys_form_account_input_captcha"><![CDATA[Security Image]]></string>
+	<string name="_sys_form_account_input_agreement_value"><![CDATA[By signing up, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string>
+	<string name="_sys_form_account_input_captcha"><![CDATA[Security image]]></string>
 	<string name="_sys_form_account_input_captcha_error"><![CDATA[Security image input failed. Please try again.]]></string>
 	<string name="_sys_form_account_input_captcha_label_text_image"><![CDATA[Type the text:]]></string>
 	<string name="_sys_form_account_input_captcha_label_text_audio"><![CDATA[Type the text you hear:]]></string>
@@ -3363,6 +3428,7 @@
 	<string name="_sys_form_account_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
 	<string name="_sys_form_account_input_email"><![CDATA[Email]]></string>
 	<string name="_sys_form_account_input_email_error"><![CDATA[Email is not valid]]></string>
+	<string name="_sys_form_account_input_email_info_pending"><![CDATA[Waiting for confirmation: {0}. Open the link we sent there. To cancel, save your current email.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error"><![CDATA[This email address is already registered. Please use <a href="{0}">Forgot password</a> to restore access to your account.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[This email is already used by someone.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[This phone number is already used by someone.]]></string>
@@ -3371,14 +3437,16 @@
 	<string name="_sys_form_account_input_password"><![CDATA[Create a password]]></string>
 	<string name="_sys_form_account_input_password_confirm"><![CDATA[Confirm a password]]></string>
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Password confirmation failed]]></string>
-	<string name="_sys_form_account_input_password_current"><![CDATA[Current Password]]></string>
+	<string name="_sys_form_account_input_password_current"><![CDATA[Current password]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[This password has already been used before, use a different one]]></string>
+	<string name="_sys_form_account_input_password_new"><![CDATA[New password]]></string>
+	<string name="_sys_form_account_input_password_new_confirm"><![CDATA[Confirm new password]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to sign in to this site.]]></string>
-	<string name="_sys_form_account_input_password_error"><![CDATA[The password must at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter and 1 digit.]]></string>
+	<string name="_sys_form_account_input_password_error"><![CDATA[Use at least 8 characters, with at least one uppercase letter, one lowercase letter and one digit.]]></string>
 	<string name="_sys_form_account_input_receive_news"><![CDATA[Email me news and announcements]]></string>
-	<string name="_sys_form_account_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
+	<string name="_sys_form_account_input_receive_updates"><![CDATA[Receive site updates]]></string>
 	<string name="_sys_form_account_input_submit"><![CDATA[Submit]]></string>
-        <string name="_sys_form_account_input_publish"><![CDATA[Create account]]></string>
+        <string name="_sys_form_account_input_publish"><![CDATA[Sign up]]></string>
         <string name="_sys_form_account_input_caption_system_picture"><![CDATA[Account Picture]]></string>
         <string name="_sys_form_account_input_picture"><![CDATA[Upload an account picture]]></string>
 	<string name="_sys_form_checkbox_value_off"><![CDATA[No]]></string>
@@ -3403,7 +3471,7 @@
 	<string name="_sys_form_confirm_email"><![CDATA[Email Confirmation]]></string>
 	<string name="_sys_form_confirm_email_input_caption_system_code"><![CDATA[Verification Code]]></string>
 	<string name="_sys_form_confirm_email_input_caption_system_do_submit"><![CDATA[Submit]]></string>
-	<string name="_sys_form_confirm_email_input_code"><![CDATA[Verification Code]]></string>
+	<string name="_sys_form_confirm_email_input_code"><![CDATA[Verification code]]></string>
 	<string name="_sys_form_confirm_email_input_code_error"><![CDATA[Verification code is invalid or expired, please sign in to your account and resend verification email.]]></string>
 	<string name="_sys_form_confirm_email_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_confirm_phone"><![CDATA[Phone Confirmation]]></string>
@@ -3421,7 +3489,7 @@
 	<string name="_sys_form_confirm_phone_input_code_error_empty"><![CDATA[Cannot be empty.]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Phone is not valid]]></string>
-	<string name="_sys_form_display_account_create"><![CDATA[Create Account]]></string>
+	<string name="_sys_form_display_account_create"><![CDATA[Create account]]></string>
 	<string name="_sys_form_display_account_settings_delete"><![CDATA[Delete Account]]></string>
 	<string name="_sys_form_display_account_settings_email"><![CDATA[Email Settings]]></string>
 	<string name="_sys_form_display_account_settings_info"><![CDATA[Edit Account]]></string>
@@ -3472,6 +3540,7 @@
         <string name="_sys_form_input_labels_placeholder"><![CDATA[Add Label]]></string>
         <string name="_sys_form_input_password_show"><![CDATA[Show password]]></string>
         <string name="_sys_form_input_password_hide"><![CDATA[Hide password]]></string>
+        <string name="_sys_form_input_privacy_label"><![CDATA[Who can see it: {0}]]></string>
         <string name="_sys_form_input_textarea_editor"><![CDATA[Editor:]]></string>
         <string name="_sys_form_labels"><![CDATA[Labels]]></string>
         <string name="_sys_form_labels_display_select"><![CDATA[Select labels display]]></string>
@@ -3572,8 +3641,8 @@
         <string name="_sys_form_profile_input_receive_news_info"><![CDATA[You can change this anytime in your account settings.]]></string>
         <string name="_sys_form_profile_input_sys_do_cancel"><![CDATA[Cancel]]></string>
         <string name="_sys_form_profile_input_do_cancel"><![CDATA[Cancel]]></string>
-        <string name="_sys_profile_cf_set_successfully_submitted"><![CDATA[Content Filter was successfully updated]]></string>
-        <string name="_sys_profile_cf_manage_successfully_submitted"><![CDATA[Content Filter was successfully updated]]></string>
+        <string name="_sys_profile_cf_set_successfully_submitted"><![CDATA[Content filter updated.]]></string>
+        <string name="_sys_profile_cf_manage_successfully_submitted"><![CDATA[Content filter updated.]]></string>
         <string name="_sys_profile_cf_manage_popup"><![CDATA[Manage Content Filter]]></string>
         <string name="_sys_form_ps_group_custom"><![CDATA[Privacy: Custom group]]></string>
         <string name="_sys_form_display_ps_gc_members"><![CDATA[Privacy: Profiles based custom group display]]></string>
@@ -3618,8 +3687,8 @@
   
 	<string name="_sys_form_report"><![CDATA[Report]]></string>
 	<string name="_sys_form_report_input_caption_submit"><![CDATA[Post]]></string>
-	<string name="_sys_form_report_input_caption_text"><![CDATA[Report Text]]></string>
-	<string name="_sys_form_report_input_caption_type"><![CDATA[Report Type]]></string>
+	<string name="_sys_form_report_input_caption_text"><![CDATA[Report text]]></string>
+	<string name="_sys_form_report_input_caption_type"><![CDATA[Report type]]></string>
 	<string name="_sys_form_report_input_caption_system_action"><![CDATA[Action]]></string>
 	<string name="_sys_form_report_input_caption_system_object_id"><![CDATA[Object ID]]></string>	
 	<string name="_sys_form_report_input_caption_system_id"><![CDATA[Report ID]]></string>
@@ -3652,7 +3721,7 @@
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_news"><![CDATA[Receive Newsletters]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_receive_updates"><![CDATA[Receive Site Updates]]></string>
 	<string name="_sys_form_unsubscribe_input_receive_news"><![CDATA[Email me news and announcements]]></string>
-	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive Site Updates]]></string>
+	<string name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive site updates]]></string>
 	<string name="_sys_form_unsubscribe_input_submit"><![CDATA[Submit]]></string>
 	<string name="_sys_form_err_not_unique_value"><![CDATA[The field should have unique value]]></string>
 	<string name="_sys_form_txt_optional"><![CDATA[(optional)]]></string>
@@ -3892,9 +3961,9 @@
         <string name="_sys_layout_topbottom_area_col1_col5"><![CDATA[Top&bottom areas with 2 columns (1:5) in the middle]]></string>
         <string name="_sys_layout_topbottom_area_col2_col5_col3"><![CDATA[Top&bottom areas with 3 columns (2:5:3) in the middle]]></string>
 	<string name="_sys_loading"><![CDATA[Loading...]]></string>
-	<string name="_sys_location_country"><![CDATA[<i class="sys-icon location-arrow"></i> {0}]]></string>
-	<string name="_sys_location_country_city"><![CDATA[<i class="sys-icon location-arrow"></i> {2}, {1}, {0}]]></string>
-        <string name="_sys_location_country_city_street"><![CDATA[<i class="sys-icon location-arrow"></i> {4} {3}, {2}, {1}, {0} ]]></string>
+	<string name="_sys_location_country"><![CDATA[<i class="sys-icon map-pin"></i> {0}]]></string>
+	<string name="_sys_location_country_city"><![CDATA[<i class="sys-icon map-pin"></i> {2}, {1}, {0}]]></string>
+        <string name="_sys_location_country_city_street"><![CDATA[<i class="sys-icon map-pin"></i> {4} {3}, {2}, {1}, {0} ]]></string>
 	<string name="_sys_location_determining"><![CDATA[Determining location...]]></string>
 	<string name="_sys_location_geolocation_not_supported_by_browser"><![CDATA[Geolocation is not supported by this browser]]></string>
 	<string name="_sys_location_undefined"><![CDATA[Location undefined]]></string>
@@ -3906,9 +3975,10 @@
     <string name="_sys_location_ph_number"><![CDATA[Number]]></string>
     <string name="_sys_location_ph_street"><![CDATA[Street]]></string>
     <string name="_sys_location_ph_city"><![CDATA[City / District]]></string>
+    <string name="_sys_location_ph_country"><![CDATA[Country]]></string>
     <string name="_sys_location_ph_state"><![CDATA[State / Province]]></string>
     <string name="_sys_location_ph_zip"><![CDATA[Postal Code]]></string>
-    <string name="_sys_location_status_undef"><![CDATA[Address is undefined]]></string>
+    <string name="_sys_location_status_undef"><![CDATA[Choose a country to find the address]]></string>
     <string name="_sys_location_status_ok"><![CDATA[Address found]]></string>
     <string name="_sys_location_status_fail"><![CDATA[Address not found]]></string>
     <string name="_sys_log_debug"><![CDATA[System: debug]]></string>
@@ -3926,7 +3996,7 @@
     <string name="_sys_manage_popup_approve_title"><![CDATA[Approve]]></string>
     <string name="_sys_manage_txt_approved"><![CDATA[The content was approved.]]></string>
     <string name="_sys_manage_txt_sent"><![CDATA[Message was sent.]]></string>
-    <string name="_sys_manage_err_cannot_perform_action"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_sys_manage_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_sys_menu_item_info_audit_administration"><![CDATA[For content moderation activity.]]></string>
     <string name="_sys_menu_item_info_onboarding_cover"><![CDATA[It shows at the top of the homepage, which guests see first.]]></string>
     <string name="_sys_menu_item_info_onboarding_join"><![CDATA[Anyone can sign up.]]></string>
@@ -3950,14 +4020,15 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Account]]></string>
+    <string name="_sys_menu_item_title_account_settings_privacy"><![CDATA[Privacy]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Connectors]]></string>
     <string name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string>
-    <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_menu_item_title_public_menu"><![CDATA[Browse]]></string>
     <string name="_sys_menu_item_title_add_content"><![CDATA[Add...]]></string>
-    <string name="_sys_menu_item_title_cart"><![CDATA[Shopping Cart]]></string>
+    <string name="_sys_menu_item_title_cart"><![CDATA[Shopping cart]]></string>
     <string name="_sys_menu_item_title_cmts_administration"><![CDATA[Comments]]></string>
     <string name="_sys_menu_item_title_audit_administration"><![CDATA[Audit]]></string>
     <string name="_sys_menu_item_title_cmts_item_delete"><![CDATA[Delete]]></string>
@@ -3971,7 +4042,7 @@
     <string name="_sys_menu_item_title_cmts_item_vote"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_cmts_item_more"><![CDATA[]]></string>
     <string name="_sys_menu_item_title_connections"><![CDATA[Connections]]></string>
-    <string name="_sys_menu_item_title_dashboard"><![CDATA[Dash]]></string>
+    <string name="_sys_menu_item_title_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_menu_item_title_home"><![CDATA[Home]]></string>
     <string name="_sys_menu_item_title_invoices"><![CDATA[Invoices]]></string>
     <string name="_sys_menu_item_title_join"><![CDATA[Sign up]]></string>
@@ -3989,7 +4060,7 @@
     <string name="_sys_menu_item_title_studio"><![CDATA[Studio]]></string>
     <string name="_sys_menu_item_title_subscriptions"><![CDATA[Subscriptions]]></string>
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share on Facebook]]></string>
-    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on Twitter]]></string>
+    <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on X]]></string>
     <string name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string>
     <string name="_sys_menu_item_title_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string>
@@ -4016,7 +4087,7 @@
     <string name="_sys_menu_item_title_sm_unfriend"><![CDATA[Unfriend]]></string>
     <string name="_sys_menu_item_title_sm_unfriend_cancel"><![CDATA[Cancel request]]></string>
     <string name="_sys_menu_item_title_sm_unfriend_reject"><![CDATA[Reject friend request]]></string>
-    <string name="_sys_menu_item_title_sm_join_paid"><![CDATA[Pay & Join]]></string>
+    <string name="_sys_menu_item_title_sm_join_paid"><![CDATA[Pay & join]]></string>
     <string name="_sys_menu_item_title_sm_join_requested_short"><![CDATA[Request sent]]></string>
     <string name="_sys_menu_item_title_sm_join_short"><![CDATA[Join]]></string>
     <string name="_sys_menu_item_title_sm_join"><![CDATA[Join]]></string>
@@ -4033,11 +4104,16 @@
     <string name="_sys_menu_item_title_sm_unsubscribe"><![CDATA[Unfollow]]></string>
     <string name="_sys_menu_item_title_sm_friends"><![CDATA[{0} friends]]></string>
     <string name="_sys_menu_item_title_sm_friends_mutual"><![CDATA[{0} mutual friends]]></string>
+    <string name="_sys_menu_item_title_sm_friends_mutual_one"><![CDATA[{0} mutual friend]]></string>
+    <string name="_sys_menu_item_title_sm_friends_one"><![CDATA[{0} friend]]></string>
     <string name="_sys_menu_item_title_sm_members"><![CDATA[{0} members]]></string>
+    <string name="_sys_menu_item_title_sm_members_one"><![CDATA[{0} member]]></string>
     <string name="_sys_menu_item_title_sm_fans"><![CDATA[Members]]></string>
     <string name="_sys_menu_item_title_sm_fans_respond"><![CDATA[Respond to a member]]></string>
     <string name="_sys_menu_item_title_sm_subscribers"><![CDATA[{0} followers]]></string>
+    <string name="_sys_menu_item_title_sm_subscribers_one"><![CDATA[{0} follower]]></string>
     <string name="_sys_menu_item_title_sm_relations"><![CDATA[{0} relations]]></string>
+    <string name="_sys_menu_item_title_sm_relations_one"><![CDATA[{0} relation]]></string>
     <string name="_sys_menu_item_title_sm_country"><![CDATA[Country]]></string>
     <string name="_sys_menu_item_title_sm_country_city"><![CDATA[Country and City]]></string>
     <string name="_sys_menu_item_title_sm_ignore"><![CDATA[Remove]]></string>
@@ -4069,6 +4145,7 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Delete]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Account]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_privacy"><![CDATA[Privacy]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Password]]></string>
     <string name="_sys_menu_item_title_system_account_settings_connectors"><![CDATA[Connectors]]></string>
     <string name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Account (section)]]></string>
@@ -4142,7 +4219,7 @@
     <string name="_sys_menu_item_title_social_sharing"><![CDATA[Share]]></string>
     <string name="_sys_menu_item_title_system_social_sharing"><![CDATA[Share]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Share on Facebook]]></string>
-    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on Twitter]]></string>
+    <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on X]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string>
     <string name="_sys_menu_item_title_system_sm_in_reply_to"><![CDATA[In reply to]]></string>
     <string name="_sys_menu_item_title_system_sm_author"><![CDATA[Author]]></string>
@@ -4302,13 +4379,15 @@
     <string name="_sys_menu_title_switch_language_popup"><![CDATA[Language Switcher (popup)]]></string>
     <string name="_sys_menu_title_switch_language_inline"><![CDATA[Language Switch (inline)]]></string>
     <string name="_sys_menu_title_switch_template"><![CDATA[Switch Template]]></string>
+    <string name="_sys_menu_title_tabbar"><![CDATA[Tab bar]]></string>
     <string name="_sys_menu_title_snippet_meta"><![CDATA[Snippet Meta Info]]></string>
     <string name="_sys_menu_title_vote_reactions_do"><![CDATA[Do Reaction Vote]]></string>
     <string name="_sys_menu_title_wiki"><![CDATA[Wiki]]></string>
     <string name="_sys_menu_set_title_sys_wiki"><![CDATA[Wiki]]></string>
+    <string name="_sys_menu_set_title_tabbar"><![CDATA[Tab bar]]></string>
     <string name="_sys_menu_item_title_wiki_edit"><![CDATA[Edit]]></string>
-    <string name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Delete Version]]></string>
-    <string name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Delete Block]]></string>
+    <string name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Delete version]]></string>
+    <string name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Delete block]]></string>
     <string name="_sys_menu_item_title_wiki_translate"><![CDATA[Translate]]></string>
     <string name="_sys_menu_item_title_wiki_history"><![CDATA[History]]></string>
     <string name="_sys_menu_title_favorite_list"><![CDATA[Favorite list]]></string>
@@ -4324,12 +4403,12 @@
     <string name="_sys_menu_item_title_sa_account"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Visit Web App]]></string>
     <string name="_sys_menu_item_title_system_sa_sounds"><![CDATA[Sounds]]></string>
-    <string name="_sys_menu_item_title_sa_site"><![CDATA[Visit Web App]]></string>
+    <string name="_sys_menu_item_title_sa_site"><![CDATA[Visit web app]]></string>
     <string name="_sys_menu_item_title_sa_sounds"><![CDATA[Sounds]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Manage Apps]]></string>
-    <string name="_sys_menu_item_title_sa_edit"><![CDATA[Manage Apps]]></string>
+    <string name="_sys_menu_item_title_sa_edit"><![CDATA[Manage apps]]></string>
     <string name="_sys_menu_item_title_system_sa_tour"><![CDATA[Introduction Tour]]></string>
-    <string name="_sys_menu_item_title_sa_tour"><![CDATA[Introduction Tour]]></string>
+    <string name="_sys_menu_item_title_sa_tour"><![CDATA[Introduction tour]]></string>
     <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_system_sa_language"><![CDATA[Language]]></string>
@@ -4344,9 +4423,9 @@
     <string name="_sys_menu_title_con_submenu"><![CDATA[Connections]]></string>
     <string name="_sys_menu_title_public_con_submenu"><![CDATA[Connections]]></string>
     <string name="_sys_menu_set_title_con_submenu"><![CDATA[Connections]]></string>
-    <string name="_sys_menu_item_title_con_friends"><![CDATA[All Friends]]></string>
-    <string name="_sys_menu_item_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
-    <string name="_sys_menu_item_title_con_friend_requested"><![CDATA[Sent Requests]]></string>
+    <string name="_sys_menu_item_title_con_friends"><![CDATA[All friends]]></string>
+    <string name="_sys_menu_item_title_con_friend_requests"><![CDATA[Friend requests]]></string>
+    <string name="_sys_menu_item_title_con_friend_requested"><![CDATA[Sent requests]]></string>
     <string name="_sys_menu_item_title_con_following"><![CDATA[Following]]></string>
     <string name="_sys_menu_item_title_con_followers"><![CDATA[Followers]]></string>
     <string name="_sys_menu_item_title_recom_friends"><![CDATA[Suggestions]]></string>
@@ -4368,7 +4447,7 @@
     <string name="_sys_menu_item_title_onboarding_join"><![CDATA[Choose who can sign up]]></string>
     <string name="_sys_menu_item_title_onboarding_logo"><![CDATA[Add your logo]]></string>
     <string name="_sys_menu_item_title_onboarding_profile"><![CDATA[Create your profile]]></string>
-    <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} mentioned <b class="bx-ntfs-content-entry">{entry_caption}</b> in a {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
+    <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} mentioned you in a {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
     <string name="_sys_mobile_friends"><![CDATA[Friends]]></string>
     <string name="_sys_mobile_info"><![CDATA[Info]]></string>
     <string name="_sys_mobile_mail"><![CDATA[Messages]]></string>
@@ -4398,20 +4477,21 @@
     <string name="_sys_page_block_title_about"><![CDATA[About]]></string>
     <string name="_sys_page_block_title_account_profile_create"><![CDATA[Create your profile]]></string>
     <string name="_sys_page_block_title_account_profile_switcher"><![CDATA[Use site as ...]]></string>
-    <string name="_sys_page_block_title_account_settings_delete"><![CDATA[Delete Account]]></string>
+    <string name="_sys_page_block_title_account_settings_delete"><![CDATA[Delete account]]></string>
     <string name="_sys_page_block_title_account_settings_connectors"><![CDATA[Connectors]]></string>
-    <string name="_sys_page_block_title_account_settings_email"><![CDATA[Email Settings]]></string>
-    <string name="_sys_page_block_title_account_settings_info"><![CDATA[Edit Account]]></string>
+    <string name="_sys_page_block_title_account_settings_email"><![CDATA[Email settings]]></string>
+    <string name="_sys_page_block_title_account_settings_info"><![CDATA[Edit account]]></string>
     <string name="_sys_page_block_title_account_settings_menu"><![CDATA[Account Settings]]></string>
-    <string name="_sys_page_block_title_account_settings_pwd"><![CDATA[Change Password]]></string>
-    <string name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_page_block_title_account_settings_privacy"><![CDATA[Who can see and contact you]]></string>
+    <string name="_sys_page_block_title_account_settings_pwd"><![CDATA[Change password]]></string>
+    <string name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_page_block_title_add_content"><![CDATA[Add Content]]></string>
-    <string name="_sys_page_block_title_chart_growth"><![CDATA[Growth Charts]]></string>
+    <string name="_sys_page_block_title_chart_growth"><![CDATA[Growth charts]]></string>
     <string name="_sys_page_block_title_chart_stats"><![CDATA[Content]]></string>
-    <string name="_sys_page_block_title_cmts_administration"><![CDATA[Manage Comments]]></string>
+    <string name="_sys_page_block_title_cmts_administration"><![CDATA[Manage comments]]></string>
     <string name="_sys_page_block_title_audit_administration"><![CDATA[Audit]]></string>
-    <string name="_sys_page_block_title_confirm_email"><![CDATA[Email Confirmation]]></string>
-    <string name="_sys_page_block_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
+    <string name="_sys_page_block_title_confirm_email"><![CDATA[Email confirmation]]></string>
+    <string name="_sys_page_block_title_confirm_phone"><![CDATA[Phone confirmation]]></string>
     <string name="_sys_page_block_title_system_cooperator"><![CDATA[Cooperator (for App only)]]></string>
     <string name="_sys_page_block_title_system_create_profile"><![CDATA[Create your profile (accounts without a profile)]]></string>
     <string name="_sys_page_block_title_cooperator"><![CDATA[Cooperator]]></string>
@@ -4423,12 +4503,12 @@
     <string name="_sys_page_block_title_ai_agent"><![CDATA[AI Agent]]></string>
     <string name="_sys_page_block_title_ai_agent_operator"><![CDATA[Agent]]></string>
     <string name="_sys_page_block_title_con_friends"><![CDATA[Friends]]></string>
-    <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
-    <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent Friend Requests]]></string>
+    <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend requests]]></string>
+    <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent friend requests]]></string>
     <string name="_sys_page_block_title_con_following"><![CDATA[Following]]></string>
     <string name="_sys_page_block_title_con_followers"><![CDATA[Followers]]></string>
     <string name="_sys_page_block_title_sys_recom_friends"><![CDATA[Recommended Friends]]></string>
-    <string name="_sys_page_block_title_recom_friends"><![CDATA[Friend Suggestions]]></string>
+    <string name="_sys_page_block_title_recom_friends"><![CDATA[Friend suggestions]]></string>
     <string name="_sys_page_block_title_sys_recom_subscriptions"><![CDATA[Recommended Subscriptions]]></string>
     <string name="_sys_page_block_title_recom_subscriptions"><![CDATA[Who to follow]]></string>
     <string name="_sys_page_block_title_ntfs_context_invitations"><![CDATA[Invitations]]></string>
@@ -4446,8 +4526,8 @@
     <string name="_sys_page_block_title_homepage_menu"><![CDATA[Content modules menu]]></string>
     <string name="_sys_page_block_title_homepage_splash"><![CDATA[Splash]]></string>
     <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot password]]></string>
-    <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search Form]]></string>
-    <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
+    <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search form]]></string>
+    <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search result]]></string>
     <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Your membership]]></string>
@@ -4458,15 +4538,15 @@
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Sign in - step2]]></string>
     <string name="_sys_page_block_system_title_login_step3"><![CDATA[Sign in - step3]]></string>
     <string name="_sys_page_block_system_title_login_only"><![CDATA[Sign in]]></string>
-    <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - Content]]></string>
+    <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - content]]></string>
     <string name="_sys_page_block_title_dashboard_profiles"><![CDATA[Your profiles]]></string>
-    <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - Audit]]></string>
+    <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - audit]]></string>
     <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Dashboard - Administration (for App only)]]></string>
     <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Your profiles (dashboard)]]></string>
     <string name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string>
     <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
-    <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - Reports]]></string>
+    <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - reports]]></string>
     <string name="_sys_page_block_title_system_cmts_view"><![CDATA[View Comment]]></string>
     <string name="_sys_page_block_title_system_cmts_view_author"><![CDATA[Comment Author]]></string>
     <string name="_sys_page_block_title_system_cmts_view_content"><![CDATA[Commented Content]]></string>
@@ -4477,25 +4557,25 @@
     <string name="_sys_page_block_title_login_step2"><![CDATA[Sign in - step 2]]></string>
     <string name="_sys_page_block_title_login_step3"><![CDATA[Sign in - step 3]]></string>
     <string name="_sys_page_block_title_manage_tools"><![CDATA[Manage]]></string>
-    <string name="_sys_page_block_title_privacy"><![CDATA[Privacy Policy]]></string>
+    <string name="_sys_page_block_title_privacy"><![CDATA[Privacy policy]]></string>
     <string name="_sys_page_block_title_profile_stats"><![CDATA[Profile stats]]></string>
     <string name="_sys_page_block_title_profile_avatar"><![CDATA[Profile avatar]]></string>
     <string name="_sys_page_block_title_profile_menu"><![CDATA[Profile menu]]></string>
     <string name="_sys_page_block_title_profile_followings"><![CDATA[Profile followings]]></string>
     <string name="_sys_page_block_title_profile_membership"><![CDATA[Membership]]></string>
-    <string name="_sys_page_block_title_unsubscribe_news"><![CDATA[Unsubscribe From Site Newsletters]]></string>
-    <string name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Unsubscribe From Site Notifications]]></string>
+    <string name="_sys_page_block_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string>
+    <string name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string>
     <string name="_sys_page_block_title_std_dash_version"><![CDATA[Updates]]></string>
     <string name="_sys_page_block_title_std_dash_space"><![CDATA[Space]]></string>
     <string name="_sys_page_block_title_std_dash_host_tools"><![CDATA[Server]]></string>
     <string name="_sys_page_block_title_std_dash_cache"><![CDATA[Cache]]></string>
     <string name="_sys_page_block_title_std_dash_queues"><![CDATA[Queues]]></string>
     <string name="_sys_page_block_title_std_dash_users"><![CDATA[Users]]></string>
-    <string name="_sys_page_block_title_terms"><![CDATA[Terms of Service]]></string>
+    <string name="_sys_page_block_title_terms"><![CDATA[Terms of service]]></string>
     <string name="_sys_page_block_title_sys_std_site_submenu"><![CDATA[Site submenu]]></string>
     <string name="_sys_page_block_title_std_site_submenu"><![CDATA[Site submenu]]></string>
-    <string name="_sys_page_block_title_wiki_pages_list"><![CDATA[Pages List]]></string>
-    <string name="_sys_page_block_title_wiki_page_contents"><![CDATA[Page Contents]]></string>
+    <string name="_sys_page_block_title_wiki_pages_list"><![CDATA[Pages list]]></string>
+    <string name="_sys_page_block_title_wiki_page_contents"><![CDATA[Page contents]]></string>
 
     <string name="_sys_page_description_hashtag"><![CDATA[Hashtag "{0}" search results]]></string>
     <string name="_sys_page_description_hashtag_in_section"><![CDATA[Hashtag "{0}" search results in "{1}" section]]></string>
@@ -4618,18 +4698,19 @@
 <p>Last updated: [date].</p>]]></string>
     <string name="_sys_page_meta_description_default"><![CDATA[{site_title} is an online community where people share, discuss and stay in touch with others who care about the same things.]]></string>
     <string name="_sys_page_title_about"><![CDATA[About]]></string>
-    <string name="_sys_page_title_account_profile_switcher"><![CDATA[My Profiles]]></string>
-    <string name="_sys_page_title_account_settings_delete"><![CDATA[Delete Account]]></string>
+    <string name="_sys_page_title_account_profile_switcher"><![CDATA[My profiles]]></string>
+    <string name="_sys_page_title_account_settings_delete"><![CDATA[Delete account]]></string>
     <string name="_sys_page_title_account_settings_connectors"><![CDATA[Connectors]]></string>
-    <string name="_sys_page_title_account_settings_email"><![CDATA[Email Settings]]></string>
-    <string name="_sys_page_title_account_settings_info"><![CDATA[Edit Account]]></string>
-    <string name="_sys_page_title_account_settings_pwd"><![CDATA[Change Password]]></string>
-    <string name="_sys_page_title_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
+    <string name="_sys_page_title_account_settings_email"><![CDATA[Email settings]]></string>
+    <string name="_sys_page_title_account_settings_info"><![CDATA[Edit account]]></string>
+    <string name="_sys_page_title_account_settings_privacy"><![CDATA[Privacy]]></string>
+    <string name="_sys_page_title_account_settings_pwd"><![CDATA[Change password]]></string>
+    <string name="_sys_page_title_profile_settings_cfilter"><![CDATA[Content filter]]></string>
     <string name="_sys_page_title_add_content"><![CDATA[Add Content]]></string>
-    <string name="_sys_page_title_cmts_administration"><![CDATA[Manage Comments]]></string>
+    <string name="_sys_page_title_cmts_administration"><![CDATA[Manage comments]]></string>
     <string name="_sys_page_title_audit_administration"><![CDATA[Audit]]></string>
-    <string name="_sys_page_title_confirm_email"><![CDATA[Email Confirmation]]></string>
-    <string name="_sys_page_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
+    <string name="_sys_page_title_confirm_email"><![CDATA[Email confirmation]]></string>
+    <string name="_sys_page_title_confirm_phone"><![CDATA[Phone confirmation]]></string>
     <string name="_sys_page_title_create_account"><![CDATA[Sign up]]></string>
     <string name="_sys_page_title_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_page_title_forgot_password"><![CDATA[Forgot password]]></string>
@@ -4639,17 +4720,18 @@
     <string name="_sys_page_title_login"><![CDATA[Sign in]]></string>
     <string name="_sys_page_title_login_step2"><![CDATA[Sign in - step 2]]></string>
     <string name="_sys_page_title_login_step3"><![CDATA[Sign in - step 3]]></string>
-    <string name="_sys_page_title_privacy"><![CDATA[Privacy Policy]]></string>
+    <string name="_sys_page_title_privacy"><![CDATA[Privacy policy]]></string>
     <string name="_sys_page_title_explore"><![CDATA[Explore]]></string>
     <string name="_sys_page_title_updates"><![CDATA[Updates]]></string>
     <string name="_sys_page_title_trends"><![CDATA[Trends]]></string>
-    <string name="_sys_page_title_terms"><![CDATA[Terms of Service]]></string>
+    <string name="_sys_page_title_terms"><![CDATA[Terms of service]]></string>
     <string name="_sys_page_title_system_about"><![CDATA[Info - About]]></string>
     <string name="_sys_page_title_system_account_profile_switcher"><![CDATA[Account - My Profiles]]></string>
     <string name="_sys_page_title_system_account_settings_delete"><![CDATA[Account - Delete]]></string>
     <string name="_sys_page_title_system_account_settings_connectors"><![CDATA[Account - Connectors]]></string>
     <string name="_sys_page_title_system_account_settings_email"><![CDATA[Account - Email Settings]]></string>
     <string name="_sys_page_title_system_account_settings_info"><![CDATA[Account - Edit]]></string>
+    <string name="_sys_page_title_system_account_settings_privacy"><![CDATA[Account - Privacy]]></string>
     <string name="_sys_page_title_system_account_settings_pwd"><![CDATA[Account - Change Password]]></string>
     <string name="_sys_page_title_system_profile_settings_cfilter"><![CDATA[Content Filter]]></string>
     <string name="_sys_page_title_system_add_content"><![CDATA[Add Content]]></string>
@@ -4673,7 +4755,7 @@
     <string name="_sys_page_title_system_forgot_password"><![CDATA[Sign in - forgot password]]></string>
     <string name="_sys_page_title_system_search_keyword"><![CDATA[Search by Keyword]]></string>
     <string name="_sys_page_title_system_settings"><![CDATA[Settings]]></string>
-    <string name="_sys_page_title_search_keyword"><![CDATA[Search by Keyword]]></string>
+    <string name="_sys_page_title_search_keyword"><![CDATA[Search by keyword]]></string>
     <string name="_sys_page_title_settings"><![CDATA[Settings]]></string>
     <string name="_sys_page_title_system_home"><![CDATA[Homepage]]></string>
     <string name="_sys_page_title_system_login"><![CDATA[Sign in - step 1]]></string>
@@ -4687,28 +4769,28 @@
     <string name="_sys_page_title_system_unsubscribe_news"><![CDATA[Unsubscribe From Newsletters]]></string>
     <string name="_sys_page_title_system_unsubscribe_notifications"><![CDATA[Unsubscribe From Notifications]]></string>
     <string name="_sys_page_title_system_studio_dashboard"><![CDATA[Studio Dashboard]]></string>
-    <string name="_sys_page_title_unsubscribe_news"><![CDATA[Unsubscribe From Site Newsletters]]></string>
-    <string name="_sys_page_title_unsubscribe_notifications"><![CDATA[Unsubscribe From Site Notifications]]></string>
-    <string name="_sys_page_title_studio_dashboard"><![CDATA[Studio Dashboard]]></string>
+    <string name="_sys_page_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string>
+    <string name="_sys_page_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string>
+    <string name="_sys_page_title_studio_dashboard"><![CDATA[Studio dashboard]]></string>
     <string name="_sys_page_title_sys_wiki_add_page"><![CDATA[Wiki: Add Page]]></string>
-    <string name="_sys_page_title_wiki_add_page"><![CDATA[Add Page]]></string>
-    <string name="_sys_page_block_title_wiki_add_page"><![CDATA[Add Page]]></string>
+    <string name="_sys_page_title_wiki_add_page"><![CDATA[Add page]]></string>
+    <string name="_sys_page_block_title_wiki_add_page"><![CDATA[Add page]]></string>
     <string name="_sys_page_title_sys_wiki_pages_list"><![CDATA[Wiki: Menu (pages list)]]></string>
     <string name="_sys_page_title_wiki_pages_list"><![CDATA[Menu]]></string>
     <string name="_sys_page_title_sys_wiki_page_contents"><![CDATA[Wiki: Table of Contents (for current page)]]></string>
-    <string name="_sys_page_title_wiki_page_contents"><![CDATA[Table of Contents]]></string>
+    <string name="_sys_page_title_wiki_page_contents"><![CDATA[Table of contents]]></string>
     <string name="_sys_page_title_system_con_friends"><![CDATA[Connections - Friends]]></string>
     <string name="_sys_page_title_con_friends"><![CDATA[Friends]]></string>
     <string name="_sys_page_title_system_con_friend_requests"><![CDATA[Connections - Friend Requests]]></string>
-    <string name="_sys_page_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
+    <string name="_sys_page_title_con_friend_requests"><![CDATA[Friend requests]]></string>
     <string name="_sys_page_title_system_con_friend_requested"><![CDATA[Connections - Sent Friend Requests]]></string>
-    <string name="_sys_page_title_con_friend_requested"><![CDATA[Sent Friend Requests]]></string>
+    <string name="_sys_page_title_con_friend_requested"><![CDATA[Sent friend requests]]></string>
     <string name="_sys_page_title_system_con_following"><![CDATA[Connections - Following]]></string>
     <string name="_sys_page_title_con_following"><![CDATA[Following]]></string>
     <string name="_sys_page_title_system_con_followers"><![CDATA[Connections - Followers]]></string>
     <string name="_sys_page_title_con_followers"><![CDATA[Followers]]></string>
     <string name="_sys_page_title_system_recom_friends"><![CDATA[Recommendations - Friends]]></string>
-    <string name="_sys_page_title_recom_friends"><![CDATA[Friend Suggestions]]></string>
+    <string name="_sys_page_title_recom_friends"><![CDATA[Friend suggestions]]></string>
     <string name="_sys_page_title_system_recom_subscriptions"><![CDATA[Recommendations - Subscriptions]]></string>
     <string name="_sys_page_title_recom_subscriptions"><![CDATA[Who to follow]]></string>
     <string name="_sys_page_title_system_ntfs_context_invitations"><![CDATA[Notifications - Context Invitations]]></string>
@@ -4791,9 +4873,10 @@
         <string name="_sys_pre_lists_studio_widget_types_favorites"><![CDATA[Favorites]]></string>
 	<string name="_sys_profile_sample_single"><![CDATA[profile]]></string>
 	<string name="_sys_profile_with_type"><![CDATA[{0} ({1})]]></string>
-        <string name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> befriended <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-	<string name="_sys_profile_friendship_added"><![CDATA[Now <b class="bx-ntfs-content-profile">{owner_name}</b> and <b class="bx-ntfs-content-entry">{entry_caption}</b> are friends]]></string>
-	<string name="_sys_profile_subscription_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> followed <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+        <string name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> sent you a friend request]]></string>
+	<string name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> accepted your friend request]]></string>
+	<string name="_sys_profile_joined_ntfs"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> joined]]></string>
+	<string name="_sys_profile_subscription_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> followed you]]></string>
 	<string name="_sys_profile_unit_view"><![CDATA[View profile]]></string>
 	<string name="_sys_profile_unit_you"><![CDATA[You]]></string>
 	<string name="_sys_profile_status_active"><![CDATA[Active]]></string>
@@ -4918,7 +5001,7 @@
     <string name="_sys_tour_launcher_designer_title"><![CDATA[Designer]]></string>
     <string name="_sys_tour_launcher_designer_txt"><![CDATA[Set the logo, pick a template and edit the cover page that guests see first.]]></string>
     <string name="_sys_tour_launcher_accounts_title"><![CDATA[Accounts]]></string>
-    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Manage member accounts and choose who is an administrator or a moderator. They look after content and profiles on the site itself, not in Studio.]]></string>
+    <string name="_sys_tour_launcher_accounts_txt"><![CDATA[Manage member accounts and choose who is an operator or a moderator. Moderators look after content and profiles on the site itself, not in Studio.]]></string>
     <string name="_sys_tour_launcher_builder_page_title"><![CDATA[Pages]]></string>
     <string name="_sys_tour_launcher_builder_page_txt"><![CDATA[Add, remove and rearrange blocks on any page, or create new pages. Visibility and SEO settings are here too.]]></string>
     <string name="_sys_tour_launcher_builder_menus_title"><![CDATA[Navigation]]></string>
@@ -4930,15 +5013,16 @@
     <string name="_sys_tour_back"><![CDATA[Back]]></string>
     <string name="_sys_tour_close"><![CDATA[Close tour]]></string>
 
-    <string name="_sys_txt_api_key"><![CDATA[API Key]]></string>
+    <string name="_sys_txt_api_key"><![CDATA[API key]]></string>
     <string name="_sys_txt_auth_or"><![CDATA[or]]></string>
     <string name="_sys_txt_access_denied"><![CDATA[Access denied]]></string>
+    <string name="_sys_txt_access_denied_guest_page"><![CDATA[Sign in or sign up to see this page.]]></string>
     <string name="_sys_txt_access_denied_text"><![CDATA[You don't have access to this.]]></string>
     <string name="_sys_txt_access_denied_title"><![CDATA[No access]]></string>
     <string name="_sys_txt_account_pending"><![CDATA[Your account is pending approval, please wait until it is activated.]]></string>
     <string name="_sys_txt_account_profile_context_change_suggestion"><![CDATA[This is your profile, you can <a href="{0}">change your current profile</a> to this profile]]></string>
     <string name="_sys_txt_account_profile_context_change_to_another_suggestion"><![CDATA[You can <a href="{0}">change your current profile</a> to this profile]]></string>
-    <string name="_sys_txt_account_profile_context_changed_success"><![CDATA[Current profile has been successfully changed to: <b>{0}</b>]]></string>
+    <string name="_sys_txt_account_profile_context_changed_success"><![CDATA[You switched to <b>{0}</b>.]]></string>
     <string name="_sys_txt_account_suspended"><![CDATA[Your account is suspended.]]></string>
     <string name="_sys_txt_account_unconfirmed_email"><![CDATA[Your email address is unconfirmed. Please check your email ({1}) for a confirmation letter and click email confirmation link or use confirmation code (6 digit) to <a href="{2}">confirm your email</a>. Can't find the letter? Check your SPAM folder or <a href="{0}">send the verification letter again</a>.]]></string>
     <string name="_sys_txt_account_unconfirmed_phone"><![CDATA[Your phone is unconfirmed. Please confirm it on <a href="{0}">verification page</a>.]]></string>
@@ -4947,6 +5031,9 @@
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Your password has been expired. Please <a href="{0}">change your password</a>.]]></string>
     <string name="_sys_txt_account_cannot_delete"><![CDATA[Cannot delete the only Operator account]]></string>
     <string name="_sys_txt_account_deletion_scheduled"><![CDATA[Account deletion was scheduled and would be done in a few minutes.]]></string>
+    <string name="_sys_txt_account_email_change_confirmed"><![CDATA[Your new email is confirmed]]></string>
+    <string name="_sys_txt_account_email_change_failed"><![CDATA[This link no longer works, or another account uses this email now. Change your email again to get a new link.]]></string>
+    <string name="_sys_txt_account_email_change_sent"><![CDATA[We sent a confirmation link to {0}. Until you open it, you sign in with {1}.]]></string>
     
     <string name="_sys_txt_agent_inactive"><![CDATA[Agent isn't activated]]></string>
     <string name="_sys_txt_captcha_not_available"><![CDATA[CAPTCHA not available]]></string>
@@ -4958,12 +5045,12 @@
     <string name="_sys_txt_confirm_email_desc"><![CDATA[Please enter confirmation code which was sent to your email address, or just click confirmation link in the same email message.]]></string>
     <string name="_sys_txt_confirm_email_error_occured"><![CDATA[Error occurred, please try to sign in to your account and resend verification email.]]></string>
     <string name="_sys_txt_confirm_email_sent"><![CDATA[Email verification letter was sent, please check your inbox.]]></string>
-    <string name="_sys_txt_confirm_email_sent_failed"><![CDATA[Error occurred, please report error to site administrator.]]></string>
-    <string name="_sys_txt_confirm_email_success"><![CDATA[You email address was successfully confirmed.]]></string>
+    <string name="_sys_txt_confirm_email_sent_failed"><![CDATA[The confirmation email could not be sent. Please try again later.]]></string>
+    <string name="_sys_txt_confirm_email_success"><![CDATA[Your email address is confirmed.]]></string>
 
     <string name="_sys_txt_confirm_phone_already_confirmed"><![CDATA[Your phone is already confirmed.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_error_occured"><![CDATA[Error occurred, please try to sign in to your account and repeat verification.]]></string>
-    <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Error occurred, please report error to site administrator.]]></string>
+    <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[The text message could not be sent. Please try again later.]]></string>
     <string name="_sys_txt_confirm_phone_sms_text"><![CDATA[Your phone's verification code is {0}.]]></string>
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Your phone number has been confirmed.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Please enter a phone number for sending verification SMS.]]></string>
@@ -5006,13 +5093,13 @@
     <string name="_sys_txt_field_created"><![CDATA[Created:]]></string>
     <string name="_sys_txt_field_updated"><![CDATA[Updated:]]></string>
     <string name="_sys_txt_forgot_pasword"><![CDATA[Forgot password?]]></string>
-    <string name="_sys_txt_forgot_pasword_check_email"><![CDATA[Email was sent, please follow instructions in the email message.]]></string>
-    <string name="_sys_txt_forgot_pasword_check_phone"><![CDATA[SMS was sent, please follow instructions in the SMS.]]></string>
+    <string name="_sys_txt_forgot_pasword_check_email"><![CDATA[If an account uses this email, we sent it a link to reset the password.]]></string>
+    <string name="_sys_txt_forgot_pasword_check_phone"><![CDATA[If an account uses this phone number, we sent it a text message with a link to reset the password.]]></string>
     <string name="_sys_txt_forgot_pasword_desc"><![CDATA[Enter your account email address to get a password-reset link.]]></string>
     <string name="_sys_txt_forgot_pasword_by_both_desc"><![CDATA[Enter your account email address or phone to get a password-reset link.]]></string>
     <string name="_sys_txt_forgot_pasword_by_phone_desc"><![CDATA[Enter your account phone to get a password-reset link.]]></string>
     <string name="_sys_txt_forgot_pasword_email_send_failed"><![CDATA[Email send failed, please try again later.]]></string>
-    <string name="_sys_txt_forgot_pasword_error_occured"><![CDATA[Error occurred, please report error to the site administrator.]]></string>
+    <string name="_sys_txt_forgot_pasword_error_occured"><![CDATA[The password reset email could not be sent. Please try again later.]]></string>
     <string name="_sys_txt_forgot_pasword_sms_text"><![CDATA[Click the link below to reset your password {0}]]></string>
     <string name="_sys_txt_forgot_pasword_logged_in"><![CDATA[You are already signed in. If you still wish to reset your password, please sign out first and then initiate the password recovery process.]]></string>
 
@@ -5030,8 +5117,9 @@
     <string name="_sys_txt_login_2fa_description_phone"><![CDATA[Two-factor authentication is on: we will send a verification code to the phone below.]]></string>
 	
     <string name="_sys_txt_login_2fa_sms_text"><![CDATA[Your verification code is {0}.]]></string>
-    <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[An error occurred, please report error to the site administrator.]]></string>
-    <string name="_sys_txt_login_agreement"><![CDATA[By logging in, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string>
+    <string name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[The sign-in code could not be sent. Please try again later.]]></string>
+    <string name="_sys_txt_login_agreement"><![CDATA[By signing in, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string>
+    <string name="_sys_txt_join_closed"><![CDATA[Sign-up is closed on this site.]]></string>
     <string name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string>
     <string name="_sys_txt_join_description_action"><![CDATA[Sign in]]></string>
     <string name="_sys_txt_join_text"><![CDATA[Signing up is quick and easy. Create your own community account to get started.]]></string>
@@ -5059,6 +5147,9 @@
     <string name="_sys_txt_one_mutual_friend"><![CDATA[<a href="{0}">{1}</a> mutual friend]]></string>
     <string name="_sys_txt_powered_by"><![CDATA[Powered by UNA Community Management System]]></string>
     <string name="_sys_txt_powered_by_una"><![CDATA[Powered by UNA]]></string>
+  <string name="_sys_txt_profile_joined_sample"><![CDATA[joined]]></string>
+  <string name="_sys_txt_profile_not_available_text"><![CDATA[It may be waiting for review or turned off for now.]]></string>
+  <string name="_sys_txt_profile_not_available_title"><![CDATA[This profile isn't available]]></string>
   <string name="_sys_txt_report_status_0"><![CDATA[New]]></string>
   <string name="_sys_txt_report_status_1"><![CDATA[In-process]]></string>
   <string name="_sys_txt_report_status_2"><![CDATA[Processed]]></string>
@@ -5085,7 +5176,7 @@
         <string name="_sys_txt_splash_create_text"><![CDATA[Build your social profile, post status updates, write notes, create polls and upload media albums.]]></string>
 	<string name="_sys_txt_switch_profile_context"><![CDATA[Switch]]></string>
 	<string name="_sys_txt_unsubscribe_email_settings_update_success"><![CDATA[Your email preferences have been updated.]]></string>
-	<string name="_sys_txt_unsubscribe_error_occured"><![CDATA[Error occurred, please sign in to your account and update email references there or contact site administrator to unsubscribe you manually.]]></string>
+	<string name="_sys_txt_unsubscribe_error_occured"><![CDATA[This unsubscribe link does not work. Sign in and change your email settings, or contact us and we will unsubscribe you.]]></string>
 	<string name="_sys_txt_unsubscribe_info"><![CDATA[Update email preferences for <b>{0}</b>]]></string>
         <string name="_sys_txt_unsubscribe_wrong_link"><![CDATA[Unsubscribe link is wrong.]]></string>
         <string name="_sys_txt_url"><![CDATA[URL]]></string>
@@ -5132,6 +5223,7 @@
 	<string name="_sys_uploader_crop_submit_button"><![CDATA[Upload]]></string>
     <string name="_sys_uploader_crop_title"><![CDATA[Crop Image]]></string>
     <string name="_sys_uploader_crop_err_upload"><![CDATA[Error Uploading.]]></string>
+    <string name="_sys_uploader_crop_popup_title"><![CDATA[Crop picture]]></string>
     <string name="_sys_uploader_crop_remove_picture"><![CDATA[Remove]]></string>
     <string name="_sys_uploader_crop_wrong_ext"><![CDATA[Wrong file extension, only images with the following extensions are allowed: jpg, jpeg, png, gif.]]></string>
 	<string name="_sys_uploader_err_msg"><![CDATA[Oops! An error occurred with {0} file: {1}]]></string>
@@ -5174,6 +5266,7 @@
 	<string name="_view_do_view_by"><![CDATA[Viewed by]]></string>
 	<string name="_view_do_view_by_counter"><![CDATA[{0} views]]></string>
 	<string name="_view_n_views"><![CDATA[{0} views]]></string>
+	<string name="_view_n_views_one"><![CDATA[{0} view]]></string>
 	<string name="_vote_counter"><![CDATA[{0}]]></string>
 	<string name="_vote_do_like"><![CDATA[Like]]></string>
 	<string name="_vote_do_unlike"><![CDATA[Like]]></string>
@@ -5186,6 +5279,7 @@
 	<string name="_vote_err_reactions_limit"><![CDATA[You can give up to {0} reactions.]]></string>
 	<string name="_vote_err_duplicate_vote"><![CDATA[Duplicate vote]]></string>
         <string name="_vote_n_votes"><![CDATA[{0} votes]]></string>
+	<string name="_vote_n_votes_one"><![CDATA[{0} vote]]></string>
 	<string name="_week_fri"><![CDATA[Friday]]></string>
 	<string name="_week_mon"><![CDATA[Monday]]></string>
 	<string name="_week_sat"><![CDATA[Saturday]]></string>
@@ -5212,7 +5306,7 @@
     <string name="_sys_wiki_lang_missing"><![CDATA[missing]]></string>
     <string name="_sys_wiki_revisions_deleted"><![CDATA[{0} revisions were deleted]]></string>
     <string name="_sys_wiki_confirm_block_deletion"><![CDATA[Are you sure you want to permanently delete this block with all revisions and translations?]]></string>
-    <string name="_sys_wiki_block_deleted"><![CDATA[Block was successfully deleted]]></string>
+    <string name="_sys_wiki_block_deleted"><![CDATA[Block deleted.]]></string>
     <string name="_sys_wiki_add_block"><![CDATA[Add Block]]></string>
 	<string name="_sys_wiki_add_page"><![CDATA[Add Page]]></string>
 	<string name="_sys_wiki_add_page_text"><![CDATA[Such wiki page doesn't exist.]]></string>
@@ -5277,7 +5371,7 @@
     <string name="_sys_queue_push"><![CDATA[PUSH]]></string>
     <string name="_sys_queue_transcoding"><![CDATA[Video transcoding]]></string>
     <string name="_sys_queue_storage"><![CDATA[File deletions]]></string>
-    <string name="_sys_page_title_redirect"><![CDATA[Redirect Confirmation]]></string>
+    <string name="_sys_page_title_redirect"><![CDATA[Redirect confirmation]]></string>
     <string name="_sys_page_block_title_redirect"><![CDATA[Confirm redirect]]></string>
     <string name="_sys_redirect_confirmation"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a link outside {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
     <string name="_sys_redirect_confirmation_harmful"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a potentially <b>harmful</b> link {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
@@ -5290,6 +5384,7 @@
     <string name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string>
     <string name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string>
     <string name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string>
+    <string name="_sys_onboarding_done"><![CDATA[You're set up]]></string>
     <string name="_sys_onboarding_hide"><![CDATA[Hide]]></string>
     <string name="_sys_onboarding_join_closed"><![CDATA[Nobody can sign up: the sign-up form is off.]]></string>
     <string name="_sys_onboarding_join_invite"><![CDATA[Only people you invite can sign up.]]></string>
@@ -5307,4 +5402,6 @@
     <string name="_sys_membership_stats_unlimited"><![CDATA[Unlimited]]></string>
     <string name="_sys_membership_stats_until"><![CDATA[Active until {0}]]></string>
     <string name="_sys_membership_stats_used"><![CDATA[{0} used]]></string>
+    <string name="_favorite_popup_title_do"><![CDATA[Add to favorites]]></string>
+    <string name="_favorite_popup_title_edit_list"><![CDATA[Edit list]]></string>
 </resources>

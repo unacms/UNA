@@ -29,6 +29,7 @@
     <string name="_bx_persons_form_profile_display_add"><![CDATA[Добавление персоны]]></string>
     <string name="_bx_persons_form_profile_display_edit"><![CDATA[Редактирование персоны]]></string>
     <string name="_bx_persons_form_profile_display_edit_cover"><![CDATA[Редактирование обложки]]></string>
+    <string name="_bx_persons_form_profile_display_edit_privacy"><![CDATA[Приватность]]></string>
     <string name="_bx_persons_form_profile_display_edit_badge"><![CDATA[Редактирование значка]]></string>
     <string name="_bx_persons_form_profile_display_delete"><![CDATA[Удаление персоны]]></string>
     <string name="_bx_persons_form_profile_display_view"><![CDATA[Просмотр персоны]]></string>
@@ -43,7 +44,7 @@
     <string name="_bx_persons_form_profile_input_allow_contact_to"><![CDATA[Писать мне могут]]></string>
     <string name="_bx_persons_form_profile_input_sys_fullname"><![CDATA[Полное имя]]></string>
     <string name="_bx_persons_form_profile_input_fullname"><![CDATA[Полное имя]]></string>
-    <string name="_bx_persons_form_profile_input_fullname_err"><![CDATA[Имя профиля обязательно для заполнения и не должно начинаться с @.]]></string>
+    <string name="_bx_persons_form_profile_input_fullname_err"><![CDATA[Имя обязательно и не может начинаться с @.]]></string>
     <string name="_bx_persons_form_profile_input_sys_desc"><![CDATA[Описание]]></string>
     <string name="_bx_persons_form_profile_input_desc"><![CDATA[Описание]]></string>
     <string name="_bx_persons_form_profile_input_sys_picture"><![CDATA[Картинка профиля]]></string>

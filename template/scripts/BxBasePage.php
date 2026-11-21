@@ -96,6 +96,8 @@ class BxBasePage extends BxDolPage
                     'img_url_encoded' => '',
                     'title_encoded' => ''
                 ]);
+                // in the popup each service is a row with its mark and name, as in other popup menus
+                $oMenu->setTemplateById(6); // menu_vertical.html
                 $sMenu = $oMenu->getCode();
             }
         }
@@ -642,6 +644,8 @@ class BxBasePage extends BxDolPage
             'page_width' => BxDolTemplate::getPageWidth($this->getType()),
             // The favicons uploaded in Designer (fav, svg, dark: '' for each one not uploaded), for the apps' browser tabs.
             'icons' => BxTemplFunctions::getUploadedFaviconUrls(),
+            // The accent Designer picked (step => "r g b", NEO's --accent-*), or null for the default blue.
+            'accent' => BxDolDesigns::getAccentScale() ?: null,
             'layout' => $bSplash ? 'splash' : str_replace('.html', '', $this->_aObject['template']),
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
@@ -1753,7 +1757,27 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageAccessDeniedMsg ($mixedMsg = false)
     {
-        return MsgBox($mixedMsg !== false ? $mixedMsg : _t('_Access denied'));
+        $sMsg = is_string($mixedMsg) && $mixedMsg !== '' ? $mixedMsg : _t('_Access denied');
+
+        if (!$this->_bSubPage && !bx_is_api()) {
+            if (!headers_sent()) {
+                header('HTTP/1.0 403 Forbidden');
+                header('Status: 403 Forbidden');
+            }
+
+            // The page keeps its name in the title bar; a title with markers would name the content, so it is left out.
+            $sTitle = _t($this->_aObject['title']);
+            if ($sTitle !== '' && !str_contains($sTitle, '{')) {
+                BxDolTemplate::getInstance()->setPageHeader($sTitle);
+            }
+        }
+
+        // A guest gets the same "Sign in to continue" card as a block that needs an account.
+        if (!isLogged() && !BxDolAcl::getDenialState($sMsg)) {
+            return DesignBoxContent('', MsgBox(BxDolAcl::getDenialStateByLevel(MEMBERSHIP_ID_NON_MEMBER, _t('_sys_txt_access_denied_guest_page'))), BX_DB_PADDING_NO_CAPTION);
+        }
+
+        return MsgBox($sMsg);
     }
 
     /**

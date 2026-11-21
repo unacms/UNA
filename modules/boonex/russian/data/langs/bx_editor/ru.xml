@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+    <string name="_bx_editor_adm_stg_cpt_type"><![CDATA[Редактор]]></string>
+</resources>

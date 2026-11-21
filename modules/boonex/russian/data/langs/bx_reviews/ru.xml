@@ -333,15 +333,17 @@
 
     <string name="_bx_reviews_txt_msg_status_hidden"><![CDATA[Данный отзыв был скрыт.]]></string>
     <string name="_bx_reviews_txt_msg_status_pending"><![CDATA[Данный отзыв ожидает утверждения.]]></string>
-    <string name="_bx_reviews_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_reviews_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_reviews_txt_poll_view_answers"><![CDATA[опрос]]></string>
     <string name="_bx_reviews_txt_poll_view_results"><![CDATA[результаты]]></string>
     <string name="_bx_reviews_txt_poll_answer_vote_do_by"><![CDATA[Проголосовали за]]></string>
     <string name="_bx_reviews_txt_poll_answer_vote_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_reviews_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string>
+    <string name="_bx_reviews_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string>
     <string name="_bx_reviews_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
-    <string name="_bx_reviews_option_voting_max_stars"><![CDATA[Максимальное количество звезд за опцию голосования]]></string>
+    <string name="_bx_reviews_option_voting_max_stars"><![CDATA[Максимум звёзд за вариант голосования]]></string>
     <string name="_bx_reviews_option_custom_context_chooser_enable"><![CDATA[Включить поле для выбора контента для отзыва]]></string>
     <string name="_bx_reviews_option_custom_context_chooser_options"><![CDATA[Тип контента, доступного для отзывов]]></string>
     <string name="_bx_reviews_txt_settings"><![CDATA[Настройки]]></string>

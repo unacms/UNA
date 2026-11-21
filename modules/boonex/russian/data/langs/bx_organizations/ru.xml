@@ -35,6 +35,7 @@
     <string name="_bx_orgs_form_profile_display_add"><![CDATA[Добавление организации]]></string>
     <string name="_bx_orgs_form_profile_display_edit"><![CDATA[Редактирование организации]]></string>
     <string name="_bx_orgs_form_profile_display_edit_cover"><![CDATA[Редактирование обложки]]></string>
+    <string name="_bx_orgs_form_profile_display_edit_privacy"><![CDATA[Приватность]]></string>
     <string name="_bx_orgs_form_profile_display_edit_badge"><![CDATA[Редактирование значка]]></string>
     <string name="_bx_orgs_form_profile_display_delete"><![CDATA[Удаление организации]]></string>
     <string name="_bx_orgs_form_profile_display_view"><![CDATA[Просмотр организации]]></string>
@@ -55,7 +56,7 @@
     <string name="_bx_orgs_form_profile_input_initial_members"><![CDATA[Пригласить участников]]></string>
     <string name="_bx_orgs_form_profile_input_sys_org_name"><![CDATA[Название организации]]></string>
     <string name="_bx_orgs_form_profile_input_org_name"><![CDATA[Название организации]]></string>
-    <string name="_bx_orgs_form_profile_input_org_name_err"><![CDATA[Имя профиля обязательно для заполнения и не должно начинаться с @.]]></string>
+    <string name="_bx_orgs_form_profile_input_org_name_err"><![CDATA[Имя обязательно и не может начинаться с @.]]></string>
     <string name="_bx_orgs_form_profile_input_sys_org_desc"><![CDATA[Описание]]></string>
     <string name="_bx_orgs_form_profile_input_org_desc"><![CDATA[Описание]]></string>
     <string name="_bx_orgs_form_profile_input_sys_org_cat"><![CDATA[Категория]]></string>
@@ -556,7 +557,7 @@
 
     <string name="_bx_orgs_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_orgs_err_price_duplicate"><![CDATA[Аналогичный ценовой план уже существует.]]></string>
-    <string name="_bx_orgs_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_orgs_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_orgs_email_friend_request"><![CDATA[Запрос на добавление в друзья]]></string>
     <string name="_bx_orgs_email_friend_request_subject"><![CDATA[Подружиться]]></string>

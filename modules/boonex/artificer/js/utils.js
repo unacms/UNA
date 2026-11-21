@@ -93,7 +93,10 @@ BxArtificerUtils.prototype.setColorSchemeHtml = function()
 
 BxArtificerUtils.prototype.setColorSchemeIcon = function() 
 {
-    $('.bx-sb-theme-current').html('<i class="sys-icon ' + (this.isColorSchemeDark() ? 'moon' : 'sun') + '"></i>').bxProcessHtml();
+    // Pages without the switch (the "Please wait" page after signing in) have none of the page scripts bxProcessHtml needs.
+    var oCurrent = $('.bx-sb-theme-current');
+    if(oCurrent.length)
+        oCurrent.html('<i class="sys-icon ' + (this.isColorSchemeDark() ? 'moon' : 'sun') + '"></i>').bxProcessHtml();
 
     this.markColorSchemeSwitches();
 };
@@ -116,15 +119,15 @@ BxArtificerUtils.prototype.getColorSchemeCode = function()
 BxArtificerUtils.prototype.markColorSchemeSwitches = function()
 {
     var iCode = this.getColorSchemeCode();
-    var sIcon = ['adjust', 'sun', 'moon'][iCode];
+    var sIcon = ['eclipse', 'sun', 'moon'][iCode];
     var bRedraw = false;
 
-    $('[data-bx-color-scheme-switch]').find('.sys-icon.adjust, .sys-icon.sun, .sys-icon.moon').each(function() {
+    $('[data-bx-color-scheme-switch]').find('.sys-icon.eclipse, .sys-icon.sun, .sys-icon.moon').each(function() {
         if($(this).hasClass(sIcon))
             return;
 
         if(this.tagName.toLowerCase() == 'i')
-            $(this).removeClass('adjust sun moon').addClass(sIcon);
+            $(this).removeClass('eclipse sun moon').addClass(sIcon);
         else {
             $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
             bRedraw = true;

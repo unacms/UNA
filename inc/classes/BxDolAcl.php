@@ -114,9 +114,9 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      * A level that isn't here is a membership that doesn't include the action.
      */
     protected $aLevel2State = array (
-        MEMBERSHIP_ID_NON_MEMBER => ['title' => '_sys_acl_state_unauthenticated_title', 'icon' => 'sign-in-alt'],
-        MEMBERSHIP_ID_ACCOUNT => ['title' => '_sys_acl_state_account_title', 'icon' => 'user-plus'],
-        MEMBERSHIP_ID_UNCONFIRMED => ['title' => '_sys_acl_state_unconfirmed_title', 'icon' => 'envelope'],
+        MEMBERSHIP_ID_NON_MEMBER => ['title' => '_sys_acl_state_unauthenticated_title', 'icon' => 'log-in'],
+        MEMBERSHIP_ID_ACCOUNT => ['title' => '_sys_acl_state_account_title', 'icon' => 'user-round-plus'],
+        MEMBERSHIP_ID_UNCONFIRMED => ['title' => '_sys_acl_state_unconfirmed_title', 'icon' => 'mail'],
         MEMBERSHIP_ID_PENDING => ['title' => '_sys_acl_state_pending_title', 'icon' => 'clock'],
         MEMBERSHIP_ID_SUSPENDED => ['title' => '_sys_acl_state_suspended_title', 'icon' => 'ban'],
     );
@@ -174,7 +174,20 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
             return null;
         }
 
-        $iLevel = self::$aDenials[$sMessage];
+        return self::getDenialStateByLevel(self::$aDenials[$sMessage], $sMessage);
+    }
+
+    /**
+     * The state of a denial for a viewer at the membership level: a guest is asked to sign in or sign up, an account
+     * without a profile to create one.
+     *
+     * @param int $iLevel membership level id (MEMBERSHIP_ID_*)
+     * @param string $sMessage translated text of the state
+     * @return array as getDenialState
+     */
+    public static function getDenialStateByLevel($iLevel, $sMessage)
+    {
+        $iLevel = (int)$iLevel;
         $oAcl = self::getInstance();
         $aState = $oAcl->aLevel2State[$iLevel] ?? ['title' => '_sys_acl_state_not_allowed_title', 'icon' => 'lock'];
 
@@ -694,7 +707,11 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      * @param  boolean $bStartsNow if true, the membership will start immediately if false, the membership will start after the current membership expires
      * @return boolean true in case of success, false in case of failure
      */
-    function setMembership($iProfileId, $iLevelId, $mixedPeriod = 0, $bStartsNow = false, $sTransactionId = '')
+    /**
+     * Set a profile's membership level.
+     * @param $bNotify email the member about the change; false when the level is the one a new profile starts with
+     */
+    public function setMembership($iProfileId, $iLevelId, $mixedPeriod = 0, $bStartsNow = false, $sTransactionId = '', $bNotify = true)
     {
         $iProfileId = (int)$iProfileId;
         $iLevelId = (int)$iLevelId;
@@ -813,6 +830,9 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
         if (!empty($aMembershipCurrent))
             $aDataForAudit = array('new_membership_level' => _t($aLevel['name']), 'old_membership_level' => _t($aMembershipCurrent['name']));
         BxDolProfile::getInstance($iProfileId)->doAudit('_sys_audit_action_set_membership', $aDataForAudit);
+
+        if(!$bNotify)
+            return true;
 
         $oEmailTemplates = BxDolEmailTemplates::getInstance();
         // Check if there is a special email template for this membership level

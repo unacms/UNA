@@ -62,7 +62,12 @@ function processJsonData(oData) {
 			fContinue(oData);
 		});
     else if(oData && oData.toast != undefined && oData.toast.length != 0) {
-        bx_toast(oData.toast);
+        // A success doesn't block: it shows as a toast, on the next page when the reply reloads or redirects.
+        if((oData.reload != undefined && Number.parseInt(oData.reload) == 1) || (oData.redirect != undefined && oData.redirect.length != 0))
+            bx_toast_next_page(oData.toast);
+        else
+            bx_toast(oData.toast);
+
         fContinue(oData);
     }
 	else
@@ -1722,28 +1727,6 @@ function bx_search (n, sFormSel, sResultsContSel, sLoadingContSel, bSortResults,
     return false;
 }
 
-function on_filter_apply(e, sInputId, sFilterName)
-{
-	var oRegExp = new RegExp("[&]{0,1}" + sFilterName + "=.*");
-    var s = ('' + document.location).replace(oRegExp, ''); // remove filter
-    s = s.replace(/page=\d+/, 'page=1'); // goto 1st page
-    if (e.checked && $('#' + sInputId).val().length > 2)
-        s += (-1 == s.indexOf('?') ? '?' : '&') + sFilterName + '=' + $('#' + sInputId).val(); // append filter
-    document.location = s;
-}
-
-function on_filter_key_up (e, sCheckboxId)
-{
-    if (13 == e.keyCode) {
-        $('#' + sCheckboxId).click();
-        return false;
-    }
-    else {
-        $('#' + sCheckboxId).removeAttr('checked');
-        return true;
-    }
-}
-
 function on_copyright_click()
 {
 	oDate = new Date();
@@ -1815,7 +1798,7 @@ function bx_autocomplete_fields(iId, sUrl, sName, bShowImg, bOnlyOnce, onSelect)
 			else if(bShowImg && item.thumb != undefined)
 				sImage = '<img class="bx-def-thumb bx-def-icon-size bx-def-margin-sec-right" src="' + item.thumb + '">';
 
-			$(this).before('<b class="val bx-def-color-bg-hl bx-def-round-corners">' + sImage + item.label + '<i class="sys-icon times ltr:ml-1 rtl:mr-1"></i><input type="hidden" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="' + sName + (bOnlyOnce ? '' : '[]') + '" value="' + item.value + '" /></b>');
+			$(this).before('<b class="val bx-def-color-bg-hl bx-def-round-corners">' + sImage + item.label + '<i class="sys-icon x ltr:ml-1 rtl:mr-1"></i><input type="hidden" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="' + sName + (bOnlyOnce ? '' : '[]') + '" value="' + item.value + '" /></b>');
 		}
 
 		if (!bOnlyOnce)
@@ -1912,6 +1895,34 @@ function bx_toast(sMessage, oParams)
     }, 1000 * (oParams && oParams.autoHide !== undefined ? parseInt(oParams.autoHide) : 3));
 };
 
+/**
+ * Show a toast on the next page this tab opens: for a success that reloads or redirects.
+ */
+function bx_toast_next_page(sMessage)
+{
+    try {
+        sessionStorage.setItem('bx-toast-next-page', sMessage);
+    }
+    catch(e) {
+        // no storage (private window, blocked site data): the toast is skipped, the page still works
+    }
+}
+
+$(document).ready(function() {
+    var sMessage = null;
+    try {
+        sMessage = sessionStorage.getItem('bx-toast-next-page');
+        if(sMessage)
+            sessionStorage.removeItem('bx-toast-next-page');
+    }
+    catch(e) {
+        // no storage: nothing to show
+    }
+
+    if(sMessage)
+        bx_toast(sMessage);
+});
+
 function bx_is_color_scheme_dark()
 {
     return localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2005,19 +2016,61 @@ function bx_onboarding_hide(oButton, sMenu)
 }
 
 /*
- * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form further
- * down the same page (the "Add new..." block) instead of reloading it; without the form the link is followed.
+ * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form of the
+ * "Add new..." block on the same page instead of reloading it. That block loads when it scrolls into view, so it is
+ * scrolled to and its form is opened once it is there. A page without the block goes to the homepage, which opens it.
  */
-function bx_onboarding_post()
+function bx_onboarding_post(bStay)
 {
-    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
-    if(!oForm)
-        return true;
+    var bReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fOpen = function(oForm) {
+        oForm.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+        oForm.click();
+    };
 
-    oForm.scrollIntoView({block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
-    oForm.click();
+    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
+    if(oForm) {
+        fOpen(oForm);
+        return false;
+    }
+
+    // the block is still a placeholder (block_async_create_post.html)
+    var oPlaceholder = document.querySelector('.sys-cpf-placeholder');
+    var oBlock = oPlaceholder ? oPlaceholder.closest('.bx-page-block-container') : null;
+    if(oBlock) {
+        oPlaceholder.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+
+        var oObserver = new MutationObserver(function() {
+            var oLoaded = oBlock.querySelector('.sys-cpf-default');
+            if(!oLoaded)
+                return;
+
+            oObserver.disconnect();
+            fOpen(oLoaded);
+        });
+        oObserver.observe(oBlock, {childList: true, subtree: true});
+        setTimeout(function() {
+            oObserver.disconnect();
+        }, 10000);
+
+        return false;
+    }
+
+    if(!bStay)
+        location.href = sUrlRoot + '#bx-compose';
     return false;
 }
+
+/*
+ * The homepage opened from "Write the first post" on another page (#bx-compose): opens the post form there.
+ */
+$(document).ready(function() {
+    if(location.hash != '#bx-compose')
+        return;
+
+    history.replaceState(null, '', location.pathname + location.search);
+    bx_onboarding_post(true);
+});
 
 /*
  * Introduction tours (BxDolTours): the Studio tour, built on Shepherd (plugins_public/shepherd). A step is drawn as a
@@ -2506,7 +2559,7 @@ function bx_sound_form_reply(oData)
     var mixedPopup = oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup;
     if((oData.code != undefined && Number.parseInt(oData.code) != 0) || bx_sound_has_field_error(oData.form) || bx_sound_has_field_error(mixedPopup))
         bx_sound('error');
-    else if(oData.code != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
+    else if(oData.code != undefined || oData.toast != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
         bx_sound('success', {emphasis: 'subtle'});
 }
 
@@ -2562,15 +2615,15 @@ function bx_sound_toggle(oSwitch)
 }
 
 /**
- * Show the visitor's level on every Sounds control: the account menu item's name and icon (volume-up, volume-down,
- * volume-mute; the Lucide iconset redraws it from a new <i>), and the checked option of Studio's radio group. Where
+ * Show the visitor's level on every Sounds control: the account menu item's name and icon (volume-2, volume-1,
+ * volume-x; the Lucide iconset redraws it from a new <i>), and the checked option of Studio's radio group. Where
  * sounds are off for everyone, the item goes away.
  */
 function bx_sound_mark_switches()
 {
     var oConfig = glBxSounds.config;
     var sLevel = bx_sound_level();
-    var sIcon = {full: 'volume-up', quiet: 'volume-down', off: 'volume-mute'}[sLevel];
+    var sIcon = {full: 'volume-2', quiet: 'volume-1', off: 'volume-x'}[sLevel];
     var bRedraw = false;
 
     $('[data-bx-sounds-switch]').each(function() {
@@ -2581,12 +2634,12 @@ function bx_sound_mark_switches()
 
         $(this).attr({'aria-label': oConfig.labels[sLevel], title: oConfig.labels[sLevel]});
 
-        $(this).find('.sys-icon.volume-up, .sys-icon.volume-down, .sys-icon.volume-mute').each(function() {
+        $(this).find('.sys-icon.volume-2, .sys-icon.volume-1, .sys-icon.volume-x').each(function() {
             if($(this).hasClass(sIcon))
                 return;
 
             if(this.tagName.toLowerCase() == 'i')
-                $(this).removeClass('volume-up volume-down volume-mute').addClass(sIcon);
+                $(this).removeClass('volume-2 volume-1 volume-x').addClass(sIcon);
             else {
                 $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
                 bRedraw = true;
@@ -2892,6 +2945,26 @@ function bx_is_selector_in_stylesheet(sSel)
            a.push(ruleList[rule].selectorText);
     }
     return -1 !== a.indexOf(sSel);
+}
+
+/**
+ * Show another icon in place of one: a new `<i class="sys-icon ...">` (with an emoji inside, if given) replaces it,
+ * and the icon set draws it. The Lucide set has replaced each <i> with an <svg>, so changing the classes of what
+ * is there now changes nothing on screen.
+ * @param oIcons - the icon elements (a jQuery set, an element or a selector)
+ * @param sClasses - the icon's classes after sys-icon: its name and its own classes (`thumbs-up sys-icon-filled`)
+ * @param sHtml - an emoji to show instead of a drawing
+ */
+function bx_set_icon(oIcons, sClasses, sHtml)
+{
+    var bChanged = false;
+    $(oIcons).each(function() {
+        $(this).replaceWith($('<i>').attr('class', 'sys-icon ' + sClasses).html(sHtml || ''));
+        bChanged = true;
+    });
+
+    if(bChanged && typeof window.bx_iconset_init_lucide === 'function')
+        bx_iconset_init_lucide();
 }
 
 function bx_copy_to_clipboard(s, onSuccess, onFail)

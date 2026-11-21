@@ -57,7 +57,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- MENU: member toolbar
 SET @iMenuToolbarMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_toolbar_member' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `markers`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on`, `active`, `copyable`, `order`) VALUES 
-('sys_toolbar_member', @sName, 'notifications-preview', '_bx_ntfs_menu_item_title_system_preview', '_bx_ntfs_menu_item_title_preview', 'javascript:void(0)', 'bx_menu_slide(''bx_notifications_preview'', $(this).parents(''ul:first''), ''site'', {id:{value:''bx_notifications_preview'', force:1}, pointer:{align:''right''}, cssClass: ''''});', '', 'bell', 'a:2:{s:6:"module";s:16:"bx_notifications";s:6:"method";s:28:"get_unread_notifications_num";}', '', 'bx_notifications_preview', 1, 2147483646, 9, 1, 1, 0);
+('sys_toolbar_member', @sName, 'notifications-preview', '_bx_ntfs_menu_item_title_system_preview', '_bx_ntfs_menu_item_title_preview', 'javascript:void(0)', 'bx_menu_slide(''bx_notifications_preview'', $(this).parents(''ul:first''), ''site'', {id:{value:''bx_notifications_preview'', force:1}, pointer:{align:''right''}, cssClass: ''''});', '', 'bell', 'a:2:{s:6:"module";s:16:"bx_notifications";s:6:"method";s:28:"get_unread_notifications_num";}', '', 'bx_notifications_preview', 1, 2147483646, 8, 1, 1, 0);
 
 -- MENU: notifications
 SET @iMIOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_ntfs_submenu' AND `order` < 9999);
@@ -75,7 +75,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 -- MENU: account notifications
 SET @iMIOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_account_notifications' AND `order` < 9999);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `markers`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on`, `active`, `copyable`, `order`) VALUES
-('sys_account_notifications', @sName, 'notifications-notifications', '_bx_ntfs_menu_item_title_system_notifications', '_bx_ntfs_menu_item_title_notifications', 'javascript:void(0)', 'bx_menu_slide(''bx_notifications_preview'', this, ''site'', {id:{value:''bx_notifications_preview'', force:1}});', '', 'bell', 'a:2:{s:6:"module";s:16:"bx_notifications";s:6:"method";s:28:"get_unread_notifications_num";}', '', 'bx_notifications_preview', 1, 2147483646, 6, 1, 1, @iMIOrder + 1);
+('sys_account_notifications', @sName, 'notifications-notifications', '_bx_ntfs_menu_item_title_system_notifications', '_bx_ntfs_menu_item_title_notifications', 'javascript:void(0)', 'bx_menu_slide(''bx_notifications_preview'', this, ''site'', {id:{value:''bx_notifications_preview'', force:1}});', '', 'bell', 'a:2:{s:6:"module";s:16:"bx_notifications";s:6:"method";s:28:"get_unread_notifications_num";}', '', 'bx_notifications_preview', 1, 2147483646, 7, 1, 1, @iMIOrder + 1);
 
 -- MENU: account settings menu
 SET @iMoAccountSettings = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_settings' AND `order` < 9999 LIMIT 1);
@@ -183,16 +183,12 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('bx_notifications_settings_administration', 'title', '_bx_ntfs_grid_column_title_title', '79%', 1, '', '', 10),
 ('bx_notifications_settings_administration', 'value', '_bx_ntfs_grid_column_title_value', '10%', 0, '', '', 20),
 
-('bx_notifications_settings_common', 'checkbox', '', '1%', 0, '', '', 1),
 ('bx_notifications_settings_common', 'switcher', '', '10%', 0, '', '', 2),
-('bx_notifications_settings_common', 'title', '_bx_ntfs_grid_column_title_title', '89%', 1, '', '', 10);
+('bx_notifications_settings_common', 'title', '_bx_ntfs_grid_column_title_title', '90%', 1, '', '', 10);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `confirm`, `order`) VALUES
 ('bx_notifications_settings_administration', 'bulk', 'activate', '_bx_ntfs_grid_action_title_activate', '', 1, 1),
-('bx_notifications_settings_administration', 'bulk', 'deactivate', '_bx_ntfs_grid_action_title_deactivate', '', 1, 2),
-
-('bx_notifications_settings_common', 'bulk', 'activate', '_bx_ntfs_grid_action_title_activate', '', 1, 1),
-('bx_notifications_settings_common', 'bulk', 'deactivate', '_bx_ntfs_grid_action_title_deactivate', '', 1, 2);
+('bx_notifications_settings_administration', 'bulk', 'deactivate', '_bx_ntfs_grid_action_title_deactivate', '', 1, 2);
 
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
 ('bx_notifications_etemplates', 'Sql', 'SELECT * FROM `bx_notifications_etemplates` WHERE 1 ', 'bx_notifications_etemplates', 'id', '', 'active', '', 100, NULL, 'start', '', '', 'type,action,subject,content', 'auto', '', 2147483647, 'BxNtfsGridEtemplates', 'modules/boonex/notifications/classes/BxNtfsGridEtemplates.php');
@@ -207,8 +203,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_notifications_etemplates', 'independent', 'add', '_bx_ntfs_grid_action_title_ett_add', '', 0, 0, 1),
 ('bx_notifications_etemplates', 'single', 'preview', '_bx_ntfs_grid_action_title_ett_preview', 'eye', 1, 0, 1),
-('bx_notifications_etemplates', 'single', 'edit', '_bx_ntfs_grid_action_title_ett_edit', 'pencil-alt', 1, 0, 2),
-('bx_notifications_etemplates', 'single', 'delete', '_bx_ntfs_grid_action_title_ett_delete', 'remove', 1, 1, 3);
+('bx_notifications_etemplates', 'single', 'edit', '_bx_ntfs_grid_action_title_ett_edit', 'pencil-line', 1, 0, 2),
+('bx_notifications_etemplates', 'single', 'delete', '_bx_ntfs_grid_action_title_ett_delete', 'x', 1, 1, 3);
 
 
 -- CRON

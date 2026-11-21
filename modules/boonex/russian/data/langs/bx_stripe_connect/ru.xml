@@ -75,7 +75,7 @@
     <string name="_bx_stripe_connect_btn_account_continue"><![CDATA[Продолжить создание учетной записи]]></string>
     <string name="_bx_stripe_connect_msg_create_account"><![CDATA[Сначала вам необходимо <a href="{0}"><b>создать</b></a> подключенную учетную запись.]]></string>
     <string name="_bx_stripe_connect_err_delete"><![CDATA[Невозможно удалить аккаунт.]]></string>
-    <string name="_bx_stripe_connect_err_perform"><![CDATA[Не удается выполнить действие. Пожалуйста сообщите.]]></string>
+    <string name="_bx_stripe_connect_err_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_bx_stripe_connect_err_non_unique_acl"><![CDATA[Комиссия для выбранного уровеня членства уже существует.]]></string>
     <string name="_bx_stripe_connect_log"><![CDATA[Stripe Connect]]></string>
 </resources>
