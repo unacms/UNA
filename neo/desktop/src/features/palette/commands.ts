@@ -134,6 +134,7 @@ export function navigationEntries(
         go('connections-sent', t('Connections: Sent'), { section: 'connections', connections: 'sent' }, ['sent requests', 'pending', 'cancel']),
         go('connections-following', t('Connections: Following'), { section: 'connections', connections: 'following' }, ['follows', 'subscriptions']),
         go('connections-followers', t('Connections: Followers'), { section: 'connections', connections: 'followers' }, ['subscribers', 'fans']),
+        go('connections-suggested', t('Connections: Suggestions'), { section: 'connections', connections: 'suggested' }, ['people you may know', 'who to follow', 'recommendations', 'add friends']),
         ...(people
             ? [
                   go('people', t('People'), { section: 'people' }, ['members', 'directory', 'recent', 'new people']),

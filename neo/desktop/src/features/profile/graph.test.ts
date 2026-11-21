@@ -1,7 +1,8 @@
 import { QueryClient, QueryObserver } from '@tanstack/react-query';
 import { describe, expect, it } from 'vitest';
 
-import { actionRequest, afterGraphChange, announcement, type Connections, countsAfter, countText, followAction, friendActions, type Relation, relationAfter, relationSummary } from './graph';
+import { actionRequest, afterGraphChange, announcement, type Connections, countsAfter, countText, followAction, friendActions, isSuggestionsBlock, type Relation, relationAfter, relationSummary, suggestionsKey } from './graph';
+import { pageBlockKey } from '../page-blocks/page-layout';
 import { profileTabs } from './profile-view';
 import { requestCountText } from './friend-requests';
 import { withoutProfile } from './connections-list';
@@ -155,6 +156,28 @@ describe('after a graph change', () => {
         expect(feed.fetches.n).toBe(0);
         feed.stop();
         head.stop();
+    });
+
+    it('marks every list of suggestions stale without reading one now, so no row moves under the pointer', async () => {
+        const client = new QueryClient();
+        const tab = shown(client, suggestionsKey(true), { pages: [page(['10'])], pageParams: [undefined] });
+        const follows = shown(client, suggestionsKey(false), { pages: [page(['8'])], pageParams: [undefined] });
+        const block = shown(client, pageBlockKey('/me/recommendations/friends?limit=5'), page(['10']));
+        const other = shown(client, pageBlockKey('/posts?limit=5'), page(['1']));
+        afterGraphChange(client, '10', '4');
+        await new Promise((r) => setTimeout(r, 0));
+        expect([tab.fetches.n, follows.fetches.n, block.fetches.n]).toEqual([0, 0, 0]);
+        expect(client.getQueryState(suggestionsKey(true))?.isInvalidated).toBe(true);
+        expect(client.getQueryState(suggestionsKey(false))?.isInvalidated).toBe(true);
+        expect(client.getQueryState(pageBlockKey('/me/recommendations/friends?limit=5'))?.isInvalidated).toBe(true);
+        expect(client.getQueryState(pageBlockKey('/posts?limit=5'))?.isInvalidated).toBe(false);
+        for (const q of [tab, follows, block, other]) q.stop();
+    });
+
+    it('knows a page block of suggestions by its endpoint', () => {
+        expect(isSuggestionsBlock(pageBlockKey('/me/recommendations/follows?limit=5'))).toBe(true);
+        expect(isSuggestionsBlock(pageBlockKey('/me/friends'))).toBe(false);
+        expect(isSuggestionsBlock(suggestionsKey(true))).toBe(false);
     });
 
     it('refetches an empty Following feed on screen at once', async () => {

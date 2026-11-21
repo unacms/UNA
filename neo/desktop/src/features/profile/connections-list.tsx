@@ -18,9 +18,10 @@ import { type MenuEntry, showMenu, useMenuExpanded } from '../../lib/native-menu
 import { emptyListText, useFillEmptyPages } from '../../lib/paging';
 import { paneHeadingId, type PaneName } from '../../shell/pane';
 import { useAnnouncer } from '../feed/feed-list';
-import { ACTION_LABELS, announcement, type ConnectionList, connectionListKey, FRIEND_REQUESTS_KEY, type GraphAction, SENT_REQUESTS_KEY } from './graph';
+import { ACTION_LABELS, announcement, type ConnectionList, connectionListKey, FRIEND_REQUESTS_KEY, type GraphAction, SENT_REQUESTS_KEY, suggestionsKey } from './graph';
 import { ProfileAvatar, ProfileName } from './profile-link';
 import { useGraphAction } from './relation-buttons';
+import { SuggestionAction, type SuggestionVerb } from './suggestion-action';
 import { ago, exactTime, monthYear } from '../../lib/dates';
 
 type Page = Schema<'Page_Connected'>;
@@ -31,10 +32,16 @@ export type PeopleView = 'recent' | 'active' | 'online';
 
 /**
  * Whose people a list shows: a profile's friends, followers or whom it follows; the friend
- * requests waiting for the acting profile; the ones it sent that wait for an answer; or the
- * network's people in one of the directory's views (People).
+ * requests waiting for the acting profile; the ones it sent that wait for an answer; the network's
+ * people in one of the directory's views (People); or the site's suggestions for the acting
+ * profile, people to ask to be friends (`friends`) or profiles to follow.
  */
-export type ConnectionsSource = { kind: 'list'; profileId: string; list: ConnectionList } | { kind: 'requests' } | { kind: 'sent' } | { kind: 'people'; view: PeopleView };
+export type ConnectionsSource =
+    | { kind: 'list'; profileId: string; list: ConnectionList }
+    | { kind: 'requests' }
+    | { kind: 'sent' }
+    | { kind: 'people'; view: PeopleView }
+    | { kind: 'suggested'; friends: boolean };
 
 /** The query key of a view of the people directory. */
 export const peopleKey = (view: PeopleView) => ['people', view] as const;
@@ -48,6 +55,7 @@ function sourceKey(source: ConnectionsSource): readonly unknown[] {
     if (source.kind === 'requests') return FRIEND_REQUESTS_KEY;
     if (source.kind === 'sent') return SENT_REQUESTS_KEY;
     if (source.kind === 'people') return peopleKey(source.view);
+    if (source.kind === 'suggested') return suggestionsKey(source.friends);
     return connectionListKey(source.profileId, source.list);
 }
 
@@ -59,6 +67,12 @@ async function loadPage(api: UnaApi, source: ConnectionsSource, cursor: string |
         // people, not connections: a row's date is when the person joined (unknown where their page is private)
         const people = unwrap(await api.GET('/persons', { params: { query: { ...query, view: source.view } } }));
         return { items: people.items.map((profile) => ({ profile, since: profile.created_at })), next_cursor: people.next_cursor };
+    }
+    if (source.kind === 'suggested') {
+        // best match first; a suggestion has no date
+        const path = source.friends ? '/me/recommendations/friends' : '/me/recommendations/follows';
+        const page = unwrap(await api.GET(path, { params: { query } }));
+        return { items: page.items.map((s) => ({ profile: s.profile, since: '' })), next_cursor: page.next_cursor };
     }
     const params = { params: { path: { id: source.profileId }, query } };
     switch (source.list) {
@@ -94,13 +108,14 @@ export function monthText(iso: string): string {
 
 /** The second line of a connection's row (spec 4.4); a person in People: when they joined, or nothing when that is not known. */
 export function connectionSince(source: ConnectionsSource, since: string): string {
+    if (source.kind === 'suggested') return '';
     if (source.kind === 'people') return since === UNKNOWN_DATE || Number.isNaN(Date.parse(since)) ? '' : t('Joined {{month}}', { month: monthText(since) });
     if (source.kind === 'requests') return t('Asked {{when}}', { when: ago(since) });
     if (source.kind === 'sent') return t('Sent {{when}}', { when: ago(since) });
     return source.list === 'friends' ? t('Friends since {{month}}', { month: monthText(since) }) : t('Following since {{month}}', { month: monthText(since) });
 }
 
-const EMPTY_ICON: Record<'requests' | 'sent' | 'people' | ConnectionList, IconName> = { requests: 'user-plus', sent: 'user-plus', people: 'users', friends: 'users', followers: 'users', following: 'users' };
+const EMPTY_ICON: Record<'requests' | 'sent' | 'people' | 'suggested' | ConnectionList, IconName> = { requests: 'user-plus', sent: 'user-plus', people: 'users', suggested: 'user-plus', friends: 'users', followers: 'users', following: 'users' };
 
 /** Pages without one profile (a request answered, a friendship ended). */
 export function withoutProfile(data: InfiniteData<Page> | undefined, profileId: string): InfiniteData<Page> | undefined {
@@ -164,8 +179,8 @@ export function ConnectionsList({ source, label, emptyText, emptyHint, manage = 
     useFillEmptyPages(query);
     const items = query.data?.pages.flatMap((p) => p.items) ?? [];
     const empty = emptyListText(query, items.length, emptyText);
-    // a page without one (People's views are not paged by connection rows): a person listed twice across pages shows once
-    const shown = source.kind === 'people' ? items.filter((c, i) => items.findIndex((o) => o.profile.id === c.profile.id) === i) : items;
+    // a page without one (People's views and the suggestions are not paged by connection rows): a person listed twice across pages shows once
+    const shown = source.kind === 'people' || source.kind === 'suggested' ? items.filter((c, i) => items.findIndex((o) => o.profile.id === c.profile.id) === i) : items;
 
     // after a row went: the row that took its place, or the one before, or the pane's heading
     useLayoutEffect(() => {
@@ -181,6 +196,13 @@ export function ConnectionsList({ source, label, emptyText, emptyHint, manage = 
             document.getElementById(paneHeadingId(pane))?.focus();
         }
     });
+
+    // the suggestions are paged by place in a list the site works out again after a request or a
+    // follow: once one was made, the next page is read from the start, or it would skip a profile
+    const loadMore = async () => {
+        if (source.kind === 'suggested' && queryClient.getQueryState(key)?.isInvalidated) await query.refetch();
+        await query.fetchNextPage();
+    };
 
     const removed = (index: number, profileId: string, text: string) => {
         focusIndex.current = index;
@@ -239,12 +261,29 @@ export function ConnectionsList({ source, label, emptyText, emptyHint, manage = 
                 </ul>
             ) : null}
             {query.hasNextPage ? (
-                <button type="button" className="btn btn-wide" onClick={() => void query.fetchNextPage()} aria-disabled={query.isFetchingNextPage || undefined} aria-busy={query.isFetchingNextPage}>
+                <button type="button" className="btn btn-wide" onClick={() => void loadMore()} aria-disabled={query.isFetchingNextPage || undefined} aria-busy={query.isFetchingNextPage}>
                     {query.isFetchingNextPage ? t('Loading…') : t('Load more')}
                 </button>
             ) : null}
         </div>
     );
+}
+
+/**
+ * The buttons in a row: Accept and Decline on a request received, Cancel on one sent; a
+ * suggestion's one step, asking to be friends or following.
+ */
+export function rowButtons(source: ConnectionsSource): { buttons: GraphAction[]; suggestion: SuggestionVerb | null } {
+    switch (source.kind) {
+        case 'requests':
+            return { buttons: ['accept', 'decline'], suggestion: null };
+        case 'sent':
+            return { buttons: ['cancel'], suggestion: null };
+        case 'suggested':
+            return { buttons: [], suggestion: source.friends ? 'befriend' : 'follow' };
+        default:
+            return { buttons: [], suggestion: null };
+    }
 }
 
 function ConnectedRow({ connected: c, source, manage, onRemoved }: { connected: Connected; source: ConnectionsSource; manage: boolean; onRemoved: (text: string) => void }) {
@@ -256,8 +295,7 @@ function ConnectedRow({ connected: c, source, manage, onRemoved }: { connected: 
     const owner = `connection-${c.profile.id}`;
     const expanded = useMenuExpanded(owner);
     const name = c.profile.display_name;
-    // the buttons in the row: Accept and Decline on a request received, Cancel on one sent
-    const buttons: GraphAction[] = source.kind === 'requests' ? ['accept', 'decline'] : source.kind === 'sent' ? ['cancel'] : [];
+    const { buttons, suggestion } = rowButtons(source);
     const menuActions = manage ? rowMenuActions(source) : [];
     const canMessage = manage && c.profile.kind === 'person';
     const sinceText = connectionSince(source, c.since);
@@ -309,8 +347,9 @@ function ConnectedRow({ connected: c, source, manage, onRemoved }: { connected: 
                     </p>
                 ) : null}
             </div>
-            {buttons.length || canMessage || menuActions.length ? (
+            {buttons.length || suggestion || canMessage || menuActions.length ? (
                 <div className="row-actions">
+                    {suggestion ? <SuggestionAction profile={c.profile} action={suggestion} onError={setError} /> : null}
                     {buttons.map((a) => (
                         <button
                             key={a}

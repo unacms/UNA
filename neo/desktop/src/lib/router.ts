@@ -17,9 +17,10 @@ export function settingsRoute(tab: SettingsTab = 'account'): Route {
 
 /**
  * The tabs of Connections (the site's Connections pages: friends, the friend requests received
- * and sent, following, followers); Friends is the default and is not written out.
+ * and sent, following, followers, and the site's suggestions); Friends is the default and is not
+ * written out.
  */
-export const CONNECTIONS_TABS = ['friends', 'requests', 'sent', 'following', 'followers'] as const;
+export const CONNECTIONS_TABS = ['friends', 'requests', 'sent', 'following', 'followers', 'suggested'] as const;
 export type ConnectionsTab = (typeof CONNECTIONS_TABS)[number];
 
 /** Connections at one of its tabs: /connections, /connections?tab=requests. */

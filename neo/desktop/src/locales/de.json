@@ -2072,5 +2072,12 @@
     "{{site}} has its API turned off": "Auf {{site}} ist die API ausgeschaltet",
     "Not a network the app is signed in to": "Die App ist bei diesem Netzwerk nicht angemeldet",
     "Pictures can’t be added while the text is being sent.": "Während der Text gesendet wird, können keine Bilder hinzugefügt werden.",
-    "The discussion was not started: {{reason}}": "Die Diskussion wurde nicht gestartet: {{reason}}"
+    "The discussion was not started: {{reason}}": "Die Diskussion wurde nicht gestartet: {{reason}}",
+    "Suggestions": "Vorschläge",
+    "People you may know, best match first": "Personen, die Sie vielleicht kennen, beste Treffer zuerst",
+    "No suggestions right now": "Gerade keine Vorschläge",
+    "People with friends in common, in your groups or nearby show up here.": "Hier erscheinen Personen mit gemeinsamen Freunden, aus Ihren Gruppen oder aus Ihrer Nähe.",
+    "Profiles you may want to follow, best match first": "Profile, denen Sie folgen könnten, beste Treffer zuerst",
+    "Profiles followed by those you follow, or in your groups, show up here.": "Hier erscheinen Profile, denen die Personen folgen, denen Sie folgen, und Mitglieder Ihrer Gruppen.",
+    "Connections: Suggestions": "Verbindungen: Vorschläge"
 }
