@@ -1,18 +1,24 @@
 /*
  * AG Grid Quartz, drawn like the Studio list: a white card, a quiet header,
  * horizontal rules only. Switches, links and buttons keep the Studio styles.
- * Tailwind 3 does not publish its palette as variables, so the colours are that palette.
+ *
+ * This file is not built by Tailwind, so it names the site's tokens itself:
+ * - the accent is rgb(var(--bx-accent-N)), the scale Studio > Designer > Settings > Accent color
+ *   sets (template/css/tailwind.css), so links, the selection and the bulk bar follow it;
+ * - corners are var(--bx-radius-*), the scale Designer's Corners setting sizes;
+ * - grays are UNA's gray scale (tailwind.config.js: NEO's neutrals), written as hex because that
+ *   scale is not published as variables.
  */
 .bx-grid-ag-wrap {
     background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    border: 1px solid #e4e4e7;
+    border-radius: var(--bx-radius-2xl);
+    box-shadow: 0 1px 2px rgb(24 24 27 / 0.04);
     overflow: clip;
 }
 
 .bx-grid-ag-wrap .bx-grid-header {
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f4f4f5;
 }
 
 .bx-grid-ag-wrap .bx-grid-header-cnt {
@@ -44,7 +50,7 @@
 
 .bx-grid-ag-wrap .bx-grid-header-controls-counter {
     flex-grow: 0;
-    color: #6b7280;
+    color: #71717a;
     font-size: 0.8125rem;
 }
 
@@ -54,13 +60,13 @@
 
 .bx-grid-ag.ag-theme-quartz {
     --bx-grid-ag-bg: #fff;
-    --bx-grid-ag-fg: #111827;
-    --bx-grid-ag-muted: #6b7280;
+    --bx-grid-ag-fg: #18181b;
+    --bx-grid-ag-muted: #71717a;
     --bx-grid-ag-header: #fff;
-    --bx-grid-ag-border: #f1f5f9;
-    --bx-grid-ag-accent: #2563eb;
-    --bx-grid-ag-selected: #eff6ff;
-    --bx-grid-ag-hover: #f8fafc;
+    --bx-grid-ag-border: #f4f4f5;
+    --bx-grid-ag-accent: rgb(var(--bx-accent-600));
+    --bx-grid-ag-selected: rgb(var(--bx-accent-50));
+    --bx-grid-ag-hover: #fafafc;
     --bx-grid-ag-radius: 0;
 
     --ag-active-color: var(--bx-grid-ag-accent);
@@ -81,7 +87,7 @@
     --ag-borders: none;
     --ag-row-border-style: solid;
     --ag-row-border-width: 1px;
-    --ag-row-border-color: #f1f5f9;
+    --ag-row-border-color: #f4f4f5;
     --ag-checkbox-border-radius: 4px;
     --ag-border-radius: 0;
     --ag-wrapper-border-radius: 0;
@@ -94,13 +100,13 @@
 }
 
 .bx-grid-ag.ag-theme-quartz .ag-header {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e4e4e7;
 }
 
 .bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
     font-size: 13px;
     font-weight: 500;
-    color: #6b7280;
+    color: #71717a;
 }
 
 .bx-grid-ag.ag-theme-quartz .ag-header-cell,
@@ -126,16 +132,16 @@
     min-width: 0;
     overflow: hidden;
     gap: 0.35rem;
-    color: #111827;
+    color: #18181b;
 }
 
 .bx-grid-ag .bx-grid-ag-cell a {
-    color: #2563eb;
+    color: rgb(var(--bx-accent-600));
     text-decoration: none;
 }
 
 .bx-grid-ag .bx-grid-ag-cell a:hover {
-    color: #1d4ed8;
+    color: rgb(var(--bx-accent-700));
 }
 
 .bx-grid-ag-text {
@@ -160,27 +166,68 @@
     margin: 0 auto;
     padding: 0;
     border: 0;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background: transparent;
-    color: #9ca3af;
+    color: #71717a; /* gray-500: 4.8:1 on the card, a control needs 3:1 */
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .bx-grid-ag-chevron:hover,
 .bx-grid-ag-chevron.is-open {
-    color: #374151;
+    color: #3f3f46;
+}
+
+/* Keyboard focus on the grid's own buttons: the site's ring, in the accent. */
+.bx-grid-ag-chevron:focus-visible,
+.bx-grid-ag-bulk-clear:focus-visible,
+.bx-grid-ag .bx-grid-secret-toggle:focus-visible,
+.bx-grid-ag .ag-selection-checkbox input:focus-visible {
+    outline: 2px solid rgb(var(--bx-accent-600));
+    outline-offset: 2px;
+}
+
+html.dark .bx-grid-ag-chevron:focus-visible,
+html.dark .bx-grid-ag-bulk-clear:focus-visible,
+html.dark .bx-grid-ag .bx-grid-secret-toggle:focus-visible,
+html.dark .bx-grid-ag .ag-selection-checkbox input:focus-visible,
+.dark .bx-grid-ag-chevron:focus-visible,
+.dark .bx-grid-ag-bulk-clear:focus-visible,
+.dark .bx-grid-ag .bx-grid-secret-toggle:focus-visible,
+.dark .bx-grid-ag .ag-selection-checkbox input:focus-visible {
+    outline-color: rgb(var(--bx-accent-400));
+}
+
+/* The grid's own cell wrapper (the row checkbox, the drag handle) is as tall as the row, so
+   what it holds sits on the row's middle line like every other cell. */
+.bx-grid-ag .ag-cell > .ag-cell-wrapper {
+    height: 100%;
+}
+
+/* A row action the row does not allow now, as the classic grid greys it. */
+.bx-grid-ag .bx-btn.bx-btn-disabled {
+    opacity: 0.5;
+    cursor: default;
 }
 
 .bx-grid-ag-chevron:hover {
     background-color: rgb(0 0 0 / 0.05);
 }
 
+html.dark .bx-grid-ag-chevron,
+html.dark .bx-grid-ag .bx-grid-drag-handle,
+html.dark .bx-grid-ag .ag-drag-handle,
+.dark .bx-grid-ag-chevron,
+.dark .bx-grid-ag .bx-grid-drag-handle,
+.dark .bx-grid-ag .ag-drag-handle {
+    color: #a1a1aa; /* gray-400: 5.8:1 on the dark card */
+}
+
 html.dark .bx-grid-ag-chevron:hover,
 html.dark .bx-grid-ag-chevron.is-open,
 .dark .bx-grid-ag-chevron:hover,
 .dark .bx-grid-ag-chevron.is-open {
-    color: #e5e7eb;
+    color: #e4e4e7;
 }
 
 html.dark .bx-grid-ag-chevron:hover,
@@ -237,8 +284,8 @@ html.dark .bx-grid-ag-chevron:hover,
     left: 0;
     right: 0;
     z-index: 2;
-    background: #f8fafc;
-    border-top: 1px solid #f1f5f9;
+    background: #fafafc;
+    border-top: 1px solid #f4f4f5;
 }
 
 .bx-grid-ag-item {
@@ -247,12 +294,12 @@ html.dark .bx-grid-ag-chevron:hover,
     gap: 0.75rem;
     height: 44px;
     padding: 0 0.85rem 0 2.5rem;
-    border-bottom: 1px solid #f1f5f9;
-    background: #f8fafc;
+    border-bottom: 1px solid #f4f4f5;
+    background: #fafafc;
 }
 
 .bx-grid-ag-item-empty {
-    color: #6b7280;
+    color: #71717a;
 }
 
 .bx-grid-ag-item-title {
@@ -276,12 +323,12 @@ html.dark .bx-grid-ag-chevron:hover,
     justify-content: center;
     flex: 0 0 auto;
     width: 1.5rem;
-    color: #6b7280;
+    color: #71717a;
     cursor: move;
 }
 
 .bx-grid-ag .ag-drag-handle {
-    color: #6b7280;
+    color: #71717a;
     cursor: move;
 }
 
@@ -303,7 +350,7 @@ html.dark .bx-grid-ag-chevron:hover,
     align-items: center;
     gap: 0.5rem;
     min-width: 0;
-    color: #111827;
+    color: #18181b;
 }
 
 .bx-grid-ag .bx-grid-ag-profile img {
@@ -319,74 +366,79 @@ html.dark .bx-grid-ag-chevron:hover,
 
 .bx-grid-ag-wrap .bx-grid-footer-cnt {
     padding: 0.65rem 1rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #f4f4f5;
 }
 
 
 html.dark .bx-grid-ag-wrap,
 .dark .bx-grid-ag-wrap {
-    background: #1f2937;
-    border-color: #374151;
+    background: #27272a;
+    border-color: #3f3f46;
     box-shadow: none;
+}
+
+html.dark .bx-grid-ag-wrap .bx-grid-header-controls-counter,
+.dark .bx-grid-ag-wrap .bx-grid-header-controls-counter {
+    color: #a1a1aa; /* gray-400: 5.8:1 on the dark card (gray-500 is 3.1:1) */
 }
 
 html.dark .bx-grid-ag-wrap .bx-grid-header,
 .dark .bx-grid-ag-wrap .bx-grid-header,
 html.dark .bx-grid-ag-wrap .bx-grid-footer-cnt,
 .dark .bx-grid-ag-wrap .bx-grid-footer-cnt {
-    border-color: #374151;
+    border-color: #3f3f46;
 }
 
 html.dark .bx-grid-ag.ag-theme-quartz,
 .dark .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: #1f2937;
-    --bx-grid-ag-fg: #e5e7eb;
-    --bx-grid-ag-muted: #9ca3af;
-    --bx-grid-ag-header: #1f2937;
-    --bx-grid-ag-border: #374151;
-    --bx-grid-ag-accent: #60a5fa;
-    --bx-grid-ag-selected: #1e3a5f;
+    --bx-grid-ag-bg: #27272a;
+    --bx-grid-ag-fg: #e4e4e7;
+    --bx-grid-ag-muted: #a1a1aa;
+    --bx-grid-ag-header: #27272a;
+    --bx-grid-ag-border: #3f3f46;
+    --bx-grid-ag-accent: rgb(var(--bx-accent-400));
+    --bx-grid-ag-selected: rgb(var(--bx-accent-900) / 0.5);
     --bx-grid-ag-hover: rgb(255 255 255 / 0.04);
     color-scheme: dark;
 }
 
 html.dark .bx-grid-ag.ag-theme-quartz .ag-header,
 .dark .bx-grid-ag.ag-theme-quartz .ag-header {
-    border-bottom-color: #374151;
+    border-bottom-color: #3f3f46;
 }
 
 html.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text,
 .dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
-    color: #9ca3af;
+    color: #a1a1aa;
 }
 
 html.dark .bx-grid-ag .bx-grid-ag-cell,
 .dark .bx-grid-ag .bx-grid-ag-cell {
-    color: #e5e7eb;
+    color: #e4e4e7;
 }
 
 html.dark .bx-grid-ag .bx-grid-ag-cell a,
 .dark .bx-grid-ag .bx-grid-ag-cell a {
-    color: #60a5fa;
+    color: rgb(var(--bx-accent-400));
 }
 
 html.dark .bx-grid-ag-items,
 .dark .bx-grid-ag-items,
 html.dark .bx-grid-ag-item,
 .dark .bx-grid-ag-item {
-    background: #111827;
-    border-color: #374151;
+    background: #18181b;
+    border-color: #3f3f46;
 }
 
 /* Card rows (from tablets up, set by the script): every row is a card 4px inside its slot, so two
    cards sit 8px apart. The card is the row's ::before, which the theme also uses for hover and
    selection, so those states recolour the card. No column is pinned, so a card is one piece. */
 .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
-    --bx-grid-ag-bg: #f9fafb;
+    --bx-grid-ag-bg: #fafafc;
     --bx-grid-ag-card: #fff;
-    --bx-grid-ag-card-border: #e5e7eb;
-    --bx-grid-ag-card-border-hover: #d1d5db;
-    --bx-grid-ag-card-border-selected: #bfdbfe;
+    --bx-grid-ag-card-border: #e4e4e7;
+    --bx-grid-ag-card-border-hover: #d4d4d8;
+    --bx-grid-ag-card-border-selected: rgb(var(--bx-accent-200));
     --ag-row-border-width: 0;
     --ag-cell-horizontal-padding: 16px;
 }
@@ -408,10 +460,10 @@ html.dark .bx-grid-ag-item,
     width: auto;
     height: auto;
     border: 1px solid var(--bx-grid-ag-card-border);
-    border-radius: 12px;
+    border-radius: var(--bx-radius-xl);
     background-color: var(--bx-grid-ag-card);
     background-image: none;
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    box-shadow: 0 1px 2px rgb(24 24 27 / 0.04);
     pointer-events: none;
     z-index: 0;
 }
@@ -437,17 +489,17 @@ html.dark .bx-grid-ag-item,
 .bx-grid-ag.bx-grid-ag-cards .bx-grid-ag-items {
     left: 4px;
     right: 4px;
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 var(--bx-radius-xl) var(--bx-radius-xl);
     overflow: hidden;
 }
 
 html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
 .dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
-    --bx-grid-ag-bg: #18212f;
-    --bx-grid-ag-card: #1f2937;
-    --bx-grid-ag-card-border: #374151;
-    --bx-grid-ag-card-border-hover: #4b5563;
-    --bx-grid-ag-card-border-selected: #1d4ed8;
+    --bx-grid-ag-bg: #18181b;
+    --bx-grid-ag-card: #27272a;
+    --bx-grid-ag-card-border: #3f3f46;
+    --bx-grid-ag-card-border-hover: #52525b;
+    --bx-grid-ag-card-border-selected: rgb(var(--bx-accent-700));
 }
 
 /* Bulk bar: between the filters and the rows, only while rows are selected. The count, the bulk
@@ -458,9 +510,9 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
     gap: 0.5rem;
     margin: 0.5rem 1rem;
     padding: 0.375rem 0.5rem 0.375rem 0.75rem;
-    border: 1px solid #bfdbfe;
-    border-radius: 0.75rem;
-    background: #eff6ff;
+    border: 1px solid rgb(var(--bx-accent-200));
+    border-radius: var(--bx-radius-xl);
+    background: rgb(var(--bx-accent-50));
 }
 
 .bx-grid-ag-bulk[hidden] {
@@ -470,8 +522,8 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
 .bx-grid-ag-bulk-count {
     flex: 0 0 auto;
     padding-right: 0.5rem;
-    border-right: 1px solid #bfdbfe;
-    color: #1d4ed8;
+    border-right: 1px solid rgb(var(--bx-accent-200));
+    color: rgb(var(--bx-accent-700));
     font-size: 0.875rem;
     font-weight: 600;
     white-space: nowrap;
@@ -492,7 +544,7 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
 
 .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"] {
     order: 1;
-    color: #dc2626;
+    color: #b91c1c; /* red-700: 5.9:1 on the button */
 }
 
 .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"]:first-of-type,
@@ -509,36 +561,41 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
     height: 1.75rem;
     padding: 0;
     border: 0;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background: transparent;
-    color: #6b7280;
+    color: #71717a;
     cursor: pointer;
 }
 
 .bx-grid-ag-bulk-clear:hover {
-    background: rgb(0 0 0 / 0.05);
-    color: #111827;
+    background: rgb(var(--bx-accent-100));
+    color: #18181b;
 }
 
 html.dark .bx-grid-ag-bulk,
 .dark .bx-grid-ag-bulk {
-    border-color: #1e40af;
-    background: rgb(30 58 138 / 0.35);
+    border-color: rgb(var(--bx-accent-800));
+    background: rgb(var(--bx-accent-900) / 0.35);
 }
 
 html.dark .bx-grid-ag-bulk-count,
 .dark .bx-grid-ag-bulk-count {
-    border-color: #1e40af;
-    color: #93c5fd;
+    border-color: rgb(var(--bx-accent-800));
+    color: rgb(var(--bx-accent-300));
 }
 
 html.dark .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"],
 .dark .bx-grid-ag-bulk-actions [bx_grid_action_bulk*="delete"] {
-    color: #f87171;
+    color: #fca5a5; /* red-300: 6:1 on the button in the dark bar (red-400 is 3.8:1) */
+}
+
+html.dark .bx-grid-ag-bulk-clear,
+.dark .bx-grid-ag-bulk-clear {
+    color: #a1a1aa;
 }
 
 html.dark .bx-grid-ag-bulk-clear:hover,
 .dark .bx-grid-ag-bulk-clear:hover {
-    background: rgb(255 255 255 / 0.08);
-    color: #e5e7eb;
+    background: rgb(var(--bx-accent-800));
+    color: #fafafc;
 }
