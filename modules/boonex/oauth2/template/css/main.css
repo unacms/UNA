@@ -102,6 +102,20 @@ html.dark .bx-auth-scope-icon {
     margin: 0;
 }
 
+/* An account with no profile: what to do, and a button that does it, as wide as Cancel under it. */
+.bx-auth-no-profile {
+    margin-top: 1.25rem;
+}
+
+#bx-auth-form .bx-btn.bx-auth-create-profile {
+    float: none;
+    display: flex;
+    width: 100%;
+    margin: 0.75rem 0 0;
+    justify-content: center;
+    text-align: center;
+}
+
 .bx-auth-note {
     margin: 1rem 0 0;
 }

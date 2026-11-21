@@ -33,6 +33,7 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
     private $_aCodes = [];
     private $_aAccessTokens = [];
     private $_aRefreshTokens = [];
+    private $_aAccounts = [];
 
     protected function setUp(): void
     {
@@ -56,6 +57,10 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
         foreach ($this->_aClients as $sClientId)
             foreach (['bx_oauth_authorization_codes', 'bx_oauth_access_tokens', 'bx_oauth_refresh_tokens', 'bx_oauth_clients'] as $sTable)
                 $oDb->query("DELETE FROM `" . $sTable . "` WHERE `client_id` = :c", ['c' => $sClientId]);
+
+        foreach ($this->_aAccounts as $iAccount)
+            if (($oAccount = BxDolAccount::getInstance($iAccount, true)))
+                $oAccount->delete(true);
 
         if ($this->_sApiV2Enable !== null && getParam(self::OPTION_API_V2) !== $this->_sApiV2Enable)
             setParam(self::OPTION_API_V2, $this->_sApiV2Enable);
@@ -283,6 +288,61 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
             $this->assertSame(200, $this->revoke($sToken, 'refresh_token')['status']);
         $this->assertSame(200, $this->revoke($sAccess, 'access_token')['status']);
         $this->assertSame(0, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `bx_oauth_access_tokens` WHERE `access_token` = :t", ['t' => $sAccess]));
+    }
+
+    public function testAnAccountWithNoProfileIsSentToCreateOneAndBack(): void
+    {
+        $this->apiV2(true);
+        list($iAccount, $sCookie) = $this->signedInAccountWithNoProfile();
+
+        $sRedirect = 'http://127.0.0.1:47033/callback';
+        $sChallenge = rtrim(strtr(base64_encode(hash('sha256', 'no-profile-verifier-' . bin2hex(random_bytes(16)), true)), '+/', '-_'), '=');
+        $aQuery = ['client_id' => self::NATIVE_APP, 'response_type' => 'code', 'redirect_uri' => $sRedirect, 'scope' => 'api', 'state' => 's3', 'code_challenge' => $sChallenge, 'code_challenge_method' => 'S256'];
+        $sAuthUrl = BX_DOL_URL_ROOT . 'm/oauth2/auth/?' . http_build_query($aQuery);
+
+        // the consent page has nothing to connect as: it says so, and Create profile leads to this request again with `create_profile`
+        $a = $this->auth('GET', $aQuery, $sCookie);
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertSame(1, preg_match('#<div id="bx-auth-form".*?</form>#s', $a['body'], $m), 'the consent form');
+        $this->assertStringNotContainsString('bx-auth-profiles', $m[0], 'no empty list of profiles');
+        $this->assertStringNotContainsString(_t('_bx_oauth_authorize_choose'), $m[0]);
+        $this->assertStringContainsString(_t('_bx_oauth_authorize_no_profile', 'UNA Desktop'), $m[0]);
+        $this->assertSame(1, preg_match('#<a href="([^"]+)" class="bx-btn bx-btn-primary bx-auth-create-profile">' . preg_quote(_t('_sys_txt_account_profile_system_action'), '#') . '</a>#', $m[0], $aLink), 'Create profile');
+        $sCreateUrl = html_entity_decode($aLink[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $this->assertSame($sAuthUrl . '&create_profile=1', $sCreateUrl);
+        $this->assertSame(1, preg_match_all('#<button type="submit" name="profile_id" value="0"#', $m[0]), 'Cancel is still there');
+
+        // following it: to profile creation, and the session says where a new profile goes back to
+        $a = $this->auth('GET', $aQuery + ['create_profile' => 1], $sCookie);
+        $this->assertSame(302, $a['status'], $a['body']);
+        $this->assertSame(BxDolPage::getProfileRequiredUrl(), BxDolTestPhpServer::header($a, 'location'));
+        $sSessionId = substr($sCookie, strlen(BX_DOL_SESSION_COOKIE . '='));
+        $aData = unserialize((string)BxDolDb::getInstance()->getOne("SELECT `data` FROM `sys_sessions` WHERE `id` = :id", ['id' => $sSessionId]));
+        $this->assertSame($sAuthUrl, $aData['custom-referrer'] ?? null, 'back to the consent page, without create_profile');
+
+        // the account's own profile (the system one) is no profile to connect as: no code for it, whatever is posted
+        $aForm = $this->consentForm($this->auth('GET', $aQuery, $sCookie)['body']);
+        $iSystemProfile = (int)BxDolProfile::getInstanceAccountProfile($iAccount)->id();
+        $a = $this->auth('POST', array_merge($aForm, ['profile_id' => (string)$iSystemProfile]), $sCookie);
+        $this->assertSame(302, $a['status'], $a['body']);
+        $sLocation = (string)BxDolTestPhpServer::header($a, 'location');
+        $this->assertStringStartsWith($sRedirect . '?', $sLocation);
+        parse_str((string)parse_url($sLocation, PHP_URL_QUERY), $aBack);
+        $this->assertSame('access_denied', $aBack['error'] ?? '');
+        $this->assertArrayNotHasKey('code', $aBack);
+    }
+
+    public function testCreateProfileIsNothingToAnAccountWithAProfile(): void
+    {
+        $this->apiV2(true);
+        list($oAccount, $sCookie) = $this->signedInUser();
+        $iProfile = (int)$oAccount->getProfilesIds()[0];
+
+        $sChallenge = rtrim(strtr(base64_encode(hash('sha256', 'with-profile-verifier-' . bin2hex(random_bytes(16)), true)), '+/', '-_'), '=');
+        $a = $this->auth('GET', ['client_id' => self::NATIVE_APP, 'response_type' => 'code', 'redirect_uri' => 'http://127.0.0.1:47034/callback', 'scope' => 'api', 'state' => 's4', 'code_challenge' => $sChallenge, 'code_challenge_method' => 'S256', 'create_profile' => 1], $sCookie);
+        $this->assertSame(200, $a['status'], $a['body']);
+        $this->assertConsentButtons($a['body'], $iProfile);
+        $this->assertStringNotContainsString('bx-auth-create-profile', $a['body']);
     }
 
     public function testNativeAppRedirectIsItsLoopbackAddressOnAnyPort(): void
@@ -559,6 +619,33 @@ class OAuthAuthorizeTest extends BxDolIntegrationTestCase
 
         bx_login($oAccount->id());
         return [$oAccount, BX_DOL_SESSION_COOKIE . '=' . BxDolSession::getInstance()->getId()];
+    }
+
+    /**
+     * A new account that has only its own (system) profile, signed in with a session; removed after the test.
+     * @return array [account id, Cookie header value]
+     */
+    private function signedInAccountWithNoProfile(): array
+    {
+        BxDolForm::unSetObjectInstance('sys_account', 'sys_account_create');
+        $sTag = bin2hex(random_bytes(4));
+        $aResult = bx_instance('BxTemplAccountForms')->createAccount([
+            'name' => 'OAuthTest ' . $sTag,
+            'email' => 'oauthtest-' . $sTag . '@example.com',
+            'password' => 'OAuthTest-' . bin2hex(random_bytes(8)),
+        ], BX_PROFILE_ACTION_AUTO, false);
+        $iAccount = (int)($aResult['account_id'] ?? 0);
+        $this->assertGreaterThan(0, $iAccount, 'an account was made: ' . json_encode($aResult['error'] ?? ''));
+        $this->_aAccounts[] = $iAccount;
+
+        $oAccount = BxDolAccount::getInstance($iAccount, true);
+        if ($oAccount->getProfiles())
+            $this->markTestSkipped('This site makes a profile with every account (sys_account_default_profile_type).');
+        if (!$oAccount->isConfirmedEmail())
+            $oAccount->updateEmailConfirmed(true, false);
+
+        bx_login($iAccount);
+        return [$iAccount, BX_DOL_SESSION_COOKIE . '=' . BxDolSession::getInstance()->getId()];
     }
 
     /**
