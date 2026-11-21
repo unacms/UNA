@@ -611,7 +611,7 @@ export const PageHeaderBody = memo(({
                     </Row>
                 </View>
                 {/* A 404 borrows the home page's data for its chrome: no tab is the current page there. */}
-                {isWeb && <MenuTop url={is404 ? '' : pageData?.url} uri={is404 ? '' : pageData?.uri} align={headerLayout.align} headerBox={headerBox} />}
+                {isWeb && <MenuTop url={is404 ? null : pageData?.url} uri={is404 ? null : pageData?.uri} align={headerLayout.align} headerBox={headerBox} />}
                 <View className={' ' + appSetting('layout', 'header', 'content_right')}>
                 
                     {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} />}
