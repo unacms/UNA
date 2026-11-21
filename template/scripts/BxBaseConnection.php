@@ -336,7 +336,7 @@ class BxBaseConnection extends BxDolConnection
 
         return [
             'count' => $iCount,
-            'countf' => _t(isset($aParams['caption']) ? $aParams['caption'] : $this->_aT['counter'], $iCount)
+            'countf' => _tn(isset($aParams['caption']) ? $aParams['caption'] : $this->_aT['counter'], $iCount)
         ];
     }
 
@@ -448,7 +448,7 @@ class BxBaseConnection extends BxDolConnection
                 'condition' => !isset($aParams['show_counter_label_text']) || $aParams['show_counter_label_text'] === true,
                 'content' => array(
                     'style_prefix' => $this->_sStylePrefix,
-                    'text' => _t(isset($aParams['caption']) ? $aParams['caption'] : $this->_aT['counter'], $iCount)
+                    'text' => _tn(isset($aParams['caption']) ? $aParams['caption'] : $this->_aT['counter'], $iCount)
                 )
             )
         ));

@@ -138,7 +138,7 @@ class BxPollsVoteSubentries extends BxTemplVoteLikes
 
     protected function _getCounterLabel($iCount, $aParams = array())
     {
-        return _t('_bx_polls_txt_subentry_vote_counter', $iCount);
+        return _tn('_bx_polls_txt_subentry_vote_counter', $iCount);
     }
 
     protected function _isShowDoVote($aParams, $isAllowedVote, $bCount)
