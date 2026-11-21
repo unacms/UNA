@@ -12,10 +12,13 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
+import { menuViewerKey } from 'app/lib/menu-remember';
 
 /**
- * The apps menu's items, and whether it has nothing to show (off in the settings, or no item for this viewer), when the
- * header leaves no slot for it. `load` false skips loading the menu.
+ * The apps menu's items, whether it has nothing to show (off in the settings, or no item for this viewer), when the
+ * header leaves no slot for it, and whether it is still `loading` (the header draws a placeholder in its slot).
+ * `load` false skips loading the menu. A member's menu is kept on the device (lib/menu-remember.ts), so it loads
+ * only the first time.
  */
 export function useMenuLauncherItems(load = true) {
     const bApps = appSetting('layout', 'apps');
@@ -23,13 +26,17 @@ export function useMenuLauncherItems(load = true) {
     // `menu_launcher` setting pins the apps; unset, they come from UNA's launcher menu.
     const staticItems = appSetting('menu_items', 'menu_launcher');
     const useStatic = Array.isArray(staticItems) && staticItems.length > 0;
-    const { menuData } = useMenuData(load && !useStatic ? appSetting('menu_items', 'objects', 'launcher') : null);
+    const { menuData, isFetched } = useMenuData(
+        load && !useStatic ? appSetting('menu_items', 'objects', 'launcher') : null,
+        { rememberFor: menuViewerKey(currentUser) }
+    );
 
     const items = useStatic
         ? menuItemsByName('', staticItems, currentUser)
         : menuItemsByNameNew('menu_post', menuData, currentUser);
+    const known = useStatic || !!menuData || isFetched;
 
-    return { items, empty: !bApps || (!hasDropdownActions(items) && (useStatic || !!menuData)) };
+    return { items, empty: !bApps || (!hasDropdownActions(items) && known), loading: !!bApps && load && !known };
 }
 
 export default function MenuLauncher({ buttonProps }) {
