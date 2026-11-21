@@ -82,21 +82,22 @@ export default function HeaderElement({ url, uri }) {
     // The page brings a visitor's toolbar along; it loads here only after a change of viewer without a page load.
     const guestToolbarLoading = !currentUser && followsGuestToolbar && !guestToolbar && !guestToolbarFetched
     const guestSlot = (name) => {
-        if (guestToolbarLoading) return SLOT.loading
+        if (guestToolbarLoading) return isWeb ? SLOT.loading : SLOT.hidden
         return inGuestToolbar(name) ? SLOT.shown : SLOT.hidden
     }
     const addMenu = useMenuAddItems(has('add'))
     const launcherMenu = useMenuLauncherItems(has('launcher'))
     const menuSlot = (menu) => {
-        if (menu.loading) return SLOT.loading
+        if (menu.loading) return isWeb ? SLOT.loading : SLOT.shown
         return menu.empty ? SLOT.hidden : SLOT.shown
     }
     const shownIf = (condition) => (condition ? SLOT.shown : SLOT.hidden)
 
-    // A tool with nothing to show gets no slot: an empty one would still take the row's gap. One whose data is
-    // still loading keeps its slot with a placeholder the size of its button, so the toolbar is as wide from its
-    // first paint as it will be (the main menu beside it fits its tabs in the room the toolbar leaves) and gives the
-    // slot up only when the data says it is empty.
+    // A tool with nothing to show gets no slot: an empty one would still take the row's gap. On the web one whose
+    // data is still loading keeps its slot with a placeholder the size of its button, so the toolbar is as wide from
+    // its first paint as it will be (the main menu beside it fits its tabs in the room the toolbar leaves) and gives
+    // the slot up only when the data says it is empty. Native is as it was: a menu's button shows while its menu
+    // loads, a visitor's tools once their toolbar has.
     const slotOf = (item) => {
         switch (item.component) {
             case "search":
