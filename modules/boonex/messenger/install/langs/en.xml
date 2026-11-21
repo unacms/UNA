@@ -21,7 +21,7 @@
 	<string name="_bx_messenger_lots_type_all"><![CDATA[All]]></string>	
 	<string name="_bx_messenger_symbols_num_brief_jot"><![CDATA[Message's length in chat's preview]]></string>
 	<string name="_bx_messenger_post_area_message"><![CDATA[Message ...]]></string>
-	<string name="_bx_messenger_title_search"><![CDATA[Search..]]></string>
+	<string name="_bx_messenger_title_search"><![CDATA[Search]]></string>
 	<string name="_bx_messenger_not_logged"><![CDATA[Please sign in first.]]></string>
 	<string name="_bx_messenger_not_found"><![CDATA[Chat is not found!]]></string>
 	<string name="_bx_messenger_jot_number_default"><![CDATA[Messages number in messenger history by default]]></string>

@@ -135,7 +135,28 @@ class BxDolTranscoderImage extends BxDolTranscoder implements iBxDolFactoryObjec
                 return $sFileUrl;
         }
 
+        // A page made before the browser stored its pixel density (the first visit) can't tell a 2x screen
+        // from a 1x one: the image is asked for through image_transcoder.php, which reads the cookie the
+        // page's head sets before any image is requested, and redirects to the right copy.
+        if($this->isDevicePixelRatioUnknown())
+            return $this->getFileUrlNotReady($mixedHandler);
+
         return parent::getFileUrl($mixedHandler);
+    }
+
+    /**
+     * Whether this request can't tell the screen's pixel density: a browser's request without the
+     * devicePixelRatio cookie, for a transcoder that makes 2x copies.
+     */
+    public function isDevicePixelRatioUnknown()
+    {
+        if($this->_iDevicePixelRatio || bx_is_api() || empty($_SERVER['HTTP_USER_AGENT']))
+            return false;
+
+        if(!empty($this->_aObject['source_params']['disable_retina']))
+            return false;
+
+        return !isset($_COOKIE['devicePixelRatio']);
     }
 
     /**
@@ -164,7 +185,10 @@ class BxDolTranscoderImage extends BxDolTranscoder implements iBxDolFactoryObjec
      */
     public function getFileUrlNotReady($mixedHandler)
     {
-        return BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $this->_aObject['object'] . '&h=' . $mixedHandler . '&dpx=' . $this->getDevicePixelRatio() . '&t=' . time() . '&s=' . $this->getHandlerSignature($mixedHandler);
+        // Without a known density image_transcoder.php takes it from the request's cookie.
+        $sDpx = $this->isDevicePixelRatioUnknown() ? '' : '&dpx=' . $this->getDevicePixelRatio();
+
+        return BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $this->_aObject['object'] . '&h=' . $mixedHandler . $sDpx . '&t=' . time() . '&s=' . $this->getHandlerSignature($mixedHandler);
     }
 
     public function isFileReady ($mixedHandlerOrig, $isCheckOutdated = true)
