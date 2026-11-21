@@ -34,6 +34,10 @@ class BxMessengerServices extends BxDol
 
     public function serviceGetBlockMain()
     {
+        if (($sMsg = $this->_oModule->getNoProfileMessage()) !== false) {
+            return [bx_api_get_msg($sMsg)];
+        }
+
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $aMenuMain = [];

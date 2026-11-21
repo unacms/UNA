@@ -62,7 +62,12 @@ function processJsonData(oData) {
 			fContinue(oData);
 		});
     else if(oData && oData.toast != undefined && oData.toast.length != 0) {
-        bx_toast(oData.toast);
+        // A success doesn't block: it shows as a toast, on the next page when the reply reloads or redirects.
+        if((oData.reload != undefined && Number.parseInt(oData.reload) == 1) || (oData.redirect != undefined && oData.redirect.length != 0))
+            bx_toast_next_page(oData.toast);
+        else
+            bx_toast(oData.toast);
+
         fContinue(oData);
     }
 	else
@@ -1722,28 +1727,6 @@ function bx_search (n, sFormSel, sResultsContSel, sLoadingContSel, bSortResults,
     return false;
 }
 
-function on_filter_apply(e, sInputId, sFilterName)
-{
-	var oRegExp = new RegExp("[&]{0,1}" + sFilterName + "=.*");
-    var s = ('' + document.location).replace(oRegExp, ''); // remove filter
-    s = s.replace(/page=\d+/, 'page=1'); // goto 1st page
-    if (e.checked && $('#' + sInputId).val().length > 2)
-        s += (-1 == s.indexOf('?') ? '?' : '&') + sFilterName + '=' + $('#' + sInputId).val(); // append filter
-    document.location = s;
-}
-
-function on_filter_key_up (e, sCheckboxId)
-{
-    if (13 == e.keyCode) {
-        $('#' + sCheckboxId).click();
-        return false;
-    }
-    else {
-        $('#' + sCheckboxId).removeAttr('checked');
-        return true;
-    }
-}
-
 function on_copyright_click()
 {
 	oDate = new Date();
@@ -1815,7 +1798,7 @@ function bx_autocomplete_fields(iId, sUrl, sName, bShowImg, bOnlyOnce, onSelect)
 			else if(bShowImg && item.thumb != undefined)
 				sImage = '<img class="bx-def-thumb bx-def-icon-size bx-def-margin-sec-right" src="' + item.thumb + '">';
 
-			$(this).before('<b class="val bx-def-color-bg-hl bx-def-round-corners">' + sImage + item.label + '<i class="sys-icon times ltr:ml-1 rtl:mr-1"></i><input type="hidden" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="' + sName + (bOnlyOnce ? '' : '[]') + '" value="' + item.value + '" /></b>');
+			$(this).before('<b class="val bx-def-color-bg-hl bx-def-round-corners">' + sImage + item.label + '<i class="sys-icon x ltr:ml-1 rtl:mr-1"></i><input type="hidden" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="' + sName + (bOnlyOnce ? '' : '[]') + '" value="' + item.value + '" /></b>');
 		}
 
 		if (!bOnlyOnce)
@@ -1912,6 +1895,34 @@ function bx_toast(sMessage, oParams)
     }, 1000 * (oParams && oParams.autoHide !== undefined ? parseInt(oParams.autoHide) : 3));
 };
 
+/**
+ * Show a toast on the next page this tab opens: for a success that reloads or redirects.
+ */
+function bx_toast_next_page(sMessage)
+{
+    try {
+        sessionStorage.setItem('bx-toast-next-page', sMessage);
+    }
+    catch(e) {
+        // no storage (private window, blocked site data): the toast is skipped, the page still works
+    }
+}
+
+$(document).ready(function() {
+    var sMessage = null;
+    try {
+        sMessage = sessionStorage.getItem('bx-toast-next-page');
+        if(sMessage)
+            sessionStorage.removeItem('bx-toast-next-page');
+    }
+    catch(e) {
+        // no storage: nothing to show
+    }
+
+    if(sMessage)
+        bx_toast(sMessage);
+});
+
 function bx_is_color_scheme_dark()
 {
     return localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -1986,20 +1997,133 @@ if(typeof MutationObserver !== 'undefined')
 document.addEventListener('DOMContentLoaded', bx_sync_theme_color);
 
 /*
- * Introduction tours (BxDolTours): the homepage tour for operators and the Studio tour, both
- * built on Shepherd (plugins_public/shepherd) and styled by template/css/tour.css.
+ * Hides an onboarding checklist (the "Get started" block, BxDolTours) for the account: its Hide button. tour.php keeps
+ * it under the checklist's menu, so it shows again only from the account menu ("Get started").
+ */
+function bx_onboarding_hide(oButton, sMenu)
+{
+    $.post(sUrlRoot + 'tour.php', {action: 'seen', tour: sMenu});
+
+    oButton.closest('.bx-page-block-container')?.remove();
+
+    // Focus would be lost with the button, so it goes to the page's main content.
+    var oMain = document.querySelector('main');
+    if(oMain) {
+        if(!oMain.hasAttribute('tabindex'))
+            oMain.setAttribute('tabindex', '-1');
+        oMain.focus({preventScroll: true});
+    }
+}
+
+/*
+ * Chart.js text and grid lines in the page's colours, light or dark: the body's text colour, and gray lines.
+ */
+function bx_chart_theme_defaults()
+{
+    if(typeof Chart == 'undefined')
+        return;
+
+    var bDark = document.documentElement.classList.contains('dark');
+    Chart.defaults.color = getComputedStyle(document.body).color;
+    Chart.defaults.borderColor = bDark ? 'rgb(255 255 255 / 0.1)' : 'rgb(0 0 0 / 0.08)';
+}
+
+/*
+ * Colours of chart series, as NEO's --chart-* (palette-schemes.css): the site's accent (--bx-accent-*, Designer's
+ * Accent color), then cyan, amber, pink, green, violet and a few more, the light or the dark scheme's set; each has
+ * 3:1 against cards. Returns iCount colours, repeating the set when there are more series.
+ */
+function bx_chart_series_colors(iCount, fAlpha)
+{
+    var bDark = document.documentElement.classList.contains('dark');
+    var sAccent = (getComputedStyle(document.documentElement).getPropertyValue(bDark ? '--bx-accent-400' : '--bx-accent-600') || '').trim() || (bDark ? '96 165 250' : '37 99 235');
+    var aSet = bDark
+        ? [sAccent, '103 232 249', '252 211 77', '249 168 212', '134 239 172', '196 181 253', '253 186 116', '94 234 212', '165 180 252', '203 213 225', '253 164 175']
+        : [sAccent, '8 145 178', '217 119 6', '219 39 119', '22 163 74', '124 58 237', '234 88 12', '13 148 136', '79 70 229', '100 116 139', '225 29 72'];
+
+    var aResult = [];
+    for(var i = 0; i < iCount; i++)
+        aResult.push('rgb(' + aSet[i % aSet.length] + (fAlpha !== undefined ? ' / ' + fAlpha : '') + ')');
+
+    return aResult;
+}
+
+/*
+ * The "Write the first post" step of a "Get started" checklist (its menu item's onclick): opens the post form of the
+ * "Add new..." block on the same page instead of reloading it. That block loads when it scrolls into view, so it is
+ * scrolled to and its form is opened once it is there. A page without the block goes to the homepage, which opens it.
+ */
+function bx_onboarding_post(bStay)
+{
+    var bReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fOpen = function(oForm) {
+        oForm.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+        oForm.click();
+    };
+
+    var oForm = document.querySelector('.sys-cpf-default'); // the "Add new..." block's closed form
+    if(oForm) {
+        fOpen(oForm);
+        return false;
+    }
+
+    // the block is still a placeholder (block_async_create_post.html)
+    var oPlaceholder = document.querySelector('.sys-cpf-placeholder');
+    var oBlock = oPlaceholder ? oPlaceholder.closest('.bx-page-block-container') : null;
+    if(oBlock) {
+        oPlaceholder.scrollIntoView({block: 'center', behavior: bReduce ? 'auto' : 'smooth'});
+
+        var oObserver = new MutationObserver(function() {
+            var oLoaded = oBlock.querySelector('.sys-cpf-default');
+            if(!oLoaded)
+                return;
+
+            oObserver.disconnect();
+            fOpen(oLoaded);
+        });
+        oObserver.observe(oBlock, {childList: true, subtree: true});
+        setTimeout(function() {
+            oObserver.disconnect();
+        }, 10000);
+
+        return false;
+    }
+
+    if(!bStay)
+        location.href = sUrlRoot + '#bx-compose';
+    return false;
+}
+
+/*
+ * The homepage opened from "Write the first post" on another page (#bx-compose): opens the post form there.
+ */
+$(document).ready(function() {
+    if(location.hash != '#bx-compose')
+        return;
+
+    history.replaceState(null, '', location.pathname + location.search);
+    bx_onboarding_post(true);
+});
+
+/*
+ * Introduction tours (BxDolTours): the Studio tour, built on Shepherd (plugins_public/shepherd). A step is drawn as a
+ * standard popup (popup_box.html): the popup surface and ring (bx-popup-box, bx-popup-color-bg, bx-popup-border), its
+ * header with the title as an h2 and the popup's close button with the close icon, the text as popup content, and
+ * Back / Next as small buttons (bx-btn bx-btn-small, Next primary). template/css/tour.css holds only what a tour adds:
+ * Shepherd's showing and hiding, the pointer in the popup's colour, and the dimmed page.
  *
  * bx_tour(oOptions) returns the Shepherd tour:
- *   name       'home' or 'studio', as BxDolTours knows it
+ *   name       'studio', as BxDolTours knows it
  *   steps      [{id, title, text, element, on}]; a step whose element is missing is left out
  *   autostart  start now (the account hasn't closed or finished this tour yet)
  *   inert      selector of the page behind the overlay: inert while a step is open, so Tab
  *              and screen readers stay inside the step
+ *   close_icon selector of a <template> holding the popup's close icon
  *   labels     {back, next, done, close, step} with step as "{0} of {1}"
  *
- * Every step can be closed (its X button or Esc). Closing or finishing the tour is kept for
+ * Every step can be closed (its close button or Esc). Closing or finishing the tour is kept for
  * the account (tour.php), so it doesn't start by itself again; ?tour=1 in the address and
- * the "Introduction Tour" menu items start it.
+ * the "Introduction Tour" item of the Studio account popup start it.
  *
  * The page is dimmed by the tour's own overlay (bx_tour_spotlight): the step's element shows
  * through a rounded opening with soft edges, a little wider than the element. Shepherd's
@@ -2015,7 +2139,7 @@ function bx_tour(oOptions)
         exitOnEsc: true,
         keyboardNavigation: true,
         defaultStepOptions: {
-            classes: 'bx-tour bx-def-z-index-modal',
+            classes: 'bx-tour bx-def-z-index-modal bx-popup-box bx-popup-color-bg bx-popup-border',
             cancelIcon: {enabled: true, label: oLabels.close || ''},
             canClickTarget: false,
             scrollTo: {behavior: bStill ? 'auto' : 'smooth', block: 'center'},
@@ -2033,8 +2157,8 @@ function bx_tour(oOptions)
 
         var aButtons = [];
         if(iIndex > 0)
-            aButtons.push({text: oLabels.back, action: oTour.back, classes: 'shepherd-button-secondary'});
-        aButtons.push({text: bLast ? oLabels.done : oLabels.next, action: bLast ? oTour.complete : oTour.next, classes: 'shepherd-button-primary'});
+            aButtons.push({text: oLabels.back, action: oTour.back, classes: 'bx-btn bx-btn-small'});
+        aButtons.push({text: bLast ? oLabels.done : oLabels.next, action: bLast ? oTour.complete : oTour.next, classes: 'bx-btn bx-btn-small bx-btn-primary'});
 
         oTour.addStep({
             id: oStep.id,
@@ -2044,15 +2168,14 @@ function bx_tour(oOptions)
             buttons: aButtons,
             when: {
                 show: function() {
-                    // "2 of 5" at the start of the step's footer.
-                    var oFooter = this.getElement() && this.getElement().querySelector('.shepherd-footer');
-                    if(!oFooter || aSteps.length < 2 || oFooter.querySelector('.bx-tour-progress'))
-                        return;
+                    var oElement = this.getElement();
+                    bx_tour_popup(oElement, oOptions, aSteps.length > 1 ? (oLabels.step || '{0} / {1}').replace('{0}', iIndex + 1).replace('{1}', aSteps.length) : '');
 
-                    var oProgress = document.createElement('span');
-                    oProgress.className = 'bx-tour-progress';
-                    oProgress.textContent = (oLabels.step || '{0} / {1}').replace('{0}', iIndex + 1).replace('{1}', aSteps.length);
-                    oFooter.insertBefore(oProgress, oFooter.firstChild);
+                    // Keyboard and screen readers start in the step (Tab, Esc, the arrow keys), not on the inert page.
+                    setTimeout(function() {
+                        if(oElement?.isConnected && !oElement.contains(document.activeElement))
+                            oElement.focus({preventScroll: true});
+                    }, 0);
                 }
             }
         });
@@ -2085,6 +2208,61 @@ function bx_tour(oOptions)
         oTour.start();
 
     return oTour;
+}
+
+/**
+ * Give a step Shepherd has drawn the parts of a standard popup (popup_box.html), once per step.
+ */
+function bx_tour_popup(oElement, oOptions, sProgress)
+{
+    if(!oElement || oElement.classList.contains('bx-tour-ready'))
+        return;
+    oElement.classList.add('bx-tour-ready');
+
+    var oHeader = oElement.querySelector('.shepherd-header');
+    if(oHeader)
+        oHeader.classList.add('bx-popup-header');
+
+    // The popup's title is an h2; Shepherd names the step by the title's id.
+    var oTitle = oElement.querySelector('.shepherd-title');
+    if(oTitle && oTitle.tagName != 'H2') {
+        var oH2 = document.createElement('h2');
+        oH2.id = oTitle.id;
+        oH2.className = oTitle.className;
+        oH2.textContent = oTitle.textContent;
+        oTitle.replaceWith(oH2);
+    }
+
+    var oClose = oElement.querySelector('.shepherd-cancel-icon');
+    var oIcon = oOptions.close_icon ? document.querySelector(oOptions.close_icon) : null;
+    if(oClose) {
+        oClose.classList.add('bx-popup-element-close');
+        if(oIcon?.content) {
+            oClose.textContent = '';
+            oClose.appendChild(oIcon.content.cloneNode(true));
+        }
+    }
+
+    var oText = oElement.querySelector('.shepherd-text');
+    if(oText)
+        oText.classList.add('bx-popup-content', 'p-4', 'text-base', 'text-gray-700', 'dark:text-gray-300');
+
+    // Back and Next at the end of the footer, "2 of 5" at its start.
+    var oFooter = oElement.querySelector('.shepherd-footer');
+    if(oFooter) {
+        oFooter.classList.add('flex', 'items-center', 'justify-end', 'gap-2', 'px-4', 'pb-4');
+        if(sProgress) {
+            var oProgress = document.createElement('span');
+            oProgress.className = 'bx-tour-progress mr-auto text-sm tabular-nums text-gray-600 dark:text-gray-400';
+            oProgress.textContent = sProgress;
+            oFooter.insertBefore(oProgress, oFooter.firstChild);
+        }
+    }
+
+    // The pointer takes the popup's surface.
+    var oArrow = oElement.querySelector('.shepherd-arrow');
+    if(oArrow)
+        oArrow.classList.add('bx-popup-color-bg');
 }
 
 var glBxTourSpotlight = {svg: null, hole: null, step: null, raf: 0, from: null, rect: null, start: 0};
@@ -2414,7 +2592,7 @@ function bx_sound_form_reply(oData)
     var mixedPopup = oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup;
     if((oData.code != undefined && Number.parseInt(oData.code) != 0) || bx_sound_has_field_error(oData.form) || bx_sound_has_field_error(mixedPopup))
         bx_sound('error');
-    else if(oData.code != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
+    else if(oData.code != undefined || oData.toast != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
         bx_sound('success', {emphasis: 'subtle'});
 }
 
@@ -2470,15 +2648,15 @@ function bx_sound_toggle(oSwitch)
 }
 
 /**
- * Show the visitor's level on every Sounds control: the account menu item's name and icon (volume-up, volume-down,
- * volume-mute; the Lucide iconset redraws it from a new <i>), and the checked option of Studio's radio group. Where
+ * Show the visitor's level on every Sounds control: the account menu item's name and icon (volume-2, volume-1,
+ * volume-x; the Lucide iconset redraws it from a new <i>), and the checked option of Studio's radio group. Where
  * sounds are off for everyone, the item goes away.
  */
 function bx_sound_mark_switches()
 {
     var oConfig = glBxSounds.config;
     var sLevel = bx_sound_level();
-    var sIcon = {full: 'volume-up', quiet: 'volume-down', off: 'volume-mute'}[sLevel];
+    var sIcon = {full: 'volume-2', quiet: 'volume-1', off: 'volume-x'}[sLevel];
     var bRedraw = false;
 
     $('[data-bx-sounds-switch]').each(function() {
@@ -2489,12 +2667,12 @@ function bx_sound_mark_switches()
 
         $(this).attr({'aria-label': oConfig.labels[sLevel], title: oConfig.labels[sLevel]});
 
-        $(this).find('.sys-icon.volume-up, .sys-icon.volume-down, .sys-icon.volume-mute').each(function() {
+        $(this).find('.sys-icon.volume-2, .sys-icon.volume-1, .sys-icon.volume-x').each(function() {
             if($(this).hasClass(sIcon))
                 return;
 
             if(this.tagName.toLowerCase() == 'i')
-                $(this).removeClass('volume-up volume-down volume-mute').addClass(sIcon);
+                $(this).removeClass('volume-2 volume-1 volume-x').addClass(sIcon);
             else {
                 $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
                 bRedraw = true;
@@ -2802,6 +2980,26 @@ function bx_is_selector_in_stylesheet(sSel)
     return -1 !== a.indexOf(sSel);
 }
 
+/**
+ * Show another icon in place of one: a new `<i class="sys-icon ...">` (with an emoji inside, if given) replaces it,
+ * and the icon set draws it. The Lucide set has replaced each <i> with an <svg>, so changing the classes of what
+ * is there now changes nothing on screen.
+ * @param oIcons - the icon elements (a jQuery set, an element or a selector)
+ * @param sClasses - the icon's classes after sys-icon: its name and its own classes (`thumbs-up sys-icon-filled`)
+ * @param sHtml - an emoji to show instead of a drawing
+ */
+function bx_set_icon(oIcons, sClasses, sHtml)
+{
+    var bChanged = false;
+    $(oIcons).each(function() {
+        $(this).replaceWith($('<i>').attr('class', 'sys-icon ' + sClasses).html(sHtml || ''));
+        bChanged = true;
+    });
+
+    if(bChanged && typeof window.bx_iconset_init_lucide === 'function')
+        bx_iconset_init_lucide();
+}
+
 function bx_copy_to_clipboard(s, onSuccess, onFail)
 {
     if ("undefined" === typeof(onSuccess))
@@ -3089,11 +3287,13 @@ function bx_scrollbar_overlay_update(o)
     var fRt = Math.max(fRadiusT - fInset, 0), fRb = Math.max(fRadiusB - fInset, 0);
     var fX = fRight - fInset;
 
+    // Smooth corners (corner-shape: squircle, Designer > Settings > Corners) are superellipses: the bar follows that curve, not an arc.
+    var fPowerT = bx_scrollbar_overlay_power(fRadiusT > 0 && Number.parseFloat(oCss.borderTopRightRadius) ? oCss : oCssFrame, 'Top');
+    var fPowerB = bx_scrollbar_overlay_power(Number.parseFloat(oCss.borderBottomRightRadius) ? oCss : oCssFrame, 'Bottom');
+
     // round the top corner when the scroll box starts at the frame's top, down the right edge, round the bottom corner
-    var sPath = fRt > 0 ? 'M' + (fX - fRt) + ' ' + (fTop + fInset) + ' A' + fRt + ' ' + fRt + ' 0 0 1 ' + fX + ' ' + (fTop + fInset + fRt) : 'M' + fX + ' ' + (fTop + fInset);
-    sPath += ' L' + fX + ' ' + (fBottom - fInset - fRb);
-    if(fRb > 0)
-        sPath += ' A' + fRb + ' ' + fRb + ' 0 0 1 ' + (fX - fRb) + ' ' + (fBottom - fInset);
+    var sPath = 'M' + (fX - fRt) + ' ' + (fTop + fInset) + bx_scrollbar_overlay_turn(fRight, fTop, fRadiusT, fInset, fPowerT, false);
+    sPath += ' L' + fX + ' ' + (fBottom - fInset - fRb) + bx_scrollbar_overlay_turn(fRight, fBottom, fRadiusB, fInset, fPowerB, true);
 
     o.svg.setAttribute('viewBox', '0 0 ' + fW + ' ' + fH);
     o.track.setAttribute('d', sPath);
@@ -3110,6 +3310,62 @@ function bx_scrollbar_overlay_update(o)
  * Overlay scrollbars for the popup contents in oContext (a popup being shown, see jquery.dolPopup.js) that scroll, such as the header's
  * More and account menus, drawn over the popup's rounded box. Studio keeps the native bar in its popups.
  */
+/**
+ * The exponent of a right corner's curve: 2 for a round corner (an arc), 2^K for corner-shape: superellipse(K), so 4 for a squircle.
+ * Browsers without corner-shape draw arcs.
+ */
+function bx_scrollbar_overlay_power(oCss, sSide)
+{
+    var sShape = oCss['corner' + sSide + 'RightShape'] || '';
+    if(sShape == 'squircle')
+        return 4;
+
+    var aMatch = /^superellipse\(\s*([\d.]+)\s*\)$/.exec(sShape);
+    var fK = aMatch ? Number.parseFloat(aMatch[1]) : 1;
+    return fK > 1 && Number.isFinite(fK) ? Math.pow(2, fK) : 2;
+}
+
+/**
+ * The bar's way round a right corner of the frame (radius fRadius, at the frame's top or bottom edge fEdge): nothing for a square
+ * corner, an arc for a round one, the superellipse's own curve for a smooth one. A smooth corner too small for the inset
+ * (under three times it) gets the arc: moved inwards, its curve would fold over itself.
+ */
+function bx_scrollbar_overlay_turn(fRight, fEdge, fRadius, fInset, fPower, bBottom)
+{
+    var fR = Math.max(fRadius - fInset, 0);
+    if(fR <= 0)
+        return '';
+
+    if(fPower > 2 && fRadius >= 3 * fInset)
+        return bx_scrollbar_overlay_corner(fRight - fRadius, bBottom ? fEdge - fRadius : fEdge + fRadius, fRadius, fInset, fPower, bBottom);
+
+    var fX = fRight - fInset;
+    return ' A' + fR + ' ' + fR + ' 0 0 1 ' + (bBottom ? (fX - fR) + ' ' + (fEdge - fInset) : fX + ' ' + (fEdge + fInset + fR));
+}
+
+/**
+ * A right corner of the bar's centre line: the frame's superellipse corner (centre fCx, fCy; radius fR; exponent fPower) moved inwards
+ * by the inset along its normal, so the bar stays parallel to the edge all the way round. Line segments: from the top edge to the
+ * right edge (top corner) or from the right edge to the bottom edge (bottom corner).
+ */
+function bx_scrollbar_overlay_corner(fCx, fCy, fR, fInset, fPower, bBottom)
+{
+    var iSteps = 16, sPath = '';
+    for(var i = bBottom ? 0 : 1; i <= iSteps; i++) {
+        var fT = (bBottom ? iSteps - i : i) / iSteps * Math.PI / 2;
+
+        // a point of |u|^p + |v|^p = 1 in the corner's quadrant (u to the right, v away from the centre vertically) and its normal
+        var fU = Math.pow(Math.sin(fT), 2 / fPower), fV = Math.pow(Math.cos(fT), 2 / fPower);
+        var fNu = Math.pow(fU, fPower - 1), fNv = Math.pow(fV, fPower - 1), fN = Math.hypot(fNu, fNv) || 1;
+
+        var fX = fCx + fR * fU - fInset * fNu / fN;
+        var fY = fR * fV - fInset * fNv / fN;
+        sPath += ' L' + fX.toFixed(2) + ' ' + (bBottom ? fCy + fY : fCy - fY).toFixed(2);
+    }
+
+    return sPath;
+}
+
 function bx_scrollbar_overlay_popups(oContext)
 {
     $(oContext).not('.bx-std *').find('.bx-popup-content').each(function() {
@@ -3133,7 +3389,7 @@ function bx_menu_highlight(oContext)
 {
     $(oContext).not('.bx-std *').find('.bx-popup ul').filter(function() {
         var oList = $(this);
-        return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
+        return !oList.is('.bx-menu-hor, .bx-menu-custom-hor, .bx-menu-floating-blocks-wide, .bx-menu-list-desc-cards, .bx-menu-highlight-list') && oList.children('li').find('a').length > 1;
     }).each(function(iIndex, eList) {
         bx_menu_highlight_list(eList);
     });

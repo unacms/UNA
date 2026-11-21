@@ -360,6 +360,7 @@ INSERT INTO `sys_form_displays`(`object`, `display_name`, `module`, `view_mode`,
 ('bx_organization', 'bx_organization_edit', 'bx_organizations', 0, '_bx_orgs_form_profile_display_edit'),
 ('bx_organization', 'bx_organization_edit_cover', 'bx_organizations', 0, '_bx_orgs_form_profile_display_edit_cover'),
 ('bx_organization', 'bx_organization_edit_badge', 'bx_organizations', 0, '_bx_orgs_form_profile_display_edit_badge'),
+('bx_organization', 'bx_organization_edit_privacy', 'bx_organizations', 0, '_bx_orgs_form_profile_display_edit_privacy'),
 ('bx_organization', 'bx_organization_view', 'bx_organizations', 1, '_bx_orgs_form_profile_display_view'),
 ('bx_organization', 'bx_organization_view_full', 'bx_organizations', 1, '_bx_orgs_form_profile_display_view_full'),
 ('bx_organization', 'bx_organization_invite', 'bx_organizations', 0, '_bx_orgs_form_profile_display_invite');
@@ -433,6 +434,10 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_organization_edit_badge', 'badge_link_select', 2147483647, 1, 2),
 ('bx_organization_edit_badge', 'badge_link_custom', 2147483647, 0, 3),
 ('bx_organization_edit_badge', 'do_submit', 2147483647, 1, 4),
+('bx_organization_edit_privacy', 'allow_view_to', 2147483647, 1, 1),
+('bx_organization_edit_privacy', 'allow_post_to', 2147483647, 1, 2),
+('bx_organization_edit_privacy', 'allow_contact_to', 2147483647, 1, 3),
+('bx_organization_edit_privacy', 'do_submit', 2147483647, 1, 4),
 
 ('bx_organization_view', 'org_name', 2147483647, 1, 1),
 ('bx_organization_view', 'org_cat', 2147483647, 1, 2),

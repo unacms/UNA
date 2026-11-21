@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "context" in member-facing strings becomes "community" (una-vocabulary skill). Studio wording keeps "context". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_invites_err_context_not_found"><![CDATA[The invitation code isn't associated with any community.]]></string_upd>
+</resources>

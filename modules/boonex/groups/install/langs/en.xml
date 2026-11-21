@@ -37,10 +37,10 @@
     <string name="_bx_groups_form_profile_input_sys_allow_post_to"><![CDATA[Who can post]]></string>
     <string name="_bx_groups_form_profile_input_allow_post_to"><![CDATA[Who can post]]></string>
     <string name="_bx_groups_form_profile_input_sys_initial_members"><![CDATA[Invite Members]]></string>
-    <string name="_bx_groups_form_profile_input_initial_members"><![CDATA[Invite Members]]></string>
+    <string name="_bx_groups_form_profile_input_initial_members"><![CDATA[Invite members]]></string>
     <string name="_bx_groups_form_profile_input_sys_group_name"><![CDATA[Group Name]]></string>
-    <string name="_bx_groups_form_profile_input_group_name"><![CDATA[Group Name]]></string>
-    <string name="_bx_groups_form_profile_input_group_name_err"><![CDATA[Name is essential min 3 max 160.]]></string>
+    <string name="_bx_groups_form_profile_input_group_name"><![CDATA[Group name]]></string>
+    <string name="_bx_groups_form_profile_input_group_name_err"><![CDATA[Name is required min 3 max 160.]]></string>
     <string name="_bx_groups_form_profile_input_sys_group_desc"><![CDATA[Description]]></string>
     <string name="_bx_groups_form_profile_input_group_desc"><![CDATA[Description]]></string>
     <string name="_bx_groups_form_profile_input_sys_group_cat"><![CDATA[Category]]></string>
@@ -50,12 +50,12 @@
     <string name="_bx_groups_form_profile_input_picture"><![CDATA[Upload New Group Picture]]></string>
     <string name="_bx_groups_form_profile_input_picture_err"><![CDATA[Group picture is mandatory.]]></string>
     <string name="_bx_groups_form_profile_input_sys_cover"><![CDATA[Cover Picture]]></string>
-    <string name="_bx_groups_form_profile_input_cover"><![CDATA[Upload New Cover Picture]]></string>
+    <string name="_bx_groups_form_profile_input_cover"><![CDATA[Upload new cover picture]]></string>
     <string name="_bx_groups_form_profile_input_sys_stg_tabs"><![CDATA[Hide tabs]]></string>
     <string name="_bx_groups_form_profile_input_stg_tabs"><![CDATA[Hide tabs]]></string>
     <string name="_bx_groups_form_profile_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_groups_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this group]]></string>
-    <string name="_bx_groups_form_profile_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+    <string name="_bx_groups_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
     <string name="_bx_groups_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete group.]]></string>
 
     <string name="_bx_groups_form_price"><![CDATA[Price]]></string>
@@ -100,24 +100,24 @@
 
     <string name="_bx_groups_page_title_sys_entries_in_context"><![CDATA[Groups in context]]></string>
     <string name="_bx_groups_page_title_entries_in_context"><![CDATA[Groups in {display_name}]]></string>
-    <string name="_bx_groups_page_title_sys_joined_entries"><![CDATA[Profile Groups]]></string>
-    <string name="_bx_groups_page_title_joined_entries"><![CDATA[Profile Groups]]></string>
-    <string name="_bx_groups_page_title_sys_create_profile"><![CDATA[Create Group]]></string>
-    <string name="_bx_groups_page_title_create_profile"><![CDATA[Create Group]]></string>
-    <string name="_bx_groups_page_title_sys_edit_profile"><![CDATA[Edit Group]]></string>
-    <string name="_bx_groups_page_title_edit_profile"><![CDATA[Edit Group]]></string>
+    <string name="_bx_groups_page_title_sys_joined_entries"><![CDATA[Profile groups]]></string>
+    <string name="_bx_groups_page_title_joined_entries"><![CDATA[Profile groups]]></string>
+    <string name="_bx_groups_page_title_sys_create_profile"><![CDATA[Create group]]></string>
+    <string name="_bx_groups_page_title_create_profile"><![CDATA[Create group]]></string>
+    <string name="_bx_groups_page_title_sys_edit_profile"><![CDATA[Edit group]]></string>
+    <string name="_bx_groups_page_title_edit_profile"><![CDATA[Edit group]]></string>
     <string name="_bx_groups_page_title_sys_edit_profile_cover"><![CDATA[Edit Group Cover]]></string>
     <string name="_bx_groups_page_title_edit_profile_cover"><![CDATA[Edit Cover]]></string>
-    <string name="_bx_groups_page_title_sys_edit_profile_settings"><![CDATA[Edit Group Settings]]></string>
-    <string name="_bx_groups_page_title_edit_profile_settings"><![CDATA[Edit Settings]]></string>
+    <string name="_bx_groups_page_title_sys_edit_profile_settings"><![CDATA[Edit group settings]]></string>
+    <string name="_bx_groups_page_title_edit_profile_settings"><![CDATA[Edit settings]]></string>
     <string name="_bx_groups_page_title_manage_profile"><![CDATA[Manage]]></string>
     <string name="_bx_groups_page_title_sys_manage_profile"><![CDATA[Manage]]></string>
-    <string name="_bx_groups_page_title_sys_delete_profile"><![CDATA[Delete Group]]></string>
-    <string name="_bx_groups_page_title_delete_profile"><![CDATA[Delete Group]]></string>
-    <string name="_bx_groups_page_title_sys_join_profile"><![CDATA[Join Group]]></string>
-    <string name="_bx_groups_page_title_join_profile"><![CDATA[Join Group]]></string>
-    <string name="_bx_groups_page_title_sys_view_profile_closed"><![CDATA[View Closed Group]]></string>
-    <string name="_bx_groups_page_title_sys_view_profile"><![CDATA[View Group]]></string>
+    <string name="_bx_groups_page_title_sys_delete_profile"><![CDATA[Delete group]]></string>
+    <string name="_bx_groups_page_title_delete_profile"><![CDATA[Delete group]]></string>
+    <string name="_bx_groups_page_title_sys_join_profile"><![CDATA[Join group]]></string>
+    <string name="_bx_groups_page_title_join_profile"><![CDATA[Join group]]></string>
+    <string name="_bx_groups_page_title_sys_view_profile_closed"><![CDATA[View closed group]]></string>
+    <string name="_bx_groups_page_title_sys_view_profile"><![CDATA[View group]]></string>
     <string name="_bx_groups_page_title_view_profile"><![CDATA[{display_name}]]></string>
     <string name="_bx_groups_page_title_browse"><![CDATA[Groups]]></string>
     <string name="_bx_groups_page_title_browse_by_author"><![CDATA[Groups of {display_name}]]></string>
@@ -134,51 +134,51 @@
     <string name="_bx_groups_page_title_sys_profile_comments"><![CDATA[Comments]]></string>
     <string name="_bx_groups_page_block_title_entry_reports"><![CDATA[Reports]]></string>
     <string name="_bx_groups_page_title_profile_comments"><![CDATA[Comments]]></string>
-    <string name="_bx_groups_page_title_sys_profile_info"><![CDATA[Group Info]]></string>
+    <string name="_bx_groups_page_title_sys_profile_info"><![CDATA[Group info]]></string>
     <string name="_bx_groups_page_title_profile_info"><![CDATA[Info about {display_name}]]></string>
     <string name="_bx_groups_page_title_sys_profile_pricing"><![CDATA[Pricing]]></string>
     <string name="_bx_groups_page_title_profile_pricing"><![CDATA[Pricing]]></string>
-    <string name="_bx_groups_page_title_sys_recent"><![CDATA[New Groups]]></string>
-    <string name="_bx_groups_page_title_recent"><![CDATA[New Groups]]></string>
-    <string name="_bx_groups_page_title_sys_manage"><![CDATA[Manage Own Groups]]></string>
-    <string name="_bx_groups_page_title_sys_manage_administration"><![CDATA[Manage All Groups]]></string>
-    <string name="_bx_groups_page_title_manage"><![CDATA[Manage Groups]]></string>
-    <string name="_bx_groups_page_title_sys_top"><![CDATA[Top Groups]]></string>
-    <string name="_bx_groups_page_title_top"><![CDATA[Top Groups]]></string>
-    <string name="_bx_groups_page_title_sys_joined"><![CDATA[Joined Groups]]></string>
+    <string name="_bx_groups_page_title_sys_recent"><![CDATA[New groups]]></string>
+    <string name="_bx_groups_page_title_recent"><![CDATA[New groups]]></string>
+    <string name="_bx_groups_page_title_sys_manage"><![CDATA[Manage own groups]]></string>
+    <string name="_bx_groups_page_title_sys_manage_administration"><![CDATA[Manage all groups]]></string>
+    <string name="_bx_groups_page_title_manage"><![CDATA[Manage groups]]></string>
+    <string name="_bx_groups_page_title_sys_top"><![CDATA[Top groups]]></string>
+    <string name="_bx_groups_page_title_top"><![CDATA[Top groups]]></string>
+    <string name="_bx_groups_page_title_sys_joined"><![CDATA[Joined groups]]></string>
     <string name="_bx_groups_page_title_sys_followed"><![CDATA[Groups I follow]]></string>
-    <string name="_bx_groups_page_title_joined"><![CDATA[Joined Groups]]></string>
+    <string name="_bx_groups_page_title_joined"><![CDATA[Joined groups]]></string>
     <string name="_bx_groups_page_title_followed"><![CDATA[Groups I follow]]></string>
-    <string name="_bx_groups_page_title_sys_invite_to_group"><![CDATA[Invite Members to the Group]]></string>
-    <string name="_bx_groups_page_title_invite_to_group"><![CDATA[Invite Members to the Group]]></string>
+    <string name="_bx_groups_page_title_sys_invite_to_group"><![CDATA[Invite members to the group]]></string>
+    <string name="_bx_groups_page_title_invite_to_group"><![CDATA[Invite members to the group]]></string>
     <string name="_bx_groups_page_title_sys_entries_search"><![CDATA[Search]]></string>
     <string name="_bx_groups_page_title_entries_search"><![CDATA[Search]]></string>
-    <string name="_bx_groups_page_title_sys_entries_favorites"><![CDATA[Favorites Groups]]></string>
-    <string name="_bx_groups_page_title_entries_favorites"><![CDATA[Favorites Groups]]></string>
+    <string name="_bx_groups_page_title_sys_entries_favorites"><![CDATA[Favorite groups]]></string>
+    <string name="_bx_groups_page_title_entries_favorites"><![CDATA[Favorite groups]]></string>
 
     <string name="_bx_groups_page_block_title_sys_entries_actions"><![CDATA[Groups actions]]></string>
     <string name="_bx_groups_page_block_title_entries_actions"><![CDATA[Groups actions]]></string>
     <string name="_bx_groups_page_block_title_sys_favorites_entries"><![CDATA[Favorite List]]></string>
-    <string name="_bx_groups_page_block_title_favorites_entries"><![CDATA["{title}" List]]></string>
+    <string name="_bx_groups_page_block_title_favorites_entries"><![CDATA[{title} list]]></string>
     <string name="_bx_groups_page_block_title_favorites_entries_info"><![CDATA[Info]]></string>
-    <string name="_bx_groups_page_block_title_favorites_entries_actions"><![CDATA[Favorites List Actions]]></string>
+    <string name="_bx_groups_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string>
     <string name="_bx_groups_page_block_title_sys_entries_of_author"><![CDATA[Groups of author]]></string>
     <string name="_bx_groups_page_block_title_entries_of_author"><![CDATA[Groups by {display_name}]]></string>
-    <string name="_bx_groups_page_block_title_favorites_of_author"><![CDATA[Favorite Groups]]></string>
+    <string name="_bx_groups_page_block_title_favorites_of_author"><![CDATA[Favorite groups]]></string>
     <string name="_bx_groups_page_block_title_sys_favorites_of_author"><![CDATA[Favorite Groups]]></string>
     <string name="_bx_groups_page_block_title_entries_in_context_link"><![CDATA[Groups in <a href="{profile_link}">{display_name}</a>]]></string>
-    <string name="_bx_groups_page_block_title_entries_in_context"><![CDATA[Groups in context]]></string>
+    <string name="_bx_groups_page_block_title_entries_in_context"><![CDATA[Groups in this community]]></string>
     <string name="_bx_groups_page_block_title_sys_entries_in_context"><![CDATA[Groups in context]]></string>
     <string name="_bx_groups_page_block_title_sys_joined_entries"><![CDATA[Joined Groups]]></string>
-    <string name="_bx_groups_page_block_title_joined_entries"><![CDATA[Joined Groups]]></string>
+    <string name="_bx_groups_page_block_title_joined_entries"><![CDATA[Joined groups]]></string>
     <string name="_bx_groups_page_block_title_sys_followed_entries"><![CDATA[Groups I follow]]></string>
     <string name="_bx_groups_page_block_title_followed_entries"><![CDATA[Groups I follow]]></string>
-    <string name="_bx_groups_page_block_title_create_profile"><![CDATA[Create Group]]></string>
-    <string name="_bx_groups_page_block_title_edit_profile"><![CDATA[Edit Group]]></string>
+    <string name="_bx_groups_page_block_title_create_profile"><![CDATA[Create group]]></string>
+    <string name="_bx_groups_page_block_title_edit_profile"><![CDATA[Edit group]]></string>
     <string name="_bx_groups_page_block_title_edit_profile_cover"><![CDATA[Edit Cover]]></string>
-    <string name="_bx_groups_page_block_title_edit_profile_settings"><![CDATA[Edit Settings]]></string>
-    <string name="_bx_groups_page_block_title_delete_profile"><![CDATA[Delete Group]]></string>
-    <string name="_bx_groups_page_block_title_join_profile"><![CDATA[Join Group]]></string>
+    <string name="_bx_groups_page_block_title_edit_profile_settings"><![CDATA[Edit settings]]></string>
+    <string name="_bx_groups_page_block_title_delete_profile"><![CDATA[Delete group]]></string>
+    <string name="_bx_groups_page_block_title_join_profile"><![CDATA[Join group]]></string>
     <string name="_bx_groups_page_block_title_profile_info_link"><![CDATA[About <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_groups_page_block_title_profile_info"><![CDATA[Info]]></string>
     <string name="_bx_groups_page_block_title_system_profile_info"><![CDATA[Info]]></string>
@@ -194,7 +194,7 @@
     <string name="_bx_groups_page_block_title_fans_link"><![CDATA[Members of <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_groups_page_block_title_fans"><![CDATA[Members]]></string>
     <string name="_bx_groups_page_block_title_system_fans"><![CDATA[Members]]></string>
-    <string name="_bx_groups_page_block_title_system_fans_manage"><![CDATA[Manage fans]]></string>
+    <string name="_bx_groups_page_block_title_system_fans_manage"><![CDATA[Manage members]]></string>
     <string name="_bx_groups_page_block_title_invites"><![CDATA[Invites]]></string>
     <string name="_bx_groups_page_block_title_system_invites_manage"><![CDATA[Invites]]></string>
     <string name="_bx_groups_page_block_title_bans"><![CDATA[Bans]]></string>
@@ -203,19 +203,19 @@
     <string name="_bx_groups_page_block_title_profile_comments"><![CDATA[Comments]]></string>
     <string name="_bx_groups_page_block_title_profile_comments_link"><![CDATA[Comments to <a href="{entry_link}">{title}</a>]]></string>
     <string name="_bx_groups_page_block_title_profile_actions"><![CDATA[Actions]]></string>
-    <string name="_bx_groups_page_block_title_featured_profiles"><![CDATA[Featured Groups]]></string>
-    <string name="_bx_groups_page_block_title_latest_profiles"><![CDATA[New Groups]]></string>
+    <string name="_bx_groups_page_block_title_featured_profiles"><![CDATA[Featured groups]]></string>
+    <string name="_bx_groups_page_block_title_latest_profiles"><![CDATA[New groups]]></string>
     <string name="_bx_groups_page_block_title_system_manage"><![CDATA[Manage Own Groups]]></string>
     <string name="_bx_groups_page_block_title_system_manage_administration"><![CDATA[Manage All Groups]]></string>
-    <string name="_bx_groups_page_block_title_manage"><![CDATA[Manage Groups]]></string>
-    <string name="_bx_groups_page_block_title_top_profiles"><![CDATA[Top Groups]]></string>
+    <string name="_bx_groups_page_block_title_manage"><![CDATA[Manage groups]]></string>
+    <string name="_bx_groups_page_block_title_top_profiles"><![CDATA[Top groups]]></string>
     <string name="_bx_groups_page_block_title_joined_profiles"><![CDATA[Joined Groups]]></string>
     <string name="_bx_groups_page_block_title_entry_all_actions"><![CDATA[All Actions]]></string>
     <string name="_bx_groups_page_block_title_entry_social_sharing"><![CDATA[Share]]></string>
     <string name="_bx_groups_page_block_title_categories"><![CDATA[Groups Categories]]></string>
-    <string name="_bx_groups_page_block_title_invite_to_group"><![CDATA[Invite Members to the Group]]></string>
-    <string name="_bx_groups_page_block_title_search_form"><![CDATA[Search Form]]></string>
-    <string name="_bx_groups_page_block_title_search_results"><![CDATA[Search Results]]></string>
+    <string name="_bx_groups_page_block_title_invite_to_group"><![CDATA[Invite members to the group]]></string>
+    <string name="_bx_groups_page_block_title_search_form"><![CDATA[Search form]]></string>
+    <string name="_bx_groups_page_block_title_search_results"><![CDATA[Search results]]></string>
     <string name="_bx_groups_page_block_title_search_form_cmts"><![CDATA[Comments Search Form]]></string>
     <string name="_bx_groups_page_block_title_search_results_cmts"><![CDATA[Comments Search Results]]></string>
     <string name="_bx_groups_page_block_title_sys_featured_entries_view_showcase"><![CDATA[Featured Groups (Showcase View)]]></string>
@@ -258,14 +258,14 @@
     <string name="_bx_groups_menu_item_title_clear_reports"><![CDATA[Clear reports]]></string>
     <string name="_bx_groups_menu_item_title_system_edit_cover"><![CDATA[Edit Cover]]></string>
     <string name="_bx_groups_menu_item_title_edit_cover"><![CDATA[Edit Cover]]></string>
-    <string name="_bx_groups_menu_item_title_system_edit_pricing"><![CDATA[Edit Pricing]]></string>
-    <string name="_bx_groups_menu_item_title_edit_pricing"><![CDATA[Edit Pricing]]></string>
-    <string name="_bx_groups_menu_item_title_system_edit_profile"><![CDATA[Edit Group]]></string>
-    <string name="_bx_groups_menu_item_title_edit_profile"><![CDATA[Edit Group]]></string>
-    <string name="_bx_groups_menu_item_title_system_edit_settings"><![CDATA[Edit Settings]]></string>
-    <string name="_bx_groups_menu_item_title_edit_settings"><![CDATA[Edit Settings]]></string>
-    <string name="_bx_groups_menu_item_title_system_delete_profile"><![CDATA[Delete Group]]></string>
-    <string name="_bx_groups_menu_item_title_delete_profile"><![CDATA[Delete Group]]></string>
+    <string name="_bx_groups_menu_item_title_system_edit_pricing"><![CDATA[Edit pricing]]></string>
+    <string name="_bx_groups_menu_item_title_edit_pricing"><![CDATA[Edit pricing]]></string>
+    <string name="_bx_groups_menu_item_title_system_edit_profile"><![CDATA[Edit group]]></string>
+    <string name="_bx_groups_menu_item_title_edit_profile"><![CDATA[Edit group]]></string>
+    <string name="_bx_groups_menu_item_title_system_edit_settings"><![CDATA[Edit settings]]></string>
+    <string name="_bx_groups_menu_item_title_edit_settings"><![CDATA[Edit settings]]></string>
+    <string name="_bx_groups_menu_item_title_system_delete_profile"><![CDATA[Delete group]]></string>
+    <string name="_bx_groups_menu_item_title_delete_profile"><![CDATA[Delete group]]></string>
     <string name="_bx_groups_menu_item_title_system_delete_account"><![CDATA[Delete Account]]></string>
     <string name="_bx_groups_menu_item_title_delete_account"><![CDATA[Delete Account]]></string>
     <string name="_bx_groups_menu_item_title_system_profile_type"><![CDATA[Group]]></string>
@@ -280,8 +280,8 @@
     <string name="_bx_groups_menu_item_title_view_joined_groups"><![CDATA[Groups]]></string>
     <string name="_bx_groups_menu_item_title_system_view_fans"><![CDATA[Members]]></string>
     <string name="_bx_groups_menu_item_title_view_fans"><![CDATA[Members]]></string>
-    <string name="_bx_groups_menu_item_title_system_add_content"><![CDATA[Add Content]]></string>
-    <string name="_bx_groups_menu_item_title_add_content"><![CDATA[Add Content]]></string>
+    <string name="_bx_groups_menu_item_title_system_add_content"><![CDATA[Add content]]></string>
+    <string name="_bx_groups_menu_item_title_add_content"><![CDATA[Add content]]></string>
     <string name="_bx_groups_menu_item_title_system_view_manage"><![CDATA[Manage]]></string>
     <string name="_bx_groups_menu_item_title_view_manage"><![CDATA[Manage]]></string>
     <string name="_bx_groups_menu_item_title_system_view_profile_comments"><![CDATA[Comments]]></string>
@@ -304,24 +304,24 @@
     <string name="_bx_groups_menu_item_title_unfriend_cancel_request"><![CDATA[Cancel friend request]]></string>
     <string name="_bx_groups_menu_item_title_unfriend_reject_request"><![CDATA[Reject friend request]]></string>
 
-    <string name="_bx_groups_menu_item_title_system_fans"><![CDATA[Fans]]></string>
-    <string name="_bx_groups_menu_item_title_fans"><![CDATA[Fans]]></string>
-    <string name="_bx_groups_menu_item_title_system_become_fan"><![CDATA[Join Group]]></string>
+    <string name="_bx_groups_menu_item_title_system_fans"><![CDATA[Members]]></string>
+    <string name="_bx_groups_menu_item_title_fans"><![CDATA[Members]]></string>
+    <string name="_bx_groups_menu_item_title_system_become_fan"><![CDATA[Join group]]></string>
     <string name="_bx_groups_menu_item_title_become_fan"><![CDATA[Join Group]]></string>
     <string name="_bx_groups_menu_item_title_become_fan_sent"><![CDATA[Join Group (requested)]]></string>
     <string name="_bx_groups_menu_item_title_become_fan_confirm"><![CDATA[Accept Request]]></string>
-    <string name="_bx_groups_menu_item_title_system_leave_group"><![CDATA[Leave Group]]></string>
+    <string name="_bx_groups_menu_item_title_system_leave_group"><![CDATA[Leave group]]></string>
     <string name="_bx_groups_menu_item_title_leave_group"><![CDATA[Leave Group]]></string>
     <string name="_bx_groups_menu_item_title_leave_group_cancel_request"><![CDATA[Cancel Request]]></string>
     <string name="_bx_groups_menu_item_title_leave_group_reject_request"><![CDATA[Reject Request]]></string>
-    <string name="_bx_groups_menu_item_title_system_pay_and_join"><![CDATA[Pay & Join]]></string>
+    <string name="_bx_groups_menu_item_title_system_pay_and_join"><![CDATA[Pay & join]]></string>
     <string name="_bx_groups_menu_item_title_pay_and_join"><![CDATA[Join {0}]]></string>
     <string name="_bx_groups_menu_item_title_system_subscriptions"><![CDATA[Following]]></string>
     <string name="_bx_groups_menu_item_title_system_subscribe"><![CDATA[Follow]]></string>
     <string name="_bx_groups_menu_item_title_subscribe"><![CDATA[Follow]]></string>
     <string name="_bx_groups_menu_item_title_system_unsubscribe"><![CDATA[Unfollow]]></string>
     <string name="_bx_groups_menu_item_title_unsubscribe"><![CDATA[Unfollow]]></string>
-    <string name="_bx_groups_menu_item_title_system_more_actions"><![CDATA[More Actions]]></string>
+    <string name="_bx_groups_menu_item_title_system_more_actions"><![CDATA[More actions]]></string>
     <string name="_bx_groups_menu_item_title_more_actions"><![CDATA[]]></string>
     <string name="_bx_groups_menu_item_title_system_friends"><![CDATA[Friends]]></string>
     <string name="_bx_groups_menu_item_title_friends"><![CDATA[Friends]]></string>
@@ -365,9 +365,9 @@
     <string name="_bx_groups_grid_action_title_adm_audit_context"><![CDATA[Audit actions in context]]></string>
     <string name="_bx_groups_grid_action_title_adm_audit_content"><![CDATA[Audit actions with context]]></string>
     <string name="_bx_groups_grid_action_title_adm_delete"><![CDATA[Delete]]></string>
-    <string name="_bx_groups_grid_action_title_adm_delete_with_content"><![CDATA[Delete With Content]]></string>
+    <string name="_bx_groups_grid_action_title_adm_delete_with_content"><![CDATA[Delete with content]]></string>
     <string name="_bx_groups_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string>
-    <string name="_bx_groups_grid_action_title_adm_more_actions"><![CDATA[More Actions]]></string>
+    <string name="_bx_groups_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string>
     <string name="_bx_groups_grid_action_err_delete"><![CDATA[Cannot delete the selected group(s).]]></string>
     <string name="_bx_groups_grid_txt_account_manager"><![CDATA[Redirect to manage account.]]></string>
 
@@ -411,7 +411,7 @@
     <string name="_bx_groups_txt_sample_vote_single"><![CDATA[vote to group]]></string>
     <string name="_bx_groups_txt_sample_score_up_single"><![CDATA[score up vote to group]]></string>
     <string name="_bx_groups_txt_sample_score_down_single"><![CDATA[score down vote to group]]></string>
-    <string name="_bx_groups_txt_set_role"><![CDATA[Set Role]]></string>
+    <string name="_bx_groups_txt_set_role"><![CDATA[Set role]]></string>
     <string name="_bx_groups_txt_delete"><![CDATA[Delete]]></string>
     <string name="_bx_groups_txt_delete_and_ban"><![CDATA[Delete and ban]]></string>
     <string name="_bx_groups_txt_empty_title"><![CDATA[No groups yet]]></string>
@@ -420,15 +420,15 @@
     <string name="_bx_groups_txt_invite_popup_title"><![CDATA[Invitation to a group]]></string>
     <string name="_bx_groups_txt_invite_popup_button_accept"><![CDATA[Accept]]></string>
     <string name="_bx_groups_txt_invite_popup_button_decline"><![CDATA[Decline]]></string>
-    <string name="_bx_groups_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You can not join this group. The invitation is expired or deleted.]]></string>
-    <string name="_bx_groups_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You can not join this group. This invitation cannot be used by you.]]></string>
+    <string name="_bx_groups_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this group. The invitation is expired or deleted.]]></string>
+    <string name="_bx_groups_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this group. This invitation cannot be used by you.]]></string>
     <string name="_bx_groups_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_groups_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_groups_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    
 
-    <string name="_bx_groups_msg_performed"><![CDATA[The action was successfully performed.]]></string>
+    <string name="_bx_groups_msg_performed"><![CDATA[Done.]]></string>
     <string name="_bx_groups_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
-    <string name="_bx_groups_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_groups_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_groups_alert_action_fan_added"><![CDATA[member joined]]></string>
     <string name="_bx_groups_txt_ntfs_fan_added"><![CDATA[Group <b class="bx-ntfs-content-profile">{owner_name}</b> has got a member <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>
@@ -460,48 +460,48 @@
     <string name="_bx_groups_email_join_request"><![CDATA[Group join request]]></string>
     <string name="_bx_groups_email_join_request_subject"><![CDATA[Request to join your group]]></string>
     <string name="_bx_groups_email_join_request_body"><![CDATA[{email_header}
-<p>New request to join <a href="{EntryUrl}">{EntryTitle}</a> group from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> group from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_join_reject"><![CDATA[Group join request was rejected]]></string>
     <string name="_bx_groups_email_join_reject_subject"><![CDATA[Request to join a group was rejected]]></string>
     <string name="_bx_groups_email_join_reject_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was rejected by group admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was rejected by group admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_join_confirm"><![CDATA[Group join request was confirmed]]></string>
     <string name="_bx_groups_email_join_confirm_subject"><![CDATA[Your request to join a group was confirmed]]></string>
     <string name="_bx_groups_email_join_confirm_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was confirmed by the group admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was confirmed by the group admin.</p>
 {email_footer}]]></string>
 
-    <string name="_bx_groups_email_fan_remove"><![CDATA[Profile was removed from group fans]]></string>
+    <string name="_bx_groups_email_fan_remove"><![CDATA[Profile was removed from group members]]></string>
     <string name="_bx_groups_email_fan_remove_subject"><![CDATA[Your profile was removed from the group]]></string>
     <string name="_bx_groups_email_fan_remove_body"><![CDATA[{email_header}
-<p>Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> group by the group admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> group by the group admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_fan_become_admin"><![CDATA[Group admin status was granted]]></string>
     <string name="_bx_groups_email_fan_become_admin_subject"><![CDATA[You are a group admin now]]></string>
     <string name="_bx_groups_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> group now.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> group now.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_admin_become_fan"><![CDATA[Group admin status was revoked]]></string>
     <string name="_bx_groups_email_admin_become_fan_subject"><![CDATA[Your group admin status was revoked]]></string>
     <string name="_bx_groups_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> group.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> group.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_set_role"><![CDATA[Group member status was changed]]></string>
     <string name="_bx_groups_email_set_role_subject"><![CDATA[Your group status was changed]]></string>
     <string name="_bx_groups_email_set_role_body"><![CDATA[{email_header}
-<p>Your status in <a href="{EntryUrl}">{EntryTitle}</a> group was changed to <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> group was changed to <b>{Role}</b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_groups_email_invitation"><![CDATA[Invitation to group]]></string>
     <string name="_bx_groups_email_invitation_subject"><![CDATA[Invitation to "{EntryTitle}" group]]></string>
     <string name="_bx_groups_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} group</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} group</a>.</p>
 {email_footer}]]></string>
 </resources>

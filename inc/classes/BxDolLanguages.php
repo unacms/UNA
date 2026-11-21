@@ -217,6 +217,53 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
             return $key;
     }
 
+    /**
+     * A string with a count, in the plural form the count needs: "1 view", "2 views".
+     * The count is {0}; more arguments are {1}, {2} and so on, as in _t.
+     * Plural forms are keys with a suffix: `<key>_one` for English 1 (and Russian 1, 21, 31...),
+     * `<key>_few` for Russian 2-4, 22-24..., `<key>_many` for Russian 5-20, 25-30...
+     * A form that is not translated falls back to the key itself.
+     */
+    public function _tn($key, $count)
+    {
+        global $LANG;
+
+        $sForm = $this->getPluralForm($count, $this->getCurrentLanguage());
+
+        $aArgs = func_get_args();
+        if($sForm != '' && isset($LANG[$key . '_' . $sForm]))
+            $aArgs[0] = $key . '_' . $sForm;
+
+        return call_user_func_array([$this, '_t'], $aArgs);
+    }
+
+    /**
+     * The plural form of a count in a language: 'one', 'few', 'many' or '' (the key itself).
+     */
+    public function getPluralForm($count, $sLang = '')
+    {
+        if(!is_numeric($count) || (float)$count != (int)$count)
+            return '';
+
+        $n = abs((int)$count);
+
+        switch(substr($sLang, 0, 2)) {
+            case 'ru':
+            case 'uk':
+            case 'be':
+                $n10 = $n % 10;
+                $n100 = $n % 100;
+                if($n10 == 1 && $n100 != 11)
+                    return 'one';
+                if($n10 >= 2 && $n10 <= 4 && ($n100 < 12 || $n100 > 14))
+                    return 'few';
+                return 'many';
+
+            default:
+                return $n == 1 ? 'one' : '';
+        }
+    }
+
     function _t_err()
     {
         return MsgBox(call_user_func_array(array($this, '_t'), func_get_args()));
@@ -303,9 +350,12 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
     protected function init()
     {
         /**
-         * Trying to initialize default language.
+         * Trying to initialize default language. The language is the main instance's: this may be a subclass's own
+         * instance (BxDolStudioLanguagesUtils::compileLanguage() calls init() again to load what it compiled), and in
+         * a command line run (periodic/migration.php) nothing has made the main instance yet, so it is made here.
          */
-        $GLOBALS['sCurrentLanguage'] = $GLOBALS['bxDolClasses'][__CLASS__]->getCurrentLangName(false);
+        $oLanguages = self::getInstance();
+        $GLOBALS['sCurrentLanguage'] = $oLanguages->getCurrentLangName(false);
         if($GLOBALS['sCurrentLanguage'] != '') {
             $sPath = BX_DIRECTORY_PATH_CACHE . 'lang-' . $GLOBALS['sCurrentLanguage'] . '.php';
             if(!file_exists($sPath))
@@ -322,7 +372,7 @@ class BxDolLanguages extends BxDolFactory implements iBxDolSingleton
          * then it saves that language to the cookie. Otherwise it finds the same language again.
          */
         if(!empty($_GET['lang']) || !empty($_POST['lang']))
-            $GLOBALS['bxDolClasses'][__CLASS__]->getCurrentLangName(true);
+            $oLanguages->getCurrentLangName(true);
 
         if(isset($_GET['lang'])) {
             if(BxDolPermalinks::getInstance()->redirectIfNecessary(array('lang')))
@@ -423,6 +473,14 @@ if (!function_exists('_t')) {
     {
         return call_user_func_array(array(BxDolLanguages::getInstance(), '_t'), func_get_args());
     }
+}
+
+/**
+ * A string with a count in the plural form the count needs, see BxDolLanguages::_tn.
+ */
+function _tn($key, $count)
+{
+    return call_user_func_array(array(BxDolLanguages::getInstance(), '_tn'), func_get_args());
 }
 
 function _t_err()

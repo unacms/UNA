@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Artificer's header width and main menu alignment, in place of Stretched Header. -->
+<resources name="ru" flag="ru" title="Russian" category="Boonex Artificer Template">
+	<string_add name="_bx_artificer_stg_cpt_option_header_width"><![CDATA[Ширина шапки]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_width_full"><![CDATA[Во всю ширину]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_width_page"><![CDATA[По ширине страницы]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align"><![CDATA[Положение главного меню]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_center"><![CDATA[По центру]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_end"><![CDATA[В конце]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_start"><![CDATA[В начале]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_designer"><![CDATA[Как в Дизайнере]]></string_add>
+	<string_del name="_bx_artificer_stg_cpt_option_header_stretched"></string_del>
+	<string_upd name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Ширина страницы в пикселях (пусто: как в Дизайнере)]]></string_upd>
+</resources>

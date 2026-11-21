@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_payment_form_commissions_input_caption_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_payment_form_invoices_input_amount_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_payment_form_invoices_input_date_due_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_payment_form_input_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_payment_err_required_login"><![CDATA[You need to log in.]]></string_upd>
+    <string_upd name="_bx_payment_cdt_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string_upd>
+    <string_upd name="_bx_payment_pp_api_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string_upd>
+    <string_upd name="_bx_payment_cbee_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string_upd>
+    <string_upd name="_bx_payment_strp_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string_upd>
+    <string_upd name="_bx_payment_aina_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string_upd>
+</resources>

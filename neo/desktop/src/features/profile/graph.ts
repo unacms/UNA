@@ -28,6 +28,15 @@ export { FRIEND_REQUESTS_KEY };
 /** The friend requests the acting profile sent that wait for an answer (GET /me/friend-requests/sent). */
 export const SENT_REQUESTS_KEY = ['friend-requests-sent'] as const;
 
+/** Every list of suggestions for the acting profile (Connections' tab, both kinds). */
+export const SUGGESTIONS_KEY = ['suggestions'] as const;
+
+/** The site's suggestions for the acting profile: people to befriend, or profiles to follow. */
+export const suggestionsKey = (friends: boolean) => [...SUGGESTIONS_KEY, friends ? 'friends' : 'follows'] as const;
+
+/** Where the site's suggestions endpoints start, as a page's suggestions block reads them. */
+const SUGGESTION_ENDPOINTS = '/me/recommendations/';
+
 export type GraphAction = 'follow' | 'unfollow' | 'befriend' | 'accept' | 'decline' | 'cancel' | 'unfriend';
 
 /** Follow or Unfollow, or nothing when the site would refuse a follow. */
@@ -139,6 +148,11 @@ export function countText(n: number, list: ConnectionList): string {
     return list === 'friends' ? tn(n, '{{count}} friend', '{{count}} friends') : tn(n, '{{count}} follower', '{{count}} followers');
 }
 
+/** A page block's query that reads the site's suggestions (pageBlockKey of such an endpoint). */
+export function isSuggestionsBlock(key: readonly unknown[]): boolean {
+    return key[0] === 'page-block' && typeof key[1] === 'string' && key[1].startsWith(SUGGESTION_ENDPOINTS);
+}
+
 /**
  * After a change between the viewer and a profile: what both profiles' counts and lists show is
  * stale, and so are the viewer's friend requests and Following feed. The feed on screen keeps
@@ -153,6 +167,10 @@ export function afterGraphChange(queryClient: QueryClient, profileId: string, vi
     }
     void queryClient.invalidateQueries(FRIEND_REQUESTS_KEY);
     void queryClient.invalidateQueries(SENT_REQUESTS_KEY);
+    // the suggestions (Connections' tab, a page's block) are read again when next shown: now
+    // would take a row from under the pointer, its button just turned to Requested or Following
+    void queryClient.invalidateQueries({ queryKey: SUGGESTIONS_KEY, refetchType: 'none' });
+    void queryClient.invalidateQueries({ predicate: (q) => isSuggestionsBlock(q.queryKey), refetchType: 'none' });
     // the friend requests badge
     requestSync();
     void queryClient.invalidateQueries(feedKey('following'), { refetchType: 'none' });

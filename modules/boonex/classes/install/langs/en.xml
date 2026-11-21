@@ -26,7 +26,7 @@
     <string name="_bx_classes_form_entry_input_do_publish"><![CDATA[Publish]]></string>
     <string name="_bx_classes_form_entry_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_classes_form_entry_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_classes_form_entry_input_title_err"><![CDATA[Title is essential. Please, fill in this field]]></string>
+    <string name="_bx_classes_form_entry_input_title_err"><![CDATA[Title is required. Please fill in this field]]></string>
     <string name="_bx_classes_form_entry_input_sys_cat"><![CDATA[Category]]></string>
     <string name="_bx_classes_form_entry_input_cat"><![CDATA[Category]]></string>
     <string name="_bx_classes_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
@@ -38,7 +38,7 @@
     <string name="_bx_classes_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
     <string name="_bx_classes_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_classes_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this class]]></string>
-    <string name="_bx_classes_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_classes_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
     <string name="_bx_classes_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the class]]></string>
     <string name="_bx_classes_form_entry_input_sys_covers"><![CDATA[Header Image]]></string>
     <string name="_bx_classes_form_entry_input_covers"><![CDATA[Header Image]]></string>
@@ -73,7 +73,7 @@
     <string name="_bx_classes_form_poll_display_add"><![CDATA[Add Poll]]></string>
     <string name="_bx_classes_form_poll_input_sys_text"><![CDATA[Question]]></string>
     <string name="_bx_classes_form_poll_input_text"><![CDATA[Question]]></string>
-    <string name="_bx_classes_form_poll_input_text_err"><![CDATA[Question is essential. Please, fill in this field]]></string>
+    <string name="_bx_classes_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string>
     <string name="_bx_classes_form_poll_input_sys_answers"><![CDATA[Answers]]></string>
     <string name="_bx_classes_form_poll_input_answers"><![CDATA[Answers]]></string>
     <string name="_bx_classes_form_poll_input_answers_err"><![CDATA[Poll should have at least 2 non-empty answers.]]></string>
@@ -87,7 +87,7 @@
     <string name="_bx_classes_category_display_edit"><![CDATA[Edit category]]></string>
     <string name="_bx_classes_category_form_entry_input_sys_value"><![CDATA[Value]]></string>
     <string name="_bx_classes_category_form_entry_input_value"><![CDATA[Value]]></string>>
-    <string name="_bx_classes_category_form_entry_input_value_err"><![CDATA[Value is essential. Please, fill in this field]]></string>
+    <string name="_bx_classes_category_form_entry_input_value_err"><![CDATA[Value is required. Please fill in this field]]></string>
     <string name="_bx_classes_lmi_cpt_categories"><![CDATA[Categories]]></string>
 
   <string name="_bx_classes_acl_action_create_entry"><![CDATA[Create Class]]></string>
@@ -173,14 +173,14 @@
     
     <string name="_bx_classes_menu_item_title_system_add_link"><![CDATA[Add Link]]></string>
     <string name="_bx_classes_menu_item_title_add_link"><![CDATA[Add Link]]></string>
-    <string name="_bx_classes_form_post_input_link_err_delete"><![CDATA[Cannot remove the link. Please report.]]></string>
+    <string name="_bx_classes_form_post_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string>
     <string name="_bx_classes_form_post_input_sys_link"><![CDATA[Link]]></string>
     <string name="_bx_classes_form_post_input_link_alt"><![CDATA[Add Link]]></string>
     <string name="_bx_classes_form_attach_link"><![CDATA[Attach Link]]></string>
     <string name="_bx_classes_form_attach_link_display_add"><![CDATA[Attach Link]]></string>
     <string name="_bx_classes_form_attach_link_input_sys_content_id"><![CDATA[Content Id]]></string>
     <string name="_bx_classes_form_attach_link_input_sys_url"><![CDATA[Add Link]]></string>
-    <string name="_bx_classes_form_attach_link_input_url_err"><![CDATA[Correct Link is essential. Please, fill in this field.]]></string>
+    <string name="_bx_classes_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string>
     <string name="_bx_classes_form_attach_link_input_url"><![CDATA[Add Link]]></string>
     <string name="_bx_classes_form_attach_link_input_do_submit"><![CDATA[Add]]></string>
     <string name="_bx_classes_form_attach_link_input_sys_do_submit"><![CDATA[Add]]></string>
@@ -232,7 +232,7 @@
     <string name="_bx_classes_grid_column_title_adm_active"><![CDATA[Active]]></string>
     <string name="_bx_classes_grid_column_title_adm_title"><![CDATA[Title]]></string>
     <string name="_bx_classes_grid_action_title_adm_audit_content"><![CDATA[Audit actions]]></string>
-    <string name="_bx_classes_grid_action_title_adm_clear_reports"><![CDATA[Сlear reports]]></string>
+    <string name="_bx_classes_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string>
     <string name="_bx_classes_grid_column_title_adm_added"><![CDATA[Added]]></string>
     <string name="_bx_classes_grid_column_title_adm_author"><![CDATA[Author]]></string>>
     <string name="_bx_classes_grid_action_title_adm_add"><![CDATA[Add]]></string>
@@ -289,8 +289,8 @@
 
     <string name="_bx_classes_txt_msg_status_hidden"><![CDATA[This class was hidden.]]></string>
     <string name="_bx_classes_txt_msg_status_pending"><![CDATA[This class is pending approval.]]></string>
-    <string name="_bx_classes_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
-    <string name="_bx_classes_txt_err_cant_add_class_without_context"><![CDATA[Class can be added into context only]]></string>
+    <string name="_bx_classes_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
+    <string name="_bx_classes_txt_err_cant_add_class_without_context"><![CDATA[A class can only be added inside a community.]]></string>
     <string name="_bx_classes_txt_err_cant_add_class_without_modules"><![CDATA[Please create classes module first]]></string>
     <string name="_bx_classes_txt_err_not_avail_before_start_date"><![CDATA[Class will be available {0}]]></string>
     <string name="_bx_classes_txt_err_not_avail_after_end_date"><![CDATA[Class isn't available after {0}]]></string>
@@ -303,5 +303,6 @@
     <string name="_bx_classes_txt_poll_view_results"><![CDATA[results]]></string>
     <string name="_bx_classes_txt_poll_answer_vote_do_by"><![CDATA[Voted for]]></string>
     <string name="_bx_classes_txt_poll_answer_vote_counter"><![CDATA[{0} votes]]></string>
+    <string name="_bx_classes_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string>
     <string name="_bx_classes_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 </resources>

@@ -348,6 +348,14 @@ abstract class BxDolUploader extends BxDolFactory
         return $this->_sPopupContainerId;
     }
 
+    /**
+     * Classes for the container the uploaded files (ghosts) are shown in, under the button.
+     */
+    public function getResultContainerClass()
+    {
+        return '';
+    }
+
     public function getIdContainerErrors()
     {
         return $this->_sErrorsContainerId;
@@ -624,7 +632,8 @@ abstract class BxDolUploader extends BxDolFactory
 
         $oProfile = BxDolProfile::getInstance($iProfileId);
         $oAccount = $oProfile ? $oProfile->getAccountObject() : null;
-        $aProfiles = $oAccount ? $oAccount->getProfiles(false) : array();
+        // the account's system profile too: it owns what is uploaded before the account has a profile (the first profile's picture)
+        $aProfiles = $oAccount ? $oAccount->getProfiles(false, false) : array();
         if (!isset($aProfiles[$aFile['profile_id']]) && !$this->isAdmin($aFile['content_id']))
             return _t('_sys_txt_access_denied');
 

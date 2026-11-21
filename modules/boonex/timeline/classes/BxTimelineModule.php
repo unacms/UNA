@@ -259,7 +259,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         echoJson([
             'code' => 0,
-            'message' => _t('_bx_timeline_txt_msg_performed_action')
+            'toast' => _t('_bx_timeline_txt_msg_performed_action')
         ]);
     }
 
@@ -328,7 +328,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             'object_author_id' => $this->_oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $aEvent['owner_id'] : $aEvent['object_id']
         ]);
 
-        echoJson(array('code' => 0, 'message' => _t('_bx_timeline_txt_msg_performed_action'), 'reload' => 1));
+        echoJson(array('code' => 0, 'toast' => _t('_bx_timeline_txt_msg_performed_action'), 'reload' => 1));
     }
 
     function actionDelete()
@@ -375,7 +375,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
         echoJson([
             'code' => 0, 
-            'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+            'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
             'count' => $aReposted['reposts'], 
             'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts'], $aParams) : '',
             'counter' => $this->_oTemplate->getRepostCounter($aReposted, $aParams),
@@ -409,7 +409,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if($oForm->isSubmitted()) {
             if(!$oForm->isValid())
                 return echoJson(['popup' => [
-                    'html' => BxTemplFunctions::getInstance()->transBox($this->_oConfig->getHtmlIds('repost', 'with_popup'), $this->_oTemplate->getRepostWith($oForm)), 
+                    'html' => $this->_getRepostPopup('with', $oForm), 
                     'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]
                 ]]);
 
@@ -423,14 +423,14 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
             return echoJson([
                 'code' => 0, 
-                'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+                'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
                 'count' => $aReposted['reposts'], 
                 'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts']) : '',
                 'counter' => $this->_oTemplate->getRepostCounter($aReposted),
             ]);
         }
 
-        echo $this->_oTemplate->getRepostTo($oForm);
+        echoJson(['popup' => ['html' => $this->_getRepostPopup('with', $oForm), 'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]]]);
     }
 
     public function actionRepostTo()
@@ -454,7 +454,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if($oForm->isSubmitted()) {
             if(!$oForm->isValid())
                 return echoJson(['popup' => [
-                    'html' => BxTemplFunctions::getInstance()->transBox($this->_oConfig->getHtmlIds('repost', 'to_popup'), $this->_oTemplate->getRepostTo($oForm)), 
+                    'html' => $this->_getRepostPopup('to', $oForm), 
                     'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]
                 ]]);
 
@@ -483,14 +483,28 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
             return echoJson([
                 'code' => 0, 
-                'message' => _t('_bx_timeline_txt_msg_success_repost'), 
+                'toast' => _t('_bx_timeline_txt_msg_success_repost'), 
                 'count' => $aReposted['reposts'], 
                 'countf' => (int)$aReposted['reposts'] > 0 ? $this->_oTemplate->getRepostCounterLabel($aReposted['reposts']) : '',
                 'counter' => $this->_oTemplate->getRepostCounter($aReposted),
             ]);
         }
 
-        echo $this->_oTemplate->getRepostTo($oForm);
+        echoJson(['popup' => ['html' => $this->_getRepostPopup('to', $oForm), 'options' => ['closeOnOuterClick' => false, 'removeOnClose' => true]]]);
+    }
+
+    /**
+     * The Repost with text / Repost to dialog: a titled popup with the form.
+     */
+    protected function _getRepostPopup($sType, $oForm)
+    {
+        $bWith = $sType == 'with';
+
+        return BxTemplFunctions::getInstance()->popupBox(
+            $this->_oConfig->getHtmlIds('repost', $bWith ? 'with_popup' : 'to_popup'),
+            _t($bWith ? '_bx_timeline_txt_do_repost_with' : '_bx_timeline_txt_do_repost_to'),
+            $bWith ? $this->_oTemplate->getRepostWith($oForm) : $this->_oTemplate->getRepostTo($oForm)
+        );
     }
 
     function actionGetView()
@@ -1342,6 +1356,57 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     public function serviceGetDateChanged ($iContentId)
     {
         return 0;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_timeline Timeline
+     * @subsection bx_timeline-other Other
+     * @subsubsection bx_timeline-has_posts_by has_posts_by
+     *
+     * @code bx_srv('bx_timeline', 'has_posts_by', [[12, 14]]); @endcode
+     *
+     * Whether any of the profiles has written a post. The homepage setup checklist uses it (BxDolTours).
+     *
+     * @param $aProfileIds array of profile IDs.
+     * @return boolean
+     *
+     * @see BxTimelineModule::serviceHasPostsBy
+     */
+    /**
+     * @ref bx_timeline-has_posts_by "has_posts_by"
+     */
+    public function serviceHasPostsBy($aProfileIds)
+    {
+        return $this->_oDb->hasCommonPostsBy(array_map('intval', (array)$aProfileIds));
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_timeline Timeline
+     * @subsection bx_timeline-other Other
+     * @subsubsection bx_timeline-get_onboarding_step_state get_onboarding_step_state
+     *
+     * @code bx_srv('bx_timeline', 'get_onboarding_step_state', ['post']); @endcode
+     *
+     * The state of the "Write the first post" step of an onboarding checklist (BxDolTours::STEP_*), the add-on of
+     * its menu item: done once a profile of the account has posted, locked while the account has no profile.
+     *
+     * @param $sStep string, the step: 'post'.
+     * @return string
+     *
+     * @see BxTimelineModule::serviceGetOnboardingStepState
+     */
+    /**
+     * @ref bx_timeline-get_onboarding_step_state "get_onboarding_step_state"
+     */
+    public function serviceGetOnboardingStepState($sStep = 'post')
+    {
+        $aProfileIds = BxDolTours::getInstance()->getProfileIds();
+        if(empty($aProfileIds))
+            return BxDolTours::STEP_LOCKED;
+
+        return $this->_oDb->hasCommonPostsBy(array_map('intval', $aProfileIds)) ? BxDolTours::STEP_DONE : BxDolTours::STEP_TODO;
     }
 
     /**
@@ -6189,6 +6254,11 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         if(empty($iProfileId) && isLogged())
             $iProfileId = bx_get_logged_profile_id();
 
+        // An account without a profile has no feed of its own: the post block above asks it to create a profile.
+        if($this->isViewerWithoutProfile($iProfileId)) {
+            return [];
+        }
+
         $aBrowseParams['owner_id'] = $iProfileId;
 
         $aBlock = $this->_getBlockView($aBrowseParams);
@@ -6251,6 +6321,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     public function getEmptyStateApi()
     {
         $aState = [
+            'icon' => 'newspaper',
             'title' => '_bx_timeline_txt_empty_feed_title',
             'text' => isLogged() ? '_bx_timeline_txt_empty_feed_text' : '',
         ];
@@ -6279,6 +6350,10 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
 
     protected function _getBlockPost($iProfileId, $aParams = array())
     {
+        if(($sMsg = $this->getNoProfileMessage($iProfileId)) !== false) {
+            return $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['content' => MsgBox($sMsg)];
+        }
+
         $this->_iOwnerId = $iProfileId;
 
         if(($mixedResult = $this->isAllowedPost()) !== true)
@@ -6291,6 +6366,35 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
         return $this->_bIsApi ? $mixedResult : [
             'content' => $mixedResult
         ];
+    }
+
+    /**
+     * Whether the profile is the viewer's own system profile: an account without a profile of its own acts as it,
+     * and it has no feed (viewing it is denied) and can't post.
+     */
+    protected function isViewerWithoutProfile($iProfileId)
+    {
+        $iViewerId = (int)$this->getUserId();
+        if(!$iViewerId || (int)$iProfileId != $iViewerId) {
+            return false;
+        }
+
+        $oViewer = BxDolProfile::getInstance($iViewerId);
+        return $oViewer && $oViewer->getModule() == 'system';
+    }
+
+    /**
+     * What an account without a profile sees in place of the post form of its own feed: posting needs a profile,
+     * and the message offers to create one (BxDolAcl::getDenialState). False for anyone else.
+     */
+    protected function getNoProfileMessage($iProfileId)
+    {
+        if(!$this->isViewerWithoutProfile($iProfileId)) {
+            return false;
+        }
+
+        $aCheck = checkActionModule($this->getUserId(), 'post', $this->getName());
+        return $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED ? $aCheck[CHECK_ACTION_MESSAGE] : false;
     }
 
     protected function _getBlockView($aBrowseParams = array())

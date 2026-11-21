@@ -5,19 +5,25 @@
     <p class="bx-install-step-lead"><?php echo _t('_sys_inst_msg_finish'); ?></p>
 
     <ol>
+        <?php if ($bCronContainer): ?>
+        <li><?php echo _t('_sys_inst_msg_finish_cron_docker'); ?></li>
+        <?php else: ?>
         <li>
-            <?php echo _t('_sys_inst_msg_finish_cron_jobs'); ?>
-            <textarea class="bx-form-input-textarea bx-def-font-inputs bx-def-margin-sec-top">
+            <label for="bx-install-cron"><?php echo _t('_sys_inst_msg_finish_cron_jobs'); ?></label>
+            <textarea id="bx-install-cron" readonly class="bx-form-input-textarea bx-def-font-inputs bx-def-margin-sec-top" spellcheck="false">
 MAILTO=<?php echo getParam('site_email') . "\n"; ?>
 * * * * * <?=$sPathToPhp; ?> -q <?=BX_DIRECTORY_PATH_ROOT; ?>periodic/cron.php
             </textarea>
         </li>
+        <?php endif; ?>
         <li class="bx-def-margin-top">
             <?php echo _t('_sys_inst_msg_finish_delete_install_folder'); ?>
         </li>
-        <li class="bx-def-margin-top">
-            <?php echo _t('_sys_inst_msg_finish_goto_studio', BX_DOL_URL_ROOT); ?>
-        </li>
     </ol>
+
+    <div class="bx-install-actions bx-install-actions-end">
+        <a href="<?php echo bx_html_attribute(BX_DOL_URL_ROOT); ?>" class="bx-btn"><?php echo _t('_sys_inst_open_site'); ?></a>
+        <a href="<?php echo bx_html_attribute(BX_DOL_URL_ROOT); ?>studio/" class="bx-btn bx-btn-primary"><?php echo _t('_sys_inst_open_studio'); ?></a>
+    </div>
 
 </div>

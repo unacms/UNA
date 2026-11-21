@@ -1,14 +1,32 @@
-<div class="bx-profile-membership-stats">
-    <div class="bx-pms-membership">__membership__</div>
-    <div class="bx-pms-stats bx-def-box bx-def-box-round-corners bx-def-color-bg-box mt-4 p-4">
-        <bx_repeat:stat_items>
-            <div class="bx-pms-stat-item mt-4 first:mt-0">
-                <div class="bx-pms-si-title">__title__</div>
-                <div class="bx-pms-si-graph mt-1">
-                    <div class="bx-pms-sig-bar rounded-md" style="width:__width__">&nbsp;</div>
-                    <div class="bx-pms-sig-text pl-4 text-sm text-gray-500 dark:text-gray-400">__value__ (__percent__)</div>
-                </div>
-            </div>
-        </bx_repeat:stat_items>
+<div class="bx-profile-membership-stats flex flex-col gap-4">
+    <div class="bx-pms-membership flex items-center gap-3">
+        <div class="bx-pms-icon flex-none flex items-center justify-center w-11 h-11 rounded-full bg-gray-950/[0.08] dark:bg-gray-50/[0.08] text-gray-700 dark:text-gray-300" aria-hidden="true">__icon__</div>
+        <div class="min-w-0 grow">
+            <div class="bx-pms-level font-semibold text-gray-900 dark:text-gray-100 truncate">__level__</div>
+            <div class="bx-pms-level-info text-sm text-gray-600 dark:text-gray-400">__level_info__</div>
+        </div>
+        <bx_if:show_action>
+            <a class="bx-btn bx-btn-small flex-none" href="__action_url__">__action_title__</a>
+        </bx_if:show_action>
     </div>
+    <ul class="bx-pms-stats flex flex-col gap-3 m-0 p-0 list-none">
+        <bx_repeat:stat_items>
+            <li class="bx-pms-stat-item">
+                <div class="flex items-center justify-between gap-3">
+                    <span class="bx-pms-si-title text-sm font-medium text-gray-900 dark:text-gray-100">__title__</span>
+                    <span class="bx-pms-si-value flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        __value__
+                        <bx_if:unlimited>
+                            <span class="bx-pms-si-unlimited inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-600/15 text-emerald-700 dark:text-emerald-300">__unlimited__</span>
+                        </bx_if:unlimited>
+                    </span>
+                </div>
+                <bx_if:limited>
+                    <div class="bx-pms-si-bar mt-2 h-1.5 w-full rounded-full overflow-hidden bg-gray-950/[0.08] dark:bg-gray-50/[0.08]" role="progressbar" aria-label="__title_attr__" aria-valuemin="0" aria-valuemax="100" aria-valuenow="__percent__">
+                        <div class="h-full rounded-full __bar_class__" style="width:__percent__%"></div>
+                    </div>
+                </bx_if:limited>
+            </li>
+        </bx_repeat:stat_items>
+    </ul>
 </div>

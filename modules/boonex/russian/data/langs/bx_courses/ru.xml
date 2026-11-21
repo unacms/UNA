@@ -363,7 +363,9 @@
     <string name="_bx_courses_menu_item_title_system_sm_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_bx_courses_menu_item_title_sm_privacy"><![CDATA[Конфиденциальность]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_members"><![CDATA[Студенты]]></string>
-    <string name="_bx_courses_menu_item_title_sm_members"><![CDATA[{0} студенты]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members"><![CDATA[{0} студентов]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members_few"><![CDATA[{0} студента]]></string>
+    <string name="_bx_courses_menu_item_title_sm_members_one"><![CDATA[{0} студент]]></string>
     <string name="_bx_courses_menu_item_title_system_sm_join"><![CDATA[Посетить]]></string>
     <string name="_bx_courses_menu_item_title_sm_join"><![CDATA[Посетить]]></string>
     <string name="_bx_courses_menu_item_title_sm_join_paid"><![CDATA[Оплатить и посетить]]></string>
@@ -502,7 +504,7 @@
 
     <string name="_bx_courses_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_courses_err_price_duplicate"><![CDATA[Аналогичный ценовой план уже существует.]]></string>
-    <string name="_bx_courses_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_courses_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_courses_alert_action_fan_added"><![CDATA[присоединение нового студента]]></string>
     <string name="_bx_courses_txt_ntfs_fan_added"><![CDATA[К курсу <b class="bx-ntfs-content-profile">{owner_name}</b> присоединился <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>
@@ -529,48 +531,48 @@
     <string name="_bx_courses_email_join_request"><![CDATA[Запрос на присоединение к курсу]]></string>
     <string name="_bx_courses_email_join_request_subject"><![CDATA[Запрос на присоединение к курсу]]></string>
     <string name="_bx_courses_email_join_request_body"><![CDATA[{email_header}
-<p>Получен запрос на присоединение к курсу <a href="{EntryUrl}">{EntryTitle}</a> от <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Получен запрос на присоединение к курсу <a href="{EntryUrl}">{EntryTitle}</a> от <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_courses_email_join_reject"><![CDATA[Отклонение запроса на присоединение к курсу]]></string>
     <string name="_bx_courses_email_join_reject_subject"><![CDATA[Ваш запрос на присоединение к курсу был отклонен]]></string>
     <string name="_bx_courses_email_join_reject_body"><![CDATA[{email_header}
-<p>Ваш запрос на присоединение к курсу <a href="{EntryUrl}">{EntryTitle}</a> был отклонен преподавателем курса.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш запрос на присоединение к курсу <a href="{EntryUrl}">{EntryTitle}</a> был отклонен преподавателем курса.</p>
 {email_footer}]]></string>
 
     <string name="_bx_courses_email_join_confirm"><![CDATA[Одобрение запроса на присоединение к курсу]]></string>
     <string name="_bx_courses_email_join_confirm_subject"><![CDATA[Ваш запрос на присоединение к курсу был одобрен]]></string>
     <string name="_bx_courses_email_join_confirm_body"><![CDATA[{email_header}
-<p>Ваш запрос на присоединение к курсу <a href="{EntryUrl}">{EntryTitle}</a> был одобрен.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш запрос на присоединение к курсу <a href="{EntryUrl}">{EntryTitle}</a> был одобрен.</p>
 {email_footer}]]></string>
 
     <string name="_bx_courses_email_fan_remove"><![CDATA[Удаление с курса]]></string>
     <string name="_bx_courses_email_fan_remove_subject"><![CDATA[Вы были удалены с курса]]></string>
     <string name="_bx_courses_email_fan_remove_body"><![CDATA[{email_header}
-<p>Ваш профиль был удален с курса <a href="{EntryUrl}">{EntryTitle}</a> преподавателем курса.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш профиль был удален с курса <a href="{EntryUrl}">{EntryTitle}</a> преподавателем курса.</p>
 {email_footer}]]></string>
 
     <string name="_bx_courses_email_fan_become_admin"><![CDATA[Получение статуса преподавателя курса]]></string>
     <string name="_bx_courses_email_fan_become_admin_subject"><![CDATA[Вы стали преподавателем курса]]></string>
     <string name="_bx_courses_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>Вы получили статус преподавателя курса <a href="{EntryUrl}">{EntryTitle}</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы получили статус преподавателя курса <a href="{EntryUrl}">{EntryTitle}</a>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_courses_email_admin_become_fan"><![CDATA[Лишение статуса преподавателя курса]]></string>
     <string name="_bx_courses_email_admin_become_fan_subject"><![CDATA[Вы были лишены статуса преподавателя курса]]></string>
     <string name="_bx_courses_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Вы были лишены статуса преподавателя курса <a href="{EntryUrl}">{EntryTitle}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы были лишены статуса преподавателя курса <a href="{EntryUrl}">{EntryTitle}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_courses_email_invitation"><![CDATA[Приглашение на курс]]></string>
     <string name="_bx_courses_email_invitation_subject"><![CDATA[Приглашение на курс "{EntryTitle}"]]></string>
     <string name="_bx_courses_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> пригласил Вас на курс <a href="{EntryUrl}">{EntryTitle}</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> пригласил Вас на курс <a href="{EntryUrl}">{EntryTitle}</a>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_courses_email_set_role"><![CDATA[Изменение статуса на курсе]]></string>
     <string name="_bx_courses_email_set_role_subject"><![CDATA[Ваш статус на курсе был изменен]]></string>
     <string name="_bx_courses_email_set_role_body"><![CDATA[{email_header}
-<p>Ваш статус на курсе <a href="{EntryUrl}">{EntryTitle}</a> был изменен на <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш статус на курсе <a href="{EntryUrl}">{EntryTitle}</a> был изменен на <b>{Role}</b>.</p>
 {email_footer}]]></string>
 </resources>

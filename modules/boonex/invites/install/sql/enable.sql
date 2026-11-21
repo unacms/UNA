@@ -34,7 +34,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designb
 
 -- PAGES: add page block on dashboard
 SET @iPBCellDashboard = 3;
-SET @iPBOrderDashboard = 2; --(SELECT IFNULL(MAX(`order`), 0) FROM `sys_pages_blocks` WHERE `object` = 'sys_dashboard' AND `cell_id` = @iPBCellDashboard LIMIT 1);
+SET @iPBOrderDashboard = 3; --(SELECT IFNULL(MAX(`order`), 0) FROM `sys_pages_blocks` WHERE `object` = 'sys_dashboard' AND `cell_id` = @iPBCellDashboard LIMIT 1);
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `order`) VALUES
 ('sys_dashboard', @iPBCellDashboard, @sName, '_bx_invites_page_block_title_invite', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:10:"bx_invites";s:6:"method";s:16:"get_block_invite";}', 0, 1, @iPBOrderDashboard);
 
@@ -66,7 +66,6 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_invites_key_lifetime', '7', @iCategId, '_bx_invites_option_key_lifetime', 'digit', '', '', '', 2),
 ('bx_invites_enable_request_invite', 'on', @iCategId, '_bx_invites_option_enable_request_invite', 'checkbox', '', '', '', 3),
 ('bx_invites_requests_email', '', @iCategId, '_bx_invites_option_requests_email', 'digit', '', '', '', 4),
-('bx_invites_enable_reg_by_inv', 'on', @iCategId, '_bx_invites_option_enable_reg_by_inv', 'checkbox', '', '', '', 5),
 ('bx_invites_requests_notifications', 'on', @iCategId, '_bx_invites_option_requests_notifications', 'checkbox', '', '', '', 6),
 ('bx_invites_automatically_befriend', 'on', @iCategId, '_bx_invites_option_automatically_befriend', 'checkbox', '', '', '', 7),
 ('bx_invites_context_auto_join', '', @iCategId, '_bx_invites_option_context_auto_join', 'checkbox', '', '', '', 20),

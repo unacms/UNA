@@ -44,9 +44,28 @@ div.adm-bp-block {
 
     box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
 }
-div.adm-bp-block.adm-bpb-inactive,
-div.bx-lr-dump div.adm-bp-block {
+/* a block off on the site and in the apps, or in no cell, is greyed out; its switches stay readable.
+   Only the icon is faded: the title and the line under it take a lighter gray that still meets WCAG AA
+   (gray-500 on white, gray-400 on black). */
+div.adm-bp-block.adm-bpb-inactive .adm-bpb-icon,
+div.bx-lr-dump div.adm-bp-block .adm-bpb-icon {
     opacity: 0.5;
+}
+div.adm-bp-block.adm-bpb-inactive .adm-bpb-title a,
+div.adm-bp-block.adm-bpb-inactive .adm-bpb-title span,
+div.adm-bp-block.adm-bpb-inactive .adm-bpb-description,
+div.bx-lr-dump div.adm-bp-block .adm-bpb-title a,
+div.bx-lr-dump div.adm-bp-block .adm-bpb-title span,
+div.bx-lr-dump div.adm-bp-block .adm-bpb-description {
+    color: #71717a; /* gray-500 */
+}
+.dark div.adm-bp-block.adm-bpb-inactive .adm-bpb-title a,
+.dark div.adm-bp-block.adm-bpb-inactive .adm-bpb-title span,
+.dark div.adm-bp-block.adm-bpb-inactive .adm-bpb-description,
+.dark div.bx-lr-dump div.adm-bp-block .adm-bpb-title a,
+.dark div.bx-lr-dump div.adm-bp-block .adm-bpb-title span,
+.dark div.bx-lr-dump div.adm-bp-block .adm-bpb-description {
+    color: #a1a1aa; /* gray-400 */
 }
 div.adm-bp-block-empty {
     height: 4rem;
@@ -62,8 +81,9 @@ div.adm-bpb-content {
     justify-content: flex-start;
     -webkit-align-items: center;
     align-items: center;
-    -webkit-flex-flow: row nowrap;
-    flex-flow: row nowrap;
+    -webkit-flex-flow: row wrap;
+    flex-flow: row wrap;
+    row-gap: 0.5rem;
 
     padding: 0.625rem;
 }
@@ -88,7 +108,7 @@ div.adm-bpb-icon {
 }
 div.adm-bpb-icon-bg {
     background-color: #323c46;
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 div.adm-bpb-icon-cnt {
     position: absolute;
@@ -105,11 +125,12 @@ div.adm-bpb-icon-cnt i.sys-icon {
     font-size: 20px;
 }
 div.adm-bpb-icon img {
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 div.adm-bpb-info {
-    -webkit-flex-grow: 2;
-    flex-grow: 2;
+    -webkit-flex: 2 1 0;
+    flex: 2 1 0;
+    min-width: 0;
 
     min-height: 2rem;
 }
@@ -130,12 +151,36 @@ div.adm-bpb-title {
 
     overflow: hidden;
 }
-div.adm-bpb-title .bx-std-api {
-    margin-left: 0.25rem;
+/* the Site and Apps switches: beside the title, below it when the cell is narrow */
+div.adm-bpb-switchers {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
-.bx-dir-rtl div.adm-bpb-title .bx-std-api {
-    margin-left: 0;
-    margin-right: 0.25rem;
+div.adm-bpb-switcher {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 2.75rem;
+}
+span.adm-bpb-switcher-caption {
+    font-size: 0.75rem;
+    line-height: 1;
+}
+div.adm-bp-cell div.adm-bp-block {
+    container-type: inline-size;
+}
+@container (max-width: 20rem) {
+    div.adm-bpb-switchers {
+        flex-basis: 100%;
+        padding-left: 3.25rem;
+    }
+    .bx-dir-rtl div.adm-bpb-switchers {
+        padding-left: 0;
+        padding-right: 3.25rem;
+    }
 }
 div.adm-bpb-description {
     font-size: 0.75rem;
@@ -184,7 +229,26 @@ div.adm-bp-cbf-counter {
     position: relative;
     float: right;
     line-height: 38px;
-    color: #b5b5b5;
+    color: #71717a; /* gray-500, AA on the white popup */
+}
+.dark div.adm-bp-cbf-counter {
+    color: #a1a1aa; /* gray-400 */
+}
+/* On a phone the block types sit above the blocks, each list scrolling in its own part of the popup. */
+@media (max-width: 639px) {
+    div.adm-bp-cbf-left {
+        position: static;
+        width: auto;
+        height: 10rem;
+    }
+    div.adm-bp-cbf-right {
+        height: 18rem;
+        margin-left: 0;
+        margin-top: 0.75rem;
+    }
+    div.adm-bp-cbf-counter {
+        float: none;
+    }
 }
 
 /*--- Edit Block popup style ---*/
@@ -267,21 +331,25 @@ div.adm-bp-epf-left {
     box-shadow: 1px 0 0 0 rgba(255, 255, 255, 0.025);
 }
 div.adm-bp-epf-left-cnt {}
-/* The modal's sidebar keeps the desktop row layout at every viewport: its column is 14rem wide, unlike the app pages' side menu that
+/* The modals' sidebars (page settings, Add blocks) keep the desktop row layout at every viewport: its column is 14rem wide, unlike the app pages' side menu that
    turns into a strip of square tiles under 1024px and a row of tabs under 768px (general.css). */
+div.adm-bp-cbf-left div.bx-std-pmen-item,
 div.adm-bp-epf-left div.bx-std-pmen-item {
     flex: none;
     height: 3.25rem; /* the 36px tile with 8px above and below, as in the app pages' side menu */
     min-width: 0;
     margin-top: 0.125rem;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item:first-child,
 div.adm-bp-epf-left div.bx-std-pmen-item:first-child {
     margin-top: 0;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item > a,
 div.adm-bp-epf-left div.bx-std-pmen-item > a {
     display: block;
     height: auto;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item-cnt,
 div.adm-bp-epf-left div.bx-std-pmen-item-cnt {
     -webkit-flex-direction: row;
     flex-direction: row;
@@ -290,15 +358,18 @@ div.adm-bp-epf-left div.bx-std-pmen-item-cnt {
     height: auto;
     padding: 0.5rem;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon,
 div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     display: block;
     width: 2.25rem;
     height: 2.25rem;
     margin: 0 0.75rem 0 0;
 }
+.bx-dir-rtl div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon,
 .bx-dir-rtl div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     margin: 0 0 0 0.75rem;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-title,
 div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-title {
     display: block;
     -webkit-line-clamp: unset;
@@ -331,7 +402,7 @@ div.adm-bp-epf-controls .bx-def-margin-sec-left {
     margin-left: 0.5rem;
 }
 /* Layout gallery: a grid that fills the panel (as many 104px-plus columns as fit, stretched to the width), each layout a card on the
-   dashboard hero plate (translucent fill, 2.5% inset hairline, 16px radius) with its name under the picture, like the launcher tiles;
+   dashboard hero plate (translucent fill, 2.5% inset hairline, 14px radius) with its name under the picture, like the launcher tiles;
    the chosen one carries a 2px blue ring and a bold name. */
 div#adm-bp-settings-group-layout {
     display: grid;
@@ -347,7 +418,7 @@ div#adm-bp-settings-group-layout > form {
 }
 div.adm-bp-layout {
     position: relative;
-    border-radius: 1rem;
+    border-radius: var(--bx-radius-2xl);
     background: rgba(0, 0, 0, 0.05);
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
     transition: background-color 0.3s;

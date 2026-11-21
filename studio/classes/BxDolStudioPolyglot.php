@@ -7,12 +7,14 @@
  * @{
  */
 
+define('BX_DOL_STUDIO_PGT_TYPE_LANGUAGES', 'pgt_languages');
 define('BX_DOL_STUDIO_PGT_TYPE_SETTINGS', 'pgt_settings');
 define('BX_DOL_STUDIO_PGT_TYPE_KEYS', 'pgt_keys');
 define('BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_TEXT', 'etemplates_text');
 define('BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML', 'etemplates_html');
 
-define('BX_DOL_STUDIO_PGT_TYPE_DEFAULT', BX_DOL_STUDIO_PGT_TYPE_SETTINGS);
+// Polyglot opens on the list of installed languages.
+define('BX_DOL_STUDIO_PGT_TYPE_DEFAULT', BX_DOL_STUDIO_PGT_TYPE_LANGUAGES);
 
 class BxDolStudioPolyglot extends BxTemplStudioWidget
 {
@@ -118,7 +120,7 @@ class BxDolStudioPolyglot extends BxTemplStudioWidget
         if(!$bResult)
             return $this->getJsResult('_adm_pgt_err_et_hf_save');
 
-        return $this->getJsResult('_adm_pgt_scs_et_hf_save', true, true, BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
+        return $this->getJsToast('_adm_pgt_scs_et_hf_save', BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
     }
     
     public function submitEtemplatesHtml(&$oForm)
@@ -136,7 +138,7 @@ class BxDolStudioPolyglot extends BxTemplStudioWidget
         if(!$bResult)
             return $this->getJsResult('_adm_pgt_err_et_hf_save');
 
-        return $this->getJsResult('_adm_pgt_scs_et_hf_save', true, true, BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
+        return $this->getJsToast('_adm_pgt_scs_et_hf_save', BX_DOL_URL_STUDIO . 'polyglot.php?page=' . BX_DOL_STUDIO_PGT_TYPE_ETEMPLATES_HTML); 
     }
 }
 

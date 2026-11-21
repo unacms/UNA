@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Connectors: which agent tools AI assistants get through MCP, for operators and for members. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_agents_connectors_txt_tokens"><![CDATA[Ваши токены доступа]]></string_add>
+    <string_add name="_sys_agents_connectors_txt_tools"><![CDATA[Инструменты для ИИ-ассистентов]]></string_add>
+    <string_add name="_sys_agents_connectors_txt_tools_info"><![CDATA[Какие инструменты агентов ИИ-ассистенты получают через MCP. Операторские инструменты действуют на весь сайт. Инструменты участников действуют от имени участника, с его правами на сайте, и дать участникам можно только те, что для этого сделаны. Инструмент, выключенный на вкладке Tools, не выдаётся.]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_operators"><![CDATA[Операторам]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_members"><![CDATA[Участникам]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_operators_only"><![CDATA[Только операторам]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_tool_off"><![CDATA[выключен]]></string_add>
+    <string_add name="_sys_agents_mcp_err_not_for_members"><![CDATA[Этот инструмент не сделан для участников: он действовал бы на весь сайт.]]></string_add>
+    <string_upd name="_sys_api_tokens_txt_info_operator"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT. Поскольку вы оператор, ваши токены дают им и операторские инструменты, включённые ниже, которые могут изменить на сайте что угодно. Создайте отдельный токен для каждого ассистента; отзовите токен, чтобы отключить его.]]></string_upd>
+</resources>

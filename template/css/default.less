@@ -1,7 +1,8 @@
 @import (reference) '_mixins.less';
 
+/* Designer's width for the page's layout and audience (<body>, BxBaseFunctions::getPageWidth), else the template's. */
 .bx-def-page-width {
-    max-width:@bx-page-width;
+    max-width: var(--bx-page-width, @bx-page-width);
     width: 100%;
 }
 

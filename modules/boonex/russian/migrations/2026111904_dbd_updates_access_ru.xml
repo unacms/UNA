@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Dashboard > Updates: access to automatic updates moved from the last row into the hero, beside "Check for updates". -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_dbd_btn_ver_access_enable"><![CDATA[Включить автообновления]]></string_add>
+    <string_add name="_adm_dbd_txt_ver_access_on"><![CDATA[Автообновления доступны]]></string_add>
+</resources>

@@ -304,6 +304,7 @@ class BxNtfsModule extends BxBaseModNotificationsModule
             // What the apps show when there are none (BxDolEmptyState): only a first page can be empty.
             if(empty($aContent) && (int)$iStart <= 0) {
                 $aBlockData['empty_state'] = BxDolEmptyState::forApi([
+                    'icon' => 'bell',
                     'title' => '_bx_ntfs_txt_empty_title',
                     'text' => '_bx_ntfs_txt_empty_text',
                 ]);

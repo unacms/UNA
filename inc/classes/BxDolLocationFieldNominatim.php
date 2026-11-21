@@ -101,12 +101,12 @@ class BxDolLocationFieldNominatim extends BxDolLocationField
             $aFields = array(
                 'lat' => array('type' => 'hidden'),
                 'lng' => array('type' => 'hidden'),
-                'street_number' => array('type' => 'text', 'ph' => _t('_sys_location_ph_number')),
-                'street' => array('type' => 'text', 'ph' => _t('_sys_location_ph_street')),
-                'city' => array('type' => 'text', 'ph' => _t('_sys_location_ph_city')),
-                'state' => array('type' => 'text', 'ph' => _t('_sys_location_ph_state')),
-                'zip' => array('type' => 'text', 'ph' => _t('_sys_location_ph_zip')),
-                'country' => array('type' => 'select'),
+                'street_number' => array('type' => 'text', 'ph' => '_sys_location_ph_number'),
+                'street' => array('type' => 'text', 'ph' => '_sys_location_ph_street'),
+                'city' => array('type' => 'text', 'ph' => '_sys_location_ph_city'),
+                'state' => array('type' => 'text', 'ph' => '_sys_location_ph_state'),
+                'zip' => array('type' => 'text', 'ph' => '_sys_location_ph_zip'),
+                'country' => array('type' => 'select', 'label' => '_sys_location_ph_country'),
             );
             if($bMinimized)
                 unset($aFields['street_number'], $aFields['street'], $aFields['zip']);
@@ -120,6 +120,9 @@ class BxDolLocationFieldNominatim extends BxDolLocationField
                 if (!isset($aInputField['attrs']) || !is_array($aInputField['attrs']))
                     $aInputField['attrs'] = [];
                 $aInputField['attrs']['placeholder'] = empty($a['ph']) ? '' : _t($a['ph']);
+                // each part is named by itself for assistive technologies, not all by the field's caption
+                if (!empty($a['ph']) || !empty($a['label']))
+                    $aInputField['area_label'] = !empty($a['label']) ? $a['label'] : $a['ph'];
                 if (isset($aInputField['attrs']['class']))
                     $aInputField['attrs']['class'] .= ' bx-form-input-location-' . $sKey;
                 else

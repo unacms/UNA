@@ -32,7 +32,7 @@ class BxCoursesMenuSnippetMeta extends BxBaseModGroupsMenuSnippetMeta
         if(empty($CNF['FIELD_REPORTS']) || (empty($this->_aContentInfo[$CNF['FIELD_REPORTS']]) && !$this->_bShowZeros))
             return false;
 
-        $sTitle = _t('_report_n_reports', $this->_aContentInfo[$CNF['FIELD_REPORTS']]);
+        $sTitle = _tn('_report_n_reports', $this->_aContentInfo[$CNF['FIELD_REPORTS']]);
 
         if($this->_bIsApi)
             return $this->_getMenuItemAPI($aItem, 'text', [

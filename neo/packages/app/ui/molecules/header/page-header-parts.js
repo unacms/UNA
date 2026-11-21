@@ -28,6 +28,8 @@ import { useHeaderOptions } from 'app/ui/molecules/header/options';
 import { SectionIcon, useSectionIcon } from 'app/ui/molecules/section-icon';
 import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
+import { resolveHeaderLayout } from 'app/lib/header-layout';
+import { AppSidebarOpenButton } from 'app/ui/molecules/sidebar/app-sidebar';
 import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
@@ -236,7 +238,7 @@ export const PageHeaderSmall = ({ pageData }) => {
     return (
         <Row className="w-full justify-between gap-2">
             <Link href="/home" alt={t('Home')} className="items-center">
-                {appStatic('logo')}
+                {appStatic('logo', { sources: pageData?.logo || __lastSiteLogo, alt: '' })}
             </Link>
             <HeaderElement url={pageData?.url} uri={pageData?.uri} />
         </Row>
@@ -412,6 +414,10 @@ export function usePageHeaderBase(pageData) {
     };
 }
 
+// The header the last page with one had: a page whose data has none yet keeps it, so the header doesn't jump.
+let __lastHeaderLayout = null;
+let __lastSiteLogo = null;
+
 export const PageHeaderBody = memo(({
     contentClassName,
     currentUser,
@@ -431,6 +437,22 @@ export const PageHeaderBody = memo(({
     sectionIcon,
 }) => {
     const { t } = useTranslation();
+    // UNA's Designer sets the header per page layout: its width and where the main menu sits (lib/header-layout.ts).
+    const is404 = pageData?.page_status == 404;
+    const headerLayout = resolveHeaderLayout(pageData?.header, {
+        width: appSetting('layout', 'header', 'width'),
+        align: appSetting('layout', 'header', 'align'),
+    }, __lastHeaderLayout);
+    useEffect(() => {
+        if (pageData?.header) __lastHeaderLayout = { width: headerLayout.width, align: headerLayout.align };
+    }, [pageData?.header, headerLayout.width, headerLayout.align]);
+    // The site's own logo (Studio > Designer), kept from the last page that sent one.
+    const siteLogo = pageData?.logo || __lastSiteLogo;
+    useEffect(() => {
+        if (pageData?.logo) __lastSiteLogo = pageData.logo;
+    }, [pageData?.logo]);
+    // The link around it names it (Home), so the image itself is decorative.
+    const logoProps = { sources: siteLogo, alt: '' };
     // Logo variant per breakpoint. Web picks it with classes (SSR-safe);
     // native renders only the matching one, since `display: none` subtrees of
     // native (Expo UI) buttons trip Fabric's layout ownership assert in debug
@@ -491,7 +513,7 @@ export const PageHeaderBody = memo(({
                     contentInsets={{ x: 6 }}
                     accessibilityLabel={t('Home')}
                 >
-                    {appStatic('logo')}
+                    {appStatic('logo', logoProps)}
                 </NeoButtonLink>
             </View>}
             {(isWeb || logoSize === 'tablet') && <View className="hidden sm:flex lg:hidden">
@@ -504,15 +526,15 @@ export const PageHeaderBody = memo(({
                     contentInsets={{ x: 12}}
                     accessibilityLabel={t('Home')}
                 >
-                    {appStatic('logo')}
+                    {appStatic('logo', logoProps)}
                 </NeoButtonLink>
             </View>}
             {/* Desktop: the logo at 40px as in UNA, 2px inside the link (p-0.5), so its 40px mark sits in a 44px
                 square at the header's px-4 inset, centred over the 44px icons below it (a section's icon circle,
                 the page title's icon) and as tall as the header's buttons. */}
-            {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex">
+            {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex neo-header-logo">
                 <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center p-0.5">
-                    {appStatic('logo', { mode: 'full', height: 40 })}
+                    {appStatic('logo', { ...logoProps, mode: 'full', height: 40 })}
                 </Link>
             </View>}
         </>
@@ -572,11 +594,13 @@ export const PageHeaderBody = memo(({
         );
     }
 
-    return (
+    const headerRow = (
         <>
-            <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
-                <View className={' ' + appSetting('layout', 'header', 'content_left')}>
+                <View className={`${appSetting('layout', 'header', 'content_left')} ${appSetting('layout', 'header', 'content_left_align')?.[headerLayout.align] ?? ''}`}>
                     <Row className='min-w-0 shrink items-center gap-3'>
+                        {/* The start of the header. Native: Menu, which opens the drawer, on a tab's first page; a page
+                            pushed over it has Back there. Web: the Application layout's sidebar as a drawer, below `xl`. */}
+                        {(isWeb || !isPushedScreen) && <AppSidebarOpenButton />}
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}
@@ -585,12 +609,27 @@ export const PageHeaderBody = memo(({
                         {contextSelectorElement}
                     </Row>
                 </View>
-                {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}
-                <View className={' ' + appSetting('layout', 'header', 'content_right')}>
+                {/* A 404 borrows the home page's data for its chrome: no tab is the current page there. */}
+                {isWeb && <MenuTop url={is404 ? null : pageData?.url} uri={is404 ? null : pageData?.uri} align={headerLayout.align} />}
+                <View className={`${appSetting('layout', 'header', 'content_right')} ${appSetting('layout', 'header', 'content_right_align')?.[headerLayout.align] ?? ''}`}>
                 
                     {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} />}
                 
                 </View>
+        </>
+    );
+
+    return (
+        <>
+            <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
+                {/* Web: the row is as wide as the page's content or the window (`layout.header.content_width`); the
+                    header's background stays full width. From `lg` its sides share the room the main menu leaves
+                    (`content_left_align`, `content_right_align`), which centres the menu on the header. */}
+                {isWeb ? (
+                    <Row className={`flex-1 min-w-0 self-stretch items-center justify-between gap-4 mx-auto w-full ${appSetting('layout', 'header', 'content_width')?.[headerLayout.width] ?? ''}`}>
+                        {headerRow}
+                    </Row>
+                ) : headerRow}
             </Row>
             {isWeb ? (
                 header.subHeader ? (

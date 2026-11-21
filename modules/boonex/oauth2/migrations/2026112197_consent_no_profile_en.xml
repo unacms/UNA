@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- OAuth2 consent page: an account with no profile is told to create one, and comes back to finish. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_oauth_authorize_no_profile"><![CDATA[You need a profile to connect <strong>{0}</strong>. Create one, and you will come back here to finish.]]></string_add>
+</resources>

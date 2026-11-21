@@ -26,7 +26,7 @@ else {
 $oTemplate = BxDolTemplate::getInstance();
 $oTemplate->setPageNameIndex (BX_PAGE_TRANSITION);
 $oTemplate->setPageHeader (_t('_Please Wait'));
-$oTemplate->setPageContent ('page_main_code', MsgBox(_t('_Please Wait')));
+$oTemplate->setPageContent ('page_main_code', BxDolTemplate::getInstance()->parseHtmlByName('transition_wait.html', ['text' => _t('_Please Wait')]));
 $oTemplate->setPageContent ('url_relocate', BX_DOL_URL_ROOT);
 
 send_headers_page_changed();

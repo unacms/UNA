@@ -2,7 +2,7 @@
 <resources name="en" flag="gb" title="English">
     <string name="_bx_attendant"><![CDATA[Attendant]]></string>
     <string name="_bx_attendant_adm_stg_cpt_type"><![CDATA[Attendant]]></string>
-    <string name="_bx_attendant_adm_stg_cpt_category_on_profile_creation"><![CDATA[Popup with recomended profiles on profile add]]></string>
+    <string name="_bx_attendant_adm_stg_cpt_category_on_profile_creation"><![CDATA[Popup with recommended profiles after profile creation]]></string>
     <string name="_bx_attendant_adm_stg_on_profile_creation_modules_list"><![CDATA[Recommend featured items from]]></string>
     <string name="_bx_attendant_adm_stg_on_profile_after_action_url"><![CDATA[Url for redirect after shows]]></string>
     <string name="_bx_attendant_adm_stg_on_profile_after_action_url_custom"><![CDATA[URL for 'Custom Page' redirect]]></string>

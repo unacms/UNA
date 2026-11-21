@@ -16,13 +16,13 @@
     <string name="_bx_events_option_searchable_fields"><![CDATA[Searchable fields]]></string>
     <string name="_bx_events_option_members_mode"><![CDATA[Special mode for event members]]></string>
     <string name="_bx_events_option_members_mode_multi_roles"><![CDATA[Multi Roles]]></string>
-    <string name="_bx_events_option_reminder_interval"><![CDATA[Reminder Interval]]></string>
+    <string name="_bx_events_option_reminder_interval"><![CDATA[Reminder interval]]></string>
     <string name="_bx_events_option_public_subscribed_me"><![CDATA[Public list of interested members]]></string>
     <string name="_bx_events_option_per_page_for_favorites_lists"><![CDATA[Number of favorite lists per page]]></string>
     <string name="_bx_events_option_enable_subscribe_wo_join"><![CDATA[Allow to mark as Interested without joining (marking as Going)]]></string>
     <string name="_bx_events_option_internal_notifications"><![CDATA[Use internal notifications]]></string>
     <string name="_bx_events_option_enable_subscribe_for_past_events"><![CDATA[Enable join for past events]]></string>
-    <string name="_bx_events_option_rm_from_timeline_after"><![CDATA[Delete past events from Timeline after N hours (0 - don't delete)]]></string>
+    <string name="_bx_events_option_rm_from_timeline_after"><![CDATA[Remove past events from Timeline after this many hours (0 = never)]]></string>
 
     <string name="_bx_events_form_profile"><![CDATA[Events]]></string>
     <string name="_bx_events_form_profile_display_add"><![CDATA[Add Event]]></string>
@@ -43,10 +43,10 @@
     <string name="_bx_events_form_profile_input_sys_allow_post_to"><![CDATA[Who can post]]></string>
     <string name="_bx_events_form_profile_input_allow_post_to"><![CDATA[Who can post]]></string>
     <string name="_bx_events_form_profile_input_sys_initial_members"><![CDATA[Invite Members]]></string>
-    <string name="_bx_events_form_profile_input_initial_members"><![CDATA[Invite Members]]></string>
+    <string name="_bx_events_form_profile_input_initial_members"><![CDATA[Invite members]]></string>
     <string name="_bx_events_form_profile_input_sys_event_name"><![CDATA[Event Name]]></string>
-    <string name="_bx_events_form_profile_input_event_name"><![CDATA[Event Name]]></string>
-    <string name="_bx_events_form_profile_input_event_name_err"><![CDATA[Name is essential min 3 max 160.]]></string>
+    <string name="_bx_events_form_profile_input_event_name"><![CDATA[Event name]]></string>
+    <string name="_bx_events_form_profile_input_event_name_err"><![CDATA[Name is required min 3 max 160.]]></string>
     <string name="_bx_events_form_profile_input_sys_event_desc"><![CDATA[Description]]></string>
     <string name="_bx_events_form_profile_input_event_desc"><![CDATA[Description]]></string>
     <string name="_bx_events_form_profile_input_sys_event_cat"><![CDATA[Category]]></string>
@@ -58,13 +58,13 @@
     <string name="_bx_events_form_profile_input_picture"><![CDATA[Upload New Event Picture]]></string>
     <string name="_bx_events_form_profile_input_picture_err"><![CDATA[Event picture is mandatory.]]></string>
     <string name="_bx_events_form_profile_input_sys_cover"><![CDATA[Cover Picture]]></string>
-    <string name="_bx_events_form_profile_input_cover"><![CDATA[Upload New Cover Picture]]></string>
+    <string name="_bx_events_form_profile_input_cover"><![CDATA[Upload new cover picture]]></string>
     <string name="_bx_events_form_profile_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_events_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this event]]></string>
-    <string name="_bx_events_form_profile_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+    <string name="_bx_events_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
     <string name="_bx_events_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete event.]]></string>
-    <string name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Reoccurring]]></string>
-    <string name="_bx_events_form_profile_input_reoccurring"><![CDATA[Reoccurring]]></string>
+    <string name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Repeats]]></string>
+    <string name="_bx_events_form_profile_input_reoccurring"><![CDATA[Repeats]]></string>
     <string name="_bx_events_form_profile_input_reoccurring_add_interval"><![CDATA[Add repeating interval]]></string>
     <string name="_bx_events_form_profile_input_sys_date_added"><![CDATA[Created]]></string>
     <string name="_bx_events_form_profile_input_date_added"><![CDATA[Created]]></string>
@@ -86,8 +86,8 @@
     <string name="_bx_events_form_profile_input_time"><![CDATA[Time]]></string>
     <string name="_bx_events_form_profile_input_sys_reminder"><![CDATA[Reminder (part of Internal Notifications)]]></string>
     <string name="_bx_events_form_profile_input_reminder"><![CDATA[Reminder]]></string>
-    <string name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Threshold radius]]></string>
-    <string name="_bx_events_form_profile_input_threshold"><![CDATA[Threshold radius (in meters)]]></string>
+    <string name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Radius around the location]]></string>
+    <string name="_bx_events_form_profile_input_threshold"><![CDATA[Radius around the location, meters]]></string>
     <string name="_bx_events_form_input_repeat_year"><![CDATA[Repeat year]]></string>
     <string name="_bx_events_form_input_repeat_month"><![CDATA[Repeat month]]></string>
     <string name="_bx_events_form_input_repeat_week_of_month"><![CDATA[Repeat week of month]]></string>
@@ -109,14 +109,14 @@
     <string name="_bx_events_form_question_input_sys_do_cancel"><![CDATA[Cancel]]></string>
     <string name="_bx_events_form_question_input_do_cancel"><![CDATA[Cancel]]></string>
 
-    <string name="_bx_events_form_questionnaire_input_question_err"><![CDATA[Please, answer the question.]]></string>
+    <string name="_bx_events_form_questionnaire_input_question_err"><![CDATA[Please answer the question.]]></string>
 
     <string name="_bx_events_form_session"><![CDATA[Session]]></string>
     <string name="_bx_events_form_session_display_add"><![CDATA[Add Session]]></string>
     <string name="_bx_events_form_session_display_edit"><![CDATA[Edit Session]]></string>
     <string name="_bx_events_form_session_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_events_form_session_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_events_form_session_input_title_err"><![CDATA[Session title is essential min 3 max 160.]]></string>
+    <string name="_bx_events_form_session_input_title_err"><![CDATA[Session title is required min 3 max 160.]]></string>
     <string name="_bx_events_form_session_input_sys_description"><![CDATA[Description]]></string>
     <string name="_bx_events_form_session_input_description"><![CDATA[Description]]></string>
     <string name="_bx_events_form_session_input_sys_date_start"><![CDATA[Date start]]></string>
@@ -184,30 +184,30 @@
     <string name="_bx_events_acl_action_delete_any_profile"><![CDATA[Delete Any Event]]></string>
     <string name="_bx_events_acl_action_delete_invites"><![CDATA[Delete Invites]]></string>
 
-    <string name="_bx_events_page_title_sys_joined"><![CDATA[Profile Events]]></string>
-    <string name="_bx_events_page_title_joined"><![CDATA[Profile Events]]></string>
-    <string name="_bx_events_page_title_sys_joined_entries"><![CDATA[Profile Events]]></string>
+    <string name="_bx_events_page_title_sys_joined"><![CDATA[Profile events]]></string>
+    <string name="_bx_events_page_title_joined"><![CDATA[Profile events]]></string>
+    <string name="_bx_events_page_title_sys_joined_entries"><![CDATA[Profile events]]></string>
     <string name="_bx_events_page_title_followed"><![CDATA[Events I follow]]></string>
     <string name="_bx_events_page_title_sys_followed"><![CDATA[Events I follow]]></string>
-    <string name="_bx_events_page_title_joined_entries"><![CDATA[Profile Events]]></string>
+    <string name="_bx_events_page_title_joined_entries"><![CDATA[Profile events]]></string>
     <string name="_bx_events_page_title_sys_entries_in_context"><![CDATA[Events in context]]></string>
     <string name="_bx_events_page_title_entries_in_context"><![CDATA[Events in {display_name}]]></string>
-    <string name="_bx_events_page_title_sys_create_profile"><![CDATA[Create Event]]></string>
-    <string name="_bx_events_page_title_create_profile"><![CDATA[Create Event]]></string>
-    <string name="_bx_events_page_title_sys_edit_profile"><![CDATA[Edit Event]]></string>
-    <string name="_bx_events_page_title_edit_profile"><![CDATA[Edit Event]]></string>
+    <string name="_bx_events_page_title_sys_create_profile"><![CDATA[Create event]]></string>
+    <string name="_bx_events_page_title_create_profile"><![CDATA[Create event]]></string>
+    <string name="_bx_events_page_title_sys_edit_profile"><![CDATA[Edit event]]></string>
+    <string name="_bx_events_page_title_edit_profile"><![CDATA[Edit event]]></string>
     <string name="_bx_events_page_title_sys_edit_profile_cover"><![CDATA[Edit Event Cover]]></string>
     <string name="_bx_events_page_title_edit_profile_cover"><![CDATA[Edit Cover]]></string>
     <string name="_bx_events_page_title_sys_questionnaire"><![CDATA[Questionnaire]]></string>
     <string name="_bx_events_page_title_questionnaire"><![CDATA[Questionnaire]]></string>
     <string name="_bx_events_page_title_manage_profile"><![CDATA[Manage]]></string>
-    <string name="_bx_events_page_title_sys_manage_profile"><![CDATA[Manage Event]]></string>
-    <string name="_bx_events_page_title_sys_delete_profile"><![CDATA[Delete Event]]></string>
-    <string name="_bx_events_page_title_delete_profile"><![CDATA[Delete Event]]></string>
-    <string name="_bx_events_page_title_sys_join_profile"><![CDATA[Join Event]]></string>
-    <string name="_bx_events_page_title_join_profile"><![CDATA[Join Event]]></string>
-    <string name="_bx_events_page_title_sys_view_profile_closed"><![CDATA[View Closed Event]]></string>
-    <string name="_bx_events_page_title_sys_view_profile"><![CDATA[View Event]]></string>
+    <string name="_bx_events_page_title_sys_manage_profile"><![CDATA[Manage event]]></string>
+    <string name="_bx_events_page_title_sys_delete_profile"><![CDATA[Delete event]]></string>
+    <string name="_bx_events_page_title_delete_profile"><![CDATA[Delete event]]></string>
+    <string name="_bx_events_page_title_sys_join_profile"><![CDATA[Join event]]></string>
+    <string name="_bx_events_page_title_join_profile"><![CDATA[Join event]]></string>
+    <string name="_bx_events_page_title_sys_view_profile_closed"><![CDATA[View closed event]]></string>
+    <string name="_bx_events_page_title_sys_view_profile"><![CDATA[View event]]></string>
     <string name="_bx_events_page_title_view_profile"><![CDATA[{display_name}]]></string>
     <string name="_bx_events_page_title_browse"><![CDATA[Events]]></string>
     <string name="_bx_events_page_title_browse_by_author"><![CDATA[Events of {display_name}]]></string>
@@ -221,35 +221,35 @@
     <string name="_bx_events_page_title_browse_connections_mutual"><![CDATA[{0} and {1} mutual connections]]></string>
     <string name="_bx_events_page_title_sys_profile_friends"><![CDATA[Friends]]></string>
     <string name="_bx_events_page_title_profile_friends"><![CDATA[Friends]]></string>
-    <string name="_bx_events_page_title_sys_group_fans"><![CDATA[Event Guests]]></string>
+    <string name="_bx_events_page_title_sys_group_fans"><![CDATA[Event guests]]></string>
     <string name="_bx_events_page_title_group_fans"><![CDATA[Going]]></string>
     <string name="_bx_events_page_title_sys_profile_comments"><![CDATA[Comments]]></string>
     <string name="_bx_events_page_title_profile_comments"><![CDATA[Comments]]></string>
-    <string name="_bx_events_page_title_sys_profile_info"><![CDATA[Event Info]]></string>
+    <string name="_bx_events_page_title_sys_profile_info"><![CDATA[Event info]]></string>
     <string name="_bx_events_page_title_profile_info"><![CDATA[Info about {display_name}]]></string>
     <string name="_bx_events_page_title_sys_profile_sessions"><![CDATA[Sessions]]></string>
     <string name="_bx_events_page_title_profile_sessions"><![CDATA[Sessions]]></string>
     <string name="_bx_events_page_title_sys_profile_pricing"><![CDATA[Pricing]]></string>
     <string name="_bx_events_page_title_profile_pricing"><![CDATA[Pricing]]></string>
-    <string name="_bx_events_page_title_sys_recent"><![CDATA[New Events]]></string>
-    <string name="_bx_events_page_title_recent"><![CDATA[New Events]]></string>
-    <string name="_bx_events_page_title_sys_manage"><![CDATA[Manage Own Events]]></string>
-    <string name="_bx_events_page_title_sys_manage_administration"><![CDATA[Manage All Events]]></string>
-    <string name="_bx_events_page_title_manage"><![CDATA[Manage Events]]></string>
-    <string name="_bx_events_page_title_sys_top"><![CDATA[Top Events]]></string>
-    <string name="_bx_events_page_title_top"><![CDATA[Top Events]]></string>
-    <string name="_bx_events_page_title_sys_upcoming"><![CDATA[Upcoming Events]]></string>
-    <string name="_bx_events_page_title_upcoming"><![CDATA[Upcoming Events]]></string>
-    <string name="_bx_events_page_title_sys_past"><![CDATA[Past Events]]></string>
-    <string name="_bx_events_page_title_past"><![CDATA[Past Events]]></string>
-    <string name="_bx_events_page_title_sys_calendar"><![CDATA[Events Calendar]]></string>
-    <string name="_bx_events_page_title_calendar"><![CDATA[Events Calendar]]></string>
-    <string name="_bx_events_page_title_sys_invite_to_group"><![CDATA[Invite Members to the Event]]></string>
-    <string name="_bx_events_page_title_invite_to_group"><![CDATA[Invite Members to the Event]]></string>
+    <string name="_bx_events_page_title_sys_recent"><![CDATA[New events]]></string>
+    <string name="_bx_events_page_title_recent"><![CDATA[New events]]></string>
+    <string name="_bx_events_page_title_sys_manage"><![CDATA[Manage own events]]></string>
+    <string name="_bx_events_page_title_sys_manage_administration"><![CDATA[Manage all events]]></string>
+    <string name="_bx_events_page_title_manage"><![CDATA[Manage events]]></string>
+    <string name="_bx_events_page_title_sys_top"><![CDATA[Top events]]></string>
+    <string name="_bx_events_page_title_top"><![CDATA[Top events]]></string>
+    <string name="_bx_events_page_title_sys_upcoming"><![CDATA[Upcoming events]]></string>
+    <string name="_bx_events_page_title_upcoming"><![CDATA[Upcoming events]]></string>
+    <string name="_bx_events_page_title_sys_past"><![CDATA[Past events]]></string>
+    <string name="_bx_events_page_title_past"><![CDATA[Past events]]></string>
+    <string name="_bx_events_page_title_sys_calendar"><![CDATA[Events calendar]]></string>
+    <string name="_bx_events_page_title_calendar"><![CDATA[Events calendar]]></string>
+    <string name="_bx_events_page_title_sys_invite_to_group"><![CDATA[Invite members to the event]]></string>
+    <string name="_bx_events_page_title_invite_to_group"><![CDATA[Invite members to the event]]></string>
     <string name="_bx_events_page_title_sys_entries_search"><![CDATA[Search]]></string>
     <string name="_bx_events_page_title_entries_search"><![CDATA[Search]]></string>
-    <string name="_bx_events_page_title_sys_entries_favorites"><![CDATA[Favorites Events]]></string>
-    <string name="_bx_events_page_title_entries_favorites"><![CDATA[Favorites Events]]></string>
+    <string name="_bx_events_page_title_sys_entries_favorites"><![CDATA[Favorite events]]></string>
+    <string name="_bx_events_page_title_entries_favorites"><![CDATA[Favorite events]]></string>
 
     <string name="_bx_events_page_block_title_sys_entries_actions"><![CDATA[Events actions]]></string>
     <string name="_bx_events_page_block_title_entries_actions"><![CDATA[Events actions]]></string>
@@ -258,27 +258,27 @@
     <string name="_bx_events_page_block_title_calendar_in_context"><![CDATA[Events Calendar in <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_events_page_block_title_sys_calendar_in_context"><![CDATA[Events Calendar]]></string>
     <string name="_bx_events_page_block_title_calendar_for_context"><![CDATA[Events Calendar]]></string>
-    <string name="_bx_events_page_block_title_browse_for_context"><![CDATA[Events in context]]></string>
+    <string name="_bx_events_page_block_title_browse_for_context"><![CDATA[Events in this community]]></string>
     <string name="_bx_events_page_block_title_sys_favorites_entries"><![CDATA[Favorite List]]></string>
-    <string name="_bx_events_page_block_title_favorites_entries"><![CDATA["{title}" List]]></string>
+    <string name="_bx_events_page_block_title_favorites_entries"><![CDATA[{title} list]]></string>
     <string name="_bx_events_page_block_title_favorites_entries_info"><![CDATA[Info]]></string>
-    <string name="_bx_events_page_block_title_favorites_entries_actions"><![CDATA[Favorites List Actions]]></string>
+    <string name="_bx_events_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string>
     <string name="_bx_events_page_block_title_sys_entries_of_author"><![CDATA[Events of author]]></string>
     <string name="_bx_events_page_block_title_entries_of_author"><![CDATA[Events by {display_name}]]></string>
-    <string name="_bx_events_page_block_title_favorites_of_author"><![CDATA[Favorite Events]]></string>
+    <string name="_bx_events_page_block_title_favorites_of_author"><![CDATA[Favorite events]]></string>
     <string name="_bx_events_page_block_title_sys_favorites_of_author"><![CDATA[Favorite Events]]></string>
     <string name="_bx_events_page_block_title_sys_joined_entries"><![CDATA[Joined Events]]></string>
-    <string name="_bx_events_page_block_title_joined_entries"><![CDATA[Joined Events]]></string>
+    <string name="_bx_events_page_block_title_joined_entries"><![CDATA[Joined events]]></string>
     <string name="_bx_events_page_block_title_sys_joined_calendar"><![CDATA[Joined Events Calendar]]></string>
-    <string name="_bx_events_page_block_title_joined_calendar"><![CDATA[Joined Events Calendar]]></string>
+    <string name="_bx_events_page_block_title_joined_calendar"><![CDATA[Joined events calendar]]></string>
     <string name="_bx_events_page_block_title_sys_followed_entries"><![CDATA[Following]]></string>
     <string name="_bx_events_page_block_title_followed_entries"><![CDATA[Following]]></string>
-    <string name="_bx_events_page_block_title_create_profile"><![CDATA[Create Event]]></string>
-    <string name="_bx_events_page_block_title_edit_profile"><![CDATA[Edit Event]]></string>
+    <string name="_bx_events_page_block_title_create_profile"><![CDATA[Create event]]></string>
+    <string name="_bx_events_page_block_title_edit_profile"><![CDATA[Edit event]]></string>
     <string name="_bx_events_page_block_title_edit_profile_cover"><![CDATA[Edit Cover]]></string>
     <string name="_bx_events_page_block_title_edit_questionnaire"><![CDATA[Questionnaire]]></string>
-    <string name="_bx_events_page_block_title_delete_profile"><![CDATA[Delete Event]]></string>
-    <string name="_bx_events_page_block_title_join_profile"><![CDATA[Join Event]]></string>
+    <string name="_bx_events_page_block_title_delete_profile"><![CDATA[Delete event]]></string>
+    <string name="_bx_events_page_block_title_join_profile"><![CDATA[Join event]]></string>
     <string name="_bx_events_page_block_title_profile_info_link"><![CDATA[About <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_events_page_block_title_profile_info"><![CDATA[Info]]></string>
     <string name="_bx_events_page_block_title_system_profile_info"><![CDATA[Info]]></string>
@@ -292,7 +292,7 @@
     <string name="_bx_events_page_block_title_fans_link"><![CDATA[Going to <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_events_page_block_title_fans"><![CDATA[Going]]></string>
     <string name="_bx_events_page_block_title_system_fans"><![CDATA[Going]]></string>
-    <string name="_bx_events_page_block_title_system_fans_manage"><![CDATA[Manage fans]]></string>
+    <string name="_bx_events_page_block_title_system_fans_manage"><![CDATA[Manage members]]></string>
     <string name="_bx_events_page_block_title_invites"><![CDATA[Invites]]></string>
     <string name="_bx_events_page_block_title_system_invites_manage"><![CDATA[Manage invites]]></string>
     <string name="_bx_events_page_block_title_subscribers_link"><![CDATA[Interested in <a href="{profile_link}">{display_name}</a>]]></string>
@@ -302,16 +302,16 @@
     <string name="_bx_events_page_block_title_entry_reports"><![CDATA[Reports]]></string>
     <string name="_bx_events_page_block_title_profile_comments_link"><![CDATA[Comments to <a href="{entry_link}">{title}</a>]]></string>
     <string name="_bx_events_page_block_title_profile_actions"><![CDATA[Actions]]></string>
-    <string name="_bx_events_page_block_title_featured_profiles"><![CDATA[Featured Events]]></string>
-    <string name="_bx_events_page_block_title_latest_profiles"><![CDATA[New Events]]></string>
+    <string name="_bx_events_page_block_title_featured_profiles"><![CDATA[Featured events]]></string>
+    <string name="_bx_events_page_block_title_latest_profiles"><![CDATA[New events]]></string>
     <string name="_bx_events_page_block_title_system_manage"><![CDATA[Manage Own Events]]></string>
     <string name="_bx_events_page_block_title_system_manage_administration"><![CDATA[Manage All Events]]></string>
-    <string name="_bx_events_page_block_title_manage"><![CDATA[Manage Events]]></string>
-    <string name="_bx_events_page_block_title_top_profiles"><![CDATA[Top Events]]></string>
+    <string name="_bx_events_page_block_title_manage"><![CDATA[Manage events]]></string>
+    <string name="_bx_events_page_block_title_top_profiles"><![CDATA[Top events]]></string>
     <string name="_bx_events_page_block_title_joined_profiles"><![CDATA[Joined Events]]></string>
     <string name="_bx_events_page_block_title_followed_profiles"><![CDATA[Events I follow]]></string>
-    <string name="_bx_events_page_block_title_upcoming_profiles"><![CDATA[Upcoming Events]]></string>
-    <string name="_bx_events_page_block_title_past_profiles"><![CDATA[Past Events]]></string>
+    <string name="_bx_events_page_block_title_upcoming_profiles"><![CDATA[Upcoming events]]></string>
+    <string name="_bx_events_page_block_title_past_profiles"><![CDATA[Past events]]></string>
     <string name="_bx_events_page_block_title_entry_all_actions"><![CDATA[All Actions]]></string>
     <string name="_bx_events_page_block_title_entry_social_sharing"><![CDATA[Share]]></string>
     <string name="_bx_events_page_block_title_categories"><![CDATA[Event categories]]></string>
@@ -321,9 +321,9 @@
     <string name="_bx_events_page_block_title_sys_entry_context"><![CDATA[Posted in]]></string>
     <string name="_bx_events_page_block_title_entry_context"><![CDATA[Posted in]]></string>
     <string name="_bx_events_page_block_title_entry_location"><![CDATA[Location]]></string>
-    <string name="_bx_events_page_block_title_invite_to_group"><![CDATA[Invite Members to the Event]]></string>
-    <string name="_bx_events_page_block_title_search_form"><![CDATA[Search Form]]></string>
-    <string name="_bx_events_page_block_title_search_results"><![CDATA[Search Results]]></string>
+    <string name="_bx_events_page_block_title_invite_to_group"><![CDATA[Invite members to the event]]></string>
+    <string name="_bx_events_page_block_title_search_form"><![CDATA[Search form]]></string>
+    <string name="_bx_events_page_block_title_search_results"><![CDATA[Search results]]></string>
     <string name="_bx_events_page_block_title_search_form_cmts"><![CDATA[Comments Search Form]]></string>
     <string name="_bx_events_page_block_title_search_results_cmts"><![CDATA[Comments Search Results]]></string>
     <string name="_bx_events_page_block_title_sys_featured_entries_view_showcase"><![CDATA[Featured Events (Showcase View)]]></string>
@@ -363,10 +363,10 @@
     <string name="_bx_events_menu_item_title_edit_sessions"><![CDATA[Sessions]]></string>
     <string name="_bx_events_menu_item_title_system_edit_pricing"><![CDATA[Pricing]]></string>
     <string name="_bx_events_menu_item_title_edit_pricing"><![CDATA[Pricing]]></string>
-    <string name="_bx_events_menu_item_title_system_edit_profile"><![CDATA[Edit Event]]></string>
-    <string name="_bx_events_menu_item_title_edit_profile"><![CDATA[Edit Event]]></string>
-    <string name="_bx_events_menu_item_title_system_delete_profile"><![CDATA[Delete Event]]></string>
-    <string name="_bx_events_menu_item_title_delete_profile"><![CDATA[Delete Event]]></string>
+    <string name="_bx_events_menu_item_title_system_edit_profile"><![CDATA[Edit event]]></string>
+    <string name="_bx_events_menu_item_title_edit_profile"><![CDATA[Edit event]]></string>
+    <string name="_bx_events_menu_item_title_system_delete_profile"><![CDATA[Delete event]]></string>
+    <string name="_bx_events_menu_item_title_delete_profile"><![CDATA[Delete event]]></string>
     <string name="_bx_events_menu_item_title_system_delete_account"><![CDATA[Delete Account]]></string>
     <string name="_bx_events_menu_item_title_delete_account"><![CDATA[Delete Account]]></string>
     <string name="_bx_events_menu_item_title_system_profile_type"><![CDATA[Event]]></string>
@@ -379,8 +379,8 @@
     <string name="_bx_events_menu_item_title_view_joined_groups"><![CDATA[Events]]></string>
     <string name="_bx_events_menu_item_title_system_view_fans"><![CDATA[Guests]]></string>
     <string name="_bx_events_menu_item_title_view_fans"><![CDATA[Going]]></string>
-    <string name="_bx_events_menu_item_title_system_add_content"><![CDATA[Add Content]]></string>
-    <string name="_bx_events_menu_item_title_add_content"><![CDATA[Add Content]]></string>
+    <string name="_bx_events_menu_item_title_system_add_content"><![CDATA[Add content]]></string>
+    <string name="_bx_events_menu_item_title_add_content"><![CDATA[Add content]]></string>
     <string name="_bx_events_menu_item_title_system_view_manage"><![CDATA[Manage]]></string>
     <string name="_bx_events_menu_item_title_view_manage"><![CDATA[Manage]]></string>
     <string name="_bx_events_menu_item_title_system_view_profile_comments"><![CDATA[Comments]]></string>
@@ -405,29 +405,29 @@
 
     <string name="_bx_events_menu_item_title_system_fans"><![CDATA[Going]]></string>
     <string name="_bx_events_menu_item_title_fans"><![CDATA[Going]]></string>
-    <string name="_bx_events_menu_item_title_system_become_fan"><![CDATA[Join Event]]></string>
+    <string name="_bx_events_menu_item_title_system_become_fan"><![CDATA[Join event]]></string>
     <string name="_bx_events_menu_item_title_become_fan"><![CDATA[Going]]></string>
     <string name="_bx_events_menu_item_title_become_fan_sent"><![CDATA[Requested]]></string>
     <string name="_bx_events_menu_item_title_become_fan_confirm"><![CDATA[Confirm]]></string>
-    <string name="_bx_events_menu_item_title_system_leave_group"><![CDATA[Leave Event]]></string>
+    <string name="_bx_events_menu_item_title_system_leave_group"><![CDATA[Leave event]]></string>
     <string name="_bx_events_menu_item_title_leave_group"><![CDATA[Not going]]></string>
     <string name="_bx_events_menu_item_title_leave_group_cancel_request"><![CDATA[Cancel]]></string>
     <string name="_bx_events_menu_item_title_leave_group_reject_request"><![CDATA[Decline]]></string>
     <string name="_bx_events_menu_item_title_sm_members"><![CDATA[{0} going]]></string>
     <string name="_bx_events_menu_item_title_sm_subscribers"><![CDATA[{0} interested]]></string>
 
-    <string name="_bx_events_menu_item_title_system_pay_and_join"><![CDATA[Pay & Join]]></string>
+    <string name="_bx_events_menu_item_title_system_pay_and_join"><![CDATA[Pay & join]]></string>
     <string name="_bx_events_menu_item_title_pay_and_join"><![CDATA[Join {0}]]></string>
     <string name="_bx_events_menu_item_title_system_subscriptions"><![CDATA[Following]]></string>
     <string name="_bx_events_menu_item_title_system_subscribe"><![CDATA[Follow]]></string>
     <string name="_bx_events_menu_item_title_subscribe"><![CDATA[Interested]]></string>
-    <string name="_bx_events_menu_item_title_system_check_in"><![CDATA[Check In]]></string>
-    <string name="_bx_events_menu_item_title_check_in"><![CDATA[Check In]]></string>
+    <string name="_bx_events_menu_item_title_system_check_in"><![CDATA[Check in]]></string>
+    <string name="_bx_events_menu_item_title_check_in"><![CDATA[Check in]]></string>
     <string name="_bx_events_menu_item_title_system_view_entries_in_context"><![CDATA[Events]]></string>
     <string name="_bx_events_menu_item_title_view_entries_in_context"><![CDATA[Events]]></string>
     <string name="_bx_events_menu_item_title_system_unsubscribe"><![CDATA[Unfollow]]></string>
     <string name="_bx_events_menu_item_title_unsubscribe"><![CDATA[Not interested]]></string>
-    <string name="_bx_events_menu_item_title_system_more_actions"><![CDATA[More Actions]]></string>
+    <string name="_bx_events_menu_item_title_system_more_actions"><![CDATA[More actions]]></string>
     <string name="_bx_events_menu_item_title_more_actions"><![CDATA[]]></string>
     <string name="_bx_events_menu_item_title_system_friends"><![CDATA[Friends]]></string>
     <string name="_bx_events_menu_item_title_friends"><![CDATA[Friends]]></string>
@@ -468,7 +468,7 @@
     <string name="_bx_events_menu_item_title_sm_joined"><![CDATA[Going]]></string>
     <string name="_bx_events_menu_item_title_system_sm_date_end"><![CDATA[Date end]]></string>
     <string name="_bx_events_menu_item_title_sm_date_end"><![CDATA[Date end]]></string>
-    <string name="_bx_events_menu_item_title_ical_export"><![CDATA[Sync to Calendar]]></string>
+    <string name="_bx_events_menu_item_title_ical_export"><![CDATA[Sync to calendar]]></string>
 
     <string name="_bx_events_grid_filter_item_title_adm_select_one_filter1"><![CDATA[All Statuses]]></string>
     <string name="_bx_events_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Any Audience]]></string>
@@ -481,11 +481,11 @@
     <string name="_bx_events_grid_column_title_adm_added"><![CDATA[Created]]></string>
     <string name="_bx_events_grid_column_title_adm_account"><![CDATA[Account]]></string>
     <string name="_bx_events_grid_action_title_adm_delete"><![CDATA[Delete]]></string>
-    <string name="_bx_events_grid_action_title_adm_delete_with_content"><![CDATA[Delete With Content]]></string>
-    <string name="_bx_events_grid_action_title_adm_more_actions"><![CDATA[More Actions]]></string>
+    <string name="_bx_events_grid_action_title_adm_delete_with_content"><![CDATA[Delete with content]]></string>
+    <string name="_bx_events_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string>
     <string name="_bx_events_grid_action_title_adm_audit_content"><![CDATA[Audit actions with content]]></string>
     <string name="_bx_events_grid_action_title_adm_audit_context"><![CDATA[Audit actions in context]]></string>
-    <string name="_bx_events_grid_action_title_adm_clear_reports"><![CDATA[Сlear reports]]></string>
+    <string name="_bx_events_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string>
     <string name="_bx_events_grid_action_err_delete"><![CDATA[Cannot delete the selected event(s).]]></string>
     <string name="_bx_events_grid_txt_account_manager"><![CDATA[Redirect to manage account.]]></string>
 
@@ -547,7 +547,7 @@
     <string name="_bx_events_txt_sample_vote_single"><![CDATA[vote to event]]></string>
     <string name="_bx_events_txt_sample_score_up_single"><![CDATA[score up vote to event]]></string>
     <string name="_bx_events_txt_sample_score_down_single"><![CDATA[score down vote to event]]></string>
-    <string name="_bx_events_txt_set_role"><![CDATA[Set Role]]></string>
+    <string name="_bx_events_txt_set_role"><![CDATA[Set role]]></string>
     <string name="_bx_events_txt_view_answers"><![CDATA[View questionnaire answers]]></string>
     <string name="_bx_events_txt_private_group"><![CDATA[Private event]]></string>
     <string name="_bx_events_txt_from_time_to_time"><![CDATA[{0} - {1}]]></string>
@@ -555,16 +555,16 @@
     <string name="_bx_events_txt_invite_popup_title"><![CDATA[Invitation to a event]]></string>
     <string name="_bx_events_txt_invite_popup_button_accept"><![CDATA[Accept]]></string>
     <string name="_bx_events_txt_invite_popup_button_decline"><![CDATA[Decline]]></string>
-    <string name="_bx_events_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You can not join this event. The invitation is expired or deleted.]]></string>
-    <string name="_bx_events_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You can not join this event. This invitation cannot be used by you.]]></string>
+    <string name="_bx_events_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this event. The invitation is expired or deleted.]]></string>
+    <string name="_bx_events_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this event. This invitation cannot be used by you.]]></string>
     <string name="_bx_events_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_events_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_events_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    
     <string name="_bx_events_txt_empty_title"><![CDATA[No events yet]]></string>
 
-    <string name="_bx_events_msg_performed"><![CDATA[The action was successfully performed.]]></string>
+    <string name="_bx_events_msg_performed"><![CDATA[Done.]]></string>
     <string name="_bx_events_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
-    <string name="_bx_events_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_events_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_events_alert_action_fan_added"><![CDATA[member joined]]></string>
     <string name="_bx_events_txt_ntfs_fan_added"><![CDATA[Event <b class="bx-ntfs-content-profile">{owner_name}</b> has got a member <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>
@@ -661,59 +661,57 @@
     <string name="_bx_events_email_join_request"><![CDATA[Event join request]]></string>
     <string name="_bx_events_email_join_request_subject"><![CDATA[Request to join your event]]></string>
     <string name="_bx_events_email_join_request_body"><![CDATA[{email_header}
-<p>New request to join <a href="{EntryUrl}">{EntryTitle}</a> event from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> event from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_join_reject"><![CDATA[Event join request was rejected]]></string>
     <string name="_bx_events_email_join_reject_subject"><![CDATA[Request to join an event was rejected]]></string>
     <string name="_bx_events_email_join_reject_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was rejected by event admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was rejected by event admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_join_confirm"><![CDATA[Event join request was confirmed]]></string>
     <string name="_bx_events_email_join_confirm_subject"><![CDATA[Your request to join an event was confirmed]]></string>
     <string name="_bx_events_email_join_confirm_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was confirmed by the event admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was confirmed by the event admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_fan_remove"><![CDATA[Profile was removed from event participants]]></string>
     <string name="_bx_events_email_fan_remove_subject"><![CDATA[Your profile was removed from the event]]></string>
     <string name="_bx_events_email_fan_remove_body"><![CDATA[{email_header}
-<p>Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> event by the event admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> event by the event admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_fan_become_admin"><![CDATA[Event admin status was granted]]></string>
     <string name="_bx_events_email_fan_become_admin_subject"><![CDATA[You are an event admin now]]></string>
     <string name="_bx_events_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> event now.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> event now.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_admin_become_fan"><![CDATA[Event admin status was revoked]]></string>
     <string name="_bx_events_email_admin_become_fan_subject"><![CDATA[Your event admin status was revoked]]></string>
     <string name="_bx_events_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> event.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> event.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_invitation"><![CDATA[Invitation to event]]></string>
     <string name="_bx_events_email_invitation_subject"><![CDATA[Invitation to "{EntryTitle}" event]]></string>
     <string name="_bx_events_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} event</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} event</a>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_set_role"><![CDATA[Event member status was changed]]></string>
     <string name="_bx_events_email_set_role_subject"><![CDATA[Your event status was changed]]></string>
     <string name="_bx_events_email_set_role_body"><![CDATA[{email_header}
-<p>Your status in <a href="{EntryUrl}">{EntryTitle}</a> event was changed to <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> event was changed to <b>{Role}</b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_events_email_reminder"><![CDATA[Reminder for the event]]></string>
     <string name="_bx_events_email_reminder_subject"><![CDATA["{EntryTitle}" event - {EntryBeginShort}]]></string>
     <string name="_bx_events_email_reminder_body"><![CDATA[{email_header}
-<p class="vevent">
-    <a href="{EntryUrl}" class="summary">{EntryTitle}</a> event reminder:</a><br />
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{EntryUrl}" class="summary">{EntryTitle}</a> event reminder:</a><br />
     Date: <abbr class="dtstart" title="{EntryBeginUTC}">{EntryBegin}</abbr><br />
-    {EntryLocation}
-</p>
+    {EntryLocation}</p>
 {email_footer}]]></string>
     <string name="_bx_events_email_reminder_location"><![CDATA[Location: <span class="location">{0}</span>]]></string>
 </resources>

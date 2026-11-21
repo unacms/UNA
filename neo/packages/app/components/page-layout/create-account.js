@@ -9,34 +9,41 @@ import { PageFooter } from 'app/components/nav/menu-footer'
 import Page from 'app/ui/molecules/page/page'
 import Html from 'app/ui/atoms/html'
 import { appSetting, getPageForms } from 'app/lib/util'
+import { pageHasAuthPart } from 'app/lib/util/page-data'
 import { landingText } from 'app/lib/landing-text'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 
-function PageContent({ children }) {
+// `withAuthLinks`: the parts an older UNA doesn't send with the form (other ways to sign up, the
+// terms, "Already have an account?"). A UNA that sends them has the block draw them (AuthBlockPart).
+function PageContent({ children, withAuthLinks }) {
     const { t } = useTranslation()
 
     return (
         <View className="w-full justify-center max-w-md gap-6 mx-auto">
             {children}
-            <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
-            <Html
-                customClassName="text-xs text-center text-muted-foreground u-html-links"
-                data={t('create_account_page_terms')}
-            />
-            <Row className="mx-auto gap-1 justify-center items-center text-center">
-                <Text className="text-secondary-foreground text-base">
-                    {t('create_account_page_already_have')}
-                </Text>
-                <Link
-                    variant="accent"
-                    size="md"
-                    href="/login"
-                    haptics="Medium"
-                >
-                    {t('create_account_page_sign_in')}
-                </Link>
-            </Row>
+            {withAuthLinks ? (
+                <>
+                    <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
+                    <Html
+                        customClassName="text-xs text-center text-muted-foreground u-html-links"
+                        data={t('create_account_page_terms')}
+                    />
+                    <Row className="mx-auto gap-1 justify-center items-center text-center">
+                        <Text className="text-secondary-foreground text-base">
+                            {t('create_account_page_already_have')}
+                        </Text>
+                        <Link
+                            variant="accent"
+                            size="md"
+                            href="/login"
+                            haptics="Medium"
+                        >
+                            {t('create_account_page_sign_in')}
+                        </Link>
+                    </Row>
+                </>
+            ) : null}
         </View>
     )
 }
@@ -116,7 +123,7 @@ export default function PageLayout({ data, blocks, children }) {
                 </View>
                 {/* The frame's padding keeps the form off the screen edge at every size. */}
                 <PageChromeProvider inset>
-                    <PageContent>{formContent}</PageContent>
+                    <PageContent withAuthLinks={!pageHasAuthPart(data)}>{formContent}</PageContent>
                 </PageChromeProvider>
             </View>
             <PageFooter />

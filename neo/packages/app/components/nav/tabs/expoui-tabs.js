@@ -42,6 +42,7 @@ import { getWindowSafeAreaInsets, useGlobalSearchParams, useRouter, usePathname,
 import { rememberSelectedTab } from 'app/lib/navigation/tab-history';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useCurrentUser } from 'app/context/user';
+import { hasAppDrawer } from 'app/context/app-sidebar';
 
 const IOS_TAB_BAR_HEIGHT = 52;
 /** More popup entry that opens the operator agent (the iOS sheet shows an icon instead). */
@@ -416,13 +417,16 @@ export default function ExpoUITabNavigator({
         hasAgent,
         exclude: sheetExclude,
     });
-    const sheetHeader = profileMore && hasNativeMoreSheet ? profileMenu.header : null;
+    const moreHeader = profileMore && hasNativeMoreSheet ? profileMenu.header : null;
+    // The viewer's menu (ui/molecules/sidebar/app-sidebar) is headed by their profile: with it, the More sheet
+    // lists the profile as a row among the other pages, not as a second profile head.
+    const sheetHeader = hasAppDrawer(currentUser) ? null : moreHeader;
     const sheetItems = sheetHeader
         ? profileMenu.items
         : trimMenuSeparators(overflowMenuItems.filter((item) => !sheetExclude.includes(item.tab?.url)));
     // The profile is the only More link left: the avatar opens it directly
     // (unless the sheet is also where the operator agent opens).
-    const profileOnly = !!sheetHeader && profileMenu.profileOnly;
+    const profileOnly = !!moreHeader && profileMenu.profileOnly;
     // Popup More menu (Android, iOS without the sheet): Agent heads the list,
     // shown selected while its chat is open.
     const popupMenuItems = hasAgent

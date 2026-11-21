@@ -1,8 +1,29 @@
 <div class="bx-msg-box-container my-4 px-4 text-center" id="__id__">
+    <bx_if:plain>
     <div class="bx-msg-box inline-block mx-auto p-4 bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-md [&_a]:underline [&_a]:underline-offset-2 [&_a]:text-gray-900 dark:[&_a]:text-gray-100">__msgText__</div>
     <bx_if:timer>
         <script language="javascript">
-            setTimeout("$('#__id__').bx_anim('hide', 'fade', 'slow', function(){$(this).remove();})", __time__);
+            setTimeout("$('#__timer_id__').bx_anim('hide', 'fade', 'slow', function(){$(this).remove();})", __time__);
         </script>
     </bx_if:timer>
+    </bx_if:plain>
+    <bx_if:state>
+    <div class="bx-msg-box-state flex flex-col items-center gap-3 py-2">
+        <bx_if:icon>
+            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300" aria-hidden="true">__icon_html__</div>
+        </bx_if:icon>
+        <bx_if:title>
+            <div class="bx-msg-box-title text-lg font-semibold text-gray-900 dark:text-gray-100">__state_title__</div>
+        </bx_if:title>
+        <div class="bx-msg-box max-w-md text-gray-600 dark:text-gray-300 [&_a]:underline [&_a]:underline-offset-2 [&_a]:text-gray-900 dark:[&_a]:text-gray-100">__state_text__</div>
+        <bx_if:buttons>
+            <div class="flex flex-wrap justify-center gap-2 pt-1">
+                <bx_repeat:buttons>
+                    <bx_if:link><a class="bx-btn __class__" href="__link__"__attrs__>__title__</a></bx_if:link>
+                    <bx_if:button><button type="button" class="bx-btn __class__"__attrs__>__title__</button></bx_if:button>
+                </bx_repeat:buttons>
+            </div>
+        </bx_if:buttons>
+    </div>
+    </bx_if:state>
 </div>

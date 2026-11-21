@@ -45,7 +45,7 @@ function TimeCell({ ts, format }) {
 }
 
 /** Interactive cells subscribe to the store themselves — plain cells stay pure. */
-function SwitcherCell({ id, data, label }) {
+function SwitcherCell({ id, data, label, column, action }) {
     const { t } = useTranslation();
     const toggleSwitch = useGrid((state) => state.toggleSwitch);
 
@@ -53,7 +53,7 @@ function SwitcherCell({ id, data, label }) {
         <View className="items-start justify-center">
             <Switch
                 size="small"
-                onValueChange={() => toggleSwitch(id)}
+                onValueChange={() => toggleSwitch(id, column, action)}
                 value={isSwitcherOn(data)}
                 // Some grids leave the switcher column untitled (bx_albums_common); the switch still needs a name.
                 label={label || t('Enabled')}
@@ -84,7 +84,7 @@ function SelectCell({ rowId }) {
  * Render one UNA grid cell by `cell.type` (text, date, switcher, actions, …).
  * Unknown types fall back to JSON so new backend types are visible in UI.
  */
-export default function Cell({ cell, id, label }) {
+export default function Cell({ cell, id, label, column }) {
     switch (cell?.type) {
         case 'time':
         case 'datetime':
@@ -102,7 +102,8 @@ export default function Cell({ cell, id, label }) {
                 </View>
             )
         case 'switcher':
-            return <SwitcherCell id={id} data={cell.data} label={label} />
+            // a grid can have two switches, on the site ('enable') and in the apps ('enable_api'); each names its action
+            return <SwitcherCell id={id} data={cell.data} label={label} column={column} action={cell.action} />
         case 'checkbox':
             return <SelectCell rowId={cell.data} />
         case 'profile':

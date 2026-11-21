@@ -41,7 +41,7 @@ define('BX_DOL_REPORT_STASUS_PROCESSED', 2);
  * - class_name - your custom class name, if you overrride default class
  * - class_file - your custom class path
  *
- * You can refer to BoonEx modules for sample record in this table.
+ * You can refer to the bundled UNA modules for a sample record in this table.
  *
  *
  *

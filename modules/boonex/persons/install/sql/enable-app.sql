@@ -93,3 +93,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_snippet_
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_menu_manage_tools' AND `module`='bx_persons' AND `name`='clear-reports';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_menu_manage_tools' AND `module`='bx_persons' AND `name`='manage-cf';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_menu_manage_tools' AND `module`='bx_persons' AND `name`='delete-with-content';
+
+-- PAGE: explore
+UPDATE `sys_pages_blocks` SET `active_api` = 1, `config_api` = '{"content_type":"browse_simple","header_more_url":"/persons-home","view":"row"}' WHERE `object` = 'sys_explore' AND `module` = 'bx_persons' AND `title` = '_bx_persons_page_block_title_latest_profiles';

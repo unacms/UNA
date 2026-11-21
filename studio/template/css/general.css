@@ -92,14 +92,6 @@ div.bx-std-pcap-mp-right {
 	right: 10px;
 }
 
-div.bx-std-pcap-help .sys-rss-feed-wrapper {
-	padding-top: 0px;
-}
-div.bx-std-pcap-help .bx-loading-ajax {
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-
 div.bx-std-pcap-action {
 	position: relative;
 	float: left;
@@ -124,7 +116,7 @@ div.bx-std-pmen-item {
     height: 3.25rem; /* 36px icon + 8px above and below: the item background is the header icons' 8px halo (and the active one their active ring) */
     margin-top: 0.125rem;
 
-    border-radius: 1rem; /* icon radius (8px) + 8px padding */
+    border-radius: var(--bx-radius-2xl); /* icon radius (8px) + 8px padding */
 
     font-size: 1.0rem;
     font-weight: 500;
@@ -157,7 +149,7 @@ div.bx-std-pmen-item .bx-std-pmen-ic-icon {
 
     margin-right: 0.75rem;
     
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background-repeat: no-repeat;
     background-position: center center;
 
@@ -184,23 +176,21 @@ div.bx-std-pmen-item .sys-icon {
     width: 100%;
     height: 100%;
 
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
 }
 /* Glyphs inside the gray tile buttons are line art, only full-bleed artwork needs the rounding. */
 div.bx-std-pmen-item .bx-std-tile-btn svg,
 div.bx-std-pmen-item .bx-std-tile-btn .sys-icon {
     border-radius: 0;
 }
-/* App art: 1px beyond its 36px tile on every side (9px corners), as large as a tile button with its outer hairline; the tile's darker edge
-   line sits over that outer 1px (tailwind.css). */
+/* App art: its 36px tile (8px corners), as large as a tile button; the tile's darker edge line sits over the art's outer pixel
+   (tailwind.css). */
 div.bx-std-pmen-item .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) > img,
 div.bx-std-pmen-item .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) > svg {
     display: block;
-    width: calc(100% + 2px);
-    max-width: none; /* Tailwind's base caps images at their box */
-    height: calc(100% + 2px);
-    margin: -1px;
-    border-radius: calc(0.5rem + 1px);
+    width: 100%;
+    height: 100%;
+    border-radius: var(--bx-radius-lg);
 }
 
 div.bx-std-pmen-item a, 
@@ -233,7 +223,7 @@ div.bx-std-pmen-item .sys-icon {
     max-width: 16rem;
     padding: 0.375rem 0.625rem;
 
-    border-radius: 0.5rem;
+    border-radius: var(--bx-radius-lg);
     background: rgb(24 24 27); /* gray-900 */
     box-shadow: 0 4px 12px -2px rgba(10, 10, 12, 0.25);
     color: #ffffff;
@@ -410,4 +400,24 @@ img.bx-std-api {
 
         text-align: start;
     }
+}
+
+/* The account popup's name row: the same avatar as the site's header (the profile unit), drawn at 24px. */
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture {
+    display: inline-flex;
+    flex: none;
+}
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture > div,
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture .bx-def-unit-img,
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture img,
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture p {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture img {
+    object-fit: cover;
+}
+.bx-std .bx-menu-verlit li.bx-mv-label .bx-mv-picture p {
+    font-size: 0.75rem;
+    line-height: 1;
 }

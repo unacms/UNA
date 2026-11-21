@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState, type KeyboardEvent } from 'react';
 
 import type { Schema } from 'una-api';
 
@@ -85,11 +85,8 @@ function PostEditorForm({ activity, onDone }: Readonly<{ activity: Activity; onD
 
     const changes = postChanges(activity, { html: plain ? value.html : null, audience: inContext ? null : audience });
     const changed = Object.keys(changes).length > 0;
-    // no text is no post, unless it has media; and text it had is not taken off here (the edit
-    // would keep it: the site keeps a post's text unless it is given new text)
-    const noText = plain && !text.trim();
-    const empty = noText && (!item.media.length || !!originalText.trim());
-    const emptyNote = !empty ? null : item.media.length ? t('The text can’t be removed here: write new text, or remove it on the site.') : t('Write something to save the post.');
+    const emptyNote = plain ? emptyTextNote(text, originalText, item.media.length > 0) : null;
+    const empty = emptyNote !== null;
 
     // without a text box, focus goes to what can be changed (who sees it), or else to the note
     // saying why: the Edit button that had it is gone (WCAG 2.4.3)
@@ -138,16 +135,7 @@ function PostEditorForm({ activity, onDone }: Readonly<{ activity: Activity; onD
                 e.preventDefault();
                 void save();
             }}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                    e.preventDefault();
-                    void save();
-                } else if (e.key === 'Escape') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (!busy) void cancel();
-                }
-            }}
+            onKeyDown={(e) => editorKeys(e, save, busy ? null : cancel)}
         >
             {plain ? (
                 <RichEditor
@@ -176,24 +164,60 @@ function PostEditorForm({ activity, onDone }: Readonly<{ activity: Activity; onD
                     {error}
                 </p>
             ) : null}
-            <div className="composer-row">
-                {inContext ? (
-                    <span className="muted small">{t('The group or event decides who sees it')}</span>
-                ) : (
-                    <AudiencePicker id={`${ids}-audience`} value={audience} onChange={setAudience} />
-                )}
-                <span className="muted small" aria-hidden="true">
-                    {t('{{keys}} to save', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
-                </span>
-                <div className="composer-buttons">
-                    <button type="button" className="btn btn-quiet" onClick={() => void cancel()} disabled={busy}>
-                        {t('Cancel')}
-                    </button>
-                    <button type="submit" className="btn btn-primary" disabled={busy || empty || (!plain && inContext)} aria-busy={busy} aria-keyshortcuts="Meta+Enter Control+Enter">
-                        {t('Save')}
-                    </button>
-                </div>
-            </div>
+            <EditorRow audienceId={`${ids}-audience`} inContext={inContext} audience={audience} onAudience={setAudience} busy={busy} canSave={!empty && (plain || !inContext)} onCancel={() => void cancel()} />
         </form>
+    );
+}
+
+/**
+ * Why the text can't be saved as it is, or null: no text is no post, unless it has media; and
+ * text it had is not taken off here (the edit would keep it: the site keeps a post's text unless
+ * it is given new text).
+ */
+function emptyTextNote(text: string, originalText: string, hasMedia: boolean): string | null {
+    if (text.trim() || (hasMedia && !originalText.trim())) return null;
+    return hasMedia ? t('The text can’t be removed here: write new text, or remove it on the site.') : t('Write something to save the post.');
+}
+
+/** Cmd/Ctrl+Enter saves; Esc puts the editor away (when it can), never the pane under it. */
+function editorKeys(e: KeyboardEvent, save: () => Promise<void>, cancel: (() => Promise<void>) | null): void {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        void save();
+    } else if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (cancel) void cancel();
+    }
+}
+
+type EditorRowProps = {
+    audienceId: string;
+    /** A post in a group or event: who sees it is theirs to decide. */
+    inContext: boolean;
+    audience: Audience;
+    onAudience: (audience: Audience) => void;
+    busy: boolean;
+    canSave: boolean;
+    onCancel: () => void;
+};
+
+/** The editor's last row: who sees the post, the keys hint, Cancel and Save. */
+function EditorRow({ audienceId, inContext, audience, onAudience, busy, canSave, onCancel }: Readonly<EditorRowProps>) {
+    return (
+        <div className="composer-row">
+            {inContext ? <span className="muted small">{t('The group or event decides who sees it')}</span> : <AudiencePicker id={audienceId} value={audience} onChange={onAudience} />}
+            <span className="muted small" aria-hidden="true">
+                {t('{{keys}} to save', { keys: isMac ? '⌘↩' : 'Ctrl+Enter' })}
+            </span>
+            <div className="composer-buttons">
+                <button type="button" className="btn btn-quiet" onClick={onCancel} disabled={busy}>
+                    {t('Cancel')}
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={busy || !canSave} aria-busy={busy} aria-keyshortcuts="Meta+Enter Control+Enter">
+                    {t('Save')}
+                </button>
+            </div>
+        </div>
     );
 }

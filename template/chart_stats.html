@@ -2,9 +2,13 @@
     <div class="bx-chart-stats-graph">
         <canvas class="bx-canvas" id="__chart_id__" width="100%"></canvas>
         <script language="javascript">
+            var oStatsData = __chart_data__;
+            if(oStatsData.datasets && oStatsData.datasets[0])
+                $.extend(oStatsData.datasets[0], {backgroundColor: bx_chart_series_colors(oStatsData.labels.length), borderColor: 'transparent', borderWidth: 2});
+            bx_chart_theme_defaults();
             var oStatsChart = new Chart($("#__chart_id__"), {
                     type: 'doughnut',
-                    data: __chart_data__,
+                    data: oStatsData,
                     options: {
                         plugins: {
                             legend: {

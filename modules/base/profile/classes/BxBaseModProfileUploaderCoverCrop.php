@@ -18,6 +18,7 @@ class BxBaseModProfileUploaderCoverCrop extends BxBaseModProfileUploaderCrop
         parent::__construct($aObject, $sStorageObject, $sUniqId, $oTemplate ? $oTemplate : $this->_oModule->_oTemplate);
 
         $this->_sUploaderFormTemplate = 'uploader_form_crop_cover.html';
+        $this->_sPreviewShape = self::PREVIEW_COVER;
         
         $CNF = $this->_oModule->_oConfig->CNF;
 

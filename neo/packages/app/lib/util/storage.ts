@@ -49,6 +49,32 @@ export async function persistedSet(key: string, value: unknown): Promise<void> {
     }
 }
 
+/**
+ * Web: the value kept under `key`, read at once (localStorage is synchronous), for what has to be on screen in the
+ * first render of a view that only the client draws. null on native (its storage answers later: use `persistedGet`),
+ * on the server and when storage is off. Never read it in a render the server also does: the two would differ.
+ */
+export function persistedGetSync(key: string): any {
+    try {
+        return hasWebStorage('localStorage') ? parse(window.localStorage.getItem(PERSISTED_PREFIX + key)) : null;
+    } catch {
+        return null;
+    }
+}
+
+export async function persistedRemove(key: string): Promise<void> {
+    const fullKey = PERSISTED_PREFIX + key;
+    try {
+        if (isWeb) {
+            if (hasWebStorage('localStorage')) window.localStorage.removeItem(fullKey);
+        } else {
+            await AsyncStorage.removeItem(fullKey);
+        }
+    } catch {
+        // Storage disabled: there is nothing to remove.
+    }
+}
+
 const sessionMemory = new Map<string, unknown>();
 
 export function sessionCacheGet(key: string): any {

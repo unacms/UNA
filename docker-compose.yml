@@ -1,28 +1,57 @@
-version: '3'
+# Local development stack for UNA. Not for production: see README.md.
+#
+# Settings come from the environment or from a `.env` file next to this file
+# (see "Settings" in README.md). Defaults:
+#   UNA_PORT=80             site port on the host; the site URL is http://localhost:<UNA_PORT>
+#   PMA_PORT=8080           phpMyAdmin, MAILPIT_PORT=8025 Mailpit, MYSQL_PORT=3306, JOT_PORT=5555
+#   UNA_JOT_URL             Messenger's Jot server URL, http://localhost:<JOT_PORT> by default
+#   PHP_DISPLAY_ERRORS=0    1 prints PHP errors in pages; they always go to `docker compose logs php`
+#   XDEBUG_MODE=off         debug turns Xdebug on (a request starts a session with the XDEBUG_TRIGGER cookie)
+#
+# nginx listens on UNA_PORT inside its container too, and php and cron forward
+# 127.0.0.1:<UNA_PORT> to it (scripts/docker-compose/self-url.sh). So the site URL
+# (http://localhost:<UNA_PORT>, or any host name that resolves to 127.0.0.1) works
+# from PHP as well: image transcoding and other requests UNA makes to itself.
+
 services:
 
     web:
-        image: nginx:latest
+        image: nginx:1.28
+        restart: unless-stopped
         ports:
-            - "80:80"
+            - "${UNA_PORT:-80}:${UNA_PORT:-80}"
+        environment:
+            UNA_PORT: ${UNA_PORT:-80}
+            NGINX_ENVSUBST_FILTER: '^UNA_'
         volumes:
-            - ./scripts/docker-compose/nginx.conf:/etc/nginx/conf.d/default.conf
+            - ./scripts/docker-compose/nginx.conf:/etc/nginx/templates/default.conf.template:ro
             - ./:/opt/una
         networks:
-            unanet:
-                aliases:
-                    - localhost.una.io
+            - unanet
 
     php:
         build:
             context: .
             dockerfile: scripts/docker-compose/PHP.Dockerfile
+        restart: unless-stopped
+        environment:
+            UNA_PORT: ${UNA_PORT:-80}
+            # the cron service below runs periodic/cron.php, so the installer doesn't ask for a crontab line
+            UNA_CRON_RUNNER: docker
+            # Messenger's Jot server (the jot service below) as the browser reaches it; the Messenger installer saves
+            # it in Messenger's settings when they have none. Set UNA_JOT_URL in .env for another address.
+            UNA_JOT_URL: ${UNA_JOT_URL:-http://localhost:${JOT_PORT:-5555}}
+            PHP_DISPLAY_ERRORS: ${PHP_DISPLAY_ERRORS:-0}
+            XDEBUG_MODE: ${XDEBUG_MODE:-off}
         volumes:
-            - ./scripts/docker-compose/php.ini:/usr/local/etc/php/php.ini
-            - ./scripts/docker-compose/php-fpm-pool.conf:/usr/local/etc/php-fpm.d/zz-una.conf
+            - ./scripts/docker-compose/php.ini:/usr/local/etc/php/php.ini:ro
+            - ./scripts/docker-compose/php-fpm-pool.conf:/usr/local/etc/php-fpm.d/zz-una.conf:ro
             - ./:/opt/una
         extra_hosts:
             - "host.docker.internal:host-gateway"
+        depends_on:
+            mysql:
+                condition: service_healthy
         networks:
             - unanet
 
@@ -30,16 +59,21 @@ services:
         build:
             context: .
             dockerfile: scripts/docker-compose/Cron.Dockerfile
+        restart: unless-stopped
+        environment:
+            UNA_PORT: ${UNA_PORT:-80}
         volumes:
-            - ./scripts/docker-compose/php.ini:/usr/local/etc/php/php-cron.ini
+            - ./scripts/docker-compose/php-cron.ini:/usr/local/etc/php/php.ini:ro
             - ./:/opt/una
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
+        depends_on:
+            mysql:
+                condition: service_healthy
         networks:
             - unanet
 
     mysql:
-        image: mariadb:latest
+        image: mariadb:11.8
+        restart: unless-stopped
         environment:
             MYSQL_ROOT_PASSWORD: 'root'
             MYSQL_USER: 'una'
@@ -47,44 +81,51 @@ services:
             MYSQL_DATABASE: 'una'
         volumes:
             - mysqldata:/var/lib/mysql
-            - ./scripts/docker-compose/db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql
-            - ./scripts/docker-compose/mysqld.cnf:/etc/mysql/conf.d/mysqld.cnf
+            - ./scripts/docker-compose/db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql:ro
+            - ./scripts/docker-compose/mysqld.cnf:/etc/mysql/conf.d/mysqld.cnf:ro
         ports:
-            - 3306:3306
+            - "127.0.0.1:${MYSQL_PORT:-3306}:3306"
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            interval: 5s
+            timeout: 5s
+            retries: 30
+            start_period: 30s
         networks:
             - unanet
 
     jot:
-        image: unaio/jot-server:latest
-        restart: always
+        image: unaio/jot-server:2.0.3
+        restart: unless-stopped
         ports:
-            - 5555:5000
+            - "127.0.0.1:${JOT_PORT:-5555}:5000"
         networks:
             - unanet
 
     phpmyadmin:
-        image: phpmyadmin
-        restart: always
+        image: phpmyadmin:5.2
+        restart: unless-stopped
+        # Signs in as MySQL root without a password prompt, so it listens on 127.0.0.1 only.
         ports:
-            - 8080:80
+            - "127.0.0.1:${PMA_PORT:-8080}:80"
         environment:
             - PMA_HOST=mysql
             - PMA_USER=root
             - PMA_PASSWORD=root
             - UPLOAD_LIMIT=200M
         volumes:
-            - ./scripts/docker-compose/phpmyadmin.inc.php:/etc/phpmyadmin/config.user.inc.php
+            - ./scripts/docker-compose/phpmyadmin.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
         depends_on:
-            - mysql
+            mysql:
+                condition: service_healthy
         networks:
             - unanet
 
     mailpit:
-        image: axllent/mailpit
-        container_name: mailpit
+        image: axllent/mailpit:v1.34
         restart: unless-stopped
         ports:
-            - "8025:8025"
+            - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
         environment:
             MP_MAX_MESSAGES: 5000
             MP_SMTP_AUTH_ACCEPT_ANY: 1
@@ -96,4 +137,4 @@ volumes:
     mysqldata: {}
 
 networks:
-  unanet:
+    unanet:

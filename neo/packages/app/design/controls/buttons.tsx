@@ -97,9 +97,9 @@ const ICON_ACCESSIBLE_MAP: Record<string, string> = {
     'Settings': 'Settings',
     'Home': 'Home',
     'User': 'Profile',
-    'UserRound': 'Login',
-    'LogIn': 'Login',
-    'LogOut': 'Logout',
+    'UserRound': 'Sign in',
+    'LogIn': 'Sign in',
+    'LogOut': 'Sign out',
 };
 
 const getAddon = (addon: ButtonAddon | undefined, isTitle: boolean) => {

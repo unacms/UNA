@@ -44,6 +44,7 @@ function BxDolMenuMoreAuto(options)
 
     this._sLayout = '';
     this._fLayoutWidth = -1;
+    this._fShift = 0;
     this._bSettled = false;
     this._oResizeObserver = null;
 }
@@ -144,6 +145,7 @@ BxDolMenuMoreAuto.prototype.init = function()
     var sRemembered = this._bStaticMode ? '' : this._recall();
     if(sRemembered) {
         this._apply(sRemembered);
+        this._setShift(this._recallShift());
         this._reveal(false);
     }
     else
@@ -265,9 +267,13 @@ BxDolMenuMoreAuto.prototype._onResize = function()
     if(!this._bSettled)
         return;
 
-    // Our own changes to the row don't change the container's width; skip the callbacks they cause.
-    if(Math.abs(this._getAvailable() - this._fLayoutWidth) < 0.5)
+    // Our own changes to the row don't change the container's width; skip the callbacks they cause. The header around
+    // it may have changed all the same (the toolbar's width), which moves a centred row.
+    if(Math.abs(this._getAvailable() - this._fLayoutWidth) < 0.5) {
+        if(this._balance())
+            this._remember(this._sLayout);
         return;
+    }
 
     this._layout(true);
 };
@@ -300,6 +306,7 @@ BxDolMenuMoreAuto.prototype._layout = function(bAnimate)
 {
     if(this._bStaticMode) {
         this._apply(this._compute(null, 0));
+        this._balance();
         return;
     }
 
@@ -311,6 +318,7 @@ BxDolMenuMoreAuto.prototype._layout = function(bAnimate)
 
     var aBefore = bAnimate && sLayout != this._sLayout ? this._getPositions() : null;
     this._apply(sLayout);
+    this._balance();
     if(aBefore)
         this._animateFrom(aBefore);
 
@@ -473,6 +481,64 @@ BxDolMenuMoreAuto.prototype._apply = function(sLayout)
     this._sLayout = sLayout;
 };
 
+/**
+ * A menu in the middle of the header (.bx-header-menu-center, Designer > Settings > Header) is centred in the header,
+ * not in its own container, which the logo and the toolbar leave off-centre: the row moves towards the header's middle
+ * as far as its container leaves room, so a long row still fills the container. The move is a transform: the
+ * container keeps its width and the measurements their values.
+ * @return true when the row moved
+ */
+BxDolMenuMoreAuto.prototype._balance = function()
+{
+    var eMenu = this._oMenu.get(0);
+    var eBox = eMenu.closest('.bx-header-menu-center');
+
+    var fShift = 0;
+    var aShown = eBox ? this._oMenu.children(this._sClassItem).filter(function() {
+        return this.getClientRects().length > 0;
+    }) : $();
+    if(aShown.length) {
+        var fLeft = Infinity;
+        var fRight = -Infinity;
+        aShown.each(function() {
+            var oRect = this.getBoundingClientRect();
+            fLeft = Math.min(fLeft, oRect.left);
+            fRight = Math.max(fRight, oRect.right);
+        });
+        // Where the row is without the move made so far.
+        fLeft -= this._fShift;
+        fRight -= this._fShift;
+
+        var fnContent = function(eElement) {
+            var oRect = eElement.getBoundingClientRect();
+            var oStyle = window.getComputedStyle(eElement);
+            return {
+                left: oRect.left + Number.parseFloat(oStyle.borderLeftWidth) + Number.parseFloat(oStyle.paddingLeft),
+                right: oRect.right - Number.parseFloat(oStyle.borderRightWidth) - Number.parseFloat(oStyle.paddingRight)
+            };
+        };
+        var oBox = fnContent(eBox);
+        var oRoom = fnContent(eMenu.parentNode);
+
+        var fMin = oRoom.left - fLeft;
+        var fMax = oRoom.right - fRight;
+        if(fMin <= fMax)
+            fShift = Math.min(Math.max((oBox.left + oBox.right) / 2 - (fLeft + fRight) / 2, fMin), fMax);
+    }
+
+    if(Math.abs(fShift - this._fShift) < 0.5)
+        return false;
+
+    this._setShift(fShift);
+    return true;
+};
+
+BxDolMenuMoreAuto.prototype._setShift = function(fShift)
+{
+    this._fShift = fShift;
+    this._oMenu.get(0).style.transform = Math.abs(fShift) < 0.5 ? '' : 'translateX(' + fShift.toFixed(1) + 'px)';
+};
+
 BxDolMenuMoreAuto.prototype._styleForRow = function(oItem)
 {
     oItem.removeClass('bx-def-color-bg-hl-hover');
@@ -512,6 +578,22 @@ BxDolMenuMoreAuto.prototype._recall = function()
     }
 };
 
+/**
+ * The move a centred row had at this window width (_balance): the toolbar it is centred against is parsed after the
+ * menu, so the remembered move is what the row shows until it is measured.
+ */
+BxDolMenuMoreAuto.prototype._recallShift = function()
+{
+    try {
+        var oStored = JSON.parse(window.localStorage.getItem(this._sStorageKey) || 'null');
+        var fShift = oStored && oStored.shifts ? Number(oStored.shifts[window.innerWidth]) : 0;
+        return Number.isFinite(fShift) ? fShift : 0;
+    }
+    catch(e) {
+        return 0;
+    }
+};
+
 BxDolMenuMoreAuto.prototype._remember = function(sLayout)
 {
     try {
@@ -521,14 +603,24 @@ BxDolMenuMoreAuto.prototype._remember = function(sLayout)
             oStored = {sig: sSignature, rows: {}, order: []};
 
         var sWidth = String(window.innerWidth);
-        if(oStored.rows[sWidth] == sLayout)
+        var fShift = Math.round(this._fShift * 10) / 10;
+        if(!oStored.shifts)
+            oStored.shifts = {};
+        if(oStored.rows[sWidth] == sLayout && (oStored.shifts[sWidth] || 0) == fShift)
             return;
 
         oStored.rows[sWidth] = sLayout;
+        if(fShift)
+            oStored.shifts[sWidth] = fShift;
+        else
+            delete oStored.shifts[sWidth];
         oStored.order = $.grep(oStored.order || [], function(s) { return s != sWidth; });
         oStored.order.push(sWidth);
-        while(oStored.order.length > this._iStorageWidths)
-            delete oStored.rows[oStored.order.shift()];
+        while(oStored.order.length > this._iStorageWidths) {
+            var sDropped = oStored.order.shift();
+            delete oStored.rows[sDropped];
+            delete oStored.shifts[sDropped];
+        }
 
         window.localStorage.setItem(this._sStorageKey, JSON.stringify(oStored));
     }

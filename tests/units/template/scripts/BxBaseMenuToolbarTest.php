@@ -142,7 +142,7 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
     {
         $sSql = self::readFile('install/sql/system.sql');
         $this->assertStringContainsString("('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login'", $sSql, 'Log in has a label to show.');
-        $this->assertStringContainsString("('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-plus',  '', '', 0, 1, 0, 1, 0, 3)", $sSql, 'Sign up is a guests-only item of the member toolbar.');
+        $this->assertStringContainsString("('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-round-plus',  '', '', 0, 1, 0, 1, 0, 3)", $sSql, 'Sign up is a guests-only item of the member toolbar.');
         $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='create-account';", self::readFile('modules/system/install/sql/enable-app-menus.sql'));
 
         $sMigration = self::readFile('migrations/2026111640_guest_toolbar_sign_up.sql');
@@ -154,7 +154,10 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $sNeo = self::readFile('neo/packages/app/settings/header-toolbar.js');
         $this->assertStringContainsString("una: 'login'", $sNeo);
         $this->assertStringContainsString("una: 'create-account'", $sNeo);
-        $this->assertStringContainsString("if (item.una && !currentUser) return inGuestToolbar(item.una)", self::readFile('neo/packages/app/ui/molecules/header/header-element.js'));
+        // A guest's Log In and Sign Up take their slot from the guest toolbar (guestSlot: a placeholder while it loads on the web).
+        $sHeader = self::readFile('neo/packages/app/ui/molecules/header/header-element.js');
+        $this->assertStringContainsString("if (item.una && !currentUser) return guestSlot(item.una)", $sHeader);
+        $this->assertStringContainsString("return inGuestToolbar(name) ? SLOT.shown : SLOT.hidden", $sHeader);
 
         $oMenu = $this->getToolbar('sys_toolbar_member');
         $aRows = $this->getToolbarRows($oMenu);
@@ -240,12 +243,12 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $this->assertStringContainsString('--button-foreground: var(--neutral-300);', $sNeo);
         $this->assertStringContainsString('--button-foreground-hover: var(--neutral-100);', $sNeo);
 
-        //--- The header toolbar takes its look from one rule, with the press scale and the open (accent) look.
+        //--- The header toolbar takes its look from one rule, with the press and the open (accent) look.
         $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-menu-toolbar \.bx-menu-toolbar-item \{\s*@apply bg-gray-950\/\[0\.08\] hover:bg-gray-950\/\[0\.12\] active:bg-gray-950\/\[0\.12\] dark:bg-gray-50\/\[0\.08\]/', $sCss);
         $this->assertStringContainsString('@apply text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100;', $sCss);
         $this->assertStringContainsString('.bx-menu-toolbar-item:has(> a[aria-expanded="true"])', $sCss);
         $this->assertStringContainsString('body:not(.bx-std) .bx-btn[aria-expanded="true"]:not(.bx-btn-primary)', $sCss);
-        $this->assertStringContainsString('body:not(.bx-std) .bx-btn:not(.bx-btn-disabled):active', $sCss);
+        $this->assertMatchesRegularExpression('/body:not\(\.bx-std\) \.bx-btn:not\(\.bx-btn-disabled\):active \{\s*@apply opacity-50 shadow-none;\s*\}/', $sCss, 'A press dims the button and drops its shadow: no scale.');
 
         $sTemplate = self::readFile('modules/boonex/artificer/data/template/system/menu_toolbar.html');
         $this->assertStringNotContainsString('bg-gray-100', $sTemplate, 'No colours of its own on the item: the rule above paints it.');

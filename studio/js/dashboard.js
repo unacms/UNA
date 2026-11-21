@@ -78,12 +78,13 @@ BxDolStudioDashboard.prototype.checkForUpgrade = function() {
         },
         function(oData) {
             var oInfo = oData && oData.data ? oData.data : {};
+            $this.setVersionStatus(oInfo.current);
             $this.setVersionRow('stable', oInfo.stable);
             $this.setVersionRow('beta', oInfo.beta);
             $this.setVersionRow('apps', oInfo.apps);
 
             // the rows changed silently: read them out, name, value and status
-            var aOut = [];
+            var aOut = [$('#bx-dbd-version-current .bx-dbd-vi-time').text().trim()];
             $('#' + sDivId + ' .bx-dbd-htools-item[id]').each(function() {
                 var sName = $(this).find('.bx-dbd-htools-name').contents().first().text().trim();
                 var sStatus = $(this).find('.bx-dbd-htools-status').text().trim();
@@ -99,6 +100,19 @@ BxDolStudioDashboard.prototype.checkForUpgrade = function() {
     ).always(function() {
         $this.loading(sDivId, false, oButton);
     });
+};
+
+/**
+ * Updates block: the line under the installed version, {status: ok / fail / undef, value}: the latest stable or beta release
+ * is installed (green), an update is available (red), or neither is known (gray).
+ */
+BxDolStudioDashboard.prototype.setVersionStatus = function(oStatus) {
+    var oItem = $('#bx-dbd-version-current');
+    if(!oItem.length || !oStatus)
+        return;
+
+    oItem.removeClass('bx-dbd-htools-item-ok bx-dbd-htools-item-warn bx-dbd-htools-item-fail bx-dbd-htools-item-undef').addClass('bx-dbd-htools-item-' + oStatus.status);
+    oItem.find('.bx-dbd-vi-time').text(oStatus.value);
 };
 
 /**
@@ -448,7 +462,9 @@ BxDolStudioDashboard.prototype.clearChartItem = function(sBlock, sAction, sType,
         function(oData) {
             $this.loading(sDivId, false, oButton);
 
-            if(oData.message != undefined && oData.message.length > 0)
+            if(oData.toast != undefined && oData.toast.length > 0)
+                bx_toast(oData.toast);
+            else if(oData.message != undefined && oData.message.length > 0)
                 $this.popup(oData.message, function() {
                     // the control that was used is redrawn with the chart: hand focus to the block's first control
                     return $('#' + sDivId).find('button, a[href]').first().get(0);
@@ -477,7 +493,7 @@ BxDolStudioDashboard.prototype.clearQueue = function(sType, oButton) {
 /**
  * Server block: show one tab's panel. Audit and permissions panels fetch their report the first time they open.
  */
-BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab) {
+BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab, onLoaded) {
     var $this = this;
     var sDivId = 'bx-dbd-htools';
     var oBlock = $('#' + sDivId).closest('.bx-std-block');
@@ -493,10 +509,13 @@ BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab) {
     oPanel.prop('hidden', false);
 
     var sAction = oPanel.data('action');
-    if(!sAction || oPanel.data('loaded'))
+    if(!sAction || oPanel.data('loaded')) {
+        if(typeof onLoaded == 'function' && !oPanel.data('loading'))
+            onLoaded(oPanel);
         return;
+    }
 
-    oPanel.data('loaded', true).html($this.getLoader());
+    oPanel.data('loaded', true).data('loading', true).html($this.getLoader());
     $this.loading(sDivId, true);
 
     $.get(
@@ -509,18 +528,39 @@ BxDolStudioDashboard.prototype.hostToolsTab = function(sTab, oTab) {
             $this.loading(sDivId, false);
 
             if(!sData.length) {
-                oPanel.data('loaded', false).empty();
+                oPanel.data('loaded', false).data('loading', false).empty();
                 return;
             }
 
-            oPanel.html(sData).bxProcessHtml();
+            oPanel.data('loading', false).html(sData).bxProcessHtml();
             $this.bindChartTips(oPanel);
+
+            if(typeof onLoaded == 'function')
+                onLoaded(oPanel);
         },
         'html'
     ).fail(function() {
         // the tab can be tried again after a failed request
         $this.loading(sDivId, false);
-        oPanel.data('loaded', false).empty();
+        oPanel.data('loaded', false).data('loading', false).empty();
+    });
+};
+
+/**
+ * Server block, Status tab: a section with warnings or failures opens the Audit tab with that section's rows unfolded,
+ * its heading in view and focused.
+ */
+BxDolStudioDashboard.prototype.auditOpen = function(sSection) {
+    this.hostToolsTab('audit', null, function(oPanel) {
+        var oToggle = oPanel.find('[aria-controls="bx-dbd-audit-' + sSection + '"]');
+        if(!oToggle.length)
+            return;
+
+        if(oToggle.attr('aria-expanded') != 'true')
+            oToggle.trigger('click');
+
+        oToggle.get(0).scrollIntoView({block: 'nearest'});
+        oToggle.trigger('focus');
     });
 };
 

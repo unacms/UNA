@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_unacon_information_block"><![CDATA[
+This module can be used to log in to this site using another UNA site (master site) credentials. <br />
+To make it work, go to the master site, install "OAuth2 Server" module and add new client site, specify the desired title and the following URL:<br />
+<strong>{0}</strong><br />
+Then enter generated on the master site the Key & Server pair in this module settings.]]></string_upd>
+</resources>

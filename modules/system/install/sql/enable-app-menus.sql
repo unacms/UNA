@@ -8,13 +8,14 @@
 UPDATE `sys_objects_menu` SET `config_api`='{"icon":"compass"}' WHERE `object`='sys_homepage_submenu';
 -- Home menu: the apps draw it as a grid, as the site does
 UPDATE `sys_objects_menu` SET `config_api`='{"view":"grid"}' WHERE `object`='sys_homepage';
+UPDATE `sys_objects_menu` SET `config_api`='{"view":"cards"}' WHERE `object`='sys_add_profile';
 UPDATE `sys_objects_menu` SET `config_api`='{}' WHERE `object`='sys_ntfs_submenu';
 -- Settings: `hub` is the section's own page, where the apps show the menu as a list on phones and tablets (the menu's
--- `section_nav_small`); an item's group (Studio > Navigation > an item > "Group in the apps") puts it under Account or
--- the current profile; `icon` is the section's icon in the apps (the gear: Lucide `settings`, as the account menu's Settings item is drawn)
+-- `section_nav_small`), in the sections its items without a link make (Account, the current profile); `icon` is the
+-- section's icon in the apps (the gear: Lucide `settings`, as the account menu's Settings item is drawn); deleting the
+-- account is in the destructive colour (`danger`)
 UPDATE `sys_objects_menu` SET `config_api`='{"hub":"settings","icon":"settings"}' WHERE `object`='sys_account_settings_submenu';
-UPDATE `sys_menu_items` SET `group_name`='account' WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-profile-switcher', 'account-settings-info', 'account-settings-email', 'account-settings-password');
-UPDATE `sys_menu_items` SET `group_name`=IF(`name`='account-settings-delete', 'danger', 'profile') WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('profile-settings-cfilter', 'account-settings-delete');
+UPDATE `sys_menu_items` SET `config_api`='{"danger":true}' WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-delete';
 UPDATE `sys_menu_items` SET `config_api`='{"badge":"friends"}' WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='friends';
 -- Site menu: Log in and Sign up show as buttons above the other items, in the apps and in UNA's phone sidebar (`primary` picks the prominent one)
 UPDATE `sys_menu_items` SET `config_api`='{"button":true}' WHERE `set_name`='sys_site' AND `module`='system' AND `name` IN ('login', 'create-account');
@@ -29,6 +30,8 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `modu
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-avatar';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-followings';
+-- the apps' drawer only (`drawer`): the web app's sidebar leaves them out, its header and footer have them
+UPDATE `sys_menu_items` SET `active_api`=1, `config_api`='{"drawer":true}' WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name` IN ('homepage-menu', 'account-menu', 'footer-menu');
 -- the apps' sidebar (API v2 GET /navigation): its groups and the Apps Menu's items; Member Menu and Member Following stay off as installed
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='member-avatar';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_apps_sidebar' AND `module`='system' AND `name`='apps-menu';
@@ -52,6 +55,8 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `mo
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_footer' AND `module`='system' AND `name`='powered_by';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_site' AND `module`='system' AND `name`='main-menu';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='search';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_application' AND `module`='system' AND `name`='search';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_application' AND `module`='system' AND `name`='add-content';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='add-content';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='apps';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='account';
@@ -68,9 +73,12 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notific
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='studio';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='cart';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='logout';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name` IN ('account-settings-section-account', 'account-settings-section-profile');
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-info';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-email';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-password';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-connectors';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-privacy';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='account-settings-delete';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard' AND `module`='system' AND `name`='dashboard';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard' AND `module`='system' AND `name`='dashboard-admin';
@@ -95,6 +103,13 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_social_sharing'
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='system' AND `name`='cmts-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_content_manage' AND `module`='system' AND `name`='cmts';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='system' AND `name`='profile-stats-profile';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_account' AND `module`='system' AND `name`='profile';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_account' AND `module`='system' AND `name`='stats';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_account' AND `module`='system' AND `name`='preferences';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_account' AND `module`='system' AND `name`='logout';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_preferences' AND `module`='system' AND `name`='settings';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_preferences' AND `module`='system' AND `name`='switch-language';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_preferences' AND `module`='system' AND `name`='color-scheme';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_wiki' AND `module`='system' AND `name`='edit';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_wiki' AND `module`='system' AND `name`='delete-version';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_wiki' AND `module`='system' AND `name`='delete-block';
@@ -122,3 +137,4 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `mo
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='privacy';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_tabbar' AND `module`='system' AND `name`='dashboard';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_onboarding_operator' AND `module`='system';

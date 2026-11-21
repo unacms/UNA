@@ -91,3 +91,4 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_timeline_menu_po
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_timeline_menu_post_attachments' AND `module`='bx_timeline' AND `name`='add-video-record';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_timeline_menu_post_attachments' AND `module`='bx_timeline' AND `name`='add-file-html5';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_timeline_menu_post_attachments' AND `module`='bx_timeline' AND `name`='add-poll';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_onboarding_operator' AND `module`='bx_timeline' AND `name`='post';

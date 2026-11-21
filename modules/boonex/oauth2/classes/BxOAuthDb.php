@@ -113,6 +113,38 @@ class BxOAuthDb extends BxDolModuleDb
         return $this->getOne("SELECT `user_id` FROM `bx_oauth_refresh_tokens` WHERE `client_id` = ? AND `user_id` IN (" . $this->implode_escape($aIds) . ") LIMIT 1", array($sClientId));
     }
 
+    /**
+     * The clients profiles have codes or tokens of: client_id and title (none for a built-in native app), by title.
+     */
+    public function getConnectedApps($aProfileIds)
+    {
+        if (!$aProfileIds)
+            return array();
+
+        $sIn = $this->implode_escape(array_map('intval', $aProfileIds));
+        return $this->getAll("SELECT `t`.`client_id`, `c`.`title` FROM (
+                SELECT `client_id` FROM `bx_oauth_refresh_tokens` WHERE `user_id` IN (" . $sIn . ")
+                UNION SELECT `client_id` FROM `bx_oauth_access_tokens` WHERE `user_id` IN (" . $sIn . ")
+            ) AS `t`
+            LEFT JOIN `bx_oauth_clients` AS `c` ON (`c`.`client_id` = `t`.`client_id`)
+            ORDER BY `c`.`title`, `t`.`client_id`");
+    }
+
+    /**
+     * Delete a client's codes and tokens of these profiles.
+     */
+    public function disconnectApp($sClientId, $aProfileIds)
+    {
+        if (!$aProfileIds)
+            return false;
+
+        $sIn = $this->implode_escape(array_map('intval', $aProfileIds));
+        foreach (array('bx_oauth_access_tokens', 'bx_oauth_refresh_tokens', 'bx_oauth_authorization_codes') as $sTable)
+            $this->query("DELETE FROM `" . $sTable . "` WHERE `client_id` = :client AND `user_id` IN (" . $sIn . ")", array('client' => $sClientId));
+
+        return true;
+    }
+
     function getClientByAllowedOriginUrl($sUrl)
     {
         return $this->getRow("SELECT `c`.* FROM `bx_oauth_clients` AS `c` INNER JOIN `bx_oauth_allowed_origins` AS `o` ON (`o`.`client_id` = `c`.`id`) WHERE `o`.`url` = :url", array('url' => $sUrl));

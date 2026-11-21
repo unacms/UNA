@@ -336,6 +336,33 @@ class BxDolAccountQuery extends BxDolDb implements iBxDolSingleton
     }
 
     /**
+     * Keep a new email address waiting for its confirmation; '' cancels it.
+     * The account keeps signing in and recovering the password with `email` meanwhile.
+     * @param  string $sEmail - new email address or ''
+     * @param  int    $iID    - account id
+     * @return number of affected rows
+     */
+    public function updateEmailPending($sEmail, $iID)
+    {
+        return $this->_updateField ($iID, 'email_pending', $sEmail);
+    }
+
+    /**
+     * Make the confirmed pending email the account's email, unless another account uses it now.
+     * @param  string $sEmail - the pending email address the account confirmed
+     * @param  int    $iID    - account id
+     * @return true when the account has the new email now
+     */
+    public function applyEmailPending($sEmail, $iID)
+    {
+        $aBind = ['email' => $sEmail, 'id' => (int)$iID];
+        if ($this->getOne("SELECT `id` FROM `sys_accounts` WHERE `email` = :email AND `id` != :id LIMIT 1", $aBind))
+            return false;
+
+        return (int)$this->query("UPDATE `sys_accounts` SET `email` = :email, `email_pending` = '', `email_confirmed` = 1 WHERE `id` = :id AND `email_pending` = :email LIMIT 1", $aBind) > 0;
+    }
+
+    /**
      * Give an account that has no phone this one, unless another account has it.
      * Two accounts saving the same phone at once don't both keep it: each looks for
      * another owner after its own save and gives the phone up if there is one.

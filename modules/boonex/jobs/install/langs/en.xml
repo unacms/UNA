@@ -38,7 +38,7 @@
     <string name="_bx_jobs_form_profile_input_initial_members"><![CDATA[Invite Assignees]]></string>
     <string name="_bx_jobs_form_profile_input_sys_name"><![CDATA[Job Name]]></string>
     <string name="_bx_jobs_form_profile_input_name"><![CDATA[Job Name]]></string>
-    <string name="_bx_jobs_form_profile_input_name_err"><![CDATA[Name is essential min 3 max 160.]]></string>
+    <string name="_bx_jobs_form_profile_input_name_err"><![CDATA[Name is required min 3 max 160.]]></string>
     <string name="_bx_jobs_form_profile_input_sys_desc"><![CDATA[Description]]></string>
     <string name="_bx_jobs_form_profile_input_desc"><![CDATA[Description]]></string>
     <string name="_bx_jobs_form_profile_input_sys_cat"><![CDATA[Category]]></string>
@@ -51,7 +51,7 @@
     <string name="_bx_jobs_form_profile_input_cover"><![CDATA[Upload New Cover Picture]]></string>
     <string name="_bx_jobs_form_profile_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
     <string name="_bx_jobs_form_profile_input_delete_confirm"><![CDATA[I am sure I want to delete this job]]></string>
-    <string name="_bx_jobs_form_profile_input_delete_confirm_info"><![CDATA[This action can not be undone.]]></string>
+    <string name="_bx_jobs_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string>
     <string name="_bx_jobs_form_profile_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete job.]]></string>
     <string name="_bx_jobs_form_profile_input_sys_date_start"><![CDATA[Date start]]></string>
     <string name="_bx_jobs_form_profile_input_date_start"><![CDATA[Date start]]></string>
@@ -82,7 +82,7 @@
     <string name="_bx_jobs_form_question_input_do_submit"><![CDATA[Submit]]></string>
     <string name="_bx_jobs_form_question_input_sys_do_cancel"><![CDATA[Cancel]]></string>
     <string name="_bx_jobs_form_question_input_do_cancel"><![CDATA[Cancel]]></string>
-    <string name="_bx_jobs_form_questionnaire_input_question_err"><![CDATA[Please, answer the question.]]></string>
+    <string name="_bx_jobs_form_questionnaire_input_question_err"><![CDATA[Please answer the question.]]></string>
 
     <string name="_bx_jobs_form_price"><![CDATA[Price]]></string>
     <string name="_bx_jobs_form_price_display_add"><![CDATA[Add]]></string>
@@ -193,7 +193,7 @@
     <string name="_bx_jobs_page_block_title_favorites_of_author"><![CDATA[Favorite Jobs]]></string>
     <string name="_bx_jobs_page_block_title_sys_favorites_of_author"><![CDATA[Favorite Jobs]]></string>
     <string name="_bx_jobs_page_block_title_entries_in_context_link"><![CDATA[Jobs in <a href="{profile_link}">{display_name}</a>]]></string>
-    <string name="_bx_jobs_page_block_title_entries_in_context"><![CDATA[Jobs in context]]></string>
+    <string name="_bx_jobs_page_block_title_entries_in_context"><![CDATA[Jobs in this community]]></string>
     <string name="_bx_jobs_page_block_title_sys_entries_in_context"><![CDATA[Jobs in context]]></string>
     <string name="_bx_jobs_page_block_title_sys_joined_entries"><![CDATA[Joined Jobs]]></string>
     <string name="_bx_jobs_page_block_title_joined_entries"><![CDATA[Joined Jobs]]></string>
@@ -271,6 +271,7 @@
     <string name="_bx_jobs_menu_set_title_view_profile_meta"><![CDATA[Job Meta]]></string>
     <string name="_bx_jobs_menu_item_title_system_sm_members"><![CDATA[Assignees]]></string>
     <string name="_bx_jobs_menu_item_title_sm_members"><![CDATA[{0} assignees]]></string>
+    <string name="_bx_jobs_menu_item_title_sm_members_one"><![CDATA[{0} assignee]]></string>
     <string name="_bx_jobs_menu_set_title_view_profile_submenu"><![CDATA[View Job Submenu]]></string>
     <string name="_bx_jobs_menu_title_view_profile_submenu"><![CDATA[View Job Submenu]]></string>
     <string name="_bx_jobs_menu_title_entries_my"><![CDATA[Profile Jobs Action Menu]]></string>
@@ -466,15 +467,15 @@
     <string name="_bx_jobs_txt_invite_popup_title"><![CDATA[Invitation to a job]]></string>
     <string name="_bx_jobs_txt_invite_popup_button_accept"><![CDATA[Accept]]></string>
     <string name="_bx_jobs_txt_invite_popup_button_decline"><![CDATA[Decline]]></string>
-    <string name="_bx_jobs_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You can not join this job. The invitation is expired or deleted.]]></string>
-    <string name="_bx_jobs_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You can not join this job. This invitation cannot be used by you.]]></string>
+    <string name="_bx_jobs_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this job. The invitation is expired or deleted.]]></string>
+    <string name="_bx_jobs_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this job. This invitation cannot be used by you.]]></string>
     <string name="_bx_jobs_txt_n_unit"><![CDATA[{0} ({1})]]></string>
     <string name="_bx_jobs_txt_cart_item_title"><![CDATA[{0}: {1} ({2} {3})]]></string>
     <string name="_bx_jobs_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string>    
 
     <string name="_bx_jobs_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_jobs_err_price_duplicate"><![CDATA[Similar pricing plan is already exists.]]></string>
-    <string name="_bx_jobs_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_jobs_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_jobs_alert_action_fan_added"><![CDATA[assignee joined]]></string>
     <string name="_bx_jobs_txt_ntfs_fan_added"><![CDATA[Job <b class="bx-ntfs-content-profile">{owner_name}</b> has got an assignee <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string>
@@ -503,48 +504,48 @@
     <string name="_bx_jobs_email_join_request"><![CDATA[Job join request]]></string>
     <string name="_bx_jobs_email_join_request_subject"><![CDATA[Request to join your job]]></string>
     <string name="_bx_jobs_email_join_request_body"><![CDATA[{email_header}
-<p>New request to join <a href="{EntryUrl}">{EntryTitle}</a> job from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> job from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_join_reject"><![CDATA[Job join request was rejected]]></string>
     <string name="_bx_jobs_email_join_reject_subject"><![CDATA[Request to join a job was rejected]]></string>
     <string name="_bx_jobs_email_join_reject_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was rejected by job admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was rejected by job admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_join_confirm"><![CDATA[Job join request was confirmed]]></string>
     <string name="_bx_jobs_email_join_confirm_subject"><![CDATA[Your request to join a job was confirmed]]></string>
     <string name="_bx_jobs_email_join_confirm_body"><![CDATA[{email_header}
-<p>Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was confirmed by the job admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was confirmed by the job admin.</p>
 {email_footer}]]></string>
 
-    <string name="_bx_jobs_email_fan_remove"><![CDATA[Profile was removed from job fans]]></string>
+    <string name="_bx_jobs_email_fan_remove"><![CDATA[Profile was removed from job members]]></string>
     <string name="_bx_jobs_email_fan_remove_subject"><![CDATA[Your profile was removed from the job]]></string>
     <string name="_bx_jobs_email_fan_remove_body"><![CDATA[{email_header}
-<p>Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> job by the job admin.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> job by the job admin.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_fan_become_admin"><![CDATA[Job admin status was granted]]></string>
     <string name="_bx_jobs_email_fan_become_admin_subject"><![CDATA[You are a job admin now]]></string>
     <string name="_bx_jobs_email_fan_become_admin_body"><![CDATA[{email_header}
-<p>You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> job now.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> job now.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_admin_become_fan"><![CDATA[Job admin status was revoked]]></string>
     <string name="_bx_jobs_email_admin_become_fan_subject"><![CDATA[Your job admin status was revoked]]></string>
     <string name="_bx_jobs_email_admin_become_fan_body"><![CDATA[{email_header}
-<p>Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> job.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> job.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_set_role"><![CDATA[Job assignee status was changed]]></string>
     <string name="_bx_jobs_email_set_role_subject"><![CDATA[Your job status was changed]]></string>
     <string name="_bx_jobs_email_set_role_body"><![CDATA[{email_header}
-<p>Your status in <a href="{EntryUrl}">{EntryTitle}</a> job was changed to <b>{Role}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> job was changed to <b>{Role}</b>.</p>
 {email_footer}]]></string>
 
     <string name="_bx_jobs_email_invitation"><![CDATA[Invitation to job]]></string>
     <string name="_bx_jobs_email_invitation_subject"><![CDATA[Invitation to "{EntryTitle}" job]]></string>
     <string name="_bx_jobs_email_invitation_body"><![CDATA[{email_header}
-<p><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} job</a>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} job</a>.</p>
 {email_footer}]]></string>
 </resources>

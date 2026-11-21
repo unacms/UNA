@@ -57,11 +57,457 @@ html {
 .bx-main.bx-pt-application .bx-menu-toolbar-padding {
     padding-top: 0;
 }
-.bx-main.bx-pt-application .bx-main-column.narrow {
-    z-index: 4999;
+/*
+ * The header is a strip over the page with no surface of its own, 8px above and below what it holds (16px while empty); the sidebar is the page's left column under it, with the logo and its button on top,
+ * the context switcher and the Application toolbar under them, the menus, and the member's account at the foot; the content
+ * starts beside it.
+ *   wide (1280px and up): expanded, --bx-sidebar-width 16rem, or narrow, 4rem with icons only (.bx-app-sidebar-narrow on .bx-main)
+ *   below it: a drawer, 16rem (at most 85% of the screen) over the page, shown while .bx-main has .bx-app-sidebar-open
+ * js/sidebar.js flips the two classes and nothing else; pt_application.html sets the narrow one before the first paint.
+ * NEO and the native apps follow the same three states and sizes.
+ */
+.bx-main.bx-pt-application {
+    --bx-sidebar-width: var(--bx-sidebar-width-expanded, 16rem); /* the width the member dragged it to (js/sidebar.js), or 16rem */
+    --bx-sidebar-width-narrow: 4rem;
+    --bx-sidebar-head: 3.5rem; /* the sidebar's top row: the logo and the 36px button */
+    --bx-app-header: 1rem; /* the header strip: 16px while it is empty; js/sidebar.js sets its height */
+    --bx-app-footer: 1rem; /* the footer strip, the same */
 }
-.bx-main.bx-pt-application .bx-main-column.narrow.bx-mc-narrowed .bx-mc-cnt {
+/* The content between the header strip and the footer strip. */
+.bx-main.bx-pt-application .bx-main-content {
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100dvh; /* the window: the content block scrolls inside it, between the strips */
+    padding-top: var(--bx-app-header);
+    padding-bottom: var(--bx-app-footer);
+}
+/* It is one block (pt_application.html: the blocks' fill, edge, shadow and corners), 16px from the window's sides as the strips
+   are from its top and bottom; wide, its left side is the sidebar's. */
+.bx-main.bx-pt-application .bx-app-content {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    margin: 0 1rem;
+}
+/* Its footer at Page width (Designer > Settings > Footer width; pt_application.html) lines up with the page's blocks: the
+   side padding of .bx-page-wrapper (px-3 md:px-4 lg:px-6) as the footer's side margins. */
+.bx-main.bx-pt-application .bx-footer-box.bx-def-page-width > footer {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+}
+@media (min-width: 768px) {
+    .bx-main.bx-pt-application .bx-footer-box.bx-def-page-width > footer {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
+@media (min-width: 1024px) {
+    .bx-main.bx-pt-application .bx-footer-box.bx-def-page-width > footer {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+    }
+}
+
+.bx-main.bx-pt-application .bx-app-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5001; /* the drawer: over the header strip (.bx-def-z-index-nav, 5000); wide, it is under it (below) */
+    display: flex;
+    flex-direction: column;
+    width: var(--bx-sidebar-width);
+    max-width: 85vw;
+}
+.bx-dir-rtl .bx-main.bx-pt-application .bx-app-sidebar {
+    left: auto;
+    right: 0;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between; /* the sidebar's logo starts the row, its button ends it */
+    gap: 0.5rem;
+    height: var(--bx-sidebar-head);
+    padding: 0 0.875rem; /* the 36px button centred over the narrow sidebar's 64px */
+}
+/* The second row: the context switcher, when the site has one. */
+.bx-main.bx-pt-application .bx-app-sidebar-tools:not(:has(*)) {
+    display: none;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-tools {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0 0.875rem 0.5rem;
+}
+/* The Application toolbar's buttons (Search, Add) at the end of the logo's row: 44px, the header toolbar's size. */
+.bx-main.bx-pt-application .bx-app-sidebar-head .bx-ti-right {
+    margin: 0;
+    margin-inline-start: auto;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-head .bx-menu-toolbar {
+    display: flex;
+    gap: 0.75rem; /* 12px between the buttons, in the row and stacked */
     padding: 0;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0;
+}
+/* The button's link and its icon box fill the item, so the icon stays in the middle. */
+.bx-main.bx-pt-application .bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item > a,
+.bx-main.bx-pt-application .bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item > a > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+/* The sidebar's edge (wide screens): an 8px handle over the line between the sidebar and the content, showing a 2px line while
+   it is hovered, focused or dragged. Dragged, it sizes the sidebar; pressed, it narrows or widens it (js/sidebar.js). */
+.bx-main.bx-pt-application .bx-app-sidebar-resizer {
+    display: none;
+}
+/* The account at the foot, always in view: the member's picture and name, a plate on hover, a line over it. */
+.bx-main.bx-pt-application .bx-app-sidebar-foot {
+    padding: 0.5rem;
+    box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 0.08);
+}
+.dark .bx-main.bx-pt-application .bx-app-sidebar-foot {
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+}
+.bx-main.bx-pt-application .bx-app-sidebar-account {
+    transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.bx-main.bx-pt-application .bx-app-sidebar-account:hover,
+.bx-main.bx-pt-application .bx-app-sidebar-account[aria-expanded="true"] {
+    background-color: rgb(0 0 0 / 0.05);
+}
+.dark .bx-main.bx-pt-application .bx-app-sidebar-account:hover,
+.dark .bx-main.bx-pt-application .bx-app-sidebar-account[aria-expanded="true"] {
+    background-color: rgb(255 255 255 / 0.05);
+}
+/* The sidebar's own logo (a copy of the header's without its ids): on the sidebar's 16px line, never wider than the row leaves it. */
+.bx-main.bx-pt-application .bx-app-sidebar-logo {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    min-width: 0;
+    margin: 0; /* on the row's own 14px inset, as the toolbar under it */
+}
+.bx-main.bx-pt-application .bx-app-sidebar-logo > a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    max-width: 100%;
+}
+/* The logo at the sidebar's scale: the mark 36px tall (the logo's height), the text in proportion; the template sets the
+   header's size on the image itself. */
+.bx-main.bx-pt-application .bx-app-sidebar-logo :is(img, svg) {
+    width: auto !important;
+    max-width: 100%;
+    height: 2.25rem !important;
+}
+/* The button shows what a press does: panel-left-close while the sidebar is open, panel-left-open while it is narrow. */
+.bx-main.bx-pt-application .bx-app-sidebar-icon-open {
+    display: none;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-bottom: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-foot {
+    display: flex;
+    flex: none;
+    justify-content: center;
+    gap: 1rem;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-foot:empty {
+    display: none;
+}
+.bx-main.bx-pt-application .bx-app-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgb(0 0 0 / 0.5);
+}
+
+/* Wide: the sidebar under the header strip, the content where the sidebar ends. */
+@media (min-width: 1280px) {
+    /* The window does not scroll here, so it keeps no gutter for a scrollbar: the block is 16px from its right edge. */
+    html:has(.bx-main.bx-pt-application) {
+        overflow: hidden;
+        scrollbar-gutter: auto;
+    }
+    /* The header strip: the logo is in the sidebar, and a member's toolbar and account too. */
+    .bx-main.bx-pt-application .bx-app-header-logo,
+    .bx-main.bx-pt-application:has(.bx-app-sidebar-account) #bx-toolbar .bx-ti-right {
+        display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow {
+        --bx-sidebar-width: var(--bx-sidebar-width-narrow);
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar {
+        top: var(--bx-app-header);
+        bottom: var(--bx-app-footer);
+        z-index: 4999;
+    }
+    .bx-main.bx-pt-application #main-content {
+        margin-inline-start: var(--bx-sidebar-width);
+    }
+    /* The handle sizes and toggles the sidebar here: no button. */
+    .bx-main.bx-pt-application #toggleSidebar {
+        display: none;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-resizer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        inset-inline-end: -0.25rem;
+        z-index: 2;
+        display: block;
+        width: 0.5rem;
+        cursor: col-resize;
+        touch-action: none;
+        outline: none;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-resizer::after {
+        content: '';
+        position: absolute;
+        top: 0.5rem;
+        bottom: 0.5rem;
+        left: calc(50% - 1px);
+        width: 2px;
+        border-radius: 1px;
+        background-color: rgb(37 99 235); /* the accent (blue-600, the primary buttons' colour) */
+        opacity: 0;
+        transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-resizer:hover::after,
+    .bx-main.bx-pt-application.bx-app-sidebar-dragging .bx-app-sidebar-resizer::after {
+        opacity: 1;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-resizer:focus-visible::after {
+        opacity: 1;
+    }
+    /* While it is dragged: the page follows the pointer without a delay or a text selection. */
+    .bx-main.bx-pt-application.bx-app-sidebar-dragging,
+    .bx-main.bx-pt-application.bx-app-sidebar-dragging * {
+        cursor: col-resize !important;
+        user-select: none;
+        transition: none !important;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-open-btn {
+        display: none;
+    }
+    /* Narrow: the button alone on top, the toolbar's buttons stacked, the account's picture alone. */
+    /* Narrow: the mark on top (Designer's mark when the site has one, else the logo's first 36px, where a logo usually has its
+       mark), the button under it. */
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-head {
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.5rem; /* with the mark's 44px link round its 36px: the mark, Search and Add 12px apart, as in the row */
+        height: auto;
+        padding-top: 0.75rem;
+        padding-bottom: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-body {
+        margin-top: -0.375rem; /* the first row's icon 16px under Add, as the rows' icons are apart (the panel's own top spacing is 6px more) */
+        padding-top: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo > a {
+        justify-content: center; /* the 36px mark in the link's 44px target */
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo:not(:has(#bx-mark)) img {
+        width: 2.25rem !important;
+        object-fit: cover;
+        object-position: left center;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo:has(#bx-mark) :is(#bx-logo, #bx-logo-dark) {
+        display: none !important;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo #bx-mark {
+        display: block !important;
+        width: 2.25rem !important;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo #bx-mark-dark {
+        display: none !important;
+    }
+    .dark .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo:has(#bx-mark-dark) #bx-mark {
+        display: none !important;
+    }
+    .dark .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo #bx-mark-dark {
+        display: block !important;
+        width: 2.25rem !important;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-tools {
+        flex-direction: column;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-head .bx-ti-right {
+        margin: 0; /* centred in the column, not pushed to the row's end */
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-head .bx-menu-toolbar {
+        flex-direction: column;
+        margin: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-account {
+        justify-content: center;
+        padding: 0.25rem 0;
+    }
+    /* Narrow: icons only, centred in the 64px, with no scrollbar taking a side. */
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar [sidebar-toggle-item] {
+        display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-icon-close {
+        display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-icon-open {
+        display: flex;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-body {
+        scrollbar-width: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-body::-webkit-scrollbar {
+        display: none;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-mc-cnt {
+        padding: 0 0.5rem; /* as expanded: a row is 48px wide with its 32px icon in the middle, so its hover plate is a near square, not a sliver */
+    }
+    /* A narrow row is its 32px icon alone: the link's side paddings (made for an icon and a label) would squeeze or clip it. */
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-menu-panel li a {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-menu-panel .bx-stl-mii {
+        flex: none;
+        margin: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar .bx-menu-panel .bx-stl-mii > * {
+        margin: 0;
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-foot {
+        flex-direction: column;
+    }
+}
+
+/* Below the breakpoint: a page of the Standard layout (its header, the window scrolling the content, no footer strip) whose
+   sidebar is a drawer that slides in over the page and its header. */
+@media (max-width: 1279.98px) {
+    /* The drawer's first row also holds Search, Add and its close button (44px each): the logo's mark, as the narrow sidebar
+       shows it. */
+    .bx-main.bx-pt-application .bx-app-sidebar-logo:not(:has(#bx-mark)) img {
+        width: 2.25rem !important;
+        object-fit: cover;
+        object-position: left center;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-logo:has(#bx-mark) :is(#bx-logo, #bx-logo-dark) {
+        display: none !important;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-logo #bx-mark {
+        display: block !important;
+        width: 2.25rem !important;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar-logo #bx-mark-dark {
+        display: none !important;
+    }
+    .dark .bx-main.bx-pt-application .bx-app-sidebar-logo:has(#bx-mark-dark) #bx-mark {
+        display: none !important;
+    }
+    .dark .bx-main.bx-pt-application .bx-app-sidebar-logo #bx-mark-dark {
+        display: block !important;
+        width: 2.25rem !important;
+    }
+    .bx-main.bx-pt-application #bx-toolbar {
+        background-color: rgb(255 255 255 / 0.6);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        box-shadow: inset 0 -1px 0 0 rgb(255 255 255 / 0.5), 0 1px 8px -1px rgb(0 0 0 / 0.1), 0 1px 0 0 rgb(0 0 0 / 0.025);
+    }
+    .dark .bx-main.bx-pt-application #bx-toolbar {
+        background-color: rgb(39 39 42 / 0.6);
+        box-shadow: inset 0 -1px 0 0 rgb(255 255 255 / 0.05), 0 1px 8px -1px rgb(0 0 0 / 0.5), 0 1px 0 0 rgb(0 0 0 / 0.25);
+    }
+    .bx-main.bx-pt-application #bx-toolbar-content {
+        min-height: 4rem; /* the standard header's 64px */
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    /* The drawer's button the size of the member toolbar's (44px), the logo 12px after it (outweighing the phone styles, which
+       take the logo's margins off: .bx-media-phone #bx-toolbar-content .bx-toolbar-item.bx-ti-logo). */
+    .bx-main.bx-pt-application #bx-toolbar-content .bx-app-header-logo.bx-ti-logo {
+        display: flex;
+        margin-inline-start: 0.75rem;
+    }
+    /* The logo 36px tall, as in the sidebar (the template sets the standard header's size on the image itself). */
+    .bx-main.bx-pt-application .bx-app-header-logo :is(img, svg) {
+        width: auto !important;
+        height: 2.25rem !important;
+    }
+    .bx-main.bx-pt-application .bx-main-content {
+        height: auto;
+        padding-bottom: 0;
+    }
+    .bx-main.bx-pt-application .bx-app-content {
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+    }
+    .bx-main.bx-pt-application .bx-app-footer {
+        display: none;
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar {
+        visibility: hidden;
+        transform: translateX(-100%);
+        transition: transform 250ms cubic-bezier(0.2, 0.7, 0.3, 1), visibility 0s linear 250ms;
+        box-shadow: none;
+    }
+    .bx-dir-rtl .bx-main.bx-pt-application .bx-app-sidebar {
+        transform: translateX(100%);
+    }
+    .bx-main.bx-pt-application .bx-app-sidebar {
+        background-color: rgb(244 244 245); /* the drawer is over the page: the page's colour (gray-100, gray-950 in dark) */
+    }
+    .dark .bx-main.bx-pt-application .bx-app-sidebar {
+        background-color: rgb(10 10 12);
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-open .bx-app-sidebar {
+        visibility: visible;
+        transform: none;
+        transition: transform 250ms cubic-bezier(0.2, 0.7, 0.3, 1), visibility 0s;
+        box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06), 0 12px 24px -4px rgb(0 0 0 / 0.2);
+    }
+    .bx-main.bx-pt-application.bx-app-sidebar-open .bx-app-sidebar-backdrop {
+        display: block;
+    }
+}
+/* Phones: the header has room for the logo's mark only (Designer's mark where the site has one, else the logo's first 36px). */
+@media (max-width: 639.98px) {
+    .bx-main.bx-pt-application .bx-app-header-logo :is(img, svg) {
+        width: 2.25rem !important;
+        object-fit: cover;
+        object-position: left center;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .bx-main.bx-pt-application .bx-app-sidebar {
+        transition: none;
+    }
 }
 
 /*--- Design Boxes ---*/
@@ -111,6 +557,13 @@ html {
     flex: 1 2 auto;
 
     max-width: 75%;
+}
+/* The header's buttons and tabs sit at its top padding, so a button is as far from the block's top edge as from its right
+   one. Beside a one-line title the header is as tall as the button and the title is centred on it; over a description
+   the title runs down from the same top line. */
+.bx-db-header > .bx-db-menu {
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
 }
 
 .bx-media-phone .bx-db-menu {
@@ -420,20 +873,34 @@ button.bx-btn:focus .bx-loading-ajax-btn {
     display: inline-flex;
 }
 
-/* Its ink is the theme's neutral foreground (gray-950 / gray-50); far dots fade towards the page. */
+/* Its ink is the theme's neutral foreground (gray-950 / gray-50); far dots fade towards the page.
+   The default orb sits on a round plate: half-transparent, blurring what is behind it, so the orb reads over any
+   content. The plate is padding that the margin takes back, so the orb's box keeps its size. An orb in a button
+   has no plate: the button is its background. */
 .bx-loading-orb {
     display: block;
     flex: none;
+    box-sizing: content-box;
     width: 64px;
     height: 64px;
+    padding: 12px;
+    margin: -12px;
+    border-radius: 9999px;
+    corner-shape: round;
     color: #0a0a0c;
+    background-color: rgb(255 255 255 / 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
 }
 html.dark .bx-loading-orb {
     color: #fafafc;
+    background-color: rgb(38 38 42 / 0.5);
 }
 .bx-loading-orb[data-bx-orb-size="32"] {
     width: 32px;
     height: 32px;
+    padding: 6px;
+    margin: -6px;
 }
 .bx-loading-orb[data-bx-orb-size="20"] {
     width: 20px;
@@ -443,11 +910,16 @@ html.dark .bx-loading-orb {
 /* In a button the orb takes the button's text colour, so it shows on primary buttons too. */
 .bx-loading-ajax-btn .bx-loading-orb,
 html.dark .bx-loading-ajax-btn .bx-loading-orb {
+    padding: 0;
+    margin: 0;
     color: inherit;
+    background-color: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 }
 
 /* Transition pages: the orb in the middle of the screen with the page's message under it. A plain "Please wait"
-   (transition_wait.html, after signing in) is for screen readers only: the orb says it. */
+   (transition_wait.html, after signing in or out) is for screen readers only: the orb says it. */
 .bx-transition {
     position: fixed;
     inset: 0;

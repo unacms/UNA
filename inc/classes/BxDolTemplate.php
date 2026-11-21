@@ -150,6 +150,21 @@ define('BX_PAGE_TYPE_APPLICATION', 4); ///< regular page divided on columns with
  */
 class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 {
+    /** How wide the header's content is: as the page's (Page width) or the window's. */
+    public const HEADER_WIDTHS = ['page', 'full'];
+    /** Where the main menu sits in the header: next to the logo, in the middle or next to the toolbar. */
+    public const HEADER_ALIGNS = ['start', 'center', 'end'];
+    /** How wide the footer is, its separator included: as the page's content (Page width) or the window. */
+    public const FOOTER_WIDTHS = ['page', 'full'];
+    /** The page layouts with a header of their own: Application, and Standard for every other layout. */
+    public const HEADER_LAYOUTS = ['standard', 'application'];
+    /** Who the header is for: visitors (guests) and members (signed in). */
+    public const HEADER_AUDIENCES = ['visitor', 'member'];
+    /** The page width when Designer has none, and the narrowest and widest it takes, in pixels. */
+    public const PAGE_WIDTH_DEFAULT = 1280;
+    public const PAGE_WIDTH_MIN = 480;
+    public const PAGE_WIDTH_MAX = 3840;
+
     protected static $_sColorClassPrefix = 'col-';
     protected static $_sColorClassPrefixBg = 'bg-col-';
     protected static $_aColors = array(
@@ -609,6 +624,14 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         return $aResult;
     }
 
+    /**
+     * A name's colour: the background of its letter avatar (a profile or account without a picture), by an id or a palette key.
+     * The palette's colour is darkened, when it has to be, until the white letter on it passes WCAG AA for any text size
+     * (4.5:1): the palette's lime and yellow are only about 1.6:1 with white.
+     * @param $mixedName an id, a palette key, or false for a random colour
+     * @param $fOpacity the alpha to add as the fourth value, or false for none
+     * @return array [r, g, b] or [r, g, b, a]
+     */
     public static function getColorCode($mixedName = false, $fOpacity = false)
     {
         $aPalette = self::getColorPalette();
@@ -619,11 +642,93 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         else if(is_numeric($mixedName))
             $mixedName = $aClasses[(int)$mixedName % count($aClasses)];
 
-        $aColor = $aPalette[$mixedName];
+        $aColor = self::getColorForWhiteText($aPalette[$mixedName]);
         if($fOpacity !== false && is_numeric($fOpacity))
             $aColor[] = $fOpacity;
 
         return $aColor;
+    }
+
+    /**
+     * The colour getColorCode picks for a name or an id, as `#rrggbb`: for clients that draw a letter avatar
+     * themselves (the apps), so a profile has the same colour there as on the site.
+     * @param $mixedName the getColorCode key: an account or profile id
+     * @return string
+     */
+    public static function getColorHex($mixedName)
+    {
+        // Lists send it for every profile, and getColorPalette runs a hook each time.
+        static $aCache = [];
+
+        $sKey = (string)$mixedName;
+        if(!isset($aCache[$sKey]))
+            $aCache[$sKey] = vsprintf('#%02x%02x%02x', array_map('intval', array_slice(self::getColorCode($mixedName), 0, 3)));
+
+        return $aCache[$sKey];
+    }
+
+    /**
+     * The colour, darkened in small steps when it has to be, on which white text has at least the given contrast.
+     * @param $aRgb [r, g, b], 0-255
+     * @param $fRatio the contrast to reach, 4.5 by default (WCAG AA for text of any size)
+     * @return array [r, g, b]
+     */
+    public static function getColorForWhiteText($aRgb, $fRatio = 4.5)
+    {
+        $aRgb = array_map('intval', array_slice(array_values($aRgb), 0, 3));
+
+        for($i = 0; $i < 60 && self::getContrastWithWhite($aRgb) < $fRatio; $i++)
+            $aRgb = array_map(function($iChannel) {
+                return (int)floor($iChannel * 0.96);
+            }, $aRgb);
+
+        return $aRgb;
+    }
+
+    /**
+     * The contrast ratio of white with a colour (WCAG 2 relative luminance).
+     * @param $aRgb [r, g, b], 0-255
+     */
+    public static function getContrastWithWhite($aRgb)
+    {
+        $aLinear = array_map(function($iChannel) {
+            $f = $iChannel / 255;
+            return $f <= 0.04045 ? $f / 12.92 : pow(($f + 0.055) / 1.055, 2.4);
+        }, array_slice(array_values($aRgb), 0, 3));
+
+        return 1.05 / (0.2126 * $aLinear[0] + 0.7152 * $aLinear[1] + 0.0722 * $aLinear[2] + 0.05);
+    }
+
+    /**
+     * A letter avatar as an image URL (an SVG data URI), for code that needs a picture URL where there is no picture:
+     * the first letter of the name, white on the name's colour from the palette, as the letter avatars in the units
+     * (account_unit*.html, the profile units) draw it in markup.
+     * @param $sName display name
+     * @param $mixedColor the getColorCode key: an account or profile id
+     * @return string data:image/svg+xml URI
+     */
+    public static function getLetterAvatarUrl($sName, $mixedColor)
+    {
+        $sName = trim(html_entity_decode((string)$sName, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $sLetter = mb_strtoupper(get_mb_substr($sName, 0, 1), 'UTF-8');
+        if($sLetter === '') {
+            $sLetter = '?';
+        }
+
+        $sSvg = self::getInstance()->parseHtmlByName('letter_avatar_svg.html', [
+            'color' => implode(', ', array_slice(self::getColorCode($mixedColor), 0, 3)),
+            'letter' => htmlspecialchars($sLetter, ENT_QUOTES | ENT_XML1, 'UTF-8'),
+        ]);
+
+        return 'data:image/svg+xml;base64,' . base64_encode($sSvg);
+    }
+
+    /**
+     * Whether a picture URL is a letter avatar from getLetterAvatarUrl, for code that draws its own letter where there is no picture.
+     */
+    public static function isLetterAvatarUrl($sUrl)
+    {
+        return is_string($sUrl) && strncmp($sUrl, 'data:image/svg+xml;base64,', 26) === 0;
     }
 
     public static function getColorClass($sType = BX_DOL_COLOR_FT, $sName = '')
@@ -867,10 +972,117 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         if(isset($this->aPage['type']))
             $iType = (int)$this->aPage['type'];
 
-        if($iType == BX_PAGE_TYPE_DEFAULT) 
+        return self::resolvePageType($iType);
+    }
+
+    /**
+     * The layout a page of this type has for the current viewer: Default is the one Designer sets for visitors or
+     * members (sys_pt_default_visitor, sys_pt_default_member).
+     * @param int $iType page type
+     * @return int page type, never Default
+     */
+    public static function resolvePageType($iType)
+    {
+        $iType = (int)$iType;
+        if($iType == BX_PAGE_TYPE_DEFAULT)
             $iType = (int)getParam('sys_pt_default_' . (isLogged() ? 'member' : 'visitor'));
 
         return $iType;
+    }
+
+    /**
+     * The header of a page of this type, as Designer sets it per layout and audience (Designer > Settings > Header):
+     * the Application layout has its own, every other layout the Standard one's, and each has one for visitors and
+     * one for members. Templates may override it on the site (BxBaseFunctions::getHeaderLayout); the apps get Designer's.
+     * @param int $iType page type, Default is resolved for the current viewer
+     * @param bool|null $bMember whose header: a member's or a visitor's; null is the current viewer's
+     * @return array ['layout' => 'standard' or 'application', 'width' => 'page' or 'full', 'align' => 'start', 'center' or 'end']
+     */
+    public static function getHeaderLayout($iType, $bMember = null)
+    {
+        [$sLayout, $sSuffix] = self::_getLayoutAudience($iType, $bMember);
+
+        $sWidth = getParam('sys_header_width_' . $sSuffix);
+        if(!in_array($sWidth, self::HEADER_WIDTHS, true))
+            $sWidth = $sLayout == 'application' ? 'full' : 'page';
+
+        // As the header was before the setting: the site centres the menu of Standard pages, Application's follows the logo.
+        $sAlign = getParam('sys_header_align_' . $sSuffix);
+        if(!in_array($sAlign, self::HEADER_ALIGNS, true))
+            $sAlign = $sLayout == 'application' ? 'start' : 'center';
+
+        return ['layout' => $sLayout, 'width' => $sWidth, 'align' => $sAlign];
+    }
+
+    /**
+     * The footer of a page of this type, as Designer sets it per layout and audience (Designer > Settings > Page,
+     * header and footer), as the header is. Templates may override it on the site (BxBaseFunctions::getFooterLayout);
+     * the apps get Designer's.
+     * @param int $iType page type, Default is resolved for the current viewer
+     * @param bool|null $bMember whose footer: a member's or a visitor's; null is the current viewer's
+     * @return array ['width' => 'page' or 'full']
+     */
+    public static function getFooterLayout($iType, $bMember = null)
+    {
+        [$sLayout, $sSuffix] = self::_getLayoutAudience($iType, $bMember);
+
+        // As the footer was before the setting: under the page's content on Standard pages, across the content's block on Application's.
+        $sWidth = getParam('sys_footer_width_' . $sSuffix);
+        if(!in_array($sWidth, self::FOOTER_WIDTHS, true))
+            $sWidth = $sLayout == 'application' ? 'full' : 'page';
+
+        return ['width' => $sWidth];
+    }
+
+    /**
+     * How wide the content of a page of this type is, as Designer sets it per layout and audience (Designer >
+     * Settings > Header): a number of pixels, or 'full' for the window's width. A header of Page width is as wide.
+     * Templates may override it on the site (BxBaseFunctions::getPageWidth); the apps get Designer's.
+     * @param int $iType page type, Default is resolved for the current viewer
+     * @param bool|null $bMember whose page: a member's or a visitor's; null is the current viewer's
+     * @return int|string pixels, or 'full'
+     */
+    public static function getPageWidth($iType, $bMember = null)
+    {
+        [, $sSuffix] = self::_getLayoutAudience($iType, $bMember);
+
+        $mixedWidth = self::checkPageWidth(getParam('sys_page_width_' . $sSuffix));
+        return $mixedWidth !== false ? $mixedWidth : self::PAGE_WIDTH_DEFAULT;
+    }
+
+    /**
+     * A page width as Designer keeps it: 'full', or whole pixels from PAGE_WIDTH_MIN to PAGE_WIDTH_MAX.
+     * @param mixed $mixedValue
+     * @return int|string|false the width, or false when the value is not one
+     */
+    public static function checkPageWidth($mixedValue)
+    {
+        $sValue = trim((string)$mixedValue);
+        if($sValue === 'full')
+            return 'full';
+
+        if(!preg_match('/^\d{1,5}$/', $sValue))
+            return false;
+
+        $iValue = (int)$sValue;
+        return $iValue >= self::PAGE_WIDTH_MIN && $iValue <= self::PAGE_WIDTH_MAX ? $iValue : false;
+    }
+
+    /**
+     * A page's layout for its header and width settings, and the settings' suffix with the audience.
+     * @return array [layout ('standard' or 'application'), suffix ('<layout>_visitor' or '<layout>_member')]
+     */
+    protected static function _getLayoutAudience($iType, $bMember)
+    {
+        if($bMember === null)
+            $bMember = isLogged();
+
+        $iType = (int)$iType;
+        if($iType == BX_PAGE_TYPE_DEFAULT)
+            $iType = (int)getParam('sys_pt_default_' . ($bMember ? 'member' : 'visitor'));
+
+        $sLayout = $iType == BX_PAGE_TYPE_APPLICATION ? 'application' : 'standard';
+        return [$sLayout, $sLayout . '_' . ($bMember ? 'member' : 'visitor')];
     }
 
     /**
@@ -940,6 +1152,30 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     function setPageMetaRobots($s)
     {
         $this->aPage['robots'] = $s;
+    }
+
+    /**
+     * The text of the page's `<title>`: the page's own title followed by the site's name ("Posts · Site"), so browser
+     * tabs, bookmarks and search results say which site a page is on. A title that already names the site (the home
+     * page's "Welcome to Site") is kept as it is, and a page without a title gets the site's name.
+     * @param string $sTitle the page's title, plain text
+     * @return string plain text
+     */
+    public function getPageTitleWithSite($sTitle)
+    {
+        $sSite = trim((string)getParam('site_title'));
+        $sTitle = trim((string)$sTitle);
+
+        if($sTitle === '')
+            return $sSite;
+        // "Welcome to Site" or "Site: about us" name the site already; "Unanswered questions" on a site called "UNA" doesn't.
+        $sTitleLower = mb_strtolower($sTitle);
+        $sSiteLower = mb_strtolower($sSite);
+        $iSite = mb_strlen($sSiteLower);
+        if($sSite === '' || mb_substr($sTitleLower, -$iSite) === $sSiteLower || (mb_substr($sTitleLower, 0, $iSite) === $sSiteLower && !preg_match('/^[\p{L}\p{N}]/u', mb_substr($sTitle, $iSite))))
+            return $sTitle;
+
+        return _t('_sys_page_title_with_site', $sTitle, $sSite);
     }
 
     /**
@@ -1382,9 +1618,18 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 <meta name="geo.position" content="' . $this->aPage['location']['lat'] . ';' . $this->aPage['location']['lng'] . '" />
                 <meta name="geo.region" content="' . bx_html_attribute($this->aPage['location']['country']) . '" />';
 
-        // A page without an image of its own gets the page or site cover, or the site icon, @see BxBasePage::getMetaImageDefault
-        if(empty($this->aPage['image']) && $bPage && method_exists($oPage, 'getMetaImageDefault') && ($sImage = $oPage->getMetaImageDefault()))
-            $this->addPageMetaImage($sImage, $oPage->getMetaImageInfo($sImage));
+        // A page without an image of its own gets the page or site cover, or the site icon, @see BxBasePage::getMetaImageDefault;
+        // a script that stands in for a page (the splash) the site's icon or logo. Not found and other messages get none.
+        $bNoIndex = !empty($this->aPage['robots']) && is_string($this->aPage['robots']) && str_contains($this->aPage['robots'], 'noindex');
+        if(empty($this->aPage['image']) && !$bNoIndex) {
+            if($bPage && method_exists($oPage, 'getMetaImageDefault')) {
+                if(($sImage = $oPage->getMetaImageDefault()))
+                    $this->addPageMetaImage($sImage, $oPage->getMetaImageInfo($sImage));
+            }
+            else if(!$bPage && ($aImage = BxTemplPage::getSiteMetaImage()) && !empty($aImage['url'])) {
+                $this->addPageMetaImage($aImage['url'], ['width' => $aImage['width'], 'height' => $aImage['height'], 'card' => $aImage['card']]);
+            }
+        }
 
         // Open Graph, which X and others read too; a big picture card needs a big landscape image
         $bPageImage = !empty($this->aPage['image']);
@@ -2016,11 +2261,18 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'meta_info':
                 $sRet = $this->getMetaInfo();
                 break;
+            case 'meta_icons':
+                // Page shells without __meta_info__ (sign-in, "Please Wait", popups) still carry the site's icons,
+                // so a browser tab never falls back to /favicon.ico.
+                $sRet = BxTemplFunctions::getInstance()->getMetaIcons();
+                break;
             case 'page_header':
+                $sTitle = '';
                 if (isset($this->aPage['title']) && !empty($this->aPage['title']))
-                    $sRet = bx_process_output(strip_tags($this->aPage['title']));
-                if(empty($sRet) && isset($this->aPage['header']))
-                    $sRet = bx_process_output(strip_tags($this->aPage['header']));
+                    $sTitle = strip_tags($this->aPage['title']);
+                if($sTitle === '' && isset($this->aPage['header']))
+                    $sTitle = strip_tags($this->aPage['header']);
+                $sRet = bx_process_output($this->getPageTitleWithSite($sTitle));
                 break;
             case 'page_header_text':
                 if(isset($this->aPage['header_text']))
@@ -2071,7 +2323,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'cover':
             	$oCover = BxDolCover::getInstance($this);
 
-            	$bCover = $oCover->isEnabled();
+            	$bCover = $oCover->isEnabled() && !$oCover->isPageCoverOff();
             	if($bCover && ($oPage = BxDolPage::getObjectInstanceByURI()) !== false) {
                     $bCover = $oPage->isPageCover();
                     if($bCover && !$oCover->isCover()) {
@@ -2184,9 +2436,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 $sRet = $aData[$sKey];
                 break;
             case 'service_worker':
-                if(getParam('sys_pwa_sw_enable') != 'on')
-                    break;
-                $sRet = "if(navigator && navigator.serviceWorker) navigator.serviceWorker.register('sw.js.php');";
+                // a JS boolean: _header_js.html registers the PWA's service worker when it is true
+                $sRet = getParam('sys_pwa_sw_enable') == 'on' ? 'true' : 'false';
                 break;
             case 'socket_engine':
                 $sRet = BxDolSockets::getInstance()->getJsCode();
@@ -3908,13 +4159,22 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         bx_import('BxDolLanguages');
         header('HTTP/1.0 403 Forbidden');
         header('Status: 403 Forbidden');
-        
-        $a = [
-            'title' => _t('_access_denied_page_title'),
-            'content' => _t('_access_denied_page_content'),
-        ];
-        
-        $this->displayMsg($sMsg ? $sMsg : _t('_Access denied'), false, $iPage, $iDesignBox);
+
+        // An expected permission state, not an error: titled by its reason (BxDolAcl::getDenialState), else "No access".
+        if (!$sMsg || $sMsg == _t('_Access denied') || $sMsg == _t('_sys_txt_access_denied')) {
+            $sMsg = _t('_sys_txt_access_denied_text');
+        }
+
+        $aState = BxDolAcl::getDenialState($sMsg);
+        if (!$aState) {
+            $aState = ['icon' => 'lock', 'title' => _t('_sys_txt_access_denied_title'), 'text' => $sMsg];
+        }
+
+        $this->displayMsg([
+            'title' => $aState['title'],
+            'content' => $sMsg,
+            'state' => $iPage == BX_PAGE_DEFAULT ? array_merge($aState, ['title' => '']) : $aState, // a design box has the title
+        ], false, $iPage, $iDesignBox);
     }
 
     function displayNoData ($sMsg = '', $iPage = BX_PAGE_DEFAULT, $iDesignBox = BX_DB_PADDING_DEF)
@@ -3963,12 +4223,24 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         if (bx_is_api())
             return [bx_api_get_msg($sContent)];
 
-        $sContent = MsgBox($sContent);
-        if($iPage == BX_PAGE_DEFAULT)
+        // A state (see BxBaseFunctions::msgBox) shows an icon, the text and actions; a denial of BxDolAcl gets its own.
+        $sContent = MsgBox($bArray && !empty($s['state']) ? $s['state'] : $sContent);
+        if($iPage == BX_PAGE_DEFAULT) {
             $sContent = DesignBoxContent($sTitle, $sContent, $iDesignBox);
+
+            // One shell for every message: no cover of the page that couldn't be shown, and the box's title is the
+            // page's heading.
+            $oCover = BxDolCover::getInstance();
+            $oCover->setPageCoverOff();
+            $sContent = preg_replace('#<h2 class="bx-dbt-ttl">(.*?)</h2>#s', '<h1 class="bx-dbt-ttl">$1</h1>', $sContent, 1, $iHeadings);
+            if($iHeadings)
+                $oCover->setPageHasHeading();
+        }
 
         $oTemplate = BxDolTemplate::getInstance();
         $oTemplate->resetPageMeta();
+        // Not found, no access and other messages say nothing search engines should keep.
+        $oTemplate->setPageMetaRobots('noindex');
         $oTemplate->setPageNameIndex ($iPage);
         $oTemplate->setPageHeader ($sTitle);
         $oTemplate->setPageContent ('page_main_code', $sContent);
@@ -4077,6 +4349,10 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             header('Content-Security-Policy: frame-ancestors ' . getParam('sys_csp_frame_ancestors'));
 
         $sResult = $oTemplate->parsePageByName('page_' . $oTemplate->getPageNameIndex() . '.html', $oTemplate->getPageContent());
+
+        // the drawings of the icons the page names go into the icon set's code (BxBaseIconsetLucide::fillPageIcons)
+        if(($oIconset = BxDolIconset::getObjectInstance()) && method_exists($oIconset, 'fillPageIcons'))
+            $sResult = $oIconset->fillPageIcons($sResult);
         
         /**
          * @hooks

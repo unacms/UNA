@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_froala_information_block"><![CDATA[The Froala editor isn't supported anymore. UNA default editor is free and has all Froala features and even more. <b>Froala module has to be remain installed to preserve files uploaded directly into the editor</b> if you used Froala before.]]></string_upd>
+</resources>

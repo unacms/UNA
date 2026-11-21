@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Connectors: AI assistants connect by the MCP server URL and sign in; a token is for developer tools. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_api_tokens_txt_info"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account: in the assistant, add a connector with the MCP server URL below and sign in to this site when it asks. They work with your own content the way you can on the site. A developer tool that can't sign in uses an access token instead.]]></string_upd>
+    <string_upd name="_sys_api_tokens_txt_info_operator"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account: in the assistant, add a connector with the MCP server URL below and sign in to this site when it asks. As an operator, they also get the operator tools switched on in Studio > Agents > Tools, which can change anything on the site. A developer tool that can't sign in uses an access token instead.]]></string_upd>
+</resources>

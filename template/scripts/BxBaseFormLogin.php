@@ -103,6 +103,7 @@ class BxBaseFormLogin extends BxTemplFormView
             $this->aInputs['ID']['skip_domain_check'] = true;
 
         $this->_setAutocomplete(['ID' => 'username', 'Password' => 'current-password', 'phone' => 'tel', 'code' => 'one-time-code']);
+        $this->_setEmailInputs(['ID']);
 
         if (isset($this->aInputs['relocate'])) {
             $sRelocate = bx_process_input(bx_get('relocate'));

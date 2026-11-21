@@ -12,13 +12,12 @@ import {
     Author,
     AuthorActions,
     UnitFeed,
-    SmallUnit,
     prepareData,
     MainContent,
     FeedEditForm,
 } from 'app/components/elements/feed-item-parts'
 
-import { CardList, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
+import { CardFeed, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { components } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/page/scroll'
@@ -34,7 +33,7 @@ function TimelineRecommendations({ data }) {
 
     return (
         <AnimatedBlock>
-            <CardList className="mb-0.5 sm:mb-4" padding="py-2 overflow-hidden">
+            <CardFeed className="mb-0.5 sm:mb-4" padding="py-2 overflow-hidden">
                 <CardHeader className=" px-3 lg:px-4 pt-2 sm:pt-3 flex-row items-center justify-between">
                     <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
                 </CardHeader>
@@ -59,7 +58,7 @@ function TimelineRecommendations({ data }) {
                         haptics="Medium"
                     />
                 </View>
-            </CardList>
+            </CardFeed>
         </AnimatedBlock>
     )
 }
@@ -89,7 +88,16 @@ function DefaultUnit({ data }) {
     return <DefaultFeedUnit data={data} />
 }
 
-function DefaultFeedUnit({ data }) {
+/** The compact feed (`feed_unit: small`): the same card with a short preview and no comments under it. */
+function SmallUnit({ data }) {
+    if (data.type == 'timeline_recommendations') {
+        return <TimelineRecommendations data={data} />
+    }
+
+    return <DefaultFeedUnit data={data} compact />
+}
+
+function DefaultFeedUnit({ data, compact = false }) {
     const isSkeleton = data?.skeleton;
     const { t } = useTranslation()
     const [viewState, setViewState] = useState({ view: '' })
@@ -137,7 +145,7 @@ function DefaultFeedUnit({ data }) {
                     viewState={viewState}
                 />
             )}
-            <CardList
+            <CardFeed
                 border="border-y border-x-none sm:border-x"
                 className="mb-0.5 sm:mb-3"
                 padding="px-0"
@@ -159,7 +167,7 @@ function DefaultFeedUnit({ data }) {
                 </Row>
                 <View className="flex-auto px-4 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
-                        <MainContent url={url} data={data} />
+                        <MainContent url={url} data={data} compact={compact} />
                     </Skeleton>
                 </View>
                 {!!menuCounters?.items?.length && <>
@@ -178,7 +186,7 @@ function DefaultFeedUnit({ data }) {
                         data={menuActions}
                     />
                 </Row>
-                {commentsData && (
+                {commentsData && !compact && (
                     <View className="">
                         <CommentsSection
                             url={url}
@@ -191,7 +199,7 @@ function DefaultFeedUnit({ data }) {
                         />
                     </View>
                 )}
-            </CardList>
+            </CardFeed>
         </AnimatedBlock>
     )
 }

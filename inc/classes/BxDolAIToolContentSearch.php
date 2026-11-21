@@ -13,6 +13,11 @@ use NeuronAI\Tools\ArrayProperty;
 
 class BxDolAIToolContentSearch extends BxDolAITool
 {
+    public static function isMemberSafe(): bool
+    {
+        return true;
+    }
+
     public function __construct()
     {
         parent::__construct(

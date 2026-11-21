@@ -60,7 +60,7 @@ class BxBasePagesSearchResult extends BxTemplSearchResult
     function displaySearchUnit($aData)
     {
         $sModule = $aData['module'];
-        $sIcon = 'file-alt';
+        $sIcon = 'file-text';
         if ('system' == $sModule || 'custom' == $sModule) {
             $sModule = '';
         }

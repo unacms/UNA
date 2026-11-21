@@ -1,0 +1,21 @@
+<!-- The Application layout's context switcher (the apps' "Context switcher", Settings > API: sys_api_context_switcher): the
+     contexts of that module the member takes part in, in a popup. -->
+<div class="bx-app-context-switcher min-w-0" sidebar-toggle-item>
+    <button type="button" class="bx-app-context-switcher-btn flex items-center min-w-0 max-w-full gap-2 h-9 px-3 rounded-lg text-sm leading-5 font-medium cursor-pointer" onclick="bx_menu_popup_inline('#bx-app-context-switcher-popup', this, {pointer: {align: 'left'}});" aria-haspopup="true" aria-expanded="false" aria-controls="bx-app-context-switcher-popup">
+        <span class="truncate">__title__</span>
+        <span class="flex-none"><bx_image_auto:chevron-down /></span>
+    </button>
+    <div id="bx-app-context-switcher-popup" class="bx-popup-wrapper bx-popup-trans-wrapper box-border bx-def-z-index-nav" style="display:none; opacity:1;">
+        <div class="bx-popup-gap mx-4 my-px md:m-px">
+            <div class="bx-popup bx-popup-trans bx-popup-border bx-popup-color-bg">
+                <div class="bx-popup-content relative p-2">
+                    <ul class="bx-menu-verlit flex flex-col gap-0.5 m-0 p-0 list-none">
+                        <bx_repeat:contexts>
+                            <li><a class="flex items-center gap-3 h-11 px-2 rounded-xl" href="__url__"><img class="flex-none w-6 h-6 rounded-full object-cover" src="__thumb__" alt="" /><span class="truncate text-sm font-medium">__name__</span></a></li>
+                        </bx_repeat:contexts>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

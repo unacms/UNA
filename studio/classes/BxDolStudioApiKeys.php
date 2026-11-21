@@ -37,7 +37,7 @@ class BxDolStudioApiKeys extends BxTemplStudioGrid
 
         } else { // if form is not submitted or some fields are invalid, display popup with form
 
-            $s = BxTemplStudioFunctions::getInstance()->popupBox($oForm->getId() . '_form', '', $oForm->getCode() . '
+            $s = BxTemplStudioFunctions::getInstance()->popupBox($oForm->getId() . '_form', $this->_getAddPopupTitle(), $oForm->getCode() . '
                 <script>
                     $(document).ready(function () {
                         $("#' . $oForm->getId() . '").ajaxForm({
@@ -56,6 +56,14 @@ class BxDolStudioApiKeys extends BxTemplStudioGrid
             echoJson(array('popup' => array('html' => $s, 'options' => array('closeOnOuterClick' => false))));
 
         }
+    }
+
+    /**
+     * The title of the Add dialog.
+     */
+    protected function _getAddPopupTitle()
+    {
+        return _t('_adm_api_popup_title_add_key');
     }
 
     public function performActionAdd()
@@ -84,19 +92,11 @@ class BxDolStudioApiKeys extends BxTemplStudioGrid
                     ),
                 ),
 
+                // the popup's own close button closes it: one button here
                 'submit' => array(
-                    'type' => 'input_set',
-                    0 => array (
-                        'type' => 'submit',
-                        'name' => 'do_submit',
-                        'value' => _t('_sys_submit'),
-                    ),
-                    1 => array (
-                        'type' => 'reset',
-                        'name' => 'close',
-                        'value' => _t('_sys_close'),
-                        'attrs' => array('class' => 'bx-def-margin-sec-left', 'onclick' => '$(\'.bx-popup-applied:visible\').dolPopupHide();'),
-                    ),
+                    'type' => 'submit',
+                    'name' => 'do_submit',
+                    'value' => _t('_adm_form_btn_field_add'),
                 ),
 
             ),

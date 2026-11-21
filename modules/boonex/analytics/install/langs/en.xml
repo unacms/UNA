@@ -183,7 +183,7 @@
 	<string name="_bx_analytics_adm_stg_cpt_track_vitals"><![CDATA[Measure performance]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_tracking"><![CDATA[Collect visits and events]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_trusted_proxies"><![CDATA[Trusted proxies]]></string>
-	<string name="_bx_analytics_adm_stg_cpt_items_count"><![CDATA[Max number of items]]></string>
+	<string name="_bx_analytics_adm_stg_cpt_items_count"><![CDATA[Maximum items]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_limit_hits"><![CDATA[Hits per minute from one address]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_limit_visits"><![CDATA[New visits per hour from one address]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_link_members"><![CDATA[Link visits to members]]></string>
@@ -444,7 +444,7 @@
 	<string name="_bx_analytics_txt_not_available"><![CDATA[n/a]]></string>
 	<string name="_bx_analytics_txt_not_enough_data"><![CDATA[Not enough data]]></string>
 	<string name="_bx_analytics_txt_now"><![CDATA[now]]></string>
-	<string name="_bx_analytics_txt_online_now"><![CDATA[online in the last {0} minutes]]></string>
+	<string name="_bx_analytics_txt_online_now"><![CDATA[visitors in the last {0} minutes]]></string>
 	<string name="_bx_analytics_txt_open_analytics"><![CDATA[Open analytics]]></string>
 	<string name="_bx_analytics_txt_p75"><![CDATA[75th percentile]]></string>
 	<string name="_bx_analytics_txt_page_of"><![CDATA[Page {0} of {1}]]></string>
@@ -715,7 +715,7 @@
 	<string name="_bx_analytics_action_comment"><![CDATA[Comment]]></string>
 	<string name="_bx_analytics_action_connection"><![CDATA[Connection]]></string>
 	<string name="_bx_analytics_action_content_add"><![CDATA[Content created]]></string>
-	<string name="_bx_analytics_action_login"><![CDATA[Login]]></string>
+	<string name="_bx_analytics_action_login"><![CDATA[Sign in]]></string>
 	<string name="_bx_analytics_action_profile_add"><![CDATA[Profile created]]></string>
 	<string name="_bx_analytics_action_purchase"><![CDATA[Purchase]]></string>
 	<string name="_bx_analytics_action_renewal"><![CDATA[Renewal]]></string>

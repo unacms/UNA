@@ -8,6 +8,7 @@
  */
 
 define('BX_DOL_LINK_CLASS', 'bx-link'); ///< class to add to every link in user content
+define('BX_DOL_FILE_TRANSFER_TIMEOUT', 300); ///< timeout in seconds for requests that download files or packages, sys_default_curl_timeout is for everything else
 
 define('BX_DATA_TEXT', 1); ///< regular text data type
 define('BX_DATA_TEXT_MULTILINE', 2); ///< regular multiline text data type
@@ -222,7 +223,8 @@ function bx_process_output ($mixedData, $iDataType = BX_DATA_TEXT, $mixedParams 
     case BX_DATA_DATETIME:
         return $mixedData;
     case BX_DATA_DATE_UTC:
-        if (!preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $mixedData, $m))
+        // a zero date ('0000-00-00', what an empty date column keeps) is no date: a date picker shows it empty
+        if (!preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $mixedData, $m) || !(int)$m[1])
             return '';
         return sprintf("%04d-%02d-%02d 00:00:00Z", $m[1], $m[2], $m[3]);
         return $mixedData . "Z";
@@ -474,7 +476,13 @@ function _sendMail($sRecipientEmail, $sMailSubject, $sMailBody, $iRecipientID = 
         $sMailBody = $oEmailTemplates->parseContent($sMailBody, $aPlus, !$iRecipientID && $oAccount ? $oAccount->id() : 0, $iRecipientID);
     }
 
-    if(($sRootUrl = getParam('sys_api_url_root_email')) !== '') {
+    // The links lead to the app the member uses: the site's choice for every email (sys_api_url_root_email), else, for
+    // an email sent while the web app asks (a sign-up's confirmation, a password reset), that app's address.
+    $sRootUrl = getParam('sys_api_url_root_email');
+    if($sRootUrl === '' && ($sClientUrl = bx_api_get_client_url()))
+        $sRootUrl = $sClientUrl;
+
+    if($sRootUrl !== '') {
         if(substr(BX_DOL_URL_ROOT, -1) == '/' && substr($sRootUrl, -1) != '/')
             $sRootUrl .= '/';
 
@@ -907,7 +915,7 @@ function clear_xss($val)
         ));
    
 	    $oConfig->set('HTML.DefinitionID', 'html5-definitions');
-		$oConfig->set('HTML.DefinitionRev', 1);
+		$oConfig->set('HTML.DefinitionRev', 2);
       
 		if ($def = $oConfig->maybeGetRawHTMLDefinition()) {
 		    $def->addElement('section', 'Block', 'Flow', 'Common');
@@ -929,6 +937,7 @@ function clear_xss($val)
 		        'src' => 'URI',
 		        'type' => 'Text',
             ));
+            $def->addElement('mark', 'Inline', 'Inline', 'Common'); // the editor's Marker
             $def->addAttribute('a', 'data-profile-id', 'Text');
             $def->addAttribute('a', 'dchar', 'Text');
             $def->addAttribute('div', 'source', 'Text');
@@ -3197,9 +3206,13 @@ function bx_log($sObject, $mixed, $iLevel = BX_LOG_DEBUG)
         return false;
 }
 
+/**
+ * Age in full years on a birthday (YYYY-MM-DD, with an optional time).
+ * @return int the age, 0 for an empty date (0000-00-00, as MySQL stores it), one that can't be read or one in the future
+ */
 function bx_birthday2age($sBirthday)
 {
-    if(!$sBirthday)
+    if(!$sBirthday || !is_string($sBirthday))
         return 0;
 
     $iPosSpace = strpos($sBirthday, ' ');
@@ -3207,6 +3220,8 @@ function bx_birthday2age($sBirthday)
         $sBirthday = trim(substr($sBirthday, 0, $iPosSpace));
 
     $aDate = explode('-', $sBirthday);
+    if(!preg_match('/^\d{4}$/', $aDate[0]) || (int)$aDate[0] < 1)
+        return 0;
 
     $iCdYear = (int)date('Y');
     $iCdMonth = (int)date('n');
@@ -3218,7 +3233,7 @@ function bx_birthday2age($sBirthday)
     if((isset($aDate[1]) && $iCdMonth < (int)$aDate[1]) || (isset($aDate[1], $aDate[2]) && $iCdMonth == (int)$aDate[1] && $iCdDay < (int)$aDate[2]))
         $iResult -= 1;
 
-    return $iResult;
+    return max(0, $iResult);
 }
 
 function bx_setcookie($sName, $sValue = "", $oExpiresOrOptions = 0, $sPath = 'auto', $sDomain = '', $bSecure = 'auto', $bHttpOnly = false)
@@ -3491,6 +3506,31 @@ function bx_api_get_base_url()
     return false;
 }
     
+/**
+ * The address of the web app that sends this API request: its Origin, when the request comes through the API and
+ * the origin is an http(s) address the site lets call its API (Studio > API > Origins). False otherwise: a request
+ * from the site itself, the native apps (neo://app) and unknown origins.
+ * @return string|false the origin with a trailing slash
+ */
+function bx_api_get_client_url()
+{
+    if(!bx_is_api())
+        return false;
+
+    $sOrigin = isset($_SERVER['HTTP_ORIGIN']) ? trim((string)$_SERVER['HTTP_ORIGIN']) : '';
+    if($sOrigin === '' || !preg_match('#^https?://[^/\s]+$#i', $sOrigin))
+        return false;
+
+    if(parse_url($sOrigin, PHP_URL_HOST) == parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST) && parse_url($sOrigin, PHP_URL_PORT) == parse_url(BX_DOL_URL_ROOT, PHP_URL_PORT))
+        return false;
+
+    $oApiQuery = BxDolApiQuery::getInstance();
+    if(!$oApiQuery->getOrigin($sOrigin) && !$oApiQuery->getOrigin($sOrigin . '/'))
+        return false;
+
+    return $sOrigin . '/';
+}
+
 function bx_api_get_relative_url($sUrl, $sPrefix = BX_DOL_URL_ROOT)
 {
     $a = '/' . bx_ltrim_str($sUrl, $sPrefix);
@@ -3506,9 +3546,28 @@ function bx_api_get_block($sType, $sData, $aParams = [])
     return $aData;
 }
 
+/**
+ * A message block for API clients. A message that BxDolAcl gave for a denied action also carries `empty_state`
+ * (BxDolAcl::getDenialState, in BxDolEmptyState's form): its title, text and the action that helps, such as
+ * "Create profile" for an account without a profile, so the apps can say the same as the site.
+ */
 function bx_api_get_msg($sMessage, $aParams = [])
 {
-    return bx_api_get_block('msg', $sMessage != '' ? _t($sMessage) : '', $aParams);
+    $sMessage = $sMessage != '' ? _t($sMessage) : '';
+
+    if (($aState = BxDolAcl::getDenialState($sMessage)) && !isset($aParams['ext']['empty_state'])) {
+        // "Create a profile first": the informer's "You don't have a profile yet" bar would say it twice, as on the
+        // site (BxBaseFunctions::msgBoxState).
+        if (($aState['level'] ?? 0) == MEMBERSHIP_ID_ACCOUNT)
+            BxDolInformer::hide('sys-account-profile-system');
+
+        $aEmptyState = BxDolEmptyState::resolve($aState);
+        if ($aEmptyState) {
+            $aParams['ext'] = array_merge($aParams['ext'] ?? [], ['empty_state' => $aEmptyState]);
+        }
+    }
+
+    return bx_api_get_block('msg', $sMessage, $aParams);
 }
 
 function bx_api_get_image($mixedStorage, $iId)

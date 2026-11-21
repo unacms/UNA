@@ -15,14 +15,30 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         return $sSql;
     }
 
-    public function testProfileIsNotRequiredByDefault(): void
+    public function testProfileIsAskedForAfterSignInByDefault(): void
     {
-        // An account without a profile of its own gets the "create a profile" informer and uses the site; "Require a
-        // profile" sends it to profile creation instead, on the site and in the apps, once an admin turns it on.
-        $bFound = preg_match("/\\(@iCategoryId, 'sys_account_require_profile', '_adm_stg_cpt_option_sys_account_require_profile', '([^']*)', 'checkbox',/", self::systemSql(), $aMatch);
+        // "Accounts without a profile": '' only the "create a profile" informer, 'prompt' also the "Create your profile"
+        // window on the first page after sign-in, 'on' sends the account to profile creation (site and apps).
+        $bFound = preg_match("/\\(@iCategoryId, 'sys_account_require_profile', '_adm_stg_cpt_option_sys_account_require_profile', '([^']*)', 'select', '([^']*)',/", self::systemSql(), $aMatch);
 
-        $this->assertSame(1, $bFound, 'system.sql adds the "Require a profile" option to the Account settings.');
-        $this->assertSame('', $aMatch[1], 'Off on a fresh install.');
+        $this->assertSame(1, $bFound, 'system.sql adds the "Accounts without a profile" option to the Account settings.');
+        $this->assertSame('prompt', $aMatch[1], 'A fresh install asks after sign-in.');
+        $this->assertSame(['module' => 'system', 'method' => 'get_profile_requirement_modes', 'class' => 'BaseServiceAccount'], unserialize($aMatch[2]), 'The choices come from the account service.');
+    }
+
+    public function testProfileTypesAreCardsWithDescriptions(): void
+    {
+        // "Create your profile" lists the profile types as cards: icon, title, the menu item's Info and a chevron.
+        $this->assertSame(1, preg_match("/\\(36, 'menu_list_desc_cards\\.html', '_sys_menu_template_title_list_desc_cards', 1\\)/", self::systemSql()), 'system.sql adds the "Cards with descriptions" menu template.');
+        $this->assertSame(1, preg_match("/\\('sys_add_profile', '_sys_menu_title_add_profile', '', 'sys_add_profile_links', 'system', 36,/", self::systemSql()), 'The add-profile menu uses it.');
+
+        $sApp = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+        $this->assertStringContainsString("SET `config_api`='{\"view\":\"cards\"}' WHERE `object`='sys_add_profile'", $sApp, 'The apps draw it as cards too.');
+
+        $sTemplate = file_get_contents(__DIR__ . '/../../../template/menu_list_desc_cards.html');
+        foreach (['bx-menu-list-desc-cards', 'bx-menu-object-__object__', '__title__', '__info__', 'menu_icon.html', 'chevron-right'] as $s)
+            $this->assertStringContainsString($s, $sTemplate);
+        $this->assertStringContainsString('group-[:only-child]:border-blue-600', $sTemplate, 'A lone type reads as the one action: accent border.');
     }
 
     public function testHomeCreatePostBlockIsACardWithTitle(): void
@@ -48,10 +64,10 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
 
     public function testDashboardBlockInAppHasNoBackgroundOnPhones(): void
     {
-        // The dashboard block is already a stack of cards, so on phones NEO draws it straight on the page, with the
+        // "Your account" on the dashboard is already a stack of cards, so on phones NEO draws it straight on the page, with the
         // block's padding; tablets and desktops keep the background.
         $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-pages.sql');
-        $bFound = preg_match("/UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='([^']*)' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';/", (string)$sSql, $aMatch);
+        $bFound = preg_match("/UPDATE `sys_pages_blocks` SET `active_api`=1, `config_api`='([^']*)' WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_account';/", (string)$sSql, $aMatch);
 
         $this->assertSame(1, $bFound, 'enable-app-pages.sql sets the App config of the dashboard block.');
         $aConfig = json_decode($aMatch[1], true);
@@ -77,8 +93,8 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
     {
         // Icon-only items (no title) that open their menus above them: BxBaseMenuFooter renders the menus and shows
         // the Theme item only where the template has a colour scheme, the Sounds item where sounds play on the site.
-        foreach (['color_scheme' => 'adjust', 'sounds' => 'volume-up'] as $sName => $sIcon) {
-            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z-]+)',/", self::systemSql(), $aMatch);
+        foreach (['color_scheme' => 'eclipse', 'sounds' => 'volume-2'] as $sName => $sIcon) {
+            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z0-9-]+)',/", self::systemSql(), $aMatch);
 
             $this->assertSame(1, $bFound, "system.sql adds the footer's " . $sName . ' item.');
             $this->assertStringContainsString("bx_menu_popup_inline(''#bx-menu-footer-" . str_replace('_', '-', $sName) . "'', this, {pointer: {flip: true}});", $aMatch[0]);
@@ -301,17 +317,41 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString("SET `config_api`='{\"button\":true}' WHERE `set_name`='sys_site' AND `module`='system' AND `name` IN ('login', 'create-account');", $sApp, 'Log in and Sign up show as buttons.');
     }
 
-    public function testSignUpUsesTheLogInLayout(): void
+    public function testAuthPagesLayouts(): void
     {
-        // Sign up, Log in and Forgot password share the thin one-column layout (id 18), one card width on the site and in the apps.
+        // Log in and Forgot password share the thin one-column layout (id 18), one card width on the site and in the
+        // apps. Sign up is two equal columns (id 4): the picture and the words beside the form.
         $sSql = self::systemSql();
-        foreach (['sys_create_account', 'sys_login', 'sys_forgot_password'] as $sObject) {
+        foreach (['sys_create_account' => 4, 'sys_login' => 18, 'sys_forgot_password' => 18] as $sObject => $iLayout) {
             $bFound = preg_match("/\\('" . $sObject . "', '[^']+', '[^']+', '[^']+', 'system', \\d+, (\\d+),/", $sSql, $aMatch);
             $this->assertSame(1, $bFound, $sObject);
-            $this->assertSame(18, (int)$aMatch[1], $sObject);
+            $this->assertSame($iLayout, (int)$aMatch[1], $sObject);
         }
 
         $this->assertStringContainsString('w-full max-w-md mx-auto', (string)file_get_contents(__DIR__ . '/../../../template/_row_1_column_thin.html'), 'The thin column is 448px (max-w-md), as NEO\'s.');
+        $this->assertMatchesRegularExpression("/\\(4, '2_columns', [^)]*'layout_2_columns.html', 2\\)/", $sSql, 'Layout 4 is the two columns.');
+    }
+
+    public function testSignUpPageHasItsIntroBesideTheForm(): void
+    {
+        $sSql = str_replace('\\"', '"', self::systemSql());
+
+        // The picture and the words in the first column (cell 1), in a design box without a title, background or
+        // padding; the form in the second (cell 2).
+        $this->assertStringContainsString("('sys_create_account', 1, 'system', '', '_sys_page_block_title_create_account_intro', 0, 0, 0, 2147483647, 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:20:\"create_account_intro\";s:5:\"class\";s:19:\"TemplServiceAccount\";}', 0, 1, 1, 1)", $sSql);
+        $this->assertStringContainsString("('sys_create_account', 2, 'system', '', '_sys_page_block_title_create_account', 11,", $sSql);
+
+        // Both reach the apps, which draw the page from its blocks: the page names no layout of the apps' own.
+        $sApp = (string)file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-pages.sql');
+        foreach (['_sys_page_block_title_create_account_intro', '_sys_page_block_title_create_account'] as $sTitle)
+            $this->assertMatchesRegularExpression("/SET `active_api`=1[^;]* WHERE `object`='sys_create_account' AND `module`='system' AND `title_system`='' AND `title`='" . $sTitle . "';/", $sApp, $sTitle);
+        $this->assertDoesNotMatchRegularExpression("/UPDATE `sys_objects_page` SET `config_api`=[^;]*WHERE `object`='sys_create_account'/", $sApp);
+    }
+
+    public function testAuthBlocksHaveLargePadding(): void
+    {
+        // The sign-in and sign-up blocks, on their pages and on the home page (the guest splash draws those rows).
+        $this->assertStringContainsString("UPDATE `sys_pages_blocks` SET `padding_size`='large' WHERE `object` IN ('sys_login', 'sys_create_account', 'sys_home') AND `module`='system' AND `title` IN ('_sys_page_block_title_login', '_sys_page_block_title_create_account');", self::systemSql());
     }
 
     public function testScreenSizeColumns(): void
@@ -330,5 +370,38 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
     {
         // The home page's menu block (the grid of sections) shows to guests only (level 1, MEMBERSHIP_ID_NON_MEMBER).
         $this->assertMatchesRegularExpression("/\\('sys_home', 1, 'system', '', '_sys_page_block_title_homepage_menu', 13, 0, 0, 1, 'menu', 'sys_homepage',/", self::systemSql());
+    }
+
+    public function testOperationalDefaultsSuitANewSite(): void
+    {
+        $sSql = self::systemSql();
+        $fValue = function (string $sName) use ($sSql): ?string {
+            return preg_match("/\\(@iCategoryId, '" . $sName . "', '[^']*', '([^']*)',/", $sSql, $aMatch) ? $aMatch[1] : null;
+        };
+
+        $this->assertSame('ERROR', $fValue('sys_logs_level'), 'Logs keep errors only.');
+        $this->assertSame('30', $fValue('sys_default_curl_timeout'), 'Outgoing requests do not hold a worker for minutes.');
+        $this->assertSame('v4', $fValue('sys_storage_s3_sig_ver'), 'AWS takes only signature v4 for new buckets.');
+        $this->assertSame('', $fValue('sys_storage_s3_acl_enable'), 'New AWS buckets refuse object ACLs.');
+        $this->assertSame('hd', $fValue('sys_player_default_format'));
+        $this->assertStringNotContainsString("'sys_alerts_logger'", $sSql, 'Nothing reads it.');
+    }
+
+    public function testDatesFollowTheVisitorsLanguage(): void
+    {
+        // moment.js locale formats: "Nov 21, 2026", "2:30 PM", "Nov 21, 2026 2:30 PM" in English, 24-hour where the
+        // language uses it.
+        $sSql = self::systemSql();
+        $this->assertStringContainsString("'sys_format_date', '_adm_stg_cpt_option_sys_format_date', 'll',", $sSql);
+        $this->assertStringContainsString("'sys_format_time', '_adm_stg_cpt_option_sys_format_time', 'LT',", $sSql);
+        $this->assertStringContainsString("'sys_format_datetime', '_adm_stg_cpt_option_sys_format_datetime', 'lll',", $sSql);
+    }
+
+    public function testStudioHelpFeedIsGone(): void
+    {
+        $sSql = self::systemSql();
+        $this->assertStringNotContainsString('sys_studio_page_help', $sSql);
+        $this->assertStringNotContainsString('sys_studio_module_help', $sSql);
+        $this->assertFileDoesNotExist(__DIR__ . '/../../../studio/classes/BxDolStudioRssPageHelp.php');
     }
 }

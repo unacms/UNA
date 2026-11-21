@@ -1,16 +1,23 @@
 <div class="bx-install-initial">
 
-    <img class="bx-def-margin-bottom bx-install-img" src="img/logo.svg" alt="UNA" />
+    <h1 class="bx-def-font-h1"><?php echo _t('_sys_inst_welcome'); ?></h1>
+    <p class="bx-install-step-lead"><?php echo _t('_sys_inst_welcome_lead'); ?></p>
+
+    <ol class="bx-install-steps">
+        <?php foreach ($aSteps as $sStep => $sTitle): ?>
+        <li><b><?php echo $sTitle; ?></b> · <?php echo _t('_sys_inst_welcome_step_' . $sStep); ?></li>
+        <?php endforeach; ?>
+    </ol>
+
+    <?php if ($aWarnings): ?>
+    <div class="bx-install-initial-waring bx-def-margin-top" role="status">
+        <?php echo _t('_sys_inst_hosting_warnings'); ?>
+    </div>
+    <?php endif; ?>
 
     <div class="bx-install-actions">
         <a href="?action=permissions" class="bx-btn bx-btn-primary"><?php echo _t('_sys_inst_start_installation'); ?></a>
         <a href="?action=audit" class="bx-btn"><?php echo _t('_sys_inst_server_audit'); ?></a>
     </div>
-
-    <?php if ($aWarnings): ?>
-    <div class="bx-install-initial-waring bx-def-margin-top">
-        <?php echo _t('_sys_inst_hosting_warnings'); ?>
-    </div>
-    <?php endif; ?>
 
 </div>

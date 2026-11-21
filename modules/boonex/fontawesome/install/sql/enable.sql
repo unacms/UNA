@@ -13,7 +13,7 @@ SET @iCategId = LAST_INSERT_ID();
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 ('bx_fontawesome_option_icons_style', 'default', @iCategId, '_bx_fontawesome_option_icons_style', 'select', 'default,light,duotone', '', '', 10);
 
-UPDATE `sys_options` SET `value` = 'bx_fontawesome' WHERE `name` = 'sys_iconset_default';
+-- The site's icon set (sys_iconset_default) stays as it is: Font Awesome Pro is chosen in Studio, Lucide is the default.
 
 
 -- Alerts

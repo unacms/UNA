@@ -144,6 +144,36 @@ class BxBaseGrid extends BxDolGrid
         echo echoJson(array($sAction => $aAffectedIds));
     }
 
+    /**
+     * Show or hide rows in the apps: the 'switcher_api' column turns 'field_active_api' on and off.
+     * A grid without that option or without that column refuses it.
+     */
+    public function performActionEnableApi($mixedChecked = null)
+    {
+        $this->_replaceMarkers ();
+
+        $aIds = bx_get('ids');
+        if (!$this->_isSwitcherApiAvailable() || !$aIds || !is_array($aIds)) {
+            if($this->_bIsApi)
+                return [];
+
+            echoJson([]);
+            return;
+        }
+
+        $iChecked = (int)($mixedChecked !== null ? $mixedChecked : bx_get('checked'));
+
+        $aAffectedIds = [];
+        foreach ($aIds as $mixedId)
+            if ($this->_enableApi($mixedId, $iChecked))
+                $aAffectedIds[] = preg_match("/^[\d\w]+$/", $mixedId) ? $mixedId : (int)$mixedId;
+
+        if($this->_bIsApi)
+            return $aAffectedIds;
+
+        echoJson([($iChecked ? 'enable_api' : 'disable_api') => $aAffectedIds]);
+    }
+
     public function performActionRevealSecret()
     {
         $this->_replaceMarkers();
@@ -682,7 +712,7 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _getCellHeaderFallbackTitle ($sKey)
     {
-        $aTitles = array('switcher' => '_sys_active', 'actions' => '_sys_grid_lbl_actions', 'order' => '_sys_grid_lbl_order', 'checkbox' => '_sys_grid_lbl_select');
+        $aTitles = array('switcher' => '_sys_active', 'switcher_api' => '_sys_grid_lbl_show_in_apps', 'actions' => '_sys_grid_lbl_actions', 'order' => '_sys_grid_lbl_order', 'checkbox' => '_sys_grid_lbl_select');
         if (isset($aTitles[$sKey]))
             return _t($aTitles[$sKey]);
 
@@ -698,9 +728,33 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _isRowDisabled($aRow)
     {
-        if (isset($aRow[$this->_aOptions['field_active']]) && !$this->_switcherState2Checked($aRow[$this->_aOptions['field_active']]))
+        if (isset($aRow[$this->_aOptions['field_active']]) && !$this->_switcherState2Checked($aRow[$this->_aOptions['field_active']])) {
+            // a row which is still shown in the apps is not disabled
+            $sFieldActiveApi = $this->_getFieldActiveApi();
+            if ($sFieldActiveApi !== '' && isset($aRow[$sFieldActiveApi]) && $this->_switcherState2Checked($aRow[$sFieldActiveApi]))
+                return false;
+
             return true;
+        }
         return false;
+    }
+
+    /**
+     * Name of the field which shows the row in the apps ('field_active_api' option), an empty string when the grid has none.
+     */
+    protected function _getFieldActiveApi()
+    {
+        $sField = isset($this->_aOptions['field_active_api']) ? (string)$this->_aOptions['field_active_api'] : '';
+
+        return preg_match('/^[A-Za-z0-9_]+$/', $sField) ? $sField : '';
+    }
+
+    /**
+     * The 'enable_api' action works only in a grid which has the 'field_active_api' option and the 'switcher_api' column.
+     */
+    protected function _isSwitcherApiAvailable()
+    {
+        return $this->_getFieldActiveApi() !== '' && isset($this->_aOptions['fields']['switcher_api']);
     }
 
     /**
@@ -761,6 +815,46 @@ class BxBaseGrid extends BxDolGrid
         return $mixedState ? true : false;
     }
 
+    /**
+     * What an empty grid shows: the standard empty state, with the grid's Add action as its button when the grid has one
+     * and no search is applied.
+     */
+    protected function _getEmptyState()
+    {
+        $bFiltered = !empty($this->_aOptions['filter_get']) && (string)bx_get($this->_aOptions['filter_get']) !== '';
+
+        return $this->_oFunctions->emptyState($this->_getEmptyText(), !$bFiltered ? $this->_getEmptyStateButton() : []);
+    }
+
+    /**
+     * The empty grid's line: "Nothing here yet" unless a grid names what it lists ("No badges yet").
+     */
+    protected function _getEmptyText()
+    {
+        return _t('_Empty');
+    }
+
+    protected function _getEmptyStateButton()
+    {
+        $a = $this->_aOptions['actions_independent']['add'] ?? null;
+        if(empty($a) || !is_array($a) || empty($a['active']) || empty($a['title'])) {
+            return [];
+        }
+
+        // a grid that hides its Add action (no permission) or disables it (a filter to choose first) leaves it out here too
+        if(method_exists($this, '_getActionAdd')) {
+            $sAction = $this->_getActionAdd('independent', 'add', $a);
+            if($sAction === '' || str_contains($sAction, 'bx-btn-disabled')) {
+                return [];
+            }
+        }
+
+        return [
+            'title' => $a['title'],
+            'onclick' => "glGrids['" . bx_js_string($this->_sObject) . "'].action('add', {}, '', false, 0)",
+        ];
+    }
+
     protected function _getRowsDataDesign (&$aData)
     {
         $aGrid = array();
@@ -769,7 +863,7 @@ class BxBaseGrid extends BxDolGrid
             $aGrid[] = array(
                 'id_row' => 0,
                 'row_class' => 'bx-grid-table-row-empty',
-                'row' => '<td class="bx-def-padding-sec-topbottom" colspan="' . count($this->_aOptions['fields']) . '">' . MsgBox(_t('_Empty')) . '</td>'
+                'row' => '<td class="bx-def-padding-sec-topbottom" colspan="' . count($this->_aOptions['fields']) . '">' . $this->_getEmptyState() . '</td>'
             );
         else
             foreach ($aData as $aRow)
@@ -853,8 +947,43 @@ class BxBaseGrid extends BxDolGrid
 
     protected function _getCellSwitcher ($mixedValue, $sKey, $aField, $aRow)
     {
+        return $this->_getCellSwitcherFor($this->_aOptions['field_active'], 'enable', $this->_getSwitcherLabel($sKey, $aField), $sKey, $aField, $aRow);
+    }
+
+    /**
+     * The switch which shows the row in the apps ('field_active_api'); the cell is empty in a grid without that option.
+     */
+    protected function _getCellSwitcherApi ($mixedValue, $sKey, $aField, $aRow)
+    {
+        $sFieldActiveApi = $this->_getFieldActiveApi();
+        if ($sFieldActiveApi === '')
+            return $this->_bIsApi ? ['type' => 'text', 'data' => ''] : $this->_getCellDefault('', $sKey, $aField, $aRow);
+
+        return $this->_getCellSwitcherFor($sFieldActiveApi, 'enable_api', $this->_getSwitcherLabel($sKey, $aField), $sKey, $aField, $aRow);
+    }
+
+    /**
+     * Name of a column's switch for assistive tech, also its tooltip, before the row's title. In a grid with both switches
+     * they say where they show the row; otherwise the switch has the column's title (Active when the column has none).
+     */
+    protected function _getSwitcherLabel ($sKey, $aField)
+    {
+        if ($sKey == 'switcher_api')
+            return _t('_sys_grid_lbl_show_in_apps');
+
+        if ($this->_isSwitcherApiAvailable())
+            return _t('_sys_grid_lbl_show_on_site');
+
+        return !empty($aField['title']) ? _t($aField['title']) : _t('_sys_active');
+    }
+
+    /**
+     * A switch bound to a field of the row: the action is sent with the row's id and 'checked' when it is turned.
+     */
+    protected function _getCellSwitcherFor ($sFieldActive, $sAction, $sLabel, $sKey, $aField, $aRow)
+    {
         if($this->_bIsApi)
-            return ['type' => 'switcher', 'data' => $aRow[$this->_aOptions['field_active']], 'fld' => $this->_aOptions['field_active']];
+            return ['type' => 'switcher', 'data' => isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : 0, 'fld' => $sFieldActive, 'action' => $sAction];
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
@@ -865,8 +994,7 @@ class BxBaseGrid extends BxDolGrid
         $oForm = new BxTemplFormView(array(), $this->_oTemplate);
         $oForm->addCssJs();
 
-        // the switch's name for assistive tech: the column title (Active when the column has none) and the row's title
-        $sLabel = !empty($aField['title']) ? _t($aField['title']) : _t('_sys_active');
+        // the switch's name for assistive tech: the column's label and the row's title
         foreach (array('title', 'name', 'caption') as $sTitleKey)
             if (!empty($aRow[$sTitleKey]) && is_string($aRow[$sTitleKey])) {
                 $sLabel .= ': ' . strip_tags(_t($aRow[$sTitleKey]));
@@ -875,19 +1003,19 @@ class BxBaseGrid extends BxDolGrid
 
         $aInput = array(
             'type' => 'switcher',
-            'name' => $this->_sObject . '_switch_' . $aRow[$this->_aOptions['field_id']],
+            'name' => $this->_sObject . '_switch' . ($sAction != 'enable' ? '_' . $sAction : '') . '_' . $aRow[$this->_aOptions['field_id']],
             'caption' => '',
             'attrs' => array (
                 'aria-label' => $sLabel,
-                'bx_grid_action_single' => 'enable',
+                'bx_grid_action_single' => $sAction,
                 'bx_grid_action_confirm' => '',
                 'bx_grid_action_data' => $aRow[$this->_aOptions['field_id']],
             ),
             'value' => $aRow[$this->_aOptions['field_id']],
-            'checked' => $this->_isSwitcherOn(isset($aRow[$this->_aOptions['field_active']]) ? $aRow[$this->_aOptions['field_active']] : false, $sKey, $aField, $aRow),
+            'checked' => $this->_isSwitcherOn(isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : false, $sKey, $aField, $aRow),
         );
         $sSwitcher = $oForm->genInput($aInput);
-        return '<td ' . $sAttr . '>' . $sSwitcher . '</td>';
+        return '<td ' . $sAttr . ' title="' . bx_html_attribute($sLabel) . '">' . $sSwitcher . '</td>';
     }
 
     protected function _getCellOrder ($mixedValue, $sKey, $aField, $aRow)
@@ -1301,7 +1429,7 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _isControlsColumn ($sKey)
     {
-        return in_array($sKey, ['checkbox', 'switcher', 'actions']) || (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey);
+        return in_array($sKey, ['checkbox', 'switcher', 'switcher_api', 'actions']) || (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey);
     }
 
     /**
@@ -1429,6 +1557,19 @@ class BxBaseGrid extends BxDolGrid
         $sFieldId = $this->_aOptions['field_id'];
         $sFieldActive = $this->_aOptions['field_active'];
         $sQuery = $oDb->prepare("UPDATE `{$sTable}` SET `$sFieldActive` = ? WHERE `{$sFieldId}` = ?", $this->_switcherChecked2State($isChecked), $mixedId);
+        return $oDb->query($sQuery);
+    }
+
+    protected function _enableApi ($mixedId, $isChecked)
+    {
+        $sFieldActiveApi = $this->_getFieldActiveApi();
+        if ($sFieldActiveApi === '' || empty($this->_aOptions['table']))
+            return false;
+
+        $oDb = BxDolDb::getInstance();
+        $sTable = $this->_aOptions['table'];
+        $sFieldId = $this->_aOptions['field_id'];
+        $sQuery = $oDb->prepare("UPDATE `{$sTable}` SET `{$sFieldActiveApi}` = ? WHERE `{$sFieldId}` = ?", $this->_switcherChecked2State($isChecked), $mixedId);
         return $oDb->query($sQuery);
     }
 

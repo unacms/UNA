@@ -212,8 +212,9 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
             // default_storage_engine exists on every supported server (MySQL 5.5.3+, MariaDB), so the
             // version isn't read for it; PDO's server version wouldn't do anyway, a proxy reports its own.
             $this->pdoExec("SET NAMES 'utf8mb4' COLLATE '" . (defined('BX_DATABASE_COLLATE') ? BX_DATABASE_COLLATE : 'utf8mb4_unicode_ci') . "', sql_mode = '', default_storage_engine = " . $this->_sStorageEngine);
-            if (0 == strcasecmp($this->_sStorageEngine, 'INNODB'))
-                $this->pdoExec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE");
+            // No isolation level is set: the server's own (transaction_isolation) applies. UNA runs its
+            // queries in autocommit, where a statement is atomic at any level, and SERIALIZABLE would turn
+            // every read inside a transaction into a shared lock that writers wait for.
 
 			$this->cleanMemoryAll();
     	}
@@ -544,6 +545,9 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
         if(isset($GLOBALS['bx_profiler']))
         	$GLOBALS['bx_profiler']->beginQuery($oStatement->queryString);
 
+        // Read before the statement runs: a deadlock rolls the transaction back and clears the flag.
+        $bInTransaction = self::$_rLink->inTransaction();
+
         for ($iAttempts = 3; $iAttempts > 0; --$iAttempts) {
 
             $oException = null;
@@ -555,8 +559,11 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
                 $iErrorCode = $oException->errorInfo[1];
             }
 
-            // if deadlock timeout - try again, make sure that deadlock timeout is short
-            if (!$bResult && (1205 == $iErrorCode || 1213 == $iErrorCode)) {
+            // A lock wait timeout rolls back only the statement: try it again.
+            // A deadlock rolls back the whole transaction: try it again only when the statement
+            // was a transaction of its own, otherwise the caller has to roll back and start over.
+            // The last attempt's error reaches the caller.
+            if (!$bResult && $iAttempts > 1 && (1205 == $iErrorCode || (1213 == $iErrorCode && !$bInTransaction && !$this->isAutocommitOff()))) {
                 continue;
             }
 
@@ -583,6 +590,22 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 			$this->error($this->_aError);
 
         return $bResult;
+    }
+
+    /**
+     * Whether the session runs with autocommit off (SET autocommit = 0), where every statement
+     * belongs to a transaction that PDO does not know about. When the server can't tell, the answer
+     * is yes: a statement is then not run again outside a transaction that may have been rolled back.
+     */
+    protected function isAutocommitOff()
+    {
+        try {
+            $oStatement = self::$_rLink->query("SELECT @@autocommit");
+            return !$oStatement || '0' === (string)$oStatement->fetchColumn();
+        }
+        catch (PDOException $oException) {
+            return true;
+        }
     }
 
     /**
@@ -770,6 +793,10 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
     public function cacheParamsClear($sCacheName = '')
     {
         if(empty($sCacheName)) {
+            // The cache engine is one of the params: take the cache object while they are still loaded. Asked for
+            // after this, with nothing made it earlier (a command line run), it had no engine to go by.
+            $this->getDbCacheObject();
+
             self::$_aParams = [];
             $sCacheName = self::$_sParamsCacheName;
         }
@@ -886,6 +913,12 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 			return $this->_oDbCacheObject;
 
 		$sEngine = $this->getParam('sys_db_cache_engine');
+		// No engine: the params are not loaded (they are being reloaded). The file engine serves this call, and the
+		// next one picks the real engine: the base BxDolCache kept here cleared nothing and reported a failure.
+		if(empty($sEngine)) {
+			return bx_instance('BxDolCacheFile');
+		}
+
 		$this->_oDbCacheObject = bx_instance('BxDolCache'.$sEngine);
 		if(!$this->_oDbCacheObject->isAvailable())
 			$this->_oDbCacheObject = bx_instance('BxDolCacheFile');

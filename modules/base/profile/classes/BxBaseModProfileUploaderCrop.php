@@ -55,8 +55,9 @@ class BxBaseModProfileUploaderCrop extends BxTemplUploaderCrop
         $aGhosts = $oStorage->getGhosts($iProfileId, $mixedContent, $iContentId ? true : false);
         foreach ($aGhosts as $aFile) {
             // for requested image type delete only unassigned ghosts and currently set image will be deleted while saving
-            if($aFile['id'] != $aContentInfo[$this->_sImage] && !in_array($aFile['id'], array_map(function($sField) use ($aContentInfo) {
-                return $aContentInfo[$sField];
+            // a new profile (content id 0) has no images yet
+            if($aFile['id'] != ($aContentInfo[$this->_sImage] ?? 0) && !in_array($aFile['id'], array_map(function($sField) use ($aContentInfo) {
+                return $aContentInfo[$sField] ?? 0;
             }, $this->_aOtherImages)))
                 $iCount += $oStorage->deleteFile($aFile['id']);
         }

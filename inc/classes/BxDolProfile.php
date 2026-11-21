@@ -150,6 +150,8 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
             'display_name' => $oProfile->getDisplayName(),
             'url' => ($sUrl = $oProfile->getUrl()) !== false ? bx_api_get_relative_url($sUrl) : false,
             'url_avatar' => $oProfile->{isset($aParams['get_avatar']) && method_exists($oProfile, $aParams['get_avatar']) ? $aParams['get_avatar'] : 'getAvatar'}(),
+            // The letter avatar's colour, the same as on the site (BxDolTemplate::getColorCode).
+            'color' => BxDolTemplate::getColorHex($oProfile->id()),
             'module' => $oProfile->getModule(),
         ];
 
@@ -190,9 +192,12 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
             'account_id' => $oAccount->id(),
             'email' => $oAccount->getEmail(),
             'display_name' => $oProfile->getDisplayName(),
+            // `system` for an account without a profile, which acts as its account's profile.
+            'module' => $oProfile->getModule(),
             'url' => $sUrl,
             'url_postfix' => substr($sUrl, strrpos($sUrl, '/') + 1),
             'avatar' => $oProfile->getAvatar(),
+            'color' => BxDolTemplate::getColorHex($iId),
             'settings' => $oProfile->getSettings(),
             'membership' => $aMembershipInfo['id'],
             'membership_name' => _t($aMembershipInfo['name']),
@@ -213,6 +218,13 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
 
             // The apps show profile creation in place of every page while this is true, as the site does.
             $aRv['profile_required'] = BxDolAccount::isProfileRequired();
+            // "Ask after sign-in": the apps show the "Create your profile" window once, with these title and text and
+            // the profile types of `menu`, then call system/account_profile_prompt_seen, as the site shows it on the
+            // first page after sign-in. False when it isn't due.
+            $aRv['profile_prompt'] = BxDolAccount::isProfilePromptDue() ? [
+                'title' => _t('_sys_page_block_title_account_profile_create'),
+                'text' => _t('_sys_page_block_desc_account_profile_create'),
+            ] : false;
 
             // The items of the site's member toolbar the apps get, so their header shows the same tools: no Messages
             // or Notifications button without its module.
@@ -853,7 +865,7 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
 
         if ($aInfo['type'] == 'system' && count($aProfiles) == 1) {
             $oInformer->add('sys-account-profile-system', _t('_sys_txt_account_profile_system'), BX_INFORMER_INFO, [
-                'icon' => 'user-plus',
+                'icon' => 'user-round-plus',
                 'action_url' => BxDolPermalinks::getInstance()->permalink('page.php?i=account-profile-switcher'),
                 'action_title' => _t('_sys_txt_account_profile_system_action'),
             ]);

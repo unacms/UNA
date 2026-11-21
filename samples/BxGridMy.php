@@ -67,16 +67,16 @@ CREATE TABLE IF NOT EXISTS `sample_grid_data` (
 );
 
 INSERT INTO `sample_grid_data` VALUES
-(1, 'admin', 'dev@boonex.com', 'Rejected', 3, '', '', '', '', '', '0000-00-00', '', 0),
+(1, 'admin', 'dev@example.com', 'Rejected', 3, '', '', '', '', '', '0000-00-00', '', 0),
 (43, 'Shmak', 'shamks@gmail.com', 'Active', 1, '', '', '', '', 'Yogurtown', '0000-00-00', '', 1),
 (45, 'Rio', 'parrot@blue.bz', 'Active', 1, '', '', '', '', 'Rio', '0000-00-00', '', 9),
 (36, 'Master Yoda', 'force@galaxy.sw', 'Active', 1, '', '', '', '', 'Sydney', '0000-00-00', '', 4),
 (28, 'petr', 'petr@petrovich.com', 'Active', 1, '', '', '', '', 'Petrovka', '0000-00-00', '', 10),
 (35, 'MrTwister', 'mr@twister.com', 'Active', 1, '', '', '', '', 'Mumbai', '0000-00-00', '', 6),
 (42, 'kokoko', 'okokok@ok.com', 'Unconfirmed', 1, '', '', '', '', 'Ok', '0000-00-00', '', 10),
-(34, 'uno', 'uno@boonex.com', 'Active', 1, '', '', '', '', 'Sydney', '0000-00-00', '', 9),
+(34, 'uno', 'uno@example.com', 'Active', 1, '', '', '', '', 'Sydney', '0000-00-00', '', 9),
 (41, 'Super User', 'user@super.co', 'Active', 1, '', '', '', '', 'Seashore', '0000-00-00', '', 2),
-(10, 'Andrew5', 'uno5@boonex.com', 'Active', 1, 'male', 'Unite People!', '<p>This is a demo profile that you may find on <a href="http://www.boonex.com/">BoonEx</a>.<p>BoonEx mission is to Unite People and thus make the world a better place.</p>', 'AU', 'Castle Hill', '1981-03-31', 'boonex, community, unite, people', 10),
+(10, 'Andrew5', 'uno5@example.com', 'Active', 1, 'male', 'Unite People!', '<p>This is a demo profile that you may find on <a href="https://una.io/">UNA</a>.<p>UNA mission is to Unite People and thus make the world a better place.</p>', 'AU', 'Castle Hill', '1981-03-31', 'una, community, unite, people', 10),
 (47, 'Bimbo', 'bambi@bumba.com', 'Unconfirmed', 1, '', '', '', '', 'Bomba', '0000-00-00', '', 3),
 (50, 'X-Man', 'x@man.me', 'Unconfirmed', 1, '', '', '', '', 'Movie City', '0000-00-00', '', 10);
 

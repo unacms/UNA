@@ -2,9 +2,10 @@ import { Conductor } from 'app/ui/molecules/sections/conductor';
 import { useState } from 'react';
 import { DataByName } from 'app/components/block';
 import { SearchPanel } from 'app/ui/molecules/sections/search';
-import { parseUrl, parseQueryString} from 'app/lib/util';
+import { appSetting, parseUrl, parseQueryString } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user'
-import { useLayoutSettings } from 'app/context/layout-settings';
+import { View } from 'app/design/view';
+import { PageTitle } from 'app/ui/molecules/page/page-title';
 
 export default function PageLayout(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -40,15 +41,16 @@ export default function PageLayout(props) {
         object:'search',
         items:menuItems
     }
-     const { layoutSettings } = useLayoutSettings();
 
-
-    const { layoutName: layout } = useLayoutSettings();
-    const leftSideBar = layout != 'hor' ? false : true
-
-    return (<Conductor 
+    // As UNA's search page: its title (desktop; phones and tablets show it in the header) and the search field above
+    // the results, so a search can be changed where its results are.
+    return (<View className="w-full flex-1">
+        <View className={appSetting('layout', 'max_width_block') + ' mx-auto w-full gap-3 px-3 pt-4 pb-3 sm:px-4'}>
+            <PageTitle data={props.data} />
+        </View>
+        {header}
+        <Conductor 
         layoutName={props.layoutName}
-        header={header} 
         //minHeaderHeight={0} 
         //offsetTop={130}
         isHideDefaultHeader={false} 
@@ -56,7 +58,7 @@ export default function PageLayout(props) {
         data={props.data} 
         blocks={props.blocks}
         useSectionAsMenu={true}
-        leftSideBar={leftSideBar}
         onChangeRoute={changeRoute}
-    />)
+    />
+    </View>)
 }

@@ -67,7 +67,7 @@
 
     <string name="_bx_accnt_grid_column_title_adm_is_confirmed"><![CDATA[Confirmed]]></string>
     <string name="_bx_accnt_grid_column_title_adm_profiles"><![CDATA[Profiles]]></string>
-    <string name="_bx_accnt_grid_column_title_adm_logged"><![CDATA[Last Logged]]></string>
+    <string name="_bx_accnt_grid_column_title_adm_logged"><![CDATA[Last sign-in]]></string>
     <string name="_bx_accnt_grid_column_title_adm_last_active"><![CDATA[Last Active]]></string>
     <string name="_bx_accnt_grid_column_title_adm_added"><![CDATA[Created]]></string>
     <string name="_bx_accnt_grid_action_title_adm_activate"><![CDATA[Activate]]></string>
@@ -119,7 +119,7 @@
     <string name="_bx_accnt_txt_field_receive_news"><![CDATA[Receive News]]></string>
     <string name="_bx_accnt_txt_field_added"><![CDATA[Added]]></string>
     <string name="_bx_accnt_txt_field_changed"><![CDATA[Changed]]></string>
-    <string name="_bx_accnt_txt_field_logged"><![CDATA[Logged]]></string>
+    <string name="_bx_accnt_txt_field_logged"><![CDATA[Last sign-in]]></string>
     <string name="_bx_accnt_txt_field_ip"><![CDATA[IP]]></string>
     <string name="_bx_accnt_txt_field_lang_id"><![CDATA[Language]]></string>
 </resources>

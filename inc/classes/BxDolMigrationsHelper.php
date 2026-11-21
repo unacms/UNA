@@ -13,6 +13,7 @@
  *
  * - addColumn(), addIndex(): add one only when it is missing (MySQL 5.7 has no
  *   `ADD COLUMN IF NOT EXISTS`), so the migration is safe to run twice.
+ * - dropColumn(): drop one only when it is there (nor `DROP COLUMN IF EXISTS`).
  * - moduleUpdated(): the module's version (and `note` from its config.php) as the update pack
  *   would have left it.
  *
@@ -34,6 +35,22 @@ class BxDolMigrationsHelper
                 return false;
 
             $oQuery->addColumn($sTable, $sColumn, $sDefinition);
+            return true;
+        });
+    }
+
+    /**
+     * @return bool whether the column was dropped
+     */
+    public static function dropColumn(string $sTable, string $sColumn): bool
+    {
+        $oQuery = self::_getQuery();
+        return $oQuery->withExceptions(function () use ($oQuery, $sTable, $sColumn) {
+            if (!$oQuery->isColumn($sTable, $sColumn)) {
+                return false;
+            }
+
+            $oQuery->dropColumn($sTable, $sColumn);
             return true;
         });
     }

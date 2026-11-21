@@ -4,7 +4,7 @@
         $(document).ready(function () {
             $('.adm-bp-block .adm-bpb-icon, .adm-bp-block .adm-bpb-info').bind('click', function() {
                 var oCheckbox = $(this).parents('.adm-bp-block').find("input[type = 'checkbox']");
-                oCheckbox.prop('checked', !oCheckbox.prop('checked'));
+                oCheckbox.prop('checked', !oCheckbox.prop('checked')).trigger('change');
             });
         });
     </script>

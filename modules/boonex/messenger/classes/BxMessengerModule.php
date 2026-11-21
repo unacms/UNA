@@ -280,6 +280,11 @@ class BxMessengerModule extends BxBaseModGeneralModule
         if (bx_is_api())
             return bx_srv($this->getName(), 'get_block_main', [], 'Services');
 
+        if (($sMsg = $this->getNoProfileMessage()) !== false) {
+            return MsgBox($sMsg);
+        }
+
+        $this->addNoServerInformer();
         $this->initDefaultParams();
 
         $bSimpleMode = $this->_oConfig->CNF['USE-UNIQUE-MODE'];
@@ -293,6 +298,43 @@ class BxMessengerModule extends BxBaseModGeneralModule
         ];
 
         return $this->_oTemplate->parseHtmlByName('main.html', $aData);
+    }
+
+    /**
+     * The message an account without a profile gets in place of Messenger: it acts as its system profile, whose
+     * level may not send messages, so it sees "Create a profile first" with the button that helps
+     * (BxDolAcl::getDenialState), the same state as the rest of the site. False for anyone else.
+     */
+    public function getNoProfileMessage()
+    {
+        $iViewerId = (int)bx_get_logged_profile_id();
+        if (!$iViewerId || !($oViewer = BxDolProfile::getInstance($iViewerId)) || $oViewer->getModule() != 'system') {
+            return false;
+        }
+
+        $aCheck = checkActionModule($iViewerId, str_replace('_', ' ', BX_MSG_ACTION_SEND_MESSAGE), $this->getName());
+        return $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED ? $aCheck[CHECK_ACTION_MESSAGE] : false;
+    }
+
+    /**
+     * Without a Jot server URL messages are sent and saved, but new ones show only after a reload. The page says so
+     * in the site's informer, and an operator gets a button to Messenger's settings in Studio.
+     */
+    protected function addNoServerInformer()
+    {
+        if (trim((string)$this->_oConfig->CNF['SERVER_URL']) !== '') {
+            return;
+        }
+
+        $sMsg = '_bx_messenger_informer_no_server';
+        $aParams = ['icon' => 'wifi-off'];
+        if (isAdmin()) {
+            $sMsg = '_bx_messenger_informer_no_server_operator';
+            $aParams['action_url'] = BX_DOL_URL_STUDIO . 'module.php?name=' . $this->getName() . '&page=settings';
+            $aParams['action_title'] = _t('_bx_messenger_informer_no_server_action');
+        }
+
+        BxDolInformer::getInstance($this->_oTemplate)->add('bx-messenger-no-server', _t($sMsg), BX_INFORMER_INFO, $aParams);
     }
 
     public function actionGetThreadReplies()
@@ -1034,8 +1076,10 @@ class BxMessengerModule extends BxBaseModGeneralModule
                 $aMyLots = $this->_oDb->getMyLots($this->_iProfileId, $aParams, $aFoundConvos);
         }
 
-        if (empty($aMyLots))
-            $sContent = $sParam ? MsgBox(_t('_bx_messenger_txt_msg_no_results')) : $this->_oTemplate->getFriendsList($sParam); {
+        if (empty($aMyLots)) {
+            $sContent = $this->getSearchEmptyState($sParam, (bool)$iStarred, $sType);
+        }
+        else {
             $sContent = $this->_oTemplate->getLotsPreview($this->_iProfileId, $aMyLots);
             if (!empty($aFoundConvos['jots_list'])) {
                 foreach ($aFoundConvos['jots_list'] as $iJot => $iConvo) {
@@ -1046,6 +1090,23 @@ class BxMessengerModule extends BxBaseModGeneralModule
 
         $aResult['html'] = $sContent;
         echoJson($aResult);
+    }
+
+    /**
+     * What the talks list says when a search finds nothing: nothing matches the words, none of the kind (or starred),
+     * or no talks at all.
+     */
+    protected function getSearchEmptyState($sParam, $bStarred, $sType)
+    {
+        if ($sParam) {
+            return $this->_oTemplate->getEmptyState('search');
+        }
+
+        if ($bStarred || ($sType && $sType != BX_MSG_TALK_TYPE_INBOX)) {
+            return $this->_oTemplate->getEmptyState('list');
+        }
+
+        return $this->_oTemplate->getEmptyState('inbox', $this->_iProfileId);
     }
 
     /**
@@ -1375,7 +1436,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
             $oAccountInfo = BxDolAccount::getInstance($aProfileInfo['account_id']);
 
             $sThumb = $oProfile->getThumb();
-            $bThumb = stripos($sThumb, 'no-picture') === FALSE;
+            $bThumb = stripos($sThumb, 'no-picture') === FALSE && !BxDolTemplate::isLetterAvatarUrl($sThumb);
             $sDisplayName = $oProfile->getDisplayName();
             if (!empty($aProfileInfoDetails) && !empty($oAccountInfo)) {
                 $aResult[$aProfileInfo['type']]['results'][] = array(
@@ -2696,6 +2757,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
      */
     public function serviceIsVideoConferenceAllowed($mixedObject)
     {
+        if (!$this->_oConfig->CNF['ENABLE-JITSI'])
+            return false;
+
         if (!$this->_iProfileId || !$this->onCheckContact($this->_iProfileId, (int) $mixedObject))
             return false;
 
@@ -2771,7 +2835,9 @@ class BxMessengerModule extends BxBaseModGeneralModule
         header('Content-type: text/html; charset=utf-8');
 
         $sContent = '';
-        if (!$oProfile)
+        if (!$this->_oConfig->CNF['ENABLE-JITSI'])
+            $sContent = MsgBox(_t('_bx_messenger_jitsi_err_can_join_conference'));
+        else if (!$oProfile)
             $sContent = MsgBox(_t('_bx_messenger_profile_not_found'));
         else {
             $aInfo = $oProfile->getInfo();
@@ -3173,7 +3239,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
         foreach ($aModules as $sKey => $aModule) {
             if (!$aModule['icon']) {
                 $aResult[$sKey] = array(
-                    'icon' => 'world',
+                    'icon' => 'globe',
                     'icon_color' => 'green'
                 );
                 continue;
@@ -3361,7 +3427,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
             ));
         }
 
-        return echoJson(['code' => 1, 'html' => MsgBox(_t('_bx_messenger_txt_msg_no_results')), 'title' => _t($sTitle)]);
+        echoJson(['code' => 1, 'html' => $this->_oTemplate->getEmptyState('list', $this->_iProfileId), 'title' => _t($sTitle)]);
     }
 
     public function actionGetTopMenuItems()
@@ -3421,7 +3487,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
 
     public function actionGetJitsiConferenceForm($iLotId = 0)
     {
-        if (!$this->_iProfileId) {
+        if (!$this->_iProfileId || !$this->_oConfig->CNF['ENABLE-JITSI']) {
             echo MsgBox(_t('_bx_messenger_jitsi_err_can_join_conference'));
             exit;
         }
@@ -4506,10 +4572,12 @@ class BxMessengerModule extends BxBaseModGeneralModule
         switch ($sType) {
             case BX_MSG_TALK_TYPE_BROADCAST:
                 $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_FILTER'], $CNF['OBJECT_FORM_FILTER_DISPLAY'], $this->_oTemplate);
-                if ($oForm->filteredForm())
+                if ($oForm->filteredForm()) {
                     $sHtml = $oForm->getCode();
-                else
+                }
+                else {
                     $sHtml = MsgBox(_t('_bx_messenger_no_criteria_available'));
+                }
 
                 break;
             case 'followers':

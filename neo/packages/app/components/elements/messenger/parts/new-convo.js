@@ -83,7 +83,8 @@ export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 's
     if (size == 'small')
         btn = <View key={`add-1`}><NeoButton style={iconStyle} selected={showModal} selectedState="pressedToggle" controlSize="regular" borderShape="circle" image="Plus" accessibilityLabel={t('messenger_add_users')} onPress={() => newConvo()} /></View>
     else {
-        btn = <NeoButton style="bordered" controlSize="regular" image="Plus" label={t('messenger_create_first')} onPress={() => { newConvo(); onShow(); }} />
+        // The empty list's one action, worded as UNA's (`_bx_messenger_empty_action_new`).
+        btn = <NeoButton style={style ?? 'borderedProminent'} controlSize="regular" label={t('New message')} onPress={() => { newConvo(); onShow?.(); }} />
     }
     return <>
         {btn}

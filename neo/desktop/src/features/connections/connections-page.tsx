@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { SegmentedTabs } from '../../components/segmented-tabs';
+import { SkeletonRows } from '../../components/skeleton';
 import { unwrap } from '../../lib/api';
 import { useApp } from '../../lib/context';
 import { t, tn } from '../../lib/i18n';
@@ -14,7 +15,7 @@ import { connectionsKey } from '../profile/graph';
 const PANEL_ID = 'connections-panel';
 const tabId = (tab: ConnectionsTab) => `connections-tab-${tab}`;
 
-export const CONNECTIONS_TAB_LABELS: Record<ConnectionsTab, string> = { friends: t('Friends'), requests: t('Requests'), sent: t('Sent', { context: 'requests' }), following: t('Following'), followers: t('Followers') };
+export const CONNECTIONS_TAB_LABELS: Record<ConnectionsTab, string> = { friends: t('Friends'), requests: t('Requests'), sent: t('Sent', { context: 'requests' }), following: t('Following'), followers: t('Followers'), suggested: t('Suggestions') };
 
 /** What each tab lists, its accessible name and what its empty list says. */
 const TAB_LISTS: Record<ConnectionsTab, { label: string; empty: string; hint: string }> = {
@@ -23,15 +24,35 @@ const TAB_LISTS: Record<ConnectionsTab, { label: string; empty: string; hint: st
     sent: { label: t('Friend requests you sent, newest first'), empty: t('No requests waiting'), hint: t('Friend requests you send wait here until they are answered.') },
     following: { label: t('People you follow, newest first'), empty: t('Not following anyone yet'), hint: t('Follow people to see their posts on Home.') },
     followers: { label: t('People who follow you, newest first'), empty: t('No followers yet'), hint: t('People who follow you show up here.') },
+    suggested: { label: t('People you may know, best match first'), empty: t('No suggestions right now'), hint: t('People with friends in common, in your groups or nearby show up here.') },
 };
 
+/** The Suggestions tab of a profile that can't have friends: profiles to follow instead. */
+const FOLLOW_SUGGESTIONS = { label: t('Profiles you may want to follow, best match first'), empty: t('No suggestions right now'), hint: t('Profiles followed by those you follow, or in your groups, show up here.') };
+
 /**
- * The tabs the acting profile has: all of them, or only Following and Followers where it can't
- * have friends (an organization whose module has friends off: `lists.friends` false). Every tab
- * while that is not known yet, so the tabs do not move for a person.
+ * The tabs the acting profile has: all of them, or only Following, Followers and Suggestions
+ * where it can't have friends (an organization whose module has friends off: `lists.friends`
+ * false). Every tab while that is not known yet, so the tabs do not move for a person.
  */
 export function connectionsTabs(friends: boolean | undefined): ConnectionsTab[] {
-    return friends === false ? CONNECTIONS_TABS.filter((tab) => tab === 'following' || tab === 'followers') : [...CONNECTIONS_TABS];
+    return friends === false ? CONNECTIONS_TABS.filter((tab) => tab === 'following' || tab === 'followers' || tab === 'suggested') : [...CONNECTIONS_TABS];
+}
+
+/**
+ * What a tab lists. Suggestions are people to ask to be friends, or, for a profile that can't
+ * have friends, profiles to follow (the site's Friend Suggestions and Who to Follow).
+ */
+export function tabSource(tab: ConnectionsTab, profileId: string, friends: boolean | undefined): ConnectionsSource {
+    switch (tab) {
+        case 'requests':
+        case 'sent':
+            return { kind: tab };
+        case 'suggested':
+            return { kind: 'suggested', friends: friends !== false };
+        default:
+            return { kind: 'list', profileId, list: tab };
+    }
 }
 
 /** "1 waiting", "12 waiting": what the Requests tab's count says. */
@@ -42,7 +63,7 @@ export function requestsSpoken(n: number): string {
 /**
  * The Connections section (the site's Connections pages): the acting profile's friends, the
  * friend requests waiting for it (Accept, Decline) and the ones it sent (Cancel), whom it
- * follows and who follows it, a tab each. A page in the content pane, as Media or Events: a
+ * follows and who follows it, and the site's suggestions, a tab each. A page in the content pane, as Media or Events: a
  * person opens their profile's page here too, and Back comes back to the tab.
  */
 export function ConnectionsPage() {
@@ -55,8 +76,8 @@ export function ConnectionsPage() {
     const tabs = connectionsTabs(connections.data?.lists.friends);
     const wanted = route.list.connections ?? 'friends';
     const current = tabs.includes(wanted) ? wanted : (tabs[0] ?? 'following');
-    const list = TAB_LISTS[current];
-    const source: ConnectionsSource = current === 'requests' ? { kind: 'requests' } : current === 'sent' ? { kind: 'sent' } : { kind: 'list', profileId: id, list: current };
+    const source = tabSource(current, id, connections.data?.lists.friends);
+    const list = source.kind === 'suggested' && !source.friends ? FOLLOW_SUGGESTIONS : TAB_LISTS[current];
 
     return (
         <Pane
@@ -76,7 +97,12 @@ export function ConnectionsPage() {
             }
         >
             <div className="column" id={PANEL_ID} role="tabpanel" aria-labelledby={tabId(current)}>
-                <ConnectionsList key={`${id}-${current}`} source={source} label={list.label} emptyText={list.empty} emptyHint={list.hint} manage />
+                {/* which suggestions waits for whether the profile can have friends (on a failure: it can) */}
+                {source.kind === 'suggested' && !connections.data && !connections.isError ? (
+                    <SkeletonRows loading />
+                ) : (
+                    <ConnectionsList key={`${id}-${current}-${source.kind === 'suggested' && source.friends}`} source={source} label={list.label} emptyText={list.empty} emptyHint={list.hint} manage />
+                )}
             </div>
         </Pane>
     );

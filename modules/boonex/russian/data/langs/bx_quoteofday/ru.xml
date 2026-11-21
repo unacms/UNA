@@ -4,7 +4,7 @@
   <string name="_bx_quoteofday_option_rss_url"><![CDATA[Ссылка на внешний источник RSS]]></string>
   <string name="_bx_quoteofday_lmi_cpt_quotes"><![CDATA[Список цитат]]></string>
   <string name="_bx_quoteofday_source"><![CDATA[Источник]]></string>
-  <string name="_bx_quoteofday_rss_max_items"><![CDATA[Максимальное количество позиций, получаемых из RSS]]></string>
+  <string name="_bx_quoteofday_rss_max_items"><![CDATA[Максимум позиций из RSS]]></string>
   <string name="_bx_quoteofday_source_internal"><![CDATA[Список цитат]]></string>
   <string name="_bx_quoteofday_source_rss"><![CDATA[Источник RSS]]></string>
   

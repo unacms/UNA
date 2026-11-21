@@ -1,3 +1,7 @@
+/* Colours are the site's gray scale (Tailwind gray = NEO's neutrals, tailwind.config.js) in NEO's roles, and links are the site's
+   coloured links (blue-700, blue-400 in dark). Each has a :where(.dark) twin, which keeps the light rule's specificity so a
+   template's own overrides still win in both schemes. */
+
 /* --------------- general */
 
 li.bx-mi-aux {}
@@ -32,7 +36,11 @@ ul.bx-menu-custom-hor {
 
 .bx-menu-hor li.bx-menu-tab-active a,
 .bx-menu-custom-hor li.bx-menu-tab-active a {
-    color:#000;
+    color:#18181b;
+}
+:where(.dark) .bx-menu-hor li.bx-menu-tab-active a,
+:where(.dark) .bx-menu-custom-hor li.bx-menu-tab-active a {
+    color:#f4f4f5;
 }
 
 .bx-menu-custom-hor li img, 
@@ -96,7 +104,12 @@ ul.bx-menu-custom-ver {
 .bx-menu-notif li.bx-menu-tab-active a,
 .bx-menu-verlit li.bx-menu-tab-active a,
 .bx-menu-ver li.bx-menu-tab-active a {
-    color:#000;
+    color:#18181b;
+}
+:where(.dark) .bx-menu-notif li.bx-menu-tab-active a,
+:where(.dark) .bx-menu-verlit li.bx-menu-tab-active a,
+:where(.dark) .bx-menu-ver li.bx-menu-tab-active a {
+    color:#f4f4f5;
 }
 
 .bx-menu-notif li img,
@@ -219,7 +232,10 @@ ul.bx-menu-main-submenu {
 }
 
 .bx-menu-main-submenu li.bx-menu-tab-active a {
-    color:#000;
+    color:#18181b;
+}
+:where(.dark) .bx-menu-main-submenu li.bx-menu-tab-active a {
+    color:#f4f4f5;
 }
 
 /* --------------- toolbar menu */
@@ -393,6 +409,10 @@ ul.bx-menu-toolbar li a .bx-def-unit-alert-middle {
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
 }
+:where(.dark) .bx-sliding-menu,
+:where(.dark) .bx-sliding-menu-main {
+    background-color: rgba(39, 39, 42, 0.9);
+}
 
 .bx-sliding-menu-fullheight {
     height:calc(100% - 3rem);
@@ -484,7 +504,10 @@ ul.bx-menu-floating-blocks {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 1.25rem;
-    background-color: #edf1f7;
+    background-color: #f4f4f5;
+}
+:where(.dark) .bx-menu-floating-blocks-dash-item .bx-menu-floating-blocks-icon {
+    background-color: #3f3f46;
 }
 .bx-menu-floating-blocks-dash-title {
     display:flex;
@@ -550,7 +573,13 @@ ul.bx-menu-floating-blocks {
 .bx-menu-floating-blocks-dash li.bx-menu-tab-active a,
 .bx-menu-floating-blocks-wide li.bx-menu-tab-active a,
 .bx-menu-floating-blocks li.bx-menu-tab-active a {
-    color:#000;
+    color:#18181b;
+}
+:where(.dark) .bx-menu-floating-blocks-big li.bx-menu-tab-active a,
+:where(.dark) .bx-menu-floating-blocks-dash li.bx-menu-tab-active a,
+:where(.dark) .bx-menu-floating-blocks-wide li.bx-menu-tab-active a,
+:where(.dark) .bx-menu-floating-blocks li.bx-menu-tab-active a {
+    color:#f4f4f5;
 }
 
 .bx-menu-floating-blocks li img,
@@ -676,6 +705,9 @@ li.bx-menu-inter-div:first-child {
 }
 li.bx-menu-inter-act .sys-icon {
     color: rgba(0, 0, 0, 0.2);
+}
+:where(.dark) li.bx-menu-inter-act .sys-icon {
+    color: rgba(255, 255, 255, 0.2);
 }
 li.bx-menu-inter-pas a:hover {
     background-color: transparent;
@@ -881,7 +913,13 @@ ul.bx-menu-btns-icon-hor li:last-child .bx-btn {
 .bx-menu-custom.bx-menu-custom-hor.bx-menu-more-auto .bx-menu-submenu-more-auto .bx-menu-item .sys-icon,
 .bx-menu-main-submenu.bx-menu-more-auto .bx-menu-submenu-more-auto .bx-menu-item .bx-btn,
 .bx-menu-custom.bx-menu-custom-hor.bx-menu-more-auto .bx-menu-submenu-more-auto .bx-menu-item .bx-btn {
-    color: #3e8685;
+    color: #1d4ed8;
+}
+:where(.dark) .bx-menu-main-submenu.bx-menu-more-auto .bx-menu-submenu-more-auto .bx-menu-item .sys-icon,
+:where(.dark) .bx-menu-custom.bx-menu-custom-hor.bx-menu-more-auto .bx-menu-submenu-more-auto .bx-menu-item .sys-icon,
+:where(.dark) .bx-menu-main-submenu.bx-menu-more-auto .bx-menu-submenu-more-auto .bx-menu-item .bx-btn,
+:where(.dark) .bx-menu-custom.bx-menu-custom-hor.bx-menu-more-auto .bx-menu-submenu-more-auto .bx-menu-item .bx-btn {
+    color: #60a5fa;
 }
 .bx-menu-custom.bx-menu-custom-hor.bx-menu-more-auto .bx-menu-item.bx-base-general-ea-sa .sys-action-element-holder a span:not(.sys-action-do-icon) {
     display: none;
@@ -993,9 +1031,6 @@ ul.bx-menu-btns-icon-hor li:last-child .bx-btn {
     -webkit-justify-content: space-between;
     justify-content: space-between;
 }
-.bx-menu-ver.bx-menu-object-sys_profile_followings li .bx-menu-item-link > a {
-    text-transform: uppercase;
-}
 .bx-menu-ver.bx-menu-object-sys_profile_followings li a {
     -webkit-flex-grow: 3;
     flex-grow: 3;
@@ -1094,4 +1129,23 @@ ul.bx-menu-btns-icon-hor li:last-child .bx-btn {
 
 .bx-menu-meta-item-ex A{
     display: flex !important;
+}
+
+/*
+ * Where the main menu sits in the header (Designer > Settings > Header, or the template's own setting). In the
+ * middle it is centred in the header, not in the room between the logo and the toolbar: BxDolMenuMoreAuto moves the
+ * row there as far as that room allows (_balance). The #bx-toolbar selectors outrank tailwind.css, which centres the
+ * header's menu for templates without this setting.
+ */
+.bx-header-menu-start ul.bx-menu-main,
+#bx-toolbar .bx-header-menu-start ul.bx-menu-main {
+    justify-content: flex-start;
+}
+.bx-header-menu-center ul.bx-menu-main,
+#bx-toolbar .bx-header-menu-center ul.bx-menu-main {
+    justify-content: center;
+}
+.bx-header-menu-end ul.bx-menu-main,
+#bx-toolbar .bx-header-menu-end ul.bx-menu-main {
+    justify-content: flex-end;
 }

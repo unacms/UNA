@@ -26,7 +26,8 @@ class BxBaseMenuToolbar extends BxTemplMenu
     {
         $a = parent::getMenuItems ();
 
-        if (!isLogged())
+        // the account item's avatar is site markup; the apps draw their own (an API item carries no template parts)
+        if (!isLogged() || $this->_bIsApi)
             return $a;
 
         foreach ($a as $k => $r) {

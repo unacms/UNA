@@ -1472,6 +1472,12 @@ once a minute), a few hundred once after a change.
   from the site's origin (scheme, host and port all the same) or one in `sys_api_origins`.
   Other `Authorization` schemes, such as HTTP Basic in front of a staging site, are ignored.
 - Neither: a guest. `auth: 'required'` operations answer 401.
+- `Authorization: Bearer una_pat_<40 hex>`: a personal access token (`BxDolApiTokens`) that the
+  account made for itself in account settings > Connectors (operators also in Studio > Agents >
+  Connectors). It acts as the account's current profile, like an OAuth token, until it expires
+  (30, 90 or 365 days, or never) or the account revokes it. Only its sha256 is kept
+  (`sys_api_tokens`), so it is shown once; it is used mainly by AI assistants through the MCP
+  server below, and deleting the account deletes its tokens.
 - `PUT /me/active-profile` switches only between profiles of the token's account (403
   otherwise), even for admins, who can switch to anyone's profile on the site.
 
@@ -1510,6 +1516,65 @@ can't prove who it is (RFC 8252 8.6), so it always gets the consent page; confid
 (with a secret) keep the old shortcuts (one profile, or connected before). Sign-out should revoke
 the refresh token (`token_type_hint=refresh_token`) and then the access token at
 `/m/oauth2/revoke`.
+
+## MCP server
+
+`/api/mcp` (`api_mcp.php`, `BxDolMcpServer`) is a Model Context Protocol server (protocol
+`2026-07-28`, the version `tools/` speaks too) for AI assistants: one JSON-RPC message per POST,
+answered as JSON; a notification gets 202. It has its own switch, `sys_mcp_enable` (Studio >
+Agents > Settings, off as installed; 503 while off), apart from API v2's: it runs API v2's
+operations inside itself, with no `/api/v2` open. It needs a token: a personal access token or an
+OAuth one with the `api` scope (401 with `WWW-Authenticate` otherwise; the session cookie is not
+taken). It answers `initialize`, `server/discover`, `tools/list`, `tools/call` and `ping`. Its
+tool calls are counted in API v2's rate limits.
+
+**Connecting.** A person adds the URL in their assistant (Claude, ChatGPT: "add a custom
+connector") and signs in; nobody copies a token. That is the MCP authorization flow, on the OAuth2
+server module (`bx_oauth`):
+
+1. `/api/mcp` without a token answers 401 with
+   `WWW-Authenticate: Bearer resource_metadata="<site>/.well-known/oauth-protected-resource"`.
+2. `/.well-known/oauth-protected-resource` (RFC 9728) names the authorization server, the site
+   itself; `/.well-known/oauth-authorization-server` (RFC 8414) lists its endpoints. Both are
+   `api_mcp.php?_wk=...` behind the rewrite. A site in a folder of its host has them only under the
+   folder, so a client must follow `resource_metadata` there.
+3. The client registers itself at `/m/oauth2/register` (RFC 7591, `BxOAuthModule::actionRegister`):
+   a public client with an `mcp-` id, `https://` or loopback redirects, ten registrations a minute
+   from an address. Such a client signs in like the desktop app: PKCE with S256 is required, its
+   redirect matches exactly (a loopback one on any port), it gets the `api` scope when it asks for
+   none, and a `resource` it sends must be the MCP server (RFC 8707).
+4. The person signs in and approves it on the consent page, which says what it may do and where
+   the browser goes back to; the client gets an access token and a refresh token.
+
+Account settings > Connectors lists the apps the account connected (MCP clients, the desktop app,
+other OAuth clients) with a button to disconnect each: its codes and tokens are deleted. A personal
+access token is for developer tools that can't sign in.
+
+Clients of the versions before `2026-07-28` open with `initialize` and send no `_meta`; the server
+answers them too (`2025-11-25`, `2025-06-18`, `2025-03-26`, the `MCP-Protocol-Version` header), with
+no session.
+
+The tools act as the token's account, so the site's permission checks decide what they may do:
+
+- Every API v2 operation is a tool named by its operationId (`getMe`, `getProfile`, ...), except
+  uploads and streamed answers. Path and query params are arguments of their own, a JSON body is
+  the `body` argument, and paged lists take `cursor` and `limit`. A call runs through
+  `BxDolApiV2Router::dispatch()`: the operation's auth, rate limit, query and body checks, as for
+  an HTTP request. An error is a tool result with `isError` and the problem document.
+- Agent tools (`sys_agents_tools`) switched on in the two MCP columns of Studio > Agents > Tools, apart from
+  whether agents have them (the Agents column, `active`), and only those whose code allows it
+  (`BxDolAIToolFactory::isMcpAllowed()`: never MySQL Write or the tools that work only in an agent's chat). The
+  operator agent's own tools are listed there too, locked for agents, for their MCP switch:
+  - `mcp`: for operators (`isAdmin()`) whose Studio role has the action `use mcp` (Studio >
+    Roles; every role has it as installed). They act on the whole site; each call is logged to
+    `sys_agents`.
+  - `mcp_members`: for every member, and only a tool made for it can have it
+    (`BxDolAITool::isMemberSafe()`: the content and comments tools). The call runs in the
+    member's scope (`BxDolAITool::setMemberScope()`): it acts as the member whatever its
+    arguments say (`memberScopedArgs()` are left out of its schema), the module's own checks
+    decide (`checkAllowedView/Add/Edit/Delete`, the comments' `isViewAllowed`, `isPostAllowed`,
+    `isEditAllowed`, `isRemoveAllowed`), and accounts and profiles are refused. Agents never set
+    that scope, so their tools work as before.
 
 ## Rate limits
 

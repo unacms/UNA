@@ -86,23 +86,9 @@ BxForumMain.prototype.onChangeFilter = function (oFilter) {
 	
     if(sValueSearch == _t('_sys_grid_search'))
 		sValueSearch = '';
+
 	clearTimeout($this._iSearchTimeoutId);
 	$this._iSearchTimeoutId = setTimeout(function () {
         glGrids[$this._sObjNameGrid].setFilter(sValueFilter1 + $this._sParamsDivider + sValueFilter2 + $this._sParamsDivider + sValueFilter3 + $this._sParamsDivider + sValueSearch, true);
     }, 500);
-};
-
-BxForumMain.prototype.setFilter = function (sFilter, isReload) {
-
-    if (this._sFilter == sFilter)
-        return;
-
-    this._sFilter = sFilter;
-
-    if (isReload) {
-        if (sFilter.length > 0)
-            this.reload(0);
-        else
-            this.reload();
-    }
 };

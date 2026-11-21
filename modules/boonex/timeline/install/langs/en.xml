@@ -24,7 +24,7 @@
     <string name="_bx_timeline_option_events_per_page_account"><![CDATA[Number of items in context (profile) + subscriptions timeline]]></string>
     <string name="_bx_timeline_option_events_per_page_home"><![CDATA[Number of items in public timeline]]></string>
     <string name="_bx_timeline_option_events_per_page"><![CDATA[Number of items per page]]></string>
-    <string name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Enable Infinite Scroll]]></string>
+    <string name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Enable infinite scroll]]></string>
     <string name="_bx_timeline_option_events_per_preload"><![CDATA[Infinite Scroll: Number of items per preload]]></string>
     <string name="_bx_timeline_option_auto_preloads"><![CDATA[Infinite Scroll: Number of auto preloads]]></string>
     <string name="_bx_timeline_option_rss_length"><![CDATA[The length of RSS feed]]></string>
@@ -54,11 +54,11 @@
     <string name="_bx_timeline_option_hot_sources_content"><![CDATA[Add content]]></string>
     <string name="_bx_timeline_option_hot_sources_comment"><![CDATA[Add comment]]></string>
     <string name="_bx_timeline_option_hot_sources_vote"><![CDATA[Add vote]]></string>
-    <string name="_bx_timeline_option_hot_threshold_age"><![CDATA[Maximum age of commented/voted post that gets included in Hot feed (in days, 0 - no limit)]]></string>
+    <string name="_bx_timeline_option_hot_threshold_age"><![CDATA[Maximum age of a commented or voted post that can be in the Hot feed, days (0 = no limit)]]></string>
     <string name="_bx_timeline_option_hot_threshold_comment"><![CDATA[Minimum number of comments for content to appear in Hot feed]]></string>
     <string name="_bx_timeline_option_hot_threshold_vote"><![CDATA[Minimum number of votes for content to appear in Hot feed]]></string>
-    <string name="_bx_timeline_option_hot_interval"><![CDATA[Interval of time (in hours) to get Hot events (0 - no limit)]]></string>
-    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Adjustment coefficient  related  to content age (0 - no adjustment)]]></string>
+    <string name="_bx_timeline_option_hot_interval"><![CDATA[Time window for Hot events, hours (0 = no limit)]]></string>
+    <string name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Content age adjustment coefficient (0 = no adjustment)]]></string>
     <string name="_bx_timeline_option_enable_cache_item"><![CDATA[Enable item cache]]></string>
     <string name="_bx_timeline_option_cache_item_engine"><![CDATA[Item cache engine (other than File option may require custom server setup)]]></string>
     <string name="_bx_timeline_option_cache_item_lifetime"><![CDATA[Item cache lifetime]]></string>
@@ -67,7 +67,7 @@
     <string name="_bx_timeline_option_enable_editor_toolbar"><![CDATA[Enable post form editor toolbar]]></string>
     <string name="_bx_timeline_option_editor_auto_attach_insertion"><![CDATA[Treat images inserted in the editor as attachments]]></string>
     <string name="_bx_timeline_option_enable_media_priority"><![CDATA[Enable priority of media content over links in attachments]]></string>
-    <string name="_bx_timeline_option_limit_attach_links"><![CDATA[Limit number of attached links (0 - no limit)]]></string>
+    <string name="_bx_timeline_option_limit_attach_links"><![CDATA[Maximum attached links (0 = no limit)]]></string>
     <string name="_bx_timeline_option_extenals_every_public"><![CDATA[Show external event as every N-th in public timeline]]></string>
     <string name="_bx_timeline_option_extenals_every_owner"><![CDATA[Show external event as every N-th in context (profile) timeline]]></string>
     <string name="_bx_timeline_option_extenals_every_feed"><![CDATA[Show external event as every N-th in context (profile) + subscriptions timeline]]></string>
@@ -78,7 +78,7 @@
     <string name="_bx_timeline_option_extenals_every_feed_preload"><![CDATA[Show external event as every N-th in context (profile) + subscriptions timeline with Infinite Scroll enabled]]></string>
     <string name="_bx_timeline_option_extenals_every_hot_preload"><![CDATA[Show external event as every N-th in hot timeline with Infinite Scroll enabled]]></string>
     <string name="_bx_timeline_option_extenals_every_feed_and_hot_preload"><![CDATA[Show external event as every N-th in 'For You' timeline with Infinite Scroll enabled]]></string>
-    <string name="_bx_timeline_option_filters_style"><![CDATA[Filters: Style]]></string>
+    <string name="_bx_timeline_option_filters_style"><![CDATA[Filters: style]]></string>
     <string name="_bx_timeline_option_filters_style_default"><![CDATA[Default]]></string>
     <string name="_bx_timeline_option_filters_style_display"><![CDATA[Display]]></string>
     <string name="_bx_timeline_option_filters_contexts_hide"><![CDATA[Filters: By contexts]]></string>
@@ -116,7 +116,7 @@
     <string name="_bx_timeline_form_post_input_date_published_info"><![CDATA[Leave empty to publish immediately.]]></string>
     <string name="_bx_timeline_form_post_input_sys_link"><![CDATA[Link]]></string>
     <string name="_bx_timeline_form_post_input_link_alt"><![CDATA[Add Link]]></string>
-    <string name="_bx_timeline_form_post_input_link_err_delete"><![CDATA[Cannot remove the link. Please report.]]></string>
+    <string name="_bx_timeline_form_post_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string>
     <string name="_bx_timeline_form_post_input_sys_photo"><![CDATA[Photo]]></string>
     <string name="_bx_timeline_form_post_input_photo"><![CDATA[]]></string>
     <string name="_bx_timeline_form_post_input_photo_alt"><![CDATA[Add Photo]]></string>
@@ -136,8 +136,8 @@
     <string name="_bx_timeline_form_attach_link_display_add"><![CDATA[Attach Link]]></string>
     <string name="_bx_timeline_form_attach_link_input_sys_event_id"><![CDATA[Event ID]]></string>
     <string name="_bx_timeline_form_attach_link_input_sys_url"><![CDATA[Url]]></string>
-    <string name="_bx_timeline_form_attach_link_input_url"><![CDATA[Add Link]]></string>
-    <string name="_bx_timeline_form_attach_link_input_url_err"><![CDATA[Correct Link is essential. Please, fill in this field.]]></string>
+    <string name="_bx_timeline_form_attach_link_input_url"><![CDATA[Add link]]></string>
+    <string name="_bx_timeline_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string>
     <string name="_bx_timeline_form_attach_link_input_sys_do_submit"><![CDATA[Add]]></string>
     <string name="_bx_timeline_form_attach_link_input_do_submit"><![CDATA[Add]]></string>
     <string name="_bx_timeline_form_attach_link_input_do_cancel"><![CDATA[Close]]></string>
@@ -146,7 +146,7 @@
     <string name="_bx_timeline_form_poll_display_add"><![CDATA[Add Poll]]></string>
     <string name="_bx_timeline_form_poll_input_sys_text"><![CDATA[Question]]></string>
     <string name="_bx_timeline_form_poll_input_text"><![CDATA[Question]]></string>
-    <string name="_bx_timeline_form_poll_input_text_err"><![CDATA[Question is essential. Please, fill in this field]]></string>
+    <string name="_bx_timeline_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string>
     <string name="_bx_timeline_form_poll_input_sys_answers"><![CDATA[Answers]]></string>
     <string name="_bx_timeline_form_poll_input_answers"><![CDATA[Answers]]></string>
     <string name="_bx_timeline_form_poll_input_answers_err"><![CDATA[Poll should have at least 2 non-empty answers.]]></string>
@@ -176,7 +176,7 @@
     <string name="_bx_timeline_form_repost_input_sys_do_cancel"><![CDATA[Cancel]]></string>
     <string name="_bx_timeline_form_repost_input_do_cancel"><![CDATA[Cancel]]></string>
 
-    <string name="_bx_timeline_form_filters_input_by_contexts"><![CDATA[Contexts:]]></string>
+    <string name="_bx_timeline_form_filters_input_by_contexts"><![CDATA[Communities:]]></string>
     <string name="_bx_timeline_form_filters_input_by_contexts_any"><![CDATA[Any]]></string>
     <string name="_bx_timeline_form_filters_input_by_modules"><![CDATA[Content:]]></string>
     <string name="_bx_timeline_form_filters_input_by_modules_all"><![CDATA[All]]></string>
@@ -209,24 +209,24 @@
 
 
     <!-- Pages -->
-    <string name="_bx_timeline_page_title_sys_view"><![CDATA[Profile Feed]]></string>
-    <string name="_bx_timeline_page_title_view"><![CDATA[Profile Feed]]></string>
-    <string name="_bx_timeline_page_title_sys_view_home"><![CDATA[Public Feed]]></string>
-    <string name="_bx_timeline_page_title_view_home"><![CDATA[Public Feed]]></string>
-    <string name="_bx_timeline_page_title_sys_view_hot"><![CDATA[Hot Feed]]></string>
-    <string name="_bx_timeline_page_title_view_hot"><![CDATA[Hot Feed]]></string>
-    <string name="_bx_timeline_page_title_sys_item"><![CDATA[Feed Item]]></string>
-    <string name="_bx_timeline_page_title_item"><![CDATA[Feed Item]]></string>
-    <string name="_bx_timeline_page_title_sys_item_brief"><![CDATA[Feed Item Preview]]></string>
-    <string name="_bx_timeline_page_title_item_brief"><![CDATA[Feed Item Preview]]></string>
+    <string name="_bx_timeline_page_title_sys_view"><![CDATA[Profile feed]]></string>
+    <string name="_bx_timeline_page_title_view"><![CDATA[Profile feed]]></string>
+    <string name="_bx_timeline_page_title_sys_view_home"><![CDATA[Public feed]]></string>
+    <string name="_bx_timeline_page_title_view_home"><![CDATA[Public feed]]></string>
+    <string name="_bx_timeline_page_title_sys_view_hot"><![CDATA[Hot feed]]></string>
+    <string name="_bx_timeline_page_title_view_hot"><![CDATA[Hot feed]]></string>
+    <string name="_bx_timeline_page_title_sys_item"><![CDATA[Feed item]]></string>
+    <string name="_bx_timeline_page_title_item"><![CDATA[Feed item]]></string>
+    <string name="_bx_timeline_page_title_sys_item_brief"><![CDATA[Feed item preview]]></string>
+    <string name="_bx_timeline_page_title_item_brief"><![CDATA[Feed item preview]]></string>
     <string name="_bx_timeline_page_title_sys_account"><![CDATA[Feed]]></string>
     <string name="_bx_timeline_page_title_account"><![CDATA[Feed]]></string>
-    <string name="_bx_timeline_page_title_sys_manage_administration"><![CDATA[Manage All]]></string>
+    <string name="_bx_timeline_page_title_sys_manage_administration"><![CDATA[Manage all]]></string>
     <string name="_bx_timeline_page_title_manage"><![CDATA[Manage]]></string>
-    <string name="_bx_timeline_page_block_title_system_post_profile"><![CDATA[Post to Сontext Feed]]></string>
-    <string name="_bx_timeline_page_block_title_post_profile"><![CDATA[Post to Feed]]></string>
+    <string name="_bx_timeline_page_block_title_system_post_profile"><![CDATA[Post to Context Feed]]></string>
+    <string name="_bx_timeline_page_block_title_post_profile"><![CDATA[Post to feed]]></string>
     <string name="_bx_timeline_page_block_title_system_view_profile"><![CDATA[Profile Feed (Timeline)]]></string>
-    <string name="_bx_timeline_page_block_title_view_profile"><![CDATA[Profile Feed]]></string>
+    <string name="_bx_timeline_page_block_title_view_profile"><![CDATA[Profile feed]]></string>
     <string name="_bx_timeline_page_block_title_system_view_profile_outline"><![CDATA[Profile Feed (Outline)]]></string>
     <string name="_bx_timeline_page_block_title_view_profile_outline"><![CDATA[Profile Feed]]></string>
     <string name="_bx_timeline_page_block_title_item"><![CDATA[Item]]></string>
@@ -246,15 +246,15 @@
     <string name="_bx_timeline_page_block_title_system_views_outline"><![CDATA[All Feeds (Outline)]]></string>
     <string name="_bx_timeline_page_block_title_views_outline"><![CDATA[Feed]]></string>        
     <string name="_bx_timeline_page_block_title_system_post_home"><![CDATA[Post to Public Feed]]></string>
-    <string name="_bx_timeline_page_block_title_post_home"><![CDATA[Post to Feed]]></string>
+    <string name="_bx_timeline_page_block_title_post_home"><![CDATA[Post to feed]]></string>
     <string name="_bx_timeline_page_block_title_system_view_home"><![CDATA[Public Feed (Timeline)]]></string>
     <string name="_bx_timeline_page_block_title_view_home"><![CDATA[Public Feed]]></string>
     <string name="_bx_timeline_page_block_title_system_view_home_outline"><![CDATA[Public Feed (Outline)]]></string>
-    <string name="_bx_timeline_page_block_title_view_home_outline"><![CDATA[Public Feed]]></string>
+    <string name="_bx_timeline_page_block_title_view_home_outline"><![CDATA[Public feed]]></string>
     <string name="_bx_timeline_page_block_title_system_view_hot"><![CDATA[Hot Feed (Timeline)]]></string>
     <string name="_bx_timeline_page_block_title_view_hot"><![CDATA[Hot Feed]]></string>
     <string name="_bx_timeline_page_block_title_system_view_hot_outline"><![CDATA[Hot Feed (Outline)]]></string>
-    <string name="_bx_timeline_page_block_title_view_hot_outline"><![CDATA[Hot Feed]]></string>
+    <string name="_bx_timeline_page_block_title_view_hot_outline"><![CDATA[Hot feed]]></string>
     <string name="_bx_timeline_page_block_title_system_menu_db"><![CDATA[Dynamic Browsing: Menu]]></string>
     <string name="_bx_timeline_page_block_title_menu_db"><![CDATA[Feeds]]></string>
     <string name="_bx_timeline_page_block_title_system_views_db"><![CDATA[Dynamic Browsing: Views]]></string>
@@ -310,17 +310,18 @@
     <string name="_bx_timeline_menu_item_view_owner"><![CDATA[Posts by {0}]]></string>
     <string name="_bx_timeline_menu_item_view_other"><![CDATA[Posts by others]]></string>
     <string name="_bx_timeline_menu_item_get_rss"><![CDATA[RSS]]></string>
+    <string name="_bx_timeline_menu_item_info_onboarding_post"><![CDATA[A post in the feed shows new members what the site is about.]]></string>
 
     <string name="_bx_timeline_menu_title_item_share"><![CDATA[Share Item]]></string>
     <string name="_bx_timeline_menu_set_title_item_share"><![CDATA[Share Item]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_repost"><![CDATA[Repost]]></string>
     <string name="_bx_timeline_menu_item_title_item_repost"><![CDATA[Repost]]></string>
-    <string name="_bx_timeline_menu_item_title_system_item_repost_with"><![CDATA[Repost with Text]]></string>
-    <string name="_bx_timeline_menu_item_title_item_repost_with"><![CDATA[Repost with Text]]></string>
-    <string name="_bx_timeline_menu_item_title_system_item_repost_to"><![CDATA[Repost to Context]]></string>
-    <string name="_bx_timeline_menu_item_title_item_repost_to"><![CDATA[Repost to Context]]></string>
+    <string name="_bx_timeline_menu_item_title_system_item_repost_with"><![CDATA[Repost with text]]></string>
+    <string name="_bx_timeline_menu_item_title_item_repost_with"><![CDATA[Repost with text]]></string>
+    <string name="_bx_timeline_menu_item_title_system_item_repost_to"><![CDATA[Repost to context]]></string>
+    <string name="_bx_timeline_menu_item_title_item_repost_to"><![CDATA[Repost to a community]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_send"><![CDATA[Send]]></string>
-    <string name="_bx_timeline_menu_item_title_item_send"><![CDATA[Send to Friend]]></string>
+    <string name="_bx_timeline_menu_item_title_item_send"><![CDATA[Send to friend]]></string>
     <string name="_bx_timeline_menu_item_title_system_item_copy"><![CDATA[Copy to clipboard]]></string>
     <string name="_bx_timeline_menu_item_title_item_copy"><![CDATA[Copy to clipboard]]></string>
     <string name="_bx_timeline_menu_item_title_system_admt_timeline"><![CDATA[Timeline]]></string>
@@ -346,8 +347,8 @@
     <string name="_bx_timeline_menu_item_title_item_delete"><![CDATA[{delete_title}]]></string>
     <string name="_bx_timeline_menu_item_title_item_delete_common"><![CDATA[Delete]]></string>
     <string name="_bx_timeline_menu_item_title_item_delete_system"><![CDATA[Hide from feeds]]></string>
-    <string name="_bx_timeline_menu_item_title_system_item_mute"><![CDATA[Mute Author]]></string>
-    <string name="_bx_timeline_menu_item_title_item_mute"><![CDATA[Mute Author]]></string>
+    <string name="_bx_timeline_menu_item_title_system_item_mute"><![CDATA[Mute author]]></string>
+    <string name="_bx_timeline_menu_item_title_item_mute"><![CDATA[Mute author]]></string>
 
     <string name="_bx_timeline_menu_title_item_actions"><![CDATA[Item Actions]]></string>
     <string name="_bx_timeline_menu_set_title_item_actions"><![CDATA[Item Actions]]></string>
@@ -369,21 +370,21 @@
 
     <string name="_bx_timeline_menu_title_post_attachments"><![CDATA[Form Attachments]]></string>
     <string name="_bx_timeline_menu_set_title_post_attachments"><![CDATA[Form Attachments]]></string>
-    <string name="_bx_timeline_menu_item_title_system_add_link"><![CDATA[Add Link]]></string>
-    <string name="_bx_timeline_menu_item_title_add_link"><![CDATA[Add Link]]></string>
+    <string name="_bx_timeline_menu_item_title_system_add_link"><![CDATA[Add link]]></string>
+    <string name="_bx_timeline_menu_item_title_add_link"><![CDATA[Add link]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_photo_simple"><![CDATA[Add Photo (Simple)]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_photo_html5"><![CDATA[Add Photo (HTML5)]]></string>
-    <string name="_bx_timeline_menu_item_title_add_photo"><![CDATA[Add Photo]]></string>
+    <string name="_bx_timeline_menu_item_title_add_photo"><![CDATA[Add photo]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_video_simple"><![CDATA[Add Video (Simple)]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_video_html5"><![CDATA[Add Video (HTML5)]]></string>
-    <string name="_bx_timeline_menu_item_title_add_file"><![CDATA[Add File]]></string>
+    <string name="_bx_timeline_menu_item_title_add_file"><![CDATA[Add file]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_file_simple"><![CDATA[Add File (Simple)]]></string>
     <string name="_bx_timeline_menu_item_title_system_add_file_html5"><![CDATA[Add File (HTML5)]]></string>
-    <string name="_bx_timeline_menu_item_title_add_video"><![CDATA[Add Video]]></string>
-    <string name="_bx_timeline_menu_item_title_system_add_video_record"><![CDATA[Record Video]]></string>
-    <string name="_bx_timeline_menu_item_title_add_video_record"><![CDATA[Record Video]]></string>
-    <string name="_bx_timeline_menu_item_title_system_add_poll"><![CDATA[Add Poll]]></string>
-    <string name="_bx_timeline_menu_item_title_add_poll"><![CDATA[Add Poll]]></string>
+    <string name="_bx_timeline_menu_item_title_add_video"><![CDATA[Add video]]></string>
+    <string name="_bx_timeline_menu_item_title_system_add_video_record"><![CDATA[Record video]]></string>
+    <string name="_bx_timeline_menu_item_title_add_video_record"><![CDATA[Record video]]></string>
+    <string name="_bx_timeline_menu_item_title_system_add_poll"><![CDATA[Add poll]]></string>
+    <string name="_bx_timeline_menu_item_title_add_poll"><![CDATA[Add poll]]></string>
     <string name="_bx_timeline_menu_item_title_system_timeline"><![CDATA[Timeline]]></string>
     <string name="_bx_timeline_menu_item_title_timeline"><![CDATA[Timeline]]></string>
     <string name="_bx_timeline_menu_item_title_system_create_entry"><![CDATA[Update]]></string>
@@ -391,7 +392,9 @@
     <string name="_bx_timeline_menu_item_title_system_view_timeline_view"><![CDATA[Timeline]]></string>
     <string name="_bx_timeline_menu_item_title_view_timeline_view"><![CDATA[Timeline]]></string>
     <string name="_bx_timeline_menu_item_title_system_manage_my_timeline"><![CDATA[Timeline]]></string>
+    <string name="_bx_timeline_menu_item_title_system_onboarding_post"><![CDATA[Write the first post]]></string>
     <string name="_bx_timeline_menu_item_title_manage_my_timeline"><![CDATA[Timeline]]></string>
+    <string name="_bx_timeline_menu_item_title_onboarding_post"><![CDATA[Write the first post]]></string>
 
     <!-- Grids -->
     <string name="_bx_timeline_grid_filter_item_title_adm_select_one_filter1"><![CDATA[All Statuses]]></string>
@@ -421,11 +424,11 @@
     <string name="_bx_timeline_alert_action_repost_follow_context"><![CDATA[New content repost]]></string>
 
     <string name="_bx_timeline_txt_msg_no_results"><![CDATA[Empty]]></string>
-    <string name="_bx_timeline_txt_msg_performed_action"><![CDATA[The action was successfully performed.]]></string>
-    <string name="_bx_timeline_txt_msg_posted"><![CDATA[Posted successfully.]]></string>
+    <string name="_bx_timeline_txt_msg_performed_action"><![CDATA[Done.]]></string>
+    <string name="_bx_timeline_txt_msg_posted"><![CDATA[Posted.]]></string>
     <string name="_bx_timeline_grid_action_err_delete"><![CDATA[Cannot delete the selected timeline events(s).]]></string>
     <string name="_bx_timeline_txt_err_cannot_perform_insertion"><![CDATA[Cannot perform insertion.]]></string>
-    <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+    <string name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_timeline_txt_err_empty_post"><![CDATA[The post is empty.]]></string>
     <string name="_bx_timeline_txt_err_attach_links"><![CDATA[The maximum allowed number of attached links has been reached.]]></string>
     <string name="_bx_timeline_txt_file_alt"><![CDATA[File]]></string>
@@ -483,22 +486,23 @@
 
     <string name="_bx_timeline_txt_do_repost"><![CDATA[Repost]]></string>
     <string name="_bx_timeline_txt_do_repost_with"><![CDATA[Repost with Text]]></string>
-    <string name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to Context]]></string>
+    <string name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to a community]]></string>
     <string name="_bx_timeline_txt_empty_feed_create"><![CDATA[Create new…]]></string>
     <string name="_bx_timeline_txt_empty_feed_text"><![CDATA[Write a new post or follow someone to get started.]]></string>
     <string name="_bx_timeline_txt_empty_feed_title"><![CDATA[Nothing here yet]]></string>
     <string name="_bx_timeline_txt_repost_counter"><![CDATA[{0}]]></string>
     <string name="_bx_timeline_txt_reposted"><![CDATA[Reposted {0}'s {1}.]]></string>
     <string name="_bx_timeline_txt_reposted_by"><![CDATA[Reposted by]]></string>
-    <string name="_bx_timeline_txt_err_cannot_repost"><![CDATA[Cannot repost. Please report.]]></string>
+    <string name="_bx_timeline_txt_err_cannot_repost"><![CDATA[The post could not be reposted. Please try again.]]></string>
     <string name="_bx_timeline_txt_err_already_reposted"><![CDATA[You already reposted the item.]]></string>
-    <string name="_bx_timeline_txt_msg_success_repost"><![CDATA[The item was successfully reposted.]]></string>
+    <string name="_bx_timeline_txt_msg_success_repost"><![CDATA[Reposted.]]></string>
     <string name="_bx_timeline_txt_object_reposted"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> reposted a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
 
     <string name="_bx_timeline_txt_poll_view_answers"><![CDATA[poll]]></string>
     <string name="_bx_timeline_txt_poll_view_results"><![CDATA[results]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_do_by"><![CDATA[Voted for]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_counter"><![CDATA[{0} votes]]></string>
+    <string name="_bx_timeline_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string>
     <string name="_bx_timeline_txt_poll_answer_vote_percent"><![CDATA[({0}%)]]></string>
 
     <!-- EMAIL TEMPLATES -->

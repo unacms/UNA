@@ -114,9 +114,12 @@ export default function UnaSplash({ code, data }: Readonly<UnaSplashProps>) {
         return () => root.removeEventListener('click', onClick)
     }, [router])
 
+    // As wide as the page (`max-w-8xl` follows UNA's page width) with the page's 16px sides, as the site shows the
+    // splash inside its page: the code's own widths (the default's 88rem) never pass the header's row. Text without a
+    // colour of its own takes the page's text colour, as on the site (gray-600 / gray-400 there).
     return (
-        <View className="flex-auto w-full">
-            <div ref={rootRef} className="neo-splash flex flex-auto flex-col w-full">
+        <View className="flex-auto w-full max-w-8xl mx-auto px-4">
+            <div ref={rootRef} className="neo-splash flex flex-auto flex-col w-full text-secondary-foreground">
                 {content}
             </div>
         </View>

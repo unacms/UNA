@@ -79,8 +79,10 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
         // Latest Stable and Latest Beta each show the newest version on that channel: green when the site has it, orange when it is newer.
         $bUpgradeAvailable = false;
         $aRows = [];
+        $aLatest = [];
         foreach(['stable', 'beta'] as $sChannel) {
             list($sVersion, $bNewer, $bUpgrade) = $this->getVersionChannelInfo($sChannel);
+            $aLatest[$sChannel] = $sVersion;
 
             if($sVersion)
                 $aRows[$sChannel] = ['status' => $bNewer ? 'warn' : 'ok', 'value' => $sVersion];
@@ -92,44 +94,73 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
                 $bUpgradeAvailable = true;
         }
 
-        // The Apps row is named after the number of installed apps; its value is the number waiting for an update.
-        $sApps = $this->getAppsCountText();
-        $mixedUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
-        if(!is_array($mixedUpdates))
-            $aApps = ['status' => 'undef', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ht_na')];
-        else if(($iUpdates = count($mixedUpdates)) > 0)
-            $aApps = ['status' => 'warn', 'name' => $sApps, 'value' => '<a href="' . BX_DOL_URL_STUDIO . 'store.php?page=updates">' . _t('_adm_dbd_txt_ver_apps_updates', $iUpdates) . '</a>'];
-        else
-            $aApps = ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
-
         return [
             'upgrade' => (int)$bUpgradeAvailable,
+            'current' => $this->getVersionStatus(bx_get_ver(), $aLatest['stable'], $aLatest['beta'], getParam('sys_upgrade_channel') == 'beta' ? 'beta' : 'stable'),
             'stable' => $aRows['stable'],
             'beta' => $aRows['beta'],
-            'apps' => $aApps
+            'apps' => $this->getVersionAppsRow()
         ];
     }
 
+    /**
+     * The Updates block's Apps row: named after the number of installed apps; its value is the number waiting for an update.
+     */
+    protected function getVersionAppsRow()
+    {
+        $sApps = $this->getAppsCountText();
+        $mixedUpdates = BxDolStudioInstallerUtils::getInstance()->checkUpdates();
+        if(!is_array($mixedUpdates)) {
+            return ['status' => 'undef', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ht_na')];
+        }
+
+        $iUpdates = count($mixedUpdates);
+        if($iUpdates > 0) {
+            return ['status' => 'warn', 'name' => $sApps, 'value' => '<a href="' . BX_DOL_URL_STUDIO . 'store.php?page=updates">' . _t('_adm_dbd_txt_ver_apps_updates', $iUpdates) . '</a>'];
+        }
+
+        return ['status' => 'ok', 'name' => $sApps, 'value' => _t('_adm_dbd_txt_ver_up_to_date')];
+    }
+
+    /**
+     * The count on the launcher's Dashboard tile, worked out on every Studio page (launcher-update-cache), so it asks no
+     * other server: a newer release from the version server's last answer (BxDolUpgrader::getVersionUpdateInfoCached), and a
+     * failed PHP, database or web server row in the last server audit, which the Dashboard keeps (getAuditReport).
+     */
     public function serviceGetWidgetNotices() {
     	$iResult = 0;
 
     	//--- Check Version: a newer release on the channel the site follows
-    	list(, $bNewer) = $this->getVersionChannelInfo(getParam('sys_upgrade_channel') == 'beta' ? 'beta' : 'stable');
-    	if($bNewer)
+    	$oUpgrader = bx_instance('BxDolUpgrader');
+    	$aUpdateInfo = $oUpgrader->getVersionUpdateInfoCached();
+    	if(is_array($aUpdateInfo) && $oUpgrader->isNewVersionAvailable($aUpdateInfo))
     		$iResult += 1;
 
     	//--- Check Host Requirements
-		$oAudit = new BxDolStudioToolsAudit();
-
-    	foreach($this->aItemsHTools as $sTitle => $sFunc) {
-    		$aResult = $oAudit->checkRequirements(BX_DOL_AUDIT_FAIL, $sFunc);
-			if(!empty($aResult)) {
-				$iResult += 1;
-				break;
-			}
-    	}
+    	if($this->hasHostRequirementsFailed(json_decode((string)getParam('sys_audit_report'), true)))
+    		$iResult += 1;
 
     	return $iResult;
+    }
+
+    /**
+     * Whether a server audit report (BxDolStudioToolsAudit::getReport) has a failed row in its PHP, database or web server section.
+     */
+    public function hasHostRequirementsFailed($aReport)
+    {
+        if(empty($aReport['sections']) || !is_array($aReport['sections']))
+            return false;
+
+        foreach($aReport['sections'] as $aSection) {
+            if(!is_array($aSection) || !isset($aSection['name']) || !in_array($aSection['name'], ['php', 'database', 'webserver'], true) || empty($aSection['rows']) || !is_array($aSection['rows']))
+                continue;
+
+            foreach($aSection['rows'] as $aRow)
+                if(is_array($aRow) && isset($aRow['type']) && $aRow['type'] === 'fail')
+                    return true;
+        }
+
+        return false;
     }
 
     /**
@@ -180,14 +211,13 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
         // when the running version was applied: the last update, or the installation itself when it was never updated
         $iApplied = $aSysInfo['updated'] > 0 ? $aSysInfo['updated'] : $aSysInfo['date'];
 
-        // the last status row: whether the site can receive automatic updates (see isAutoUpdateAccess)
+        // in the hero, beside "Check for updates": the way to get automatic updates, or a note that the site has them (see isAutoUpdateAccess)
         $bAccess = $this->isAutoUpdateAccess();
 
         $sContent = BxDolStudioTemplate::getInstance()->parseHtmlByName('dbd_versions.html', array(
             'js_object' => $sJsObject,
             'domain' => getParam('site_title'),
             'version' => bx_get_ver(),
-            'version_time' => _t('_adm_dbd_txt_ver_applied', bx_time_js($iApplied, BX_FORMAT_DATE_TIME, true)),
             'bx_repeat:toggles' => $aTmplVarsToggles,
             'installed' => bx_time_js($aSysInfo['date'], BX_FORMAT_DATE, true),
             'updated' => bx_time_js($iApplied, BX_FORMAT_DATE, true),
@@ -198,10 +228,9 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'icon_apps' => $this->getChartIcon('layout-grid')['svg'],
             'apps' => $this->getAppsCountText(),
             'checking' => _t('_adm_dbd_txt_ver_checking'),
-            'icon_access' => $this->getChartIcon('badge-check')['svg'],
-            'access_class' => $bAccess ? ' bx-dbd-htools-item-ok' : '', // the same bx_if twice in one row would be cut as one span by the template parser
             'bx_if:access_active' => ['condition' => $bAccess, 'content' => []],
-            'bx_if:access_inactive' => ['condition' => !$bAccess, 'content' => [
+            // with the Automatic updates switch already on, a button to "enable" them would contradict it
+            'bx_if:access_inactive' => ['condition' => !$bAccess && getParam('sys_autoupdate') != 'on', 'content' => [
                 'access_url' => 'https://unacms.com/start' // a bx_if block only sees its own content
             ]]
         ));
@@ -569,18 +598,29 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             }
 
             // Status rows: a row per section of the last audit with its headline (a version) or its outcome, and the issue count when it has issues.
+            // A section with warnings or failures is a button that opens its rows in the Audit tab (dashboard.js auditOpen).
+            $sChevron = $this->getChartIcon('chevron-right')['svg'];
             foreach($this->getAuditReport()['sections'] as $aSection) {
                 $aSummary = $this->getAuditSectionSummary($aSection);
-                $aTmplVarsItems[] = [
+                $aRow = [
+                    'js_object' => $sJsObject,
+                    'name' => $aSection['name'],
                     'status' => $aSummary['status'],
                     'status_title' => _t('_sys_audit_title_' . $aSummary['status']), // read out in place of the dot's colour
                     'icon' => $this->getChartIcon($aSection['icon'])['svg'],
+                    'icon_chevron' => $sChevron,
                     'title' => $aSection['title'],
                     'value' => $aSummary['value'],
                     'bx_if:show_desc' => [
                         'condition' => $aSummary['desc'] !== '',
                         'content' => ['desc' => $aSummary['desc']]
                     ]
+                ];
+
+                $bIssues = in_array($aSummary['status'], ['warn', 'fail']);
+                $aTmplVarsItems[] = [
+                    'bx_if:show_plain' => ['condition' => !$bIssues, 'content' => $aRow],
+                    'bx_if:show_link' => ['condition' => $bIssues, 'content' => $aRow],
                 ];
             }
         }
@@ -761,6 +801,57 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
             'js_object' => $this->getPageJsObject(),
             'chart_data' => $sChartData,
         ])];
+    }
+
+    /**
+     * The line under the installed version in the Updates hero: the latest stable or beta release (green), the update that is
+     * available (red; the followed channel's release when it is newer; the other channel's when the installed version is neither
+     * latest release, e.g. an older beta on the stable channel), a version newer than both
+     * releases (a development copy) or a failed check (gray).
+     * @param string $sInstalled the installed version
+     * @param string $sStable latest stable release, '' when the check failed
+     * @param string $sBeta latest beta release, '' when the check failed
+     * @param string $sChannel the channel the site follows: stable or beta
+     * @return array [status: ok / fail / undef, value: the text]
+     */
+    public function getVersionStatus($sInstalled, $sStable, $sBeta, $sChannel)
+    {
+        $iStable = $this->compareVersion($sStable, $sInstalled);
+        $iBeta = $this->compareVersion($sBeta, $sInstalled);
+        $bBeta = $sChannel == 'beta';
+        $iFollowed = $bBeta ? $iBeta : $iStable; // the channel the site follows
+        $iOther = $bBeta ? $iStable : $iBeta;
+
+        // the first that holds: [condition, status, language key, version]; neither latest and nothing newer is a development copy
+        $aChecks = [
+            [$iStable === null && $iBeta === null, 'undef', '_adm_dbd_txt_ver_check_failed', ''],
+            [$iFollowed === 1, 'fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sBeta : $sStable],
+            [$iStable === 0, 'ok', '_adm_dbd_txt_ver_is_latest_stable', ''],
+            [$iBeta === 0, 'ok', '_adm_dbd_txt_ver_is_latest_beta', ''],
+            // an older beta on the stable channel (or an older stable on the beta one) is behind the other channel's release
+            [$iOther === 1, 'fail', '_adm_dbd_txt_ver_update_to', $bBeta ? $sStable : $sBeta],
+        ];
+        $aStatus = ['undef', '_adm_dbd_txt_ver_is_newer', ''];
+        foreach($aChecks as $aCheck) {
+            if($aCheck[0]) {
+                $aStatus = array_slice($aCheck, 1);
+                break;
+            }
+        }
+
+        return ['status' => $aStatus[0], 'value' => _t($aStatus[1], bx_process_output($aStatus[2]))];
+    }
+
+    /**
+     * @return int|null 1 when the release is newer than the installed version, 0 when it is the same, -1 when older, null when the check gave none
+     */
+    protected function compareVersion($sRelease, $sInstalled)
+    {
+        if($sRelease === '') {
+            return null;
+        }
+
+        return version_compare(strtolower($sRelease), strtolower($sInstalled));
     }
 
     /**

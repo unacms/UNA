@@ -40,6 +40,10 @@ These apply to UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, and install 
 - Set `active_api` in `modules/system/install/sql/enable-app-pages.sql` (page blocks, including their `config_api`) and `modules/system/install/sql/enable-app-menus.sql` (menu items) for core, for modules use `modules/boonex/*/install/sql/enable-app.sql` files. Do not set it in `install.sql`, `enable.sql`, or other common install and enable scripts.
 - Requirements: PHP 8.3 and newer, MySQL 5.7.8/MariaDB 10.2.3 and newer
 
+## Wording
+
+Before writing or changing an English string that members or admins see (titles, menus, option captions, errors, email subjects), read [`.agents/skills/una-vocabulary/SKILL.md`](.agents/skills/una-vocabulary/SKILL.md). It also lists the legacy `bx_`/`Dol` names that are never renamed.
+
 ## Studio app icons
 
 Before adding or changing a launcher tile (`studio/template/images/icons/wi-*.svg`, `modules/**/template/images/icons/std-icon.svg`), read [`.agents/skills/studio-icons/SKILL.md`](.agents/skills/studio-icons/SKILL.md).

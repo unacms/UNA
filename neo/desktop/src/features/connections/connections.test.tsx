@@ -13,7 +13,7 @@ import { SyncProvider } from '../../lib/sync-provider';
 import { type CommandHandler, Shell } from '../../shell/shell';
 import type { NavItem } from '../../shell/sidebar';
 import { rowMenuActions } from '../profile/connections-list';
-import { connectionsTabs } from './connections-page';
+import { connectionsTabs, tabSource } from './connections-page';
 
 const person = (id: string, name: string, badges?: Schema<'Profile'>['badges']): Schema<'Profile'> => ({
     id,
@@ -131,7 +131,7 @@ describe('Connections', () => {
         const tabs = within(pane()).getByRole('tablist', { name: 'Connections' });
         // the count comes with the sync
         await within(tabs).findByRole('tab', { name: 'Requests, 1 waiting' });
-        expect(within(tabs).getAllByRole('tab').map((t) => t.textContent)).toEqual(['Friends', 'Requests1, 1 waiting', 'Sent', 'Following', 'Followers']);
+        expect(within(tabs).getAllByRole('tab').map((t) => t.textContent)).toEqual(['Friends', 'Requests1, 1 waiting', 'Sent', 'Following', 'Followers', 'Suggestions']);
         expect(within(tabs).getByRole('tab', { name: 'Friends' }).getAttribute('aria-selected')).toBe('true');
         expect(within(tabs).getByRole('tab', { name: 'Requests, 1 waiting' })).toBeTruthy();
         const list = await within(pane()).findByRole('list', { name: 'Your friends, newest friendship first' });
@@ -202,8 +202,131 @@ describe('Connections', () => {
         expect(rowMenuActions({ kind: 'list', profileId: '4', list: 'following' })).toEqual(['unfollow']);
         expect(rowMenuActions({ kind: 'list', profileId: '4', list: 'followers' })).toEqual([]);
         expect(rowMenuActions({ kind: 'requests' })).toEqual([]);
-        expect(connectionsTabs(false)).toEqual(['following', 'followers']);
-        expect(connectionsTabs(undefined)).toEqual(['friends', 'requests', 'sent', 'following', 'followers']);
+        expect(rowMenuActions({ kind: 'suggested', friends: true })).toEqual([]);
+        expect(connectionsTabs(false)).toEqual(['following', 'followers', 'suggested']);
+        expect(connectionsTabs(undefined)).toEqual(['friends', 'requests', 'sent', 'following', 'followers', 'suggested']);
+    });
+});
+
+const suggestions = (profiles: Schema<'Profile'>[], next: string | null = null) => ({ status: 200, body: { items: profiles.map((profile, i) => ({ profile, score: 10 - i })), next_cursor: next } });
+
+describe('Connections’ Suggestions', () => {
+    it('is a tab of its own, written into the path, and back', () => {
+        const route = connectionsRoute('suggested');
+        expect(routeToPath(route)).toBe('/connections?tab=suggested');
+        expect(parseRoute('/connections?tab=suggested')).toEqual(route);
+        expect(tabSource('suggested', '4', true)).toEqual({ kind: 'suggested', friends: true });
+        expect(tabSource('suggested', '4', undefined)).toEqual({ kind: 'suggested', friends: true });
+        expect(tabSource('suggested', '4', false)).toEqual({ kind: 'suggested', friends: false });
+        expect(tabSource('requests', '4', true)).toEqual({ kind: 'requests' });
+        expect(tabSource('following', '4', true)).toEqual({ kind: 'list', profileId: '4', list: 'following' });
+    });
+
+    it('lists people one may know, page by page, with no date under the name', async () => {
+        const later = person('14', 'Zoe');
+        const { api, calls } = site({
+            'GET /me/recommendations/friends': (request) => (new URL(request.url).searchParams.get('cursor') === 'p2' ? suggestions([later, tom]) : suggestions([tom, ana], 'p2')),
+        });
+        renderApp(connectionsRoute('suggested'), api);
+        const list = await within(pane()).findByRole('list', { name: 'People you may know, best match first' });
+        expect(within(list).getAllByRole('listitem')).toHaveLength(2);
+        expect(list.querySelector('time')).toBeNull();
+        fireEvent.click(within(pane()).getByRole('button', { name: 'Load more' }));
+        // Tom on both pages shows once
+        await waitFor(() => expect(within(list).getAllByRole('listitem')).toHaveLength(3));
+        expect(within(list).getByRole('button', { name: 'Zoe' })).toBeTruthy();
+        expect(calls).not.toContain('GET /me/recommendations/follows');
+    });
+
+    it('asks to be friends from the row, keeping the row and the focus', async () => {
+        // the site leaves Tom out once asked: the row stays until the list is next read
+        let asked = false;
+        const { api, calls } = site({
+            'GET /me/recommendations/friends': () => suggestions(asked ? [ana] : [tom, ana]),
+            'POST /profiles/10/friend': () => {
+                asked = true;
+                return { status: 200, body: { status: 'requested' } };
+            },
+        });
+        renderApp(connectionsRoute('suggested'), api);
+        const list = await within(pane()).findByRole('list', { name: 'People you may know, best match first' });
+        const add = within(list).getByRole('button', { name: 'Add friend, Tom' });
+        add.focus();
+        fireEvent.click(add);
+        await within(list).findByRole('button', { name: 'Requested, Tom' });
+        expect(calls).toContain('POST /profiles/10/friend');
+        // the graph's refresh has run (the page's own counts are read again) and still the row is there
+        await waitFor(() => expect(calls.filter((c) => c === 'GET /profiles/4/connections').length).toBeGreaterThan(1));
+        expect(calls.filter((c) => c === 'GET /me/recommendations/friends')).toHaveLength(1);
+        expect(document.activeElement).toBe(within(list).getByRole('button', { name: 'Requested, Tom' }));
+        expect(within(list).getAllByRole('listitem')).toHaveLength(2);
+        // pressed again, it asks nothing more
+        fireEvent.click(within(list).getByRole('button', { name: 'Requested, Tom' }));
+        expect(calls.filter((c) => c === 'POST /profiles/10/friend')).toHaveLength(1);
+    });
+
+    it('says why the site refused, under the row', async () => {
+        const { api } = site({
+            'GET /me/recommendations/friends': () => suggestions([tom]),
+            'POST /profiles/10/friend': () => ({ status: 403, body: { type: 'urn:una:problem:forbidden', title: 'Forbidden', status: 403, code: 'forbidden', detail: 'Tom takes no friend requests' } }),
+        });
+        renderApp(connectionsRoute('suggested'), api);
+        const list = await within(pane()).findByRole('list', { name: 'People you may know, best match first' });
+        fireEvent.click(within(list).getByRole('button', { name: 'Add friend, Tom' }));
+        const alert = await within(list).findByRole('alert');
+        expect(alert.textContent).toBe('Tom takes no friend requests');
+        // under the name, not among the row's buttons
+        expect(alert.closest('.list-main')).toBeTruthy();
+        expect(within(list).getByRole('button', { name: 'Add friend, Tom' })).toBeTruthy();
+    });
+
+    it('offers profiles to follow where the profile can’t have friends', async () => {
+        const { api, calls } = site({
+            'GET /profiles/4/connections': () => ({ status: 200, body: { followers: 0, following: 0, friends: 0, viewer: null, lists: { followers: true, following: true, friends: false } } }),
+            'GET /me/recommendations/follows': () => suggestions([mila]),
+            'POST /profiles/8/follow': () => ({ status: 204 }),
+        });
+        renderApp(connectionsRoute('suggested'), api);
+        const tabs = within(pane()).getByRole('tablist', { name: 'Connections' });
+        await waitFor(() => expect(within(tabs).getAllByRole('tab').map((t) => t.textContent)).toEqual(['Following', 'Followers', 'Suggestions']));
+        const list = await within(pane()).findByRole('list', { name: 'Profiles you may want to follow, best match first' });
+        fireEvent.click(within(list).getByRole('button', { name: 'Follow, Mila' }));
+        await within(list).findByRole('button', { name: 'Following, Mila' });
+        expect(calls).toContain('POST /profiles/8/follow');
+        expect(calls).not.toContain('GET /me/recommendations/friends');
+    });
+
+    it('reads the list again from the start before the next page, once a request was made', async () => {
+        const zoe = person('14', 'Zoe');
+        let asked = false;
+        const reads: string[] = [];
+        const { api } = site({
+            'GET /me/recommendations/friends': (request) => {
+                const cursor = new URL(request.url).searchParams.get('cursor');
+                reads.push(cursor ?? 'start');
+                // once Tom is asked, the site's list moves up a place: Zoe would be skipped from the old cursor
+                if (asked) return cursor === 'p2' ? suggestions([]) : suggestions([ana, zoe], 'p2');
+                return cursor === 'p2' ? suggestions([]) : suggestions([tom, ana], 'p2');
+            },
+            'POST /profiles/10/friend': () => {
+                asked = true;
+                return { status: 200, body: { status: 'requested' } };
+            },
+        });
+        renderApp(connectionsRoute('suggested'), api);
+        const list = await within(pane()).findByRole('list', { name: 'People you may know, best match first' });
+        fireEvent.click(within(list).getByRole('button', { name: 'Add friend, Tom' }));
+        await within(list).findByRole('button', { name: 'Requested, Tom' });
+        fireEvent.click(within(pane()).getByRole('button', { name: 'Load more' }));
+        expect(await within(list).findByRole('button', { name: 'Zoe' })).toBeTruthy();
+        expect(reads).toEqual(['start', 'start', 'p2']);
+    });
+
+    it('says when there is nobody to suggest', async () => {
+        const { api } = site({ 'GET /me/recommendations/friends': () => suggestions([]) });
+        renderApp(connectionsRoute('suggested'), api);
+        expect(await within(pane()).findByText('No suggestions right now')).toBeTruthy();
+        expect(within(pane()).getByText('People with friends in common, in your groups or nearby show up here.')).toBeTruthy();
     });
 });
 

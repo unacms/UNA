@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The Workspace card of "Create your profile" gets a description. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_workspaces_menu_item_info_create_profile"><![CDATA[For a workspace your team shares.]]></string_add>
+</resources>

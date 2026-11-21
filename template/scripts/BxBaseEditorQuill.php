@@ -125,7 +125,7 @@ class BxBaseEditorQuill extends BxDolEditor
             'insert_as_plain_text' => getParam('sys_quill_insert_as_plain_text') == 'on' ? 'true' : 'false',
             'empty_tags' => getParam('sys_quill_allow_empty_tags') == 'on' ? 'true' : 'false',
             'allowed_tags' => $sAllowedTags == '' ? 'false' : $sAllowedTags,
-            'bx_var_css_additional_class' => $sToolbarItems ? '' : 'bx-form-input-html-quill-empty',
+            'bx_var_css_additional_class' => trim(($sToolbarItems ? '' : 'bx-form-input-html-quill-empty') . ($iViewMode == BX_EDITOR_MINI ? ' bx-form-input-html-mini' : '')),
             'bx_var_element_name' => str_replace(['-', ' '], '_', $aAttrs['element_name']),
             'bx_var_editor_name' => $sEditorName,
             'bx_var_editor_call_init' => $sEditorCallInit,

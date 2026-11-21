@@ -105,9 +105,9 @@
     <string name="_bx_acl_et_txt_name_subscription_cancel_required"><![CDATA[Требуется отмена подписки.]]></string>
     <string name="_bx_acl_et_txt_subject_subscription_cancel_required"><![CDATA[Требуется отмена подписки.]]></string>
     <string name="_bx_acl_et_txt_body_subscription_cancel_required"><![CDATA[{email_header}
-<p>Привет,</p>
-<p>Вы оплатили новый уровень членства, но подписка вашего старого уровня все ещё активна. Вам нужно отменить её вручную.</p>
-<p>Информация о старой подписке:<br />Уровень членства: {level}<br />Номер заказа: {order}<br />Дата начала: {date_starts}<br />Дата окончания: {date_expires}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Привет,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы оплатили новый уровень членства, но подписка вашего старого уровня все ещё активна. Вам нужно отменить её вручную.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Информация о старой подписке:<br />Уровень членства: {level}<br />Номер заказа: {order}<br />Дата начала: {date_starts}<br />Дата окончания: {date_expires}</p>
 {email_footer}]]></string>
 
 
@@ -115,7 +115,7 @@
     <string name="_bx_acl_msg_empty_owner"><![CDATA['Главный продавец' не задан. Вам необходимо пометить какой-либо профайл как 'Главный продавец' в настройках активного на данный момент платежного модуля.]]></string>
     <string name="_bx_acl_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_acl_err_price_duplicate"><![CDATA[Примечание! Аналогичный ценовой план уже существует.]]></string>
-    <string name="_bx_acl_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_acl_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <string name="_bx_acl_txt_all_level"><![CDATA[Все уровни]]></string>
     <string name="_bx_acl_txt_level_caption_standard"><![CDATA[Бесплатно]]></string>

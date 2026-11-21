@@ -131,6 +131,8 @@ export default function FormModal({ pageData, setPageData, modalView, url, histo
                 onClose={handleClose}
                 onVisible={!!pageData}
                 title={getModalPostTitle(authorData, t)}
+                // Named while the title is still empty (loading), and by the page's title.
+                accessibilityLabel={pageData?.title || undefined}
                 padding=""
                 outerClickClose={isWeb}
                 usePadding={true}
@@ -163,6 +165,8 @@ export default function FormModal({ pageData, setPageData, modalView, url, histo
             maxWidth={modalWidth}
             scrollable={pageData?.module == 'bx_timeline' ? false : true}
             title={isShowHeader ? pageData.title : null}
+            // The feed's composer draws its own header and its page's title ("Profile Feed") says nothing about it.
+            accessibilityLabel={pageData.module == 'bx_timeline' ? t('Create post') : (pageData.title || undefined)}
             onVisible={!!pageData}
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
             //padding={isShowHeader ? " p-0 " : " p-0 "}

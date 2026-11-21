@@ -66,13 +66,14 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertStringContainsString('.bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"])', $sPopup, 'One rule styles every vertical menu in a popup.');
         $this->assertStringContainsString(':not(.bx-menu-floating-blocks-wide)', $sPopup, 'The account panel pads its own rows, so links there get no second padding.');
+        $this->assertStringContainsString(':not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards)', $sPopup, 'The apps grid keeps its tiles and the cards of "Create your profile" their cards in a popup.');
         $this->assertMatchesRegularExpression('/min-height: 2\.75rem;/', $sPopup, 'Popup rows are 44px.');
-        $this->assertMatchesRegularExpression('/border-radius: 0\.75rem;/', $sPopup, 'Popup rows have 12px corners, as NEO\'s regular menu items.');
+        $this->assertMatchesRegularExpression('/border-radius: var\(--bx-radius-xl\);/', $sPopup, 'Popup rows have 12px corners, as NEO\'s regular menu items.');
         $this->assertMatchesRegularExpression('/min-height: 2\.75rem;[^}]*padding-inline-start: 1rem;\s*padding-inline-end: 1rem;/', $sPopup, 'A label is 16px from either side of its row.');
-        $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-popup-menu \.bx-popup-border \{\s*border-radius: 1\.25rem;/', $sCss, 'Menu popups have 20px corners, concentric with the rows\' 12px ones in the 8px inset.');
+        $this->assertMatchesRegularExpression('/\.bx-artificer \.bx-popup-menu \.bx-popup-border \{\s*border-radius: calc\(1\.25rem \* var\(--bx-radius-scale\)\);/', $sCss, 'Menu popups have 20px corners, concentric with the rows\' 12px ones in the 8px inset.');
         $this->assertMatchesRegularExpression('/\.bx-popup \.bx-menu-highlight-list::before \{[^}]*\brounded-xl\b/', $sCss, 'The sliding highlight has the rows\' corners.');
 
-        $sList = '\.bx-artificer \.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\)';
+        $sList = '\.bx-artificer \.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\):not\(\.bx-menu-floating-blocks\):not\(\.bx-menu-list-desc-cards\)';
         $this->assertMatchesRegularExpression('/' . $sList . ' \{[^}]*display: flex;\s*flex-direction: column;\s*gap: 0\.25rem;/', $sPopup, 'Rows are 4px apart, as NEO\'s (gap-1).');
         $this->assertMatchesRegularExpression('/' . $sList . ' > li \{\s*position: relative;\s*margin-top: 0;/', $sPopup, 'Artificer\'s 1px row margins give way to the gap.');
         $this->assertMatchesRegularExpression('/' . $sList . '::after,\s*' . $sList . ':not\(\.bx-menu-highlight-list\)::before \{\s*display: none;/', $sPopup, 'The clearfix boxes take no gap, so the list is inset the same above and below; the highlight\'s ::before stays.');
@@ -102,7 +103,7 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotFalse($iEnd, 'tailwind.css has the account panel rule after it.');
         $s = substr($sCss, $iStart, $iEnd - $iStart);
 
-        $sItem = '/\.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\) > li';
+        $sItem = '/\.bx-popup ul:is\(\.bx-menu-ver, \.bx-menu-custom-ver, \[class\*="bx-menu-object-"\]\):not\(\.bx-menu-hor\):not\(\.bx-menu-custom-hor\):not\(\.bx-menu-floating-blocks-wide\):not\(\.bx-menu-floating-blocks\):not\(\.bx-menu-list-desc-cards\) > li';
         $sCurve = 'cubic-bezier\(0, 0, 0\.2, 1\)';
         $this->assertMatchesRegularExpression($sItem . ' \.bx-stl-mii:has\(> \*\) \{\s*@apply shrink-0 w-8 h-8 rounded-full [^;]*bg-gray-200\/50 dark:bg-gray-700\/50 text-gray-600 dark:text-gray-400;\s*transition: color 150ms ' . $sCurve . ', background-color 150ms ' . $sCurve . ';/', $s, 'An icon sits in a 32px circle, in the label\'s colour, and both ease with the highlight.');
         $this->assertMatchesRegularExpression($sItem . ' > a:has\(> \.bx-stl-mii > \*\) \{\s*padding-inline-start: 0\.5rem;/', $s, 'The circle is 8px from the row\'s side (6px above and below in the 44px row).');
@@ -164,15 +165,15 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('bg-gray-600', $sHtml);
 
         //--- NEO's header menu: 320px, 8px under the button, the menu popups' 20px corners; More's rows.
-        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-cnt \{\s*@apply absolute top-\[3\.875rem\] ltr:right-4 rtl:left-4 w-80 [^;]*rounded-\[1\.25rem\]/', $sCss);
+        $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-cnt \{\s*@apply absolute top-\[3\.875rem\] ltr:right-4 rtl:left-4 w-80 [^;]*rounded-\[calc\(1\.25rem_\*_var\(--bx-radius-scale\)\)\]/', $sCss);
         $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-sidebar-item > a,\s*#bx-sidebar-site \.bx-sidebar-dropdown-content > li > a \{\s*@apply flex items-center min-h-11 py-0 ps-3 pe-3 rounded-xl border-0 text-sm leading-5 font-medium/', $sCss);
         $this->assertStringContainsString('@apply bg-blue-200/60 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 ring-0;', $sCss);
         $this->assertMatchesRegularExpression('/#bx-sidebar-site \.bx-si-icon \{\s*@apply flex items-center justify-center w-6 h-6/', $sCss, '24px icons without a circle.');
 
-        //--- It grows from the button's corner; the account sidebar still slides in.
+        //--- It grows from the button's corner. The account menu is a popup now (AccountMenuPopupTest), so no sidebar slides.
         $this->assertStringContainsString('.bx-sidebar.bx-sidebar-site.bx-sidebar-active .bx-sidebar-cnt {' . "\n" . '    transform: scale(1);', $sMotion);
         $this->assertStringNotContainsString('.bx-dir-ltr .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt,', $sMotion);
-        $this->assertStringContainsString('.bx-dir-ltr .bx-sidebar.bx-sidebar-account .bx-sidebar-cnt {', $sMotion);
+        $this->assertStringNotContainsString('bx-sidebar-account', $sMotion);
 
         $this->assertStringContainsString('plainIcons', self::read('neo/packages/app/components/nav/menu-header-navigation.tsx'), 'NEO\'s phone menu has the same rows.');
     }

@@ -549,6 +549,26 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         ]) > 0;
     }
 
+    /**
+     * Whether an event can still be delivered using the delivery type: the event exists and 
+     * its notification is active in Studio for at least one of the setting types.
+     */
+    public function isEventDeliveryActive($iEventId, $sDeliveryType)
+    {
+        $sQuery = "SELECT 
+                COUNT(*) 
+            FROM `" . $this->_sTable . "` AS `te` 
+            INNER JOIN `" . $this->_sTableHandlers . "` AS `th` ON `te`.`type`=`th`.`alert_unit` AND `te`.`action`=`th`.`alert_action` 
+            INNER JOIN `" . $this->_sTableSettings . "` AS `ts` ON `th`.`id`=`ts`.`handler_id` 
+            WHERE 
+                `te`.`id`=:event_id AND `ts`.`delivery`=:delivery AND `ts`.`active`='1'";
+
+        return (int)$this->getOne($sQuery, [
+            'event_id' => (int)$iEventId,
+            'delivery' => $sDeliveryType
+        ]) > 0;
+    }
+
     public function queueGet($aParams)
     {
     	$aMethod = array('name' => 'getAll', 'params' => array(0 => 'query'));

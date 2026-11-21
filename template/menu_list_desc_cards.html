@@ -1,0 +1,15 @@
+<!-- Menu template "Cards with descriptions": a bordered card per item, its icon in a 48px circle, the title over the item's Info and a chevron; the whole card is the link. A lone item is the one action of its block: its card takes the accent border and its circle the accent colour. Used for the profile types of "Create your profile". -->
+<ul class="bx-menu-list-desc-cards bx-menu-object-__object__ flex flex-col gap-2 list-none p-0 my-0">
+    <bx_repeat:menu_items>
+        <li class="bx-menu-item bx-menu-item-__name__ __class_add__ group">
+            <a class="flex items-center gap-4 p-4 text-start rounded-xl border border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 bx-btn-focus group-[:only-child]:border-blue-600 dark:group-[:only-child]:border-blue-500" href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick> __attrs__>
+                <span class="flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 group-[:only-child]:bg-blue-600 group-[:only-child]:text-white" aria-hidden="true"><bx_include_auto:menu_icon.html /></span>
+                <span class="flex-1 min-w-0">
+                    <bx_if:title><span class="block text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">__title__</span></bx_if:title>
+                    <bx_if:info><span class="block mt-0.5 text-sm leading-5 text-gray-600 dark:text-gray-400">__info__</span></bx_if:info>
+                </span>
+                <i class="sys-icon chevron-right shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true"></i>
+            </a>
+        </li>
+    </bx_repeat:menu_items>
+</ul>
