@@ -22,7 +22,7 @@
     <string name="_bx_events_option_enable_subscribe_wo_join"><![CDATA[Разрешить помечать как 'Заинтересован' пользователям, не являющимся участниками события]]></string>
     <string name="_bx_events_option_internal_notifications"><![CDATA[Использовать встроенную нотификацию]]></string>
     <string name="_bx_events_option_enable_subscribe_for_past_events"><![CDATA[Разрешить присоединение к прошедшим событиям]]></string>
-    <string name="_bx_events_option_rm_from_timeline_after"><![CDATA[Удалить прошедшие события с Ленты через N часов (0 - не удалять)]]></string>
+    <string name="_bx_events_option_rm_from_timeline_after"><![CDATA[Убирать прошедшие события из ленты через столько часов (0 = никогда)]]></string>
 
     <string name="_bx_events_form_profile"><![CDATA[События]]></string>
     <string name="_bx_events_form_profile_display_add"><![CDATA[Добавление события]]></string>
@@ -62,8 +62,8 @@
     <string name="_bx_events_form_profile_input_delete_confirm"><![CDATA[Я уверен, что хочу удалить эту группу]]></string>
     <string name="_bx_events_form_profile_input_delete_confirm_info"><![CDATA[Это действие не может быть отменено.]]></string>
     <string name="_bx_events_form_profile_input_delete_confirm_error"><![CDATA[Пожалуйста, отметьте этот флажок, если действительно хотите удалить группу.]]></string>
-    <string name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Повторяющееся событие]]></string>
-    <string name="_bx_events_form_profile_input_reoccurring"><![CDATA[Повторяющееся событие]]></string>
+    <string name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Повторяется]]></string>
+    <string name="_bx_events_form_profile_input_reoccurring"><![CDATA[Повторяется]]></string>
     <string name="_bx_events_form_profile_input_reoccurring_add_interval"><![CDATA[Добавить повторяющийся интервал]]></string>
     <string name="_bx_events_form_profile_input_sys_date_added"><![CDATA[Создано]]></string>
     <string name="_bx_events_form_profile_input_date_added"><![CDATA[Создано]]></string>
@@ -86,8 +86,8 @@
     <string name="_bx_events_form_profile_input_sys_reminder"><![CDATA[Напоминание (часть встроенних нотификаций)]]></string>
     <string name="_bx_events_form_profile_input_reminder"><![CDATA[Напоминание]]></string>
     <string name="_bx_events_form_profile_input_allow_view_favorite_list"><![CDATA[Видимость]]></string>
-    <string name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Пороговый радиус]]></string>
-    <string name="_bx_events_form_profile_input_threshold"><![CDATA[Пороговый радиус (в метрах)]]></string>
+    <string name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Радиус вокруг места]]></string>
+    <string name="_bx_events_form_profile_input_threshold"><![CDATA[Радиус вокруг места, метров]]></string>
     <string name="_bx_events_form_input_repeat_year"><![CDATA[Повторять: год]]></string>
     <string name="_bx_events_form_input_repeat_month"><![CDATA[Повторять: месяц]]></string>
     <string name="_bx_events_form_input_repeat_week_of_month"><![CDATA[Повторять: неделя в месяце]]></string>
@@ -641,7 +641,7 @@
     <string name="_bx_events_popup_title_price_edit"><![CDATA[Изменить тарифный план]]></string>
     <string name="_bx_events_msg_performed"><![CDATA[Действие успешно выполнено.]]></string>
     <string name="_bx_events_err_price_duplicate"><![CDATA[Подобный тарифный план уже существует.]]></string>
-    <string name="_bx_events_err_cannot_perform"><![CDATA[Появилась ошибка. Пожалуйста, сообщите.]]></string>
+    <string name="_bx_events_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_bx_events_pre_lists_period_units"><![CDATA[Интервал выставления счетов]]></string>
     <string name="_bx_events_period_unit_day"><![CDATA[день]]></string>
     <string name="_bx_events_period_unit_week"><![CDATA[неделя]]></string>

@@ -665,7 +665,7 @@ BxDolGrid.prototype.hideSecret = function (eWrap) {
     eWrap.removeClass('bx-grid-secret-shown');
     eWrap.find('.bx-grid-secret-value').text(sMasked);
     eWrap.find('.bx-grid-secret-toggle').attr('title', _t('_sys_grid_secret_reveal'));
-    eWrap.find('.bx-grid-secret-toggle .sys-icon').removeClass('eye-slash').addClass('eye');
+    eWrap.find('.bx-grid-secret-toggle .sys-icon').removeClass('eye-closed').addClass('eye');
 };
 
 BxDolGrid.prototype.setSecretValue = function (sId, sField, sValue) {
@@ -676,7 +676,7 @@ BxDolGrid.prototype.setSecretValue = function (sId, sField, sValue) {
     eWrap.addClass('bx-grid-secret-shown');
     eWrap.find('.bx-grid-secret-value').text(sValue);
     eToggle.attr('title', _t('_sys_grid_secret_hide'));
-    eToggle.find('.sys-icon').removeClass('eye').addClass('eye-slash');
+    eToggle.find('.sys-icon').removeClass('eye').addClass('eye-closed');
 };
 
 /** @} */

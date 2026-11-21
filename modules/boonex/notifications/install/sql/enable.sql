@@ -203,8 +203,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_notifications_etemplates', 'independent', 'add', '_bx_ntfs_grid_action_title_ett_add', '', 0, 0, 1),
 ('bx_notifications_etemplates', 'single', 'preview', '_bx_ntfs_grid_action_title_ett_preview', 'eye', 1, 0, 1),
-('bx_notifications_etemplates', 'single', 'edit', '_bx_ntfs_grid_action_title_ett_edit', 'pencil-alt', 1, 0, 2),
-('bx_notifications_etemplates', 'single', 'delete', '_bx_ntfs_grid_action_title_ett_delete', 'remove', 1, 1, 3);
+('bx_notifications_etemplates', 'single', 'edit', '_bx_ntfs_grid_action_title_ett_edit', 'pencil-line', 1, 0, 2),
+('bx_notifications_etemplates', 'single', 'delete', '_bx_ntfs_grid_action_title_ett_delete', 'x', 1, 1, 3);
 
 
 -- CRON

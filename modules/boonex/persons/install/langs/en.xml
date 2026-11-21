@@ -47,7 +47,7 @@
     <string name="_bx_persons_form_profile_input_fullname"><![CDATA[Name]]></string>
     <string name="_bx_persons_form_profile_input_sys_last_name"><![CDATA[Last Name]]></string>
     <string name="_bx_persons_form_profile_input_last_name"><![CDATA[Last Name]]></string>
-    <string name="_bx_persons_form_profile_input_fullname_err"><![CDATA[Profile name is mandatory and and cannot start with @]]></string>
+    <string name="_bx_persons_form_profile_input_fullname_err"><![CDATA[Name is required and cannot start with @.]]></string>
     <string name="_bx_persons_form_profile_input_sys_desc"><![CDATA[Description]]></string>
     <string name="_bx_persons_form_profile_input_desc"><![CDATA[Description]]></string>
     <string name="_bx_persons_form_profile_input_sys_picture"><![CDATA[Profile Picture]]></string>
