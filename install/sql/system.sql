@@ -1491,12 +1491,12 @@ INSERT INTO `sys_acl_levels` (`ID`, `Name`, `Icon`, `Description`, `Active`, `Pu
 (1, '_adm_prm_txt_level_unauthenticated', 'user-round-arrow-left', '', 'yes', 'no', 'no', 0, 0, 0, 1),
 (2, '_adm_prm_txt_level_account', 'at-sign', '', 'yes', 'no', 'no', 0, 0, 0, 2),
 (3, '_adm_prm_txt_level_standard', 'user-round', '', 'yes', 'no', 'no', 0, 0, 0, 3),
-(4, '_adm_prm_txt_level_unconfirmed', 'user', '', 'yes', 'no', 'no', 0, 0, 0, 4),
+(4, '_adm_prm_txt_level_unconfirmed', 'user-round', '', 'yes', 'no', 'no', 0, 0, 0, 4),
 (5, '_adm_prm_txt_level_pending', 'user-round-pen', '', 'yes', 'no', 'no', 0, 0, 0, 5),
 (6, '_adm_prm_txt_level_suspended', 'user-round-x', '', 'yes', 'no', 'no', 0, 0, 0, 6),
 (7, '_adm_prm_txt_level_moderator', 'user-shield', '', 'yes', 'no', 'no', 0, 0, 0, 7),
 (8, '_adm_prm_txt_level_administrator', 'shield-user', '', 'yes', 'no', 'no', 0, 0, 0, 8),
-(9, '_adm_prm_txt_level_premium', 'user', '', 'yes', 'yes', 'no', 0, 0, 0, 9);
+(9, '_adm_prm_txt_level_premium', 'user-round', '', 'yes', 'yes', 'no', 0, 0, 0, 9);
 
 
 -- --------------------------------------------------------
@@ -1666,7 +1666,7 @@ CREATE TABLE `sys_statistics` (
 );
 
 INSERT INTO `sys_statistics` (`module`, `name`, `title`, `link`, `icon`, `query`, `order`) VALUES
-('system', 'sys_accounts', '_sys_accounts', '', 'user', 'SELECT COUNT(*) FROM `sys_accounts` WHERE 1', 1);
+('system', 'sys_accounts', '_sys_accounts', '', 'user-round', 'SELECT COUNT(*) FROM `sys_accounts` WHERE 1', 1);
 
 
 -- --------------------------------------------------------
@@ -2958,8 +2958,8 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('jar', 'application/java-archive', '', ''),
 ('ser', 'application/java-serialized-object', '', ''),
 ('class', 'application/java-vm', '', ''),
-('js', 'application/javascript', '', 'far file-code'),
-('json', 'application/json', '', 'far file-code'),
+('js', 'application/javascript', '', 'file-code'),
+('json', 'application/json', '', 'file-code'),
 ('jsonml', 'application/jsonml+json', '', ''),
 ('lostxml', 'application/lost+xml', '', ''),
 ('hqx', 'application/mac-binhex40', '', ''),
@@ -2971,7 +2971,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('nb', 'application/mathematica', '', ''),
 ('mb', 'application/mathematica', '', ''),
 ('mathml', 'application/mathml+xml', '', ''),
-('mbox', 'application/mbox', '', 'far file-code'),
+('mbox', 'application/mbox', '', 'file-code'),
 ('mscml', 'application/mediaservercontrol+xml', '', ''),
 ('metalink', 'application/metalink+xml', '', ''),
 ('meta4', 'application/metalink4+xml', '', ''),
@@ -2980,7 +2980,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('m21', 'application/mp21', '', ''),
 ('mp21', 'application/mp21', '', ''),
 ('mp4s', 'application/mp4', '', ''),
-('doc', 'application/msword', 'mime-type-document.svg', 'far file-word'),
+('doc', 'application/msword', 'mime-type-document.svg', 'file-text'),
 ('dot', 'application/msword', '', ''),
 ('mxf', 'application/mxf', '', ''),
 ('bin', 'application/octet-stream', '', ''),
@@ -3006,10 +3006,10 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('onepkg', 'application/onenote', '', ''),
 ('oxps', 'application/oxps', '', ''),
 ('xer', 'application/patch-ops-error+xml', '', ''),
-('pdf', 'application/pdf', 'mime-type-document.svg', 'far file-pdf'),
-('pgp', 'application/pgp-encrypted', '', 'far file-code'),
-('asc', 'application/pgp-signature', '', 'far file-code'),
-('sig', 'application/pgp-signature', '', 'far file-code'),
+('pdf', 'application/pdf', 'mime-type-document.svg', 'file-text'),
+('pgp', 'application/pgp-encrypted', '', 'file-code'),
+('asc', 'application/pgp-signature', '', 'file-code'),
+('sig', 'application/pgp-signature', '', 'file-code'),
 ('prf', 'application/pics-rules', '', ''),
 ('p10', 'application/pkcs10', 'mime-type-vector.svg', ''),
 ('p7m', 'application/pkcs7-mime', '', ''),
@@ -3027,7 +3027,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('ps', 'application/postscript', 'mime-type-vector.svg', ''),
 ('cww', 'application/prs.cww', '', ''),
 ('pskcxml', 'application/pskc+xml', '', ''),
-('rdf', 'application/rdf+xml', '', 'far file-code'),
+('rdf', 'application/rdf+xml', '', 'file-code'),
 ('rif', 'application/reginfo+xml', '', ''),
 ('rnc', 'application/relax-ng-compact-syntax', '', ''),
 ('rl', 'application/resource-lists+xml', '', ''),
@@ -3037,20 +3037,20 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('mft', 'application/rpki-manifest', '', ''),
 ('roa', 'application/rpki-roa', '', ''),
 ('rsd', 'application/rsd+xml', '', ''),
-('rss', 'application/rss+xml', '', 'far file-code'),
+('rss', 'application/rss+xml', '', 'file-code'),
 ('rtf', 'application/rtf', 'mime-type-document.svg', ''),
 ('sbml', 'application/sbml+xml', '', ''),
 ('scq', 'application/scvp-cv-request', '', ''),
 ('scs', 'application/scvp-cv-response', '', ''),
 ('spq', 'application/scvp-vp-request', '', ''),
 ('spp', 'application/scvp-vp-response', '', ''),
-('sdp', 'application/sdp', 'mime-type-presentation.svg', 'far file-powerpoint'),
+('sdp', 'application/sdp', 'mime-type-presentation.svg', 'file-chart-pie'),
 ('setpay', 'application/set-payment-initiation', '', ''),
 ('setreg', 'application/set-registration-initiation', '', ''),
 ('shf', 'application/shf+xml', '', ''),
 ('smi', 'application/smil+xml', '', ''),
 ('smil', 'application/smil+xml', '', ''),
-('rq', 'application/sparql-query', '', 'far file-code'),
+('rq', 'application/sparql-query', '', 'file-code'),
 ('srx', 'application/sparql-results+xml', '', ''),
 ('gram', 'application/srgs', '', ''),
 ('grxml', 'application/srgs+xml', '', ''),
@@ -3193,7 +3193,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('gim', 'application/vnd.groove-identity-message', '', ''),
 ('grv', 'application/vnd.groove-injector', '', ''),
 ('gtm', 'application/vnd.groove-tool-message', '', ''),
-('tpl', 'application/vnd.groove-tool-template', '', 'far file-code'),
+('tpl', 'application/vnd.groove-tool-template', '', 'file-code'),
 ('vcg', 'application/vnd.groove-vcard', '', ''),
 ('hal', 'application/vnd.hal+xml', '', ''),
 ('zmm', 'application/vnd.handheld-entertainment+xml', '', ''),
@@ -3282,12 +3282,12 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('mpc', 'application/vnd.mophun.certificate', '', ''),
 ('xul', 'application/vnd.mozilla.xul+xml', '', ''),
 ('cil', 'application/vnd.ms-artgalry', 'mime-type-vector.svg', ''),
-('taxi', 'application/vnd.ms-cab-compressed', 'mime-type-archive.svg', 'far file-archive'),
-('xls', 'application/vnd.ms-excel', 'mime-type-spreadsheet.svg', 'far file-excel'),
+('taxi', 'application/vnd.ms-cab-compressed', 'mime-type-archive.svg', 'file-archive'),
+('xls', 'application/vnd.ms-excel', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
 ('xlm', 'application/vnd.ms-excel', '', ''),
 ('xla', 'application/vnd.ms-excel', '', ''),
 ('xlc', 'application/vnd.ms-excel', '', ''),
-('xlt', 'application/vnd.ms-excel', 'mime-type-spreadsheet.svg', 'far file-excel'),
+('xlt', 'application/vnd.ms-excel', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
 ('xlw', 'application/vnd.ms-excel', '', ''),
 ('xlam', 'application/vnd.ms-excel.addin.macroenabled.12', '', ''),
 ('xlsb', 'application/vnd.ms-excel.sheet.binary.macroenabled.12', '', ''),
@@ -3300,7 +3300,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('thmx', 'application/vnd.ms-officetheme', '', ''),
 ('cat', 'application/vnd.ms-pki.seccat', '', ''),
 ('stl', 'application/vnd.ms-pki.stl', '', ''),
-('ppt', 'application/vnd.ms-powerpoint', 'mime-type-presentation.svg', 'far file-powerpoint'),
+('ppt', 'application/vnd.ms-powerpoint', 'mime-type-presentation.svg', 'file-chart-pie'),
 ('pps', 'application/vnd.ms-powerpoint', '', ''),
 ('pot', 'application/vnd.ms-powerpoint', '', ''),
 ('ppam', 'application/vnd.ms-powerpoint.addin.macroenabled.12', '', ''),
@@ -3345,10 +3345,10 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('otg', 'application/vnd.oasis.opendocument.graphics-template', '', ''),
 ('odi', 'application/vnd.oasis.opendocument.image', '', ''),
 ('oti', 'application/vnd.oasis.opendocument.image-template', '', ''),
-('odp', 'application/vnd.oasis.opendocument.presentation', 'mime-type-presentation.svg', 'far file-powerpoint'),
+('odp', 'application/vnd.oasis.opendocument.presentation', 'mime-type-presentation.svg', 'file-chart-pie'),
 ('otp', 'application/vnd.oasis.opendocument.presentation-template', '', ''),
-('ods', 'application/vnd.oasis.opendocument.spreadsheet', 'mime-type-spreadsheet.svg', 'far file-excel'),
-('ots', 'application/vnd.oasis.opendocument.spreadsheet-template', 'mime-type-spreadsheet.svg', 'far file-excel'),
+('ods', 'application/vnd.oasis.opendocument.spreadsheet', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
+('ots', 'application/vnd.oasis.opendocument.spreadsheet-template', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
 ('odt', 'application/vnd.oasis.opendocument.text', 'mime-type-document.svg', ''),
 ('odm', 'application/vnd.oasis.opendocument.text-master', '', ''),
 ('ott', 'application/vnd.oasis.opendocument.text-template', 'mime-type-document.svg', ''),
@@ -3356,13 +3356,13 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('xo', 'application/vnd.olpc-sugar', '', ''),
 ('dd2', 'application/vnd.oma.dd2+xml', '', ''),
 ('oxt', 'application/vnd.openofficeorg.extension', '', ''),
-('pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'mime-type-presentation.svg', 'far file-powerpoint'),
+('pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'mime-type-presentation.svg', 'file-chart-pie'),
 ('sldx', 'application/vnd.openxmlformats-officedocument.presentationml.slide', '', ''),
 ('ppsx', 'application/vnd.openxmlformats-officedocument.presentationml.slideshow', '', ''),
 ('potx', 'application/vnd.openxmlformats-officedocument.presentationml.template', '', ''),
-('xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'mime-type-spreadsheet.svg', 'far file-excel'),
+('xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
 ('xltx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.template', '', ''),
-('docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'mime-type-document.svg', 'far file-word'),
+('docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'mime-type-document.svg', 'file-text'),
 ('dotx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.template', '', ''),
 ('mgp', 'application/vnd.osgeo.mapguide.package', '', ''),
 ('dp', 'application/vnd.osgi.dp', '', ''),
@@ -3412,21 +3412,21 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('sdkd', 'application/vnd.solent.sdkm+xml', '', ''),
 ('dxp', 'application/vnd.spotfire.dxp', '', ''),
 ('sfs', 'application/vnd.spotfire.sfs', '', ''),
-('sdc', 'application/vnd.stardivision.calc', 'mime-type-spreadsheet.svg', 'far file-excel'),
+('sdc', 'application/vnd.stardivision.calc', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
 ('sda', 'application/vnd.stardivision.draw', '', ''),
-('sdd', 'application/vnd.stardivision.impress', 'mime-type-presentation.svg', 'far file-powerpoint'),
+('sdd', 'application/vnd.stardivision.impress', 'mime-type-presentation.svg', 'file-chart-pie'),
 ('smf', 'application/vnd.stardivision.math', '', ''),
 ('sdw', 'application/vnd.stardivision.writer', 'mime-type-document.svg', ''),
 ('vor', 'application/vnd.stardivision.writer', '', ''),
 ('sgl', 'application/vnd.stardivision.writer-global', '', ''),
 ('smzip', 'application/vnd.stepmania.package', '', ''),
 ('sm', 'application/vnd.stepmania.stepchart', '', ''),
-('sxc', 'application/vnd.sun.xml.calc', 'mime-type-spreadsheet.svg', 'far file-excel'),
-('stc', 'application/vnd.sun.xml.calc.template', 'mime-type-spreadsheet.svg', 'far file-excel'),
+('sxc', 'application/vnd.sun.xml.calc', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
+('stc', 'application/vnd.sun.xml.calc.template', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
 ('sxd', 'application/vnd.sun.xml.draw', 'mime-type-vector.svg', ''),
 ('std', 'application/vnd.sun.xml.draw.template', '', ''),
-('sxi', 'application/vnd.sun.xml.impress', 'mime-type-presentation.svg', 'far file-powerpoint'),
-('sti', 'application/vnd.sun.xml.impress.template', 'mime-type-presentation.svg', 'far file-powerpoint'),
+('sxi', 'application/vnd.sun.xml.impress', 'mime-type-presentation.svg', 'file-chart-pie'),
+('sti', 'application/vnd.sun.xml.impress.template', 'mime-type-presentation.svg', 'file-chart-pie'),
 ('sxm', 'application/vnd.sun.xml.math', '', ''),
 ('sxw', 'application/vnd.sun.xml.writer', 'mime-type-document.svg', ''),
 ('sxg', 'application/vnd.sun.xml.writer.global', '', ''),
@@ -3486,9 +3486,9 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('hlp', 'application/winhlp', '', ''),
 ('wsdl', 'application/wsdl+xml', '', ''),
 ('wspolicy', 'application/wspolicy+xml', '', ''),
-('7z', 'application/x-7z-compressed', 'mime-type-archive.svg', 'far file-archive'),
+('7z', 'application/x-7z-compressed', 'mime-type-archive.svg', 'file-archive'),
 ('abw', 'application/x-abiword', '', ''),
-('ace', 'application/x-ace-compressed', 'mime-type-archive.svg', 'far file-archive'),
+('ace', 'application/x-ace-compressed', 'mime-type-archive.svg', 'file-archive'),
 ('dmg', 'application/x-apple-diskimage', '', ''),
 ('aab', 'application/x-authorware-bin', '', ''),
 ('x32', 'application/x-authorware-bin', '', ''),
@@ -3501,7 +3501,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('blb', 'application/x-blorb', '', ''),
 ('blorb', 'application/x-blorb', '', ''),
 ('bz', 'application/x-bzip', '', ''),
-('bz2', 'application/x-bzip2', 'mime-type-archive.svg', 'far file-archive'),
+('bz2', 'application/x-bzip2', 'mime-type-archive.svg', 'file-archive'),
 ('boz', 'application/x-bzip2', '', ''),
 ('cbr', 'application/x-cbr', '', ''),
 ('cba', 'application/x-cbr', '', ''),
@@ -3514,7 +3514,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('pgn', 'application/x-chess-pgn', '', ''),
 ('nsc', 'application/x-conference', '', ''),
 ('cpio', 'application/x-cpio', '', ''),
-('csh', 'application/x-csh', '', 'far file-code'),
+('csh', 'application/x-csh', '', 'file-code'),
 ('deb', 'application/x-debian-package', '', ''),
 ('udeb', 'application/x-debian-package', '', ''),
 ('dgc', 'application/x-dgc-compressed', '', ''),
@@ -3577,7 +3577,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('exe', 'application/x-msdownload', '', ''),
 ('dll', 'application/x-msdownload', '', ''),
 ('com', 'application/x-msdownload', '', ''),
-('bat', 'application/x-msdownload', '', 'far file-code'),
+('bat', 'application/x-msdownload', '', 'file-code'),
 ('msi', 'application/x-msdownload', '', ''),
 ('mvb', 'application/x-msmediaview', '', ''),
 ('m13', 'application/x-msmediaview', '', ''),
@@ -3598,13 +3598,13 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('p7b', 'application/x-pkcs7-certificates', '', ''),
 ('spc', 'application/x-pkcs7-certificates', '', ''),
 ('p7r', 'application/x-pkcs7-certreqresp', '', ''),
-('rar', 'application/x-rar-compressed', 'mime-type-archive.svg', 'far file-archive'),
+('rar', 'application/x-rar-compressed', 'mime-type-archive.svg', 'file-archive'),
 ('ris', 'application/x-research-info-systems', '', ''),
-('sh', 'application/x-sh', '', 'far file-code'),
+('sh', 'application/x-sh', '', 'file-code'),
 ('shar', 'application/x-shar', '', ''),
 ('swf', 'application/x-shockwave-flash', '', ''),
 ('xap', 'application/x-silverlight-app', '', ''),
-('sql', 'text/x-sql', '', 'far file-code'),
+('sql', 'text/x-sql', '', 'file-code'),
 ('sit', 'application/x-stuffit', '', ''),
 ('sitx', 'application/x-stuffitx', '', ''),
 ('srt', 'application/x-subrip', '', ''),
@@ -3612,7 +3612,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('sv4crc', 'application/x-sv4crc', '', ''),
 ('t3', 'application/x-t3vm-image', '', ''),
 ('gam', 'application/x-tads', '', ''),
-('tar', 'application/x-tar', 'mime-type-archive.svg', 'far file-archive'),
+('tar', 'application/x-tar', 'mime-type-archive.svg', 'file-archive'),
 ('tcl', 'application/x-tcl', '', ''),
 ('tex', 'application/x-tex', '', ''),
 ('tfm', 'application/x-tex-tfm', '', ''),
@@ -3620,7 +3620,7 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('texi', 'application/x-texinfo', '', ''),
 ('obj', 'application/x-tgif', '', ''),
 ('ustar', 'application/x-ustar', '', ''),
-('src', 'application/x-wais-source', '', 'far file-code'),
+('src', 'application/x-wais-source', '', 'file-code'),
 ('der', 'application/x-x509-ca-cert', '', ''),
 ('crt', 'application/x-x509-ca-cert', '', ''),
 ('fig', 'application/x-xfig', '', ''),
@@ -3638,14 +3638,14 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('xaml', 'application/xaml+xml', '', ''),
 ('xdf', 'application/xcap-diff+xml', '', ''),
 ('xenc', 'application/xenc+xml', '', ''),
-('xhtml', 'application/xhtml+xml', '', 'far file-code'),
+('xhtml', 'application/xhtml+xml', '', 'file-code'),
 ('xht', 'application/xhtml+xml', '', ''),
-('xml', 'application/xml', '', 'far file-code'),
-('xsl', 'application/xml', '', 'far file-code'),
-('dtd', 'application/xml-dtd', '', 'far file-code'),
+('xml', 'application/xml', '', 'file-code'),
+('xsl', 'application/xml', '', 'file-code'),
+('dtd', 'application/xml-dtd', '', 'file-code'),
 ('xop', 'application/xop+xml', '', ''),
 ('xpl', 'application/xproc+xml', '', ''),
-('xslt', 'application/xslt+xml', '', 'far file-code'),
+('xslt', 'application/xslt+xml', '', 'file-code'),
 ('xspf', 'application/xspf+xml', '', ''),
 ('mxml', 'application/xv+xml', '', ''),
 ('xhvml', 'application/xv+xml', '', ''),
@@ -3653,129 +3653,129 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('xvm', 'application/xv+xml', '', ''),
 ('yang', 'application/yang', '', ''),
 ('yin', 'application/yin+xml', '', ''),
-('zip', 'application/zip', 'mime-type-archive.svg', 'far file-archive'),
-('adp', 'audio/adpcm', 'mime-type-audio.svg', 'far file-audio'),
-('au', 'audio/basic', 'mime-type-audio.svg', 'far file-audio'),
-('snd', 'audio/basic', 'mime-type-audio.svg', 'far file-audio'),
-('mid', 'audio/midi', 'mime-type-audio.svg', 'far file-audio'),
-('midi', 'audio/midi', 'mime-type-audio.svg', 'far file-audio'),
-('kar', 'audio/midi', 'mime-type-audio.svg', 'far file-audio'),
-('rmi', 'audio/midi', 'mime-type-audio.svg', 'far file-audio'),
-('m4a', 'audio/mp4', 'mime-type-audio.svg', 'far file-audio'),
-('mp4a', 'audio/mp4', 'mime-type-audio.svg', 'far file-audio'),
-('m4p', 'audio/mp4a-latm', 'mime-type-audio.svg', 'far file-audio'),
-('mpga', 'audio/mpeg', 'mime-type-audio.svg', 'far file-audio'),
-('mp2', 'audio/mpeg', 'mime-type-audio.svg', 'far file-audio'),
-('mp2a', 'audio/mpeg', 'mime-type-audio.svg', 'far file-audio'),
-('mp3', 'audio/mpeg', 'mime-type-audio.svg', 'far file-audio'),
-('m2a', 'audio/mpeg', 'mime-type-audio.svg', 'far file-audio'),
-('m3a', 'audio/mpeg', 'mime-type-audio.svg', 'far file-audio'),
-('oga', 'audio/ogg', 'mime-type-audio.svg', 'far file-audio'),
-('ogg', 'audio/ogg', 'mime-type-audio.svg', 'far file-audio'),
-('spx', 'audio/ogg', 'mime-type-audio.svg', 'far file-audio'),
-('s3m', 'audio/s3m', 'mime-type-audio.svg', 'far file-audio'),
-('sil', 'audio/silk', 'mime-type-audio.svg', 'far file-audio'),
-('uva', 'audio/vnd.dece.audio', 'mime-type-audio.svg', 'far file-audio'),
-('uvva', 'audio/vnd.dece.audio', 'mime-type-audio.svg', 'far file-audio'),
-('eol', 'audio/vnd.digital-winds', 'mime-type-audio.svg', 'far file-audio'),
-('dra', 'audio/vnd.dra', 'mime-type-audio.svg', 'far file-audio'),
-('dts', 'audio/vnd.dts', 'mime-type-audio.svg', 'far file-audio'),
-('dtshd', 'audio/vnd.dts.hd', 'mime-type-audio.svg', 'far file-audio'),
-('lvp', 'audio/vnd.lucent.voice', 'mime-type-audio.svg', 'far file-audio'),
-('pya', 'audio/vnd.ms-playready.media.pya', 'mime-type-audio.svg', 'far file-audio'),
-('ecelp4800', 'audio/vnd.nuera.ecelp4800', 'mime-type-audio.svg', 'far file-audio'),
-('ecelp7470', 'audio/vnd.nuera.ecelp7470', 'mime-type-audio.svg', 'far file-audio'),
-('ecelp9600', 'audio/vnd.nuera.ecelp9600', 'mime-type-audio.svg', 'far file-audio'),
-('rip', 'audio/vnd.rip', 'mime-type-audio.svg', 'far file-audio'),
-('weba', 'audio/webm', 'mime-type-audio.svg', 'far file-audio'),
-('aac', 'audio/x-aac', 'mime-type-audio.svg', 'far file-audio'),
-('aif', 'audio/x-aiff', 'mime-type-audio.svg', 'far file-audio'),
-('aiff', 'audio/x-aiff', 'mime-type-audio.svg', 'far file-audio'),
-('aifc', 'audio/x-aiff', 'mime-type-audio.svg', 'far file-audio'),
-('caf', 'audio/x-caf', 'mime-type-audio.svg', 'far file-audio'),
-('flac', 'audio/x-flac', 'mime-type-audio.svg', 'far file-audio'),
-('mka', 'audio/x-matroska', 'mime-type-audio.svg', 'far file-audio'),
-('m3u', 'audio/x-mpegurl', 'mime-type-audio.svg', 'far file-audio'),
-('wax', 'audio/x-ms-wax', 'mime-type-audio.svg', 'far file-audio'),
-('wma', 'audio/x-ms-wma', 'mime-type-audio.svg', 'far file-audio'),
-('ram', 'audio/x-pn-realaudio', 'mime-type-audio.svg', 'far file-audio'),
-('ra', 'audio/x-pn-realaudio', 'mime-type-audio.svg', 'far file-audio'),
-('rmp', 'audio/x-pn-realaudio-plugin', 'mime-type-audio.svg', 'far file-audio'),
-('wav', 'audio/x-wav', 'mime-type-audio.svg', 'far file-audio'),
-('xm', 'audio/xm', 'mime-type-audio.svg', 'far file-audio'),
+('zip', 'application/zip', 'mime-type-archive.svg', 'file-archive'),
+('adp', 'audio/adpcm', 'mime-type-audio.svg', 'file-headphone'),
+('au', 'audio/basic', 'mime-type-audio.svg', 'file-headphone'),
+('snd', 'audio/basic', 'mime-type-audio.svg', 'file-headphone'),
+('mid', 'audio/midi', 'mime-type-audio.svg', 'file-headphone'),
+('midi', 'audio/midi', 'mime-type-audio.svg', 'file-headphone'),
+('kar', 'audio/midi', 'mime-type-audio.svg', 'file-headphone'),
+('rmi', 'audio/midi', 'mime-type-audio.svg', 'file-headphone'),
+('m4a', 'audio/mp4', 'mime-type-audio.svg', 'file-headphone'),
+('mp4a', 'audio/mp4', 'mime-type-audio.svg', 'file-headphone'),
+('m4p', 'audio/mp4a-latm', 'mime-type-audio.svg', 'file-headphone'),
+('mpga', 'audio/mpeg', 'mime-type-audio.svg', 'file-headphone'),
+('mp2', 'audio/mpeg', 'mime-type-audio.svg', 'file-headphone'),
+('mp2a', 'audio/mpeg', 'mime-type-audio.svg', 'file-headphone'),
+('mp3', 'audio/mpeg', 'mime-type-audio.svg', 'file-headphone'),
+('m2a', 'audio/mpeg', 'mime-type-audio.svg', 'file-headphone'),
+('m3a', 'audio/mpeg', 'mime-type-audio.svg', 'file-headphone'),
+('oga', 'audio/ogg', 'mime-type-audio.svg', 'file-headphone'),
+('ogg', 'audio/ogg', 'mime-type-audio.svg', 'file-headphone'),
+('spx', 'audio/ogg', 'mime-type-audio.svg', 'file-headphone'),
+('s3m', 'audio/s3m', 'mime-type-audio.svg', 'file-headphone'),
+('sil', 'audio/silk', 'mime-type-audio.svg', 'file-headphone'),
+('uva', 'audio/vnd.dece.audio', 'mime-type-audio.svg', 'file-headphone'),
+('uvva', 'audio/vnd.dece.audio', 'mime-type-audio.svg', 'file-headphone'),
+('eol', 'audio/vnd.digital-winds', 'mime-type-audio.svg', 'file-headphone'),
+('dra', 'audio/vnd.dra', 'mime-type-audio.svg', 'file-headphone'),
+('dts', 'audio/vnd.dts', 'mime-type-audio.svg', 'file-headphone'),
+('dtshd', 'audio/vnd.dts.hd', 'mime-type-audio.svg', 'file-headphone'),
+('lvp', 'audio/vnd.lucent.voice', 'mime-type-audio.svg', 'file-headphone'),
+('pya', 'audio/vnd.ms-playready.media.pya', 'mime-type-audio.svg', 'file-headphone'),
+('ecelp4800', 'audio/vnd.nuera.ecelp4800', 'mime-type-audio.svg', 'file-headphone'),
+('ecelp7470', 'audio/vnd.nuera.ecelp7470', 'mime-type-audio.svg', 'file-headphone'),
+('ecelp9600', 'audio/vnd.nuera.ecelp9600', 'mime-type-audio.svg', 'file-headphone'),
+('rip', 'audio/vnd.rip', 'mime-type-audio.svg', 'file-headphone'),
+('weba', 'audio/webm', 'mime-type-audio.svg', 'file-headphone'),
+('aac', 'audio/x-aac', 'mime-type-audio.svg', 'file-headphone'),
+('aif', 'audio/x-aiff', 'mime-type-audio.svg', 'file-headphone'),
+('aiff', 'audio/x-aiff', 'mime-type-audio.svg', 'file-headphone'),
+('aifc', 'audio/x-aiff', 'mime-type-audio.svg', 'file-headphone'),
+('caf', 'audio/x-caf', 'mime-type-audio.svg', 'file-headphone'),
+('flac', 'audio/x-flac', 'mime-type-audio.svg', 'file-headphone'),
+('mka', 'audio/x-matroska', 'mime-type-audio.svg', 'file-headphone'),
+('m3u', 'audio/x-mpegurl', 'mime-type-audio.svg', 'file-headphone'),
+('wax', 'audio/x-ms-wax', 'mime-type-audio.svg', 'file-headphone'),
+('wma', 'audio/x-ms-wma', 'mime-type-audio.svg', 'file-headphone'),
+('ram', 'audio/x-pn-realaudio', 'mime-type-audio.svg', 'file-headphone'),
+('ra', 'audio/x-pn-realaudio', 'mime-type-audio.svg', 'file-headphone'),
+('rmp', 'audio/x-pn-realaudio-plugin', 'mime-type-audio.svg', 'file-headphone'),
+('wav', 'audio/x-wav', 'mime-type-audio.svg', 'file-headphone'),
+('xm', 'audio/xm', 'mime-type-audio.svg', 'file-headphone'),
 ('cdx', 'chemical/x-cdx', 'mime-type-vector.svg', ''),
 ('cif', 'chemical/x-cif', '', ''),
 ('cmdf', 'chemical/x-cmdf', '', ''),
 ('cml', 'chemical/x-cml', '', ''),
 ('csml', 'chemical/x-csml', '', ''),
 ('xyz', 'chemical/x-xyz', '', ''),
-('bmp', 'image/bmp', 'mime-type-image.svg', 'far file-image'),
-('cgm', 'image/cgm', 'mime-type-image.svg', 'far file-image'),
-('g3', 'image/g3fax', 'mime-type-image.svg', 'far file-image'),
-('gif', 'image/gif', 'mime-type-image.svg', 'far file-image'),
-('ief', 'image/ief', 'mime-type-image.svg', 'far file-image'),
-('jp2', 'image/jp2', 'mime-type-image.svg', 'far file-image'),
-('jpeg', 'image/jpeg', 'mime-type-image.svg', 'far file-image'),
-('jpg', 'image/jpeg', 'mime-type-image.svg', 'far file-image'),
-('jpe', 'image/jpeg', 'mime-type-image.svg', 'far file-image'),
-('ktx', 'image/ktx', 'mime-type-image.svg', 'far file-image'),
-('pict', 'image/pict', 'mime-type-image.svg', 'far file-image'),
-('pic', 'image/pict', 'mime-type-image.svg', 'far file-image'),
-('pct', 'image/pict', 'mime-type-image.svg', 'far file-image'),
-('png', 'image/png', 'mime-type-png.svg', 'far file-image'),
-('btif', 'image/prs.btif', 'mime-type-image.svg', 'far file-image'),
-('sgi', 'image/sgi', 'mime-type-image.svg', 'far file-image');
+('bmp', 'image/bmp', 'mime-type-image.svg', 'file-image'),
+('cgm', 'image/cgm', 'mime-type-image.svg', 'file-image'),
+('g3', 'image/g3fax', 'mime-type-image.svg', 'file-image'),
+('gif', 'image/gif', 'mime-type-image.svg', 'file-image'),
+('ief', 'image/ief', 'mime-type-image.svg', 'file-image'),
+('jp2', 'image/jp2', 'mime-type-image.svg', 'file-image'),
+('jpeg', 'image/jpeg', 'mime-type-image.svg', 'file-image'),
+('jpg', 'image/jpeg', 'mime-type-image.svg', 'file-image'),
+('jpe', 'image/jpeg', 'mime-type-image.svg', 'file-image'),
+('ktx', 'image/ktx', 'mime-type-image.svg', 'file-image'),
+('pict', 'image/pict', 'mime-type-image.svg', 'file-image'),
+('pic', 'image/pict', 'mime-type-image.svg', 'file-image'),
+('pct', 'image/pict', 'mime-type-image.svg', 'file-image'),
+('png', 'image/png', 'mime-type-png.svg', 'file-image'),
+('btif', 'image/prs.btif', 'mime-type-image.svg', 'file-image'),
+('sgi', 'image/sgi', 'mime-type-image.svg', 'file-image');
 INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) VALUES
-('svg', 'image/svg+xml', 'mime-type-image.svg', 'far file-image'),
-('svgz', 'image/svg+xml', 'mime-type-image.svg', 'far file-image'),
-('tiff', 'image/tiff', 'mime-type-image.svg', 'far file-image'),
-('tif', 'image/tiff', 'mime-type-image.svg', 'far file-image'),
-('psd', 'image/vnd.adobe.photoshop', 'mime-type-psd.svg', 'far file-image'),
-('uvi', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'far file-image'),
-('uvvi', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'far file-image'),
-('uvg', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'far file-image'),
-('uvvg', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'far file-image'),
-('sub', 'image/vnd.dvb.subtitle', 'mime-type-image.svg', 'far file-image'),
-('djvu', 'image/vnd.djvu', 'mime-type-image.svg', 'far file-image'),
-('djv', 'image/vnd.djvu', 'mime-type-image.svg', 'far file-image'),
-('dwg', 'image/vnd.dwg', 'mime-type-image.svg', 'far file-image'),
-('dxf', 'image/vnd.dxf', 'mime-type-image.svg', 'far file-image'),
-('fbs', 'image/vnd.fastbidsheet', 'mime-type-image.svg', 'far file-image'),
-('fpx', 'image/vnd.fpx', 'mime-type-image.svg', 'far file-image'),
-('fst', 'image/vnd.fst', 'mime-type-image.svg', 'far file-image'),
-('mmr', 'image/vnd.fujixerox.edmics-mmr', 'mime-type-image.svg', 'far file-image'),
-('rlc', 'image/vnd.fujixerox.edmics-rlc', 'mime-type-image.svg', 'far file-image'),
-('mdi', 'image/vnd.ms-modi', 'mime-type-image.svg', 'far file-image'),
-('wdp', 'image/vnd.ms-photo', 'mime-type-image.svg', 'far file-image'),
-('npx', 'image/vnd.net-fpx', 'mime-type-image.svg', 'far file-image'),
-('wbmp', 'image/vnd.wap.wbmp', 'mime-type-image.svg', 'far file-image'),
-('xif', 'image/vnd.xiff', 'mime-type-image.svg', 'far file-image'),
-('webp', 'image/webp', 'mime-type-image.svg', 'far file-image'),
-('3ds', 'image/x-3ds', 'mime-type-image.svg', 'far file-image'),
-('ras', 'image/x-cmu-raster', 'mime-type-image.svg', 'far file-image'),
-('cmx', 'image/x-cmx', 'mime-type-image.svg', 'far file-image'),
-('fh', 'image/x-freehand', 'mime-type-image.svg', 'far file-image'),
-('fhc', 'image/x-freehand', 'mime-type-image.svg', 'far file-image'),
-('fh4', 'image/x-freehand', 'mime-type-image.svg', 'far file-image'),
-('fh5', 'image/x-freehand', 'mime-type-image.svg', 'far file-image'),
-('fh7', 'image/x-freehand', 'mime-type-image.svg', 'far file-image'),
-('ico', 'image/x-icon', 'mime-type-image.svg', 'far file-image'),
-('pntg', 'image/x-macpaint', 'mime-type-image.svg', 'far file-image'),
-('pnt', 'image/x-macpaint', 'mime-type-image.svg', 'far file-image'),
-('mac', 'image/x-macpaint', 'mime-type-image.svg', 'far file-image'),
-('sid', 'image/x-mrsid-image', 'mime-type-image.svg', 'far file-image'),
-('pcx', 'image/x-pcx', 'mime-type-image.svg', 'far file-image'),
-('pnm', 'image/x-portable-anymap', 'mime-type-image.svg', 'far file-image'),
-('pbm', 'image/x-portable-bitmap', 'mime-type-image.svg', 'far file-image'),
-('pgm', 'image/x-portable-graymap', 'mime-type-image.svg', 'far file-image'),
-('ppm', 'image/x-portable-pixmap', 'mime-type-image.svg', 'far file-image'),
-('qtif', 'image/x-quicktime', 'mime-type-image.svg', 'far file-image'),
-('qti', 'image/x-quicktime', 'mime-type-image.svg', 'far file-image'),
-('rgb', 'image/x-rgb', 'mime-type-image.svg', 'far file-image'),
-('tga', 'image/x-tga', 'mime-type-image.svg', 'far file-image'),
-('xbm', 'image/x-xbitmap', 'mime-type-image.svg', 'far file-image'),
-('xpm', 'image/x-xpixmap', 'mime-type-image.svg', 'far file-image'),
-('xwd', 'image/x-xwindowdump', 'mime-type-image.svg', 'far file-image'),
+('svg', 'image/svg+xml', 'mime-type-image.svg', 'file-image'),
+('svgz', 'image/svg+xml', 'mime-type-image.svg', 'file-image'),
+('tiff', 'image/tiff', 'mime-type-image.svg', 'file-image'),
+('tif', 'image/tiff', 'mime-type-image.svg', 'file-image'),
+('psd', 'image/vnd.adobe.photoshop', 'mime-type-psd.svg', 'file-image'),
+('uvi', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'file-image'),
+('uvvi', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'file-image'),
+('uvg', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'file-image'),
+('uvvg', 'image/vnd.dece.graphic', 'mime-type-image.svg', 'file-image'),
+('sub', 'image/vnd.dvb.subtitle', 'mime-type-image.svg', 'file-image'),
+('djvu', 'image/vnd.djvu', 'mime-type-image.svg', 'file-image'),
+('djv', 'image/vnd.djvu', 'mime-type-image.svg', 'file-image'),
+('dwg', 'image/vnd.dwg', 'mime-type-image.svg', 'file-image'),
+('dxf', 'image/vnd.dxf', 'mime-type-image.svg', 'file-image'),
+('fbs', 'image/vnd.fastbidsheet', 'mime-type-image.svg', 'file-image'),
+('fpx', 'image/vnd.fpx', 'mime-type-image.svg', 'file-image'),
+('fst', 'image/vnd.fst', 'mime-type-image.svg', 'file-image'),
+('mmr', 'image/vnd.fujixerox.edmics-mmr', 'mime-type-image.svg', 'file-image'),
+('rlc', 'image/vnd.fujixerox.edmics-rlc', 'mime-type-image.svg', 'file-image'),
+('mdi', 'image/vnd.ms-modi', 'mime-type-image.svg', 'file-image'),
+('wdp', 'image/vnd.ms-photo', 'mime-type-image.svg', 'file-image'),
+('npx', 'image/vnd.net-fpx', 'mime-type-image.svg', 'file-image'),
+('wbmp', 'image/vnd.wap.wbmp', 'mime-type-image.svg', 'file-image'),
+('xif', 'image/vnd.xiff', 'mime-type-image.svg', 'file-image'),
+('webp', 'image/webp', 'mime-type-image.svg', 'file-image'),
+('3ds', 'image/x-3ds', 'mime-type-image.svg', 'file-image'),
+('ras', 'image/x-cmu-raster', 'mime-type-image.svg', 'file-image'),
+('cmx', 'image/x-cmx', 'mime-type-image.svg', 'file-image'),
+('fh', 'image/x-freehand', 'mime-type-image.svg', 'file-image'),
+('fhc', 'image/x-freehand', 'mime-type-image.svg', 'file-image'),
+('fh4', 'image/x-freehand', 'mime-type-image.svg', 'file-image'),
+('fh5', 'image/x-freehand', 'mime-type-image.svg', 'file-image'),
+('fh7', 'image/x-freehand', 'mime-type-image.svg', 'file-image'),
+('ico', 'image/x-icon', 'mime-type-image.svg', 'file-image'),
+('pntg', 'image/x-macpaint', 'mime-type-image.svg', 'file-image'),
+('pnt', 'image/x-macpaint', 'mime-type-image.svg', 'file-image'),
+('mac', 'image/x-macpaint', 'mime-type-image.svg', 'file-image'),
+('sid', 'image/x-mrsid-image', 'mime-type-image.svg', 'file-image'),
+('pcx', 'image/x-pcx', 'mime-type-image.svg', 'file-image'),
+('pnm', 'image/x-portable-anymap', 'mime-type-image.svg', 'file-image'),
+('pbm', 'image/x-portable-bitmap', 'mime-type-image.svg', 'file-image'),
+('pgm', 'image/x-portable-graymap', 'mime-type-image.svg', 'file-image'),
+('ppm', 'image/x-portable-pixmap', 'mime-type-image.svg', 'file-image'),
+('qtif', 'image/x-quicktime', 'mime-type-image.svg', 'file-image'),
+('qti', 'image/x-quicktime', 'mime-type-image.svg', 'file-image'),
+('rgb', 'image/x-rgb', 'mime-type-image.svg', 'file-image'),
+('tga', 'image/x-tga', 'mime-type-image.svg', 'file-image'),
+('xbm', 'image/x-xbitmap', 'mime-type-image.svg', 'file-image'),
+('xpm', 'image/x-xpixmap', 'mime-type-image.svg', 'file-image'),
+('xwd', 'image/x-xwindowdump', 'mime-type-image.svg', 'file-image'),
 ('eml', 'message/rfc822', '', ''),
 ('mime', 'message/rfc822', '', ''),
 ('igs', 'model/iges', '', ''),
@@ -3797,162 +3797,162 @@ INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) V
 ('x3dvz', 'model/x3d+vrml', '', ''),
 ('x3d', 'model/x3d+xml', '', ''),
 ('x3dz', 'model/x3d+xml', '', ''),
-('manifest', 'text/cache-manifest', '', 'far file-alt'),
-('appcache', 'text/cache-manifest', '', 'far file-alt'),
-('ics', 'text/calendar', '', 'far file-alt'),
-('ifb', 'text/calendar', '', 'far file-alt'),
-('css', 'text/css', '', 'far file-code'),
-('csv', 'text/csv', 'mime-type-spreadsheet.svg', 'far file-excel'),
-('html', 'text/html', '', 'far file-code'),
-('htm', 'text/html', '', 'far file-code'),
-('n3', 'text/n3', '', 'far file-alt'),
-('txt', 'text/plain', 'mime-type-document.svg', 'far file-alt'),
-('text', 'text/plain', '', 'far file-alt'),
-('conf', 'text/plain', '', 'far file-alt'),
-('def', 'text/plain', '', 'far file-alt'),
-('list', 'text/plain', '', 'far file-alt'),
-('log', 'text/plain', '', 'far file-alt'),
-('in', 'text/plain', '', 'far file-alt'),
-('dsc', 'text/prs.lines.tag', '', 'far file-alt'),
-('rtx', 'text/richtext', '', 'far file-alt'),
-('sgml', 'text/sgml', '', 'far file-alt'),
-('sgm', 'text/sgml', '', 'far file-alt'),
-('tsv', 'text/tab-separated-values', '', 'far file-alt'),
-('t', 'text/troff', '', 'far file-alt'),
-('tr', 'text/troff', '', 'far file-alt'),
-('roff', 'text/troff', '', 'far file-alt'),
-('man', 'text/troff', '', 'far file-alt'),
-('me', 'text/troff', '', 'far file-alt'),
-('ms', 'text/troff', '', 'far file-alt'),
-('ttl', 'text/turtle', '', 'far file-code'),
-('uri', 'text/uri-list', '', 'far file-alt'),
-('uris', 'text/uri-list', '', 'far file-alt'),
-('urls', 'text/uri-list', '', 'far file-alt'),
-('address-card', 'text/vcard', '', 'far file-alt'),
-('curl', 'text/vnd.curl', '', 'far file-alt'),
-('dcurl', 'text/vnd.curl.dcurl', '', 'far file-alt'),
-('scurl', 'text/vnd.curl.scurl', '', 'far file-alt'),
-('mcurl', 'text/vnd.curl.mcurl', '', 'far file-alt'),
-('fly', 'text/vnd.fly', '', 'far file-alt'),
-('flx', 'text/vnd.fmi.flexstor', '', 'far file-alt'),
-('gv', 'text/vnd.graphviz', '', 'far file-alt'),
-('3dml', 'text/vnd.in3d.3dml', '', 'far file-alt'),
-('spot', 'text/vnd.in3d.spot', '', 'far file-alt'),
-('jad', 'text/vnd.sun.j2me.app-descriptor', '', 'far file-alt'),
-('wml', 'text/vnd.wap.wml', '', 'far file-alt'),
-('wmls', 'text/vnd.wap.wmlscript', '', 'far file-alt'),
-('s', 'text/x-asm', '', 'far file-alt'),
-('asm', 'text/x-asm', '', 'far file-code'),
-('c', 'text/x-c', '', 'far file-code'),
-('far closed-captioning', 'text/x-c', '', 'far file-code'),
-('cxx', 'text/x-c', '', 'far file-code'),
-('cpp', 'text/x-c', '', 'far file-code'),
-('h', 'text/x-c', '', 'far file-code'),
-('hh', 'text/x-c', '', 'far file-code'),
-('dic', 'text/x-c', '', 'far file-alt'),
-('f', 'text/x-fortran', '', 'far file-code'),
-('for', 'text/x-fortran', '', 'far file-code'),
-('f77', 'text/x-fortran', '', 'far file-alt'),
-('f90', 'text/x-fortran', '', 'far file-alt'),
-('java', 'text/x-java-source', '', 'far file-code'),
-('opml', 'text/x-opml', '', 'far file-alt'),
-('p', 'text/x-pascal', '', 'far file-alt'),
-('pas', 'text/x-pascal', '', 'far file-code'),
-('php', 'application/x-httpd-php', '', 'far file-code'),
-('coffee', 'text/x-coffeescript', '', 'far file-code'),
-('lsp', 'text/x-common-lisp', '', 'far file-code'),
-('lisp', 'text/x-common-lisp', '', 'far file-code'),
-('diff', 'text/x-diff', '', 'far file-code'),
-('go', 'text/x-go', '', 'far file-code'),
-('lua', 'text/x-lua', '', 'far file-code'),
-('pl', 'text/x-perl', '', 'far file-code'),
-('prl', 'text/x-perl', '', 'far file-code'),
-('perl', 'text/x-perl', '', 'far file-code'),
-('py', 'text/x-python', '', 'far file-code'),
-('nginx', 'text/nginx', '', 'far file-code'),
-('ini', 'text/x-ini', '', 'far file-alt'),
-('rb', 'text/x-ruby', '', 'far file-code'),
-('sass', 'text/x-sass', '', 'far file-code'),
-('bash', 'text/x-sh', '', 'far file-code'),
-('swift', 'text/x-swift', '', 'far file-code'),
-('vb', 'text/x-vb', '', 'far file-code'),
-('vbs', 'text/vbscript', '', 'far file-code'),
-('vue', 'text/x-vue', '', 'far file-code'),
-('yaml', 'text/x-yaml', '', 'far file-alt'),
-('md', 'text/x-markdown', '', 'far file-alt'),
-('xq', 'application/xquery', '', 'far file-code'),
-('xquery', 'application/xquery', '', 'far file-code'),
-('ps1', 'application/x-powershell', '', 'far file-code'),
+('manifest', 'text/cache-manifest', '', 'file-text'),
+('appcache', 'text/cache-manifest', '', 'file-text'),
+('ics', 'text/calendar', '', 'file-text'),
+('ifb', 'text/calendar', '', 'file-text'),
+('css', 'text/css', '', 'file-code'),
+('csv', 'text/csv', 'mime-type-spreadsheet.svg', 'file-spreadsheet'),
+('html', 'text/html', '', 'file-code'),
+('htm', 'text/html', '', 'file-code'),
+('n3', 'text/n3', '', 'file-text'),
+('txt', 'text/plain', 'mime-type-document.svg', 'file-text'),
+('text', 'text/plain', '', 'file-text'),
+('conf', 'text/plain', '', 'file-text'),
+('def', 'text/plain', '', 'file-text'),
+('list', 'text/plain', '', 'file-text'),
+('log', 'text/plain', '', 'file-text'),
+('in', 'text/plain', '', 'file-text'),
+('dsc', 'text/prs.lines.tag', '', 'file-text'),
+('rtx', 'text/richtext', '', 'file-text'),
+('sgml', 'text/sgml', '', 'file-text'),
+('sgm', 'text/sgml', '', 'file-text'),
+('tsv', 'text/tab-separated-values', '', 'file-text'),
+('t', 'text/troff', '', 'file-text'),
+('tr', 'text/troff', '', 'file-text'),
+('roff', 'text/troff', '', 'file-text'),
+('man', 'text/troff', '', 'file-text'),
+('me', 'text/troff', '', 'file-text'),
+('ms', 'text/troff', '', 'file-text'),
+('ttl', 'text/turtle', '', 'file-code'),
+('uri', 'text/uri-list', '', 'file-text'),
+('uris', 'text/uri-list', '', 'file-text'),
+('urls', 'text/uri-list', '', 'file-text'),
+('address-card', 'text/vcard', '', 'file-text'),
+('curl', 'text/vnd.curl', '', 'file-text'),
+('dcurl', 'text/vnd.curl.dcurl', '', 'file-text'),
+('scurl', 'text/vnd.curl.scurl', '', 'file-text'),
+('mcurl', 'text/vnd.curl.mcurl', '', 'file-text'),
+('fly', 'text/vnd.fly', '', 'file-text'),
+('flx', 'text/vnd.fmi.flexstor', '', 'file-text'),
+('gv', 'text/vnd.graphviz', '', 'file-text'),
+('3dml', 'text/vnd.in3d.3dml', '', 'file-text'),
+('spot', 'text/vnd.in3d.spot', '', 'file-text'),
+('jad', 'text/vnd.sun.j2me.app-descriptor', '', 'file-text'),
+('wml', 'text/vnd.wap.wml', '', 'file-text'),
+('wmls', 'text/vnd.wap.wmlscript', '', 'file-text'),
+('s', 'text/x-asm', '', 'file-text'),
+('asm', 'text/x-asm', '', 'file-code'),
+('c', 'text/x-c', '', 'file-code'),
+('far closed-captioning', 'text/x-c', '', 'file-code'),
+('cxx', 'text/x-c', '', 'file-code'),
+('cpp', 'text/x-c', '', 'file-code'),
+('h', 'text/x-c', '', 'file-code'),
+('hh', 'text/x-c', '', 'file-code'),
+('dic', 'text/x-c', '', 'file-text'),
+('f', 'text/x-fortran', '', 'file-code'),
+('for', 'text/x-fortran', '', 'file-code'),
+('f77', 'text/x-fortran', '', 'file-text'),
+('f90', 'text/x-fortran', '', 'file-text'),
+('java', 'text/x-java-source', '', 'file-code'),
+('opml', 'text/x-opml', '', 'file-text'),
+('p', 'text/x-pascal', '', 'file-text'),
+('pas', 'text/x-pascal', '', 'file-code'),
+('php', 'application/x-httpd-php', '', 'file-code'),
+('coffee', 'text/x-coffeescript', '', 'file-code'),
+('lsp', 'text/x-common-lisp', '', 'file-code'),
+('lisp', 'text/x-common-lisp', '', 'file-code'),
+('diff', 'text/x-diff', '', 'file-code'),
+('go', 'text/x-go', '', 'file-code'),
+('lua', 'text/x-lua', '', 'file-code'),
+('pl', 'text/x-perl', '', 'file-code'),
+('prl', 'text/x-perl', '', 'file-code'),
+('perl', 'text/x-perl', '', 'file-code'),
+('py', 'text/x-python', '', 'file-code'),
+('nginx', 'text/nginx', '', 'file-code'),
+('ini', 'text/x-ini', '', 'file-text'),
+('rb', 'text/x-ruby', '', 'file-code'),
+('sass', 'text/x-sass', '', 'file-code'),
+('bash', 'text/x-sh', '', 'file-code'),
+('swift', 'text/x-swift', '', 'file-code'),
+('vb', 'text/x-vb', '', 'file-code'),
+('vbs', 'text/vbscript', '', 'file-code'),
+('vue', 'text/x-vue', '', 'file-code'),
+('yaml', 'text/x-yaml', '', 'file-text'),
+('md', 'text/x-markdown', '', 'file-text'),
+('xq', 'application/xquery', '', 'file-code'),
+('xquery', 'application/xquery', '', 'file-code'),
+('ps1', 'application/x-powershell', '', 'file-code'),
 ('aps', 'application/x-aspx', '', ''),
-('jsp', 'application/x-jsp', '', 'far file-code'),
-('nfo', 'text/x-nfo', '', 'far file-alt'),
-('etx', 'text/x-setext', '', 'far file-alt'),
-('sfv', 'text/x-sfv', '', 'far file-alt'),
-('uu', 'text/x-uuencode', '', 'far file-alt'),
-('vcs', 'text/x-vcalendar', '', 'far file-alt'),
-('vcf', 'text/x-vcard', '', 'far file-alt'),
-('3gp', 'video/3gpp', 'mime-type-video.svg', 'far file-video'),
-('3g2', 'video/3gpp2', 'mime-type-video.svg', 'far file-video'),
-('h261', 'video/h261', 'mime-type-video.svg', 'far file-video'),
-('h263', 'video/h263', 'mime-type-video.svg', 'far file-video'),
-('h264', 'video/h264', 'mime-type-video.svg', 'far file-video'),
-('jpgv', 'video/jpeg', 'mime-type-video.svg', 'far file-video'),
-('jpm', 'video/jpm', 'mime-type-video.svg', 'far file-video'),
-('jpgm', 'video/jpm', 'mime-type-video.svg', 'far file-video'),
-('mj2', 'video/mj2', 'mime-type-video.svg', 'far file-video'),
-('mjp2', 'video/mj2', 'mime-type-video.svg', 'far file-video'),
-('ts', 'video/mp2t', 'mime-type-video.svg', 'far file-video'),
-('mp4', 'video/mp4', 'mime-type-video.svg', 'far file-video'),
-('mp4v', 'video/mp4', 'mime-type-video.svg', 'far file-video'),
-('mpg4', 'video/mp4', 'mime-type-video.svg', 'far file-video'),
-('m4v', 'video/mp4', 'mime-type-video.svg', 'far file-video'),
-('mpeg', 'video/mpeg', 'mime-type-video.svg', 'far file-video'),
-('mpg', 'video/mpeg', 'mime-type-video.svg', 'far file-video'),
-('mpe', 'video/mpeg', 'mime-type-video.svg', 'far file-video'),
-('m1v', 'video/mpeg', 'mime-type-video.svg', 'far file-video'),
-('m2v', 'video/mpeg', 'mime-type-video.svg', 'far file-video'),
-('ogv', 'video/ogg', 'mime-type-video.svg', 'far file-video'),
-('qt', 'video/quicktime', 'mime-type-video.svg', 'far file-video'),
-('mov', 'video/quicktime', 'mime-type-video.svg', 'far file-video'),
-('uvh', 'video/vnd.dece.hd', 'mime-type-video.svg', 'far file-video'),
-('uvvh', 'video/vnd.dece.hd', 'mime-type-video.svg', 'far file-video'),
-('uvm', 'video/vnd.dece.mobile', 'mime-type-video.svg', 'far file-video'),
-('uvvm', 'video/vnd.dece.mobile', 'mime-type-video.svg', 'far file-video'),
-('uvp', 'video/vnd.dece.pd', 'mime-type-video.svg', 'far file-video'),
-('uvvp', 'video/vnd.dece.pd', 'mime-type-video.svg', 'far file-video');
+('jsp', 'application/x-jsp', '', 'file-code'),
+('nfo', 'text/x-nfo', '', 'file-text'),
+('etx', 'text/x-setext', '', 'file-text'),
+('sfv', 'text/x-sfv', '', 'file-text'),
+('uu', 'text/x-uuencode', '', 'file-text'),
+('vcs', 'text/x-vcalendar', '', 'file-text'),
+('vcf', 'text/x-vcard', '', 'file-text'),
+('3gp', 'video/3gpp', 'mime-type-video.svg', 'file-play'),
+('3g2', 'video/3gpp2', 'mime-type-video.svg', 'file-play'),
+('h261', 'video/h261', 'mime-type-video.svg', 'file-play'),
+('h263', 'video/h263', 'mime-type-video.svg', 'file-play'),
+('h264', 'video/h264', 'mime-type-video.svg', 'file-play'),
+('jpgv', 'video/jpeg', 'mime-type-video.svg', 'file-play'),
+('jpm', 'video/jpm', 'mime-type-video.svg', 'file-play'),
+('jpgm', 'video/jpm', 'mime-type-video.svg', 'file-play'),
+('mj2', 'video/mj2', 'mime-type-video.svg', 'file-play'),
+('mjp2', 'video/mj2', 'mime-type-video.svg', 'file-play'),
+('ts', 'video/mp2t', 'mime-type-video.svg', 'file-play'),
+('mp4', 'video/mp4', 'mime-type-video.svg', 'file-play'),
+('mp4v', 'video/mp4', 'mime-type-video.svg', 'file-play'),
+('mpg4', 'video/mp4', 'mime-type-video.svg', 'file-play'),
+('m4v', 'video/mp4', 'mime-type-video.svg', 'file-play'),
+('mpeg', 'video/mpeg', 'mime-type-video.svg', 'file-play'),
+('mpg', 'video/mpeg', 'mime-type-video.svg', 'file-play'),
+('mpe', 'video/mpeg', 'mime-type-video.svg', 'file-play'),
+('m1v', 'video/mpeg', 'mime-type-video.svg', 'file-play'),
+('m2v', 'video/mpeg', 'mime-type-video.svg', 'file-play'),
+('ogv', 'video/ogg', 'mime-type-video.svg', 'file-play'),
+('qt', 'video/quicktime', 'mime-type-video.svg', 'file-play'),
+('mov', 'video/quicktime', 'mime-type-video.svg', 'file-play'),
+('uvh', 'video/vnd.dece.hd', 'mime-type-video.svg', 'file-play'),
+('uvvh', 'video/vnd.dece.hd', 'mime-type-video.svg', 'file-play'),
+('uvm', 'video/vnd.dece.mobile', 'mime-type-video.svg', 'file-play'),
+('uvvm', 'video/vnd.dece.mobile', 'mime-type-video.svg', 'file-play'),
+('uvp', 'video/vnd.dece.pd', 'mime-type-video.svg', 'file-play'),
+('uvvp', 'video/vnd.dece.pd', 'mime-type-video.svg', 'file-play');
 INSERT INTO `sys_storage_mime_types` (`ext`, `mime_type`, `icon`, `icon_font`) VALUES
-('uvs', 'video/vnd.dece.sd', 'mime-type-video.svg', 'far file-video'),
-('uvvs', 'video/vnd.dece.sd', 'mime-type-video.svg', 'far file-video'),
-('uvv', 'video/vnd.dece.video', 'mime-type-video.svg', 'far file-video'),
-('uvvv', 'video/vnd.dece.video', 'mime-type-video.svg', 'far file-video'),
-('dvb', 'video/vnd.dvb.file', 'mime-type-video.svg', 'far file-video'),
-('fvt', 'video/vnd.fvt', 'mime-type-video.svg', 'far file-video'),
-('mxu', 'video/vnd.mpegurl', 'mime-type-video.svg', 'far file-video'),
-('m4u', 'video/vnd.mpegurl', 'mime-type-video.svg', 'far file-video'),
-('pyv', 'video/vnd.ms-playready.media.pyv', 'mime-type-video.svg', 'far file-video'),
-('uvu', 'video/vnd.uvvu.mp4', 'mime-type-video.svg', 'far file-video'),
-('uvvu', 'video/vnd.uvvu.mp4', 'mime-type-video.svg', 'far file-video'),
-('viv', 'video/vnd.vivo', 'mime-type-video.svg', 'far file-video'),
-('dv', 'video/x-dv', 'mime-type-video.svg', 'far file-video'),
-('dif', 'video/x-dv', 'mime-type-video.svg', 'far file-excel'),
-('webm', 'video/webm', 'mime-type-video.svg', 'far file-video'),
-('f4v', 'video/x-f4v', 'mime-type-video.svg', 'far file-video'),
-('fli', 'video/x-fli', 'mime-type-video.svg', 'far file-video'),
-('flv', 'video/x-flv', 'mime-type-video.svg', 'far file-video'),
-('mkv', 'video/x-matroska', 'mime-type-video.svg', 'far file-video'),
-('mk3d', 'video/x-matroska', 'mime-type-video.svg', 'far file-video'),
-('mks', 'video/x-matroska', 'mime-type-video.svg', 'far file-video'),
-('mng', 'video/x-mng', 'mime-type-video.svg', 'far file-video'),
-('asf', 'video/x-ms-asf', 'mime-type-video.svg', 'far file-video'),
-('asx', 'video/x-ms-asf', 'mime-type-video.svg', 'far file-video'),
-('vob', 'video/x-ms-vob', 'mime-type-video.svg', 'far file-video'),
-('wm', 'video/x-ms-wm', 'mime-type-video.svg', 'far file-video'),
-('wmv', 'video/x-ms-wmv', 'mime-type-video.svg', 'far file-video'),
-('wmx', 'video/x-ms-wmx', 'mime-type-video.svg', 'far file-video'),
-('wvx', 'video/x-ms-wvx', 'mime-type-video.svg', 'far file-video'),
-('avi', 'video/x-msvideo', 'mime-type-video.svg', 'far file-video'),
-('movie', 'video/x-sgi-movie', 'mime-type-video.svg', 'far file-video'),
-('smv', 'video/x-smv', 'mime-type-video.svg', 'far file-video'),
+('uvs', 'video/vnd.dece.sd', 'mime-type-video.svg', 'file-play'),
+('uvvs', 'video/vnd.dece.sd', 'mime-type-video.svg', 'file-play'),
+('uvv', 'video/vnd.dece.video', 'mime-type-video.svg', 'file-play'),
+('uvvv', 'video/vnd.dece.video', 'mime-type-video.svg', 'file-play'),
+('dvb', 'video/vnd.dvb.file', 'mime-type-video.svg', 'file-play'),
+('fvt', 'video/vnd.fvt', 'mime-type-video.svg', 'file-play'),
+('mxu', 'video/vnd.mpegurl', 'mime-type-video.svg', 'file-play'),
+('m4u', 'video/vnd.mpegurl', 'mime-type-video.svg', 'file-play'),
+('pyv', 'video/vnd.ms-playready.media.pyv', 'mime-type-video.svg', 'file-play'),
+('uvu', 'video/vnd.uvvu.mp4', 'mime-type-video.svg', 'file-play'),
+('uvvu', 'video/vnd.uvvu.mp4', 'mime-type-video.svg', 'file-play'),
+('viv', 'video/vnd.vivo', 'mime-type-video.svg', 'file-play'),
+('dv', 'video/x-dv', 'mime-type-video.svg', 'file-play'),
+('dif', 'video/x-dv', 'mime-type-video.svg', 'file-spreadsheet'),
+('webm', 'video/webm', 'mime-type-video.svg', 'file-play'),
+('f4v', 'video/x-f4v', 'mime-type-video.svg', 'file-play'),
+('fli', 'video/x-fli', 'mime-type-video.svg', 'file-play'),
+('flv', 'video/x-flv', 'mime-type-video.svg', 'file-play'),
+('mkv', 'video/x-matroska', 'mime-type-video.svg', 'file-play'),
+('mk3d', 'video/x-matroska', 'mime-type-video.svg', 'file-play'),
+('mks', 'video/x-matroska', 'mime-type-video.svg', 'file-play'),
+('mng', 'video/x-mng', 'mime-type-video.svg', 'file-play'),
+('asf', 'video/x-ms-asf', 'mime-type-video.svg', 'file-play'),
+('asx', 'video/x-ms-asf', 'mime-type-video.svg', 'file-play'),
+('vob', 'video/x-ms-vob', 'mime-type-video.svg', 'file-play'),
+('wm', 'video/x-ms-wm', 'mime-type-video.svg', 'file-play'),
+('wmv', 'video/x-ms-wmv', 'mime-type-video.svg', 'file-play'),
+('wmx', 'video/x-ms-wmx', 'mime-type-video.svg', 'file-play'),
+('wvx', 'video/x-ms-wvx', 'mime-type-video.svg', 'file-play'),
+('avi', 'video/x-msvideo', 'mime-type-video.svg', 'file-play'),
+('movie', 'video/x-sgi-movie', 'mime-type-video.svg', 'file-play'),
+('smv', 'video/x-smv', 'mime-type-video.svg', 'file-play'),
 ('ice', 'x-conference/x-cooltalk', '', '');
 
 
@@ -5166,14 +5166,14 @@ CREATE TABLE IF NOT EXISTS `sys_menu_items` (
 -- buttons (`config_api` in enable-app-menus.sql), Sign up the primary one; then the modules' items (each module adds
 -- its own after the last item below 9999), then About; More is last
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_site', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'home', '', 2147483647, 1, 1, 1),
-('sys_site', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info-circle', '', 2147483647, 1, 1, 2),
+('sys_site', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'house', '', 2147483647, 1, 1, 1),
+('sys_site', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info', '', 2147483647, 1, 1, 2),
 ('sys_site', 'system', 'search', '_sys_menu_item_title_system_search', '_sys_menu_item_title_search', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-search\', this, \'site\');', '', 'search', '', 2147483647, 1, 1, 3),
-('sys_site', 'system', 'more-auto', '_sys_menu_item_title_system_more_auto', '_sys_menu_item_title_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', 2147483647, 1, 0, 9999);
+('sys_site', 'system', 'more-auto', '_sys_menu_item_title_system_more_auto', '_sys_menu_item_title_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', 2147483647, 1, 0, 9999);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `hidden_on`, `copyable`, `primary`, `order`) VALUES
-('sys_site', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'sign-in-alt', '', 1, '6', 0, 0, 1),
-('sys_site', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-plus', '', 1, '6', 0, 1, 2);
+('sys_site', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'log-in', '', 1, '6', 0, 0, 1),
+('sys_site', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-round-plus', '', 1, '6', 0, 1, 2);
 
 -- the logo is Home on phones; More goes last and About below the modules' items
 UPDATE `sys_menu_items` SET `hidden_on` = '1' WHERE `set_name` = 'sys_site' AND `name` = 'home';
@@ -5206,16 +5206,16 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_apps_sidebar', 'system', 'member-memberships', '_sys_menu_item_title_system_member_memberships', '', '', '', '', '', 'sys_profile_memberships', 2147483646, 1, 0, 6);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_apps_menu', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', 'page.php?i=home', '', '', 'home', '', '', 2147483647, 1, 0, 1),
+('sys_apps_menu', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', 'page.php?i=home', '', '', 'house', '', '', 2147483647, 1, 0, 1),
 ('sys_apps_menu', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass', '', '', 2147483647, 1, 0, 2),
-('sys_apps_menu', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{member_url}', '', '', 'user', '', '', 2147483646, 1, 0, 3),
-('sys_apps_menu', 'system', 'connections', '_sys_menu_item_title_system_connections', '_sys_menu_item_title_connections', 'page.php?i=friend-suggestions', '', '', 'users', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 1, 0, 6);
+('sys_apps_menu', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{member_url}', '', '', 'user-round', '', '', 2147483646, 1, 0, 3),
+('sys_apps_menu', 'system', 'connections', '_sys_menu_item_title_system_connections', '_sys_menu_item_title_connections', 'page.php?i=friend-suggestions', '', '', 'users-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 1, 0, 6);
 
 -- application menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_application', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'home col-gray-dark', '', 2147483647, 1, 1, 1),
-('sys_application', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info-circle col-blue3-dark', '', 2147483647, 1, 1, 2),
-('sys_application', 'system', 'more-auto', '_sys_menu_item_title_system_more_auto', '_sys_menu_item_title_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', 2147483647, 1, 0, 9999);
+('sys_application', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'house col-gray-dark', '', 2147483647, 1, 1, 1),
+('sys_application', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info col-blue3-dark', '', 2147483647, 1, 1, 2),
+('sys_application', 'system', 'more-auto', '_sys_menu_item_title_system_more_auto', '_sys_menu_item_title_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', 2147483647, 1, 0, 9999);
 
 -- homepage submenu
 -- The operators' "Get started" checklist (BxDolTours, BxTemplMenuOnboarding): a step per item, its add-on answers the step's state.
@@ -5223,13 +5223,13 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_onboarding_operator', 'system', 'profile', '_sys_menu_item_title_system_onboarding_profile', '_sys_menu_item_title_onboarding_profile', '_sys_menu_item_info_onboarding_profile', 'page.php?i=account-profile-switcher', '', '', 'circle-user-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:7:"profile";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 1),
 ('sys_onboarding_operator', 'system', 'logo', '_sys_menu_item_title_system_onboarding_logo', '_sys_menu_item_title_onboarding_logo', '_sys_menu_item_info_onboarding_logo', '{url_studio}designer.php?page=logo', '', '', 'target', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"logo";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, '', 1, 0, 1, 2),
 ('sys_onboarding_operator', 'system', 'cover', '_sys_menu_item_title_system_onboarding_cover', '_sys_menu_item_title_onboarding_cover', '_sys_menu_item_info_onboarding_cover', '{url_studio}designer.php?page=cover', '', '', 'gallery-vertical', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"is_onboarding_step_available";s:6:"params";a:1:{i:0;s:5:"cover";}s:5:"class";s:19:"TemplServiceAccount";}', 1, 0, 1, 3),
-('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-plus', '', 2147483646, '', 1, 0, 1, 10);
+('sys_onboarding_operator', 'system', 'join', '_sys_menu_item_title_system_onboarding_join', '_sys_menu_item_title_onboarding_join', '_sys_menu_item_info_onboarding_join', '', '', '', 'user-round-plus', '', 2147483646, '', 1, 0, 1, 10);
 
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
 ('sys_homepage_submenu', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', '', '', '', 'bolt', '', '', 2147483647, '', 0, 1, 1),
-('sys_homepage_submenu', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass ', '', '', 2147483647, '', 0, 1, 2),
-('sys_homepage_submenu', 'system', 'updates', '_sys_menu_item_title_system_updates', '_sys_menu_item_title_updates', 'page.php?i=updates', '', '', 'fire', '', '', 2147483647, '', 0, 1, 3),
-('sys_homepage_submenu', 'system', 'trends', '_sys_menu_item_title_system_trends', '_sys_menu_item_title_trends', 'page.php?i=trends', '', '', 'hashtag', '', '', 2147483647, '', 0, 1, 4);
+('sys_homepage_submenu', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass', '', '', 2147483647, '', 0, 1, 2),
+('sys_homepage_submenu', 'system', 'updates', '_sys_menu_item_title_system_updates', '_sys_menu_item_title_updates', 'page.php?i=updates', '', '', 'flame', '', '', 2147483647, '', 0, 1, 3),
+('sys_homepage_submenu', 'system', 'trends', '_sys_menu_item_title_system_trends', '_sys_menu_item_title_trends', 'page.php?i=trends', '', '', 'hash', '', '', 2147483647, '', 0, 1, 4);
 
 -- footer menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
@@ -5239,8 +5239,8 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_footer', 'system', 'copyright', '_sys_menu_item_title_system_copyright', '_sys_menu_item_title_copyright', '', '', '', '', '', 2147483647, 1, 1, 4),
 ('sys_footer', 'system', 'switch_language', '_sys_menu_item_title_system_switch_language', '_sys_menu_item_title_switch_language', 'javascript:void(0);', 'bx_menu_popup(''sys_switch_language_popup'', this, {pointer: {flip: true}});', '', '', '', 2147483647, 1, 1, 5),
 ('sys_footer', 'system', 'switch_template', '_sys_menu_item_title_system_switch_template', '_sys_menu_item_title_switch_template', 'javascript:void(0);', 'bx_menu_popup(''sys_switch_template'', window);', '', '', '', 2147483647, 1, 1, 6),
-('sys_footer', 'system', 'color_scheme', '_sys_menu_item_title_system_color_scheme', '', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-footer-color-scheme'', this, {pointer: {flip: true}});', '', 'adjust', '', 2147483647, 1, 1, 7),
-('sys_footer', 'system', 'sounds', '_sys_menu_item_title_system_sounds', '', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-footer-sounds'', this, {pointer: {flip: true}});', '', 'volume-up', '', 2147483647, 1, 1, 8),
+('sys_footer', 'system', 'color_scheme', '_sys_menu_item_title_system_color_scheme', '', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-footer-color-scheme'', this, {pointer: {flip: true}});', '', 'eclipse', '', 2147483647, 1, 1, 7),
+('sys_footer', 'system', 'sounds', '_sys_menu_item_title_system_sounds', '', 'javascript:void(0);', 'bx_menu_popup_inline(''#bx-menu-footer-sounds'', this, {pointer: {flip: true}});', '', 'volume-2', '', 2147483647, 1, 1, 8),
 ('sys_footer', 'system', 'powered_by', '_sys_menu_item_title_system_powered_by', '', 'https://unacms.com', '', '_blank', '<svg width="67" height="28" viewBox="91 0 67 28" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(0.0552 0 0 0.0552 86.8564 -0.1436)" fill="currentColor"><path d="M322.4 324.2c1.4-1.3 3.8-.1 3.5 1.7-1 6-2 12-3.1 18-4.3 24.7-8.7 50-9.5 81.1-.1 1.6-1.1 3.1-2.6 3.5-17.3 5.5-35.7 8.5-54.7 8.5-22.1 0-43.2-4-62.8-11.3-2.5-.9-2.4-4.4-.1-5.5 24.6-11.8 42-37.5 43.7-66.2.1-2.4 2.3-4.2 4.7-3.9 4.7.8 9.6 1.1 14.5 1.1 25.8 0 49.3-10.3 66.4-27zM420.2 193.1c1.1-2.3 4.6-2.4 5.5.1 7.3 19.6 11.3 40.7 11.3 62.8 0 70.4-40.2 131.4-98.9 161.3-2.5 1.3-5.5-.7-5.3-3.5 1.4-24.4 5-45.3 8.8-66.6 4.7-27.3 9.6-55.3 9.6-91.2 0-4.9-.3-9.8-1.1-14.5-.3-2.4 1.5-4.6 3.9-4.7 28.7-1.7 54.4-19.1 66.2-43.7zM173.9 94.7c2.5-1.3 5.5.7 5.3 3.5-1.4 24.4-5 45.3-8.8 66.6-4.7 27.3-9.6 55.3-9.6 91.2 0 4.9.3 9.8 1.1 14.5.3 2.4-1.5 4.6-3.9 4.7-28.7 1.7-54.4 19.1-66.2 43.7-1.1 2.3-4.6 2.4-5.5-.1-7.3-19.6-11.3-40.7-11.3-62.8 0-70.4 40.2-131.4 98.9-161.3zM256 75c22.1 0 43.2 4 62.8 11.3 2.5.9 2.4 4.4.1 5.5-24.6 11.8-42 37.5-43.7 66.2-.1 2.4-2.3 4.2-4.7 3.9-4.7-.8-9.6-1.1-14.5-1.1-25.8 0-49.3 10.3-66.4 27-1.4 1.3-3.8.1-3.5-1.7 1-6 2-12 3.1-18 4.3-24.7 8.7-50 9.5-81.1.1-1.6 1.1-3.1 2.6-3.5 17.3-5.5 35.7-8.5 54.7-8.5z" fill-opacity=".4"/><circle cx="351.2" cy="160.8" r="57.1"/><circle cx="160.8" cy="351.2" r="57.1"/></g><path d="M128.5 14C128.5 16.4853 126.485 18.5 124 18.5C121.515 18.5 119.5 16.4853 119.5 14V8.75C119.5 8.33579 119.164 8 118.75 8C118.336 8 118 8.33579 118 8.75V14C118 17.3137 120.686 20 124 20C127.314 20 130 17.3137 130 14V8.75C130 8.33579 129.664 8 129.25 8C128.836 8 128.5 8.33579 128.5 8.75V14ZM142.5 14V19.25C142.5 19.6642 142.836 20 143.25 20C143.664 20 144 19.6642 144 19.25V14C144 10.6863 141.314 8 138 8C134.686 8 132 10.6863 132 14V19.25C132 19.6642 132.336 20 132.75 20C133.164 20 133.5 19.6642 133.5 19.25V14C133.5 11.5147 135.515 9.5 138 9.5C140.485 9.5 142.5 11.5147 142.5 14Z" fill="currentColor"/><path d="M156.5 17.9687V19.25C156.5 19.6642 156.836 20 157.25 20V20C157.664 20 158 19.6642 158 19.25V14C158 10.6863 155.314 8 152 8C148.686 8 146 10.6863 146 14C146 17.3137 148.686 20 152 20C153.792 20 155.401 19.2144 156.5 17.9687ZM156.5 14C156.5 16.4853 154.485 18.5 152 18.5C149.515 18.5 147.5 16.4853 147.5 14C147.5 11.5147 149.515 9.5 152 9.5C154.485 9.5 156.5 11.5147 156.5 14Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>', '', 2147483647, 1, 1, 9999);
 
 -- app tab bar menu (NEO bottom bar and native tabs; guests see level 1 items, members the rest)
@@ -5251,12 +5251,12 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_tabbar', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info', '', 1, 1, 1, 3),
 ('sys_tabbar', 'system', 'terms', '_sys_menu_item_title_system_terms', '_sys_menu_item_title_terms', 'page.php?i=terms', '', '', 'handshake', '', 1, 1, 1, 4),
 ('sys_tabbar', 'system', 'privacy', '_sys_menu_item_title_system_privacy', '_sys_menu_item_title_privacy', 'page.php?i=privacy', '', '', 'shield-check', '', 1, 1, 1, 5),
-('sys_tabbar', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{own_profile_url}', '', '', 'user', '', 2147483646, 1, 1, 6),
+('sys_tabbar', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{own_profile_url}', '', '', 'user-round', '', 2147483646, 1, 1, 6),
 ('sys_tabbar', 'system', 'dashboard', '_sys_menu_item_title_system_dashboard', '_sys_menu_item_title_dashboard', 'page.php?i=dashboard', '', '', 'circle-gauge', '', 2147483646, 1, 1, 5);
 
 -- site toolbar menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_toolbar_site', 'system', 'main-menu', '_sys_menu_item_title_system_main_menu', '', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_site\', this, \'site\');', '', 'bars', '', 2147483647, 1, 1, 1);
+('sys_toolbar_site', 'system', 'main-menu', '_sys_menu_item_title_system_main_menu', '', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_site\', this, \'site\');', '', 'menu', '', 2147483647, 1, 1, 1);
 
 -- application toolbar menu: the Application layout's sidebar, beside the context switcher (the member's account is at the sidebar's foot)
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on_pt`, `active`, `copyable`, `order`) VALUES
@@ -5267,10 +5267,10 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on_pt`, `active`, `copyable`, `order`) VALUES
 ('sys_toolbar_member', 'system', 'search', '_sys_menu_item_title_system_search', '', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-search'', this, ''site'');', '', 'search', '', '', 0, 2147483647, 0, 1, 1, 0),
 ('sys_toolbar_member', 'system', 'add-content', '_sys_menu_item_title_system_add_content', '', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_add_content\', this, \'site\');', '', 'plus', '', '', 0, 2147483646, 0, 1, 1, 0),
-('sys_toolbar_member', 'system', 'apps', '_sys_menu_item_title_system_apps', '', 'javascript:void(0);', '', '', 'qrcode', '', '', 0, 2147483646, 3, 1, 1, 0),
-('sys_toolbar_member', 'system', 'account', '_sys_menu_item_title_system_account_menu', '_sys_menu_item_title_account_menu', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-account'', this, ''site'');', '', 'user',  'a:3:{s:6:"module";s:6:"system";s:6:"method";s:21:"profile_notifications";s:5:"class";s:20:"TemplServiceProfiles";}', 'sys_account_popup', 1, 2147483646, 0, 1, 0, 1),
-('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'user',  '', '', 0, 1, 0, 1, 0, 2),
-('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-plus',  '', '', 0, 1, 0, 1, 0, 3);
+('sys_toolbar_member', 'system', 'apps', '_sys_menu_item_title_system_apps', '', 'javascript:void(0);', '', '', 'qr-code', '', '', 0, 2147483646, 3, 1, 1, 0),
+('sys_toolbar_member', 'system', 'account', '_sys_menu_item_title_system_account_menu', '_sys_menu_item_title_account_menu', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-account'', this, ''site'');', '', 'user-round',  'a:3:{s:6:"module";s:6:"system";s:6:"method";s:21:"profile_notifications";s:5:"class";s:20:"TemplServiceProfiles";}', 'sys_account_popup', 1, 2147483646, 0, 1, 0, 1),
+('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login', '', '', 'user-round',  '', '', 0, 1, 0, 1, 0, 2),
+('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-round-plus',  '', '', 0, 1, 0, 1, 0, 3);
 
 -- account popup menu; its own profile list (profile-switcher) is off on the site: the account menu's switch-profile item shows it
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
@@ -5281,17 +5281,17 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 -- notifications menu in account popup; switch-profile lists the account's other profiles there (BxBaseMenuAccountNotifications), the apps draw their own switcher for it
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_account_notifications', 'system', 'switch-profile', '_sys_menu_item_title_system_switch_profile', '_sys_menu_item_title_switch_profile', '{switch_profile}', '', '', 'users', '', '', 2147483646, 1, 1, 0),
-('sys_account_notifications', 'system', 'dashboard', '_sys_menu_item_title_system_dashboard', '_sys_menu_item_title_dashboard', 'page.php?i=dashboard', '', '', 'tachometer-alt', '', '', 2147483646, 1, 1, 1),
-('sys_account_notifications', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{own_profile_url}', '', '', 'user', '', '', 2147483644, 1, 1, 2),
-('sys_account_notifications', 'system', 'account-settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=account-settings-email', '', '', 'cog', '', '', 2147483646, 1, 1, 3),
+('sys_account_notifications', 'system', 'switch-profile', '_sys_menu_item_title_system_switch_profile', '_sys_menu_item_title_switch_profile', '{switch_profile}', '', '', 'users-round', '', '', 2147483646, 1, 1, 0),
+('sys_account_notifications', 'system', 'dashboard', '_sys_menu_item_title_system_dashboard', '_sys_menu_item_title_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
+('sys_account_notifications', 'system', 'profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{own_profile_url}', '', '', 'user-round', '', '', 2147483644, 1, 1, 2),
+('sys_account_notifications', 'system', 'account-settings', '_sys_menu_item_title_system_account_settings', '_sys_menu_item_title_account_settings', 'page.php?i=account-settings-email', '', '', 'settings', '', '', 2147483646, 1, 1, 3),
 ('sys_account_notifications', 'system', 'add-content', '_sys_menu_item_title_system_add_content', '_sys_menu_item_title_add_content', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_add_content\', $(\'#bx-menu-toolbar-item-add-content a\').get(0), \'site\');', '', 'plus', '', '', 2147483646, 1, 1, 4),
 ('sys_account_notifications', 'system', 'studio', '_sys_menu_item_title_system_studio', '_sys_menu_item_title_studio', '{studio_url}', '', '', 'wrench', '', '', 2147483646, 1, 0, 5),
-('sys_account_notifications', 'system', 'cart', '_sys_menu_item_title_system_cart', '_sys_menu_item_title_cart', 'cart.php', '', '', 'cart-plus', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_cart_items_count";s:6:"params";a:0:{}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 1, 1, 6),
-('sys_account_notifications', 'system', 'orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'cart-arrow-down', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_orders_count";s:6:"params";a:1:{i:0;s:3:"new";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 7),
-('sys_account_notifications', 'system', 'invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'file-invoice', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_invoices_count";s:6:"params";a:1:{i:0;s:6:"unpaid";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 8),
-('sys_account_notifications', 'system', 'sounds', '_sys_menu_item_title_system_sounds', '_sys_menu_item_title_sounds', 'javascript:void(0);', 'bx_sound_toggle(this);', '', 'volume-up', '', '', 2147483646, 1, 1, 9998),
-('sys_account_notifications', 'system', 'logout', '_sys_menu_item_title_system_logout', '_sys_menu_item_title_logout', 'page.php?i=logout', '', '', 'sign-out-alt', '', '', 2147483646, 1, 1, 9999);
+('sys_account_notifications', 'system', 'cart', '_sys_menu_item_title_system_cart', '_sys_menu_item_title_cart', 'cart.php', '', '', 'shopping-cart', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_cart_items_count";s:6:"params";a:0:{}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 1, 1, 6),
+('sys_account_notifications', 'system', 'orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'shopping-cart', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_orders_count";s:6:"params";a:1:{i:0;s:3:"new";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 7),
+('sys_account_notifications', 'system', 'invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'receipt', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_invoices_count";s:6:"params";a:1:{i:0;s:6:"unpaid";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 8),
+('sys_account_notifications', 'system', 'sounds', '_sys_menu_item_title_system_sounds', '_sys_menu_item_title_sounds', 'javascript:void(0);', 'bx_sound_toggle(this);', '', 'volume-2', '', '', 2147483646, 1, 1, 9998),
+('sys_account_notifications', 'system', 'logout', '_sys_menu_item_title_system_logout', '_sys_menu_item_title_logout', 'page.php?i=logout', '', '', 'log-out', '', '', 2147483646, 1, 1, 9999);
 
 -- The homepage introduction tour, for operators while it is on (BxDolTours).
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
@@ -5299,13 +5299,13 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 -- account settings menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_account_settings', 'system', 'account-settings-info', '_sys_menu_item_title_system_account_settings_info', '_sys_menu_item_title_account_settings_info', 'page.php?i=account-settings-info', '', '', 'info-circle', '', 2147483646, '', 1, 1, 1),
-('sys_account_settings', 'system', 'account-profile-switcher', '_sys_menu_item_title_system_account_profile_context', '_sys_menu_item_title_account_profile_context', 'page.php?i=account-profile-switcher', '', '', 'user', '', 2147483646, '', 1, 1, 2),
-('sys_account_settings', 'system', 'account-settings-email', '_sys_menu_item_title_system_account_settings_email', '_sys_menu_item_title_account_settings_email', 'page.php?i=account-settings-email', '', '', 'envelope', '', 2147483646, '', 1, 1, 3),
+('sys_account_settings', 'system', 'account-settings-info', '_sys_menu_item_title_system_account_settings_info', '_sys_menu_item_title_account_settings_info', 'page.php?i=account-settings-info', '', '', 'info', '', 2147483646, '', 1, 1, 1),
+('sys_account_settings', 'system', 'account-profile-switcher', '_sys_menu_item_title_system_account_profile_context', '_sys_menu_item_title_account_profile_context', 'page.php?i=account-profile-switcher', '', '', 'user-round', '', 2147483646, '', 1, 1, 2),
+('sys_account_settings', 'system', 'account-settings-email', '_sys_menu_item_title_system_account_settings_email', '_sys_menu_item_title_account_settings_email', 'page.php?i=account-settings-email', '', '', 'mail', '', 2147483646, '', 1, 1, 3),
 ('sys_account_settings', 'system', 'account-settings-password', '_sys_menu_item_title_system_account_settings_pwd', '_sys_menu_item_title_account_settings_pwd', 'page.php?i=account-settings-password', '', '', 'key', '', 2147483646, '', 1, 1, 4),
-('sys_account_settings', 'system', 'profile-settings-cfilter', '_sys_menu_item_title_system_profile_settings_cfilter', '_sys_menu_item_title_profile_settings_cfilter', 'page.php?i=profile-settings-cfilter', '', '', 'filter', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"is_enabled_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 1, 1, 5),
+('sys_account_settings', 'system', 'profile-settings-cfilter', '_sys_menu_item_title_system_profile_settings_cfilter', '_sys_menu_item_title_profile_settings_cfilter', 'page.php?i=profile-settings-cfilter', '', '', 'funnel', '', 2147483646, 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"is_enabled_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 1, 1, 5),
 ('sys_account_settings', 'system', 'account-settings-connectors', '_sys_menu_item_title_system_account_settings_connectors', '_sys_menu_item_title_account_settings_connectors', 'page.php?i=account-settings-connectors', '', '', 'plug', '', 2147483646, '', 1, 1, 6),
-('sys_account_settings', 'system', 'account-settings-delete', '_sys_menu_item_title_system_account_settings_delete', '_sys_menu_item_title_account_settings_delete', 'page.php?i=account-settings-delete', '', '', 'remove', '', 2147483646, '', 1, 1, 9999);
+('sys_account_settings', 'system', 'account-settings-delete', '_sys_menu_item_title_system_account_settings_delete', '_sys_menu_item_title_account_settings_delete', 'page.php?i=account-settings-delete', '', '', 'x', '', 2147483646, '', 1, 1, 9999);
 -- Its sections, items without a link: the apps draw each as a heading over its subitems (the current profile's under
 -- the profile's name), the site's tab row shows the subitems in their place
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
@@ -5317,22 +5317,22 @@ UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsAccount WHERE `set_na
 UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_name`='sys_account_settings' AND `module`='system' AND `name`='profile-settings-cfilter';
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'tachometer-alt', '', '', 2147483646, 1, 1, 1),
+('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
 ('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 2147483647, 0, 1, 2),
 ('sys_account_dashboard', 'system', 'dashboard-subscriptions', '_sys_menu_item_title_system_subscriptions', '_sys_menu_item_title_subscriptions', 'subscriptions.php', '', '', 'credit-card col-blue3', '', '', 2147483646, 1, 1, 3),
-('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'cart-arrow-down col-green3', '', '', 2147483646, 1, 1, 4),
-('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'file-invoice col-green3', '', '', 2147483646, 1, 1, 5),
+('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'shopping-cart col-green3', '', '', 2147483646, 1, 1, 4),
+('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'receipt col-green3', '', '', 2147483646, 1, 1, 5),
 ('sys_account_dashboard', 'system', 'dashboard-content', '_sys_menu_item_title_system_account_dashboard_content', '_sys_menu_item_title_account_dashboard_content', 'page.php?i=dashboard-content', '', '', 'copy', '', '', 192, 1, 1, 6),
-('sys_account_dashboard', 'system', 'dashboard-reports', '_sys_menu_item_title_system_account_dashboard_reports', '_sys_menu_item_title_account_dashboard_reports', 'page.php?i=dashboard-reports', '', '', 'exclamation-circle', '', '', 192, 1, 1, 7),
-('sys_account_dashboard', 'system', 'dashboard-audit', '_sys_menu_item_title_system_account_dashboard_audit', '_sys_menu_item_title_account_dashboard_audit', 'page.php?i=dashboard-audit', '', '', 'history', '', '', 192, 1, 1, 8);
+('sys_account_dashboard', 'system', 'dashboard-reports', '_sys_menu_item_title_system_account_dashboard_reports', '_sys_menu_item_title_account_dashboard_reports', 'page.php?i=dashboard-reports', '', '', 'circle-exclamation-point', '', '', 192, 1, 1, 7),
+('sys_account_dashboard', 'system', 'dashboard-audit', '_sys_menu_item_title_system_account_dashboard_audit', '_sys_menu_item_title_account_dashboard_audit', 'page.php?i=dashboard-audit', '', '', 'rotate-ccw-clock', '', '', 192, 1, 1, 8);
 
 -- comment manage menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_cmts_item_manage', 'system', 'item-pin', '_sys_menu_item_title_system_cmts_item_pin', '_sys_menu_item_title_cmts_item_pin', 'javascript:void(0)', 'javascript:{js_object}.cmtPin(this, {content_id}, 1)', '_self', 'thumbtack', '', 2147483647, 1, 0, 0),
-('sys_cmts_item_manage', 'system', 'item-unpin', '_sys_menu_item_title_system_cmts_item_unpin', '_sys_menu_item_title_cmts_item_unpin', 'javascript:void(0)', 'javascript:{js_object}.cmtPin(this, {content_id}, 0)', '_self', 'thumbtack', '', 2147483647, 1, 0, 0),
+('sys_cmts_item_manage', 'system', 'item-pin', '_sys_menu_item_title_system_cmts_item_pin', '_sys_menu_item_title_cmts_item_pin', 'javascript:void(0)', 'javascript:{js_object}.cmtPin(this, {content_id}, 1)', '_self', 'pin', '', 2147483647, 1, 0, 0),
+('sys_cmts_item_manage', 'system', 'item-unpin', '_sys_menu_item_title_system_cmts_item_unpin', '_sys_menu_item_title_cmts_item_unpin', 'javascript:void(0)', 'javascript:{js_object}.cmtPin(this, {content_id}, 0)', '_self', 'pin', '', 2147483647, 1, 0, 0),
 ('sys_cmts_item_manage', 'system', 'item-report', '_sys_menu_item_title_system_cmts_item_report', '', 'javascript:void(0)', '', '', '', '', 2147483647, 1, 0, 0),
-('sys_cmts_item_manage', 'system', 'item-edit', '_sys_menu_item_title_system_cmts_item_edit', '_sys_menu_item_title_cmts_item_edit', 'javascript:void(0)', 'javascript:{js_object}.cmtEdit(this, {content_id})', '_self', 'pencil-alt', '', 2147483647, 1, 0, 0),
-('sys_cmts_item_manage', 'system', 'item-delete', '_sys_menu_item_title_system_cmts_item_delete', '_sys_menu_item_title_cmts_item_delete', 'javascript:void(0)', 'javascript:{js_object}.cmtRemove(this, {content_id})', '_self', 'remove', '', 2147483647, 1, 0, 0);
+('sys_cmts_item_manage', 'system', 'item-edit', '_sys_menu_item_title_system_cmts_item_edit', '_sys_menu_item_title_cmts_item_edit', 'javascript:void(0)', 'javascript:{js_object}.cmtEdit(this, {content_id})', '_self', 'pencil-line', '', 2147483647, 1, 0, 0),
+('sys_cmts_item_manage', 'system', 'item-delete', '_sys_menu_item_title_system_cmts_item_delete', '_sys_menu_item_title_cmts_item_delete', 'javascript:void(0)', 'javascript:{js_object}.cmtRemove(this, {content_id})', '_self', 'x', '', 2147483647, 1, 0, 0);
 
 -- comment actions menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES 
@@ -5340,8 +5340,8 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('sys_cmts_item_actions', 'system', 'item-reaction', '_sys_menu_item_title_system_cmts_item_reaction', '_sys_menu_item_title_cmts_item_reaction', 'javascript:void(0)', '', '', '', '', '', 0, 2147483647, 0, 0, 1, 1),
 ('sys_cmts_item_actions', 'system', 'item-score', '_sys_menu_item_title_system_cmts_item_score', '_sys_menu_item_title_cmts_item_score', 'javascript:void(0)', '', '', '', '', '', 0, 2147483647, 0, 0, 1, 2),
 ('sys_cmts_item_actions', 'system', 'item-reply', '_sys_menu_item_title_system_cmts_item_reply', '_sys_menu_item_title_cmts_item_reply', 'javascript:void(0)', 'javascript:{reply_onclick}', '_self', 'reply', '', '', 0, 2147483647, 1, 0, 1, 3),
-('sys_cmts_item_actions', 'system', 'item-quote', '_sys_menu_item_title_system_cmts_item_quote', '_sys_menu_item_title_cmts_item_quote', 'javascript:void(0)', 'javascript:{quote_onclick}', '_self', 'quote-right', '', '', 0, 2147483647, 1, 0, 1, 4),
-('sys_cmts_item_actions', 'system', 'item-more', '_sys_menu_item_title_system_cmts_item_more', '_sys_menu_item_title_cmts_item_more', 'javascript:void(0)', 'bx_menu_popup(''sys_cmts_item_manage'', this, {''id'':''sys_cmts_item_manage_{cmt_system}_{cmt_id}'', ''removeOnClose'':1}, {cmt_system:''{cmt_system}'', cmt_object_id:{cmt_object_id}, cmt_id:{cmt_id}});', '', 'ellipsis-h', '', 'sys_cmts_item_manage', 1, 2147483647, 1, 0, 1, 5);
+('sys_cmts_item_actions', 'system', 'item-quote', '_sys_menu_item_title_system_cmts_item_quote', '_sys_menu_item_title_cmts_item_quote', 'javascript:void(0)', 'javascript:{quote_onclick}', '_self', 'quote', '', '', 0, 2147483647, 1, 0, 1, 4),
+('sys_cmts_item_actions', 'system', 'item-more', '_sys_menu_item_title_system_cmts_item_more', '_sys_menu_item_title_cmts_item_more', 'javascript:void(0)', 'bx_menu_popup(''sys_cmts_item_manage'', this, {''id'':''sys_cmts_item_manage_{cmt_system}_{cmt_id}'', ''removeOnClose'':1}, {cmt_system:''{cmt_system}'', cmt_object_id:{cmt_object_id}, cmt_id:{cmt_id}});', '', 'ellipsis', '', 'sys_cmts_item_manage', 1, 2147483647, 1, 0, 1, 5);
 
 -- comment counters menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES 
@@ -5358,16 +5358,16 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 
 -- social sharing menu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_social_sharing', 'system', 'social-sharing-facebook', '_sys_menu_item_title_system_social_sharing_facebook', '_sys_menu_item_title_social_sharing_facebook', 'https://www.facebook.com/sharer/sharer.php?u={url_encoded}', '', '_blank', 'fab facebook-f', '', 2147483647, 1, 1, 1),
-('sys_social_sharing', 'system', 'social-sharing-twitter', '_sys_menu_item_title_system_social_sharing_twitter', '_sys_menu_item_title_social_sharing_twitter', 'https://twitter.com/share?url={url_encoded}', '', '_blank', 'fab twitter', '', 2147483647, 1, 1, 2),
-('sys_social_sharing', 'system', 'social-sharing-pinterest', '_sys_menu_item_title_system_social_sharing_pinterest', '_sys_menu_item_title_social_sharing_pinterest', 'http://pinterest.com/pin/create/button/?url={url_encoded}&media={img_url_encoded}&description={title_encoded}', '', '_blank', 'fab pinterest', '', 2147483647, 1, 1, 3),
-('sys_social_sharing', 'system', 'social-sharing-linked_in', '_sys_menu_item_title_system_social_sharing_linked_in', '_sys_menu_item_title_social_sharing_linked_in',  'https://www.linkedin.com/shareArticle?mini=true&url={url_encoded}', '', '_blank', 'fab linkedin', '', 2147483647, 1, 1, 4),
-('sys_social_sharing', 'system', 'social-sharing-whatsapp', '_sys_menu_item_title_system_social_sharing_whatsapp', '_sys_menu_item_title_social_sharing_whatsapp', 'https://wa.me/?text={url_encoded}', '', '_blank', 'fab whatsapp', '', 2147483647, 1, 1, 5);
+('sys_social_sharing', 'system', 'social-sharing-facebook', '_sys_menu_item_title_system_social_sharing_facebook', '_sys_menu_item_title_social_sharing_facebook', 'https://www.facebook.com/sharer/sharer.php?u={url_encoded}', '', '_blank', 'brand-facebook', '', 2147483647, 1, 1, 1),
+('sys_social_sharing', 'system', 'social-sharing-twitter', '_sys_menu_item_title_system_social_sharing_twitter', '_sys_menu_item_title_social_sharing_twitter', 'https://twitter.com/share?url={url_encoded}', '', '_blank', 'brand-x', '', 2147483647, 1, 1, 2),
+('sys_social_sharing', 'system', 'social-sharing-pinterest', '_sys_menu_item_title_system_social_sharing_pinterest', '_sys_menu_item_title_social_sharing_pinterest', 'http://pinterest.com/pin/create/button/?url={url_encoded}&media={img_url_encoded}&description={title_encoded}', '', '_blank', 'brand-pinterest', '', 2147483647, 1, 1, 3),
+('sys_social_sharing', 'system', 'social-sharing-linked_in', '_sys_menu_item_title_system_social_sharing_linked_in', '_sys_menu_item_title_social_sharing_linked_in',  'https://www.linkedin.com/shareArticle?mini=true&url={url_encoded}', '', '_blank', 'brand-linkedin', '', 2147483647, 1, 1, 4),
+('sys_social_sharing', 'system', 'social-sharing-whatsapp', '_sys_menu_item_title_system_social_sharing_whatsapp', '_sys_menu_item_title_social_sharing_whatsapp', 'https://wa.me/?text={url_encoded}', '', '_blank', 'brand-whatsapp', '', 2147483647, 1, 1, 5);
 
 -- dashboard manage tools
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `info`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_account_dashboard_manage_tools', 'system', 'cmts-administration', '_sys_menu_item_title_system_cmts_administration', '_sys_menu_item_title_cmts_administration', '', 'page.php?i=cmts-administration', '', '', 'comments', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_menu_addon_manage_tools";s:5:"class";s:17:"TemplCmtsServices";}', '', 192, 1, 0, 1),
-('sys_account_dashboard_manage_tools', 'system', 'audit-administration', '_sys_menu_item_title_system_audit_administration', '_sys_menu_item_title_audit_administration', '_sys_menu_item_info_audit_administration', 'page.php?i=audit-administration', '', '', 'history', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_menu_addon_manage_tools";s:5:"class";s:18:"TemplAuditServices";}', '', 192, 1, 0, 2);
+('sys_account_dashboard_manage_tools', 'system', 'cmts-administration', '_sys_menu_item_title_system_cmts_administration', '_sys_menu_item_title_cmts_administration', '', 'page.php?i=cmts-administration', '', '', 'messages-square', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_menu_addon_manage_tools";s:5:"class";s:17:"TemplCmtsServices";}', '', 192, 1, 0, 1),
+('sys_account_dashboard_manage_tools', 'system', 'audit-administration', '_sys_menu_item_title_system_audit_administration', '_sys_menu_item_title_audit_administration', '_sys_menu_item_info_audit_administration', 'page.php?i=audit-administration', '', '', 'rotate-ccw-clock', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_menu_addon_manage_tools";s:5:"class";s:18:"TemplAuditServices";}', '', 192, 1, 0, 2);
 
 -- dashboard content
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
@@ -5375,31 +5375,31 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 
 -- profile stats
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_profile_stats', 'system', 'profile-stats-profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{member_url}', '', '', 'user', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_menu_addon_profile_edit";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483646, 1, 0, 0),
-('sys_profile_stats', 'system', 'friend-suggestions', '_sys_menu_item_title_system_connections', '_sys_menu_item_title_connections', 'page.php?i=friend-suggestions', '', '', 'users', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 1, 1, 1);
+('sys_profile_stats', 'system', 'profile-stats-profile', '_sys_menu_item_title_system_profile', '_sys_menu_item_title_profile', '{member_url}', '', '', 'user-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_menu_addon_profile_edit";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483646, 1, 0, 0),
+('sys_profile_stats', 'system', 'friend-suggestions', '_sys_menu_item_title_system_connections', '_sys_menu_item_title_connections', 'page.php?i=friend-suggestions', '', '', 'users-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_unconfirmed_connections_num";s:6:"params";a:1:{i:0;s:20:"sys_profiles_friends";}s:5:"class";s:23:"TemplServiceConnections";}', '', 2147483646, 1, 1, 1);
 
 -- wiki menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `editable`, `order`) VALUES 
-('sys_wiki', 'system', 'edit', '', '_sys_menu_item_title_wiki_edit', '', '', '', 'edit', '', '', 0, 2147483646, '', 1, 0, 1, 1),
-('sys_wiki', 'system', 'delete-version', '', '_sys_menu_item_title_wiki_delete_version', '', '', '', 'times', '', '', 0, 2147483646, '', 1, 0, 1, 2),
-('sys_wiki', 'system', 'delete-block', '', '_sys_menu_item_title_wiki_delete_block', '', '', '', 'times-circle', '', '', 0, 2147483646, '', 1, 0, 1, 3),
-('sys_wiki', 'system', 'translate', '', '_sys_menu_item_title_wiki_translate', '', '', '', 'language', '', '', 0, 2147483646, '', 1, 0, 1, 4),
-('sys_wiki', 'system', 'history', '', '_sys_menu_item_title_wiki_history', '', '', '', 'history', '', '', 0, 2147483646, '', 1, 0, 1, 5);
+('sys_wiki', 'system', 'edit', '', '_sys_menu_item_title_wiki_edit', '', '', '', 'square-pen', '', '', 0, 2147483646, '', 1, 0, 1, 1),
+('sys_wiki', 'system', 'delete-version', '', '_sys_menu_item_title_wiki_delete_version', '', '', '', 'x', '', '', 0, 2147483646, '', 1, 0, 1, 2),
+('sys_wiki', 'system', 'delete-block', '', '_sys_menu_item_title_wiki_delete_block', '', '', '', 'circle-x', '', '', 0, 2147483646, '', 1, 0, 1, 3),
+('sys_wiki', 'system', 'translate', '', '_sys_menu_item_title_wiki_translate', '', '', '', 'languages', '', '', 0, 2147483646, '', 1, 0, 1, 4),
+('sys_wiki', 'system', 'history', '', '_sys_menu_item_title_wiki_history', '', '', '', 'rotate-ccw-clock', '', '', 0, 2147483646, '', 1, 0, 1, 5);
 
 -- favorite list menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `editable`, `order`) VALUES 
-('sys_favorite_list', 'system', 'edit', '', '_sys_menu_item_title_favorite_list_edit', 'javascript:void(0)', 'javascript:{js_object}.cmtEdit(this, {list_id})', '', 'edit', '', '', 0, 2147483646, '', 1, 0, 1, 1),
-('sys_favorite_list', 'system', 'delete', '', '_sys_menu_item_title_wiki_favorite_list_delete', 'javascript:void(0)', 'javascript:{js_object}.cmtDelete(this, {list_id})', '', 'times', '', '', 0, 2147483646, '', 1, 0, 1, 2);
+('sys_favorite_list', 'system', 'edit', '', '_sys_menu_item_title_favorite_list_edit', 'javascript:void(0)', 'javascript:{js_object}.cmtEdit(this, {list_id})', '', 'square-pen', '', '', 0, 2147483646, '', 1, 0, 1, 1),
+('sys_favorite_list', 'system', 'delete', '', '_sys_menu_item_title_wiki_favorite_list_delete', 'javascript:void(0)', 'javascript:{js_object}.cmtDelete(this, {list_id})', '', 'x', '', '', 0, 2147483646, '', 1, 0, 1, 2);
 
 -- connections submenu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
-('sys_con_submenu', 'system', 'friends', '', '_sys_menu_item_title_con_friends', 'page.php?i=friends', '', '', 'users', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:21:"profile_friends_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 1),
+('sys_con_submenu', 'system', 'friends', '', '_sys_menu_item_title_con_friends', 'page.php?i=friends', '', '', 'users-round', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:21:"profile_friends_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 1),
 ('sys_con_submenu', 'system', 'friend-suggestions', '', '_sys_menu_item_title_recom_friends', 'page.php?i=friend-suggestions', '', '', 'user-shield', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:36:"profile_recommendation_friends_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 2),
-('sys_con_submenu', 'system', 'friend-requests', '', '_sys_menu_item_title_con_friend_requests', 'page.php?i=friend-requests', '', '', 'user-plus', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:30:"profile_friends_requests_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 3),
-('sys_con_submenu', 'system', 'sent-friend-requests', '', '_sys_menu_item_title_con_friend_requested', 'page.php?i=sent-friend-requests', '', '', 'user-check', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:35:"profile_sent_friends_requests_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 4),
-('sys_con_submenu', 'system', 'follow-suggestions', '', '_sys_menu_item_title_recom_subscriptions', 'page.php?i=follow-suggestions', '', '', 'address-book', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:38:"profile_recommendation_following_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 5),
-('sys_con_submenu', 'system', 'followers', '', '_sys_menu_item_title_con_followers', 'page.php?i=followers', '', '', 'users', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:23:"profile_followers_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 6),
-('sys_con_submenu', 'system', 'following', '', '_sys_menu_item_title_con_following', 'page.php?i=following', '', '', 'users', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:23:"profile_following_count";s:6:"params";a:2:{i:0;i:0;i:1;b:1;}s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 7);
+('sys_con_submenu', 'system', 'friend-requests', '', '_sys_menu_item_title_con_friend_requests', 'page.php?i=friend-requests', '', '', 'user-round-plus', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:30:"profile_friends_requests_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 3),
+('sys_con_submenu', 'system', 'sent-friend-requests', '', '_sys_menu_item_title_con_friend_requested', 'page.php?i=sent-friend-requests', '', '', 'user-round-check', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:35:"profile_sent_friends_requests_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 4),
+('sys_con_submenu', 'system', 'follow-suggestions', '', '_sys_menu_item_title_recom_subscriptions', 'page.php?i=follow-suggestions', '', '', 'contact-round', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:38:"profile_recommendation_following_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 5),
+('sys_con_submenu', 'system', 'followers', '', '_sys_menu_item_title_con_followers', 'page.php?i=followers', '', '', 'users-round', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:23:"profile_followers_count";s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 6),
+('sys_con_submenu', 'system', 'following', '', '_sys_menu_item_title_con_following', 'page.php?i=following', '', '', 'users-round', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:23:"profile_following_count";s:6:"params";a:2:{i:0;i:0;i:1;b:1;}s:5:"class";s:20:"TemplServiceProfiles";}', '', 2147483647, '', 1, 1, 7);
 
 -- notifiactions submenu
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES
@@ -5686,90 +5686,90 @@ CREATE TABLE IF NOT EXISTS `sys_grid_actions` (
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `confirm`, `order`) VALUES
 ('sys_studio_lang_keys', 'bulk', 'delete', '_adm_pgt_btn_delete', '', 1, 1),
-('sys_studio_lang_keys', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_lang_keys', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_lang_keys', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_lang_keys', 'single', 'delete', '', 'x', 1, 2),
 ('sys_studio_lang_keys', 'independent', 'add', '_adm_pgt_btn_add_new_key', '', 0, 1),
 
-('sys_studio_lang_etemplates', 'single', 'edit', '', 'pencil-alt', 0, 1),
+('sys_studio_lang_etemplates', 'single', 'edit', '', 'pencil-line', 0, 1),
 
 ('sys_studio_acl', 'independent', 'add', '_adm_prm_btn_add_level', '', 0, 1),
-('sys_studio_acl', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_acl', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_acl', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_acl', 'single', 'delete', '', 'x', 1, 2),
 
-('sys_studio_acl_actions', 'single', 'options', '', 'cog', 0, 1),
+('sys_studio_acl_actions', 'single', 'options', '', 'settings', 0, 1),
 
 ('sys_studio_nav_menus', 'independent', 'add', '_adm_nav_btn_menus_create', '', 0, 1),
-('sys_studio_nav_menus', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_nav_menus', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_nav_menus', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_nav_menus', 'single', 'delete', '', 'x', 1, 2),
 
 ('sys_studio_nav_sets', 'independent', 'add', '_adm_nav_btn_sets_create', '', 0, 1),
-('sys_studio_nav_sets', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_nav_sets', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_nav_sets', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_nav_sets', 'single', 'delete', '', 'x', 1, 2),
 
 ('sys_studio_nav_items', 'independent', 'import', '_adm_nav_btn_items_gl_import', '', 0, 1),
 ('sys_studio_nav_items', 'independent', 'add', '_adm_nav_btn_items_gl_create', '', 0, 2),
-('sys_studio_nav_items', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_nav_items', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_nav_items', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_nav_items', 'single', 'delete', '', 'x', 1, 2),
 ('sys_studio_nav_items', 'single', 'show_to', '_adm_nav_btn_items_gl_visible', '', 0, 3),
 
 ('sys_studio_nav_import', 'single', 'import', '', 'plus', 0, 1),
 ('sys_studio_nav_import', 'bulk', 'done', '_adm_nav_btn_items_done', '', 0, 1),
 
-('sys_studio_forms', 'single', 'edit', '', 'pencil-alt', 0, 1),
+('sys_studio_forms', 'single', 'edit', '', 'pencil-line', 0, 1),
 
-('sys_studio_forms_displays', 'single', 'edit', '', 'pencil-alt', 0, 1),
+('sys_studio_forms_displays', 'single', 'edit', '', 'pencil-line', 0, 1),
 
-('sys_studio_forms_fields', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_forms_fields', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_forms_fields', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_forms_fields', 'single', 'delete', '', 'x', 1, 2),
 ('sys_studio_forms_fields', 'single', 'show_to', '_adm_form_btn_fields_visible', '', 0, 3),
 ('sys_studio_forms_fields', 'independent', 'add', '_adm_form_btn_fields_create', '', 0, 1),
 
 ('sys_studio_forms_pre_lists', 'independent', 'add', '_adm_form_btn_pre_lists_create', '', 0, 1),
-('sys_studio_forms_pre_lists', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_forms_pre_lists', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_forms_pre_lists', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_forms_pre_lists', 'single', 'delete', '', 'x', 1, 2),
 
 ('sys_studio_forms_pre_values', 'independent', 'add', '_adm_form_btn_pre_values_create', '', 0, 1),
-('sys_studio_forms_pre_values', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_forms_pre_values', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_forms_pre_values', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_forms_pre_values', 'single', 'delete', '', 'x', 1, 2),
 ('sys_studio_forms_pre_values', 'bulk', 'delete', '_adm_form_btn_pre_values_delete', '', 1, 1),
 
-('sys_studio_search_forms', 'single', 'edit', '', 'pencil-alt', 0, 1),
+('sys_studio_search_forms', 'single', 'edit', '', 'pencil-line', 0, 1),
 
-('sys_studio_search_forms_fields', 'single', 'edit', '', 'pencil-alt', 0, 1),
+('sys_studio_search_forms_fields', 'single', 'edit', '', 'pencil-line', 0, 1),
 ('sys_studio_search_forms_fields', 'independent', 'reset', '_adm_form_btn_search_forms_fields_reset', '', 0, 1),
 
 ('sys_studio_search_forms_sortable_fields', 'independent', 'reset', '_adm_form_btn_search_forms_sortable_fields_reset', '', 0, 1),
 
 ('sys_studio_labels', 'independent', 'back', '_adm_form_btn_labels_back', '', 0, 1),
 ('sys_studio_labels', 'independent', 'add', '_adm_form_btn_labels_add', '', 0, 2),
-('sys_studio_labels', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_labels', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_labels', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_labels', 'single', 'delete', '', 'x', 1, 2),
 
 ('sys_studio_categories', 'bulk', 'delete', '_adm_form_btn_categories_delete', '', 1, 1),
-('sys_studio_categories', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_studio_categories', 'single', 'delete', '', 'remove', 1, 2),
+('sys_studio_categories', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_studio_categories', 'single', 'delete', '', 'x', 1, 2),
 ('sys_studio_categories', 'independent', 'add', '_adm_form_btn_categories_add', '', 0, 1),
 
 ('sys_studio_groups_roles', 'independent', 'add', '_adm_rl_btn_role_add', '', 0, 1),
-('sys_studio_groups_roles', 'single', 'edit', '_adm_rl_btn_role_edit', 'pencil-alt', 0, 1),
-('sys_studio_groups_roles', 'single', 'delete', '_adm_rl_btn_role_delete', 'remove', 1, 3),
+('sys_studio_groups_roles', 'single', 'edit', '_adm_rl_btn_role_edit', 'pencil-line', 0, 1),
+('sys_studio_groups_roles', 'single', 'delete', '_adm_rl_btn_role_delete', 'x', 1, 3),
 
 ('sys_badges_administration', 'bulk', 'delete', '_adm_form_btn_badges_delete', '', 1, 1),
-('sys_badges_administration', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('sys_badges_administration', 'single', 'delete', '', 'remove', 1, 2),
+('sys_badges_administration', 'single', 'edit', '', 'pencil-line', 0, 1),
+('sys_badges_administration', 'single', 'delete', '', 'x', 1, 2),
 ('sys_badges_administration', 'single', 'delete_icon', '', '', 1, 3),
 ('sys_badges_administration', 'independent', 'add', '_adm_form_btn_badges_add', '', 0, 1);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `confirm`, `order`, `icon_only`) VALUES
 ('sys_reports_administration', 'single', 'check_in', '_adm_form_btn_reports_check_in', 'lock-open', 0, 1, 1),
 ('sys_reports_administration', 'single', 'check_out', '_adm_form_btn_reports_check_out', 'lock', 0, 2, 1),
-('sys_reports_administration', 'single', 'audit', '_adm_form_btn_reports_audit', 'history', 0, 3, 1);
+('sys_reports_administration', 'single', 'audit', '_adm_form_btn_reports_audit', 'rotate-ccw-clock', 0, 3, 1);
 
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_studio_roles', 'independent', 'add', '_adm_rl_btn_role_add', '', 0, 0, 1),
-('sys_studio_roles', 'single', 'edit', '_adm_rl_btn_role_edit', 'pencil-alt', 1, 0, 1),
-('sys_studio_roles', 'single', 'delete', '_adm_rl_btn_role_delete', 'remove', 1, 1, 2);
+('sys_studio_roles', 'single', 'edit', '_adm_rl_btn_role_edit', 'pencil-line', 1, 0, 1),
+('sys_studio_roles', 'single', 'delete', '_adm_rl_btn_role_delete', 'x', 1, 1, 2);
 
 -- GRIDS: moderation tools
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
@@ -5787,7 +5787,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_cmts_administration', 'bulk', 'delete', '_sys_cmts_administration_grid_action_title_adm_delete', '', 0, 1, 1),
-('sys_cmts_administration', 'single', 'delete', '_sys_cmts_administration_grid_action_title_adm_delete', 'remove', 1, 1, 1);
+('sys_cmts_administration', 'single', 'delete', '_sys_cmts_administration_grid_action_title_adm_delete', 'x', 1, 1, 1);
 
 
 -- GRID: Storage managers
@@ -5816,14 +5816,14 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 -- Storages: Files
 ('sys_studio_strg_files', 'bulk', 'delete', '_adm_strg_btn_delete', '', 0, 1, 1),
 ('sys_studio_strg_files', 'single', 'download', '_adm_strg_btn_download', 'download', 1, 0, 1),
-('sys_studio_strg_files', 'single', 'delete', '_adm_strg_btn_delete', 'remove', 1, 1, 2),
+('sys_studio_strg_files', 'single', 'delete', '_adm_strg_btn_delete', 'x', 1, 1, 2),
 ('sys_studio_strg_files', 'independent', 'add', '_adm_strg_btn_add', '', 0, 0, 1),
 
 -- Storages: Images
 ('sys_studio_strg_images', 'bulk', 'delete', '_adm_strg_btn_delete', '', 0, 1, 1),
 ('sys_studio_strg_images', 'single', 'download', '_adm_strg_btn_download', 'download', 1, 0, 1),
-('sys_studio_strg_images', 'single', 'resize', '_adm_strg_btn_resize', 'compress', 1, 0, 2),
-('sys_studio_strg_images', 'single', 'delete', '_adm_strg_btn_delete', 'remove', 1, 1, 3),
+('sys_studio_strg_images', 'single', 'resize', '_adm_strg_btn_resize', 'shrink', 1, 0, 2),
+('sys_studio_strg_images', 'single', 'delete', '_adm_strg_btn_delete', 'x', 1, 1, 3),
 ('sys_studio_strg_images', 'independent', 'add', '_adm_strg_btn_add', '', 0, 0, 1);
 
 
@@ -5866,23 +5866,23 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `params`, `hi
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_grid_connections', 'single', 'accept', '_sys_accept', '', 0, 0, 1),
-('sys_grid_connections', 'single', 'delete', '', 'remove', 0, 1, 2),
+('sys_grid_connections', 'single', 'delete', '', 'x', 0, 1, 2),
 ('sys_grid_connections', 'single', 'add_friend', '_sys_add_friend', 'plus', 0, 0, 3),
 
 ('sys_grid_connections_requests', 'single', 'accept', '_sys_accept', '', 0, 0, 1),
-('sys_grid_connections_requests', 'single', 'delete', '', 'remove', 0, 1, 2),
+('sys_grid_connections_requests', 'single', 'delete', '', 'x', 0, 1, 2),
 
 ('sys_grid_subscriptions', 'single', 'subscribe', '_sys_subscribe', 'check', 0, 0, 1),
-('sys_grid_subscriptions', 'single', 'delete', '', 'remove', 0, 1, 2),
+('sys_grid_subscriptions', 'single', 'delete', '', 'x', 0, 1, 2),
 
 ('sys_grid_subscribed_me', 'single', 'subscribe', '_sys_subscribe', 'check', 0, 0, 1),
 
-('sys_grid_relations', 'single', 'delete', '_Delete', 'remove', 1, 1, 1),
+('sys_grid_relations', 'single', 'delete', '_Delete', 'x', 1, 1, 1),
 
-('sys_grid_related_me', 'single', 'confirm', '_sys_confirm', 'check-circle', 1, 0, 1),
-('sys_grid_related_me', 'single', 'decline', '_sys_decline', 'times-circle', 1, 1, 2),
-('sys_grid_related_me', 'single', 'add', '_sys_add_relation', 'plus-circle', 1, 0, 3),
-('sys_grid_related_me', 'single', 'delete', '_Delete', 'remove', 1, 1, 4);
+('sys_grid_related_me', 'single', 'confirm', '_sys_confirm', 'circle-check', 1, 0, 1),
+('sys_grid_related_me', 'single', 'decline', '_sys_decline', 'circle-x', 1, 1, 2),
+('sys_grid_related_me', 'single', 'add', '_sys_add_relation', 'circle-plus', 1, 0, 3),
+('sys_grid_related_me', 'single', 'delete', '_Delete', 'x', 1, 1, 4);
 
 -- GRID: personal access tokens of the signed-in account (account settings > Connectors, Studio > Agents > Connectors)
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `override_class_name`, `override_class_file`) VALUES
@@ -5898,7 +5898,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `params`, `hi
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_grid_api_tokens', 'independent', 'add', '_sys_api_tokens_btn_add', 'plus', 0, 0, 1),
-('sys_grid_api_tokens', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'remove', 1, 1, 1);
+('sys_grid_api_tokens', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'x', 1, 1, 1);
 
 -- GRID: API Origins
 
@@ -5911,7 +5911,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_api_origins', 'actions', '', '19%', 0, 0, '', '', 3);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
-('sys_studio_api_origins', 'single', 'delete', '_Delete', 'remove', 1, 1, 1),
+('sys_studio_api_origins', 'single', 'delete', '_Delete', 'x', 1, 1, 1),
 ('sys_studio_api_origins', 'independent', 'add', '_adm_form_btn_field_add', '', 0, 0, 1);
 
 -- GRID: API Keys
@@ -5926,7 +5926,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_api_keys', 'actions', '', '19%', 0, 0, '', '', 4);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
-('sys_studio_api_keys', 'single', 'delete', '_Delete', 'remove', 1, 1, 1),
+('sys_studio_api_keys', 'single', 'delete', '_Delete', 'x', 1, 1, 1),
 ('sys_studio_api_keys', 'independent', 'add', '_adm_form_btn_field_add', '', 0, 0, 1);
 
 -- GRID: API Configs
@@ -5942,7 +5942,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_studio_api_configs', 'single', 'apply', '_adm_api_btn_apply', 'recycle', 1, 1, 1),
 ('sys_studio_api_configs', 'single', 'remove', '_adm_api_btn_remove', 'eraser', 1, 1, 2),
-('sys_studio_api_configs', 'single', 'export', '_adm_api_btn_export', 'file-export', 1, 0, 3),
+('sys_studio_api_configs', 'single', 'export', '_adm_api_btn_export', 'file-output', 1, 0, 3),
 -- ('sys_studio_api_configs', 'single', 'import', '_adm_api_btn_import', 'file-import', 1, 1, 4),
 ('sys_studio_api_configs', 'independent', 'apply_all', '_adm_api_btn_apply_all', '', 0, 1, 1),
 ('sys_studio_api_configs', 'independent', 'remove_all', '_adm_api_btn_remove_all', '', 0, 1, 2),
@@ -5965,8 +5965,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
 ('sys_studio_agents_models', 'single', 'duplicate', '_Duplicate', 'copy', 1, 0, 1, 1),
-('sys_studio_agents_models', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 1, 2),
-('sys_studio_agents_models', 'single', 'delete', '_Delete', 'remove', 1, 1, 1, 3),
+('sys_studio_agents_models', 'single', 'edit', '_Edit', 'pencil-line', 1, 0, 1, 2),
+('sys_studio_agents_models', 'single', 'delete', '_Delete', 'x', 1, 1, 1, 3),
 ('sys_studio_agents_models', 'bulk', 'delete', '_Delete', '', 0, 1, 1, 1);
 
 -- GRID: Agents Vector Store
@@ -5983,8 +5983,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
 ('sys_studio_agents_vector_store', 'single', 'add_data', '_sys_uploader_simple_attach_one_more_file', 'plus', 1, 0, 1, 10),
-('sys_studio_agents_vector_store', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 1, 20),
-('sys_studio_agents_vector_store', 'single', 'delete', '_Delete', 'remove', 1, 1, 1, 30),
+('sys_studio_agents_vector_store', 'single', 'edit', '_Edit', 'pencil-line', 1, 0, 1, 20),
+('sys_studio_agents_vector_store', 'single', 'delete', '_Delete', 'x', 1, 1, 1, 30),
 ('sys_studio_agents_vector_store', 'single', 'duplicate', '_Duplicate', 'copy', 1, 0, 1, 40);
 
 -- GRID: Agents Vector Store Data
@@ -6018,12 +6018,12 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_studio_agents_agents', 'bulk', 'delete', '_Delete', '', 0, 1, 1),
 ('sys_studio_agents_agents', 'single', 'manual', '_Run', 'play', 1, 0, 1),
-('sys_studio_agents_agents', 'single', 'message', '_sys_agents_agents_act_message', 'comment', 1, 0, 2),
-('sys_studio_agents_agents', 'single', 'activity', '_sys_agents_agents_act_activity', 'history', 1, 0, 3),
-('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 4),
-('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 5),
+('sys_studio_agents_agents', 'single', 'message', '_sys_agents_agents_act_message', 'message-circle', 1, 0, 2),
+('sys_studio_agents_agents', 'single', 'activity', '_sys_agents_agents_act_activity', 'rotate-ccw-clock', 1, 0, 3),
+('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-text', 1, 0, 4),
+('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-line', 1, 0, 5),
 ('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 6),
-('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 7),
+('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'x', 1, 1, 7),
 ('sys_studio_agents_agents', 'independent', 'add', '_adm_form_btn_field_add', '', 0, 0, 1);
 
 -- GRID: Agents Logs
@@ -6049,8 +6049,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_agents_tools', 'actions', '', '40%', 0, 0, '', '', 40);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
-('sys_studio_agents_tools', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 1, 20),
-('sys_studio_agents_tools', 'single', 'delete', '_Delete', 'remove', 1, 1, 1, 30),
+('sys_studio_agents_tools', 'single', 'edit', '_Edit', 'pencil-line', 1, 0, 1, 20),
+('sys_studio_agents_tools', 'single', 'delete', '_Delete', 'x', 1, 1, 1, 30),
 ('sys_studio_agents_tools', 'single', 'duplicate', '_Duplicate', 'copy', 1, 0, 1, 40);
 
 -- GRID: Agents Connectors, the operator's own personal access tokens (the same as account settings > Connectors)
@@ -6067,7 +6067,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
 ('sys_studio_agents_connectors', 'independent', 'add', '_sys_api_tokens_btn_add', '', 0, 0, 1, 10),
-('sys_studio_agents_connectors', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'remove', 1, 1, 1, 20);
+('sys_studio_agents_connectors', 'single', 'delete', '_sys_api_tokens_btn_revoke', 'x', 1, 1, 1, 20);
 
 
 -- --------------------------------------------------------
@@ -6710,7 +6710,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 -- The sign-in and join blocks, on their pages and on the home page: a title icon and a line under the title
 UPDATE `sys_pages_blocks` SET `icon`='user-round-key', `description`='_sys_page_block_desc_login' WHERE `object` IN ('sys_login', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_login';
-UPDATE `sys_pages_blocks` SET `icon`='user-plus', `description`='_sys_page_block_desc_create_account' WHERE `object` IN ('sys_create_account', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_create_account';
+UPDATE `sys_pages_blocks` SET `icon`='user-round-plus', `description`='_sys_page_block_desc_create_account' WHERE `object` IN ('sys_create_account', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_create_account';
 
 -- The friend and follow suggestions, in the blocks list and in the home page's sidebar: a compact title
 UPDATE `sys_pages_blocks` SET `title_size`='compact' WHERE `object` IN ('', 'sys_home') AND `module`='system' AND `title` IN ('_sys_page_block_title_recom_friends', '_sys_page_block_title_recom_subscriptions');
@@ -6718,7 +6718,7 @@ UPDATE `sys_pages_blocks` SET `title_size`='compact' WHERE `object` IN ('', 'sys
 -- The "create profile" block describes itself: title, description and icon are shown by
 -- API clients (NEO) in the block header and can be changed in Studio.
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `description`, `icon`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
-('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_create', '_sys_page_block_desc_account_profile_create', 'user-plus', 11, 0, 0, 2147483647, 'menu', 'sys_add_profile', 0, 1, 1, 1);
+('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_create', '_sys_page_block_desc_account_profile_create', 'user-round-plus', 11, 0, 0, 2147483647, 'menu', 'sys_add_profile', 0, 1, 1, 1);
 
 -- settings (sys_settings) has no blocks: the site opens the settings menu's first page there (BxBasePageAccount), the apps
 -- show the menu itself on phones and tablets (BxDolMenu::SECTION_NAV_SMALL_LIST)
@@ -6726,7 +6726,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 -- studio dashboard blocks
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `icon`, `designbox_id`, `class`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
 ('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_version', 'package', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"get_block_version";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 1),
-('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_users', 'users', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_users";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 2),
+('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_users', 'users-round', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_users";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 2),
 
 ('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_space', 'layers', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_space";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 3),
 

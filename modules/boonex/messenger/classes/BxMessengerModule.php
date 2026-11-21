@@ -3239,7 +3239,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
         foreach ($aModules as $sKey => $aModule) {
             if (!$aModule['icon']) {
                 $aResult[$sKey] = array(
-                    'icon' => 'world',
+                    'icon' => 'globe',
                     'icon_color' => 'green'
                 );
                 continue;

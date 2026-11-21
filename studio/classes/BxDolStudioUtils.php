@@ -10,7 +10,7 @@
 define('BX_DOL_STUDIO_MODULE_SYSTEM', 'system');
 define('BX_DOL_STUDIO_MODULE_CUSTOM', 'custom');
 
-define('BX_DOL_STUDIO_MODULE_ICON_DEFAULT', 'far lightbulb');
+define('BX_DOL_STUDIO_MODULE_ICON_DEFAULT', 'lightbulb');
 
 define('BX_DOL_STUDIO_VISIBLE_ALL', 'all');
 define('BX_DOL_STUDIO_VISIBLE_SELECTED', 'selected');
@@ -38,15 +38,15 @@ class BxDolStudioUtils extends BxDol
 
 		switch ($sType) {
 			case BX_DOL_MODULE_TYPE_MODULE:
-				$sIcon = 'cube';
+				$sIcon = 'box';
 				break;
 
 			case BX_DOL_MODULE_TYPE_LANGUAGE:
-				$sIcon = 'language';
+				$sIcon = 'languages';
 				break;
 
 			case BX_DOL_MODULE_TYPE_TEMPLATE:
-				$sIcon = 'adjust';
+				$sIcon = 'eclipse';
 				break;
 
 			default:

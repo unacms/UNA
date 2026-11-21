@@ -48,7 +48,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- MENU: dashboard manage tools
 SET @iManageMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard_manage_tools' LIMIT 1);
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_account_dashboard_manage_tools', @sName, 'accounts-administration', '_bx_accnt_menu_item_title_system_admt_accounts', '_bx_accnt_menu_item_title_admt_accounts', 'page.php?i=accounts-administration', '', '_self', 'at', 'a:2:{s:6:"module";s:11:"bx_accounts";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
+('sys_account_dashboard_manage_tools', @sName, 'accounts-administration', '_bx_accnt_menu_item_title_system_admt_accounts', '_bx_accnt_menu_item_title_admt_accounts', 'page.php?i=accounts-administration', '', '_self', 'at-sign', 'a:2:{s:6:"module";s:11:"bx_accounts";s:6:"method";s:27:"get_menu_addon_manage_tools";}', '', 192, 1, 0, @iManageMenuOrder + 1);
 
 
 -- ACL

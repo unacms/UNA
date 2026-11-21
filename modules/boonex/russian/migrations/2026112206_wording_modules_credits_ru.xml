@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="ru" flag="ru" title="Russian" category="Credits">
+    <string_upd name="_bx_credits_err_cannot_send"><![CDATA[Не удалось отправить сообщение. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_bx_credits_err_cannot_cancel_withdrawal"><![CDATA[Не удалось отменить запрос на вывод средств. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Не удалось подтвердить запрос на вывод средств. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_bx_credits_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_bx_credits_err_incorrect_data"><![CDATA[Некоторые данные неверны. Проверьте их и попробуйте ещё раз.]]></string_upd>
+</resources>

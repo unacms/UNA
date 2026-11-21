@@ -395,7 +395,7 @@
     <string name="_bx_payment_err_wrong_vendor"><![CDATA[Incorrect vendor.]]></string>
     <string name="_bx_payment_err_wrong_data"><![CDATA[Incorrect input data.]]></string>
     <string name="_bx_payment_err_not_found_pending"><![CDATA[Pending order was not found.]]></string>
-    <string name="_bx_payment_err_cannot_perform"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_bx_payment_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_payment_err_wrong_quantity"><![CDATA[Incorrect quantity specified.]]></string>
     <string name="_bx_payment_err_already_processed"><![CDATA[This payment has already processed.]]></string>
     <string name="_bx_payment_err_already_registered"><![CDATA[Subscription with the same data was already registered.]]></string>
@@ -551,7 +551,7 @@
     <string name="_bx_payment_pp_api_err_cannot_authorize"><![CDATA[Can't authorize the approved order.]]></string>
     <string name="_bx_payment_pp_api_err_cannot_capture"><![CDATA[Can't finalize checkout.]]></string>
     <string name="_bx_payment_pp_api_err_no_item"><![CDATA[There is nothing to subscribe.]]></string>
-    <string name="_bx_payment_pp_api_err_wrong_item"><![CDATA[The product you want to subscribe to has incorrect data on PayPal end. Please report.]]></string>
+    <string name="_bx_payment_pp_api_err_wrong_item"><![CDATA[PayPal has wrong details for this product, so you cannot subscribe to it yet. Please contact us.]]></string>
     <string name="_bx_payment_pp_api_err_no_subscription"><![CDATA[The subscription data isn't available or incorrect.]]></string>
     <string name="_bx_payment_pp_api_err_subscription_not_confirmed"><![CDATA[Subscription wasn't confirmed.]]></string>
     <string name="_bx_payment_pp_api_msg_authorized"><![CDATA[The order was successfully authorized.]]></string>

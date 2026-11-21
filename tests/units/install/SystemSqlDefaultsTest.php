@@ -93,8 +93,8 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
     {
         // Icon-only items (no title) that open their menus above them: BxBaseMenuFooter renders the menus and shows
         // the Theme item only where the template has a colour scheme, the Sounds item where sounds play on the site.
-        foreach (['color_scheme' => 'adjust', 'sounds' => 'volume-up'] as $sName => $sIcon) {
-            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z-]+)',/", self::systemSql(), $aMatch);
+        foreach (['color_scheme' => 'eclipse', 'sounds' => 'volume-2'] as $sName => $sIcon) {
+            $bFound = preg_match("/\\('sys_footer', 'system', '" . $sName . "', '_sys_menu_item_title_system_" . $sName . "', '', 'javascript:void\\(0\\);', '([^']|'')*', '', '([a-z0-9-]+)',/", self::systemSql(), $aMatch);
 
             $this->assertSame(1, $bFound, "system.sql adds the footer's " . $sName . ' item.');
             $this->assertStringContainsString("bx_menu_popup_inline(''#bx-menu-footer-" . str_replace('_', '-', $sName) . "'', this, {pointer: {flip: true}});", $aMatch[0]);

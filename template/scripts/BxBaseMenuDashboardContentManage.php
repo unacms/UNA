@@ -53,7 +53,7 @@ class BxBaseMenuDashboardContentManage extends BxTemplMenuCustom
                 'active' => true,
                 'title' => '_sys_menu_item_title_va_more_auto', 
                 'href' => 'javascript:void(0)', 
-                'icon' => 'ellipsis-v',
+                'icon' => 'ellipsis-vertical',
             ];
         }
 

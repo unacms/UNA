@@ -45,7 +45,7 @@ class BxDolStudioWidget extends BxTemplStudioPage
                     'type' => 'switcher',
                     'name' => 'featured',
                     'caption' => '_adm_txt_pca_featured',
-                    'icon' => 'users',
+                    'icon' => 'users-round',
                     'checked' => $this->aPage['featured'],
                     'onchange' => "javascript:" . $sJsObjectLauncher . ".featured('" . $this->aPage['name'] . "', this)"
                 ));

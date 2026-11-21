@@ -311,10 +311,10 @@
     <string name="_bx_credits_err_withdraw_minimum"><![CDATA[Withdrawal less then {0} credits isn't available.]]></string>
     <string name="_bx_credits_err_withdraw_remaining"><![CDATA[Minimum remaining balance after withdrawal should be more then {0} credits.]]></string>
     <string name="_bx_credits_err_cannot_update_balance"><![CDATA[Cannot update balance.]]></string>
-    <string name="_bx_credits_err_cannot_send"><![CDATA[Cannot send message. Please report.]]></string>
-    <string name="_bx_credits_err_cannot_cancel_withdrawal"><![CDATA[Cannot cancel withdrawal request. Please report.]]></string>
-    <string name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[Cannot confirm withdrawal request. Please report.]]></string>
-    <string name="_bx_credits_err_cannot_perform_action"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_bx_credits_err_cannot_send"><![CDATA[The message could not be sent. Please try again.]]></string>
+    <string name="_bx_credits_err_cannot_cancel_withdrawal"><![CDATA[The withdrawal request could not be canceled. Please try again.]]></string>
+    <string name="_bx_credits_err_cannot_confirm_withdrawal"><![CDATA[The withdrawal request could not be confirmed. Please try again.]]></string>
+    <string name="_bx_credits_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string>
 
 
     <!-- Checkout process -->
@@ -350,5 +350,5 @@
 
     <string name="_bx_credits_err_unknown_buyer"><![CDATA[Please sign in.]]></string>
     <string name="_bx_credits_err_unknown_seller"><![CDATA[Unknown seller.]]></string>
-    <string name="_bx_credits_err_incorrect_data"><![CDATA[Incorrect input data. Please report.]]></string>
+    <string name="_bx_credits_err_incorrect_data"><![CDATA[Some of the details are not valid. Check them and try again.]]></string>
 </resources>
