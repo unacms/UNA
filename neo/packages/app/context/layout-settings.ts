@@ -81,8 +81,11 @@ const getDeviceLangCode = (): string => {
  * The stored feed unit as one of `layout.avaliable_feed_units`. Builds from July to November 2026 stored the
  * labels ("Full feed", "Compact feed") instead of the ids; anything else is `default`.
  */
+const LEGACY_FEED_UNITS: Record<string, string> = { 'Compact feed': 'small', 'Full feed': 'default' };
+
 export const resolveFeedUnit = (value: unknown): string => {
-    const id = value === 'Compact feed' ? 'small' : value === 'Full feed' ? 'default' : String(value || '');
+    const stored = typeof value === 'string' ? value : '';
+    const id = LEGACY_FEED_UNITS[stored] ?? stored;
     const units = appSetting('layout', 'avaliable_feed_units');
     return Array.isArray(units) && units.includes(id) ? id : 'default';
 };

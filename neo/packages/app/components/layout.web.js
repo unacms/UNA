@@ -225,7 +225,7 @@ export default function Layout(props) {
     if (data?.empty)
         return <>{children}</>
 
-    return <MemoizedContent blocks={blocks} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
+    return <MemoizedContent blocks={blocks} currentUser={currentUser} layoutName={layoutName} data={data} uri={uri}>{children}</MemoizedContent>
 }
 
 const Content = React.memo(({ children, currentUser, layoutName, url }) => {

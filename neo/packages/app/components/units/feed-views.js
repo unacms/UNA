@@ -448,7 +448,8 @@ export const DefaultView = memo(
 export const CompactView = memo(function CompactView({ data, url, bIsTitle }) {
     const text = stripTags(data.content?.text || '').trim()
     const picture = data.mainImage || data.content?.images_attach?.[0] || data.content?.videos_attach?.[0] || null
-    const thumb = picture ? toUnaDisplayImageItem(picture) || (picture.src_poster ? { src: picture.src_poster } : null) : null
+    let thumb = picture ? toUnaDisplayImageItem(picture) : null
+    if (!thumb && picture?.src_poster) thumb = { src: picture.src_poster }
     if (!bIsTitle && !text && !thumb) return null
 
     return (
