@@ -47,11 +47,12 @@ class SignInBlockParityTest extends BxDolTestCase
         // The site orders the link's row before the Password row; it stays after it in the page.
         $this->assertMatchesRegularExpression('/> #bx-form-element-submit_text \{[^}]*\border: 1;[^}]*height: 0;/', self::read('modules/boonex/artificer/data/template/system/css/general.css'));
 
-        // NEO on web draws the link after the control and lifts it onto the label's line.
+        // NEO on web does the same: the link is drawn after the control and ordered before it, in a row that wraps.
         $sField = self::read('neo/packages/app/components/form-fields/_field.js');
         $this->assertStringContainsString('const captionAccessory = captionAccessoryProp ?? (isWeb ? null : linkOnLabelLine)', $sField, 'On web the link is not in the label\'s row, which is before the input.');
-        $this->assertMatchesRegularExpression('/\{linkLifted \? \([^<]*<View className="absolute end-0 bottom-full /', $sField);
-        $this->assertGreaterThan(strpos($sField, 'const control = ('), strpos($sField, '{linkLifted ? ('), 'Inside the control, after the input.');
+        $this->assertMatchesRegularExpression('/\{control\}\s*<\/View>\s*\{linkOrdered \? \([^<]*<View className="order-2 max-w-full /', $sField, 'After the control in the page, before it on screen.');
+        $this->assertStringContainsString("linkOrdered && 'order-3'", $sField);
+        $this->assertStringContainsString("linkOrdered && 'flex-row flex-wrap items-center justify-between gap-x-3'", $sField, 'The link wraps under the label when both don\'t fit, so they never overlap.');
         $this->assertStringNotContainsString('tabIndex', $sField, 'The order comes from the page, not from tabindex.');
     }
 

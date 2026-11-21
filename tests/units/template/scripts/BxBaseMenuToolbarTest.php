@@ -154,7 +154,7 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         $sNeo = self::readFile('neo/packages/app/settings/header-toolbar.js');
         $this->assertStringContainsString("una: 'login'", $sNeo);
         $this->assertStringContainsString("una: 'create-account'", $sNeo);
-        $this->assertStringContainsString("if (item.una && !currentUser) return inGuestToolbar(item.una)", self::readFile('neo/packages/app/ui/molecules/header/header-element.js'));
+        $this->assertStringContainsString("if (item.una && !currentUser) return guestSlot(item.una)", self::readFile('neo/packages/app/ui/molecules/header/header-element.js'));
 
         $oMenu = $this->getToolbar('sys_toolbar_member');
         $aRows = $this->getToolbarRows($oMenu);

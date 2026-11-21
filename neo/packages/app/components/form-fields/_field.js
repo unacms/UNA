@@ -272,11 +272,11 @@ export default function Field({
 
     // `fieldLink` (the sign-in form's "Forgot password?") shares the label's line, at its end. With no
     // label line (a floating label) it goes under the control, at the end of the description's line.
-    // On web it comes after the control in the page and is lifted onto the label's line, so Tab goes
-    // from the field above to this one and reaches the link after it, as on the site (its
+    // On web it comes after the control in the page and is ordered before it (`linkOrdered`), so Tab
+    // goes from the field above to this one and reaches the link after it, as on the site (its
     // `#bx-form-element-submit_text`). Native has no tab order: the link is in the label's row.
     const linkOnLabelLine = isShowCaption && isGrid && !captionAccessoryProp ? fieldLink : null
-    const linkLifted = isWeb ? linkOnLabelLine : null
+    const linkOrdered = isWeb ? linkOnLabelLine : null
     const captionAccessory = captionAccessoryProp ?? (isWeb ? null : linkOnLabelLine)
     const linkUnderControl = !isShowCaption && !captionAccessoryProp ? fieldLink : null
 
@@ -307,7 +307,13 @@ export default function Field({
     // `captionAccessory` (the language tabs of a translatable field) shares the caption's line,
     // at its end, and wraps under it when both don't fit. Without a caption it sits above the control.
     const captionElement = isShowCaption ? (
-        <View className="w-full @5xl/form-container:w-1/4 @5xl/form-container:pr-4 @5xl/form-container:min-h-11 @5xl/form-container:justify-center">
+        <View
+            className={cn(
+                '@5xl/form-container:w-1/4 @5xl/form-container:pr-4 @5xl/form-container:min-h-11 @5xl/form-container:justify-center',
+                // beside `linkOrdered` the label is as wide as its text, so the link fits on its line
+                linkOrdered ? 'order-1 max-w-full' : 'w-full'
+            )}
+        >
             {captionAccessory ? (
                 <Row className="w-full flex-wrap items-center justify-between gap-x-3 gap-y-1">
                     {captionLabel}
@@ -343,13 +349,6 @@ export default function Field({
             {!!error && !Array.isArray(error) && (
                 <FormError errorText={error} errorId={errorId} />
             )}
-            {linkLifted ? (
-                // The label's row is 24px tall and 4px above the control (`field_padding`). In a wide
-                // form the label is beside the control, so the link stays under it, at its end.
-                <View className="absolute end-0 bottom-full mb-1 h-6 justify-center @5xl/form-container:static @5xl/form-container:mb-0 @5xl/form-container:h-auto @5xl/form-container:items-end">
-                    {linkLifted}
-                </View>
-            ) : null}
             {linkUnderControl ? (
                 <Row className="mt-1 items-start justify-between gap-3">
                     <Text className="flex-1 px-1 text-xs text-muted-foreground">
@@ -383,16 +382,31 @@ export default function Field({
                 </View>
             )}
             {isGrid ? (
-                <View className="@5xl/form-container:flex-row @5xl/form-container:items-start gap-y-1 z-10">
+                <View
+                    className={cn(
+                        '@5xl/form-container:flex-row @5xl/form-container:items-start gap-y-1 z-10',
+                        // A wrapping row: the label and the link share the first line (the link goes
+                        // under the label when both don't fit), the control takes the next one.
+                        linkOrdered && 'flex-row flex-wrap items-center justify-between gap-x-3'
+                    )}
+                >
                     {captionElement}
                     <View
                         className={cn(
-                            'relative w-full gap-1 @5xl/form-container:w-3/4',
-                            !isShowCaption && '@5xl/form-container:ml-auto'
+                            'w-full gap-1 @5xl/form-container:w-3/4',
+                            !isShowCaption && '@5xl/form-container:ml-auto',
+                            linkOrdered && 'order-3'
                         )}
                     >
                         {control}
                     </View>
+                    {linkOrdered ? (
+                        // After the control in the page, before it on screen. In a wide form the
+                        // label is beside the control, so the link goes under the control, at its end.
+                        <View className="order-2 max-w-full @5xl/form-container:order-last @5xl/form-container:w-full @5xl/form-container:items-end">
+                            {linkOrdered}
+                        </View>
+                    ) : null}
                 </View>
             ) : (
                 control
