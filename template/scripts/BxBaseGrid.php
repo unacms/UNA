@@ -1714,7 +1714,7 @@ class BxBaseGrid extends BxDolGrid
     {
         $sMethod = '_getCell' . $this->_genMethodName($sKey);
         if (!method_exists($this, $sMethod)) {
-            $sMethod = !empty($aField['secret']) ? '_getCellSecret' : '_getCellDefault';
+            $sMethod = empty($aField['secret']) ? '_getCellDefault' : '_getCellSecret';
         }
 
         $mixedValue = $this->_getCellData($sKey, $aField, $aRow);
@@ -1722,7 +1722,7 @@ class BxBaseGrid extends BxDolGrid
             $mixedValue = _t($mixedValue);
             $aField['translatable'] = 0; // _getCellDefault translates in API mode, and this is translated already
         }
-        if ($sMethod != '_getCellSecret' && is_string($mixedValue) && !empty($aField['chars_limit']) && (int)$aField['chars_limit'] > 0) {
+        if ($sMethod != '_getCellSecret' && is_string($mixedValue) && !empty($aField['chars_limit'])) {
             $mixedValue = strip_tags($mixedValue);
         }
 
@@ -1731,30 +1731,41 @@ class BxBaseGrid extends BxDolGrid
             return $mixedCell;
         }
 
-        switch ($mixedCell['type']) {
+        return $this->_agCellState($mixedCell, $sKey, $aField, $aRow);
+    }
+
+    /**
+     * What the classic grid decides for the row and the typed cell alone does not say: that a
+     * text value is HTML to print, a disabled checkbox, the state and the name of a switch, and
+     * the state of the row's actions.
+     */
+    protected function _agCellState($aCell, $sKey, $aField, $aRow)
+    {
+        switch ($aCell['type']) {
             case 'text':
-                $mixedCell['html'] = 1;
+                $aCell['html'] = 1;
                 break;
 
             case 'checkbox':
-                $mixedCell['disabled'] = $this->_isCheckboxDisabled($aRow) ? 1 : 0;
+                $aCell['disabled'] = (int)(bool)$this->_isCheckboxDisabled($aRow);
                 break;
 
             case 'switcher':
-                $sFieldActive = isset($mixedCell['fld']) ? $mixedCell['fld'] : '';
-                $mixedCell['on'] = $this->_isSwitcherOn(isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : false, $sKey, $aField, $aRow) ? 1 : 0;
-                $mixedCell['label'] = $this->_agSwitcherLabel($sKey, $aField, $aRow);
+                $sFieldActive = isset($aCell['fld']) ? $aCell['fld'] : '';
+                $mixedActive = isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : false;
+                $aCell['on'] = (int)(bool)$this->_isSwitcherOn($mixedActive, $sKey, $aField, $aRow);
+                $aCell['label'] = $this->_agSwitcherLabel($sKey, $aField, $aRow);
                 break;
 
             case 'actions':
-                $mixedCell['data'] = $this->_agActions(is_array($mixedCell['data']) ? $mixedCell['data'] : [], $aRow);
+                $aCell['data'] = $this->_agActions(is_array($aCell['data']) ? $aCell['data'] : [], $aRow);
                 break;
 
             default:
                 break;
         }
 
-        return $mixedCell;
+        return $aCell;
     }
 
     /**
@@ -1792,7 +1803,7 @@ class BxBaseGrid extends BxDolGrid
                 $aActions[$iAction]['icon'] = $this->_agActionIcon($aAction['icon']);
             }
 
-            $aActions[$iAction]['disabled'] = $bDisabled ? 1 : 0;
+            $aActions[$iAction]['disabled'] = (int)$bDisabled;
 
             // An icon-only action with no title of its own (edit and delete in Studio) still needs a name.
             $sName = isset($aAction['name']) ? $aAction['name'] : '';
