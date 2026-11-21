@@ -1115,6 +1115,26 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The text of the page's `<title>`: the page's own title followed by the site's name ("Posts · Site"), so browser
+     * tabs, bookmarks and search results say which site a page is on. A title that already names the site (the home
+     * page's "Welcome to Site") is kept as it is, and a page without a title gets the site's name.
+     * @param string $sTitle the page's title, plain text
+     * @return string plain text
+     */
+    public function getPageTitleWithSite($sTitle)
+    {
+        $sSite = trim((string)getParam('site_title'));
+        $sTitle = trim((string)$sTitle);
+
+        if($sTitle === '')
+            return $sSite;
+        if($sSite === '' || bx_mb_strpos(mb_strtolower($sTitle), mb_strtolower($sSite)) !== false)
+            return $sTitle;
+
+        return _t('_sys_page_title_with_site', $sTitle, $sSite);
+    }
+
+    /**
      * Set page injections.
      *
      * @param array $aInjections name => value injections.
@@ -2194,10 +2214,12 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 $sRet = BxTemplFunctions::getInstance()->getMetaIcons();
                 break;
             case 'page_header':
+                $sTitle = '';
                 if (isset($this->aPage['title']) && !empty($this->aPage['title']))
-                    $sRet = bx_process_output(strip_tags($this->aPage['title']));
-                if(empty($sRet) && isset($this->aPage['header']))
-                    $sRet = bx_process_output(strip_tags($this->aPage['header']));
+                    $sTitle = strip_tags($this->aPage['title']);
+                if($sTitle === '' && isset($this->aPage['header']))
+                    $sTitle = strip_tags($this->aPage['header']);
+                $sRet = bx_process_output($this->getPageTitleWithSite($sTitle));
                 break;
             case 'page_header_text':
                 if(isset($this->aPage['header_text']))
@@ -4155,6 +4177,8 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 
         $oTemplate = BxDolTemplate::getInstance();
         $oTemplate->resetPageMeta();
+        // Not found, no access and other messages say nothing search engines should keep.
+        $oTemplate->setPageMetaRobots('noindex');
         $oTemplate->setPageNameIndex ($iPage);
         $oTemplate->setPageHeader ($sTitle);
         $oTemplate->setPageContent ('page_main_code', $sContent);

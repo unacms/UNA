@@ -707,6 +707,9 @@ class BxBasePage extends BxDolPage
             $aTexts = ['title' => '_sys_txt_join_title', 'text' => '_sys_txt_join_text', 'title_invite' => '_sys_txt_join_title_invite', 'text_invite' => '_sys_txt_join_text_invite'];
         if($aTexts)
             $a['texts'] = self::getTranslatedTextsAPI($aTexts);
+        // The home page's tagline is the site's description, as in the splash code ({site_description}).
+        if($sUri == 'home' && ($sDescription = BxDolSplash::getInstance()->getSiteDescription()) !== '')
+            $a['texts']['text'] = $sDescription;
 
         // The title UNA's cover shows (the selected site menu item for a section, else the page's), for the apps' header.
         // HTML-escaped like `title`.
@@ -1501,6 +1504,13 @@ class BxBasePage extends BxDolPage
             return [bx_api_get_block('lang', ['title' => _t($aBlock['title']), 'content' => bx_process_macros($sContent)])];
         }
     
+        // The default Terms and Privacy until the operator saves them once: a note only the operator sees.
+        if(isAdmin() && BxDolPage::isLangBlockToReview($aBlock['content']))
+            BxDolInformer::getInstance()->add('sys-page-lang-block-review-' . $aBlock['id'], _t('_sys_txt_page_lang_block_review'), BX_INFORMER_ALERT, [
+                'action_url' => BX_DOL_URL_STUDIO . 'builder_page.php?type=' . rawurlencode($this->_aObject['module']) . '&page=' . rawurlencode($this->_aObject['object']),
+                'action_title' => _t('_sys_txt_page_lang_block_review_action'),
+            ]);
+
         $s = '<div class="bx-page-lang-container bx-def-vanilla-html max-w-none">' . _t(trim($aBlock['content'])) . '</div>';
         $s = $this->_replaceMarkers($s, array('block_id' => $aBlock['id']));
         $s = bx_process_macros($s);
@@ -1615,12 +1625,34 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageMetaDesc()
     {
-        // A page without a description of its own gets the site's default one (Studio > Languages), not an empty one.
+        // A page without a description of its own describes itself with its first text (About, Terms), else it gets the
+        // site's default one (Studio > Languages), not an empty one.
         $sResult = $this->_replaceMarkers(_t($this->_aObject['meta_description']));
+        if(trim(strip_tags($sResult)) === '')
+            $sResult = $this->_getPageMetaDescFromBlocks();
         if(trim(strip_tags($sResult)) === '')
             $sResult = $this->_replaceMarkers(_t('_sys_page_meta_description_default'));
 
         return $sResult;
+    }
+
+    /**
+     * The text of the page's first text block (`lang` or `html`) the viewer can see, for a page without a description.
+     * @return string HTML, empty when the page has no such block
+     */
+    protected function _getPageMetaDescFromBlocks()
+    {
+        foreach($this->_oQuery->getPageBlocks() as $aCell)
+            foreach($aCell as $aBlock) {
+                if(!in_array($aBlock['type'], ['lang', 'html']) || !$this->_isVisibleBlock($aBlock))
+                    continue;
+
+                $sText = $this->_replaceMarkers($aBlock['type'] == 'lang' ? _t(trim($aBlock['content'])) : $aBlock['content']);
+                if(trim(strip_tags($sText)) !== '')
+                    return $sText;
+            }
+
+        return '';
     }
 
     /**
@@ -1665,7 +1697,17 @@ class BxBasePage extends BxDolPage
             if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iIcon, 'transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH], false)))
                 return $sUrl;
 
-        return '';
+        // The uploaded logo (not an SVG, which previews don't show), else the template's own 512px icon, so a shared
+        // link always has a picture.
+        if(($iLogo = (int)getParam('sys_site_logo')) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iLogo, 'object' => BX_DOL_STORAGE_OBJ_IMAGES], false)))
+            return $sUrl;
+
+        $sUrl = $this->_oTemplate->getIconUrl('android-icon-512.png');
+        if(!$sUrl)
+            return '';
+
+        $this->_aMetaImages[$sUrl] = ['width' => 512, 'height' => 512, 'card' => 'summary'];
+        return $sUrl;
     }
 
     /**

@@ -168,6 +168,11 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
             if(trim(strip_tags($sResult)) !== '')
                 return $sResult;
 
+        // An entry without text (a profile without "About") is still named, not described as the whole site.
+        $sTitle = trim(strip_tags($this->_getPageTitle()));
+        if($sTitle !== '')
+            return _t('_sys_page_meta_description_entry', $sTitle, getParam('site_title'));
+
         return parent::_getPageMetaDesc();
     }
 

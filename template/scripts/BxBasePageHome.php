@@ -126,7 +126,7 @@ class BxBasePageHome extends BxTemplPage
         return [
             'title' => _t('_sys_txt_splash_title'),
             'title_accent' => '',
-            'text' => _t('_sys_txt_splash_slogan'),
+            'text' => BxDolSplash::getInstance()->getSiteDescription(),
             'join' => _t('_sys_txt_splash_join'),
             'login' => _t('_sys_txt_splash_login'),
             'join_icon' => '',

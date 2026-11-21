@@ -25,6 +25,7 @@
  *   `__join_form_in_box__`: the apps open Sign up rather than embed its form), `logo` (`__logo__`) and `illustration`
  *   (`__illustration__`). `social_login` (the social sign-in buttons alone) has no marker; write the element.
  * - `{site_title}` in text becomes `<neo-slot name="site_title">Site title</neo-slot>`, in attributes the plain title.
+ * - `{site_description}` becomes the site's tagline (getSiteDescription), as on the site.
  * - `__join_link__` and `__login_link__` are the apps' own paths, `/create-account` and `/login`.
  * - Macros run as on the site. `<main>` becomes a `<div>` (the apps have their own). Scripts, inline event handlers and javascript: links are removed, and so are the
  *   elements that have a `data-site-only` attribute (parts for the site only).
@@ -187,9 +188,18 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
         ]);
 
         $sCode = bx_process_macros($sCode);
-        $sCode = bx_replace_markers($sCode, ['site_title' => self::TOKEN_SITE_TITLE]);
+        $sCode = bx_replace_markers($sCode, ['site_title' => self::TOKEN_SITE_TITLE, 'site_description' => $this->getSiteDescription()]);
 
         return $this->cleanForApp($sCode, (string)getParam('site_title'));
+    }
+
+    /**
+     * The site's tagline for `{site_description}`: the home page's description, else the site's default one
+     * (Studio > Languages, `_sys_page_meta_description_default`), the same words search results show. Plain text.
+     */
+    public function getSiteDescription()
+    {
+        return trim(strip_tags(BxDolPage::getMetaDescriptionByObject('sys_home')));
     }
 
     /**
