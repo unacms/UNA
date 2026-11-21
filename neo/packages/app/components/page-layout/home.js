@@ -178,7 +178,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
-    const { layoutSettings } = useLayoutSettings();
+    const { feedUnit } = useLayoutSettings();
 
     const headerHeight = useHeaderHeight();
     const [sideBarWidth, setSideBarWidth] = useState(undefined);
@@ -286,7 +286,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                             <BlockByName
                                 data={data}
                                 name={timelineBlocks.length ? getTimelineBlock(item.name, timelineBlocks) : blocks?.[item.name + '_feed']}
-                                unitMode={layoutSettings.feed_unit}
+                                unitMode={feedUnit}
                                 exProps={{
                                     headerBlocks: headerBlocks,
                                 }}

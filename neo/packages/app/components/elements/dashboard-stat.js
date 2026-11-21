@@ -326,8 +326,8 @@ function DashboardManageMenu({ items }) {
 
 function DashboardSettingsMenu() {
     const {
-        layoutSettings,
         updateLayoutSettings,
+        feedUnit,
         themeName,
         setThemeName,
         lang,
@@ -415,18 +415,19 @@ function DashboardSettingsMenu() {
                 <View className="w-full min-w-0">
                     <DropdownMenu
                         triggerClassName="w-full"
-                        items={appSetting('layout', 'avaliable_feed_units').map((feed_unit) => ({
-                            id: feed_unit,
-                            key: feed_unit,
-                            name: feed_unit,
-                            title: t(feed_unit),
+                        items={appSetting('layout', 'avaliable_feed_units').map((unit) => ({
+                            id: unit,
+                            key: unit,
+                            name: unit,
+                            title: t('feed_unit_' + unit),
+                            selected: feedUnit === unit,
                         }))}
                         onSelect={(oItem) => {
                             updateLayoutSettings({ feed_unit: oItem.id })
                         }}
                     >
                         <NeoButton
-                            label={t(layoutSettings.feed_unit)}
+                            label={t('feed_unit_' + feedUnit)}
                             style="bordered"
                             controlSize="large"
                             image="Rows2"

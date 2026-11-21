@@ -25,8 +25,6 @@ import Menu from 'app/components/menu'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import { components } from 'app/components/registry'
-import Card from 'app/ui/molecules/page/card'
-import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowseShort } from 'app/components/elements/comments-browse';
 import { Pressable } from 'app/design/view'
 import { subscribeTimelineEdit } from 'app/lib/timeline-edits'
@@ -39,7 +37,7 @@ import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
-import { stripTags, isWeb } from 'app/lib/util'
+import { isWeb } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
 
 
@@ -130,7 +128,7 @@ export const CommentsSection = memo(
     }
 )
 
-export const MainContent = memo(({ url, data, fulltext }) => {
+export const MainContent = memo(({ url, data, fulltext, compact = false }) => {
     const bIsTitle =
         data?.content?.title && data?.content?.title?.trim() != ''
             ? true
@@ -173,6 +171,8 @@ export const MainContent = memo(({ url, data, fulltext }) => {
     const componentName = unitTypes[contentType]
 
     const ContentComponent = FeedItems[componentName]
+
+    if (compact) return <FeedItems.CompactView {...commonProps} />
 
     return ContentComponent ? (
         <ContentComponent {...commonProps} />
@@ -613,67 +613,6 @@ export const Author = memo(({ data, url, t }) => {
         </View>
     )
 })
-
-export function SmallUnit({ data }) {
-    let url = '/' + data.url
-
-    // Create a hover card wrapper function for avatar only
-    const hoverCardWrapper = (content) => (
-        <ProfileHoverCard profileData={data.author_data}>
-            {content}
-        </ProfileHoverCard>
-    );
-
-    return (
-        <AnimatedBlock>
-            <Link href={url} className="w-full" emulate={true}>
-                <Card className={' w-full tl-' + data.id}>
-                    <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
-                        <Profile
-                            {...data.author_data}
-                            displayType="unit_wo_info"
-                            displaySize="base"
-                            hoverCardWrapper={hoverCardWrapper}
-                        />
-                    </View>
-                    <View className="flex-auto flex-col my-auto">
-                        <Row className="flex-row gap-2">
-                            <Text className=" text-sm flex-auto font-medium text-secondary-foreground ">
-                                {data.author_data.display_name}
-                            </Text>
-                            <Time variant="link" className="text-xs flex-none leading-5 "
-
-                                ts={data.date}
-                            ></Time>
-                        </Row>
-                        <Text
-                            className="flex-auto text-lg font-bold text-secondary-foreground  "
-                            numberOfLines={1}
-                        >
-                            {data.content.title}
-                        </Text>
-                        <View className="flex-row w-full items-end content-end">
-                            <Text
-                                className="flex-auto mr-2  text-base text-muted-foreground  "
-                                numberOfLines={1}
-                            >
-                                {data.plainText}
-                                {stripTags(data.content.text)}
-                            </Text>
-                            <View className="flex-none bg-primary rounded-full my-auto h-min px-1.5">
-                                {data.cmts.count > 0 && (
-                                    <Text className="text-xs text-white dark:text-black font-medium">
-                                        {data.cmts.count}
-                                    </Text>
-                                )}
-                            </View>
-                        </View>
-                    </View>
-                </Card>
-            </Link>
-        </AnimatedBlock>
-    )
-}
 
 const cmtsFromProps = (cmts) => cmts
 

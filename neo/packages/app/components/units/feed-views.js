@@ -441,6 +441,44 @@ export const DefaultView = memo(
     }
 )
 
+/**
+ * The compact feed (`feed_unit: small`, the dashboard's Feed setting): the title and two or three lines of plain
+ * text, with the first picture as a small thumbnail at the end. Media, polls and files stay on the post's page.
+ */
+export const CompactView = memo(function CompactView({ data, url, bIsTitle }) {
+    const text = stripTags(data.content?.text || '').trim()
+    const picture = data.mainImage || data.content?.images_attach?.[0] || data.content?.videos_attach?.[0] || null
+    const thumb = picture ? toUnaDisplayImageItem(picture) || (picture.src_poster ? { src: picture.src_poster } : null) : null
+    if (!bIsTitle && !text && !thumb) return null
+
+    return (
+        <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)}>
+            <Row className="w-full gap-3 items-start">
+                <View className="flex-1 min-w-0 gap-1">
+                    {bIsTitle && (
+                        <Text
+                            numberOfLines={2}
+                            className="text-card-foreground web:hover:text-foreground text-base font-semibold leading-tight font-title tracking-tight"
+                        >
+                            {data.content.title}
+                        </Text>
+                    )}
+                    {!!text && (
+                        <Text className="text-secondary-foreground text-sm" numberOfLines={bIsTitle ? 2 : 3}>
+                            {text}
+                        </Text>
+                    )}
+                </View>
+                {thumb && (
+                    <View className="flex-none w-16 h-16 rounded-lg overflow-hidden bg-muted">
+                        <Image {...thumb} alt="" view="cover" className="u-cover w-full h-full" sizes="64px" />
+                    </View>
+                )}
+            </Row>
+        </LinkOrModal>
+    )
+})
+
 export const PollView = memo(
     ({
         data,

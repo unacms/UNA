@@ -53,6 +53,8 @@
     "sounds_level_full": "Sons : fort",
     "sounds_level_quiet": "Sons : doux",
     "sounds_level_off": "Sons : désactivés",
+    "feed_unit_default": "Fil complet",
+    "feed_unit_small": "Fil compact",
     "theme": "Thème",
     "rvote_like_title": "J’aime",
     "rvote_love_title": "Amour",
