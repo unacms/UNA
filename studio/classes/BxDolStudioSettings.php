@@ -36,7 +36,7 @@ class BxDolStudioSettings extends BxTemplStudioWidget
             return $sType;
 
         $aCategory = [];
-        (new BxDolStudioOptionsQuery())->getCategories(['type' => 'by_name', 'value' => $mixedCategory], $aCategory, false);
+        BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => $mixedCategory], $aCategory, false);
         if(empty($aCategory['type_name']) || $aCategory['type_name'] == $sType || $aCategory['type_group'] == BX_DOL_STUDIO_STG_GROUP_TEMPLATES)
             return $sType;
 
