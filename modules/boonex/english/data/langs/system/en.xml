@@ -866,6 +866,7 @@
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Colors the app title bar and, on phones, the status bar. Defaults to the color your template sets.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Draws corners as a smooth curve in browsers that support it, such as Chrome. Other browsers keep round corners.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[A smooth corner looks smaller than a round one of the same radius. Where corners are smooth, radii are multiplied by this number, from 1 to 2.]]></string>
+	<string name="_adm_dsg_inf_settings_section_accent"><![CDATA[The color of links, buttons, switches and focus rings, on the site, in Studio and in the apps. Every preset keeps text readable (WCAG AA) in light and dark mode.]]></string>
 	<string name="_adm_dsg_inf_settings_section_corners"><![CDATA[How round the corners of blocks, buttons, fields and popups are, on the site and in Studio. Pills and circles keep their shape.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string>
 	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[How wide pages are, how wide the header is and where the main menu sits in it, for each page layout, for visitors and for members. The site and the apps follow these; a template can set its own in its settings.]]></string>
@@ -926,6 +927,14 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Use a service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Offline page]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Window color]]></string>
+	<string name="_adm_dsg_txt_settings_accent_blue"><![CDATA[Blue]]></string>
+	<string name="_adm_dsg_txt_settings_accent_graphite"><![CDATA[Graphite]]></string>
+	<string name="_adm_dsg_txt_settings_accent_green"><![CDATA[Green]]></string>
+	<string name="_adm_dsg_txt_settings_accent_indigo"><![CDATA[Indigo]]></string>
+	<string name="_adm_dsg_txt_settings_accent_orange"><![CDATA[Orange]]></string>
+	<string name="_adm_dsg_txt_settings_accent_rose"><![CDATA[Rose]]></string>
+	<string name="_adm_dsg_txt_settings_accent_teal"><![CDATA[Teal]]></string>
+	<string name="_adm_dsg_txt_settings_accent_violet"><![CDATA[Violet]]></string>
 	<string name="_adm_dsg_txt_settings_header_align"><![CDATA[Main menu]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_center"><![CDATA[Center]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_end"><![CDATA[End]]></string>
@@ -947,6 +956,7 @@
 	<string name="_adm_dsg_txt_settings_radius_large"><![CDATA[Large]]></string>
 	<string name="_adm_dsg_txt_settings_radius_none"><![CDATA[None]]></string>
 	<string name="_adm_dsg_txt_settings_radius_small"><![CDATA[Small]]></string>
+	<string name="_adm_dsg_txt_settings_section_accent"><![CDATA[Colors]]></string>
 	<string name="_adm_dsg_txt_settings_section_corners"><![CDATA[Corners]]></string>
 	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Forms]]></string>
 	<string name="_adm_dsg_txt_settings_section_header"><![CDATA[Page and header]]></string>
@@ -2211,6 +2221,7 @@
     <string name="_adm_stg_cpt_option_sys_session_auth"><![CDATA[Session authentication]]></string>
     <string name="_adm_stg_cpt_option_sys_default_curl_timeout"><![CDATA[cURL - default timeout]]></string>
     <string name="_adm_stg_cpt_option_sys_default_socket_timeout"><![CDATA[HTTP context read timeout (in seconds, -1 - unlimit)]]></string>
+    <string name="_adm_stg_cpt_option_sys_design_accent"><![CDATA[Accent color]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius"><![CDATA[Corner size]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Smooth corners]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Smooth corner multiplier]]></string>
