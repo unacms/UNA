@@ -23,6 +23,7 @@ class SplashSiteShellTest extends BxDolTestCase
         'max-width: 48rem;' => 'max-width: 36rem;',
         'line-height: 1.5rem;' => 'line-height: 1.5;',
         'line-height: 1.75rem;' => 'line-height: 1.5556;',
+        'height: 12rem;' => 'max-width: 100%; height: auto;',
     ];
 
     /** The install default as it was before that migration. */
@@ -111,7 +112,8 @@ class SplashSiteShellTest extends BxDolTestCase
     }
 
     /**
-     * 2026112483 gives the dark illustration the apps' accent pair, the text a 36rem measure and a unitless line height.
+     * 2026112483 gives the dark illustration the apps' accent pair, the text a 36rem measure and a unitless line height,
+     * and keeps the illustration inside its column.
      * It changes only a splash that is still the previous default (its MD5 without carriage returns), one declaration
      * at a time, and what it gives is the install default.
      */
