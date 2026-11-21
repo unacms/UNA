@@ -2,6 +2,9 @@ import Svg, { Circle, G, Path } from 'react-native-svg';
 import { Platform } from 'react-native';
 import { View } from 'app/design/view';
 import { useThemeValue } from 'app/design/theme';
+import Image from 'app/ui/atoms/image';
+import { appSetting } from 'app/lib/util';
+import { pickSiteLogo, type SiteLogo } from 'app/lib/site-logo';
 
 // The default logo is UNA's own artwork, path for path: the Artificer template's
 // data/template/system/images/mark-generic.svg (the glyph) and logo-generic.svg (glyph and
@@ -21,6 +24,10 @@ export type LogoProps = {
     mode?: 'adaptive' | 'full' | 'mark';
     /** Height in px; the full logo is 67:20, so 40 makes it 134 wide. */
     height?: number;
+    /** The site's own logo and mark from UNA (the page's `logo`); UNA's artwork where it has none. */
+    sources?: SiteLogo | null;
+    /** The site's name, read for its own logo. */
+    alt?: string;
 };
 
 // Glyph: four petals at 40% and two dots, in its own 362-unit box.
@@ -49,26 +56,55 @@ const LogoFull = ({ height, fill }: Readonly<LogoArtProps>) => (
 
 const isWeb = Platform.OS === 'web';
 
-export default function Logo({ mode = 'adaptive', height = 32 }: Readonly<LogoProps>) {
+/**
+ * The site's own image, light and dark: web draws both and lets the colour scheme pick (the server's HTML can't
+ * know it), native the one for its theme.
+ */
+function SiteLogoImage({ light, dark, aspect, height, alt }: Readonly<{ light: string; dark: string; aspect: number; height: number; alt: string }>) {
+    const themeSrc = useThemeValue(light, dark)
+    const width = Math.round(height * aspect)
+
+    if (!isWeb)
+        return <Image src={themeSrc} width={width} height={height} alt={alt} contentFit="contain" nobg />
+
+    if (light === dark)
+        return <Image src={light} width={width} height={height} alt={alt} unoptimized style={{ height, width: 'auto' }} />
+
+    return (
+        <>
+            <Image src={light} width={width} height={height} alt={alt} unoptimized className="dark:hidden" style={{ height, width: 'auto' }} />
+            <Image src={dark} width={width} height={height} alt={alt} unoptimized className="hidden dark:block" style={{ height, width: 'auto' }} />
+        </>
+    )
+}
+
+export default function Logo({ mode = 'adaptive', height = 32, sources, alt = '' }: Readonly<LogoProps>) {
     // Native: a concrete colour, since react-native-svg doesn't inherit a parent View's text
     // colour. Web: `currentColor` from the classes below, so the server HTML (which can't know
     // the theme) already has the right one and a light / dark scope around the logo counts.
     const themeFill = useThemeValue(LOGO_FILL.light, LOGO_FILL.dark)
     const fill = isWeb ? 'currentColor' : themeFill
 
+    // The operator's logo (Studio > Designer) wins over UNA's artwork, unless the app always draws UNA's.
+    const own = appSetting('layout', 'logo_from_una') === false ? null : sources
+    const ownMark = pickSiteLogo(own, 'mark')
+    const ownFull = pickSiteLogo(own, 'full')
+    const glyph = ownMark ? <SiteLogoImage {...ownMark} height={height} alt={alt} /> : <LogoGlyph height={height} fill={fill} />
+    const full = ownFull ? <SiteLogoImage {...ownFull} height={height} alt={alt} /> : <LogoFull height={height} fill={fill} />
+
     if (mode === 'mark')
-        return <View className={LOGO_TEXT_CLASS}><LogoGlyph height={height} fill={fill} /></View>
+        return <View className={LOGO_TEXT_CLASS}>{glyph}</View>
 
     if (mode !== 'adaptive')
-        return <View className={LOGO_TEXT_CLASS}><LogoFull height={height} fill={fill} /></View>
+        return <View className={LOGO_TEXT_CLASS}>{full}</View>
 
     return (
         <View className={`web:motion-safe:hover:animate-pulse ${LOGO_TEXT_CLASS}`}>
             <View className="sm:hidden">
-                <LogoGlyph height={height} fill={fill} />
+                {glyph}
             </View>
             <View className="hidden sm:flex">
-                <LogoFull height={height} fill={fill} />
+                {full}
             </View>
         </View>
     )

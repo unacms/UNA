@@ -85,6 +85,10 @@ export const settingsLayout = {
         button_style_for_actions: 'secondary',
 
         share_text: '',
+        // The logo in the header: true draws the site's own logo and mark from UNA (Studio > Designer, sent with every
+        // page as `logo`), with UNA's artwork where the site has none; false always draws UNA's artwork. A fork with
+        // its own logo component replaces `logo` in customization/static.js instead.
+        logo_from_una: true,
         default_icon_stroke_width: 2,
         tablet_mode_from: 'lg',
         show_tabbar_on_mobile_non_logged: false,
