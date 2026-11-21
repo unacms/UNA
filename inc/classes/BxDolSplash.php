@@ -18,6 +18,10 @@
  *
  * A switch that was never saved (`''`) follows the older `sys_api_root_page_guest` option: `splash` is on.
  *
+ * The forms' boxes on the site (`__login_form_in_box__`, `__join_form_in_box__`) take their padding and title sizes
+ * from the home page's sign-in and sign-up blocks (getFormInBox), the rows the apps' splash draws: Studio > Pages >
+ * Home > the block > Padding sizes the form on the site and in the apps.
+ *
  * Code for the apps (see neo/AGENTS.md, "Guest splash"):
  * - The site's markers become placeholder elements, `<neo-slot name="..."></neo-slot>`, which the apps draw with
  *   their own components: `login_form` (`__login_form__`, `__login_form_in_box__`: the sign-in form with its social
@@ -222,6 +226,51 @@ class BxDolSplash extends BxDolFactory implements iBxDolSingleton
     public function getIllustration()
     {
         return BxDolTemplate::getInstance()->parseHtmlByName('splash_illustration.html', []);
+    }
+
+    /**
+     * The home page's block (Studio > Pages > Home) that holds one of the splash's forms, by its service
+     * (`system:login_form`, `system:create_account_form`): its design box and its sizes. The block is off on the home
+     * page as installed and still is where the form's box is set: the apps' splash draws the block itself
+     * (AUTH_BLOCKS), the site's splash sizes its box as the block (getFormInBox). Empty when the page has none.
+     */
+    public function getAuthBlock($sSource)
+    {
+        foreach(BxDolPageQuery::getPageServiceBlocksDesign('sys_home') as $aBlock) {
+            $aContent = @unserialize($aBlock['content']);
+            if(is_array($aContent) && isset($aContent['module'], $aContent['method']) && $aContent['module'] . ':' . $aContent['method'] === $sSource)
+                return $aBlock;
+        }
+
+        return [];
+    }
+
+    /**
+     * A form of the site's splash in its box (`__login_form_in_box__`, `__join_form_in_box__`): a regular design box
+     * with the title, description and icon given, and the padding and title sizes of the home page's block for
+     * $sSource, so one setting (Studio > Pages > Home > the block > Padding) sizes the form's box on the site and in
+     * the apps.
+     * @param $sSource the block's service, `module:method`
+     * @param $mixedTitle the box's title, or [title, description, icon] (see BxBaseFunctions::designBoxContent)
+     */
+    public function getFormInBox($sSource, $mixedTitle, $sContent)
+    {
+        $aBlock = $this->getAuthBlock($sSource);
+        $sClasses = BxDolPageDesignbox::getSizeClasses(['designbox_id' => BX_DB_PADDING_DEF] + array_intersect_key($aBlock, ['padding_size' => 1, 'title_size' => 1]));
+
+        // The sizes are rules of the pages' stylesheet, which splash.php, not being a page, doesn't load.
+        $oTemplate = BxDolTemplate::getInstance();
+        if($sClasses !== '')
+            $oTemplate->addCss('page_layouts.css');
+
+        return $oTemplate->parseHtmlByName('designbox_container.html', [
+            'class_add' => $sClasses !== '' ? ' ' . $sClasses : '',
+            'bx_if:show_html_id' => [
+                'condition' => false,
+                'content' => [],
+            ],
+            'content' => DesignBoxContent($mixedTitle, $sContent, BX_DB_PADDING_DEF),
+        ]);
     }
 
     protected function getSlot($sName)

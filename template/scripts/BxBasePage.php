@@ -387,6 +387,7 @@ class BxBasePage extends BxDolPage
     /**
      * A page without a cover whose block is titled as the page (Sign in, Sign up, Forgot password) has one heading:
      * the block's title becomes the page's `<h1>`, in place of the hidden one the empty cover gives (BxBaseCover).
+     * A block before it with an `<h1>` in its content is the heading instead, and the titled block keeps its `<h2>`.
      * @param array $aBlock the block
      * @param string $sCode the block's code in its design box
      * @return string the code
@@ -395,6 +396,13 @@ class BxBasePage extends BxDolPage
     {
         if($this->_bHeadingBlock || $this->isPageCover())
             return $sCode;
+
+        // A block that draws a heading of its own (the Sign up page's picture and words) is the page's heading.
+        if(preg_match('/<h1[\s>]/i', $sCode)) {
+            $this->_bHeadingBlock = true;
+            BxDolCover::getInstance()->setPageHasHeading();
+            return $sCode;
+        }
 
         $sPageTitle = mb_strtolower(trim(strip_tags($this->_getPageTitle())));
         $sBlockTitle = mb_strtolower(trim(strip_tags($this->getBlockTitle($aBlock))));

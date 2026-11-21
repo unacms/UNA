@@ -4560,6 +4560,7 @@
     <string name="_sys_page_block_title_system_create_profile"><![CDATA[Create your profile (accounts without a profile)]]></string>
     <string name="_sys_page_block_title_cooperator"><![CDATA[Cooperator]]></string>
     <string name="_sys_page_block_title_create_account"><![CDATA[Sign up]]></string>
+    <string name="_sys_page_block_title_create_account_intro"><![CDATA[Sign up introduction]]></string>
     <string name="_sys_page_block_title_sys_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_sys_ai_agent"><![CDATA[AI Agent]]></string>

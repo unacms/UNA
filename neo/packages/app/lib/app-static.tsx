@@ -14,7 +14,7 @@ import { staticComponents } from 'app/customization/static';
  * - `static:<name>` in a block list, e.g. a page's `blocks` setting (see getPageSettings)
  *   → `components_<name>` (staticBlockFor in components/block.tsx).
  * - A UNA block content item of type `static` with `data.element: '<name>'`
- *   → `components_<name>` (components/elements/static.js).
+ *   → `components_<name>` (components/elements/static.js), which gets the item's `data`.
  */
 export function appStatic(section: any, props: any) {
     const Component = (staticComponents as Record<string, any>)[section];

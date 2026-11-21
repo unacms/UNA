@@ -1,5 +1,6 @@
 import { Platform } from 'react-native'
-import { isComponent } from 'app/components/registry'
+import { components, coreLayouts, isComponent } from 'app/components/registry'
+import { isIntroItem } from 'app/lib/intro-block'
 import { appSetting } from './settings'
 import { strToObj } from './object'
 
@@ -201,6 +202,12 @@ export function isTaskItemPage(data: any, uri: string): boolean {
     return path === 'item' && isTasksModule(data);
 }
 
+/** A project replaced the Sign up page layout (`create-account` in customization/page-layout/_map.js). */
+export function hasOwnCreateAccountLayout(): boolean {
+    const registered = (components as Record<string, Record<string, unknown> | undefined>)['layout']?.['create-account'];
+    return Boolean(registered) && registered !== (coreLayouts as Record<string, unknown>)['create-account'];
+}
+
 export type LayoutNameResult = { layoutName: string; layoutBlocks: any; isCustomLayout: boolean; columnLayout: string };
 
 export function getLayoutName(data: any, uri: string): LayoutNameResult {
@@ -243,7 +250,11 @@ export function getLayoutName(data: any, uri: string): LayoutNameResult {
             custom: true,
         },
         {
-            cond: uri === 'create-account',
+            // UNA's Sign up page is drawn from its blocks, in UNA's own layout (the last check). A project
+            // that put its own component under the `create-account` layout key keeps its page; so does a
+            // UNA that names that layout in the page's config (`isCustom` above), as UNA did before it
+            // sent the page's picture and words as a block.
+            cond: uri === 'create-account' && hasOwnCreateAccountLayout(),
             name: 'create-account',
             custom: true,
         },
@@ -280,15 +291,25 @@ export function getPageForms(data: any): any[] {
         .filter((item: any) => item?.type === 'form');
 }
 
+/** The page has UNA's `intro` block (a picture, the page's heading and a line of text; components/elements/intro.tsx). */
+export function pageHasIntro(data: any): boolean {
+    return Object.values(data?.elements ?? {})
+        .flatMap((cell: any) => Object.values(cell ?? {}))
+        .flatMap((block: any) => block?.content ?? [])
+        .some(isIntroItem);
+}
+
 /**
  * The splash, login and create-account pages draw their own heading, so the header shows no page
  * title there. Each also says so with `<PageHeaderOptions showTitle={false} />`, but on web the page
  * hydrates after the header, which would show the title until then. Create account draws it around
  * its cells, or around a form (with `blocks` set, invitation-only registration can send only a message).
+ * So does a page with UNA's intro block, whose title is the heading (UNA's Sign up page).
  */
 export function isOwnHeadingPage(data: any, isGuest: boolean): boolean {
     const { layoutName, layoutBlocks } = getLayoutName(data, data?.uri?.toString() || '');
     if (layoutName === 'create-account') return !layoutBlocks || getPageForms(data).length > 0;
+    if (pageHasIntro(data)) return true;
     return layoutName === 'login' || isSplashPage(data, layoutName, isGuest);
 }
 

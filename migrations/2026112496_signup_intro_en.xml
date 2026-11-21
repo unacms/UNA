@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Pages > Sign up: the name of the block with the picture and the words beside the form. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_page_block_title_create_account_intro"><![CDATA[Sign up introduction]]></string_add>
+</resources>

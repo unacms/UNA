@@ -153,6 +153,18 @@ class BxDolPageQuery extends BxDolDb
     }
 
     /**
+     * The design box of every service block of a page, on or off (also the ones taken off the page, in cell 0): what
+     * the guest splash needs to size its sign-in and join boxes as the home page's blocks (BxDolSplash::getAuthBlock).
+     * The blocks on the page come first, in its order.
+     */
+    static public function getPageServiceBlocksDesign($sObject)
+    {
+        return BxDolDb::getInstance()->getAll("SELECT `id`, `designbox_id`, `padding_size`, `title_size`, `content` FROM `sys_pages_blocks` WHERE `object` = :object AND `type` = 'service' ORDER BY (`cell_id` = 0), `cell_id`, `order`, `id`", [
+            'object' => $sObject,
+        ]);
+    }
+
+    /**
      * The blocks of a page the apps show (`active_api`), in its cells (cell_id 1 and up, cell 0
      * holds the blocks taken off the page) and their order, in one query.
      */
