@@ -272,7 +272,12 @@ export default function Field({
 
     // `fieldLink` (the sign-in form's "Forgot password?") shares the label's line, at its end. With no
     // label line (a floating label) it goes under the control, at the end of the description's line.
-    const captionAccessory = captionAccessoryProp ?? (isShowCaption ? fieldLink : null)
+    // On web it comes after the control in the page and is lifted onto the label's line, so Tab goes
+    // from the field above to this one and reaches the link after it, as on the site (its
+    // `#bx-form-element-submit_text`). Native has no tab order: the link is in the label's row.
+    const linkOnLabelLine = isShowCaption && isGrid && !captionAccessoryProp ? fieldLink : null
+    const linkLifted = isWeb ? linkOnLabelLine : null
+    const captionAccessory = captionAccessoryProp ?? (isWeb ? null : linkOnLabelLine)
     const linkUnderControl = !isShowCaption && !captionAccessoryProp ? fieldLink : null
 
     const captionLabel = isShowCaption ? (
@@ -338,6 +343,13 @@ export default function Field({
             {!!error && !Array.isArray(error) && (
                 <FormError errorText={error} errorId={errorId} />
             )}
+            {linkLifted ? (
+                // The label's row is 24px tall and 4px above the control (`field_padding`). In a wide
+                // form the label is beside the control, so the link stays under it, at its end.
+                <View className="absolute end-0 bottom-full mb-1 h-6 justify-center @5xl/form-container:static @5xl/form-container:mb-0 @5xl/form-container:h-auto @5xl/form-container:items-end">
+                    {linkLifted}
+                </View>
+            ) : null}
             {linkUnderControl ? (
                 <Row className="mt-1 items-start justify-between gap-3">
                     <Text className="flex-1 px-1 text-xs text-muted-foreground">
@@ -375,7 +387,7 @@ export default function Field({
                     {captionElement}
                     <View
                         className={cn(
-                            'w-full gap-1 @5xl/form-container:w-3/4',
+                            'relative w-full gap-1 @5xl/form-container:w-3/4',
                             !isShowCaption && '@5xl/form-container:ml-auto'
                         )}
                     >

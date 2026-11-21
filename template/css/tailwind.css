@@ -148,7 +148,7 @@
        blue links, 1.5 line height, 16px between paragraphs, lists indented 1.5rem. */
     .bx-def-vanilla-html {
         @apply prose prose-zinc dark:prose-invert leading-normal;
-        @apply prose-a:text-blue-700 dark:prose-a:text-blue-400 prose-a:font-normal;
+        @apply prose-a:text-blue-700 dark:prose-a:text-blue-300 prose-a:font-normal;
         --tw-prose-body: theme('colors.zinc.600');
         --tw-prose-headings: theme('colors.zinc.900');
         --tw-prose-bold: theme('colors.zinc.900');
@@ -215,7 +215,7 @@
     }
 
     .bx-artificer .bx-menthion-link {
-        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200;
     }
 
     .bx-artificer .bx-def-box-sizing {
@@ -661,7 +661,7 @@
     }
 
     .bx-artificer .bx-def-a-colored {
-        @apply text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200;
     }
 
     .bx-std a.bx-def-font-meta,
@@ -1184,7 +1184,7 @@
 
     .bx-artificer form a:not(.bx-btn),
     .bx-artificer .sys-jf-agreement a:not(.bx-btn) {
-        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+        @apply font-normal text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200;
     }
 
     .bx-artificer .bx-form-caption,
@@ -2342,7 +2342,7 @@
 
     .bx-base-text-unit-title a,
     .bx-tl-title a {
-        @apply text-gray-800 hover:text-blue-700 dark:text-gray-100 dark:hover:text-blue-400 hover:no-underline;
+        @apply text-gray-800 hover:text-blue-700 dark:text-gray-100 dark:hover:text-blue-300 hover:no-underline;
     }
 
     .bx-base-text-unit-ext .bx-base-text-unit-text {
