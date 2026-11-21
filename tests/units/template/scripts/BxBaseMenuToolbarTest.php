@@ -142,7 +142,7 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
     {
         $sSql = self::readFile('install/sql/system.sql');
         $this->assertStringContainsString("('sys_toolbar_member', 'system', 'login', '_sys_menu_item_title_system_login', '_sys_menu_item_title_login', 'page.php?i=login'", $sSql, 'Log in has a label to show.');
-        $this->assertStringContainsString("('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-plus',  '', '', 0, 1, 0, 1, 0, 3)", $sSql, 'Sign up is a guests-only item of the member toolbar.');
+        $this->assertStringContainsString("('sys_toolbar_member', 'system', 'create-account', '_sys_menu_item_title_system_join', '_sys_menu_item_title_join', 'page.php?i=create-account', '', '', 'user-round-plus',  '', '', 0, 1, 0, 1, 0, 3)", $sSql, 'Sign up is a guests-only item of the member toolbar.');
         $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='create-account';", self::readFile('modules/system/install/sql/enable-app-menus.sql'));
 
         $sMigration = self::readFile('migrations/2026111640_guest_toolbar_sign_up.sql');

@@ -343,7 +343,7 @@ class BxBaseCmtsServices extends BxDol
             '_cache' => $bCache,
             'owner_id' => $iOwnerId,
             'object_owner_id' => $iAuthorId,
-            'icon' => 'comments',
+            'icon' => 'messages-square',
             'sample' => $sSample,
             'sample_wo_article' => $sSampleWoArticle,
             'sample_action' => $sAction,

@@ -147,7 +147,7 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `conf
 ('bx_antispam_grid_dnsbl', 'independent', 'recheck', '_bx_antispam_grid_action_recheck', '', 0, 2),
 ('bx_antispam_grid_dnsbl', 'independent', 'add', '_bx_antispam_grid_action_add', '', 0, 3),
 ('bx_antispam_grid_dnsbl', 'independent', 'help', '_bx_antispam_grid_action_help', '', 0, 4),
-('bx_antispam_grid_dnsbl', 'single', 'delete', '', 'remove',  1, 1);
+('bx_antispam_grid_dnsbl', 'single', 'delete', '', 'x',  1, 1);
 
 -- grid: ip table
 
@@ -165,8 +165,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `params`, `or
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `confirm`, `order`) VALUES
 ('bx_antispam_grid_ip_table', 'bulk', 'delete', '_bx_antispam_grid_action_delete', '', 1, 1),
-('bx_antispam_grid_ip_table', 'single', 'edit', '', 'pencil-alt', 0, 1),
-('bx_antispam_grid_ip_table', 'single', 'delete', '', 'remove',  1, 2),
+('bx_antispam_grid_ip_table', 'single', 'edit', '', 'pencil-line', 0, 1),
+('bx_antispam_grid_ip_table', 'single', 'delete', '', 'x',  1, 2),
 ('bx_antispam_grid_ip_table', 'independent', 'add', '_bx_antispam_grid_action_add', '', 0, 1);
 
 -- grid: block log

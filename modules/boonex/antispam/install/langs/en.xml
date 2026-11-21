@@ -179,7 +179,7 @@ This antispam method scan submitted content for the URLs and check them if any o
 	<string name="_bx_antispam_option_toxicity_filter_action_disapprove"><![CDATA[Disapprove all toxic content if possible, block the rest]]></string>
 	<string name="_bx_antispam_option_toxicity_report"><![CDATA[Send report to admin if toxic content discovered]]></string>
 	<string name="_bx_antispam_option_toxicity_filter_api_key"><![CDATA[Perspective API key (see <a href="https://developers.perspectiveapi.com/s/docs-get-started">this</a> page on how obtain it)]]></string>
-	<string name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Toxicity threshold to consider a text as toxic (0 - 100)]]></string>
+	<string name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Toxicity score at which a text counts as toxic (0 to 100)]]></string>
 	<string name="_bx_antispam_form_submission_error"><![CDATA[Incorrect info. The form seems to contain some toxic content. Please check your inputs and try to submit again.]]></string>
 
 	<string name="_bx_antispam_toxicity_blocked_report_name"><![CDATA[Toxicity blocked report message]]></string>
@@ -215,10 +215,10 @@ This antispam method scan submitted content for the URLs and check them if any o
     <string name="_bx_antispam_option_lasso_moderation_action_none"><![CDATA[None]]></string>
     <string name="_bx_antispam_option_lasso_moderation_action_disapprove"><![CDATA[Disapprove]]></string>
     <string name="_bx_antispam_option_lasso_moderation_report"><![CDATA[Send report to admin if harmful content discovered]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Toxicity threshold (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Threat threshold (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Identity attack threshold (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Profanity threshold (0 - 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Toxicity threshold (0 to 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Threat threshold (0 to 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Identity attack threshold (0 to 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Profanity threshold (0 to 100)]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_name"><![CDATA[Harmful content posted report message]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_subject"><![CDATA[Harmful content has been posted]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_body"><![CDATA[{email_header}

@@ -114,9 +114,9 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
      * A level that isn't here is a membership that doesn't include the action.
      */
     protected $aLevel2State = array (
-        MEMBERSHIP_ID_NON_MEMBER => ['title' => '_sys_acl_state_unauthenticated_title', 'icon' => 'sign-in-alt'],
-        MEMBERSHIP_ID_ACCOUNT => ['title' => '_sys_acl_state_account_title', 'icon' => 'user-plus'],
-        MEMBERSHIP_ID_UNCONFIRMED => ['title' => '_sys_acl_state_unconfirmed_title', 'icon' => 'envelope'],
+        MEMBERSHIP_ID_NON_MEMBER => ['title' => '_sys_acl_state_unauthenticated_title', 'icon' => 'log-in'],
+        MEMBERSHIP_ID_ACCOUNT => ['title' => '_sys_acl_state_account_title', 'icon' => 'user-round-plus'],
+        MEMBERSHIP_ID_UNCONFIRMED => ['title' => '_sys_acl_state_unconfirmed_title', 'icon' => 'mail'],
         MEMBERSHIP_ID_PENDING => ['title' => '_sys_acl_state_pending_title', 'icon' => 'clock'],
         MEMBERSHIP_ID_SUSPENDED => ['title' => '_sys_acl_state_suspended_title', 'icon' => 'ban'],
     );
