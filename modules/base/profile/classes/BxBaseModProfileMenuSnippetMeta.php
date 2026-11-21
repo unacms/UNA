@@ -250,7 +250,7 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
                 $sUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_VIEW_FRIENDS'] . '&profile_id=' . $iContentProfile));
 
             return $this->_getMenuItemAPI($aItem, 'text', [
-                'title' => _t('_sys_menu_item_title_sm_friends', $iFriends),
+                'title' => _tn('_sys_menu_item_title_sm_friends', $iFriends),
                 'link' => bx_api_get_relative_url($sUrl),
             ]);
         }
@@ -283,7 +283,7 @@ class BxBaseModProfileMenuSnippetMeta extends BxBaseModGeneralMenuSnippetMeta
 
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        $sTitle = _t('_sys_menu_item_title_sm_friends_mutual', $iFriends);
+        $sTitle = _tn('_sys_menu_item_title_sm_friends_mutual', $iFriends);
 
         $sUrl = $this->_oContentProfile->getUrl();
         if(!empty($CNF['URI_VIEW_FRIENDS']))
