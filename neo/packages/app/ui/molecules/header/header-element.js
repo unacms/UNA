@@ -30,6 +30,35 @@ function getItemTier(className) {
     return 'both'
 }
 
+// A toolbar slot: its button, a placeholder while its data loads, or no slot at all.
+const SLOT = { shown: 'shown', loading: 'loading', hidden: 'hidden' }
+
+// A placeholder is the header's control height (44px) and round, as its buttons.
+const PLACEHOLDER = {
+    round: 'h-11 w-11 rounded-full bg-muted animate-pulse',
+    // Around a labelled button (Log In, Sign Up), which gives it its width.
+    labelled: 'rounded-full bg-muted animate-pulse',
+}
+
+/**
+ * Holds a toolbar slot while its data loads. A labelled button is as wide as its label, in any language: pass the
+ * button as `children` and it is drawn hidden inside the placeholder (not shown, not focusable, not read out), so
+ * the slot has its final width from the start.
+ */
+function ToolbarPlaceholder({ children = null }) {
+    if (!children) return <View aria-hidden data-neo-toolbar-placeholder className={PLACEHOLDER.round} />
+    return (
+        <View aria-hidden data-neo-toolbar-placeholder className={PLACEHOLDER.labelled}>
+            <View className="invisible">{children}</View>
+        </View>
+    )
+}
+
+/** Whether a toolbar item is for this platform (`web` / `native` on the item; both unless it says otherwise). */
+function isForPlatform(item, isWeb) {
+    return (isWeb ? item.web : item.native) ?? true
+}
+
 export default function HeaderElement({ url, uri }) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
@@ -61,165 +90,191 @@ export default function HeaderElement({ url, uri }) {
     // server HTML and doesn't pop in on hydration. A member is an object here and never reaches this.
     // Log In and Sign Up (`una: <item name>`) follow it the same way: the site's guest header is that menu.
     const followsGuestToolbar = has('search') || itemsToRender.some((item) => !!item.una)
-    const { menuData: guestToolbar } = useMenuData(
+    const { menuData: guestToolbar, isFetched: guestToolbarFetched } = useMenuData(
         !currentUser && followsGuestToolbar ? appSetting('menu_items', 'objects', 'toolbar') : null
     )
     const inGuestToolbar = (name) => Array.isArray(guestToolbar?.items) && guestToolbar.items.some((item) => item?.name === name)
+    // The page brings a visitor's toolbar along; it loads here only after a change of viewer without a page load.
+    const guestToolbarLoading = !currentUser && followsGuestToolbar && !guestToolbar && !guestToolbarFetched
+    const guestSlot = (name) => {
+        if (guestToolbarLoading) return isWeb ? SLOT.loading : SLOT.hidden
+        return inGuestToolbar(name) ? SLOT.shown : SLOT.hidden
+    }
     const addMenu = useMenuAddItems(has('add'))
     const launcherMenu = useMenuLauncherItems(has('launcher'))
+    const menuSlot = (menu) => {
+        if (menu.loading) return isWeb ? SLOT.loading : SLOT.shown
+        return menu.empty ? SLOT.hidden : SLOT.shown
+    }
+    const shownIf = (condition) => (condition ? SLOT.shown : SLOT.hidden)
 
-    // A tool with nothing to show gets no slot: an empty one would still take the row's gap.
-    const isShown = (item) => {
+    // A tool with nothing to show gets no slot: an empty one would still take the row's gap. On the web one whose
+    // data is still loading keeps its slot with a placeholder the size of its button, so the toolbar is as wide from
+    // its first paint as it will be (the main menu beside it fits its tabs in the room the toolbar leaves) and gives
+    // the slot up only when the data says it is empty. Native is as it was: a menu's button shows while its menu
+    // loads, a visitor's tools once their toolbar has.
+    const slotOf = (item) => {
         switch (item.component) {
             case "search":
-                return bSearch && (currentUser ? inUnaToolbar('search') : inGuestToolbar('search'))
+                if (!bSearch) return SLOT.hidden
+                return currentUser ? shownIf(inUnaToolbar('search')) : guestSlot('search')
             case "launcher":
-                return !launcherMenu.empty
+                return menuSlot(launcherMenu)
             case "add":
-                return !addMenu.empty
+                return menuSlot(addMenu)
             case "notifications":
-                return bNotifs && inUnaToolbar('notifications-preview')
+                return shownIf(bNotifs && inUnaToolbar('notifications-preview'))
             case "link":
-                if (item.una && !currentUser) return inGuestToolbar(item.una)
-                return item.href !== '{messenger}' || inUnaToolbar('notifications-messenger')
+                if (item.una && !currentUser) return guestSlot(item.una)
+                return shownIf(item.href !== '{messenger}' || inUnaToolbar('notifications-messenger'))
             case "account":
-                return true
+                return SLOT.shown
             case "menu_navigation":
                 // Native: the drawer has the menu's place (Log In, Sign Up and the links), opened from the header's start.
-                return isWeb || !hasAppDrawer(currentUser)
+                return shownIf(isWeb || !hasAppDrawer(currentUser))
             default:
-                return false
+                return SLOT.hidden
         }
     }
     const shownItems = itemsToRender
-        .map((item, index) => ({ item, index }))
-        .filter(({ item }) => ((isWeb ? item.web : item.native) ?? true) && isShown(item))
+        .map((item, index) => ({ item, index, slot: isForPlatform(item, isWeb) ? slotOf(item) : SLOT.hidden }))
+        .filter(({ slot }) => slot !== SLOT.hidden)
 
-    return (
-        <Row className="justify-end gap-3 items-center">
-            {shownItems.map(({ item, index }) => (
-                <View key={index} className={item.className}>
-                    {(() => {
-                        switch (item.component) {
-                            case "search":
-                                return <Search />
-                            case "launcher":
-                                return <MenuLauncher buttonProps={tierButtonProps(item)} />
-                            case "add":
-                                return <MenuAdd buttonProps={tierButtonProps(item)} />
-                            case "notifications":
-                                return <NotificationButton uri={uri} buttonProps={tierButtonProps(item)} />
-                            case "account":
-                                return (
-                                    <Row className="items-center gap-3">
-                                        <OperatorAgentHeaderButton />
-                                        <MenuAccount buttonProps={tierButtonProps(item)} />
-                                    </Row>
-                                )
-                            case "menu_navigation":
-                                return <MenuHeaderNavigation {...(tierButtonProps(item) || {})} url={url} uri={uri} />
-                            case "link":
-                                if (item.props?.neoButton) {
-                                    const { neoButton, primary, ...neoButtonProps } = item.props;
-                                    const isMessenger = item.href === '{messenger}';
-                                    // Visual label only from props.title. Item title is a11y
-                                    // metadata — using it as label turns icon-only circles
-                                    // (mobile Log In) into padded labelled buttons.
-                                    const translatedTitle = neoButtonProps.title
-                                        ? t(neoButtonProps.title)
-                                        : undefined;
-                                    const translatedA11y = neoButtonProps.accessibilityLabel
-                                        ? t(neoButtonProps.accessibilityLabel)
-                                        : (item.title ? t(item.title) : undefined);
-                                    const renderLink = (desktop) => (
-                                        <NeoButtonLink
-                                            {...getHeaderToolbarNeoButtonDefaults(desktop, { primary })}
-                                            borderShape="circle"
-                                            {...neoButtonProps}
-                                            {...(translatedTitle ? { title: translatedTitle, label: translatedTitle } : {})}
-                                            {...(translatedA11y ? { accessibilityLabel: translatedA11y } : {})}
-                                            {...(item.target ? { target: item.target } : {})}
-                                            href={isMessenger ? appSetting('messenger', 'url') : item.href}
-                                            {...(isMessenger
-                                                ? {
-                                                    image: neoButtonProps.image ?? 'MessageSquare',
-                                                    addon: {
-                                                        variant: "primary",
-                                                        text: currentUser?.counters?.bx_messenger_new_messages,
-                                                        hideZero: true,
-                                                    },
-                                                    selected: appSetting('messenger', 'url') === '/' + uri,
-                                                }
-                                                : {})}
-                                        />
-                                    )
-                                    const tier = getItemTier(item.className)
-                                    if (tier !== 'both') return renderLink(tier === 'desktop')
-                                    // Shown on both sides of `lg`: one copy per tier, picked with classes.
-                                    if (cssTiers) {
-                                        return (
-                                            <>
-                                                <View className="lg:hidden">{renderLink(false)}</View>
-                                                <View className="hidden lg:flex">{renderLink(true)}</View>
-                                            </>
-                                        )
+    /** A slot's button (or menu). */
+    const renderTool = (item) => {
+        switch (item.component) {
+            case "search":
+                return <Search />
+            case "launcher":
+                return <MenuLauncher buttonProps={tierButtonProps(item)} />
+            case "add":
+                return <MenuAdd buttonProps={tierButtonProps(item)} />
+            case "notifications":
+                return <NotificationButton uri={uri} buttonProps={tierButtonProps(item)} />
+            case "account":
+                return (
+                    <Row className="items-center gap-2">
+                        <OperatorAgentHeaderButton />
+                        <MenuAccount buttonProps={tierButtonProps(item)} />
+                    </Row>
+                )
+            case "menu_navigation":
+                return <MenuHeaderNavigation {...(tierButtonProps(item) || {})} url={url} uri={uri} />
+            case "link":
+                if (item.props?.neoButton) {
+                    const { neoButton, primary, ...neoButtonProps } = item.props;
+                    const isMessenger = item.href === '{messenger}';
+                    // Visual label only from props.title. Item title is a11y
+                    // metadata — using it as label turns icon-only circles
+                    // (mobile Log In) into padded labelled buttons.
+                    const translatedTitle = neoButtonProps.title
+                        ? t(neoButtonProps.title)
+                        : undefined;
+                    const translatedA11y = neoButtonProps.accessibilityLabel
+                        ? t(neoButtonProps.accessibilityLabel)
+                        : (item.title ? t(item.title) : undefined);
+                    const renderLink = (desktop) => (
+                        <NeoButtonLink
+                            {...getHeaderToolbarNeoButtonDefaults(desktop, { primary })}
+                            borderShape="circle"
+                            {...neoButtonProps}
+                            {...(translatedTitle ? { title: translatedTitle, label: translatedTitle } : {})}
+                            {...(translatedA11y ? { accessibilityLabel: translatedA11y } : {})}
+                            {...(item.target ? { target: item.target } : {})}
+                            href={isMessenger ? appSetting('messenger', 'url') : item.href}
+                            {...(isMessenger
+                                ? {
+                                    image: neoButtonProps.image ?? 'MessageSquare',
+                                    addon: {
+                                        variant: "primary",
+                                        text: currentUser?.counters?.bx_messenger_new_messages,
+                                        hideZero: true,
+                                    },
+                                    selected: appSetting('messenger', 'url') === '/' + uri,
+                                }
+                                : {})}
+                        />
+                    )
+                    const tier = getItemTier(item.className)
+                    if (tier !== 'both') return renderLink(tier === 'desktop')
+                    // Shown on both sides of `lg`: one copy per tier, picked with classes.
+                    if (cssTiers) {
+                        return (
+                            <>
+                                <View className="lg:hidden">{renderLink(false)}</View>
+                                <View className="hidden lg:flex">{renderLink(true)}</View>
+                            </>
+                        )
+                    }
+                    return renderLink(isDesktop)
+                }
+
+                if (item.href === '{messenger}') {
+                    const messengerHref = appSetting('messenger', 'url');
+                    const messengerLabel = item.alt || item.title || item.props?.title;
+                    return (
+                        <NeoButton
+                            {...toolbarNeoButtonDefaults}
+                            addon={{
+                                variant: "primary",
+                                text: currentUser?.counters?.bx_messenger_new_messages,
+                                hideZero: true,
+                            }}
+                            borderShape="circle"
+                            image="MessageSquare"
+                            selected={appSetting('messenger', 'url') === '/' + uri}
+                            role="link"
+                            alt={messengerLabel ? t(messengerLabel) : undefined}
+                            accessibilityLabel={messengerLabel ? t(messengerLabel) : undefined}
+                            onPress={(event) => {
+                                item.props?.onPress?.(event);
+                                if (messengerHref) router?.push?.(messengerHref);
+                            }}
+                        />
+                    )
+                }
+                const linkTitle = item.props?.title || item.title;
+                return (
+                        <NeoButtonLink
+                            {...legacyToNeoButtonProps({
+                                ...(item.props || {}),
+                                ...(linkTitle ? { title: t(linkTitle) } : {}),
+                                ...(item.href === '{messenger}'
+                                    ? {
+                                        addon: {
+                                            variant: "primary",
+                                            text: currentUser?.counters?.bx_messenger_new_messages,
+                                            hideZero: true,
+                                        },
+                                        variant: isDesktop ? 'secondary' : 'text',
+                                        size: 'base',
+                                        pressed: appSetting('messenger', 'url') === '/' + uri,
                                     }
-                                    return renderLink(isDesktop)
-                                }
+                                    : {
+                                        variant: item.props?.variant || (isDesktop ? 'secondary' : 'text'),
+                                    }),
+                            })}
+                            {...(item.target ? { target: item.target } : {})}
+                            href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
+                        />
+                )
+            default:
+                return null
+        }
+    }
+    // While its data loads a slot holds a placeholder: round, or around the hidden labelled button it will show.
+    const renderSlot = (item, slot) => {
+        if (slot !== SLOT.loading) return renderTool(item)
+        return <ToolbarPlaceholder>{item.props?.title ? renderTool(item) : null}</ToolbarPlaceholder>
+    }
 
-                                if (item.href === '{messenger}') {
-                                    const messengerHref = appSetting('messenger', 'url');
-                                    const messengerLabel = item.alt || item.title || item.props?.title;
-                                    return (
-                                        <NeoButton
-                                            {...toolbarNeoButtonDefaults}
-                                            addon={{
-                                                variant: "primary",
-                                                text: currentUser?.counters?.bx_messenger_new_messages,
-                                                hideZero: true,
-                                            }}
-                                            borderShape="circle"
-                                            image="MessageSquare"
-                                            selected={appSetting('messenger', 'url') === '/' + uri}
-                                            role="link"
-                                            alt={messengerLabel ? t(messengerLabel) : undefined}
-                                            accessibilityLabel={messengerLabel ? t(messengerLabel) : undefined}
-                                            onPress={(event) => {
-                                                item.props?.onPress?.(event);
-                                                if (messengerHref) router?.push?.(messengerHref);
-                                            }}
-                                        />
-                                    )
-                                }
-                                const linkTitle = item.props?.title || item.title;
-                                return (
-                                        <NeoButtonLink
-                                            {...legacyToNeoButtonProps({
-                                                ...(item.props || {}),
-                                                ...(linkTitle ? { title: t(linkTitle) } : {}),
-                                                ...(item.href === '{messenger}'
-                                                    ? {
-                                                        addon: {
-                                                            variant: "primary",
-                                                            text: currentUser?.counters?.bx_messenger_new_messages,
-                                                            hideZero: true,
-                                                        },
-                                                        variant: isDesktop ? 'secondary' : 'text',
-                                                        size: 'base',
-                                                        pressed: appSetting('messenger', 'url') === '/' + uri,
-                                                    }
-                                                    : {
-                                                        variant: item.props?.variant || (isDesktop ? 'secondary' : 'text'),
-                                                    }),
-                                            })}
-                                            {...(item.target ? { target: item.target } : {})}
-                                            href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
-                                        />
-                                )
-                            default:
-                                return null
-                        }
-                    })()}
+    // The buttons are 8px apart, as in UNA's site toolbar (Artificer menu_toolbar.html, `gap-2`); a slot's placeholder
+    // is a child of the same row.
+    return (
+        <Row className="justify-end gap-2 items-center">
+            {shownItems.map(({ item, index, slot }) => (
+                <View key={index} className={item.className}>
+                    {renderSlot(item, slot)}
                 </View>
             ))}
         </Row>

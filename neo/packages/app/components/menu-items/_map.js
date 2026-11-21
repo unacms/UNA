@@ -4,6 +4,8 @@ import { DynamicFallback } from 'app/lib/dynamic-fallback';
 // Every dropdown draws its rows with this. As a chunk it held each first open
 // behind DropdownPopup's loading row for most of a second.
 import DropdownItem from './dropdown-item';
+// The header's tabs. As a chunk the bar stood empty between its placeholders and its tabs while the chunk loaded.
+import TopMenu from './topmenu';
 
 // The other menu item types are each their own chunk (see lib/dynamic-fallback.js).
 const Link = dynamic(() => import('./link'), { loading: DynamicFallback });
@@ -13,7 +15,6 @@ const Callback = dynamic(() => import('./callback'), { loading: DynamicFallback 
 const Modal = dynamic(() => import('./modal'), { loading: DynamicFallback });
 const Submenu = dynamic(() => import('./submenu'), { loading: DynamicFallback });
 const Blockmenu = dynamic(() => import('./blockmenu'), { loading: DynamicFallback });
-const TopMenu = dynamic(() => import('./topmenu'), { loading: DynamicFallback });
 const Sidebar = dynamic(() => import('./sidebar'), { loading: DynamicFallback });
 const Unit = dynamic(() => import('./unit'), { loading: DynamicFallback });
 const SidebarWithWrapper = dynamic(() => import('./sidebar-with-wrapper'), { loading: DynamicFallback });
