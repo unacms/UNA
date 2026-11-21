@@ -493,7 +493,13 @@ class BxBaseStudioStore extends BxDolStudioStore
         $sContent = $sModules = $sUpdates = "";
         $aProducts = $this->loadDownloaded();
 
-        //--- Prepare modules.
+        //--- Prepare modules: Install is the card's button, Delete is in its More menu (one menu for every card).
+        $sMoreMenuId = 'bx-std-str-downloaded-menu';
+        $sMoreIcon = '';
+        if(($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml('ellipsis')) !== false) {
+            $sMoreIcon = $sSvg;
+        }
+
         $bCacheImage = getParam('sys_template_cache_image_enable') == 'on';
         foreach($aProducts['modules'] as $aModule) {
             $sIcon = BxDolStudioUtils::getModuleIcon($aModule, 'store');
@@ -521,6 +527,9 @@ class BxBaseStudioStore extends BxDolStudioStore
                 'vendor' => strtolower($aModule['vendor']) == 'boonex' ? 'UNA INC' : $aModule['vendor'],
                 'version' => $aModule['version'],
                 'dir' => $aModule['dir'],
+                'more_menu_id' => $sMoreMenuId,
+                'more_title' => bx_html_attribute(_t('_adm_str_txt_more_actions', $aModule['title'])),
+                'more_icon' => $sMoreIcon,
                 'bx_if:hide_install' => array(
                     'condition' => $bInstalled || $bQueued,
                     'content' => array()
@@ -571,7 +580,7 @@ class BxBaseStudioStore extends BxDolStudioStore
                     'list' => $sModules,
                     'paginate' => ''
                 )),
-            ));
+            )) . $this->getDownloadedMenu($sMoreMenuId);
 
         if(!empty($sUpdates))
             $sContent .= $this->getBlockCode(array(
@@ -587,6 +596,42 @@ class BxBaseStudioStore extends BxDolStudioStore
             'js_object' => $sJsObject,
             'content' => $sContent
         ));
+    }
+
+    /**
+     * The More menu of a downloaded package's card (studio/template/menu_context.html, opened by studio/js/context_menu.js).
+     * It has the one destructive action, Delete, for the card whose More button opened it.
+     */
+    protected function getDownloadedMenu($sId)
+    {
+        $sIcon = '';
+        if(($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml('trash-2')) !== false) {
+            $sIcon = $sSvg;
+        }
+
+        $sMenu = BxDolStudioTemplate::getInstance()->parseHtmlByName('menu_context.html', [
+            'label' => bx_html_attribute(_t('_adm_txt_show_actions')),
+            'bx_repeat:items' => [[
+                'bx_if:show_separator' => ['condition' => false, 'content' => []],
+                'bx_if:show_label' => ['condition' => false, 'content' => []],
+                'bx_if:show_item' => ['condition' => true, 'content' => [
+                    'role' => 'menuitem',
+                    'class' => 'bx-std-cm-danger',
+                    'attrs' => '',
+                    'onclick' => bx_html_attribute($this->getPageJsObject() . ".remove(oBxDolStudioContextMenu.oTrigger.getAttribute('data-dir'), oBxDolStudioContextMenu.oTrigger)"),
+                    'icon' => $sIcon,
+                    'title' => _t('_adm_btn_delete_submit'),
+                    'bx_if:show_check' => ['condition' => false, 'content' => []],
+                    'bx_if:show_switch' => ['condition' => false, 'content' => []],
+                ]],
+            ]],
+        ]);
+
+        return BxTemplStudioFunctions::getInstance()->transBox($sId, [
+            'wrapper_class' => 'bx-std-context-wrapper',
+            'wrapper_role' => 'presentation', // the [role="menu"] inside is the thing
+            'content' => $sMenu
+        ], true);
     }
 
     protected function getMessage($sCaption, $sContent, $aActions = array())

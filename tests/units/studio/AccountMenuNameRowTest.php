@@ -23,14 +23,19 @@ class AccountMenuNameRowTest extends BxDolTestCase
         $this->assertStringContainsString("'{member_url}'", self::read('install/sql/system.sql'), 'The item\'s link is the profile.');
     }
 
-    public function testPictureReplacesTheGlyphWhenTheProfileHasOne(): void
+    public function testAvatarReplacesTheGlyph(): void
     {
-        $this->assertSame('<img class="bx-mv-picture" src="__url__" alt="" />', trim(self::read('studio/template/menu_account_popup_picture.html')), 'Decorative: the name is next to it.');
+        // the site header's avatar (BxBaseMenuToolbar): the picture, or the name's letter on its colour; decorative, the name is next to it
+        $this->assertSame('<div class="bx-mv-picture" aria-hidden="true">__unit__</div>', trim(self::read('studio/template/menu_account_popup_picture.html')));
 
         $s = self::read('studio/template/scripts/BxBaseStudioMenuAccountPopup.php');
         $this->assertStringContainsString("if(\$sName == 'account' && (\$sPicture = \$this->getProfilePicture()) != '') {", $s);
+        $this->assertStringContainsString("\$oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info_links', 'size' => 'icon']]);", $s);
         $this->assertStringContainsString("parseHtmlByName('menu_account_popup_picture.html', [", $s);
-        $this->assertStringContainsString("'url' => bx_html_attribute(\$sUrl)", $s);
+        $this->assertStringNotContainsString('getIcon()', $s, 'The icon URL of an operator was the old account.svg placeholder.');
+
+        $sCss = self::read('studio/template/css/general.css');
+        $this->assertMatchesRegularExpression('/li\.bx-mv-label \.bx-mv-picture p \{\s*width: 1\.5rem;\s*height: 1\.5rem;/', $sCss, '24px, as the glyphs.');
     }
 
     public function testDropdownIsCompactWithTheRowsCorners(): void

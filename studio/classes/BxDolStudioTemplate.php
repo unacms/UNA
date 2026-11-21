@@ -154,11 +154,6 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
             case 'class_name':
                 $sRet = 'bx-dir-' . strtolower(bx_lang_direction());
                 break;
-            case 'meta_info':
-                // Studio pages carry the Studio's own icons (the UNA logo favicon); the site's custom icons still take precedence when set.
-                $sRet = parent::parseSystemKey($sKey, $mixedKeyWrapperHtml, false);
-                $sRet = preg_replace('/<link rel="(icon|apple-touch-icon)"[^>]*\/>/', '', $sRet) . BxTemplStudioFunctions::getInstance()->getMetaIcons();
-                break;
             default:
                 $sRet = parent::parseSystemKey($sKey, $mixedKeyWrapperHtml, false);
         }

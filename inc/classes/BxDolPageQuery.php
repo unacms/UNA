@@ -153,6 +153,18 @@ class BxDolPageQuery extends BxDolDb
     }
 
     /**
+     * The design box of every service block of a page, on or off (also the ones taken off the page, in cell 0): what
+     * the guest splash needs to size its sign-in and join boxes as the home page's blocks (BxDolSplash::getAuthBlock).
+     * The blocks on the page come first, in its order.
+     */
+    static public function getPageServiceBlocksDesign($sObject)
+    {
+        return BxDolDb::getInstance()->getAll("SELECT `id`, `designbox_id`, `padding_size`, `title_size`, `content` FROM `sys_pages_blocks` WHERE `object` = :object AND `type` = 'service' ORDER BY (`cell_id` = 0), `cell_id`, `order`, `id`", [
+            'object' => $sObject,
+        ]);
+    }
+
+    /**
      * The blocks of a page the apps show (`active_api`), in its cells (cell_id 1 and up, cell 0
      * holds the blocks taken off the page) and their order, in one query.
      */
@@ -198,6 +210,17 @@ class BxDolPageQuery extends BxDolDb
             ]);
 
         return $aRet;
+    }
+
+    /**
+     * The page's text blocks (`lang`, `html`) shown on the site, or in the apps, in the order of the page.
+     */
+    public function getPageTextBlocks($bIsApi = false)
+    {
+        return $this->getAll("SELECT `id`, `type`, `content`, `visible_for_levels` FROM `sys_pages_blocks` WHERE `object` = :object AND `cell_id` BETWEEN 1 AND :cells AND `type` IN ('lang', 'html') AND " . ($bIsApi ? "`active_api` = 1" : "`active` = 1") . " ORDER BY `cell_id` ASC, `order` ASC", [
+            'object' => $this->_aObject['object'],
+            'cells' => (int)$this->_aObject['cells_number'],
+        ]);
     }
 
     public function getPageBlock($iBlockId)

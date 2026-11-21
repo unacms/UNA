@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The "Write the first post" step of the operators' "Get started" checklist. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_timeline_menu_item_info_onboarding_post"><![CDATA[A post in the feed shows new members what the site is about.]]></string_add>
+    <string_add name="_bx_timeline_menu_item_title_system_onboarding_post"><![CDATA[Write the first post]]></string_add>
+    <string_add name="_bx_timeline_menu_item_title_onboarding_post"><![CDATA[Write the first post]]></string_add>
+</resources>

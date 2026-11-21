@@ -759,6 +759,20 @@ class BxTimelineDb extends BxBaseModNotificationsDb
         return $aResult;
     }
 
+    /**
+     * Whether any of the profiles has written a post of its own (not a repost or an event of another app)
+     * that is still on the site.
+     */
+    public function hasCommonPostsBy($aProfileIds)
+    {
+        if(empty($aProfileIds) || !is_array($aProfileIds))
+            return false;
+
+        return (int)$this->getOne("SELECT 1 FROM `" . $this->_sTable . "` WHERE `object_owner_id` IN (" . $this->implode_escape($aProfileIds) . ") AND `type` LIKE :type AND `status` = 'active' LIMIT 1", [
+            'type' => $this->_oConfig->getPrefix('common_post') . '%',
+        ]) == 1;
+    }
+
     public function getEvents($aParams)
     {
         /**

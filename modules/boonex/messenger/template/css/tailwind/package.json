@@ -9,7 +9,7 @@
     "build": "node compile.js ./components",
     "build:minify": "npm run build minify && npm run remove:config",
     "remove:files": "npm run build remove && npm run remove:config",
-    "remove:config": "rm -rf ./node_modules package-lock.json parent.config.js",
+    "remove:config": "rm -rf ./node_modules package-lock.json parent.config.js tailwind.smooth-shadow.js",
     "postinstall": "cp ../../../../../../tailwind.config.js ./parent.config.js && cp ../../../../../../tailwind.smooth-shadow.js ./",
     "clear": "npm run remove:config && npm run remove:files"
   },

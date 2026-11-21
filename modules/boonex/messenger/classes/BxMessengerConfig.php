@@ -313,7 +313,7 @@ class BxMessengerConfig extends BxBaseModGeneralConfig
             'EMOJI_SET' => getParam($aModule['db_prefix'] . 'emoji_set'),
             'REACTIONS_SIZE' => (int)getParam($aModule['db_prefix'] . 'reactions_size'),
             'EMOJI_PREVIEW' => getParam($aModule['db_prefix'] . 'show_emoji_preview') == 'on',
-            'ENABLE-JITSI' => getParam($aModule['db_prefix'] . 'jitsi_enable') == 'on',
+            'ENABLE-JITSI' => getParam($aModule['db_prefix'] . 'jitsi_enable') == 'on' && trim((string)getParam($aModule['db_prefix'] . 'jitsi_server')) !== '', // video calls need a server the operator chose
             'JITSI-SERVER' => getParam($aModule['db_prefix'] . 'jitsi_server'),
             'JITSI-CHAT' => getParam($aModule['db_prefix'] . 'jitsi_chat') == 'on',
             'JITSI-CHAT-SYNC' => getParam($aModule['db_prefix'] . 'jitsi_sync') == 'on',

@@ -38,7 +38,7 @@ div.bx-std-block {
 }
 /*
  * Overlay scrollbar (bx_std_scrollbar in studio/js/page.js): the scroll box hides its native bar, and an SVG drawn over the block runs a
- * thumb down the right edge and round the 24px bottom corner (the top one too when nothing sits above the scroll box), like a bar that
+ * thumb down the right edge and round the 22px bottom corner (the top one too when nothing sits above the scroll box), like a bar that
  * follows the panel's shape; the thumb shows while the pointer is over the block or the content scrolls.
  */
 div.bx-std-block-content,
@@ -109,7 +109,7 @@ div.bx-std-block-caption {
     z-index: 1;
 
     gap: 0.75rem;
-    padding: 1rem; /* 16px round a 36px row (a small button's height): a 68px caption like the header bar, its icon, buttons and tabs on the block's 16px content line, their 8px corners concentric with the block's 24px */
+    padding: 1rem; /* 16px round a 36px row (a small button's height): a 68px caption like the header bar, its icon, buttons and tabs on the block's 16px content line, their 8px corners inside the block's 22px */
     box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 0.05); /* hairline divider on the row's own bottom pixel: a shadow, so it adds no height */
 }
 .dark div.bx-std-block-caption {
@@ -238,7 +238,7 @@ div.bx-std-block-content {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl); /* the scroll box clips to the block's 24px corners instead of squaring them off */
+    border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl); /* the scroll box clips to the block's 22px corners instead of squaring them off */
     padding: 0.5rem;
 }
 div.bx-std-block-content:not(:last-child) {
@@ -317,7 +317,7 @@ form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-i
     margin: auto calc(-1 * var(--bx-std-inset)) 0; /* spans the block edge to edge over the scroller's inset; auto pushes it down */
     padding: 1rem;
     border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl);
-    background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #e4e4e7; /* the gray-200 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
+    background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #f4f4f5; /* the gray-100 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
     box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
 }
 /* Code editors stack their scrollbars and gutter up to z-index 6; isolated, those stay inside
@@ -348,7 +348,7 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header {
     flex: none;
     margin: 0;
     padding: 1rem;
-    background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #e4e4e7; /* the gray-200 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
+    background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #f4f4f5; /* the gray-100 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
     box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 0.05);
 }
 /* Under a caption the toolbar is the caption's second row: the 16px between them is split 8 / 8 so the half inside the
@@ -386,7 +386,7 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
     margin: auto 0 0;
     padding: 1rem;
     border-radius: 0 0 var(--bx-radius-3xl) var(--bx-radius-3xl);
-    background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #e4e4e7; /* the gray-200 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
+    background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) #f4f4f5; /* the gray-100 page under the block's white/60, so the sticky row matches the block around it; layered, not pre-mixed: a mixed colour is a shade off on displays that blend in their own colour space */
     box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
 }
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer > hr.bx-def-hr {
@@ -431,7 +431,7 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table td:last-child {
 .dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header,
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
-    background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)) #000; /* the black page under the block's white/10, layered like the light one above (pre-mixed #1a1a1a showed lighter than the caption) */
+    background: linear-gradient(rgba(39, 39, 42, 0.6), rgba(39, 39, 42, 0.6)) #0a0a0c; /* the gray-950 page under the block's gray-800/60, layered like the light one above (a pre-mixed colour showed a shade off the caption) */
 }
 .dark form:is([name="adm-settings-form"], [name="adm-dsg-logo-form"], [name="adm-dsg-icon-form"], [name="adm-dsg-cover-form"], [name="adm-dsg-splash-form"], [name="adm-dsg-injections-form"], [name="adm-dsg-pwa-form"], [name="adm-dsg-settings-form"], [name="adm-dsg-templates-form"]) > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {

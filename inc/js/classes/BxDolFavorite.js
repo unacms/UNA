@@ -121,7 +121,7 @@ BxDolFavorite.prototype.onFavorite = function(oData, oElement)
             return;
 
         if(oData && oData.label_icon)
-            $(oElement).find('.sys-action-do-icon .sys-icon').attr('class', 'sys-icon ' + oData.label_icon);
+            bx_set_icon($(oElement).find('.sys-action-do-icon .sys-icon'), oData.label_icon);
 
         if(oData && oData.label_title) {
             $(oElement).attr('title', oData.label_title);
@@ -133,7 +133,7 @@ BxDolFavorite.prototype.onFavorite = function(oData, oElement)
 
         var oCounter = $this._getCounter(oElement);
         if(oCounter && oCounter.length > 0) {
-            oCounter.html(oData.countf);
+            oCounter.html(oData.countf).bxProcessHtml();
 
             oCounter.parents('.' + $this._sSP + '-counter-holder:first').bx_anim(oData.count > 0 ? 'show' : 'hide');
         }

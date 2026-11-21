@@ -36,9 +36,40 @@ class BxBaseStudioDesign extends BxDolStudioDesign
         ));
     }
 
+    /**
+     * The logo is set in Designer > Logo, for every template. A template's Logo page only says so, with a link, unless
+     * the template has a logo of its own (it comes first in the logo chain): then the form follows, to change or remove it.
+     */
     protected function getLogo()
     {
     	$oPage = $this->getObjectDesigner();
+        if(!$oPage->isLogoTemplateSet()) {
+            $oTemplate = BxDolStudioTemplate::getInstance();
+            $oForm = new BxTemplStudioFormView([
+                'form_attrs' => ['id' => 'adm-dsg-logo-note-form'],
+                'inputs' => [
+                    'note' => [
+                        'type' => 'custom',
+                        'name' => 'note',
+                        'content' => $oTemplate->parseHtmlByName('dsr_logo_note.html', [
+                            'text' => _t('_adm_dsg_txt_logo_note_designer'),
+                            'bx_if:show_link' => [
+                                'condition' => true,
+                                'content' => [
+                                    'url' => BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_LOGO,
+                                    'link' => _t('_adm_dsg_lnk_logo_system'),
+                                ]
+                            ],
+                        ]),
+                    ],
+                ],
+            ], $oTemplate);
+
+            return $oTemplate->parseHtmlByName('design.html', [
+                'content' => $oForm->getCode(),
+                'js_content' => $this->getPageJsCode()
+            ]);
+        }
 
         $this->aPageCss = array_merge($this->aPageCss, $oPage->getPageCss());
         $this->aPageJs = array_merge($this->aPageJs, $oPage->getPageJs());

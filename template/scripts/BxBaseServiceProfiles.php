@@ -127,19 +127,17 @@ class BxBaseServiceProfiles extends BxDol
         return $oTemplate->parseHtmlByName('profile_avatar.html', $aVars);
     }
 
+    /**
+     * The member's own menu (Profile stats: their profile, connections and content), on the site and in the apps,
+     * which used to get the site's main menu here.
+     */
     public function serviceProfileMenu ($iProfileId = 0)
     {
-        if(bx_is_api()){
-            $oMenu = BxDolMenu::getObjectInstance('sys_site');
-                return [
-                    bx_api_get_block ('profile_menu', $oMenu->getCodeAPI())
-                ];
-        }
-        if(($oMenu = BxDolMenu::getObjectInstance('sys_profile_stats')) !== false) {
-            return $oMenu->getCode();
-        }
-        else
-            return '';
+        $oMenu = BxDolMenu::getObjectInstance('sys_profile_stats');
+        if(bx_is_api())
+            return $oMenu ? [bx_api_get_block ('profile_menu', $oMenu->getCodeAPI())] : [];
+
+        return $oMenu ? $oMenu->getCode() : '';
     }
 
     public function serviceProfileFollowings ($iProfileId = 0)
@@ -236,6 +234,41 @@ class BxBaseServiceProfiles extends BxDol
         return BxDolTemplate::getInstance()->parseHtmlByName('profile_stats.html', $aVars);
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-profiles Profiles
+     * @subsubsection bx_system_general-account_dashboard account_dashboard
+     *
+     * @code bx_srv('system', 'account_dashboard', [], 'TemplServiceProfiles'); @endcode
+     * @code {{~system:account_dashboard:TemplServiceProfiles~}} @endcode
+     *
+     * "Your account": the member's profile with the profile switcher, their stats as tiles, their preferences
+     * (Settings, language, theme) and Sign out. Nothing without a profile.
+     *
+     * @see BxBaseServiceProfiles::serviceAccountDashboard
+     */
+    /**
+     * @ref bx_system_general-account_dashboard "account_dashboard"
+     */
+    public function serviceAccountDashboard ()
+    {
+        $bApi = bx_is_api();
+        if(!bx_get_logged_profile_id())
+            return $bApi ? [] : '';
+
+        $oMenu = BxDolMenu::getObjectInstance('sys_dashboard_account');
+        if(!$oMenu)
+            return $bApi ? [] : '';
+
+        if($bApi) {
+            $aMenu = $oMenu->getCodeAPI();
+            return !empty($aMenu['items']) ? [bx_api_get_block('account_dashboard', $aMenu)] : [];
+        }
+
+        return $oMenu->getCode();
+    }
+
     public function serviceGetMenuAddonProfileEdit($iProfileId = 0, $sCaption = '')
     {
         /**
@@ -308,35 +341,185 @@ class BxBaseServiceProfiles extends BxDol
         if(!$iProfileId)
             $iProfileId = bx_get_logged_profile_id();
 
-        $sTxtUnlimited = _t('_unlimited');
-        $sTxtFiles = _t('_sys_storage_files');
-        $aQuota = BxDolProfileQuery::getInstance()->getProfileQuota($iProfileId);
+        $aData = $this->_getMembershipStats($iProfileId);
+        if(!$aData)
+            return bx_is_api() ? [] : '';
 
-        $aTmplVarsStats = array();
-        if(!empty($aQuota['quota_size'])) {
-            $iWidth = (int)round(100 * $aQuota['current_size']/$aQuota['quota_size']);
-            $sPercent = $iWidth . '%';
-        }
-        else {
-            $iWidth = 0;
-            $sPercent = $sTxtUnlimited;
-        }
-        $aTmplVarsStats[] = array('title' => _t('_sys_profile_storage_quota_size'), 'width' => $iWidth, 'value' => _t_format_size($aQuota['current_size']), 'percent' => $sPercent);
+        if(bx_is_api())
+            return [bx_api_get_block('membership_stats', $aData)];
 
-        if(!empty($aQuota['quota_number'])) {
-            $iWidth = (int)round(100 * $aQuota['current_number']/$aQuota['quota_number']);
-            $sPercent = $iWidth . '%';
-        }
-        else {
-            $iWidth = 0;
-            $sPercent = $sTxtUnlimited;
-        } 
-        $aTmplVarsStats[] = array('title' => _t('_sys_profile_storage_quota_number'), 'width' => $iWidth, 'value' => $aQuota['current_number'] . ' ' . $sTxtFiles, 'percent' => $sPercent);
+        $oTemplate = BxDolTemplate::getInstance();
 
-        return BxDolTemplate::getInstance()->parseHtmlByName('profile_membership_stats.html', array(
-            'membership' => BxDolAcl::getInstance()->getProfileMembership($iProfileId),
+        $aTmplVarsStats = [];
+        foreach($aData['usage'] as $aItem) {
+            $bLimited = $aItem['limit'] > 0;
+            $aTmplVarsStats[] = [
+                'title' => $aItem['title'],
+                'value' => $aItem['value'],
+                'bx_if:unlimited' => [
+                    'condition' => $aItem['unlimited'],
+                    'content' => ['unlimited' => $aItem['badge']]
+                ],
+                'bx_if:limited' => [
+                    'condition' => $bLimited,
+                    'content' => [
+                        'title_attr' => bx_html_attribute($aItem['title']),
+                        'percent' => $aItem['percent'],
+                        'bar_class' => $this->_getMembershipBarClass($aItem['percent']),
+                    ]
+                ],
+            ];
+        }
+
+        $aLevel = $aData['level'];
+        $oTemplate->addCss(['acl.css']);
+        return $oTemplate->parseHtmlByName('profile_membership_stats.html', [
+            'icon' => $oTemplate->getImage($aLevel['icon'], ['class' => 'bx-pms-icon-image w-5 h-5']),
+            'level' => $aLevel['name'],
+            'level_info' => $aLevel['info'],
+            'bx_if:show_action' => [
+                'condition' => !empty($aData['action']),
+                'content' => !empty($aData['action']) ? [
+                    'action_url' => bx_absolute_url($aData['action']['url']),
+                    'action_title' => $aData['action']['title'],
+                ] : []
+            ],
             'bx_repeat:stat_items' => $aTmplVarsStats
-        ));
+        ]);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-profiles Profiles
+     * @subsubsection bx_system_general-create_profile_block create_profile_block
+     *
+     * @code bx_srv('system', 'create_profile_block', [], 'TemplServiceProfiles'); @endcode
+     *
+     * The profile types to create a profile from, for an account that has no profile yet. Empty when the account has
+     * a profile, or when the operators' "Get started" checklist shows, whose first step is the same.
+     *
+     * @see BxBaseServiceProfiles::serviceCreateProfileBlock
+     */
+    /**
+     * @ref bx_system_general-create_profile_block "create_profile_block"
+     */
+    public function serviceCreateProfileBlock()
+    {
+        $bApi = bx_is_api();
+
+        $oTours = BxDolTours::getInstance();
+        if(!isLogged() || $oTours->hasProfile())
+            return $bApi ? [] : '';
+
+        $sOnboarding = BxDolTours::ONBOARDING_OPERATOR;
+        if($oTours->isOnboardingShown($sOnboarding) && ($oOnboarding = BxDolMenu::getObjectInstance($sOnboarding)) && $oOnboarding instanceof BxBaseMenuOnboarding) {
+            list($iDone, $iSteps) = $oOnboarding->getProgress();
+            if($iSteps && $iDone < $iSteps)
+                return $bApi ? [] : '';
+        }
+
+        $oMenu = BxDolMenu::getObjectInstance('sys_add_profile');
+        if(!$oMenu)
+            return $bApi ? [] : '';
+
+        // The block says what the "You don't have a profile yet" message says, on the site and in the apps (the page's
+        // `user.informer` is built after its blocks).
+        BxDolInformer::hide('sys-account-profile-system');
+
+        if($bApi)
+            return [bx_api_get_block('menu', ['title' => _t('_sys_page_block_title_account_profile_create'), 'content' => $oMenu->getCodeAPI()])];
+
+        if(($oInformer = BxDolInformer::getInstance(BxDolTemplate::getInstance())))
+            $oInformer->remove('sys-account-profile-system');
+
+        return $oMenu->getCode();
+    }
+
+    /**
+     * A usage bar's colour: amber from 80%, red when full.
+     */
+    protected function _getMembershipBarClass($iPercent)
+    {
+        if($iPercent >= 100)
+            return 'bg-red-600';
+
+        return $iPercent >= 80 ? 'bg-amber-500' : 'bg-blue-600';
+    }
+
+    /**
+     * Membership level and storage usage of a profile, for the web block and the API.
+     */
+    protected function _getMembershipStats($iProfileId)
+    {
+        $oAcl = BxDolAcl::getInstance();
+        $aLevel = $oAcl->getMemberMembershipInfo($iProfileId, 0, true);
+        if(empty($aLevel) || !is_array($aLevel))
+            return [];
+
+        $aLevelInfo = $oAcl->getMembershipInfo($aLevel['id']);
+
+        $iExpires = (int)($aLevel['date_expires'] ?? 0);
+        $sInfo = $iExpires > 0 ? _t('_sys_membership_stats_until', bx_time_js($iExpires, BX_FORMAT_DATE)) : _t('_sys_membership_stats_no_end');
+
+        $aQuota = BxDolProfileQuery::getInstance()->getProfileQuota($iProfileId);
+        $iSize = (int)$aQuota['current_size'];
+        $iNumber = (int)$aQuota['current_number'];
+        $iSizeLimit = (int)$aQuota['quota_size'];
+        $iNumberLimit = (int)$aQuota['quota_number'];
+
+        $sFiles = $iNumber == 1 ? _t('_sys_membership_stats_files_one') : _t('_sys_membership_stats_files', $iNumber);
+        $aUsage = [[
+            'key' => 'storage',
+            'title' => _t('_sys_profile_storage_quota_size'),
+            'value' => $iSizeLimit > 0 ? _t('_sys_membership_stats_of', _t_format_size($iSize), _t_format_size($iSizeLimit)) : _t('_sys_membership_stats_used', _t_format_size($iSize)),
+            'current' => $iSize,
+            'limit' => $iSizeLimit,
+            'unlimited' => $iSizeLimit == 0,
+            'badge' => $iSizeLimit == 0 ? _t('_sys_membership_stats_unlimited') : '',
+            'percent' => $iSizeLimit > 0 ? min(100, (int)round(100 * $iSize / $iSizeLimit)) : 0,
+        ], [
+            'key' => 'files',
+            'title' => _t('_sys_profile_storage_quota_number'),
+            'value' => $iNumberLimit > 0 ? _t('_sys_membership_stats_of', $iNumber, $iNumberLimit) : $sFiles,
+            'current' => $iNumber,
+            'limit' => $iNumberLimit,
+            'unlimited' => $iNumberLimit == 0,
+            'badge' => $iNumberLimit == 0 ? _t('_sys_membership_stats_unlimited') : '',
+            'percent' => $iNumberLimit > 0 ? min(100, (int)round(100 * $iNumber / $iNumberLimit)) : 0,
+        ]];
+
+        if(($iMaxFile = (int)$aQuota['max_file_size']) > 0)
+            $aUsage[] = [
+                'key' => 'max_file_size',
+                'title' => _t('_sys_membership_stats_max_file_size'),
+                'value' => _t_format_size($iMaxFile),
+                'current' => $iMaxFile,
+                'limit' => 0,
+                'unlimited' => false,
+                'badge' => '',
+                'percent' => 0,
+            ];
+
+        $aAction = [];
+        if(BxDolModuleQuery::getInstance()->isEnabledByName('bx_acl') && $oAcl->getMemberships(true, false, true, true))
+            $aAction = [
+                'title' => _t('_sys_membership_stats_see_plans'),
+                // Relative: the site makes it absolute, the apps open it as their own page.
+                'url' => BxDolPermalinks::getInstance()->permalink('page.php?i=acl-view'),
+            ];
+
+        return [
+            'level' => [
+                'id' => (int)$aLevel['id'],
+                'name' => _t($aLevelInfo['name']),
+                'icon' => $aLevelInfo['icon'],
+                'info' => $sInfo,
+                'date_expires' => $iExpires,
+            ],
+            'usage' => $aUsage,
+            'action' => $aAction,
+        ];
     }
 
     /**
@@ -462,67 +645,12 @@ class BxBaseServiceProfiles extends BxDol
 
     public function serviceProfilesSearch ($sTerm, $mixedParams = [])
     {
-        $bParams = is_array($mixedParams);
+        return $this->_getSearchResults('profiles', $sTerm, $mixedParams);
+    }
 
-        $iLimit = 0;
-        if((is_numeric($mixedParams) && ($_iLimit = (int)$mixedParams)) || ($bParams && isset($mixedParams['limit']) && ($_iLimit = (int)$mixedParams['limit']))) 
-            $iLimit = $_iLimit;
-        else
-            $iLimit = (int)getParam('sys_profiles_search_limit');
-
-        // display friends by default
-        if (!$sTerm)
-            return $this->serviceProfilesFriends($iLimit);
-
-        // get list of "profiles" modules
-        $aModules = $this->serviceGetProfilesModules();
-
-        $mixedSearchParams = (int)getParam('sys_per_page_search_keyword_single');
-        if($bParams && !empty($mixedParams['search_params']) && is_array($mixedParams['search_params']))
-            $mixedSearchParams = [
-                'search_params' => $mixedParams['search_params'], 
-                'limit' => $mixedSearchParams
-            ];
-
-        // search in each module
-        $a = [];
-        foreach ($aModules as $aModule) {
-            if(!bx_srv($aModule['name'], 'act_as_profile'))
-                continue;
-
-            $a = array_merge($a, bx_srv($aModule['name'], 'profiles_search', [$sTerm, $mixedSearchParams]));
-        }
-
-        // sort result
-        $sOrderField = $mixedParams['order_by'] ?? 'label';
-        usort($a, function($r1, $r2) use ($sOrderField) {    
-            if($sOrderField == 'weight')
-                return -((int)$r1[$sOrderField] - (int)$r2[$sOrderField]);
-            else
-                return strcmp($r1[$sOrderField], $r2[$sOrderField]);
-        });
-
-         /**
-         * @hooks
-         * @hookdef hook-system-profiles_search_by_location 'system', 'profiles_search_by_location' - hook on serach profiles by location
-         * - $unit_name - equals `system`
-         * - $action - equals `profiles_search_by_location` 
-         * - $object_id - not used 
-         * - $sender_id - not used 
-         * - $extra_params - array of additional params with the following array keys:
-         *      - `module` - [string]  module name
-         *      - `term` - [string] term for searching
-         *      - `result` - [array] by ref, array of results, can be overridden in hook processing
-         * @hook @ref hook-account-profiles_search_by_location
-         */
-        bx_alert('system', 'profiles_search', 0, 0, [
-            'module' => $bParams && isset($mixedParams['module']) ? $mixedParams['module'] : '',
-            'term' => $sTerm,
-            'result' => &$a
-        ]);
-
-        // return as array
-        return array_slice($a, 0, $iLimit);
+    public function serviceContextsSearch ($sTerm, $mixedParams = [])
+    {
+        return $this->_getSearchResults('contexts', $sTerm, $mixedParams);
     }
 
     public function serviceProfilesSearchByLocation ($aLocation, $iRadius, $mixedParams = [])
@@ -1021,6 +1149,7 @@ class BxBaseServiceProfiles extends BxDol
                 // What the apps show when there are none (BxDolEmptyState); a page block's app config can change it.
                 if(!$aDataApi) {
                     $aBlockData['empty_state'] = BxDolEmptyState::forApi([
+                        'icon' => 'mail',
                         'title' => '_sys_txt_empty_invitations_title',
                         'text' => '_sys_txt_empty_invitations_text',
                     ]);
@@ -1696,6 +1825,77 @@ class BxBaseServiceProfiles extends BxDol
         }
 
         return $aRet;
+    }
+
+    protected function _getSearchResults($sType, $sTerm, $mixedParams = [])
+    {
+        $bTypeProfiles = $sType == 'profiles';
+        $bTypeContexts = $sType == 'contexts';
+
+        $bParams = is_array($mixedParams);
+
+        $iLimit = 0;
+        if((is_numeric($mixedParams) && ($_iLimit = (int)$mixedParams)) || ($bParams && isset($mixedParams['limit']) && ($_iLimit = (int)$mixedParams['limit']))) 
+            $iLimit = $_iLimit;
+        else
+            $iLimit = (int)getParam('sys_profiles_search_limit');
+
+        // display friends by default
+        if ($bTypeProfiles && !$sTerm)
+            return $this->serviceProfilesFriends($iLimit);
+
+        // get list of "profiles"/"contexts" modules
+        $aModules = [];
+        if(($bTypeProfiles && ($sMt = 'profile')) || ($bTypeContexts && ($sMt = 'context')))
+            $aModules = bx_srv('system', 'get_modules_by_type', [$sMt]);
+
+        $mixedSearchParams = (int)getParam('sys_per_page_search_keyword_single');
+        if($bParams && !empty($mixedParams['search_params']) && is_array($mixedParams['search_params']))
+            $mixedSearchParams = [
+                'search_params' => $mixedParams['search_params'], 
+                'limit' => $mixedSearchParams
+            ];
+
+        // search in each module
+        $a = [];
+        foreach ($aModules as $aModule) {
+            $bActAsProfile = bx_srv($aModule['name'], 'act_as_profile');
+            if(($bTypeProfiles && !$bActAsProfile) || ($bTypeContexts && $bActAsProfile))
+                continue;
+
+            $a = array_merge($a, bx_srv($aModule['name'], 'profiles_search', [$sTerm, $mixedSearchParams]));
+        }
+
+        // sort result
+        $sOrderField = $mixedParams['order_by'] ?? 'label';
+        usort($a, function($r1, $r2) use ($sOrderField) {    
+            if($sOrderField == 'weight')
+                return -((int)$r1[$sOrderField] - (int)$r2[$sOrderField]);
+            else
+                return strcmp($r1[$sOrderField], $r2[$sOrderField]);
+        });
+
+         /**
+         * @hooks
+         * @hookdef hook-system-profiles_search_by_location 'system', 'profiles_search_by_location' - hook on serach profiles by location
+         * - $unit_name - equals `system`
+         * - $action - equals `profiles_search_by_location` 
+         * - $object_id - not used 
+         * - $sender_id - not used 
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `module` - [string]  module name
+         *      - `term` - [string] term for searching
+         *      - `result` - [array] by ref, array of results, can be overridden in hook processing
+         * @hook @ref hook-account-profiles_search_by_location
+         */
+        bx_alert('system', $sType . '_search', 0, 0, [
+            'module' => $bParams && isset($mixedParams['module']) ? $mixedParams['module'] : '',
+            'term' => $sTerm,
+            'result' => &$a
+        ]);
+
+        // return as array
+        return array_slice($a, 0, $iLimit);
     }
 
     protected function _serviceBrowseConnections ($sMode, $aParams = [], $iDesignBox = BX_DB_PADDING_DEF, $bDisplayEmptyMsg = false, $bAjaxPaginate = true)

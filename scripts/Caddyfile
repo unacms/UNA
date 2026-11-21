@@ -60,6 +60,15 @@
 	@unaApiV2 path_regexp unaApiV2 ^/api/v2(/(.*))?$
 	rewrite @unaApiV2 /api_v2.php?_q={re.unaApiV2.2}&{query}
 
+	# MCP server (BxDolMcpServer): the same rule as .htaccess and the nginx file.
+	@unaMcp path_regexp unaMcp ^/api/mcp/?$
+	rewrite @unaMcp /api_mcp.php?{query}
+	# OAuth discovery for MCP clients (RFC 9728, RFC 8414)
+	@unaMcpResource path_regexp ^/\.well-known/oauth-protected-resource(/.*)?$
+	rewrite @unaMcpResource /api_mcp.php?_wk=protected-resource
+	@unaMcpAuthServer path_regexp ^/\.well-known/oauth-authorization-server(/.*)?$
+	rewrite @unaMcpAuthServer /api_mcp.php?_wk=authorization-server
+
     @unaMissing {
 	    not file
         not path */

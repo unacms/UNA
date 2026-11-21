@@ -1,7 +1,8 @@
 import { Share, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
-import { appSetting } from 'app/lib/util';
+import { appSetting, setClipboard, openExternalLink } from 'app/lib/util';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { View } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import DropdownMenuItem from 'app/components/menu-items/dropdown-item';
@@ -16,6 +17,12 @@ import {
 const handleDo = async (url, event) => {
     event.preventDefault();
 
+    // No share sheet (a computer's browser): copy the link instead.
+    if (Platform.OS === 'web' && (typeof navigator === 'undefined' || typeof navigator.share !== 'function')) {
+        await setClipboard(APP_URL + url).catch(() => {});
+        return;
+    }
+
     try {
         const result = await Share.share({
             message: APP_URL + url,
@@ -29,6 +36,24 @@ const handleDo = async (url, event) => {
         }
     } catch (error) {}
 };
+
+/**
+ * The rows of the Share menu where the browser has no share sheet (a computer): Copy link, then the services of
+ * `social_actions.share.services`, as UNA's Share popup lists them.
+ */
+export function shareMenuItems(url, services, copyTitle) {
+    const encoded = encodeURIComponent(url);
+    return [
+        { id: 'copy', name: 'copy', title: copyTitle, icon: 'Link' },
+        ...(services || []).map((service) => ({
+            id: service.name,
+            name: service.name,
+            title: service.title,
+            icon: service.icon,
+            link: service.link.replace('{url}', encoded),
+        })),
+    ];
+}
 
 export default function ElementShares(props) {
     const isWeb = Platform.OS === 'web';
@@ -60,6 +85,17 @@ export default function ElementShares(props) {
             : props.params.button_style
         : null;
 
+    // In a menu, where the browser has no share sheet, the row copies the link and says so.
+    if (props.mode === 'dropdown-menu' && !canWebShare) {
+        return (
+            <DropdownMenuItem
+                item={{ title: t('Copy link'), icon: 'Link' }}
+                icon="Link"
+                handleSelect={(event) => handleDo(action.url, event)}
+            />
+        );
+    }
+
     if (props.mode === 'dropdown-menu') {
         return (
             <DropdownMenuItem
@@ -70,7 +106,34 @@ export default function ElementShares(props) {
         );
     }
 
-    if (!canWebShare || !showAction) return null;
+    if (!showAction) return null;
+
+    // A computer's browser has no share sheet: a menu with Copy link and the services instead.
+    if (!canWebShare) {
+        const url = APP_URL + action.url;
+        return (
+            <View className="flex-auto">
+                <DropdownMenu
+                    items={shareMenuItems(url, settings.services, t('Copy link'))}
+                    onSelect={(item) => {
+                        if (item.name === 'copy')
+                            void setClipboard(url).catch(() => {});
+                        else if (item.link)
+                            void openExternalLink(item.link).catch(() => {});
+                    }}
+                    triggerAccessibilityLabel={title}
+                    buttonProps={{
+                        label: showLabel ? title : '',
+                        image: iconName,
+                        style: neoButtonStyle || 'bordered',
+                        controlSize: props.params?.button_size || 'small',
+                        borderShape: props.params?.button_border_shape,
+                        accessibilityLabel: title,
+                    }}
+                />
+            </View>
+        );
+    }
 
     const actionButton = neoButtonStyle ? (
         <NeoButton

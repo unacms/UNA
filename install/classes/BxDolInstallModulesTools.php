@@ -128,6 +128,21 @@ class BxDolInstallModulesTools
         return null;
     }
 
+    /**
+     * A module with its own composer.json needs its vendor folder, which only `composer install`
+     * in the module's folder creates: without it the module fails to load.
+     */
+    public function hasDependencies ($aModuleConfig)
+    {
+        $sDir = BX_INSTALL_DIR_MODULES . $aModuleConfig['home_dir'];
+        if (!file_exists($sDir . 'composer.json'))
+            return true;
+
+        $aComposer = json_decode((string)file_get_contents($sDir . 'composer.json'), true);
+        $sVendor = !empty($aComposer['config']['vendor-dir']) ? trim($aComposer['config']['vendor-dir'], '/') : 'vendor';
+        return file_exists($sDir . $sVendor . '/autoload.php');
+    }
+
     public function getModuleConfigByUri ($sUri, $aModules)
     {
         foreach ($aModules as $aModuleConfig)

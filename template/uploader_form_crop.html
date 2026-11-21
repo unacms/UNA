@@ -1,14 +1,13 @@
-<div id="__form_container_id__" class="bx-uploader-form-cont bx-popup-width">
+<div id="__form_container_id__" class="bx-uploader-form-cont">
     __file_field__
     <div class="bx-uploader-loading"></div>
     <div class="bx-croppie-msg pb-2"></div>
     <div class="bx-croppie-err pb-2" id="__errors_container_id__"></div>
     <div class="bx-croppie-element my-4"></div>
-    <div class="flex pt-4 bx-clearfix">
+    <div class="flex flex-wrap pt-4 bx-clearfix">
         <button class="bx-crop-action bx-crop-upload bx-btn bx-btn-disabled bx-btn-primary mt-2 mr-2"><bx_text:_sys_uploader_crop_submit_button /></button>
         <button class="bx-crop-action bx-crop-rotate bx-btn bx-btn-disabled mt-2 mr-2" data-deg="-90"><bx_text:_sys_uploader_crop_rotate_left /></button>
         <button class="bx-crop-action bx-crop-rotate bx-btn bx-btn-disabled mt-2 mr-2" data-deg="90"><bx_text:_sys_uploader_crop_rotate_right /></button>
-        <div class="bx-btn mt-2" onclick="__uploader_instance_name__.onClickCancel()"><bx_text:_sys_uploader_close /></div>
     </div>
 </div>
 <script>
@@ -26,7 +25,7 @@ setTimeout(function () {
         viewport: {
             width: 240,
             height: 240,
-            // type: 'circle'
+            type: '__viewport_type__'
         },
         boundary: {
             width: 280,

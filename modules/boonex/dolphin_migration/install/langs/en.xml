@@ -28,16 +28,16 @@
 	<string name="_bx_dolphin_migration_started_migration_profiles_finished"><![CDATA[{0} Profiles were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_profile_fields"><![CDATA[Profile Fields Migration was started]]></string>
 	<string name="_bx_dolphin_migration_started_migration_profile_fields_finished"><![CDATA[{0} Profile Fields were transferred]]></string>
-	<string name="_bx_dolphin_migration_started_migration_profile_field_can_not_be_transferred"><![CDATA[Custom Fields can not be transferred]]></string>  
+	<string name="_bx_dolphin_migration_started_migration_profile_field_can_not_be_transferred"><![CDATA[Custom Fields cannot be transferred]]></string>  
 	<string name="_bx_dolphin_migration_started_migration_blogs"><![CDATA[Blogs Migration was started]]></string>
 	<string name="_bx_dolphin_migration_started_migration_photos"><![CDATA[Photos Migration was started]]></string>
 	<string name="_bx_dolphin_migration_started_migration_photos_finished"><![CDATA[{0} photos were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_videos_finished"><![CDATA[{0} videos were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_photos_albums_finished"><![CDATA[{0} Albums and {1} Photos were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_videos_albums_finished"><![CDATA[{0} Albums and {1} Video files were transferred]]></string>
-	<string name="_bx_dolphin_migration_started_migration_photos_album_error"><![CDATA[Database Error. Albums can not be created!]]></string>  
+	<string name="_bx_dolphin_migration_started_migration_photos_album_error"><![CDATA[Database Error. Albums cannot be created!]]></string>  
 	<string name="_bx_dolphin_migration_started_migration_videos"><![CDATA[Videos Migration was started]]></string>
-	<string name="_bx_dolphin_migration_friends_exports_error"><![CDATA[Database error: Friends can not be transferred]]></string>
+	<string name="_bx_dolphin_migration_friends_exports_error"><![CDATA[Database error: Friends cannot be transferred]]></string>
 	<string name="_bx_dolphin_migration_all_data_transferred"><![CDATA[All Data was transferred]]></string>
 	<string name="_bx_dolphin_migration_status_not_started"><![CDATA[Not started Yet]]></string>
 	<string name="_bx_dolphin_migration_status_started"><![CDATA[Already started]]></string>  
@@ -84,10 +84,10 @@
 	<string name="_bx_dolphin_migration_started_migration_quotes_finished"><![CDATA[{0} Quotes were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_quotes_error"><![CDATA[Error occurred. Record Id is {0}]]></string>
 	<string name="_bx_dolphin_migration_started_migration_groups"><![CDATA[Groups Migration was started]]></string>
-	<string name="_bx_dolphin_migration_started_migration_groups_finished"><![CDATA[{0} groups with fans were transferred]]></string>
+	<string name="_bx_dolphin_migration_started_migration_groups_finished"><![CDATA[{0} groups with members were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_groups_error"><![CDATA[Error occurred. Record Id is {0}]]></string>
 	<string name="_bx_dolphin_migration_started_migration_events"><![CDATA[Events Migration was started]]></string>
-	<string name="_bx_dolphin_migration_started_migration_events_finished"><![CDATA[{0} events with fans were transferred]]></string>
+	<string name="_bx_dolphin_migration_started_migration_events_finished"><![CDATA[{0} events with members were transferred]]></string>
 	<string name="_bx_dolphin_migration_started_migration_error"><![CDATA[Error occurred. Record Id is {0}]]></string>
 	<string name="_bx_dolphin_migration_started_migration_conv"><![CDATA[Conversations Migration was started]]></string>
 	<string name="_bx_dolphin_migration_started_migration_conv_finished"><![CDATA[{0} conversations with messages were transferred]]></string>
@@ -120,7 +120,7 @@
 	<string name="_bx_dolphin_migration_nothing_removed"><![CDATA[Nothing was removed!]]></string>
 	<string name="_bx_dolphin_migration_remove_profile_content_confirmation"><![CDATA[If you remove profiles, it will remove all transferred profiles' content also. Continue?]]></string>
 	<string name="_bx_dolphin_migration_cpt_overwrite"><![CDATA[If account with the same NickName or Email already exists, then to overwrite its info.
-	<br/><b>This option is useful if you already have account on current version with the same Nickname as in Dolphin. If you enable this option all existed on UNA accounts will be updated using profiles' info from Dolphin and don't forget that info of your current logged member may be also updated and you can be logged out.</b>]]></string>
+	<br/><b>This option is useful if you already have account on current version with the same Nickname as in Dolphin. If you enable this option all existed on UNA accounts will be updated using profiles' info from Dolphin and don't forget that info of your current signed-in member may be also updated and you can be signed out.</b>]]></string>
 	<string name="_bx_dolphin_migration_cpt_clean"><![CDATA[Clear]]></string>
 	<string name="_bx_dolphin_migration_cpt_use_nickname"><![CDATA[Use NickName instead of Profile's FullName]]></string>
 	<string name="_bx_dolphin_migration_cpt_empty_albums"><![CDATA[Transfer photo albums even if they are empty]]></string>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Latin letters in place of Cyrillic look-alikes, and typos. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_attendant_adm_stg_cpt_category_on_profile_creation"><![CDATA[Popup with recommended profiles after profile creation]]></string_upd>
+</resources>

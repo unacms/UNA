@@ -86,6 +86,7 @@ export default function MenuHeaderNavigation(props: Readonly<MenuHeaderNavigatio
     return (
         <DropdownMenu
             mode="popup"
+            align="auto"
             items={items}
             popupWidth={getPopupWidth()}
             plainIcons

@@ -77,7 +77,7 @@ class BxBaseCmtsMenuActions extends BxTemplMenuCustom
                     'title' => '_sys_menu_item_title_cmts_item_unpin', 
                     'link' => 'javascript:void(0)',
                     'onclick' => 'javascript:{js_object}.cmtPin(this, {content_id}, 0)',
-                    'icon' => 'thumbtack'
+                    'icon' => 'pin'
                 ]
             ];
 

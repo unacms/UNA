@@ -1,5 +1,6 @@
 import { UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, APP_URL, appSetting } from 'app/config';
 import { decodeTextNode, truncateWords } from 'app/lib/util/html-text';
+import { unaAppPath } from 'app/lib/navigation/una-app-path';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
@@ -9,6 +10,7 @@ import { headers } from "next/headers"
 import { resolveLangCode } from '../../lib/resolve-lang'
 import { cachedUnaPageJson, unaPageCacheKey } from '../../lib/una-page-cache'
 import { resolveRequestTenant } from '../../lib/request-tenant'
+import { faviconLinks, type UnaPageIcons } from '../../lib/favicon-links';
 import type { Tenant } from '../../lib/tenant'
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -37,6 +39,8 @@ type UnaPage = {
     page_status?: number | string;
     redirect?: string;
     meta?: UnaPageMeta;
+    // The favicons uploaded in UNA's Designer; only newer UNA versions send them.
+    icons?: UnaPageIcons;
 };
 
 /** UNA's api.php envelope, or the fallback getData builds when the request fails. */
@@ -49,8 +53,6 @@ const SITE_TITLE: string = appSetting('config', 'title');
 
 // Query parameters that never change the page: left out of og:url and canonical.
 const TRACKING_PARAM = /^(utm_.*|fbclid|gclid|igshid|mc_cid|mc_eid|_rsc)$/i;
-// Query parameters UNA's API request adds to a `redirect` URL; the rest belong to the page.
-const UNA_API_PARAM = /^(r|lang|_q|params(\[.*\])?)$/;
 const OG_TYPES = ['website', 'article', 'profile'] as const;
 const TWITTER_CARDS = ['summary', 'summary_large_image'] as const;
 // Older UNA versions send up to ~700 chars of stripped HTML as the description.
@@ -118,35 +120,14 @@ function pagePath(path: string[] = [], searchParams: SearchParams | undefined, d
 }
 
 /**
- * UNA answers a non-canonical URL (mixed case, trailing slash, renamed page URI) with
- * `redirect`: its own absolute URL plus the API request's query. The same path and the
- * page's own query on NEO, or null when it points anywhere but that UNA.
+ * Follow UNA's `redirect` on the server, so crawlers (no JS) reach the real page too. UNA answers
+ * a non-canonical URL (mixed case, trailing slash, renamed page URI) or a page that stands for the
+ * viewer's own (a profile without an id) with its own URL; `unaAppPath` turns it into the NEO path.
  */
-function unaRedirectPath(redirectUrl: string, unaBase: string): string | null {
-    let base: URL, target: URL;
-    try {
-        base = new URL(unaBase);
-        target = new URL(redirectUrl, base);
-    } catch {
-        return null;
-    }
-    if (target.origin !== base.origin) return null;
-    const basePath = base.pathname.replace(/\/+$/, '');
-    if (basePath && target.pathname !== basePath && !target.pathname.startsWith(basePath + '/')) return null;
-    // Collapse leading slashes: `//host` would leave the site.
-    const pathname = '/' + target.pathname.slice(basePath.length).replace(/^\/+/, '');
-    for (const key of [...target.searchParams.keys()]) {
-        if (UNA_API_PARAM.test(key)) target.searchParams.delete(key);
-    }
-    const search = target.searchParams.toString();
-    return pathname + (search ? '?' + search : '');
-}
-
-/** Follow UNA's `redirect` on the server, so crawlers (no JS) reach the real page too. */
 async function followUnaRedirect(props: PageProps, page: UnaPage | undefined): Promise<void> {
     if (!page?.redirect) return;
     const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
-    const target = unaRedirectPath(page.redirect, await unaBaseUrl());
+    const target = unaAppPath(page.redirect, await unaBaseUrl());
     if (target && target !== pagePath(params.path, searchParams, false)) {
         redirect(target);
     }
@@ -317,12 +298,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
         alternates: { canonical: url },
         manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {
-            // PNG for link previews and clients without SVG icons; the SVG last, for
-            // browsers that take the last icon they can use.
-            icon: [
-                { url: iconPng, type: 'image/png', sizes: '192x192' },
-                { url: isClientProject ? '/static/favicon.svg' : '/favicon.svg', type: 'image/svg+xml' },
-            ],
+            // Designer's favicons (light and dark) when UNA has them, else the build's (lib/favicon-links.ts).
+            icon: faviconLinks(page.icons, isClientProject ? '/static/' : '/', iconPng),
             apple: iconPng,
         },
         other,

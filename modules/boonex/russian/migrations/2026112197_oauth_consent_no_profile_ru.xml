@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- OAuth2 consent page: an account with no profile is told to create one, and comes back to finish. -->
+<resources name="ru" flag="ru" title="Russian" category="OAuth2 Server">
+    <string_add name="_bx_oauth_authorize_no_profile"><![CDATA[Чтобы подключить <strong>{0}</strong>, нужен профиль. Создайте его, и вы вернётесь сюда, чтобы закончить.]]></string_add>
+</resources>

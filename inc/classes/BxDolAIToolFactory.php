@@ -9,6 +9,31 @@
 
 class BxDolAIToolFactory extends BxDolFactory
 {
+    /**
+     * Tool types made here from the AI library that the MCP server never gives: MySQL Write runs any write, DELETE and
+     * DROP too, with no snapshot to undo (MySQL Write (safe) is the one for that).
+     */
+    const MCP_DENIED_TYPES = ['mysql_write'];
+
+    /**
+     * Whether a row of sys_agents_tools may be given through MCP, as the tool's code says: a UNA tool class by
+     * BxDolAITool::isMcpAllowed(), a tool of the AI library made here by its type.
+     */
+    public static function isMcpAllowed(array $aRow): bool
+    {
+        $sClass = (string)($aRow['class_name'] ?? '');
+        if ($sClass === '')
+            return !in_array((string)($aRow['type'] ?? ''), self::MCP_DENIED_TYPES, true);
+
+        if (!empty($aRow['class_file']) && is_file(BX_DIRECTORY_PATH_ROOT . $aRow['class_file']))
+            require_once(BX_DIRECTORY_PATH_ROOT . $aRow['class_file']);
+
+        if (!class_exists($sClass))
+            return false;
+
+        return !is_subclass_of($sClass, 'BxDolAITool') || $sClass::isMcpAllowed();
+    }
+
     public static function getToolInstance(int $iId):  NeuronAI\Tools\ToolInterface
     {
         if (isset($GLOBALS['bxDolClasses'][__CLASS__ . '_AiAgentTool_' . $iId]))

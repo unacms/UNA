@@ -13,6 +13,7 @@ define('BX_SEMIG_STUDIO_TRANSFER', 'config');
 
 class BxSEMigStudioPage extends BxTemplStudioModule
 {    
+    protected $MODULE;
     protected $_oModule;	
 
     function __construct($sModule, $mixedPageName, $sPage = "")

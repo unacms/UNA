@@ -136,7 +136,7 @@ class BxBaseModProfileGridAdministration extends BxBaseModGeneralGridAdministrat
             if(!$oForm->update($aProfileInfo['id']))
                 $aResult = ['msg' => _t('_sys_txt_error_profile_update')];
             else
-                $aResult = ['msg' => _t('_' . $sFormDisplay . '_successfully_submitted')];
+                $aResult = ['toast' => _t('_' . $sFormDisplay . '_successfully_submitted')];
 
             return echoJson($aResult);
         }
@@ -218,6 +218,10 @@ class BxBaseModProfileGridAdministration extends BxBaseModGeneralGridAdministrat
 
     protected function _enable ($mixedId, $isChecked)
     {
+        $oOwn = $this->_getProfileObject($mixedId);
+        if ($oOwn && !($oOwn instanceof BxDolProfileUndefined) && (int)$oOwn->getAccountId() == (int)getLoggedId())
+            return false; // not one's own profile
+
         $aContentInfo = $this->_getContentInfo($mixedId);
         if ($this->_oModule->checkAllowedEdit($aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
@@ -296,11 +300,32 @@ class BxBaseModProfileGridAdministration extends BxBaseModGeneralGridAdministrat
 
     protected function _getCellSwitcher ($mixedValue, $sKey, $aField, $aRow)
     {
-        if (isset($aRow['profile_id']))
-            if (!$this->_oModule->isAllowDeleteOrDisable(bx_get_logged_profile_id(), $aRow['profile_id']))
-                return parent::_getCellDefault('', $sKey, $aField, $aRow);    
+        if ($this->_isOwnRow($aRow) || (isset($aRow['profile_id']) && !$this->_oModule->isAllowDeleteOrDisable(bx_get_logged_profile_id(), $aRow['profile_id'])))
+            return parent::_getCellDefault('', $sKey, $aField, $aRow);
         
         return parent::_getCellSwitcher ($mixedValue, $sKey, $aField, $aRow);
+    }
+
+    /**
+     * The viewer's own rows (a profile of their account) can't be picked for the bulk actions (delete, set membership):
+     * an operator doesn't suspend or delete themselves from here.
+     */
+    protected function _isCheckboxDisabled($aRow)
+    {
+        return $this->_isOwnRow($aRow) || parent::_isCheckboxDisabled($aRow);
+    }
+
+    /**
+     * Whether the row is a profile of the logged in account.
+     */
+    protected function _isOwnRow($aRow)
+    {
+        $iAccountId = (int)getLoggedId();
+        if (!$iAccountId || empty($aRow['profile_id']))
+            return false;
+
+        $oProfile = BxDolProfile::getInstance((int)$aRow['profile_id']);
+        return $oProfile && (int)$oProfile->getAccountId() == $iAccountId;
     }
     
     protected function _getCellFullname($mixedValue, $sKey, $aField, $aRow)
@@ -360,7 +385,7 @@ class BxBaseModProfileGridAdministration extends BxBaseModGeneralGridAdministrat
         if(!$this->_oModule->isAllowDeleteOrDisable(bx_get_logged_profile_id(), $oProfile->id()))
             return false;
 
-    	if($this->_oModule->checkMyself($iId))
+    	if($this->_oModule->checkMyself($iId) || (int)$oProfile->getAccountId() == (int)getLoggedId())
             return false;
 
         return $oProfile->delete($oProfile->id(), isset($aParams['with_content']) && $aParams['with_content'] === true);

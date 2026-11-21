@@ -120,7 +120,7 @@ class BxBaseSearch extends BxDolSearch
             'form_attrs' => array(
                'id' => $this->_sIdForm,
                'action' => BX_DOL_URL_ROOT . 'searchKeyword.php',
-               'method' => 'post',
+               'method' => 'get', // the results page has the keyword in its address, so it can be shared and bookmarked
             ),
             'params' => array(
                 'csrf' => array(

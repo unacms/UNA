@@ -38,7 +38,7 @@ BxDolUploaderBase.prototype.init = function (sUploaderObject, sStorageObject, sU
     this._sFormContainerId = 'bx-form-input-files-' + sUniqId + '-form-cont';
 
     this._sTemplateGhost = options.template_ghost ? options.template_ghost : '<div id="' + this._getFileContainerId('{file_id}') + '"><input type="hidden" name="f[]" value="{file_id}" />{file_name} (<a href="javascript:void(0);" onclick="{js_instance_name}.deleteGhost(\'{file_id}\')">delete</a>)</div>';
-    this._sTemplateReorder = options.template_reorder ? options.template_reorder : '<div class="bx-uploader-ghost-reorder bx-btn bx-btn-small"><i class="sys-icon bars"></i></div>';
+    this._sTemplateReorder = options.template_reorder ? options.template_reorder : '<div class="bx-uploader-ghost-reorder bx-btn bx-btn-small"><i class="sys-icon menu"></i></div>';
     this._sTemplateError = options.template_error_msg ? options.template_error_msg : '<div>{error}</div>' ;
     this._sTemplateErrorGhosts = options.template_error_ghosts ? options.template_error_ghosts : this._sTemplateError;
 
@@ -816,6 +816,10 @@ BxDolUploaderSimple.prototype.constructor = BxDolUploaderSimple;
 
 /**
  * Crop Image Uploader js class
+ *
+ * A single picture field shows a preview (see uploader_crop_preview.html): pressing it opens the file picker,
+ * and the cropper opens with the chosen file. A multiple one (albums, stories) has a button which opens the
+ * cropper with its own file field.
  */
 function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
 
@@ -823,13 +827,23 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
 
     this._eForm = null;
 
+    this._sPreviewId = 'bx-form-input-files-' + sUniqId + '-preview-' + sUploaderObject;
+    this._oPendingFile = null; // the file chosen in the preview, for the cropper to open with
+
     this.initUploader = function (oOptions) {
 
         var $this = this;
 
-        var aExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
         var eCroppie = $("#" + this._sFormContainerId + " .bx-croppie-element").croppie(oOptions);
+
+        var fBind = function (sUrl, sName) {
+            eCroppie.croppie('bind', {
+                url: sUrl
+            });
+            $("#" + $this._sFormContainerId + " .bx-croppie-element").addClass('ready');
+            $("#" + $this._sFormContainerId + " .bx-crop-action").removeClass('bx-btn-disabled');
+            $("#" + $this._sFormContainerId + " .bx-croppie-element").data('bx-filename', sName.replace(/(\.[A-Za-z0-9]+)$/, '.jpg'));
+        };
 
 		$("#" + this._sFormContainerId + ' .bx-crop-rotate').on('click', function(ev) {
 			eCroppie.croppie('rotate', parseInt($(this).data('deg')));
@@ -840,9 +854,7 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
 
             if (input.files && input.files[0]) {
 
-                var m = input.files[0].name.match(/\.([A-Za-z0-9]+)$/);
-
-                if (2 != m.length || -1 == aExt.indexOf(m[1].toLowerCase())) {                    
+                if (!$this._isFileAllowed(input.files[0])) {
                     $(input).replaceWith($(input).val('').clone(true));
                     $this._showError(_t('_sys_uploader_crop_wrong_ext'));
                     return;
@@ -850,25 +862,27 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
 
                 $this._clearErrors();
 
-                var reader = new FileReader()
-
-                reader.onload = function(e) {
-                    eCroppie.croppie('bind', {
-                        url: e.target.result
-                    });
-                    $("#" + $this._sFormContainerId + " .bx-croppie-element").addClass('ready');
-                    $("#" + $this._sFormContainerId + " .bx-crop-action").removeClass('bx-btn-disabled');
-                    $("#" + $this._sFormContainerId + " .bx-croppie-element").data('bx-filename', input.files[0].name.replace(/(\.[A-Za-z0-9]+)$/, '.jpg'));
-                }
-                reader.readAsDataURL(input.files[0]);
+                $this._readFile(input.files[0], function (sUrl) {
+                    fBind(sUrl, input.files[0].name);
+                });
             }
         });
+
+        // the file was chosen in the preview: no file field, the picture is in the cropper already
+        if (this._oPendingFile) {
+            $("#" + this._sFormContainerId + " input[name=f]").closest('.bx-form-element-wrapper').hide();
+            fBind(this._oPendingFile.url, this._oPendingFile.name);
+            this._oPendingFile = null;
+        }
 
         $("#" + this._sFormContainerId + " .bx-crop-upload").on('click', function(ev) {
             eCroppie.croppie('result', {
                 type: 'canvas',
                 size: 'original',
                 format: 'jpeg',
+                // the square picture: a round viewport only shows where the circle is, CSS rounds the picture
+                // (a circle would be saved on black corners, as JPEG has no transparency)
+                circle: false,
                 quality: '0.85',
             }).then(function(resp) {
                 var fd = new FormData();
@@ -917,7 +931,165 @@ function BxDolUploaderCrop (sUploaderObject, sStorageObject, sUniqId, options) {
     };
 }
 
-BxDolUploaderCrop.prototype = BxDolUploaderBase.prototype;
+BxDolUploaderCrop.prototype = Object.create(BxDolUploaderBase.prototype);
+BxDolUploaderCrop.prototype.constructor = BxDolUploaderCrop;
+
+BxDolUploaderCrop._aExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+BxDolUploaderCrop.prototype._isFileAllowed = function (oFile) {
+    var m = oFile.name.match(/\.([A-Za-z0-9]+)$/);
+    return m != null && -1 != BxDolUploaderCrop._aExtensions.indexOf(m[1].toLowerCase());
+};
+
+BxDolUploaderCrop.prototype._readFile = function (oFile, onRead) {
+    var oReader = new FileReader();
+    oReader.onload = function (e) {
+        onRead(e.target.result);
+    };
+    oReader.readAsDataURL(oFile);
+};
+
+/**
+ * The cropper opens with a picture: the file picker comes first, then the titled popup (BxBaseUploaderCrop::getUploaderForm)
+ * with the chosen picture in the cropper.
+ */
+BxDolUploaderCrop.prototype.showUploaderForm = function () {
+    if (!this._oPendingFile) {
+        if (!this._eChooser)
+            this._eChooser = $('<input type="file" accept="image/*" class="hidden" tabindex="-1" aria-hidden="true" />').on('change', (oEvent) => {
+                this.onPictureChosen(oEvent.currentTarget);
+            }).appendTo('body');
+
+        this._eChooser.val('').trigger('click');
+        return;
+    }
+
+    var sUrl = this._getUrlWithStandardParams() + '&a=show_uploader_form&m=' + (this._isMultiple ? 1 : 0) + '&c=' + this._iContentId + '&p=' + this._isPrivate + '&_t=' + Date.now();
+    $.get(sUrl, (sHtml) => {
+        $('#' + this._sPopupContainerId).remove();
+
+        // its script starts the cropper once the popup is in the page
+        var oPopup = $(sHtml.trim());
+        oPopup.hide().prependTo('body').bxProcessHtml();
+
+        oPopup.dolPopup({
+            closeElement: false,
+            closeOnOuterClick: false,
+            onBeforeShow: () => {
+                oPopup.find('.bx-popup-element-close').on('click', () => {
+                    this.onClickCancel();
+                });
+            }
+        });
+    }, 'html');
+};
+
+/**
+ * Opens the file picker of the preview (the preview itself, or "Change picture" in its menu).
+ */
+BxDolUploaderCrop.prototype.choosePicture = function () {
+    $('#' + this._sPreviewId + ' input[type=file]').val('').trigger('click');
+};
+
+/**
+ * A file was chosen in the preview: the cropper opens with it.
+ */
+BxDolUploaderCrop.prototype.onPictureChosen = function (eInput) {
+    var $this = this;
+
+    if (!eInput.files || !eInput.files[0])
+        return;
+
+    var oFile = eInput.files[0];
+    if (!this._isFileAllowed(oFile)) {
+        $(eInput).val('');
+        bx_alert(_t('_sys_uploader_crop_wrong_ext'));
+        return;
+    }
+
+    this._readFile(oFile, function (sUrl) {
+        $this._oPendingFile = {url: sUrl, name: oFile.name};
+        $(eInput).val('');
+        $this.showUploaderForm();
+    });
+};
+
+/**
+ * "Remove" in the preview's menu: deletes the picture, as the ghost's own delete button does.
+ */
+BxDolUploaderCrop.prototype.removePicture = function () {
+    var $this = this;
+
+    var iFileId = this._getPreviewFileId();
+    if (!iFileId)
+        return;
+
+    this.deleteGhost(iFileId, function () {
+        $this._bFocusPreview = true;
+        $this._syncPreview();
+    });
+};
+
+BxDolUploaderCrop.prototype._getPreviewGhost = function () {
+    return $('#' + this._sResultContainerId + ' .bx-uploader-ghost').last();
+};
+
+BxDolUploaderCrop.prototype._getPreviewFileId = function () {
+    var oGhost = this._getPreviewGhost();
+    if (!oGhost.length)
+        return 0;
+
+    var iFileId = parseInt(oGhost.find('input[type=hidden]').first().val());
+    return isNaN(iFileId) ? 0 : iFileId;
+};
+
+/**
+ * The preview shows the picture of the field's ghost (the uploaded or the saved one) with the edit button,
+ * or the placeholder which opens the file picker.
+ */
+BxDolUploaderCrop.prototype._syncPreview = function () {
+    var oPreview = $('#' + this._sPreviewId);
+    if (!oPreview.length)
+        return;
+
+    var iFileId = this._getPreviewFileId();
+    var sSrc = iFileId ? (this._oGhostUrls && this._oGhostUrls[iFileId]) || this._getPreviewGhost().find('img').first().attr('src') : '';
+
+    oPreview.find('.bx-uploader-crop-picture img').attr('src', sSrc || '');
+    oPreview.find('.bx-uploader-crop-picture, .bx-uploader-crop-edit').toggleClass('hidden', !sSrc);
+    oPreview.find('.bx-uploader-crop-choose, .bx-uploader-crop-badge').toggleClass('hidden', !!sSrc);
+
+    // back to the preview after an upload or a removal, on the button which is there now; after the cropper's
+    // popup has gone, which gives the focus back to the button that opened it, hidden by now
+    if (this._bFocusPreview) {
+        this._bFocusPreview = false;
+        setTimeout(function () {
+            oPreview.find(sSrc ? '.bx-uploader-crop-edit' : '.bx-uploader-crop-choose').focus();
+        }, 500);
+    }
+};
+
+BxDolUploaderCrop.prototype.showGhost = function (iId, oVars) {
+    // the preview shows the picture itself, which is sharper than the ghost's thumbnail
+    if (!this._oGhostUrls)
+        this._oGhostUrls = {};
+    if (oVars && oVars.file_url)
+        this._oGhostUrls[iId] = oVars.file_url;
+
+    BxDolUploaderBase.prototype.showGhost.call(this, iId, oVars);
+};
+
+BxDolUploaderCrop.prototype._showRestoredGhosts = function (aData, bInitReordering, onComplete) {
+    BxDolUploaderBase.prototype._showRestoredGhosts.call(this, aData, bInitReordering, onComplete);
+
+    this._syncPreview();
+};
+
+BxDolUploaderCrop.prototype.onUploadCompleted = function (sErrorMsg) {
+    this._bFocusPreview = !sErrorMsg.length;
+
+    BxDolUploaderBase.prototype.onUploadCompleted.call(this, sErrorMsg);
+};
 
 
 /**
@@ -1171,17 +1343,17 @@ BxDolImageTweak.prototype.uploadComplete = function(obj){
 
 BxDolImageTweak.prototype.changePosition = function (){
     var $this = this;
-    $(".bx-image-edit-source-" + $this._sUniqueId).parent().append("<div class='bx-image-edit-move-info'><i class='sys-icon sys-colored arrows-alt '></i>" + _t('_sys_uploader_image_reposition_info') + "</div>");
+    $(".bx-image-edit-source-" + $this._sUniqueId).parent().append("<div class='bx-image-edit-move-info'><i class='sys-icon sys-colored move '></i>" + _t('_sys_uploader_image_reposition_info') + "</div>");
     $(".bx-image-edit-source-" + $this._sUniqueId).addClass('bx-image-edit-move').bind('dragover', function(e){
         $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
+        $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + e.offsetY / $(e.currentTarget).height() * 100 + '%');
     });
     if (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0)) {
         $('body').css('overflow', 'hidden')
         $(".bx-image-edit-source-" + $this._sUniqueId).bind('touchmove', function(e){
             var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
             $(".bx-image-edit-source-" + $this._sUniqueId).parent().find('.bx-image-edit-move-info').remove();
-            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', " 0px " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
+            $(".bx-image-edit-source-" + $this._sUniqueId).css('background-position', "50% " + touch.pageY / $(e.currentTarget).height() * 100 + '%');
         });
     }
     with ($this._oContainerButtons) {

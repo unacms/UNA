@@ -36,4 +36,26 @@ class LoginPageTest extends BxDolTestCase
         $this->assertMatchesRegularExpression('/#bx-std-login-form-box \.bx-popup-close-wrapper \{\s*display: none;/', $s, 'Closing the only box on the page would leave it blank.');
         $this->assertMatchesRegularExpression('/@media \(max-height: 32rem\) \{\s*body > #bx-std-login-form-box \{\s*max-height: 100dvh;\s*overflow-y: auto;/', $s, 'A short screen scrolls the box: the page behind it is locked.');
     }
+
+    public function testFieldsHaveLabelsAndAutocomplete(): void
+    {
+        $s = self::read('studio/template/login_form.html');
+
+        // a caption that is not a label leaves the field without an accessible name
+        $this->assertStringContainsString('<label for="admin_email" class="bx-form-caption', $s);
+        $this->assertStringContainsString('<label for="admin_password" class="bx-form-caption', $s);
+        $this->assertMatchesRegularExpression('/<input id="admin_email" [^>]*autocomplete="username"[^>]*inputmode="email"[^>]*required/', $s);
+        $this->assertMatchesRegularExpression('/<input id="admin_password" type="password" [^>]*autocomplete="current-password"[^>]*required/', $s);
+        $this->assertDoesNotMatchRegularExpression('/tabindex="[1-9]/', $s, 'A positive tabindex takes the fields out of the page order.');
+    }
+
+    public function testEveryStopHasAFocusRing(): void
+    {
+        $s = self::read('studio/template/css/login.css');
+
+        // the password input has no border: its frame shows the ring; the buttons had no ring at all; the ring is the accent
+        $this->assertStringContainsString('#bx-std-login-form-box .bx-form-input-wrapper-password:has(.bx-form-input-password:focus-visible)', $s);
+        $this->assertMatchesRegularExpression('/#bx-std-login-form-box \.bx-btn:focus-visible \{\s*outline: 2px solid rgb\(var\(--bx-accent-600\)\);\s*outline-offset: 2px;/', $s);
+        $this->assertStringContainsString('outline-color: Highlight;', $s);
+    }
 }

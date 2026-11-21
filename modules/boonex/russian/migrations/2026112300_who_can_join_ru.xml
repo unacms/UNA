@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "Who can join" in Studio > Settings > Account, sign-up closed message, "You're set up" in Get started. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Кто может зарегистрироваться]]></string_add>
+    <string_add name="_adm_stg_err_option_sys_account_join"><![CDATA[Для режима «Только по приглашению» нужно приложение «Приглашения», но его не удалось добавить. Добавьте его в магазине приложений и сохраните снова.]]></string_add>
+    <string_add name="_sys_acc_join_open"><![CDATA[Все]]></string_add>
+    <string_add name="_sys_acc_join_invite"><![CDATA[Только по приглашению]]></string_add>
+    <string_add name="_sys_acc_join_invite_add"><![CDATA[Только по приглашению (добавит приложение «Приглашения»)]]></string_add>
+    <string_add name="_sys_acc_join_closed"><![CDATA[Никто]]></string_add>
+    <string_add name="_sys_txt_join_closed"><![CDATA[Регистрация на сайте закрыта.]]></string_add>
+    <string_add name="_sys_onboarding_done"><![CDATA[Всё готово]]></string_add>
+</resources>

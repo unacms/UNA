@@ -139,7 +139,7 @@ class BxBasePrivacy extends BxDolPrivacy
 
         $iGroupId = $oForm->getGroupId();
         $oForm->setId( $oForm->getId() . '_' . $iGroupId );
-        $sContent = BxTemplFunctions::getInstance()->transBox($this->_aHtmlIds['group_custom_select_popup'] . $iGroupId, $this->_oTemplate->parseHtmlByName('privacy_group_custom_select_popup.html', array(
+        $sContent = BxTemplFunctions::getInstance()->popupBox($this->_aHtmlIds['group_custom_select_popup'] . $iGroupId, $this->_getGroupCustomPopupTitle($iGroupId), $this->_oTemplate->parseHtmlByName('privacy_group_custom_select_popup.html', array(
             'js_object' => $sJsObject,
             'group' => $iGroupId,
             'form' => $oForm->getCode(),
@@ -197,7 +197,7 @@ class BxBasePrivacy extends BxDolPrivacy
 
         $iGroupId = $oForm->getGroupId();
         $oForm->setId($oForm->getId() . '_' . $iGroupId);
-        $sContent = BxTemplFunctions::getInstance()->transBox($this->_aHtmlIds['group_custom_select_popup'] . $iGroupId, $this->_oTemplate->parseHtmlByName('privacy_group_custom_select_popup.html', array(
+        $sContent = BxTemplFunctions::getInstance()->popupBox($this->_aHtmlIds['group_custom_select_popup'] . $iGroupId, $this->_getGroupCustomPopupTitle($iGroupId), $this->_oTemplate->parseHtmlByName('privacy_group_custom_select_popup.html', array(
             'js_object' => $sJsObject,
             'group' => $iGroupId,
             'form' => $oForm->getCode(),
@@ -222,6 +222,17 @@ class BxBasePrivacy extends BxDolPrivacy
             'iGroupId' => $iGroupId,
             'aHtmlIds' => $aHtmlIds
         )) . ");";
+    }
+
+    /**
+     * The title of the dialog that picks people for a group: the group's name ("Specific friends").
+     */
+    protected function _getGroupCustomPopupTitle($iGroupId)
+    {
+        $aGroup = $this->_oDb->getGroupsBy(['type' => 'id', 'id' => (int)$iGroupId]);
+        $sTitle = !empty($aGroup['title']) ? _t($aGroup['title']) : '';
+
+        return $sTitle !== '' ? rtrim($sTitle, '. ') : _t('_sys_ps_group_title_custom');
     }
 }
 

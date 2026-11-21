@@ -3,11 +3,11 @@
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * The page and its header per page layout and audience (Studio > Designer > Settings > Page and header): the page's
- * width, the header's width and where the main menu sits, for Standard and Application pages, for visitors and for
- * members (BxDolTemplate::getPageWidth, getHeaderLayout). Designer saves only the values there are, the site takes
- * them (BxBaseFunctions::TemplPageAddComponent, Artificer's own settings winning), and the apps get them with each page
- * (`page_width` and `header` of the page API).
+ * The page, its header and its footer per page layout and audience (Studio > Designer > Settings > Page, header and
+ * footer): the page's width, the header's width, where the main menu sits and the footer's width, for Standard and
+ * Application pages, for visitors and for members (BxDolTemplate::getPageWidth, getHeaderLayout, getFooterLayout).
+ * Designer saves only the values there are, the site takes them (BxBaseFunctions::TemplPageAddComponent, Artificer's
+ * own settings winning), and the apps get them with each page (`page_width`, `header` and `footer` of the page API).
  */
 #[Group('integration')]
 class HeaderLayoutTest extends BxDolIntegrationTestCase
@@ -17,6 +17,7 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         'sys_header_width_standard_visitor', 'sys_header_align_standard_visitor', 'sys_header_width_application_visitor', 'sys_header_align_application_visitor',
         'sys_header_width_standard_member', 'sys_header_align_standard_member', 'sys_header_width_application_member', 'sys_header_align_application_member',
         'sys_page_width_standard_visitor', 'sys_page_width_standard_member', 'sys_page_width_application_visitor', 'sys_page_width_application_member',
+        'sys_footer_width_standard_visitor', 'sys_footer_width_standard_member', 'sys_footer_width_application_visitor', 'sys_footer_width_application_member',
         'bx_artificer_header_width', 'bx_artificer_header_align', 'bx_artificer_page_width',
     ];
 
@@ -155,8 +156,8 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         $this->assertMatchesRegularExpression('/name="sys_page_width_kind_standard_member" value="full" data-kind="page" checked="checked"/', $sTable);
         $this->assertMatchesRegularExpression('/name="sys_page_width_kind_standard_visitor" value="limited" data-kind="page" checked="checked"/', $sTable);
         $this->assertStringContainsString('name="sys_page_width_standard_visitor" value="1100"', $sTable, 'the pixels beside Limited');
-        $this->assertSame(28, substr_count($sTable, 'type="radio"'), 'four cells, each with two page widths, two header widths and three places');
-        $this->assertSame(12, substr_count($sTable, 'checked="checked"'), 'one choice per control');
+        $this->assertSame(36, substr_count($sTable, 'type="radio"'), 'four cells, each with two page widths, two header widths, three places and two footer widths');
+        $this->assertSame(16, substr_count($sTable, 'checked="checked"'), 'one choice per control');
         $this->assertStringContainsString('aria-labelledby="adm-dsg-ht-application adm-dsg-ht-member"', $sTable, 'each cell is named by its row and column');
     }
 
@@ -298,6 +299,98 @@ class HeaderLayoutTest extends BxDolIntegrationTestCase
         $this->assertSame('full', $aData['header']['width']);
         $this->assertSame('end', $aData['header']['align']);
         $this->assertSame(BxDolTemplate::getPageWidth(BX_PAGE_TYPE_STANDARD, false), $aData['page_width'] ?? null, 'and its width');
+    }
+
+    public function testEachLayoutAndAudienceHasItsFooter(): void
+    {
+        $this->setFooter(['standard_visitor' => 'page', 'standard_member' => 'full', 'application_visitor' => 'full', 'application_member' => 'page']);
+
+        $this->assertSame(['width' => 'page'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_STANDARD, false));
+        $this->assertSame(['width' => 'full'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_STANDARD, true));
+        $this->assertSame(['width' => 'full'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_APPLICATION, false));
+        $this->assertSame(['width' => 'page'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_APPLICATION, true));
+        $this->assertSame(['width' => 'page'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_STANDARD), 'a guest gets the visitors\' footer');
+        $this->assertSame(['width' => 'page'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_DEFAULT_WO_HF, false), 'other layouts take the Standard footer');
+
+        setParam('sys_pt_default_member', BX_PAGE_TYPE_APPLICATION);
+        $this->assertSame(['width' => 'page'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_DEFAULT, true), 'Default is the audience\'s layout');
+    }
+
+    public function testUnknownFooterWidthsKeepTheFooterAsItWas(): void
+    {
+        $this->setFooter(['standard_visitor' => 'wide', 'standard_member' => '', 'application_visitor' => '1280', 'application_member' => '<b>']);
+
+        foreach ([false, true] as $bMember) {
+            $this->assertSame(['width' => 'page'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_STANDARD, $bMember), 'under the page\'s content on Standard pages');
+            $this->assertSame(['width' => 'full'], BxDolTemplate::getFooterLayout(BX_PAGE_TYPE_APPLICATION, $bMember), 'across the content\'s block on Application pages');
+        }
+    }
+
+    public function testDesignerSavesFooterWidths(): void
+    {
+        $this->setFooter(['standard_visitor' => 'page', 'standard_member' => 'page', 'application_visitor' => 'full', 'application_member' => 'full']);
+
+        $_GET = ['sys_footer_width_standard_visitor' => 'full', 'sys_footer_width_standard_member' => 'page', 'sys_footer_width_application_visitor' => 'page', 'sys_footer_width_application_member' => 'full'];
+        $this->designer()->submitSettings();
+        $this->assertSame(['full', 'page', 'page', 'full'], $this->getFooter());
+
+        $_GET = ['sys_footer_width_standard_visitor' => 'wide', 'sys_footer_width_standard_member' => '', 'sys_footer_width_application_visitor' => '<b>'];
+        $this->designer()->submitSettings();
+        $this->assertSame(['full', 'page', 'page', 'full'], $this->getFooter(), 'unknown values are not saved');
+    }
+
+    public function testDesignerShowsTheFooterWidths(): void
+    {
+        $this->setFooter(['standard_visitor' => 'full', 'standard_member' => 'page', 'application_visitor' => 'page', 'application_member' => 'full']);
+
+        $sTable = (new ReflectionMethod('BxBaseStudioDesigner', 'getSettingsHeader'))->invoke($this->designer());
+
+        foreach (['standard_visitor' => 'full', 'standard_member' => 'page', 'application_visitor' => 'page', 'application_member' => 'full'] as $sSuffix => $sValue)
+            $this->assertMatchesRegularExpression('/name="sys_footer_width_' . $sSuffix . '" value="' . $sValue . '" data-kind="footer" checked="checked"/', $sTable);
+        $this->assertSame(4, substr_count($sTable, 'adm-dsg-hd-footer-inner'), 'each cell sketches its footer');
+    }
+
+    public function testTheSiteFooterTakesTheLayoutsWidth(): void
+    {
+        $this->setFooter(['standard_visitor' => 'full', 'standard_member' => 'full', 'application_visitor' => 'page', 'application_member' => 'page']);
+        $oFunctions = BxTemplFunctions::getInstance();
+
+        BxDolTemplate::getInstance()->setPageType(BX_PAGE_TYPE_STANDARD);
+        $this->assertSame('', $oFunctions->TemplPageAddComponent('sys_footer_width'), 'a full width footer has no page width');
+        BxDolTemplate::getInstance()->setPageType(BX_PAGE_TYPE_APPLICATION);
+        $this->assertSame('bx-def-page-width', $oFunctions->TemplPageAddComponent('sys_footer_width'));
+
+        // The footer's box carries the key in the templates that draw a footer for Designer's layouts.
+        foreach (['template/footer.html', 'modules/boonex/artificer/data/template/system/pt_application.html'] as $sFile)
+            $this->assertStringContainsString('class="bx-footer-box __sys_footer_width__ mx-auto', file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile), $sFile);
+    }
+
+    public function testTheAppsGetThePagesFooter(): void
+    {
+        setParam('sys_pt_default_visitor', BX_PAGE_TYPE_STANDARD);
+
+        foreach (['full', 'page'] as $sWidth) {
+            $this->setFooter(['standard_visitor' => $sWidth]);
+
+            if (($sObject = BxDolPageQuery::getPageObjectNameByURI('home')))
+                unset($GLOBALS['bxDolClasses']['BxDolPage!' . $sObject]);
+            $_GET = ['api' => 1];
+            $aData = BxDolService::call('system', 'get_page_by_request', ['page/home', '', '[]'], 'TemplServicePages', true);
+
+            $this->assertIsArray($aData);
+            $this->assertSame(['width' => $sWidth], $aData['footer'] ?? null, 'the page carries its footer');
+        }
+    }
+
+    private function setFooter(array $aValues): void
+    {
+        foreach ($aValues as $sSuffix => $sValue)
+            setParam('sys_footer_width_' . $sSuffix, $sValue);
+    }
+
+    private function getFooter(): array
+    {
+        return array_map(fn($sSuffix) => getParam('sys_footer_width_' . $sSuffix), ['standard_visitor', 'standard_member', 'application_visitor', 'application_member']);
     }
 
     private function setHeader(string $sWho, string $sWidthStandard, string $sAlignStandard, string $sWidthApplication, string $sAlignApplication): void

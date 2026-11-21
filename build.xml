@@ -94,6 +94,10 @@
         <exclude name="node_modules/**" />
         <exclude name="bower_components/**" />        
         <exclude name="modules/boonex/*/updates/**" />
+        <!-- Messenger's CSS and emoji picker sources: `yarn` builds them into template/css/*.css and js/emoji/ -->
+        <exclude name="modules/boonex/messenger/package.json" />
+        <exclude name="modules/boonex/messenger/js/emoji-mart/**" />
+        <exclude name="modules/boonex/messenger/template/css/tailwind/**" />
         <exclude name="neo/**" />
     </fileset>
 

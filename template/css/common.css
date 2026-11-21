@@ -268,6 +268,18 @@ blockquote {
 
     max-width: 75%;
 }
+/* The header's buttons and tabs sit at its top padding, so a button is as far from the block's top edge as from its right
+   one. Beside a one-line title the header is as tall as the button and the title is centred on it; over a description
+   the title runs down from the same top line. The tabs' 1px padding (it keeps focus rings inside their scroll box) is
+   taken back by the margin, so it moves nothing. */
+.bx-db-header > .bx-db-menu {
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
+}
+.bx-db-header > .bx-db-menu > .bx-db-menu-tab {
+    margin-top: -1px;
+    margin-bottom: -1px;
+}
 
 .bx-media-phone .bx-db-menu {
     max-width: 65%;
@@ -777,7 +789,6 @@ div.bx-popup-chain-item .bx-loading-ajax {
     text-align:center;
     font-size:1rem;
     padding:10px;
-    text-transform:uppercase;
 }
 
 /* --------------- loading indicator */

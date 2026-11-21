@@ -75,7 +75,7 @@ if ($oAdmin)
 
 // SETTINGS
 
-setParam('bx_invites_enable_reg_by_inv', '');
+setParam('sys_account_join', 'open');
 
 fwrite(STDOUT, "Seeded {$sEmail}.\n");
 

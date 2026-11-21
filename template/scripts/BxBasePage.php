@@ -27,6 +27,9 @@ class BxBasePage extends BxDolPage
 
     protected $_bStickyColumns = false;
 
+    /** A block's title already stands as the page's heading (_setBlockTitleAsHeading). */
+    protected $_bHeadingBlock = false;
+
     protected $_bSubPage = false;
 
     protected $_aMetaImages = []; //--- Size and twitter card of page meta images by url, @see _getMetaImage
@@ -96,6 +99,8 @@ class BxBasePage extends BxDolPage
                     'img_url_encoded' => '',
                     'title_encoded' => ''
                 ]);
+                // in the popup each service is a row with its mark and name, as in other popup menus
+                $oMenu->setTemplateById(6); // menu_vertical.html
                 $sMenu = $oMenu->getCode();
             }
         }
@@ -379,6 +384,34 @@ class BxBasePage extends BxDolPage
      * Is page cover enabled.
      * @return string
      */
+    /**
+     * A page without a cover whose block is titled as the page (Sign in, Sign up, Forgot password) has one heading:
+     * the block's title becomes the page's `<h1>`, in place of the hidden one the empty cover gives (BxBaseCover).
+     * Not where a block of the page has an `<h1>` in its content (_setHeadingBlockByContent, called first): that
+     * block is the heading, and the titled block keeps its `<h2>`.
+     * @param array $aBlock the block
+     * @param string $sCode the block's code in its design box
+     * @return string the code
+     */
+    protected function _setBlockTitleAsHeading($aBlock, $sCode)
+    {
+        if($this->_bHeadingBlock || $this->isPageCover())
+            return $sCode;
+
+        $sPageTitle = mb_strtolower(trim(strip_tags($this->_getPageTitle())));
+        $sBlockTitle = mb_strtolower(trim(strip_tags($this->getBlockTitle($aBlock))));
+        if($sPageTitle === '' || $sPageTitle !== $sBlockTitle)
+            return $sCode;
+
+        $sCode = preg_replace('#<h2 class="bx-dbt-ttl">(.*?)</h2>#s', '<h1 class="bx-dbt-ttl">$1</h1>', $sCode, 1, $iCount);
+        if($iCount) {
+            $this->_bHeadingBlock = true;
+            BxDolCover::getInstance()->setPageHasHeading();
+        }
+
+        return $sCode;
+    }
+
     public function isPageCover()
     {
         $bResult = false;
@@ -638,8 +671,16 @@ class BxBasePage extends BxDolPage
             'type' => $this->getType (),
             // The header for this page's layout and this viewer, as Designer sets it: its width and where the main menu sits.
             'header' => BxDolTemplate::getHeaderLayout($this->getType()),
+            // The footer for this page's layout and this viewer, as Designer sets it: as wide as the page's content, or the window.
+            'footer' => BxDolTemplate::getFooterLayout($this->getType()),
             // How wide the page's content is for this viewer, as Designer sets it: pixels, or 'full'.
             'page_width' => BxDolTemplate::getPageWidth($this->getType()),
+            // The favicons uploaded in Designer (fav, svg, dark: '' for each one not uploaded), for the apps' browser tabs.
+            'icons' => BxTemplFunctions::getUploadedFaviconUrls(),
+            // The site's own mark and logo, light and dark (null for each the site has none of: the apps draw UNA's).
+            'logo' => BxBaseApiV2System::logos(),
+            // The accent Designer picked (step => "r g b", NEO's --accent-*), or null for the default blue.
+            'accent' => BxDolDesigns::getAccentScale() ?: null,
             'layout' => $bSplash ? 'splash' : str_replace('.html', '', $this->_aObject['template']),
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
@@ -703,6 +744,9 @@ class BxBasePage extends BxDolPage
             $aTexts = ['title' => '_sys_txt_join_title', 'text' => '_sys_txt_join_text', 'title_invite' => '_sys_txt_join_title_invite', 'text_invite' => '_sys_txt_join_text_invite'];
         if($aTexts)
             $a['texts'] = self::getTranslatedTextsAPI($aTexts);
+        // The home page's tagline: the site's description while the splash shows it ({site_description}).
+        if($sUri == 'home' && ($sTagline = BxDolSplash::getInstance()->getTagline()) !== '')
+            $a['texts']['text'] = $sTagline;
 
         // The title UNA's cover shows (the selected site menu item for a section, else the page's), for the apps' header.
         // HTML-escaped like `title`.
@@ -1009,6 +1053,28 @@ class BxBasePage extends BxDolPage
     }
 
     /**
+     * A block that draws a heading of its own (the Sign up page's picture and words) is the page's heading, wherever
+     * it stands on the page: the blocks' code is looked through before any block's title is made the heading
+     * (_setBlockTitleAsHeading), so a block titled as the page keeps its `<h2>` also when it comes first, as after an
+     * operator moves the blocks in Studio.
+     * @param array $aCodes the code of the page's blocks in their design boxes
+     */
+    protected function _setHeadingBlockByContent($aCodes)
+    {
+        if($this->_bHeadingBlock || $this->isPageCover())
+            return;
+
+        foreach($aCodes as $sCode) {
+            if(!is_string($sCode) || !preg_match('/<h1[\s>]/i', $sCode))
+                continue;
+
+            $this->_bHeadingBlock = true;
+            BxDolCover::getInstance()->setPageHasHeading();
+            return;
+        }
+    }
+
+    /**
      * Get page code vars
      * @return string
      */
@@ -1029,12 +1095,25 @@ class BxBasePage extends BxDolPage
             )
         );
         $aBlocks = $this->_oQuery->getPageBlocks();
+        // Every block's code first: which block holds the page's heading is known only once all are drawn.
+        $aCodes = [];
         foreach ($aBlocks as $sKey => $aCell) {
-            $sCell = '';
-            foreach ($aCell as $aBlock) {
+            foreach ($aCell as $i => $aBlock) {
                 $this->processPageBlock($aBlock, false);
 
-                $sContentWithBox = $this->_getBlockCodeWithCache($aBlock, $aBlock['async']);
+                // Drawing a block may change it (a service that returns a class for its container): kept after.
+                $aCodes[$sKey . ':' . $i] = $this->_getBlockCodeWithCache($aBlock, $aBlock['async']);
+                $aBlocks[$sKey][$i] = $aBlock;
+            }
+        }
+        $this->_setHeadingBlockByContent($aCodes);
+
+        foreach ($aBlocks as $sKey => $aCell) {
+            $sCell = '';
+            foreach ($aCell as $i => $aBlock) {
+                $sContentWithBox = $aCodes[$sKey . ':' . $i];
+                if($sContentWithBox)
+                    $sContentWithBox = $this->_setBlockTitleAsHeading($aBlock, $sContentWithBox);
 
             	$sClassAdd = '';
                 if(!empty($aBlock['class']))
@@ -1195,6 +1274,10 @@ class BxBasePage extends BxDolPage
 
             if(is_array($mixedContent) && !empty($mixedContent['content'])) {
                 $iDesignboxId = isset($mixedContent['designbox_id']) ? $mixedContent['designbox_id'] : $aBlock['designbox_id'];
+
+                // A block can give its own description, as it can in the apps (getPageAPI).
+                if(isset($mixedContent['description']))
+                    $sDescription = $mixedContent['description'];
 
                 if(!empty($mixedContent['markers']) && is_array($mixedContent['markers'])) {
                     $this->addMarkers($mixedContent['markers']);
@@ -1493,6 +1576,13 @@ class BxBasePage extends BxDolPage
             return [bx_api_get_block('lang', ['title' => _t($aBlock['title']), 'content' => bx_process_macros($sContent)])];
         }
     
+        // The default Terms and Privacy until the operator saves them once: a note only the operator sees.
+        if(isAdmin() && BxDolPage::isLangBlockToReview($aBlock['content']))
+            BxDolInformer::getInstance()->add('sys-page-lang-block-review-' . $aBlock['id'], _t('_sys_txt_page_lang_block_review'), BX_INFORMER_ALERT, [
+                'action_url' => BX_DOL_URL_STUDIO . 'builder_page.php?type=' . rawurlencode($this->_aObject['module']) . '&page=' . rawurlencode($this->_aObject['object']),
+                'action_title' => _t('_sys_txt_page_lang_block_review_action'),
+            ]);
+
         $s = '<div class="bx-page-lang-container bx-def-vanilla-html max-w-none">' . _t(trim($aBlock['content'])) . '</div>';
         $s = $this->_replaceMarkers($s, array('block_id' => $aBlock['id']));
         $s = bx_process_macros($s);
@@ -1607,12 +1697,33 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageMetaDesc()
     {
-        // A page without a description of its own gets the site's default one (Studio > Languages), not an empty one.
+        // A page without a description of its own describes itself with its first text (About, Terms), else it gets the
+        // site's default one (Studio > Languages), not an empty one.
         $sResult = $this->_replaceMarkers(_t($this->_aObject['meta_description']));
+        if(trim(strip_tags($sResult)) === '')
+            $sResult = $this->_getPageMetaDescFromBlocks();
         if(trim(strip_tags($sResult)) === '')
             $sResult = $this->_replaceMarkers(_t('_sys_page_meta_description_default'));
 
         return $sResult;
+    }
+
+    /**
+     * The text of the page's first text block (`lang` or `html`) the viewer can see, for a page without a description.
+     * @return string HTML, empty when the page has no such block
+     */
+    protected function _getPageMetaDescFromBlocks()
+    {
+        foreach($this->_oQuery->getPageTextBlocks(bx_is_api()) as $aBlock) {
+            if(!$this->_isVisibleBlock($aBlock))
+                continue;
+
+            $sText = $this->_replaceMarkers($aBlock['type'] == 'lang' ? _t(trim($aBlock['content'])) : $aBlock['content']);
+            if(trim(strip_tags($sText)) !== '')
+                return $sText;
+        }
+
+        return '';
     }
 
     /**
@@ -1652,12 +1763,48 @@ class BxBasePage extends BxDolPage
         if(($aCover = $this->getPageCoverImage()) && ($sUrl = $this->_getMetaImage($aCover)))
             return $sUrl;
 
-        // Any of the icons through the biggest (512px) icon transcoder: Facebook and others don't show one under 200px.
-        foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
-            if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sUrl = $this->_getMetaImage(['id' => $iIcon, 'transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH], false)))
-                return $sUrl;
+        $aImage = static::getSiteMetaImage();
+        if(empty($aImage['url']))
+            return '';
 
-        return '';
+        $this->_aMetaImages[$aImage['url']] = ['width' => $aImage['width'], 'height' => $aImage['height'], 'card' => $aImage['card']];
+        return $aImage['url'];
+    }
+
+    /**
+     * The site's picture for link previews, for pages without one of their own and scripts that aren't pages (the
+     * splash): an uploaded icon through the biggest (512px) icon transcoder, as Facebook and others show none under
+     * 200px, else the uploaded logo (not an SVG, which previews don't show), else the template's own 512px icon, so a
+     * shared link always has a picture. Shown small and square.
+     * @return array 'url', 'width', 'height' (0 when unknown) and 'card'
+     */
+    public static function getSiteMetaImage()
+    {
+        $aResult = false;
+
+        if(($oTranscoder = BxDolTranscoder::getObjectInstance(BX_DOL_TRANSCODER_OBJ_ICON_ANDROID_SPLASH)) !== false)
+            foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
+                if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($aResult = $oTranscoder->getFileMetaImage($iIcon)) && !empty($aResult['url']))
+                    break;
+
+        if(empty($aResult['url']) && ($iLogo = (int)getParam('sys_site_logo')) != 0 && ($oStorage = BxDolStorage::getObjectInstance('sys_images_custom')) !== false) {
+            $aFile = $oStorage->getFile($iLogo);
+            if($aFile && !$aFile['private'] && strncmp($aFile['mime_type'], 'image/', 6) === 0 && !$oStorage->isMimeTypeSvg($aFile['mime_type'])) {
+                $aSize = !empty($aFile['dimensions']) ? explode('x', $aFile['dimensions']) : [];
+                $aResult = ['url' => $oStorage->getFileUrlById($iLogo), 'width' => (int)($aSize[0] ?? 0), 'height' => (int)($aSize[1] ?? 0)];
+            }
+        }
+
+        if(empty($aResult['url'])) {
+            // A real address: the template may inline a small image as a data: URL, which previews can't fetch.
+            $sUrl = BxDolTemplate::getInstance()->getIconUrl('android-icon-512.png');
+            if(!$sUrl || str_starts_with($sUrl, 'data:'))
+                $sUrl = BX_DOL_URL_ROOT . 'template/images/icons/android-icon-512.png';
+
+            $aResult = ['url' => $sUrl, 'width' => 512, 'height' => 512];
+        }
+
+        return ['url' => $aResult['url'], 'width' => (int)$aResult['width'], 'height' => (int)$aResult['height'], 'card' => 'summary'];
     }
 
     /**
@@ -1747,7 +1894,27 @@ class BxBasePage extends BxDolPage
      */
     protected function _getPageAccessDeniedMsg ($mixedMsg = false)
     {
-        return MsgBox($mixedMsg !== false ? $mixedMsg : _t('_Access denied'));
+        $sMsg = is_string($mixedMsg) && $mixedMsg !== '' ? $mixedMsg : _t('_Access denied');
+
+        if (!$this->_bSubPage && !bx_is_api()) {
+            if (!headers_sent()) {
+                header('HTTP/1.0 403 Forbidden');
+                header('Status: 403 Forbidden');
+            }
+
+            // The page keeps its name in the title bar; a title with markers would name the content, so it is left out.
+            $sTitle = _t($this->_aObject['title']);
+            if ($sTitle !== '' && !str_contains($sTitle, '{')) {
+                BxDolTemplate::getInstance()->setPageHeader($sTitle);
+            }
+        }
+
+        // A guest gets the same "Sign in to continue" card as a block that needs an account.
+        if (!isLogged() && !BxDolAcl::getDenialState($sMsg)) {
+            return DesignBoxContent('', MsgBox(BxDolAcl::getDenialStateByLevel(MEMBERSHIP_ID_NON_MEMBER, _t('_sys_txt_access_denied_guest_page'))), BX_DB_PADDING_NO_CAPTION);
+        }
+
+        return MsgBox($sMsg);
     }
 
     /**

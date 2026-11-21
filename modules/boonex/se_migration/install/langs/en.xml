@@ -30,13 +30,13 @@
     <string name="_bx_se_migration_started_migration_profiles_finished"><![CDATA[{0} Profiles were transferred]]></string>
     <string name="_bx_se_migration_started_migration_profile_fields"><![CDATA[Profile Fields Migration was started]]></string>
     <string name="_bx_se_migration_started_migration_profile_fields_finished"><![CDATA[{0} Profile Fields were transferred]]></string>
-    <string name="_bx_se_migration_started_migration_profile_field_can_not_be_transferred"><![CDATA[Custom Fields can not be transferred]]></string>   
+    <string name="_bx_se_migration_started_migration_profile_field_can_not_be_transferred"><![CDATA[Custom Fields cannot be transferred]]></string>   
     <string name="_bx_se_migration_started_migration_blogs"><![CDATA[Blogs Migration was started]]></string>
     <string name="_bx_se_migration_started_migration_photos"><![CDATA[Photos Migration was started]]></string>
     <string name="_bx_se_migration_started_migration_photos_finished"><![CDATA[{0} Photos were transferred]]></string>
-    <string name="_bx_se_migration_started_migration_photos_album_error"><![CDATA[Database Error. Albums can not be created!]]></string>   
+    <string name="_bx_se_migration_started_migration_photos_album_error"><![CDATA[Database Error. Albums cannot be created!]]></string>   
     <string name="_bx_se_migration_started_migration_videos"><![CDATA[Videos Migration was started]]></string>
-    <string name="_bx_se_migration_friends_exports_error"><![CDATA[Database error: Friends can not be transferred]]></string>
+    <string name="_bx_se_migration_friends_exports_error"><![CDATA[Database error: Friends cannot be transferred]]></string>
     <string name="_bx_se_migration_all_data_transferred"><![CDATA[All Data was transferred]]></string>
     <string name="_bx_se_migration_status_not_started"><![CDATA[Not started Yet]]></string>
     <string name="_bx_se_migration_status_started"><![CDATA[Already started]]></string>   

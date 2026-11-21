@@ -2352,7 +2352,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
             'html_id' => $this->_oConfig->getHtmlIdView('item', $aBrowseParams, array('whole' => false)) . $aEvent['id'],
             'class' => $sClass,
             'class_owner' => $sClassOwner,
-            'class_content' => $bViewItem ? 'bx-def-color-bg-block' : 'bx-def-color-bg-box',
+            'class_content' => 'bx-def-color-bg-block', // a post is a block in the feed too: the block's surface, as NEO's feed
             'id' => $aEvent['id'],
             'bx_if:show_note' => array(
                 'condition' => !empty($aTmplVarsNote),

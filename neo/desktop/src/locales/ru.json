@@ -2304,5 +2304,12 @@
     "{{site}} has its API turned off": "На {{site}} отключён API",
     "Not a network the app is signed in to": "Приложение не вошло в эту сеть",
     "Pictures can’t be added while the text is being sent.": "Пока текст отправляется, изображения добавить нельзя.",
-    "The discussion was not started: {{reason}}": "Обсуждение не начато: {{reason}}"
+    "The discussion was not started: {{reason}}": "Обсуждение не начато: {{reason}}",
+    "Suggestions": "Рекомендации",
+    "People you may know, best match first": "Возможно, вы знакомы, сначала самые подходящие",
+    "No suggestions right now": "Пока рекомендаций нет",
+    "People with friends in common, in your groups or nearby show up here.": "Здесь появятся люди с общими друзьями, из ваших групп или живущие рядом.",
+    "Profiles you may want to follow, best match first": "На кого можно подписаться, сначала самые подходящие",
+    "Profiles followed by those you follow, or in your groups, show up here.": "Здесь появятся профили, на которые подписаны те, на кого подписаны вы, и участники ваших групп.",
+    "Connections: Suggestions": "Связи: Рекомендации"
 }

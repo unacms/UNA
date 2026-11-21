@@ -78,3 +78,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_posts_submenu' A
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_posts_submenu' AND `module`='bx_posts' AND `name`='posts-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_posts_snippet_meta' AND `module`='bx_posts' AND `name`='author';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_posts_snippet_meta' AND `module`='bx_posts' AND `name`='date';
+
+-- PAGE: explore
+UPDATE `sys_pages_blocks` SET `active_api` = 1, `config_api` = '{"content_type":"browse_simple","header_more_url":"/posts-home","view":"row"}' WHERE `object` = 'sys_explore' AND `module` = 'bx_posts' AND `title` = '_bx_posts_page_block_title_recent_entries';

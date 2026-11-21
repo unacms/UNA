@@ -57,8 +57,8 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `extra`, `order`) VALUES
-('bx_messenger_jitsi_enable', 'on', @iCategId, '_bx_messenger_allow_to_use_jitsi', 'checkbox', '', '', '', 1),
-('bx_messenger_jitsi_server', 'meet.jit.si', @iCategId, '_bx_messenger_jitsi_server', 'digit', '', '', '', 2),
+('bx_messenger_jitsi_enable', '', @iCategId, '_bx_messenger_allow_to_use_jitsi', 'checkbox', '', '', '', 1),
+('bx_messenger_jitsi_server', '', @iCategId, '_bx_messenger_jitsi_server', 'digit', '', '', '', 2),
 ('bx_messenger_jitsi_chat', '', @iCategId, '_bx_messenger_jitsi_chat_enable', 'checkbox', '', '', '', 3),
 ('bx_messenger_jitsi_sync', '', @iCategId, '_bx_messenger_jitsi_chat_sync', 'checkbox', '', '', '', 4),
 ('bx_messenger_jitsi_hide_info', '', @iCategId, '_bx_messenger_jitsi_hide_info', 'checkbox', '', '', '', 5),
@@ -102,8 +102,8 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 -- MENU: notifications
 SET @iMIOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_toolbar_member' AND `order` < 9999);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`, `visibility_custom`, `hidden_on`) VALUES
-('sys_toolbar_member', @sName, 'notifications-messenger', '_bx_messenger_menu_notifications_item_sys_title', '', 'page.php?i=messenger', '', '', 'comments col-green1', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:20:"get_updated_lots_num";}', '', 2147483646, 1, 1, 0, '', 9),
-('trigger_profile_view_actions', @sName, 'messenger', '_bx_messenger_menu_new_chat_sys_title', '_bx_messenger_menu_new_chat_action_title', 'page.php?i=messenger&profile_id={profile_id}', '', '', 'comments', '', '', 2147483646, 1, 0, 0, 'a:3:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:18:"is_contact_allowed";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', ''),
+('sys_toolbar_member', @sName, 'notifications-messenger', '_bx_messenger_menu_notifications_item_sys_title', '', 'page.php?i=messenger', '', '', 'messages-square', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:20:"get_updated_lots_num";}', '', 2147483646, 1, 1, 0, '', 9),
+('trigger_profile_view_actions', @sName, 'messenger', '_bx_messenger_menu_new_chat_sys_title', '_bx_messenger_menu_new_chat_action_title', 'page.php?i=messenger&profile_id={profile_id}', '', '', 'messages-square', '', '', 2147483646, 1, 0, 12, 'a:3:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:18:"is_contact_allowed";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', ''),
 ('trigger_profile_view_actions', @sName, 'public-vc-messenger', '_bx_messenger_menu_video_conference_sys_title', '_bx_messenger_menu_video_conference_action_title', 'javascript:void(0)', 'javascript:oMUtils.showConferenceWindow(''modules/?r=messenger/get_video_conference_form/{profile_id}'')', '', 'video', '', '', 2147483646, 1, 0, 0, 'a:3:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:27:"is_video_conference_allowed";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}}', '');
 
 -- MENU: app tab bar (NEO)
@@ -117,7 +117,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 SET @iMIOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_account_notifications' AND `order` < 9999);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`, `visibility_custom`, `hidden_on`) VALUES
-('sys_account_notifications', @sName, 'notifications-messenger', '_bx_messenger_menu_notifications_item_sys_title', '_bx_messenger_menu_notifications_item_title', 'page.php?i=messenger', '', '', 'comments col-green1', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:20:"get_updated_lots_num";}', '', 2147483646, 1, 1, @iMIOrder + 2, '', 6);
+('sys_account_notifications', @sName, 'notifications-messenger', '_bx_messenger_menu_notifications_item_sys_title', '_bx_messenger_menu_notifications_item_title', 'page.php?i=messenger', '', '', 'messages-square', 'a:2:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:20:"get_updated_lots_num";}', '', 2147483646, 1, 1, @iMIOrder + 2, '', 6);
 
 -- PAGE: module home
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`, `cover`) VALUES 
@@ -301,11 +301,11 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`, `visibility_custom`) VALUES
 (CONCAT(@sName, '_lot_menu'), @sName, 'parent', '_bx_messenger_menu_item_title_parent_lot', '_bx_messenger_menu_item_title_parent_lot', 'javascript:void(0);', 'oMessenger.loadThreadsParent({id},''{type}'',{jot});', '_self', 'reply-all', '', 2147483647, 1, 0, 0, ''),
-(CONCAT(@sName, '_lot_menu'), @sName, 'list', '_bx_messenger_menu_item_title_group_list', '_bx_messenger_menu_item_title_group_list', 'javascript:void(0);', 'oMessenger.onSelectItem(this, {id});', '_self', 'bars', '', 2147483647, 1, 0, 1, 'a:3:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:16:"is_block_version";s:6:"params";a:1:{i:0;s:2:"{}";}}'),
+(CONCAT(@sName, '_lot_menu'), @sName, 'list', '_bx_messenger_menu_item_title_group_list', '_bx_messenger_menu_item_title_group_list', 'javascript:void(0);', 'oMessenger.onSelectItem(this, {id});', '_self', 'menu', '', 2147483647, 1, 0, 1, 'a:3:{s:6:"module";s:12:"bx_messenger";s:6:"method";s:16:"is_block_version";s:6:"params";a:1:{i:0;s:2:"{}";}}'),
 (CONCAT(@sName, '_lot_menu'), @sName, 'video_call', '_bx_messenger_menu_item_title_video_call', '_bx_messenger_menu_item_title_video_call', 'javascript:void(0);', 'oMessenger.onStartVideoCall(this, {id}, ''{room}'');', '_self', 'video', '', 2147483647, 1, 0, 1, ''),
 (CONCAT(@sName, '_lot_menu'), @sName, 'star', '_bx_messenger_menu_item_title_star', '_bx_messenger_menu_item_title_star', 'javascript:void(0);', 'oMessenger.onStarLot(this, {id});', '_self', 'star', '', 2147483647, 1, 0, 2, ''),
 (CONCAT(@sName, '_lot_menu'), @sName, 'mute', '_bx_messenger_menu_item_title_mute', '_bx_messenger_menu_item_title_mute', 'javascript:void(0);', 'oMessenger.onMuteLot(this, {id});', '_self', 'bell', '', 2147483647, 1, 0, 3, ''),
-(CONCAT(@sName, '_lot_menu'), @sName, 'settings', '_bx_messenger_lots_menu_settings_title', '_bx_messenger_lots_menu_settings_title', 'javascript:void(0)', 'oMessenger.showInfoMenu(this, ''{lot_menu_id}'')', '_self', 'info-circle', '', 2147483647, 1, 0, 4, '');
+(CONCAT(@sName, '_lot_menu'), @sName, 'settings', '_bx_messenger_lots_menu_settings_title', '_bx_messenger_lots_menu_settings_title', 'javascript:void(0)', 'oMessenger.showInfoMenu(this, ''{lot_menu_id}'')', '_self', 'info', '', 2147483647, 1, 0, 4, '');
 
 -- MENU: NAV MENU
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES
@@ -315,13 +315,13 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 (CONCAT(@sName, '_nav_menu'), @sName, '_bx_messenger_nav_menu_title_view', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-(CONCAT(@sName, '_nav_menu'), @sName, 'inbox', '_bx_messenger_nav_menu_item_title_inbox', '_bx_messenger_nav_menu_item_title_inbox', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''inbox''})', '_self', 'inbox col-red3', '', 2147483647, 1, 0, 0),
-(CONCAT(@sName, '_nav_menu'), @sName, 'direct', '_bx_messenger_nav_menu_item_title_direct', '_bx_messenger_nav_menu_item_title_direct', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''direct''})', '_self', 'comment col-blue1', '', 2147483647, 1, 0, 1),
-(CONCAT(@sName, '_nav_menu'), @sName, 'threads', '_bx_messenger_nav_menu_item_title_threads', '_bx_messenger_nav_menu_item_title_threads', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''threads''});', '_self', 'comments col-blue2', '', 2147483647, 1, 0, 2),
+(CONCAT(@sName, '_nav_menu'), @sName, 'inbox', '_bx_messenger_nav_menu_item_title_inbox', '_bx_messenger_nav_menu_item_title_inbox', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''inbox''})', '_self', 'inbox', '', 2147483647, 1, 0, 0),
+(CONCAT(@sName, '_nav_menu'), @sName, 'direct', '_bx_messenger_nav_menu_item_title_direct', '_bx_messenger_nav_menu_item_title_direct', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''direct''})', '_self', 'message-circle', '', 2147483647, 1, 0, 1),
+(CONCAT(@sName, '_nav_menu'), @sName, 'threads', '_bx_messenger_nav_menu_item_title_threads', '_bx_messenger_nav_menu_item_title_threads', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''threads''});', '_self', 'messages-square', '', 2147483647, 1, 0, 2),
 (CONCAT(@sName, '_nav_menu'), @sName, 'reply', '_bx_messenger_nav_menu_item_title_replies', '_bx_messenger_nav_menu_item_title_replies', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''replies''});', '_self', 'reply', '', 2147483647, 1, 0, 3),
-(CONCAT(@sName, '_nav_menu'), @sName, 'mentions_reactions', '_bx_messenger_nav_menu_item_title_mr', '_bx_messenger_nav_menu_item_title_mr', 'javascript:void(0)', 'oMessenger.loadTalksList(this, {group : ''mr''});', '_self', 'at col-green2', '', 2147483647, 1, 0, 4),
-(CONCAT(@sName, '_nav_menu'), @sName, 'saved', '_bx_messenger_nav_menu_item_title_saved', '_bx_messenger_nav_menu_item_title_saved', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''saved''});', '_self', 'bookmark col-red1', '', 2147483647, 1, 0, 5),
-(CONCAT(@sName, '_nav_menu'), @sName, 'favorites', '_bx_messenger_nav_menu_item_title_favorites', '_bx_messenger_nav_menu_item_title_favorites', 'javascript:void(0);', '', '_self', 'star col-red2', '', 2147483647, 0, 0, 6);
+(CONCAT(@sName, '_nav_menu'), @sName, 'mentions_reactions', '_bx_messenger_nav_menu_item_title_mr', '_bx_messenger_nav_menu_item_title_mr', 'javascript:void(0)', 'oMessenger.loadTalksList(this, {group : ''mr''});', '_self', 'at-sign', '', 2147483647, 1, 0, 4),
+(CONCAT(@sName, '_nav_menu'), @sName, 'saved', '_bx_messenger_nav_menu_item_title_saved', '_bx_messenger_nav_menu_item_title_saved', 'javascript:void(0);', 'oMessenger.loadTalksList(this, {group : ''saved''});', '_self', 'bookmark', '', 2147483647, 1, 0, 5),
+(CONCAT(@sName, '_nav_menu'), @sName, 'favorites', '_bx_messenger_nav_menu_item_title_favorites', '_bx_messenger_nav_menu_item_title_favorites', 'javascript:void(0);', '', '_self', 'star', '', 2147483647, 0, 0, 6);
 
 -- MENU: Groups Menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES
@@ -338,13 +338,13 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 (CONCAT(@sName, '_lot_info_menu'), @sName, '_bx_messenger_menu_set_title_talk_info_menu', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`, `visibility_custom`) VALUES
-(CONCAT(@sName, '_lot_info_menu'), @sName, 'add_participants', '_bx_messenger_lots_menu_add_part', '_bx_messenger_lots_menu_add_part', 'javascript:void(0);', 'oMessenger.createList(''edit'');', '_self', 'plus-circle', '', 2147483647, 1, 0, 0, ''),
-(CONCAT(@sName, '_lot_info_menu'), @sName, 'delete', '_bx_messenger_lots_menu_delete', '_bx_messenger_lots_menu_delete', 'javascript:void(0);', 'oMessenger.onDeleteLot({id});', '_self', 'backspace', '', 2147483647, 1, 0, 1, ''),
-(CONCAT(@sName, '_lot_info_menu'), @sName, 'leave', '_bx_messenger_lots_menu_leave', '_bx_messenger_lots_menu_leave', 'javascript:void(0);', 'oMessenger.onLeaveLot({id});', '_self', 'sign-out-alt', '', 2147483647, 1, 0, 2, ''),
-(CONCAT(@sName, '_lot_info_menu'), @sName, 'media', '_bx_messenger_lots_menu_media', '_bx_messenger_lots_menu_media', 'javascript:void(0);', 'oMessenger.onMedia({id});', '_self', 'photo-video', '', 2147483647, 1, 0, 3, ''),
+(CONCAT(@sName, '_lot_info_menu'), @sName, 'add_participants', '_bx_messenger_lots_menu_add_part', '_bx_messenger_lots_menu_add_part', 'javascript:void(0);', 'oMessenger.createList(''edit'');', '_self', 'circle-plus', '', 2147483647, 1, 0, 0, ''),
+(CONCAT(@sName, '_lot_info_menu'), @sName, 'delete', '_bx_messenger_lots_menu_delete', '_bx_messenger_lots_menu_delete', 'javascript:void(0);', 'oMessenger.onDeleteLot({id});', '_self', 'delete', '', 2147483647, 1, 0, 1, ''),
+(CONCAT(@sName, '_lot_info_menu'), @sName, 'leave', '_bx_messenger_lots_menu_leave', '_bx_messenger_lots_menu_leave', 'javascript:void(0);', 'oMessenger.onLeaveLot({id});', '_self', 'log-out', '', 2147483647, 1, 0, 2, ''),
+(CONCAT(@sName, '_lot_info_menu'), @sName, 'media', '_bx_messenger_lots_menu_media', '_bx_messenger_lots_menu_media', 'javascript:void(0);', 'oMessenger.onMedia({id});', '_self', 'image-play', '', 2147483647, 1, 0, 3, ''),
 (CONCAT(@sName, '_lot_info_menu'), @sName, 'clear', '_bx_messenger_lots_menu_clear', '_bx_messenger_lots_menu_clear', 'javascript:void(0);', 'oMessenger.onClearLot({id});', '_self', 'trash', '', 2147483647, 1, 0, 4, ''),
-(CONCAT(@sName, '_lot_info_menu'), @sName, 'settings', '_bx_messenger_lots_menu_settings', '_bx_messenger_lots_menu_settings', 'javascript:void(0)', 'oMessenger.onLotSettings(this, ''{lot_menu_id}'')', '_self', 'cogs', '', 2147483647, 1, 0, 5, ''),
-(CONCAT(@sName, '_lot_info_menu'), @sName, 'info', '_bx_messenger_lots_menu_info', '_bx_messenger_lots_menu_info', 'javascript:void(0)', 'oMessenger.onLotInfo(this, ''{lot_menu_id}'')', '_self', 'info-circle', '', 2147483647, 1, 0, 6, '');
+(CONCAT(@sName, '_lot_info_menu'), @sName, 'settings', '_bx_messenger_lots_menu_settings', '_bx_messenger_lots_menu_settings', 'javascript:void(0)', 'oMessenger.onLotSettings(this, ''{lot_menu_id}'')', '_self', 'settings', '', 2147483647, 1, 0, 5, ''),
+(CONCAT(@sName, '_lot_info_menu'), @sName, 'info', '_bx_messenger_lots_menu_info', '_bx_messenger_lots_menu_info', 'javascript:void(0)', 'oMessenger.onLotInfo(this, ''{lot_menu_id}'')', '_self', 'info', '', 2147483647, 1, 0, 6, '');
 
 -- MENU: Message menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES
@@ -354,12 +354,12 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 (CONCAT(@sName, '_jot_menu'), @sName, '_bx_messenger_menu_set_title_jot_menu', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`, `visibility_custom`) VALUES
-(CONCAT(@sName, '_jot_menu'), @sName, 'reaction', '_bx_messenger_jot_menu_reaction', '_bx_messenger_jot_menu_reaction', 'javascript:void(0);', 'oMessenger.onAddReaction(this);', '_self', 'smile', '', 2147483647, 1, 0, 0, ''),
+(CONCAT(@sName, '_jot_menu'), @sName, 'reaction', '_bx_messenger_jot_menu_reaction', '_bx_messenger_jot_menu_reaction', 'javascript:void(0);', 'oMessenger.onAddReaction(this);', '_self', 'face-slightly-smiling', '', 2147483647, 1, 0, 0, ''),
 (CONCAT(@sName, '_jot_menu'), @sName, 'reply', '_bx_messenger_jot_menu_reply', '_bx_messenger_jot_menu_reply', 'javascript:void(0);', 'oMessenger.onReplyJot(this);', '_self', 'reply', '', 2147483647, 1, 0, 1, ''),
 (CONCAT(@sName, '_jot_menu'), @sName, 'share', '_bx_messenger_jot_menu_share', '_bx_messenger_jot_menu_share', 'javascript:void(0);', 'oMessenger.onCopyJotLink(this);', '_self', 'share', '', 2147483647, 1, 0, 2, ''),
-(CONCAT(@sName, '_jot_menu'), @sName, 'edit', '_bx_messenger_jot_menu_edit', '_bx_messenger_jot_menu_edit', 'javascript:void(0);', 'oMessenger.onEditJot(this);', '_self', 'edit', '', 2147483647, 1, 0, 3, ''),
-(CONCAT(@sName, '_jot_menu'), @sName, 'remove', '_bx_messenger_jot_menu_remove', '_bx_messenger_jot_menu_remove', 'javascript:void(0);', 'oMessenger.onDeleteJot(this);', '_self', 'backspace', '', 2147483647, 1, 0, 4, ''),
-(CONCAT(@sName, '_jot_menu'), @sName, 'thread', '_bx_messenger_jot_menu_thread', '_bx_messenger_jot_menu_thread', 'javascript:void(0);', 'oMessenger.onReplyInThread(this);', '_self', 'comment-dots', '', 2147483647, 1, 0, 5, ''),
+(CONCAT(@sName, '_jot_menu'), @sName, 'edit', '_bx_messenger_jot_menu_edit', '_bx_messenger_jot_menu_edit', 'javascript:void(0);', 'oMessenger.onEditJot(this);', '_self', 'square-pen', '', 2147483647, 1, 0, 3, ''),
+(CONCAT(@sName, '_jot_menu'), @sName, 'remove', '_bx_messenger_jot_menu_remove', '_bx_messenger_jot_menu_remove', 'javascript:void(0);', 'oMessenger.onDeleteJot(this);', '_self', 'delete', '', 2147483647, 1, 0, 4, ''),
+(CONCAT(@sName, '_jot_menu'), @sName, 'thread', '_bx_messenger_jot_menu_thread', '_bx_messenger_jot_menu_thread', 'javascript:void(0);', 'oMessenger.onReplyInThread(this);', '_self', 'message-square-dashed', '', 2147483647, 1, 0, 5, ''),
 (CONCAT(@sName, '_jot_menu'), @sName, 'save', '_bx_messenger_jot_menu_save', '_bx_messenger_jot_menu_save', 'javascript:void(0);', 'oMessenger.onSaveJotItem(this);', '_self', 'bookmark', '', 2147483647, 1, 0, 6, '');
 
 -- MENU: CREATE CONVO
@@ -374,10 +374,10 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 (CONCAT(@sName, '_create_convo_menu'), @sName, '_bx_messenger_create_convo_menu_set_title', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-(CONCAT(@sName, '_create_convo_menu'), @sName, 'standard', '_bx_messenger_create_convo_menu_standard_system', '_bx_messenger_create_convo_menu_standard', 'javascript:void(0);', '{js_object}.onSelectConvoFilter();', '_self', 'users', '', 2147483647, 1, 0, 0),
-(CONCAT(@sName, '_create_convo_menu'), @sName, 'followers', '_bx_messenger_create_convo_menu_followers_system', '_bx_messenger_create_convo_menu_followers_system', 'javascript:void(0);', '{js_object}.onSelectConvoFilter(''followers'');', '_self', 'group', '', 2147483647, 1, 0, 1),
-(CONCAT(@sName, '_create_convo_menu'), @sName, 'friends', '_bx_messenger_create_convo_menu_friends_system', '_bx_messenger_create_convo_menu_friends_system', 'javascript:void(0);', '{js_object}.onSelectConvoFilter(''friends'');', '_self', 'user-friends', '', 2147483647, 1, 0, 1),
-(CONCAT(@sName, '_create_convo_menu'), @sName, 'broadcast', '_bx_messenger_create_convo_menu_broadcast_system', '_bx_messenger_create_convo_menu_broadcast_system', 'javascript:void(0);', '{js_object}.onSelectConvoFilter(''broadcast'');', '_self', 'bullhorn', '', 2147483647, 1, 0, 2);
+(CONCAT(@sName, '_create_convo_menu'), @sName, 'standard', '_bx_messenger_create_convo_menu_standard_system', '_bx_messenger_create_convo_menu_standard', 'javascript:void(0);', '{js_object}.onSelectConvoFilter();', '_self', 'users-round', '', 2147483647, 1, 0, 0),
+(CONCAT(@sName, '_create_convo_menu'), @sName, 'followers', '_bx_messenger_create_convo_menu_followers_system', '_bx_messenger_create_convo_menu_followers_system', 'javascript:void(0);', '{js_object}.onSelectConvoFilter(''followers'');', '_self', 'users-round', '', 2147483647, 1, 0, 1),
+(CONCAT(@sName, '_create_convo_menu'), @sName, 'friends', '_bx_messenger_create_convo_menu_friends_system', '_bx_messenger_create_convo_menu_friends_system', 'javascript:void(0);', '{js_object}.onSelectConvoFilter(''friends'');', '_self', 'users-round', '', 2147483647, 1, 0, 1),
+(CONCAT(@sName, '_create_convo_menu'), @sName, 'broadcast', '_bx_messenger_create_convo_menu_broadcast_system', '_bx_messenger_create_convo_menu_broadcast_system', 'javascript:void(0);', '{js_object}.onSelectConvoFilter(''broadcast'');', '_self', 'megaphone', '', 2147483647, 1, 0, 2);
 
 --- UPLOADERS
 INSERT INTO `sys_objects_uploader` (`object`, `active`, `override_class_name`, `override_class_file`) VALUES
@@ -391,4 +391,4 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_messenger_profile_snippet_meta', @sName, '_bx_messenger_set_title_profile_snippet_meta', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES
-('bx_messenger_profile_snippet_meta', @sName, 'message', '_bx_messenger_item_title_sm_message', '_bx_messenger_item_title_sm_message', 'page.php?i=messenger', '', '', 'comments', '', 2147483647, 0, 0, 1, 1);
+('bx_messenger_profile_snippet_meta', @sName, 'message', '_bx_messenger_item_title_sm_message', '_bx_messenger_item_title_sm_message', 'page.php?i=messenger', '', '', 'messages-square', '', 2147483647, 0, 0, 1, 1);

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Settings: Global starts with "Site", server settings on the Advanced page; API v2 preview section;
+     the site template is set in Designer > Template only, the logo in Designer > Logo. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_stg_cpt_type_advanced"><![CDATA[Дополнительно]]></string_add>
+    <string_add name="_adm_stg_cpt_category_api_preview"><![CDATA[Предварительная версия API v2]]></string_add>
+    <string_add name="_adm_dsg_btn_tmpl_make_default"><![CDATA[Сделать основным]]></string_add>
+    <string_add name="_adm_dsg_txt_tmpl_make_default_confirm"><![CDATA[Сделать {0} шаблоном сайта? Все увидят его, если сами не выбрали другой.]]></string_add>
+    <string_add name="_adm_dsg_txt_settings_template_note"><![CDATA[Шаблон сайта выбирается в «Дизайнер › Шаблон».]]></string_add>
+    <string_add name="_adm_dsg_lnk_tmpl_page"><![CDATA[Открыть «Дизайнер › Шаблон»]]></string_add>
+    <string_add name="_adm_dsg_txt_logo_note_designer"><![CDATA[Логотип задаётся в «Дизайнер › Лого», для всех шаблонов.]]></string_add>
+    <string_upd name="_adm_stg_cpt_category_site_settings"><![CDATA[Сайт]]></string_upd>
+</resources>

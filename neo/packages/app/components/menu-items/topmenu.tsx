@@ -38,6 +38,10 @@ export default function MenuTopItem({ link, title, icon, isTitle, isActive, item
             triggerClassName="group rounded-xl web:active:scale-95 web:duration-100"
             items={items}
             columns={columns}
+            // One list, as UNA's More: groups (the launcher's apps) follow one another instead of standing side by
+            // side, unless the menu asks for columns.
+            stacked={!columns || columns <= 1}
+            align="auto"
             defaultOpen={false}
             plainIcons
         >
@@ -75,7 +79,7 @@ const ICON_CLASS = {
     off: 'text-secondary-foreground web:group-hover:text-foreground size-6 shrink-0',
 }
 // The label is UNA's main menu label: 14 px medium at the default spacing, the size of the labels in the More list. MenuTop's hidden probe
-// (components/nav/menu-top.js) repeats these classes to measure the bar: change them together.
+// (components/nav/menu-top.tsx) repeats these classes to measure the bar: change them together.
 const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden font-medium'
 const LABEL_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
 const LABEL_SIZE = 'text-sm leading-5'
@@ -85,9 +89,11 @@ function rowLayout(labelled: boolean): string {
     return labelled ? ROW_LAYOUT.labelled : ROW_LAYOUT.plain
 }
 
+// The current tab's fill is MenuTop's sliding indicator, behind the tab: an open More that is also the current tab
+// (its page is under More) takes only the accent label, or the two fills would stack.
 function rowState(isOpen: boolean, isActive: boolean): string {
-    if (isOpen) return ROW_STATE.open
-    return isActive ? ROW_STATE.active : ROW_STATE.idle
+    if (isActive) return ROW_STATE.active
+    return isOpen ? ROW_STATE.open : ROW_STATE.idle
 }
 
 function iconClassName(on: boolean, addClassName?: string): string {
@@ -131,8 +137,8 @@ function MenuTopItemLook({ title, icon, isTitle, isActive = false, isPopup, chev
 
     return (
         <Tooltip content={title} enabled={showTooltip}>
-            {/* The active link's highlight is MenuTop's sliding indicator, which never moves to a
-                dropdown, so an open dropdown draws its own fill behind the accent-foreground label. */}
+            {/* The current tab's fill is MenuTop's sliding indicator (accent-200 at 60%), which stays on the
+                current tab, so an open dropdown draws the same fill of its own behind the accent-foreground label. */}
             <Row className={`${ROW_BASE} ${rowLayout(labelled)} ${rowState(isOpen, isActive)}`}>
                 {[
                     // The icon's hover motion is CSS, keyed on the link's (or trigger's) `group` class.

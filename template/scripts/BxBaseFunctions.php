@@ -82,6 +82,16 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The footer of the page being shown: Designer's for its layout and audience (BxDolTemplate::getFooterLayout).
+     * A template with footer settings of its own overrides this.
+     * @return array ['width' => 'page' or 'full']
+     */
+    public function getFooterLayout()
+    {
+        return BxDolTemplate::getFooterLayout(BxDolTemplate::getInstance()->getPageType());
+    }
+
+    /**
      * How wide the content of the page being shown is: Designer's for its layout and audience
      * (BxDolTemplate::getPageWidth). A template with a page width of its own overrides this.
      * @return int|string pixels, or 'full'
@@ -101,6 +111,11 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 $mixedResult = $this->getHeaderLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
                 break;
 
+            // The footer, its separator included, is as wide as the page's content, or as the window.
+            case 'sys_footer_width':
+                $mixedResult = $this->getFooterLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
+                break;
+
             // The page's width for .bx-def-page-width (default.less), set on <body> as --bx-page-width.
             case 'sys_page_width':
                 $mixedWidth = $this->getPageWidth();
@@ -115,6 +130,14 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             // Where the main menu sits: next to the logo, in the middle of the header or next to the toolbar.
             case 'sys_header_align':
                 $mixedResult = 'bx-header-menu-' . $this->getHeaderLayout()['align'];
+                break;
+
+            // The Application layout's header toolbar: the member toolbar, which the layout's styles hide on wide screens for a
+            // member (their tools and account are in the sidebar there); guests keep it (Log in, Join), and narrow screens have the
+            // standard header with it.
+            case 'sys_application_toolbar':
+                $oMenu = BxDolMenu::getObjectInstance('sys_toolbar_member');
+                $mixedResult = $oMenu ? $oMenu->getCode() : '';
                 break;
 
             case 'sys_toolbar_search':
@@ -139,25 +162,171 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return $mixedResult;
     }
 
-    function msgBox($sText, $iTimer = 0, $sOnClose = "")
+    /**
+     * A message in a box. A state says why something isn't shown and what to do: an array with 'text' and any of
+     * 'title', 'icon' (an icon name) and 'buttons' ([['title' => text, 'link' => url], ...], the first is primary).
+     * A message that BxDolAcl gave for a denied action becomes its state (BxDolAcl::getDenialState): a guest gets
+     * "Log in" and "Sign up", an account without a profile "Create profile".
+     *
+     * @param string|array $mixedText translated message, or a state
+     */
+    public function msgBox($mixedText, $iTimer = 0, $sOnClose = "")
     {
         $iId = time() . mt_rand(1, 1000);
 
-        if($iTimer > 0)
+        // A timed message is a notice that fades out, never a denial.
+        $aState = null;
+        if(is_array($mixedText)) {
+            $aState = $mixedText;
+        }
+        elseif($iTimer <= 0 && $this->isEmptyText($mixedText)) {
+            return $this->emptyState();
+        }
+        elseif($iTimer <= 0) {
+            $aState = BxDolAcl::getDenialState($mixedText);
+        }
+        if($aState) {
+            return $this->msgBoxState($iId, $aState);
+        }
+
+        if($iTimer > 0) {
             BxDolTemplate::getInstance()->addJs(array('jquery.anim.js'));
+        }
 
         return $this->_oTemplate->parseHtmlByName('messageBox.html', array(
             'id' => $iId,
-            'msgText' => $sText,
-            'bx_if:timer' => array(
-                'condition' => $iTimer > 0,
+            'bx_if:plain' => array(
+                'condition' => true,
                 'content' => array(
-                    'id' => $iId,
-                    'time' => 1000 * $iTimer,
-                    'on_close' => $sOnClose,
+                    'msgText' => $mixedText,
+                    'bx_if:timer' => array(
+                        'condition' => $iTimer > 0,
+                        'content' => array(
+                            'timer_id' => $iId,
+                            'time' => 1000 * $iTimer,
+                            'on_close' => $sOnClose,
+                        )
+                    )
                 )
-            )
+            ),
+            'bx_if:state' => array('condition' => false, 'content' => array()),
         ));
+    }
+
+    /**
+     * The empty state of a list or a block, the same on the site and in Studio: an icon, one line in muted text and
+     * an optional action, in place of the grey "Nothing here yet" plate.
+     *
+     * @param string $sText translated line; "Nothing here yet" when empty
+     * @param array $aButton optional action: ['title' => translated, 'link' => url] and/or 'onclick' => js; a button
+     *  with only 'onclick' is a <button>
+     * @param string $sIcon Lucide icon name
+     */
+    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox')
+    {
+        return $this->msgBoxState('bx-empty-' . bin2hex(random_bytes(4)), [
+            'icon' => $sIcon,
+            'text' => $sText !== '' ? $sText : _t('_Empty'),
+            'buttons' => !empty($aButton) ? [$aButton] : [],
+        ]);
+    }
+
+    /**
+     * Whether a message box says only that there is nothing here: it is then shown as an empty state.
+     */
+    protected function isEmptyText($mixedText)
+    {
+        if(!is_string($mixedText) || ($mixedText = trim($mixedText)) === '') {
+            return false;
+        }
+
+        return in_array($mixedText, [_t('_Empty'), _t('_sys_txt_empty')], true);
+    }
+
+    /**
+     * A state's icon: the Lucide SVG, or a font icon of the default iconset when Lucide has no such icon.
+     */
+    protected function msgBoxIcon($sIcon)
+    {
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
+        $sIconHtml = $oIconset ? $oIconset->getIconHtml($sIcon) : false;
+
+        return $sIconHtml !== false ? $sIconHtml : '<i class="sys-icon ' . bx_html_attribute($sIcon) . '"></i>';
+    }
+
+    /**
+     * The state version of msgBox: icon, title, text and buttons, centred, as the apps show an empty state.
+     */
+    protected function msgBoxState($iId, $aState)
+    {
+        // The state asks for a profile: the informer's "You don't have a profile yet" bar would say it twice.
+        if(($aState['level'] ?? 0) == MEMBERSHIP_ID_ACCOUNT) {
+            BxDolInformer::hide('sys-account-profile-system');
+        }
+
+        $sIconHtml = !empty($aState['icon']) && is_string($aState['icon']) ? $this->msgBoxIcon($aState['icon']) : '';
+        $aButtons = $this->msgBoxStateButtons($aState['buttons'] ?? null);
+
+        $sTitle = isset($aState['title']) && is_string($aState['title']) ? $aState['title'] : '';
+
+        return $this->_oTemplate->parseHtmlByName('messageBox.html', [
+            'id' => $iId,
+            'bx_if:plain' => ['condition' => false, 'content' => []],
+            'bx_if:state' => [
+                'condition' => true,
+                'content' => [
+                    'state_text' => $aState['text'] ?? '',
+                    'bx_if:icon' => [
+                        'condition' => $sIconHtml !== '',
+                        'content' => ['icon_html' => $sIconHtml],
+                    ],
+                    'bx_if:title' => [
+                        'condition' => $sTitle !== '',
+                        'content' => ['state_title' => bx_process_output($sTitle)],
+                    ],
+                    'bx_if:buttons' => [
+                        'condition' => !empty($aButtons),
+                        'content' => ['bx_repeat:buttons' => $aButtons],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * The state's buttons, the first one primary. A button that acts on the page (`onclick`) keeps its link as the
+     * fallback without script.
+     */
+    protected function msgBoxStateButtons($mixedButtons)
+    {
+        $aButtons = [];
+        foreach(is_array($mixedButtons) ? $mixedButtons : [] as $aButton) {
+            $bOnclick = !empty($aButton['onclick']) && is_string($aButton['onclick']);
+            if(empty($aButton['title']) || (empty($aButton['link']) && !$bOnclick)) {
+                continue;
+            }
+
+            $aVars = [
+                'class' => empty($aButtons) ? 'bx-btn-primary' : '',
+                'title' => bx_process_output($aButton['title']),
+                'attrs' => $bOnclick ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
+            ];
+
+            // a link, or a button when the action happens on the page and has no address
+            $bLink = !empty($aButton['link']);
+            $aButtons[] = [
+                'bx_if:link' => [
+                    'condition' => $bLink,
+                    'content' => array_merge($aVars, ['link' => $bLink ? bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))) : '']),
+                ],
+                'bx_if:button' => [
+                    'condition' => !$bLink,
+                    'content' => $aVars,
+                ],
+            ];
+        }
+
+        return $aButtons;
     }
 
     /**
@@ -447,7 +616,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         // add button width popup
         $sId = 'bx-str-limit-' . rand(1, PHP_INT_MAX);
         $sTitle = bx_html_attribute(_t('_sys_str_limit_show'));
-        $sPopup = '<button type="button" class="bx-str-limit pl-2" title="' . $sTitle . '" aria-label="' . $sTitle . '" onclick="$(\'#' . $sId . '\').dolPopup({pointer:{el:$(this), offset:\'10 1\'}})"><i class="sys-icon ellipsis-h"></i></button>';
+        $sPopup = '<button type="button" class="bx-str-limit pl-2" title="' . $sTitle . '" aria-label="' . $sTitle . '" onclick="$(\'#' . $sId . '\').dolPopup({pointer:{el:$(this), offset:\'10 1\'}})"><i class="sys-icon ellipsis"></i></button>';
         $sPopup .= BxTemplFunctions::getInstance()->transBox($sId, '<div class="bx-def-padding">' . ($sPopupString ?? $sStrOriginal) . '</div>', true);
 
         return $bReturnString ? $sResult . $sPopup : [$sResult, $sPopup];
@@ -883,21 +1052,15 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      */
     function getMetaIcons()
     {
-        // favicon icon
-        $sImageUrlFav = '';
-        if(($iId = (int)getParam('sys_site_icon')) != 0)
-            $sImageUrlFav = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_FILES)->getFileUrlById($iId);          
+        // favicons uploaded in Designer, the dark one for a dark browser/OS colour scheme
+        ['fav' => $sImageUrlFav, 'svg' => $sImageUrlSvg, 'dark' => $sImageUrlDark] = self::getUploadedFaviconUrls();
 
-        // svg icon
-        $sImageUrlSvg = '';
-        if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
-            $sImageUrlSvg = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
-
-        // default icon, with a dark variant for a dark browser/OS colour scheme when the template has one
-        $sImageUrlDark = '';
+        // else the default icon, with the template's dark variant unless a dark one was uploaded
         if(empty($sImageUrlFav) && empty($sImageUrlSvg)) {
             $sImageUrlFav = $sImageUrlSvg = $this->_oTemplate->getIconUrl('favicon.svg');
-            $sImageUrlDark = $this->getMetaIconDarkUrl();
+            if(empty($sImageUrlDark)) {
+                $sImageUrlDark = $this->getMetaIconDarkUrl();
+            }
         }
         $bImageDark = !empty($sImageUrlDark);
 
@@ -933,12 +1096,35 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             'bx_if:icon_dark' => [
                 'condition' => $bImageDark,
                 'content' => [
-                    'url' => bx_html_attribute($sImageUrlSvg),
+                    'url_fav' => bx_html_attribute($sImageUrlFav ?: $sImageUrlSvg),
+                    'url_svg' => bx_html_attribute($sImageUrlSvg ?: $sImageUrlFav),
                     'url_dark' => bx_html_attribute($sImageUrlDark)
                 ]
             ],
             'url_apple' => bx_html_attribute($sImageUrlApl),
         ]);
+    }
+
+    /**
+     * Favicons uploaded in Designer (Studio > Designer > Icon): any format in 'fav', an SVG in 'svg', and an SVG or PNG
+     * for dark browser tabs in 'dark'. favicon.php sends /favicon.ico to 'fav' or 'svg'.
+     * @return array ['fav' => URL, 'svg' => URL, 'dark' => URL], '' for each one not uploaded
+     */
+    public static function getUploadedFaviconUrls()
+    {
+        $aUrls = ['fav' => '', 'svg' => '', 'dark' => ''];
+
+        if(($iId = (int)getParam('sys_site_icon')) != 0)
+            $aUrls['fav'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_FILES)->getFileUrlById($iId);
+
+        if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
+            $aUrls['svg'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+
+        if(($iId = (int)getParam('sys_site_icon_dark')) != 0) {
+            $aUrls['dark'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+        }
+
+        return $aUrls;
     }
 
     /**
@@ -1106,8 +1292,8 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * Site logo for the email header ({site_logo} marker): the logo uploaded in Designer when
-     * it is a PNG, JPEG or GIF, otherwise the site title as text, since email clients block SVG.
+     * Site logo for the email header ({site_logo} marker): the email logo uploaded in Designer, else the site logo,
+     * when it is a PNG, JPEG or GIF, otherwise the site title as text, since email clients block SVG.
      * The dark-mode logo goes next to it, hidden; the default header shows it in dark mode.
      * @return string HTML
      */
@@ -1116,8 +1302,9 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         $sTitle = trim(html_entity_decode((string)getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
 
         $oDesigns = BxDolDesigns::getInstance();
-        $sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogo());
-        $sUrlDark = $sUrl !== '' ? $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogoDark()) : '';
+        $aSources = $this->getEmailLogoSources();
+        $sUrl = $aSources['logo']['url'];
+        $sUrlDark = $aSources['logo_dark']['url'];
 
         $sAlt = trim(html_entity_decode((string)$oDesigns->getSiteLogoAlt(), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         if($sAlt === '')
@@ -1150,6 +1337,34 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Where the email header's logos come from: the email logos uploaded in Designer (sys_site_logo_email*) when they
+     * are a PNG, JPEG or GIF, else the site's logos. Without a light logo there is no dark one either, and a light email
+     * logo is never paired with the site's dark logo.
+     * @return array by type (logo, logo_dark): ['source' => 'email' | 'site' | 'none', 'url' => string]
+     */
+    public function getEmailLogoSources()
+    {
+        $oDesigns = BxDolDesigns::getInstance();
+        $aNone = ['source' => 'none', 'url' => ''];
+
+        $aResult = ['logo' => $aNone, 'logo_dark' => $aNone];
+        if(($sUrl = $this->_getEmailLogoUrl((int)getParam('sys_site_logo_email'))) !== '')
+            $aResult['logo'] = ['source' => 'email', 'url' => $sUrl];
+        else if(($sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogo())) !== '')
+            $aResult['logo'] = ['source' => 'site', 'url' => $sUrl];
+
+        if($aResult['logo']['source'] == 'none')
+            return $aResult;
+
+        if(($sUrl = $this->_getEmailLogoUrl((int)getParam('sys_site_logo_email_dark'))) !== '')
+            $aResult['logo_dark'] = ['source' => 'email', 'url' => $sUrl];
+        else if($aResult['logo']['source'] == 'site' && ($sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogoDark())) !== '')
+            $aResult['logo_dark'] = ['source' => 'site', 'url' => $sUrl];
+
+        return $aResult;
+    }
+
+    /**
      * A Designer logo's URL that lasts in an email: a public transcoded copy, since Designer
      * stores the original as a private file whose links expire. Empty unless it is a PNG, JPEG or GIF.
      */
@@ -1168,27 +1383,12 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * The profile's letter avatar colour (BxDolTemplate::getColorCode, as on the site) as hex,
-     * since some email clients ignore rgba(). Darkened just enough to keep the white letter
-     * at 3:1, the WCAG AA level for large bold text.
+     * The profile's letter avatar colour (BxDolTemplate::getColorCode, as on the site, AA with the white letter)
+     * as hex, since some email clients ignore rgba().
      */
     protected function _getEmailAvatarColor($iProfileId)
     {
         $aRgb = array_map('intval', array_slice(BxDolTemplate::getColorCode($iProfileId), 0, 3));
-
-        $fnLuminance = function($aRgb) {
-            $aLinear = array_map(function($i) {
-                $f = $i / 255;
-                return $f <= 0.04045 ? $f / 12.92 : pow(($f + 0.055) / 1.055, 2.4);
-            }, $aRgb);
-
-            return 0.2126 * $aLinear[0] + 0.7152 * $aLinear[1] + 0.0722 * $aLinear[2];
-        };
-
-        for($i = 0; $i < 20 && 1.05 / ($fnLuminance($aRgb) + 0.05) < 3; $i++)
-            $aRgb = array_map(function($c) {
-                return (int)floor($c * 0.95);
-            }, $aRgb);
 
         return sprintf('#%02x%02x%02x', $aRgb[0], $aRgb[1], $aRgb[2]);
     }
@@ -1261,8 +1461,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * The icon set's code for <head> (BxBaseIconset::getCodeHead): Lucide loads its script here, beside the page's
-     * own scripts.
+     * The icon set's code for <head> (BxBaseIconset::getCodeHead), for a set that loads a script there.
      */
     protected function getInjHeadIcons()
     {
@@ -1302,6 +1501,25 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 'condition' => $bSmooth,
                 'content' => ['factor' => rtrim(rtrim(number_format($fFactor, 2, '.', ''), '0'), '.')],
             ],
+        ]);
+    }
+
+    /**
+     * The accent color Studio > Designer > Settings picks, when it isn't the default blue: its scale as the
+     * --bx-accent-* variables that every blue-* class reads (template/css/tailwind.css, BxDolDesigns::getAccentPresets).
+     */
+    protected function getInjHeadDesignAccent()
+    {
+        $aScale = BxDolDesigns::getAccentScale();
+        if(empty($aScale))
+            return '';
+
+        $aSteps = [];
+        foreach($aScale as $iStep => $sRgb)
+            $aSteps[] = ['step' => (int)$iStep, 'rgb' => preg_replace('/[^0-9 ]/', '', $sRgb)];
+
+        return $this->_oTemplate->parseHtmlByName('design_accent.html', [
+            'bx_repeat:steps' => $aSteps,
         ]);
     }
 

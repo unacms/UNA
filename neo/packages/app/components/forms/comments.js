@@ -241,6 +241,7 @@ export default function FormComments(props) {
                                 <Profile
                                     {...currentUser}
                                     url_avatar={currentUser.avatar}
+                                    color={currentUser.color}
                                     displayType="unit_wo_info"
                                     displaySize="md"
                                 />

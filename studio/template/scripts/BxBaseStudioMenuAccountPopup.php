@@ -86,7 +86,8 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
     }
 
     /**
-     * The signed-in profile's picture for the name row, or an empty string when the profile has none.
+     * The signed-in profile's avatar for the name row, as the site's header shows it (BxBaseMenuToolbar): the picture, or the
+     * name's first letter on its colour when there is none. An operator without a profile gets the account's.
      */
     protected function getProfilePicture()
     {
@@ -95,13 +96,13 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
             return '';
         }
 
-        $sUrl = $oProfile->getIcon();
-        if(empty($sUrl) || !is_string($sUrl)) {
+        $sUnit = $oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info_links', 'size' => 'icon']]);
+        if(empty($sUnit) || !is_string($sUnit)) {
             return '';
         }
 
         return $this->_oTemplate->parseHtmlByName('menu_account_popup_picture.html', [
-            'url' => bx_html_attribute($sUrl)
+            'unit' => $sUnit
         ]);
     }
 }

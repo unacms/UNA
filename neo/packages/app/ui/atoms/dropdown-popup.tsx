@@ -31,6 +31,12 @@ const MENU_MOTION_OPEN_CLASS = 'web:duration-250 web:scale-100';
 const MENU_MOTION_ENTER_CLASS = 'web:duration-250 web:scale-97';
 const MENU_MOTION_CLOSE_CLASS = 'web:duration-150 web:scale-99';
 
+// Where the menu grows from: the trigger's corner it is anchored at.
+function popupOrigin(above: boolean, end: boolean) {
+    if (above) return end ? 'web:origin-bottom-right' : 'web:origin-bottom-left';
+    return end ? 'web:origin-top-right' : 'web:origin-top-left';
+}
+
 function menuMotionClass(measured: boolean, closing: boolean) {
     if (!measured) return MENU_MOTION_ENTER_CLASS;
     return closing ? MENU_MOTION_CLOSE_CLASS : MENU_MOTION_OPEN_CLASS;
@@ -53,10 +59,23 @@ type ButtonPos = {
     shouldOpenAbove: boolean;
     /** Web: height of the fixed popup layer, for anchoring an above-open popup by its bottom edge. */
     viewportHeight: number;
+    /** Web: width of the fixed popup layer (no scrollbar), for anchoring a popup by its right edge. */
+    viewportWidth: number;
 };
 
 /** Position while closed: the initial state and what closing resets to. */
-const CLOSED_POS: ButtonPos = { triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 };
+const CLOSED_POS: ButtonPos = { triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0, viewportWidth: 0 };
+
+/** Web: the popup keeps this far from the window's sides. */
+const POPUP_EDGE = 16;
+
+/**
+ * Which edge of its trigger a web popup lines up with: `start` (the trigger's left edge), `end` (its right edge, the
+ * popup opening leftwards), or `auto`: `end` for a trigger in the right half of the window, as UNA's header popups
+ * open under their buttons. A popup that would cross the window's right edge from the trigger's left edge lines up
+ * with its right edge instead; either way it stays 16px inside the window.
+ */
+export type DropdownPopupAlign = 'start' | 'end' | 'auto';
 
 const WEB_FOCUSABLE_SELECTOR = [
     'a[href]',
@@ -110,6 +129,8 @@ export type DropdownPopupProps = {
     defaultOpen?: boolean;
     /** Prefer opening above the trigger. */
     showOnTop?: boolean;
+    /** Web: the trigger's edge the popup lines up with (DropdownPopupAlign); `start` by default. Native ignores it. */
+    align?: DropdownPopupAlign;
     /** Popup shell classes; defaults to theme `dropdown.cnt`. */
     contentClasses?: string;
     /** When true, allows page scroll while popup is open. */
@@ -138,6 +159,7 @@ export default function DropdownPopup({
     maxPopupWidth,
     defaultOpen = false,
     showOnTop = false,
+    align = 'start',
     contentClasses = dropdownTheme?.cnt,
     hoverMode = false,
     openOnFocus = false,
@@ -260,6 +282,7 @@ export default function DropdownPopup({
                 maxHeight,
                 shouldOpenAbove,
                 viewportHeight: isWeb ? document.documentElement.clientHeight : 0,
+                viewportWidth: isWeb ? document.documentElement.clientWidth : 0,
             });
         })) return;
     }, [measureElement, minPopupWidth, showOnTop, windowHeight, windowWidth, isWeb]);
@@ -449,6 +472,24 @@ export default function DropdownPopup({
     }
     if (finalLeft < 16) finalLeft = 32;
 
+    // Web: anchored to the trigger. A popup that lines up with the trigger's right edge (`align`, or one that would
+    // cross the window's right edge from its left edge) is placed by `right`, so its width, still unknown on the first
+    // layout, doesn't move it. One that fits neither way sits as near its trigger as the window allows. Native keeps
+    // `finalLeft`.
+    const popupViewportWidth = buttonPos.viewportWidth || windowWidth;
+    const triggerEnd = buttonPos.x + buttonPos.width;
+    const maxLeft = Math.max(POPUP_EDGE, popupViewportWidth - POPUP_EDGE - effectivePopupWidth);
+    const prefersEnd = align === 'end'
+        || (align === 'auto' && buttonPos.x + buttonPos.width / 2 > popupViewportWidth / 2);
+    const wantsEnd = prefersEnd || buttonPos.x > maxLeft;
+    const anchorEnd = isWeb && wantsEnd && triggerEnd - effectivePopupWidth >= POPUP_EDGE;
+    let horizontalPos: { left: number } | { right: number } = { left: finalLeft };
+    if (anchorEnd) {
+        horizontalPos = { right: Math.max(POPUP_EDGE, popupViewportWidth - triggerEnd) };
+    } else if (isWeb && wantsEnd) {
+        horizontalPos = { left: Math.min(Math.max(POPUP_EDGE, buttonPos.x), maxLeft) };
+    }
+
     // Tweak these two constants if the gap looks off. They are intentionally
     // asymmetric — on native (especially Android) the "below" anchor often
     // needs more breathing room than the "above" one because of trigger
@@ -504,7 +545,7 @@ export default function DropdownPopup({
                 ...(anchorAboveByBottom
                     ? { bottom: buttonPos.viewportHeight - buttonPos.triggerY + triggerGapAbove }
                     : { top: popupTop }),
-                left: finalLeft,
+                ...horizontalPos,
                 opacity: hasMeasured && !isClosing ? 1 : 0,
                 visibility: hasMeasured ? 'visible' : 'hidden',
                 elevation: 5,
@@ -520,7 +561,7 @@ export default function DropdownPopup({
                 contentClasses,
                 contentClassName,
                 MENU_MOTION_CLASS,
-                buttonPos.shouldOpenAbove ? 'web:origin-bottom-left' : 'web:origin-top-left',
+                popupOrigin(buttonPos.shouldOpenAbove, anchorEnd),
                 menuMotionClass(hasMeasured, isClosing)
             )}
         >

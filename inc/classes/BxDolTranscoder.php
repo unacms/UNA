@@ -170,7 +170,8 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
             if ($aQueue['file_url_result'] && $aQueue['file_id_result']) {
   
                 // get transcoded file from provided URL              
-                $sFileData = bx_file_get_contents ($aQueue['file_url_result']);
+                $sHttpCode = null;
+                $sFileData = bx_file_get_contents ($aQueue['file_url_result'], [], 'get', [], $sHttpCode, [], BX_DOL_FILE_TRANSFER_TIMEOUT);
                 if (false === $sFileData) {
                     $o->getDb()->updateQueueStatus($aQueue['file_id_source'], BX_DOL_QUEUE_FAILED, "download file failed: {$aQueue['file_url_result']}\n");
                     bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: processCompleted failed, get transcoded file from URL ({$aQueue['file_url_result']}) failed", BX_LOG_ERR);
@@ -1153,7 +1154,8 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
             return false;
         }
 
-        $sFileData = bx_file_get_contents ($sUrl, [], 'get', []);
+        $sHttpCode = null;
+        $sFileData = bx_file_get_contents ($sUrl, [], 'get', [], $sHttpCode, [], BX_DOL_FILE_TRANSFER_TIMEOUT);
         if (false === $sFileData) {
             bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: storeFileLocally_Storage failed, getting file from URL({$sUrl}) failed", BX_LOG_ERR);
             return false;
@@ -1175,7 +1177,8 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
             return false;
         }
 
-        $sFileData = bx_file_get_contents ($aQueue['file_url_source'], [], 'get', []);
+        $sHttpCode = null;
+        $sFileData = bx_file_get_contents ($aQueue['file_url_source'], [], 'get', [], $sHttpCode, [], BX_DOL_FILE_TRANSFER_TIMEOUT);
         if (false === $sFileData) {
             bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: storeFileLocally_Queue failed, getting file from URL({$aQueue['file_url_source']}) failed", BX_LOG_ERR);
             return false;

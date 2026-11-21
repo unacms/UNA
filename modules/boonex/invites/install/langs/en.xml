@@ -60,7 +60,7 @@
     <string name="_bx_invites_grid_invites_column_title_date"><![CDATA[Date]]></string>
     <string name="_bx_invites_grid_invites_column_title_who_sent"><![CDATA[Who sent]]></string>
     <string name="_bx_invites_grid_invites_column_title_multi"><![CDATA[Reusable]]></string>
-    <string name="_bx_invites_grid_invites_column_title_aj"><![CDATA[After Join]]></string>
+    <string name="_bx_invites_grid_invites_column_title_aj"><![CDATA[After sign-up]]></string>
     <string name="_bx_invites_grid_invites_column_title_date_seen"><![CDATA[Date seen]]></string>
     <string name="_bx_invites_grid_invites_column_title_joined_account"><![CDATA[Joined account]]></string>
     <string name="_bx_invites_grid_invites_column_title_date_joined"><![CDATA[Date joined]]></string>
@@ -109,9 +109,8 @@
     <string name="_bx_invites_option_enable_request_invite"><![CDATA[Enable invitation requests by email]]></string>
     <string name="_bx_invites_option_requests_notifications"><![CDATA[Enable invitation requests in notifications]]></string>
     <string name="_bx_invites_option_requests_email"><![CDATA[Emails to send invitation requests to (comma separated)]]></string>
-    <string name="_bx_invites_option_enable_reg_by_inv"><![CDATA[Enable registration by invitation only]]></string>
     <string name="_bx_invites_option_context_auto_join"><![CDATA[Enable auto join when 'Invite to Context' feature is used]]></string>
-    <string name="_bx_invites_option_context_key_length"><![CDATA[Key length for 'Invite to Context' feature (0 - default length)]]></string>
+    <string name="_bx_invites_option_context_key_length"><![CDATA[Key length for invitations to communities (0 = default length)]]></string>
 
 
     <!-- ACL -->
@@ -124,19 +123,19 @@
     <string name="_bx_invites_et_invite_form_message"><![CDATA[Invite form message.]]></string>
     <string name="_bx_invites_et_invite_form_message_subject"><![CDATA[{profile_name} invites you to join {site_name}]]></string>
     <string name="_bx_invites_et_invite_form_message_body"><![CDATA[{email_header}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2328;">
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2328;">
   <tr>
-    <td style="padding:8px 0 16px;">
-      <p style="margin:0;font-size:22px;line-height:1.3;font-weight:600;">{profile_name} invites you to join <a href="{site_url}" style="color:#1f2328;text-decoration:none;">{site_name}</a></p>
-    </td>
+    <td style="padding:8px 0 16px;"></div>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{profile_name} invites you to join <a href="{site_url}" style="color:#1f2328;text-decoration:none;">{site_name}</a></p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"></td>
   </tr>
   <tr>
     <td style="padding:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#57606a;">Message from {profile_name}</td>
   </tr>
   <tr>
-    <td style="padding:16px 20px;background:#f6f8fa;border-radius:12px;font-size:15px;line-height:1.6;">
-      <p style="margin:0;">{text}</p>
-    </td>
+    <td style="padding:16px 20px;background:#f6f8fa;border-radius:12px;font-size:15px;line-height:1.6;"></div>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{text}</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"></td>
   </tr>
   <tr>
     <td align="left" style="padding:28px 0 12px;">
@@ -149,7 +148,7 @@
       <a href="{join_url}" style="color:#0969da;word-break:break-all;">{join_url}</a>
     </td>
   </tr>
-</table>
+</table></div>
 {email_footer}]]></string>
 
     <string name="_bx_invites_et_invite_by_request_message"><![CDATA[Invite by request message.]]></string>
@@ -165,9 +164,9 @@
     <string name="_bx_invites_et_request_form_message"><![CDATA[Request Invitation form message.]]></string>
     <string name="_bx_invites_et_request_form_message_subject"><![CDATA[Request invitation.]]></string>
     <string name="_bx_invites_et_request_form_message_body"><![CDATA[{email_header}
-<p><b>Dear Administrator</b>,</p>
-<p>{sender_name} (<a href="mailto:{sender_email}">{sender_email}</a>; IP {sender_ip}) requested an invitation to join <b>{site_name}</b> site.</p>
-<p><a href="{manage_url}">Click here</a> to manage requests.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>Dear Administrator</b>,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{sender_name} (<a href="mailto:{sender_email}">{sender_email}</a>; IP {sender_ip}) requested an invitation to join <b>{site_name}</b> site.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{manage_url}">Click here</a> to manage requests.</p>
 {email_footer}]]></string>
 
 
@@ -187,9 +186,9 @@
     <string name="_bx_invites_msg_invitation"><![CDATA[Hello! This site might be interesting for you.]]></string>
     <string name="_bx_invites_msg_invitation_sent"><![CDATA[Invitation message was queued to send to {0} email addresses from the list.]]></string>
     <string name="_bx_invites_msg_request_sent"><![CDATA[Invitation request received. We'll send an invite when it's your turn.]]></string>
-    <string name="_bx_invites_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_invites_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_invites_err_limit_reached"><![CDATA[The number of invitations sent by you reached the limit.]]></string>
-    <string name="_bx_invites_err_not_available"><![CDATA[The feature is not available now. Please, try again later.]]></string>
+    <string name="_bx_invites_err_not_available"><![CDATA[The feature is not available now. Please try again later.]]></string>
     <string name="_bx_invites_err_invite"><![CDATA[Cannot send an invitation on request.]]></string>
     <string name="_bx_invites_err_delete_invite"><![CDATA[Cannot delete the invite.]]></string>
     <string name="_bx_invites_err_delete_request"><![CDATA[Cannot delete the request.]]></string>
@@ -197,9 +196,9 @@
     <string name="_bx_invites_err_used"><![CDATA[The invitation link isn't available or already used.]]></string>
     <string name="_bx_invites_err_code_not_found"><![CDATA[The invitation code is invalid.]]></string>
     <string name="_bx_invites_err_code_not_applicable"><![CDATA[The invitation code isn't applicable.]]></string>
-    <string name="_bx_invites_err_context_not_found"><![CDATA[The invitation code isn't associated with any context.]]></string>
+    <string name="_bx_invites_err_context_not_found"><![CDATA[The invitation code isn't associated with any community.]]></string>
     <string name="_bx_invites_err_already_send"><![CDATA[The request already sent for this email.]]></string>
-    <string name="_bx_invites_err_already_registed"><![CDATA[User with this email already registered. Please use  <a href="{0}">forgot password</a> to restore access to your account.]]></string>
+    <string name="_bx_invites_err_already_registed"><![CDATA[User with this email already registered. Please use <a href="{0}">forgot password</a> to restore access to your account.]]></string>
     <string name="_bx_invites_request_status_new"><![CDATA[New]]></string>
     <string name="_bx_invites_request_status_invited"><![CDATA[Invited]]></string>
     <string name="_bx_invites_request_status_seen"><![CDATA[Seen]]></string>
@@ -218,7 +217,7 @@
 
     <string name="_bx_invites_title_date_invite_sent"><![CDATA[Date sent]]></string>
     <string name="_bx_invites_title_date_invite_seen"><![CDATA[Date seen]]></string>
-    <string name="_bx_invites_txt_email_use"><![CDATA[Mandatory use during join.]]></string>
+    <string name="_bx_invites_txt_email_use"><![CDATA[Required at sign-up]]></string>
 
     <string name="_bx_invites_reports_for_analytics_invited_total"><![CDATA[Invited - Total numbers]]></string>
     <string name="_bx_invites_reports_for_analytics_invited_speed_grows"><![CDATA[Invited - Grows speed]]></string>
@@ -226,5 +225,6 @@
     <string name="_bx_invites_reports_for_analytics_invitation_speed_grows"><![CDATA[Invitation - Grows speed]]></string>
 
     <string name="_bx_invites_alert_action_request"><![CDATA[<b class="bx-ntfs-content-profile">{entry_sample}</b> request invitation - <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_invites_alert_action_request_notify_personal"><![CDATA[New requests]]></string>
+    <string name="_bx_invites_alert_action_request_notify_personal"><![CDATA[New invitation requests]]></string>
+    <string name="_bx_invites_alert_action_info_request_notify_personal"><![CDATA[Someone asked for an invitation to join the site.]]></string>
 </resources>

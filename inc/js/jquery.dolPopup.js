@@ -130,7 +130,8 @@
             return;
 
         if (!$el) {
-            if ($('.bx-popup-wrapper[aria-modal="true"]').length)
+            // only a shown one counts: a popup in the page's markup can carry aria-modal while hidden (the site search)
+            if ($('.bx-popup-wrapper[aria-modal="true"]').filter(':visible').length)
                 return;
 
             $('[data-bx-popup-inert]').each(function () {

@@ -68,6 +68,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     const dropdown = (
         appSetting('notifications', 'url') === '/' + uri ? <ButtonComponent {...renderButtonProps} selected /> : <DropdownPopup
             open={ntfsOpen}
+            align="auto"
             minPopupWidth={360}
             onOpenChange={handleNotificationsToggle}
             buttonProps={children ? undefined : renderButtonProps}

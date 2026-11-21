@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_credits_form_bundle_input_title_err"><![CDATA[This field is required. Please fill it in for all languages.]]></string_upd>
+    <string_upd name="_bx_credits_form_bundle_input_name_err"><![CDATA[This field is required for API calls. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_credits_form_bundle_input_amount_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_credits_form_bundle_input_price_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_credits_form_credit_input_amount_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+</resources>

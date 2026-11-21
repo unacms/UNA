@@ -29,8 +29,8 @@ This antispam method scan submitted content for the URLs and check them if any o
 <table style="width:100%;"><tr>
     <td>DNSBL: {0}</td>
     <td>URI DNSBL: {1}</td>
-    <td>Login behavior: {2}</td>
-    <td>Join behavior: {3}</td>
+    <td>Sign-in behavior: {2}</td>
+    <td>Sign-up behavior: {3}</td>
 </tr></table>
 ]]></string>
     <string name="_bx_antispam_ip_table_status"><![CDATA[IP table mode: {0}]]></string>
@@ -131,15 +131,15 @@ This antispam method scan submitted content for the URLs and check them if any o
 	<string name="_bx_antispam_option_report"><![CDATA[Send report to admin if spam content discovered]]></string>
 	<string name="_bx_antispam_option_ip_list_type"><![CDATA[IP table mode]]></string>
 	<string name="_bx_antispam_option_dnsbl_enable"><![CDATA[Enable DNS Block Lists]]></string>
-	<string name="_bx_antispam_option_dnsbl_behaviour_login"><![CDATA[User login behaviour if listed in DNS Block Lists]]></string>
-	<string name="_bx_antispam_option_dnsbl_behaviour_join"><![CDATA[User join behaviour if listed in DNS Block Lists]]></string>
+	<string name="_bx_antispam_option_dnsbl_behaviour_login"><![CDATA[Sign-in behavior if listed in DNS block lists]]></string>
+	<string name="_bx_antispam_option_dnsbl_behaviour_join"><![CDATA[Sign-up behavior if listed in DNS block lists]]></string>
 	<string name="_bx_antispam_option_uridnsbl_enable"><![CDATA[Enable URI DNS Block Lists]]></string>
 	<string name="_bx_antispam_option_akismet_enable"><![CDATA[Enable Akismet]]></string>
 	<string name="_bx_antispam_option_akismet_api_key"><![CDATA[Akismet API Key]]></string>
 	<string name="_bx_antispam_option_stopforumspam_enable"><![CDATA[Enable "Stop Forum Spam"]]></string>
     <string name="_bx_antispam_option_stopforumspam_api_key"><![CDATA["Stop Forum Spam" API Key]]></string> 
 	<string name="_bx_antispam_option_disposable_email_domains_mode"><![CDATA[Mode]]></string>
-	<string name="_bx_antispam_option_disposable_email_domains_behaviour_join"><![CDATA[Join behaviour]]></string>
+	<string name="_bx_antispam_option_disposable_email_domains_behaviour_join"><![CDATA[Sign-up behavior]]></string>
   <string name="_bx_antispam_option_profanity_filter_enable"><![CDATA[Enable Profanity filter]]></string>
   <string name="_bx_antispam_option_profanity_filter_dicts"><![CDATA[Dictionaries]]></string>
   <string name="_bx_antispam_option_profanity_filter_bad_words_list"><![CDATA[Bad words list (comma separated)]]></string>
@@ -150,7 +150,7 @@ This antispam method scan submitted content for the URLs and check them if any o
   <string name="_bx_antispam_spam_report_name"><![CDATA[Spam report message]]></string>
     <string name="_bx_antispam_spam_report_subject"><![CDATA[Automatic spam report]]></string>
     <string name="_bx_antispam_spam_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
 
 <b>Page:</b> {Page}<br /><br />
 
@@ -167,7 +167,7 @@ This antispam method scan submitted content for the URLs and check them if any o
 <b>Spam content:</b>
 <pre>
 {SpamContent}
-</pre>
+</pre></div>
 {email_footer}]]></string>
 
 	<string name="_bx_antispam_type_toxicity_filter"><![CDATA[Toxicity Filter]]></string>
@@ -179,55 +179,55 @@ This antispam method scan submitted content for the URLs and check them if any o
 	<string name="_bx_antispam_option_toxicity_filter_action_disapprove"><![CDATA[Disapprove all toxic content if possible, block the rest]]></string>
 	<string name="_bx_antispam_option_toxicity_report"><![CDATA[Send report to admin if toxic content discovered]]></string>
 	<string name="_bx_antispam_option_toxicity_filter_api_key"><![CDATA[Perspective API key (see <a href="https://developers.perspectiveapi.com/s/docs-get-started">this</a> page on how obtain it)]]></string>
-	<string name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Toxicity threshold to consider a text as toxic (0 - 100)]]></string>
-	<string name="_bx_antispam_form_submission_error"><![CDATA[Incorrect info. The form seems to contain some toxic content. Please, check your inputs and try to submit again.]]></string>
+	<string name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Toxicity score at which a text counts as toxic (0 to 100)]]></string>
+	<string name="_bx_antispam_form_submission_error"><![CDATA[Incorrect info. The form seems to contain some toxic content. Please check your inputs and try to submit again.]]></string>
 
 	<string name="_bx_antispam_toxicity_blocked_report_name"><![CDATA[Toxicity blocked report message]]></string>
     <string name="_bx_antispam_toxicity_blocked_report_subject"><![CDATA[Toxic content has been blocked]]></string>
     <string name="_bx_antispam_toxicity_blocked_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <b>Page:</b> {Page}<br /><br />
 <b>Content:</b>
 <pre>
 {Content}
-</pre>
+</pre></div>
 {email_footer}]]></string>
 
 	<string name="_bx_antispam_toxicity_posted_report_name"><![CDATA[Toxicity posted report message]]></string>
     <string name="_bx_antispam_toxicity_posted_report_subject"><![CDATA[Toxic content has been posted]]></string>
     <string name="_bx_antispam_toxicity_posted_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <b>Page:</b> {Page}<br /><br />
 <bx_if:content_url>
 	<b>Content:</b> <a href="{c_url}">{c_url}</a><br /><br />
 </bx_if:content_url>
 <bx_if:manage_content_url>
 	<b>Manage:</b> <a href="{m_url}">{m_url}</a><br /><br />
-</bx_if:manage_content_url>
+</bx_if:manage_content_url></div>
 {email_footer}]]></string>
 
     <string name="_bx_antispam_adm_stg_cpt_category_lasso_moderation"><![CDATA[Lasso Moderation]]></string>
     <string name="_bx_antispam_option_lasso_moderation_enable"><![CDATA[Enable]]></string>
     <string name="_bx_antispam_option_lasso_moderation_api_key"><![CDATA[API key]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_webhook_secret"><![CDATA[Webhook Secret]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_webhook_secret"><![CDATA[Webhook secret]]></string>
     <string name="_bx_antispam_option_lasso_moderation_webhook_url"><![CDATA[Webhook URL]]></string>
     <string name="_bx_antispam_option_lasso_moderation_action"><![CDATA[Action]]></string>
     <string name="_bx_antispam_option_lasso_moderation_action_none"><![CDATA[None]]></string>
     <string name="_bx_antispam_option_lasso_moderation_action_disapprove"><![CDATA[Disapprove]]></string>
     <string name="_bx_antispam_option_lasso_moderation_report"><![CDATA[Send report to admin if harmful content discovered]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Toxicity threshold (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Threat threshold (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Identity attack threshold (0 - 100)]]></string>
-    <string name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Profanity threshold (0 - 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Toxicity threshold (0 to 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Threat threshold (0 to 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Identity attack threshold (0 to 100)]]></string>
+    <string name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Profanity threshold (0 to 100)]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_name"><![CDATA[Harmful content posted report message]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_subject"><![CDATA[Harmful content has been posted]]></string>
     <string name="_bx_antispam_et_lasso_moderation_report_body"><![CDATA[{email_header}
-<b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
 <bx_if:content_url>
 	<b>Content:</b> <a href="{c_url}">{c_url}</a><br /><br />
 </bx_if:content_url>
 <bx_if:manage_content_url>
 	<b>Manage:</b> <a href="{m_url}">{m_url}</a><br /><br />
-</bx_if:manage_content_url>
+</bx_if:manage_content_url></div>
 {email_footer}]]></string>
 </resources>

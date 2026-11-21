@@ -19,13 +19,26 @@ class BxTasksImportLinear extends BxDol
         $this->_oModule = $oModule;
     }
 
+    public function getRequestParams($aParams = [])
+    {
+        $aResult = [
+            'api_key' => $aParams['api_key'] ?? 'lin_api_key',
+            'params' => [
+                'filter' => array_merge(['project' => 'lin_api_project_name'], ($aParams['filter'] ?? [])),
+                'limit' => 1
+            ]
+        ];
+
+        return $aResult;
+    }
+
     public function perform($iContextId = 0, $aParams = [])
     {
-        $sReqApiKey = $aParams['req_api_key'] ?? '';
+        $sReqApiKey = $aParams['api_key'] ?? '';
         if(!$sReqApiKey || !BxDolProfile::getInstance($iContextId))
             return false;
 
-        $aReqParams = $aParams['req_params'] ?? [];
+        $aReqParams = $aParams['params'] ?? [];
 
         $sEndpoint = 'https://api.linear.app/graphql';
         $aRequest = [
@@ -60,37 +73,53 @@ class BxTasksImportLinear extends BxDol
             foreach($aFilter as $sKey => $sValue)
                 $aRequest['variables']['filter'][$sKey] = ['name' => ['eq' => $sValue]];
 
+        /**
+         * Imported tasks and comments are history: they go through the regular paths, 
+         * which fire the same alerts as new content, so nobody should be notified about them.
+         * 1 = BX_BASE_MOD_NTFS_SLTMODE_ABSOLUTE
+         */
+        $mixedSilentMode = BxDolAlerts::setSilentMode(1);
+
         $iProcessed = $iIssues = 0;
         $sAfter = null;
-        while($iProcessed < $iLimit) {
-            $aRequest['variables'] = array_merge($aRequest['variables'], [
-                'first' => min(100, $iLimit - $iProcessed),
-                'after' => $sAfter,
-            ]);
+        try {
+            while($iProcessed < $iLimit) {
+                $aRequest['variables'] = array_merge($aRequest['variables'], [
+                    'first' => min(100, $iLimit - $iProcessed),
+                    'after' => $sAfter,
+                ]);
 
-            $sData = bx_file_get_contents($sEndpoint, $aRequest, 'post-json', [
-                'Authorization: ' . $sReqApiKey
-            ]);
-            if(!$sData)
-                break;
-
-            $aData = json_decode($sData, true);
-            if(!$aData || !is_array($aData))
-                break;
-
-            foreach($aData['data']['issues']['nodes'] ?? [] as $aNode) {
-                if($this->addTask($iContextId, $aNode) !== false)
-                    $iIssues++;
-
-                $iProcessed++;
-            }
-
-            if(($aPageInfo = $aData['data']['issues']['pageInfo'] ?? false)) {
-                if($aPageInfo['hasNextPage'])
-                    $sAfter = $aPageInfo['endCursor'];
-                else
+                $sData = bx_file_get_contents($sEndpoint, $aRequest, 'post-json', [
+                    'Authorization: ' . $sReqApiKey
+                ]);
+                if(!$sData)
                     break;
+
+                $aData = json_decode($sData, true);
+                if(!$aData || !is_array($aData))
+                    break;
+
+                $aNodes = $aData['data']['issues']['nodes'] ?? [];
+                if(!$aNodes || !is_array($aNodes))
+                    break;
+
+                foreach($aNodes as $aNode) {
+                    if($this->addTask($iContextId, $aNode) !== false)
+                        $iIssues++;
+
+                    $iProcessed++;
+                }
+
+                // without a next page the same page would be imported again
+                $aPageInfo = $aData['data']['issues']['pageInfo'] ?? [];
+                if(empty($aPageInfo['hasNextPage']) || empty($aPageInfo['endCursor']))
+                    break;
+
+                $sAfter = $aPageInfo['endCursor'];
             }
+        }
+        finally {
+            BxDolAlerts::setSilentMode($mixedSilentMode);
         }
 
         return [$iProcessed, $iIssues];
@@ -103,6 +132,8 @@ class BxTasksImportLinear extends BxDol
         $iProfileAuthor = $this->getProfile($aData['creator'] ?? []);
         if(!$iProfileAuthor)
             return false;
+
+        $GLOBALS['glForceCurrentProfileId'] = $iProfileAuthor;
 
         $aStateCnv = [
             'Backlog' => BX_TASKS_STATE_BACBLOG,
@@ -182,6 +213,8 @@ class BxTasksImportLinear extends BxDol
             if(in_array($aContentInfo[$CNF['FIELD_STATE']], [BX_TASKS_STATE_CANCELLED, BX_TASKS_STATE_DUPLICATE, BX_TASKS_STATE_DONE]))
                 $this->_oModule->_oDb->updateEntriesBy([$CNF['FIELD_COMPLETED'] => 1], [$CNF['FIELD_ID'] => (int)$iContentId]);
         }
+
+        $GLOBALS['glForceCurrentProfileId'] = 0;
 
         return $bResult;
     }

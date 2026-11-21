@@ -19,7 +19,7 @@ $aConfig = array(
     'note' => 'Accounts, logins, user accounts',
     'version' => '15.0.5.DEV',
     'vendor' => 'UNA INC',
-    'help_url' => 'http://feed.una.io/?section={module_name}',
+    'help_url' => '',
 
     'compatible_with' => array(
         '15.0.x'

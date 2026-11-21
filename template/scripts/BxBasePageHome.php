@@ -49,9 +49,6 @@ class BxBasePageHome extends BxTemplPage
     public function getCode ()
     {
         $s = parent::getCode ();
-        $oTours = BxDolTours::getInstance();
-        if ($oTours->isAvailable(BxDolTours::HOME))
-            $s .= $this->_oTemplate->parseHtmlByName('homepage_tour.html', $oTours->getTemplateVars(BxDolTours::HOME));
 
         if($this->_sCanonicalUrl)
             BxDolTemplate::getInstance()->setPageUrl($this->_sCanonicalUrl);
@@ -129,7 +126,7 @@ class BxBasePageHome extends BxTemplPage
         return [
             'title' => _t('_sys_txt_splash_title'),
             'title_accent' => '',
-            'text' => _t('_sys_txt_splash_slogan'),
+            'text' => BxDolSplash::getInstance()->getTagline(),
             'join' => _t('_sys_txt_splash_join'),
             'login' => _t('_sys_txt_splash_login'),
             'join_icon' => '',
@@ -151,32 +148,19 @@ class BxBasePageHome extends BxTemplPage
             }
 
             $oTemplate = BxDolTemplate::getInstance();
+            $oSplash = BxDolSplash::getInstance();
             $aBlock['content'] = $oTemplate->parseHtmlByContent($aBlock['content'], array(
                 'join_link' => bx_absolute_url($oPermalink->permalink('page.php?i=create-account')),
                 'join_form' => $sJoinForm,
-                'join_form_in_box' => !empty($sJoinForm) ? DesignBoxContent(_t('_sys_txt_splash_join'), $sJoinForm, BX_DB_PADDING_DEF) : '',
+                // Sized as the home page's own sign-up and sign-in blocks, like the guest splash's boxes.
+                'join_form_in_box' => !empty($sJoinForm) ? $oSplash->getFormInBox('system:create_account_form', _t('_sys_txt_splash_join'), $sJoinForm) : '',
                 'login_link' => bx_absolute_url($oPermalink->permalink('page.php?i=login')),
                 'login_form' => $sLoginForm,
-                'login_form_in_box' => !empty($sLoginForm) ? DesignBoxContent(_t('_sys_txt_splash_login'), $sLoginForm, BX_DB_PADDING_DEF) : '',
+                'login_form_in_box' => !empty($sLoginForm) ? $oSplash->getFormInBox('system:login_form', _t('_sys_txt_splash_login'), $sLoginForm) : '',
             ));
         }
 
         return parent::_getBlockRaw($aBlock);
-    }
-
-    protected function _addJsCss()
-    {
-        parent::_addJsCss();
-        if (isAdmin()) {
-            $this->_oTemplate->addJs(array(
-                'shepherd/js/shepherd.min.js',
-            ));
-            $this->_oTemplate->addCss(array(
-                'homepage.css',
-                BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'shepherd/css/|shepherd.css',
-                'tour.css',
-            ));
-        }
     }
 }
 

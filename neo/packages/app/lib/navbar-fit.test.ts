@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit } from './navbar-fit.ts';
+import { navbarBoxWidth, navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit, navbarUnfittedTabSide } from './navbar-fit.ts';
 
 // The header at 1440px: Home, People, Posts, Orgs, Albums, Market (as both clients measure them), 8px apart, More 44px.
 const TABS = [104, 111, 101, 96, 116, 112];
@@ -54,16 +54,40 @@ test('the row starts where the main menu is placed in the header', () => {
     assert.equal(navbarRowStart('center', 300, 210), 45);
 });
 
-test("a centred row is centred on the header, as far as the bar leaves room", () => {
-    // the header's middle is 160px from the bar's left edge: the row starts at 160 - 105
-    assert.equal(navbarRowStart('center', 300, 210, 160), 55);
-    // too far either way: the row stays inside the bar
-    assert.equal(navbarRowStart('center', 300, 210, 20), 0);
-    assert.equal(navbarRowStart('center', 300, 210, 400), 90);
-    // a row that fills the bar can't move
-    assert.equal(navbarRowStart('center', 210, 210, 160), 0);
-    // no header measured yet: centred in the bar
-    assert.equal(navbarRowStart('center', 300, 210, null), 45);
+test("the bar is as wide as all its tabs, with More's room when More shows anyway", () => {
+    assert.equal(navbarBoxWidth({ ...base }), ALL);
+    assert.equal(navbarBoxWidth({ ...base, moreAlways: true }), ALL + 8 + 44);
+    assert.equal(navbarBoxWidth({ widths: [], gap: 8, more: 44, moreAlways: true }), 0);
+    // in a bar that wide every tab fits, with or without More
+    assert.equal(navbarTabsThatFit({ ...base, available: navbarBoxWidth({ ...base }) }), 6);
+    assert.equal(navbarTabsThatFit({ ...base, moreAlways: true, available: navbarBoxWidth({ ...base, moreAlways: true }) }), 6);
+});
+
+// What the wrapping row shows on its first line: a tab takes its width plus More's room, less the room it takes back.
+function firstLine(widths: number[], available: number, moreAlways: boolean): number {
+    const reserve = 8 + 44;
+    let used = 0;
+    let fit = 0;
+    for (let i = 0; i < widths.length; i++) {
+        const side = navbarUnfittedTabSide(i, widths.length, moreAlways);
+        const box = (widths[i] ?? 0) + (side.reserve ? reserve : 0) - (side.takeBack ? reserve : 0);
+        if (used + (i ? 8 : 0) + box > available) break;
+        used += (i ? 8 : 0) + box;
+        fit++;
+    }
+    return fit;
+}
+
+test('the unfitted row breaks where the fit puts More', () => {
+    for (const moreAlways of [false, true]) {
+        for (let available = 60; available <= ALL + 120; available += 7) {
+            assert.equal(
+                firstLine(TABS, available, moreAlways),
+                navbarTabsThatFit({ ...base, available, moreAlways }),
+                `available ${available}, moreAlways ${moreAlways}`,
+            );
+        }
+    }
 });
 
 test('a tab sits where its row starts', () => {

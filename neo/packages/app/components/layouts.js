@@ -4,6 +4,8 @@ import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
 import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, getPageSettings, isSplashPage, strToObj } from 'app/lib/util'
 import PageWidthStyle from 'app/ui/molecules/page/page-width-style'
+import PageAccentStyle from 'app/ui/molecules/page/page-accent-style'
+import { PageFooterWidth } from 'app/ui/molecules/page/page-footer-width'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { sidePaddingTiers } from 'app/lib/page-inset'
@@ -24,6 +26,7 @@ import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/system/version-notice';
 import { applySoundConfig } from 'app/lib/sound';
+import ProfilePrompt from 'app/components/elements/profile-prompt';
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -94,10 +97,14 @@ export default function Layouts({ path, data }) {
     return (
         <Layout layout={layout} data={pageData}>
             <PageWidthStyle data={pageData} />
-            <PageLayoutContent layout={layout} path={path} data={pageData} />
+            <PageAccentStyle data={pageData} />
+            <PageFooterWidth data={pageData}>
+                <PageLayoutContent layout={layout} path={path} data={pageData} />
+            </PageFooterWidth>
             <WindowSizeSync />
             <UnsavedFormConfirmHost />
             <FormModalHost />
+            <ProfilePrompt path={path} />
             {isVersionInfo ? <VersionWarning serverVersion={data.version} /> : null}
         </Layout>
     )

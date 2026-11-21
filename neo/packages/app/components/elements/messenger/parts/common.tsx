@@ -28,7 +28,7 @@ import ConvosList from 'app/components/elements/chat/parts/convos-list';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import JotsPanel, { ChatEmptyState } from 'app/components/elements/messenger/parts/jots-panel';
 import ComposerJs from 'app/components/elements/messenger/parts/composer';
-import { MobileListHeader, MobileChatHeader, ConvoActionsMenu, ConvoSearchButton, ConvoSearchField } from 'app/components/elements/messenger/parts/headers';
+import { MobileListActions, MobileListSubHeader, useMessengerListSearch, MobileChatHeader, ConvoActionsMenu, ConvoSearchButton, ConvoSearchField } from 'app/components/elements/messenger/parts/headers';
 import Confirm from 'app/ui/molecules/dialogs/confirm';
 import ConvoSettings from 'app/components/elements/messenger/parts/convo-settings';
 import ConvoFiles from 'app/components/elements/messenger/parts/convo-files';
@@ -168,6 +168,20 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             playCue('error');
         if (dynamicData?.data?.jot_id > 0)
             scrolTo();
+
+        // The sent message itself: UNA's reply carries only its id, and the message reaches the list through the
+        // conversation's socket event. Without sockets (none configured, or the connection is down) it would show only
+        // after a reload, so load the latest messages and merge them as that event would (rows already listed are
+        // skipped, so the event arriving as well adds nothing twice). The saved section lists saved messages only.
+        const sentConvoId = selectedConvo?.id;
+        if (dynamicData?.data?.jot_id > 0 && sentConvoId && selectedMenuRef.current !== 'saved') {
+            fetcher('/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: sentConvoId, jot: 0, start: 0 }))
+                .then((response) => {
+                    const latest: Jot[] = Array.isArray(response?.data?.jots) ? response.data.jots : [];
+                    if (latest.length) setJotUpdated({ action: 'added', id: sentConvoId, data: { jots: latest } });
+                })
+                .catch(() => undefined);
+        }
 
         if (dynamicData?.data?.data) {
             setJotUpdated(dynamicData?.data?.data);
@@ -719,26 +733,27 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     }, []);
 
     // ---------------------------------------------------------------------
-    // Injected page header. Small screens replace the whole bar with the
-    // list header or the chat header; desktop keeps the default site header
-    // (messenger chrome renders in-flow there).
+    // Page header on small screens. The open chat replaces the whole bar (its own Back, title and actions); the list
+    // keeps the header every top-level page has (the sidebar or menu button, the section's icon and the title) with
+    // the list's Search and Add as its actions, and the inbox/direct switcher and the search field in the row under
+    // it, as a section's tabs. Desktop keeps the default site header (messenger chrome renders in-flow there).
     // ---------------------------------------------------------------------
-    const injectedHeader = useMemo(() => {
-        if (!isSmallScreen) return null;
-        if (panelsVisible.jots && selectedConvo) {
-            return <MobileChatHeader title={selectedConvo.title} onBack={showConvo} menu={selectedConvo.menu} menuKey={selectedConvo.id} onAction={handleConvoAction} searchOpen={searchOpen} onSearchToggle={toggleSearch} onSearch={handleSearchTerm} />;
-        }
-        return (
-            <MobileListHeader
-                pageData={pageData}
-                onSearch={handleSearch}
-                addButtons={addButtons}
-                menuItems={menuItems}
-                menuIndex={menuIndex}
-                onMenuChange={onMenuChange}
-            />
-        );
-    }, [isSmallScreen, panelsVisible.jots, selectedConvo?.id, selectedConvo?.title, showConvo, selectedConvo?.menu, handleConvoAction, searchOpen, toggleSearch, handleSearchTerm, pageData, handleSearch, addButtons, menuItems, menuIndex, onMenuChange]);
+    const listSearch = useMessengerListSearch(handleSearch);
+    const isChatOpen = !!(panelsVisible.jots && selectedConvo);
+    const chatHeader = useMemo(() => {
+        if (!isSmallScreen || !isChatOpen || !selectedConvo) return null;
+        return <MobileChatHeader title={selectedConvo.title} onBack={showConvo} menu={selectedConvo.menu} menuKey={selectedConvo.id} onAction={handleConvoAction} searchOpen={searchOpen} onSearchToggle={toggleSearch} onSearch={handleSearchTerm} />;
+    }, [isSmallScreen, isChatOpen, selectedConvo?.id, selectedConvo?.title, showConvo, selectedConvo?.menu, handleConvoAction, searchOpen, toggleSearch, handleSearchTerm]);
+    const listActions = useMemo(() => (
+        isSmallScreen && !isChatOpen
+            ? <MobileListActions searchOpen={listSearch.open} onSearchToggle={listSearch.toggle} addButtons={addButtons} />
+            : null
+    ), [isSmallScreen, isChatOpen, listSearch.open, listSearch.toggle, addButtons]);
+    const listSubHeader = useMemo(() => (
+        isSmallScreen && !isChatOpen
+            ? <MobileListSubHeader searchOpen={listSearch.open} searchValue={listSearch.value} onSearchChange={listSearch.setValue} menuItems={menuItems} menuIndex={menuIndex} onMenuChange={onMenuChange} />
+            : null
+    ), [isSmallScreen, isChatOpen, listSearch.open, listSearch.value, listSearch.setValue, menuItems, menuIndex, onMenuChange]);
 
     // ---------------------------------------------------------------------
     // Render
@@ -749,9 +764,15 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     const errorOffset = listError ? 60 : 0;
     const convosListProps = {
         title: t('Messages'),
-        emptyText: t('No conversations found'),
+        // UNA's words for an empty inbox (`_bx_messenger_empty_inbox_*`), with its one action.
+        emptyText: t('No conversations yet'),
+        emptyDescription: t('Conversations you start or are added to show up here.'),
+        emptyIcon: 'MessagesSquare',
+        emptySearchText: t('No conversations found'),
+        emptySearchDescription: t('Try another name or word.'),
+        searching: isSmallScreen && !!listSearch.value,
         emptyAction: ({ resetSearch }: { resetSearch: () => void }) => (
-            Array.isArray(addButtons) && addButtons.length > 0 ? <CreateConvoButton variant="secondary" onSave={onSave} onShow={resetSearch} /> : null
+            Array.isArray(addButtons) && addButtons.length > 0 ? <CreateConvoButton size="regular" onSave={onSave} onShow={resetSearch} /> : null
         ),
         // Small screens show the list or the chat, never both, so a "current" row
         // would only linger after Back. Desktop keeps it highlighted next to the open chat.
@@ -774,8 +795,10 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             // The conversation list and the open chat sit on the screen background
             // (rows and bubbles carry their own fill), like the desktop split view.
             <View className='web:h-auto w-full h-full flex-row'>
-                {/* The open chat's bar has its own Back (to the list); the list's bar takes the header's. */}
-                <PageHeaderOptions main={injectedHeader} ownBackButton={!!(panelsVisible.jots && selectedConvo)} />
+                {/* The open chat's bar has its own Back (to the list); the list takes the header every top-level page has. */}
+                {isChatOpen
+                    ? <PageHeaderOptions main={chatHeader} ownBackButton />
+                    : <PageHeaderOptions title={t('Messages')} actions={listActions} sub={listSubHeader} backButton={appSetting('messenger', 'back_button') ? true : undefined} />}
                 {panelsVisible.convos && <View className='w-full'>
                     <ConvosList
                         {...convosListProps}

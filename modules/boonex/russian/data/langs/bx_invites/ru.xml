@@ -110,9 +110,8 @@
     <string name="_bx_invites_option_key_lifetime"><![CDATA[Срок действия ключа приглашения (в днях)]]></string>
     <string name="_bx_invites_option_enable_request_invite"><![CDATA[Разрешить запросы на приглашение]]></string>
     <string name="_bx_invites_option_requests_email"><![CDATA[Эл. адреса для посылки запросов на приглашение (разделенение запятой)]]></string>
-    <string name="_bx_invites_option_enable_reg_by_inv"><![CDATA[Регистрация строго по приглашению]]></string>
     <string name="_bx_invites_option_context_auto_join"><![CDATA[Включить автоматическое присоединение при использовании функции «Пригласить в контекст»]]></string>
-    <string name="_bx_invites_option_context_key_length"><![CDATA[Длина ключа для функции «Пригласить в контекст» (0 - длина по умолчанию)]]></string>
+    <string name="_bx_invites_option_context_key_length"><![CDATA[Длина ключа для приглашений в сообщества (0 = длина по умолчанию)]]></string>
 
 
     <!-- ACL -->
@@ -126,19 +125,19 @@
     <string name="_bx_invites_et_invite_form_message"><![CDATA[Пригласительная форма - сообщение.]]></string>
     <string name="_bx_invites_et_invite_form_message_subject"><![CDATA[{profile_name} приглашает вас в {site_name}]]></string>
     <string name="_bx_invites_et_invite_form_message_body"><![CDATA[{email_header}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2328;">
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2328;">
   <tr>
-    <td style="padding:8px 0 16px;">
-      <p style="margin:0;font-size:22px;line-height:1.3;font-weight:600;">{profile_name} приглашает вас в <a href="{site_url}" style="color:#1f2328;text-decoration:none;">{site_name}</a></p>
-    </td>
+    <td style="padding:8px 0 16px;"></div>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{profile_name} приглашает вас в <a href="{site_url}" style="color:#1f2328;text-decoration:none;">{site_name}</a></p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"></td>
   </tr>
   <tr>
     <td style="padding:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#57606a;">Сообщение от {profile_name}</td>
   </tr>
   <tr>
-    <td style="padding:16px 20px;background:#f6f8fa;border-radius:12px;font-size:15px;line-height:1.6;">
-      <p style="margin:0;">{text}</p>
-    </td>
+    <td style="padding:16px 20px;background:#f6f8fa;border-radius:12px;font-size:15px;line-height:1.6;"></div>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{text}</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"></td>
   </tr>
   <tr>
     <td align="left" style="padding:28px 0 12px;">
@@ -151,7 +150,7 @@
       <a href="{join_url}" style="color:#0969da;word-break:break-all;">{join_url}</a>
     </td>
   </tr>
-</table>
+</table></div>
 {email_footer}]]></string>
 
     <string name="_bx_invites_et_invite_by_request_message"><![CDATA[Приглашение по запросу - сообщение.]]></string>
@@ -165,9 +164,9 @@
     <string name="_bx_invites_et_request_form_message"><![CDATA[Форма запроса приглашения - сообщение.]]></string>
     <string name="_bx_invites_et_request_form_message_subject"><![CDATA[Запросить приглашение.]]></string>
     <string name="_bx_invites_et_request_form_message_body"><![CDATA[{email_header}
-<p><b>Дорогой администратор</b>,</p>
-<p>{sender_name} (<a href="mailto:{sender_email}">{sender_email}</a>; IP {sender_ip}) запросил приглашение для регистрации на сайте <b>{site_name}</b>.</p>
-<p><a href="{manage_url}">Нажмите сюда</a> для управление запросами.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>Дорогой администратор</b>,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{sender_name} (<a href="mailto:{sender_email}">{sender_email}</a>; IP {sender_ip}) запросил приглашение для регистрации на сайте <b>{site_name}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{manage_url}">Нажмите сюда</a> для управление запросами.</p>
 {email_footer}]]></string>
 
 
@@ -187,7 +186,7 @@
     <string name="_bx_invites_msg_invitation"><![CDATA[Привет! Этот сайт может оказаться интересным для Вас.]]></string>
     <string name="_bx_invites_msg_invitation_sent"><![CDATA[Сообщение с приглашением было поставлено в очередь для отправки по {0} эл. адресам из списка.]]></string>
     <string name="_bx_invites_msg_request_sent"><![CDATA[Запрос на приглашение получен. Мы вышлем приглашение, когда придет ваша очередь.]]></string>
-    <string name="_bx_invites_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_invites_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
     <string name="_bx_invites_err_limit_reached"><![CDATA[Число посланных Вами приглашений достигло лимита.]]></string>
     <string name="_bx_invites_err_not_available"><![CDATA[Эта функция сейчас недоступна. Пожалуйста, попытайтесь ещё раз позднее.]]></string>
     <string name="_bx_invites_err_invite"><![CDATA[Невозможно послать приглашение по запросу.]]></string>

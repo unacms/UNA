@@ -20,6 +20,9 @@ import { useSafeAreaInsets as useSafeAreaInsetsImpl, initialWindowMetrics } from
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
 import { getSelectedTabKey, getTabKeyFromPathname } from 'app/lib/navigation/tab-path';
+import { Linking } from 'react-native';
+import { APP_URL, UNA_URL } from 'app/config';
+import { unaAppPath } from 'app/lib/navigation/una-app-path';
 import type { NavigationLike, RouterLike, SafeAreaInsets } from './router.types';
 
 type TabRouteOverride = { pathname?: string; isFocused?: boolean } | null;
@@ -114,27 +117,20 @@ export function goBack(navigation: NavigationLike, router: RouterLike, callback?
 }
 
 /**
- * App path for a redirect target. The API can answer a page request with a
- * redirect to its own absolute request URL (`https://api…/path?r=system/
- * get_page_by_request…`); the page is its path.
- */
-function toAppPath(url: string): string {
-    const absolute = /^https?:\/\/[^/]+(\/[^?#]*)?(\?[^#]*)?/i.exec(url || '');
-    if (absolute) {
-        const path = absolute[1] || '/';
-        const query = absolute[2] || '';
-        return /[?&]r=system(%2F|\/)get_page/i.test(query) ? path : path + query;
-    }
-    return url?.startsWith('/') ? url : `/${url}`;
-}
-
-/**
  * Native: open `url` in place of the current page. In the focused tab that is
  * the screen on top of its stack (tab root or a pushed page), so its params
- * change and nothing is pushed; another tab gets its root replaced.
+ * change and nothing is pushed; another tab gets its root replaced. A URL of
+ * UNA's own pages opens that page in the app, even when UNA names it by its own
+ * absolute site URL (`unaAppPath`); any other site opens outside the app.
  */
 export function redirectTo(router: RouterLike, url: string, tabname = getSelectedTabKey() || '/tab0'): void {
-    const normalizedUrl = toAppPath(url);
+    if (!url) return;
+    // A link to this app's web address (APP_URL) is its page too.
+    const normalizedUrl = unaAppPath(url, UNA_URL) ?? (APP_URL ? unaAppPath(url, String(APP_URL)) : null);
+    if (!normalizedUrl) {
+        if (/^https?:\/\//i.test(url)) void Linking.openURL(url).catch(() => {});
+        return;
+    }
     const params = { url: normalizedUrl, refresh: Date.now() };
 
     if (router.setParams && getTabKeyFromPathname(tabname) === getSelectedTabKey()) {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Latin letters in place of Cyrillic look-alikes, and typos. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_mapshow_default_center_lat_coordinate"><![CDATA[Default map center latitude]]></string_upd>
+</resources>

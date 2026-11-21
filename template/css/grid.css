@@ -3,7 +3,10 @@
     width:100%;
     border-collapse:collapse;
 }
+/* Positioned, so it also clips what is positioned inside the table (screen reader text of a switch),
+   or that pushes the page wider than a phone's screen while the table scrolls sideways. */
 .bx-grid-table-wrapper {    
+    position:relative;
     overflow-x:hidden;
     overflow-y:hidden;    
 }

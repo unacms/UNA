@@ -68,14 +68,14 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 SET @iPBCellProfile = 2;
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
 ('trigger_page_profile_view_entry', @iPBCellProfile, 'bx_timeline', '_bx_timeline_page_block_title_system_post_profile', '_bx_timeline_page_block_title_post_profile', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:22:"get_block_post_profile";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 1, 0),
-('trigger_page_profile_view_entry', @iPBCellProfile, 'bx_timeline', '_bx_timeline_page_block_title_system_view_profile', '_bx_timeline_page_block_title_view_profile', 0, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:22:"get_block_view_profile";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 1, 0),
+('trigger_page_profile_view_entry', @iPBCellProfile, 'bx_timeline', '_bx_timeline_page_block_title_system_view_profile', '_bx_timeline_page_block_title_view_profile', 14, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:22:"get_block_view_profile";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 1, 0),
 ('trigger_page_profile_view_entry', @iPBCellProfile, 'bx_timeline', '_bx_timeline_page_block_title_system_view_profile_outline', '_bx_timeline_page_block_title_view_profile_outline', 0, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:30:"get_block_view_profile_outline";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 0, 0);
 
 SET @iPBCellGroup = 4;
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
 ('trigger_page_group_view_entry', @iPBCellGroup, 'bx_timeline', '_bx_timeline_page_block_title_system_post_profile', '_bx_timeline_page_block_title_post_profile', 11, 0, 0, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:22:"get_block_post_profile";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 0, 0),
 ('trigger_page_group_view_entry', @iPBCellGroup, 'system', '_sys_page_block_title_sys_create_post_context', '_sys_page_block_title_create_post_context', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}s:5:"class";s:13:"TemplServices";}', 0, 0, 1, 0),
-('trigger_page_group_view_entry', @iPBCellGroup, 'bx_timeline', '_bx_timeline_page_block_title_system_view_profile', '_bx_timeline_page_block_title_view_profile', 0, 0, 0, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:22:"get_block_view_profile";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 1, 0),
+('trigger_page_group_view_entry', @iPBCellGroup, 'bx_timeline', '_bx_timeline_page_block_title_system_view_profile', '_bx_timeline_page_block_title_view_profile', 14, 0, 0, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:22:"get_block_view_profile";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 1, 0),
 ('trigger_page_group_view_entry', @iPBCellGroup, 'bx_timeline', '_bx_timeline_page_block_title_system_view_profile_outline', '_bx_timeline_page_block_title_view_profile_outline', 0, 0, 0, 2147483647, 'service', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:30:"get_block_view_profile_outline";s:6:"params";a:1:{i:0;s:6:"{type}";}}', 0, 0, 0, 0);
 
 -- PAGE: module manage all
@@ -153,7 +153,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_timeline_menu_item_share', 'bx_timeline', 'item-repost', '_bx_timeline_menu_item_title_system_item_repost', '_bx_timeline_menu_item_title_item_repost', 'javascript:void(0)', 'javascript:{repost_onclick}', '_self', 'redo', '', 2147483647, 1, 1, 0, 1),
 ('bx_timeline_menu_item_share', 'bx_timeline', 'item-repost-with', '_bx_timeline_menu_item_title_system_item_repost_with', '_bx_timeline_menu_item_title_item_repost_with', 'javascript:void(0)', 'javascript:{repost_with_onclick}', '_self', 'redo', '', 2147483647, 1, 0, 0, 2),
 ('bx_timeline_menu_item_share', 'bx_timeline', 'item-repost-to', '_bx_timeline_menu_item_title_system_item_repost_to', '_bx_timeline_menu_item_title_item_repost_to', 'javascript:void(0)', 'javascript:{repost_to_onclick}', '_self', 'redo', '', 2147483647, 1, 0, 0, 3),
-('bx_timeline_menu_item_share', 'bx_timeline', 'item-send', '_bx_timeline_menu_item_title_system_item_send', '_bx_timeline_menu_item_title_item_send', 'page.php?i=start-convo&et={et_send}', '', '_self', 'envelope', '', 2147483647, 1, 0, 0, 4),
+('bx_timeline_menu_item_share', 'bx_timeline', 'item-send', '_bx_timeline_menu_item_title_system_item_send', '_bx_timeline_menu_item_title_item_send', 'page.php?i=start-convo&et={et_send}', '', '_self', 'mail', '', 2147483647, 1, 0, 0, 4),
 ('bx_timeline_menu_item_share', 'bx_timeline', 'item-copy', '_bx_timeline_menu_item_title_system_item_copy', '_bx_timeline_menu_item_title_item_copy', 'javascript:void(0)', 'javascript:{view_js_object}.copyToClipboard(this, ''{content_url}'')', '_self', 'copy', '', 2147483647, 1, 1, 0, 5);
 
 -- MENU: Item Manage (Pin, Delete, etc)
@@ -164,17 +164,17 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_timeline_menu_item_manage', 'bx_timeline', '_bx_timeline_menu_set_title_item_manage', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-pin', '_bx_timeline_menu_item_title_system_item_pin', '_bx_timeline_menu_item_title_item_pin', 'javascript:void(0)', 'javascript:{js_object_view}.pinPost(this, {content_id}, 1)', '_self', 'thumbtack', '', 2147483647, 1, 0, 0),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-unpin', '_bx_timeline_menu_item_title_system_item_unpin', '_bx_timeline_menu_item_title_item_unpin', 'javascript:void(0)', 'javascript:{js_object_view}.pinPost(this, {content_id}, 0)', '_self', 'thumbtack', '', 2147483647, 1, 0, 1),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-stick', '_bx_timeline_menu_item_title_system_item_stick', '_bx_timeline_menu_item_title_item_stick', 'javascript:void(0)', 'javascript:{js_object_view}.stickPost(this, {content_id}, 1)', '_self', 'thumbtack', '', 2147483647, 1, 0, 2),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-unstick', '_bx_timeline_menu_item_title_system_item_unstick', '_bx_timeline_menu_item_title_item_unstick', 'javascript:void(0)', 'javascript:{js_object_view}.stickPost(this, {content_id}, 0)', '_self', 'thumbtack', '', 2147483647, 1, 0, 3),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-promote', '_bx_timeline_menu_item_title_system_item_promote', '_bx_timeline_menu_item_title_item_promote', 'javascript:void(0)', 'javascript:{js_object_view}.promotePost(this, {content_id}, 1)', '_self', 'certificate ', '', 2147483647, 1, 0, 4),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-unpromote', '_bx_timeline_menu_item_title_system_item_unpromote', '_bx_timeline_menu_item_title_item_unpromote', 'javascript:void(0)', 'javascript:{js_object_view}.promotePost(this, {content_id}, 0)', '_self', 'certificate', '', 2147483647, 1, 0, 5),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-pin', '_bx_timeline_menu_item_title_system_item_pin', '_bx_timeline_menu_item_title_item_pin', 'javascript:void(0)', 'javascript:{js_object_view}.pinPost(this, {content_id}, 1)', '_self', 'pin', '', 2147483647, 1, 0, 0),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-unpin', '_bx_timeline_menu_item_title_system_item_unpin', '_bx_timeline_menu_item_title_item_unpin', 'javascript:void(0)', 'javascript:{js_object_view}.pinPost(this, {content_id}, 0)', '_self', 'pin', '', 2147483647, 1, 0, 1),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-stick', '_bx_timeline_menu_item_title_system_item_stick', '_bx_timeline_menu_item_title_item_stick', 'javascript:void(0)', 'javascript:{js_object_view}.stickPost(this, {content_id}, 1)', '_self', 'pin', '', 2147483647, 1, 0, 2),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-unstick', '_bx_timeline_menu_item_title_system_item_unstick', '_bx_timeline_menu_item_title_item_unstick', 'javascript:void(0)', 'javascript:{js_object_view}.stickPost(this, {content_id}, 0)', '_self', 'pin', '', 2147483647, 1, 0, 3),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-promote', '_bx_timeline_menu_item_title_system_item_promote', '_bx_timeline_menu_item_title_item_promote', 'javascript:void(0)', 'javascript:{js_object_view}.promotePost(this, {content_id}, 1)', '_self', 'award', '', 2147483647, 1, 0, 4),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-unpromote', '_bx_timeline_menu_item_title_system_item_unpromote', '_bx_timeline_menu_item_title_item_unpromote', 'javascript:void(0)', 'javascript:{js_object_view}.promotePost(this, {content_id}, 0)', '_self', 'award', '', 2147483647, 1, 0, 5),
 ('bx_timeline_menu_item_manage', 'bx_timeline', 'item-report', '_bx_timeline_menu_item_title_system_item_report', '', 'javascript:void(0)', '', '', '', '', 2147483647, 1, 0, 6),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '_self', 'exclamation-triangle', '', 2147483647, 1, 0, 7),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-mute', '_bx_timeline_menu_item_title_system_item_mute', '_bx_timeline_menu_item_title_item_mute', 'javascript:void(0)', 'javascript:{js_object_view}.muteAuthor(this, {content_id})', '_self', 'user-slash', '', 2147483647, 1, 0, 8),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-edit', '_bx_timeline_menu_item_title_system_item_edit', '_bx_timeline_menu_item_title_item_edit', 'javascript:void(0)', 'javascript:{js_object_view}.editPost(this, {content_id})', '_self', 'pencil-alt', '', 2147483647, 1, 0, 9),
-('bx_timeline_menu_item_manage', 'bx_timeline', 'item-delete', '_bx_timeline_menu_item_title_system_item_delete', '_bx_timeline_menu_item_title_item_delete', 'javascript:void(0)', 'javascript:{js_object_view}.deletePost(this, {content_id})', '_self', 'remove', '', 2147483647, 1, 0, 10);
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '_self', 'triangle-exclamation-point', '', 2147483647, 1, 0, 7),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-mute', '_bx_timeline_menu_item_title_system_item_mute', '_bx_timeline_menu_item_title_item_mute', 'javascript:void(0)', 'javascript:{js_object_view}.muteAuthor(this, {content_id})', '_self', 'user-x', '', 2147483647, 1, 0, 8),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-edit', '_bx_timeline_menu_item_title_system_item_edit', '_bx_timeline_menu_item_title_item_edit', 'javascript:void(0)', 'javascript:{js_object_view}.editPost(this, {content_id})', '_self', 'pencil-line', '', 2147483647, 1, 0, 9),
+('bx_timeline_menu_item_manage', 'bx_timeline', 'item-delete', '_bx_timeline_menu_item_title_system_item_delete', '_bx_timeline_menu_item_title_item_delete', 'javascript:void(0)', 'javascript:{js_object_view}.deletePost(this, {content_id})', '_self', 'x', '', 2147483647, 1, 0, 10);
 
 -- MENU: Item Actions (Comment, Vote, Share, Report, etc)
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -185,14 +185,14 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES
 ('bx_timeline_menu_item_actions', 'bx_timeline', 'item-view', '_bx_timeline_menu_item_title_system_item_view', '', 'javascript:void(0)', '', '', '', '', '', 0, 2147483647, 0, 0, 1, 0),
-('bx_timeline_menu_item_actions', 'bx_timeline', 'item-comment', '_bx_timeline_menu_item_title_system_item_comment', '_bx_timeline_menu_item_title_item_comment', 'javascript:void(0)', 'javascript:{comment_onclick}', '_self', 'comment', '', '', 0, 2147483647, 1, 0, 1, 10),
+('bx_timeline_menu_item_actions', 'bx_timeline', 'item-comment', '_bx_timeline_menu_item_title_system_item_comment', '_bx_timeline_menu_item_title_item_comment', 'javascript:void(0)', 'javascript:{comment_onclick}', '_self', 'message-circle', '', '', 0, 2147483647, 1, 0, 1, 10),
 ('bx_timeline_menu_item_actions', 'bx_timeline', 'item-vote', '_bx_timeline_menu_item_title_system_item_vote', '', 'javascript:void(0)', '', '', '', '', '', 0, 2147483647, 0, 0, 1, 20),
 ('bx_timeline_menu_item_actions', 'bx_timeline', 'item-reaction', '_bx_timeline_menu_item_title_system_item_reaction', '', 'javascript:void(0)', '', '', '', '', '', 0, 2147483647, 1, 0, 1, 30),
 ('bx_timeline_menu_item_actions', 'bx_timeline', 'item-score', '_bx_timeline_menu_item_title_system_item_score', '', 'javascript:void(0)', '', '', '', '', '', 0, 2147483647, 0, 0, 1, 40),
-('bx_timeline_menu_item_actions', 'bx_timeline', 'item-share', '_bx_timeline_menu_item_title_system_item_share', '_bx_timeline_menu_item_title_item_share', 'javascript:void(0)', 'bx_menu_popup(''bx_timeline_menu_item_share'', this, {''id'':''bx_timeline_menu_item_share_{content_id}''}, {content_id:{content_id}, name:''{name}'', view:''{view}'', type:''{type}''});', '', 'share-alt', '', 'bx_timeline_menu_item_share', 1, 2147483647, 1, 0, 1, 50),
+('bx_timeline_menu_item_actions', 'bx_timeline', 'item-share', '_bx_timeline_menu_item_title_system_item_share', '_bx_timeline_menu_item_title_item_share', 'javascript:void(0)', 'bx_menu_popup(''bx_timeline_menu_item_share'', this, {''id'':''bx_timeline_menu_item_share_{content_id}''}, {content_id:{content_id}, name:''{name}'', view:''{view}'', type:''{type}''});', '', 'share-2', '', 'bx_timeline_menu_item_share', 1, 2147483647, 1, 0, 1, 50),
 ('bx_timeline_menu_item_actions', 'bx_timeline', 'item-repost', '_bx_timeline_menu_item_title_system_item_repost', '_bx_timeline_menu_item_title_item_repost', 'javascript:void(0)', 'javascript:{repost_onclick}', '', 'redo', '', '', 0, 2147483647, 0, 0, 1, 55),
 ('bx_timeline_menu_item_actions', 'bx_timeline', 'item-report', '_bx_timeline_menu_item_title_system_item_report', '', 'javascript:void(0)', '', '', '', '', '', 1, 2147483647, 0, 0, 1, 57),
-('bx_timeline_menu_item_actions', 'bx_timeline', 'item-more', '_bx_timeline_menu_item_title_system_item_more', '_bx_timeline_menu_item_title_item_more', 'javascript:void(0)', 'bx_menu_popup(''bx_timeline_menu_item_manage'', this, {''id'':''bx_timeline_menu_item_manage_{content_id}''}, {content_id:{content_id}, name:''{name}'', view:''{view}'', type:''{type}''});', '', 'ellipsis-v', '', 'bx_timeline_menu_item_manage', 1, 2147483647, 0, 0, 1, 60);
+('bx_timeline_menu_item_actions', 'bx_timeline', 'item-more', '_bx_timeline_menu_item_title_system_item_more', '_bx_timeline_menu_item_title_item_more', 'javascript:void(0)', 'bx_menu_popup(''bx_timeline_menu_item_manage'', this, {''id'':''bx_timeline_menu_item_manage_{content_id}''}, {content_id:{content_id}, name:''{name}'', view:''{view}'', type:''{type}''});', '', 'ellipsis-vertical', '', 'bx_timeline_menu_item_manage', 1, 2147483647, 0, 0, 1, 60);
 
 -- MENU: all actions menu for view entry 
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `persistent`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -219,7 +219,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_timeline_menu_item_actions_all', 'bx_timeline', 'item-mute', '_bx_timeline_menu_item_title_system_item_mute', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 1, 165),
 ('bx_timeline_menu_item_actions_all', 'bx_timeline', 'item-edit', '_bx_timeline_menu_item_title_system_item_edit', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 1, 170),
 ('bx_timeline_menu_item_actions_all', 'bx_timeline', 'item-delete', '_bx_timeline_menu_item_title_system_item_delete', '', '', '', '', '', '', '', 0, 2147483647, 1, 0, 1, 180),
-('bx_timeline_menu_item_actions_all', 'bx_timeline', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, 1, 0, 1, 9999);
+('bx_timeline_menu_item_actions_all', 'bx_timeline', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, 1, 0, 1, 9999);
 
 -- MENU: Item Counters (Comments, Votes, Reactions, etc)
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -261,30 +261,30 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-photo-html5', '_bx_timeline_menu_item_title_system_add_photo_html5', '_bx_timeline_menu_item_title_add_photo', 'javascript:void(0)', 'javascript:{js_object_add_photo_html5}.showUploaderForm();', '_self', 'camera', '', '', 2147483647, 1, 0, 1, 3),
 ('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-video-simple', '_bx_timeline_menu_item_title_system_add_video_simple', '_bx_timeline_menu_item_title_add_video', 'javascript:void(0)', 'javascript:{js_object_add_video_simple}.showUploaderForm();', '_self', 'video', '', '', 2147483647, 0, 0, 1, 4),
 ('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-video-html5', '_bx_timeline_menu_item_title_system_add_video_html5', '_bx_timeline_menu_item_title_add_video', 'javascript:void(0)', 'javascript:{js_object_add_video_html5}.showUploaderForm();', '_self', 'video', '', '', 2147483647, 1, 0, 1, 5),
-('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-video-record', '_bx_timeline_menu_item_title_system_add_video_record', '_bx_timeline_menu_item_title_add_video_record', 'javascript:void(0)', 'javascript:{js_object_add_video_record}.showUploaderForm();', '_self', 'fas circle', '', '', 2147483647, 1, 0, 1, 6),
+('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-video-record', '_bx_timeline_menu_item_title_system_add_video_record', '_bx_timeline_menu_item_title_add_video_record', 'javascript:void(0)', 'javascript:{js_object_add_video_record}.showUploaderForm();', '_self', 'circle', '', '', 2147483647, 1, 0, 1, 6),
 ('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-file-simple', '_bx_timeline_menu_item_title_system_add_file_simple', '_bx_timeline_menu_item_title_add_file', 'javascript:void(0)', 'javascript:{js_object_add_file_simple}.showUploaderForm();', '_self', 'file', '', '', 2147483647, 0, 0, 1, 7),
 ('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-file-html5', '_bx_timeline_menu_item_title_system_add_file_html5', '_bx_timeline_menu_item_title_add_file', 'javascript:void(0)', 'javascript:{js_object_add_file_html5}.showUploaderForm();', '_self', 'file', '', '', 2147483647, 1, 0, 1, 8),
-('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-poll', '_bx_timeline_menu_item_title_system_add_poll', '_bx_timeline_menu_item_title_add_poll', 'javascript:void(0)', 'javascript:{js_object_poll}.showPollForm(this);', '_self', 'tasks', '', '', 2147483647, 1, 0, 1, 9);
+('bx_timeline_menu_post_attachments', 'bx_timeline', 'add-poll', '_bx_timeline_menu_item_title_system_add_poll', '_bx_timeline_menu_item_title_add_poll', 'javascript:void(0)', 'javascript:{js_object_poll}.showPollForm(this);', '_self', 'square-check', '', '', 2147483647, 1, 0, 1, 9);
 
 -- MENU: add to "add content" menu
 SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_content_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_add_content_links', 'bx_timeline', 'create-item', '_bx_timeline_menu_item_title_system_create_entry', '_bx_timeline_menu_item_title_create_entry', 'page.php?i=timeline-view', '', '', 'far clock', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
+('sys_add_content_links', 'bx_timeline', 'create-item', '_bx_timeline_menu_item_title_system_create_entry', '_bx_timeline_menu_item_title_create_entry', 'page.php?i=timeline-view', '', '', 'clock', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
 
 -- MENU: add to "add content" menu
 SET @iCreatePostOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_create_post' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_create_post', 'bx_timeline', 'create-item', '_bx_timeline_menu_item_title_system_create_entry', '_bx_timeline_menu_item_title_create_entry', 'page.php?i=timeline-view', '', '', 'far clock', '', 2147483647, 1, 0, IFNULL(@iCreatePostOrder, 0) + 1);
+('sys_create_post', 'bx_timeline', 'create-item', '_bx_timeline_menu_item_title_system_create_entry', '_bx_timeline_menu_item_title_create_entry', 'page.php?i=timeline-view', '', '', 'clock', '', 2147483647, 1, 0, IFNULL(@iCreatePostOrder, 0) + 1);
 
 -- MENU: add menu item to profiles modules (trigger* menu sets are processed separately upon modules enable/disable)
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('trigger_profile_view_submenu', 'bx_timeline', 'timeline-view', '_bx_timeline_menu_item_title_system_view_timeline_view', '_bx_timeline_menu_item_title_view_timeline_view', 'page.php?i=timeline-view&profile_id={profile_id}', '', '', 'far clock', '', 2147483647, 1, 0, 0),
-('trigger_group_view_submenu', 'bx_timeline', 'timeline-view', '_bx_timeline_menu_item_title_system_view_timeline_view', '_bx_timeline_menu_item_title_view_timeline_view', 'page.php?i=timeline-view&profile_id={profile_id}', '', '', 'far clock', '', 2147483647, 1, 0, 0);
+('trigger_profile_view_submenu', 'bx_timeline', 'timeline-view', '_bx_timeline_menu_item_title_system_view_timeline_view', '_bx_timeline_menu_item_title_view_timeline_view', 'page.php?i=timeline-view&profile_id={profile_id}', '', '', 'clock', '', 2147483647, 1, 0, 0),
+('trigger_group_view_submenu', 'bx_timeline', 'timeline-view', '_bx_timeline_menu_item_title_system_view_timeline_view', '_bx_timeline_menu_item_title_view_timeline_view', 'page.php?i=timeline-view&profile_id={profile_id}', '', '', 'clock', '', 2147483647, 1, 0, 0);
 
 -- MENU: profile stats
 SET @iPStatsMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_profile_stats' AND `active` = 1 LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
-('sys_profile_stats', 'bx_timeline', 'profile-stats-my-timeline', '_bx_timeline_menu_item_title_system_manage_my_timeline', '_bx_timeline_menu_item_title_manage_my_timeline', 'page.php?i=timeline-manage', '', '_self', 'far clock', 'a:2:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:28:"get_menu_addon_profile_stats";}', '', 2147483646, 1, 0, @iPStatsMenuOrder + 2);
+('sys_profile_stats', 'bx_timeline', 'profile-stats-my-timeline', '_bx_timeline_menu_item_title_system_manage_my_timeline', '_bx_timeline_menu_item_title_manage_my_timeline', 'page.php?i=timeline-manage', '', '_self', 'clock', 'a:2:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:28:"get_menu_addon_profile_stats";}', '', 2147483646, 1, 0, @iPStatsMenuOrder + 2);
 
 -- MENU: dashboard manage tools
 SET @iManageMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard_manage_tools' LIMIT 1);
@@ -567,7 +567,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `params`, `hi
 ('bx_timeline_mute', 'actions', '', '20%', '', '', 3);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
-('bx_timeline_mute', 'single', 'delete', '', 'remove', 0, 1, 2);
+('bx_timeline_mute', 'single', 'delete', '', 'x', 0, 1, 2);
 
 -- GRIDS: moderation tools
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
@@ -593,11 +593,11 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_timeline_administration', 'bulk', 'delete', '_bx_timeline_grid_action_title_adm_delete', '', 0, 1, 1),
-('bx_timeline_administration', 'single', 'delete', '_bx_timeline_grid_action_title_adm_delete', 'remove', 1, 1, 2),
+('bx_timeline_administration', 'single', 'delete', '_bx_timeline_grid_action_title_adm_delete', 'x', 1, 1, 2),
 ('bx_timeline_administration', 'single', 'audit_content', '_bx_timeline_grid_action_title_adm_audit_content', 'search', 1, 0, 4),
 
 ('bx_timeline_common', 'bulk', 'delete', '_bx_timeline_grid_action_title_adm_delete', '', 0, 1, 1),
-('bx_timeline_common', 'single', 'delete', '_bx_timeline_grid_action_title_adm_delete', 'remove', 1, 1, 2);
+('bx_timeline_common', 'single', 'delete', '_bx_timeline_grid_action_title_adm_delete', 'x', 1, 1, 2);
 
 
 -- METATAGS
@@ -614,6 +614,10 @@ INSERT INTO `sys_objects_connection` (`object`, `table`, `profile_initiator`, `p
 INSERT INTO `sys_email_templates` (`Module`, `NameSystem`, `Name`, `Subject`, `Body`) VALUES 
 ('bx_timeline', '_bx_timeline_et_txt_name_send', 'bx_timeline_send', '_bx_timeline_et_txt_subject_send', '_bx_timeline_et_txt_body_send');
 
+
+-- MENU: the "Write the first post" step of the operators' "Get started" checklist (sys_onboarding_operator)
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `info`, `link`, `onclick`, `target`, `icon`, `addon`, `visible_for_levels`, `visibility_custom`, `active`, `active_api`, `copyable`, `order`) VALUES
+('sys_onboarding_operator', 'bx_timeline', 'post', '_bx_timeline_menu_item_title_system_onboarding_post', '_bx_timeline_menu_item_title_onboarding_post', '_bx_timeline_menu_item_info_onboarding_post', 'index.php', 'return bx_onboarding_post();', '', 'square-pen', 'a:3:{s:6:"module";s:11:"bx_timeline";s:6:"method";s:25:"get_onboarding_step_state";s:6:"params";a:1:{i:0;s:4:"post";}}', 2147483646, '', 1, 0, 1, 4);
 
 -- CRON
 INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VALUES

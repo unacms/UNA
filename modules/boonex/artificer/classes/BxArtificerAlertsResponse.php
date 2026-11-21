@@ -140,6 +140,8 @@ class BxArtificerAlertsResponse extends BxBaseModTemplateAlertsResponse
 
     protected function _processSystemSaveSetting($oAlert)
     {
+        parent::_processSystemSaveSetting($oAlert);
+
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         if($oAlert->aExtras['option'] == $CNF['PARAM_IMAGES_CUSTOM'])

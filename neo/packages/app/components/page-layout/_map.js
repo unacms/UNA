@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { DynamicFallback } from 'app/lib/dynamic-fallback';
+import { coreLayouts } from 'app/components/registry';
 
 // Each page layout is its own chunk: fetched when a page uses it, and preloaded
 // in the HTML when it was rendered during SSR (see lib/dynamic-fallback.js).
@@ -65,3 +66,10 @@ export const componentsMapDefault = {
     'layout_topbottom_area_col1_col3_col2': PageUniversal,
     'layout_topbottom_area_col2_col5_col3': PageUniversal,
 };
+
+// Core's layouts as shipped, before a project's customization/page-layout/_map.js changes this map.
+// `create-account` is the Sign up page from before UNA sent its picture and words as a block: UNA's
+// page is drawn from its blocks now, this layout still draws it for a UNA that names it in the
+// page's config, and a project's own component under the key keeps drawing the project's page
+// (hasOwnCreateAccountLayout in lib/util/layout.ts tells it from core's).
+Object.assign(coreLayouts, componentsMapDefault);

@@ -5,7 +5,9 @@ import {
     LAYOUT_BREAKPOINTS,
     isNativeTabsEnabled,
     FeedbackHaptics,
+    isWeb,
 } from 'app/lib/util'
+import { useThemeValue } from 'app/design/theme'
 import Profile from 'app/ui/molecules/profile/profile'
 import { NeoButton } from 'app/design/controls/neo-button/neo-button'
 import { fetcher } from 'app/lib/fetcher'
@@ -88,6 +90,25 @@ export function getCoverBackButton() {
     return <CoverBackButton />
 }
 
+/**
+ * The template's own art on a profile without a cover picture, as the site shows it (UNA's `cover_default`, light
+ * and dark). Web draws both and lets the colour scheme pick, so the server's HTML is right; native the one for its theme.
+ */
+function CoverDefaultArt({ art }) {
+    const dark = art.dark || art.light
+    const themeSrc = useThemeValue(art.light, dark)
+
+    if (!isWeb)
+        return <View className="absolute inset-0"><Image alt="" view="cover" src={themeSrc} contentFit="cover" nobg /></View>
+
+    return (
+        <View className="absolute inset-0" aria-hidden>
+            <Image alt="" view="cover" src={art.light} unoptimized className="u-cover dark:hidden" />
+            {dark !== art.light ? <Image alt="" view="cover" src={dark} unoptimized className="u-cover hidden dark:block" /> : null}
+        </View>
+    )
+}
+
 export function CoverImage({
     mode,
     profileData,
@@ -100,6 +121,7 @@ export function CoverImage({
     suppressCoverBackButton = false,
     priority = false,
     animated = false,
+    defaultArt = null,
 }) {
     const { imageUrl, isUploading, pick, modal } = useProfileImageUpload({
         kind: mode,
@@ -136,6 +158,8 @@ export function CoverImage({
                             src={imageUrl}
                             priority={priority}
                         />
+                    ) : defaultArt?.light ? (
+                        <CoverDefaultArt art={defaultArt} />
                     ) : null}
                     {imageUrl?.includes('data:') || isUploading ? (
                         <View className="absolute inset-0 h-full w-full opacity-60 bg-card justify-center items-center">

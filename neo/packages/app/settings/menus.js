@@ -30,8 +30,8 @@ export const settingsMenus = {
         // Most tabs after Home in a navbar built from `objects.site`; 0: as many as fit. The tabs that don't fit go
         // under More, as on UNA's site; the site menu's "Persistent items" (Studio) never do.
         menu_navbar_site_tabs: 0,
-        // Columns in the navbar's dropdowns (More); an item's own `columns` wins.
-        menu_navbar_more_columns: 2,
+        // Columns in the navbar's dropdowns (More); an item's own `columns` wins. 1: one list, as UNA's More.
+        menu_navbar_more_columns: 1,
         // Width (px) of the header menu's popup below `lg` (`menu_navigation`, else `objects.site`). It keeps this
         // width when a group opens or closes; narrower screens cap it, 16px from each edge. 0 sizes the popup to
         // its rows instead (256px at least).
@@ -52,7 +52,7 @@ export const settingsMenus = {
             'invite-to-job': 'UserPlus',
             users: 'UsersRound',
             'camera-retro': 'Video',
-            'file-alt': 'File',
+            'file-alt': 'FileText',
             'info-circle': 'Info',
             user: 'UserRound',
             building: 'Building2',
@@ -182,6 +182,36 @@ export const settingsMenus = {
             backspace: 'Delete',
             'trash-alt': 'Trash',
             magic: 'WandSparkles',
+            // Names UNA's map added once the site's own data moved to Lucide names (2026-11): data from elsewhere
+            // (third-party modules, Market) may still send them.
+            'angle-double-up': 'ChevronsUp',
+            'angle-down': 'ChevronDown',
+            'angle-left': 'ChevronLeft',
+            'angle-right': 'ChevronRight',
+            'angle-up': 'ChevronUp',
+            'battery-empty': 'Battery',
+            'battery-half': 'BatteryMedium',
+            'caret-down': 'ChevronDown',
+            'caret-left': 'ChevronLeft',
+            'caret-up': 'ChevronUp',
+            compress: 'Shrink',
+            cube: 'Box',
+            'file-powerpoint': 'FileChartPie',
+            'list-ul': 'List',
+            'location-arrow': 'Navigation',
+            robot: 'Bot',
+            world: 'Globe',
+            // Brands: UNA's brand marks (`brand-x` arrives as BrandX); its older data names them in Font Awesome.
+            facebook: 'BrandFacebook',
+            'facebook-f': 'BrandFacebook',
+            'facebook-square': 'BrandFacebook',
+            twitter: 'BrandX',
+            'x-twitter': 'BrandX',
+            linkedin: 'BrandLinkedin',
+            'linkedin-in': 'BrandLinkedin',
+            pinterest: 'BrandPinterest',
+            'pinterest-p': 'BrandPinterest',
+            whatsapp: 'BrandWhatsapp',
         },
     },
 }

@@ -25,7 +25,7 @@ div.bx-std-page-columns-cnt {
     position: relative;
     -webkit-flex: 0 0 20rem;
     flex: 0 0 20rem;
-    border-radius: var(--bx-radius-3xl); /* 24px, like the blocks and the header bar */
+    border-radius: var(--bx-radius-3xl); /* 22px, like the blocks and the header bar */
 
     width: 20rem;
     height: 100%;
@@ -112,10 +112,10 @@ div.bx-std-page-columns-cnt {
         background-color: rgba(255, 255, 255, 0.6);
     }
     .bx-std-page-menu-toggle:focus-visible::after {
-        background-color: #3b82f6; /* blue-500, the Studio focus ring */
+        background-color: rgb(var(--bx-accent-500)); /* blue-500, the Studio focus ring */
     }
     .dark .bx-std-page-menu-toggle:focus-visible::after {
-        background-color: #60a5fa; /* blue-400 */
+        background-color: rgb(var(--bx-accent-400)); /* blue-400 */
     }
     html.bx-std-pmen-narrow .bx-std-pmt-collapse,
     html:not(.bx-std-pmen-narrow) .bx-std-pmt-expand {

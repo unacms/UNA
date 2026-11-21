@@ -1,7 +1,7 @@
 # ============================
 # Stage 1: Builder
 # ============================
-FROM php:8.3-fpm AS builder
+FROM php:8.3-fpm-trixie AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
@@ -29,11 +29,12 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # ============================
 # Stage 2: Production runtime
 # ============================
-FROM php:8.3-fpm
+FROM php:8.3-fpm-trixie
 
 # Install only runtime packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     msmtp-mta \
+    socat \
     libpng-tools \
     libjpeg62-turbo \
     libfreetype6 \
@@ -45,11 +46,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /usr/local/lib/php/extensions /usr/local/lib/php/extensions
 COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 
-# Optional: set working directory
-# WORKDIR /var/www/html
+COPY scripts/docker-compose/self-url.sh /usr/local/bin/una-self-url
+RUN chmod 0755 /usr/local/bin/una-self-url
 
-# Optional: expose PHP-FPM port
-# EXPOSE 9000
-
-# Optional: set non-root user (if needed)
-# USER www-data
+ENTRYPOINT ["una-self-url", "docker-php-entrypoint"]
+CMD ["php-fpm"]

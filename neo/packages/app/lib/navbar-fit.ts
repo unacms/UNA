@@ -50,18 +50,38 @@ export function navbarRowWidth(widths: number[], gap: number): number {
 }
 
 /**
+ * The bar's own width: every tab `gap` apart, with room for More when More shows anyway. The header gives the bar this
+ * much while it has it (up to `layout.header.menu_max_width`), so the bar's width never depends on how many tabs the
+ * fit left in it.
+ */
+export function navbarBoxWidth({ widths, gap, more, moreAlways = false }: Pick<NavbarFitInput, 'widths' | 'gap' | 'more' | 'moreAlways'>): number {
+    if (!widths.length) return 0;
+    return navbarRowWidth(widths, gap) + (moreAlways ? gap + more : 0);
+}
+
+/**
  * Where the row of tabs (`total` wide) starts in the bar (`available` wide), from the bar's left edge, for the main
  * menu's place in the header (UNA's Designer > Settings > Header): next to the logo (`start`), next to the toolbar
- * (`end`), or in the middle (`center`). In the middle it is centred on the header, `centre` px from the bar's left edge,
- * as far as the bar leaves room: the logo and the toolbar are not as wide, so the bar itself is off-centre. Without
- * `centre` it is centred in the bar, as CSS centres it (a row wider than the bar overflows evenly on both sides).
+ * (`end`), or in the middle (`center`), as the bar's own `justify-*` class places it (a row wider than the bar
+ * overflows evenly on both sides). The header centres the bar itself while it has the room (settings/layout.js,
+ * `layout.header.content_left_align`).
  */
-export function navbarRowStart(align: string, available: number, total: number, centre?: number | null): number {
+export function navbarRowStart(align: string, available: number, total: number): number {
     const free = available - total;
     if (align === 'start') return 0;
     if (align === 'end') return free;
-    if (typeof centre !== 'number' || !Number.isFinite(centre) || free <= 0) return free / 2;
-    return Math.min(Math.max(centre - total / 2, 0), free);
+    return free / 2;
+}
+
+/**
+ * The class of tab `index` of `count` before the fit is measured (the server's HTML, the placeholders), when every
+ * tab is in a row that wraps and shows its first line only. Each tab keeps More's room after it (`reserve`) and the
+ * next one takes it back (`takeBack`), so a line breaks exactly where the fit puts More: the tabs that show are the
+ * ones the fit keeps, in the same place, and only More is missing. The last tab keeps no room unless More shows
+ * anyway (`moreAlways`): when every tab fits there is no More.
+ */
+export function navbarUnfittedTabSide(index: number, count: number, moreAlways: boolean): { takeBack: boolean; reserve: boolean } {
+    return { takeBack: index > 0, reserve: moreAlways || index < count - 1 };
 }
 
 /**

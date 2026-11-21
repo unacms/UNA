@@ -4,7 +4,7 @@
 
     <!-- OPTIONS -->
     <string name="_bx_payment_options_category_general"><![CDATA[General]]></string>
-    <string name="_bx_payment_options_category_currency"><![CDATA[Сurrency]]></string>
+    <string name="_bx_payment_options_category_currency"><![CDATA[Currency]]></string>
     <string name="_bx_payment_options_category_commissions"><![CDATA[Commissions]]></string>
     <string name="_bx_payment_option_default_currency_code"><![CDATA[Currency]]></string>
     <string name="_bx_payment_option_err_default_currency_code"><![CDATA[Currency code cannot be empty.]]></string>
@@ -61,9 +61,9 @@
     <string name="_bx_payment_page_title_response"><![CDATA[Payment Response]]></string>
     <string name="_bx_payment_page_title_error"><![CDATA[Payment Error]]></string>
 
-    <string name="_bx_payment_page_title_sys_join"><![CDATA[Join]]></string>
-    <string name="_bx_payment_page_title_join"><![CDATA[Join]]></string>
-    <string name="_bx_payment_page_block_title_join"><![CDATA[Join]]></string>
+    <string name="_bx_payment_page_title_sys_join"><![CDATA[Sign up]]></string>
+    <string name="_bx_payment_page_title_join"><![CDATA[Sign up]]></string>
+    <string name="_bx_payment_page_block_title_join"><![CDATA[Sign up]]></string>
 
     <string name="_bx_payment_page_title_sys_invoices"><![CDATA[Invoices]]></string>
     <string name="_bx_payment_page_title_invoices"><![CDATA[Invoices]]></string>
@@ -244,7 +244,7 @@
     <string name="_bx_payment_form_commissions_display_edit"><![CDATA[Edit Commission Display]]></string>
     <string name="_bx_payment_form_commissions_input_caption_sys"><![CDATA[Caption]]></string>
     <string name="_bx_payment_form_commissions_input_caption"><![CDATA[Caption]]></string>
-    <string name="_bx_payment_form_commissions_input_caption_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_commissions_input_caption_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_commissions_input_description_sys"><![CDATA[Description]]></string>
     <string name="_bx_payment_form_commissions_input_description"><![CDATA[Description]]></string>
     <string name="_bx_payment_form_commissions_input_acl_id_sys"><![CDATA[Membership Level]]></string>
@@ -262,10 +262,10 @@
     <string name="_bx_payment_form_invoices_display_edit"><![CDATA[Edit Invoice Display]]></string>
     <string name="_bx_payment_form_invoices_input_amount_sys"><![CDATA[Amount]]></string>
     <string name="_bx_payment_form_invoices_input_amount"><![CDATA[Amount]]></string>
-    <string name="_bx_payment_form_invoices_input_amount_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_invoices_input_amount_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_invoices_input_date_due_sys"><![CDATA[Due date]]></string>
     <string name="_bx_payment_form_invoices_input_date_due"><![CDATA[Due date]]></string>
-    <string name="_bx_payment_form_invoices_input_date_due_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_invoices_input_date_due_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_invoices_input_status_sys"><![CDATA[Status]]></string>
     <string name="_bx_payment_form_invoices_input_status"><![CDATA[Status]]></string>
     <string name="_bx_payment_form_invoices_input_submit_sys"><![CDATA[Submit]]></string>
@@ -278,7 +278,7 @@
     <string name="_bx_payment_form_cs_input_submit"><![CDATA[Submit]]></string>
     <string name="_bx_payment_form_cs_input_cancel"><![CDATA[Cancel]]></string>
 
-    <string name="_bx_payment_form_input_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_input_err"><![CDATA[This field is required. Please fill it in.]]></string>
     <string name="_bx_payment_form_input_email_err_cor_or_emp"><![CDATA[Use correct email address or leave empty.]]></string>
 
     <!-- Predefined Values -->
@@ -302,69 +302,73 @@
     <string name="_bx_payment_et_txt_name_paid_need_join"><![CDATA[Paid and need to join.]]></string>
     <string name="_bx_payment_et_txt_subject_paid_need_join"><![CDATA[Payment was processed.]]></string>
     <string name="_bx_payment_et_txt_body_paid_need_join"><![CDATA[{email_header}
-<p>Hello, {RealName}.</p>
-<p>Your payment was processed. If you did not fill in the join form yet, then you may do it using the following link.</p>
-<p><a href="{JoinLink}">Join Now</a></p>
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {RealName}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your payment was processed. If you did not fill in the join form yet, then you may do it using the following link.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{JoinLink}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Join Now</a>
+</td></tr></tbody>
+</table>
 {email_footer}]]></string>
 
     <string name="_bx_payment_et_txt_name_cancelation_request"><![CDATA[Subscription cancellation request.]]></string>
     <string name="_bx_payment_et_txt_subject_cancelation_request"><![CDATA[Subscription cancellation request.]]></string>
     <string name="_bx_payment_et_txt_body_cancelation_request"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>A user with {profile_name} profile name requested cancellation for a subscription.</p>
-<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">A user with {profile_name} profile name requested cancellation for a subscription.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
 {email_footer}]]></string>
 
     <string name="_bx_payment_et_txt_name_expiration_notification_seller"><![CDATA[Subscription expiration notification (for seller).]]></string>
     <string name="_bx_payment_et_txt_subject_expiration_notification_seller"><![CDATA[Subscription expiration notification.]]></string>
     <string name="_bx_payment_et_txt_body_expiration_notification_seller"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>A subscription purchased by '{profile_name}' expired.</p>
-<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
-<p><b>Note</b>. An associated data will be removed shortly.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">A subscription purchased by '{profile_name}' expired.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>Note</b>. An associated data will be removed shortly.</p>
 {email_footer}]]></string>
 
     <string name="_bx_payment_et_txt_name_expiration_notification_client"><![CDATA[Subscription expiration notification (for client).]]></string>
     <string name="_bx_payment_et_txt_subject_expiration_notification_client"><![CDATA[Subscription expiration notification.]]></string>
     <string name="_bx_payment_et_txt_body_expiration_notification_client"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>Your subscription purchased from '{profile_name}' expired.</p>
-<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
-<p><b>Note</b>. An associated data will be removed shortly.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your subscription purchased from '{profile_name}' expired.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>Note</b>. An associated data will be removed shortly.</p>
 {email_footer}]]></string>
 
     <string name="_bx_payment_et_txt_name_expiring_notification_committent"><![CDATA[Invoice expiring notification.]]></string>
     <string name="_bx_payment_et_txt_subject_expiring_notification_committent"><![CDATA[Invoice expiring notification.]]></string>
     <string name="_bx_payment_et_txt_body_expiring_notification_committent"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>Your invoice '{invoice}' is expiring in '{days}' day(s).</p>
-<p>Invoice info:<br />Period start: {period_start}<br />Period end: {period_end}<br />Issue date: {date_issue}<br />Due date: {date_due}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your invoice '{invoice}' is expiring in '{days}' day(s).</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Invoice info:<br />Period start: {period_start}<br />Period end: {period_end}<br />Issue date: {date_issue}<br />Due date: {date_due}</p>
 {email_footer}]]></string>
 
     <string name="_bx_payment_et_txt_name_overdue_notification_committent"><![CDATA[Overdue invoice notification.]]></string>
     <string name="_bx_payment_et_txt_subject_overdue_notification_committent"><![CDATA[Overdue invoice notification.]]></string>
     <string name="_bx_payment_et_txt_body_overdue_notification_committent"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>Your invoice '{invoice}' is overdue '{date_due}'.</p>
-<p>Invoice info:<br />Period start: {period_start}<br />Period end: {period_end}<br />Issue date: {date_issue}<br />Due date: {date_due}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your invoice '{invoice}' is overdue '{date_due}'.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Invoice info:<br />Period start: {period_start}<br />Period end: {period_end}<br />Issue date: {date_issue}<br />Due date: {date_due}</p>
 {email_footer}]]></string>
 
     <string name="_bx_payment_et_txt_name_checkout_offline"><![CDATA[Offline checkout attempt.]]></string>
     <string name="_bx_payment_et_txt_subject_checkout_offline"><![CDATA[An attempt to pay with cash.]]></string>
     <string name="_bx_payment_et_txt_body_checkout_offline"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>A site member <a href="{profile_link}">{profile_name}</a> wanted to pay you with cash for:</p>
-<p>{items}</p>
-<p>Amount: {amount}<br />Date: {date}</p>
-<p>Go to the <a href="{pending_orders_link}">pending orders page</a> to process the order once the payment is received.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">A site member <a href="{profile_link}">{profile_name}</a> wanted to pay you with cash for:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{items}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Amount: {amount}<br />Date: {date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Go to the <a href="{pending_orders_link}">pending orders page</a> to process the order once the payment is received.</p>
 {email_footer}]]></string>
 
     <string name="_bx_payment_et_txt_name_wrong_balance"><![CDATA[Insufficient funds to write off.]]></string>
     <string name="_bx_payment_et_txt_subject_wrong_balance"><![CDATA[Insufficient funds to write off.]]></string>
     <string name="_bx_payment_et_txt_body_wrong_balance"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>You have insufficient funds to write off for paying a subscription.</p>
-<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Payment provider: {subscription_provider}<br />Date: {subscription_date}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You have insufficient funds to write off for paying a subscription.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Payment provider: {subscription_provider}<br />Date: {subscription_date}</p>
 {email_footer}]]></string>
 
     <!-- MESSAGES, WARNINGS and ERRORS -->
@@ -386,12 +390,12 @@
     <string name="_bx_payment_err_not_accept_payments"><![CDATA[The vendor does not accept payments.]]></string>
     <string name="_bx_payment_err_nothing_selected"><![CDATA[You need to select at least one item.]]></string>
     <string name="_bx_payment_err_self_purchase"><![CDATA[Buying from your own store is not permitted.]]></string>
-    <string name="_bx_payment_err_required_login"><![CDATA[You need to login.]]></string>
+    <string name="_bx_payment_err_required_login"><![CDATA[You need to sign in.]]></string>
     <string name="_bx_payment_err_unknown_vendor"><![CDATA[Unknown vendor.]]></string>
     <string name="_bx_payment_err_wrong_vendor"><![CDATA[Incorrect vendor.]]></string>
     <string name="_bx_payment_err_wrong_data"><![CDATA[Incorrect input data.]]></string>
     <string name="_bx_payment_err_not_found_pending"><![CDATA[Pending order was not found.]]></string>
-    <string name="_bx_payment_err_cannot_perform"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_bx_payment_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_payment_err_wrong_quantity"><![CDATA[Incorrect quantity specified.]]></string>
     <string name="_bx_payment_err_already_processed"><![CDATA[This payment has already processed.]]></string>
     <string name="_bx_payment_err_already_registered"><![CDATA[Subscription with the same data was already registered.]]></string>
@@ -479,7 +483,7 @@
     <string name="_bx_payment_cdt_active_cpt"><![CDATA[Active]]></string>
     <string name="_bx_payment_cdt_active_dsc"><![CDATA[Activate(Deactivate) provider]]></string>
     <string name="_bx_payment_cdt_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_cdt_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_cdt_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_cdt_err_not_available"><![CDATA[Checkout with Credits isn't available now.]]></string>
     <string name="_bx_payment_cdt_err_wrong_balance"><![CDATA[Insufficient funds to write off.]]></string>
     <string name="_bx_payment_cdt_err_wrong_transaction"><![CDATA[Transaction verification failed.]]></string>
@@ -547,12 +551,12 @@
     <string name="_bx_payment_pp_api_err_cannot_authorize"><![CDATA[Can't authorize the approved order.]]></string>
     <string name="_bx_payment_pp_api_err_cannot_capture"><![CDATA[Can't finalize checkout.]]></string>
     <string name="_bx_payment_pp_api_err_no_item"><![CDATA[There is nothing to subscribe.]]></string>
-    <string name="_bx_payment_pp_api_err_wrong_item"><![CDATA[The product you want to subscribe to has incorrect data on PayPal end. Please report.]]></string>
+    <string name="_bx_payment_pp_api_err_wrong_item"><![CDATA[PayPal has wrong details for this product, so you cannot subscribe to it yet. Please contact us.]]></string>
     <string name="_bx_payment_pp_api_err_no_subscription"><![CDATA[The subscription data isn't available or incorrect.]]></string>
     <string name="_bx_payment_pp_api_err_subscription_not_confirmed"><![CDATA[Subscription wasn't confirmed.]]></string>
     <string name="_bx_payment_pp_api_msg_authorized"><![CDATA[The order was successfully authorized.]]></string>
     <string name="_bx_payment_pp_api_msg_captured"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_pp_api_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_pp_api_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_txt_name_paypal_api"><![CDATA[PayPal]]></string>
     <string name="_bx_payment_txt_cart_paypal_api"><![CDATA[PayPal]]></string>
     <string name="_bx_payment_txt_subscribe_paypal_api"><![CDATA[PayPal]]></string>
@@ -579,7 +583,7 @@
     <string name="_bx_payment_cbee_test_api_key_cpt"><![CDATA[API Key (test)]]></string>
     <string name="_bx_payment_cbee_test_api_key_dsc"><![CDATA[Your Chargebee API Access key for 'test' mode]]></string>
     <string name="_bx_payment_cbee_check_amount_cpt"><![CDATA[Enable amount checking]]></string>
-    <string name="_bx_payment_cbee_check_amount_dsc"><![CDATA[Enable amount checking for Chargebee Webhooks (recomended). However checking should be disabled when discounts and coupons are used.]]></string>
+    <string name="_bx_payment_cbee_check_amount_dsc"><![CDATA[Enable amount checking for Chargebee Webhooks (recommended). However checking should be disabled when discounts and coupons are used.]]></string>
     <string name="_bx_payment_cbee_ssl_cpt"><![CDATA[Enable SSL]]></string>
     <string name="_bx_payment_cbee_ssl_dsc"><![CDATA[Enable SSL connection to communicate with Chargebee. Note. URLs below will be updated after saving.]]></string>
     <string name="_bx_payment_cbee_cancellation_email_cpt"><![CDATA[Cancellation Email]]></string>
@@ -587,7 +591,7 @@
     <string name="_bx_payment_cbee_return_data_url_cpt"><![CDATA[Data return URL]]></string>
     <string name="_bx_payment_cbee_notify_url_cpt"><![CDATA[Webhooks URL]]></string>
     <string name="_bx_payment_cbee_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_cbee_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_cbee_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_cbee_txt_checkout_with_single"><![CDATA[Checkout with {0}]]></string>
     <string name="_bx_payment_cbee_txt_checkout_with_recurring"><![CDATA[Checkout with {0}]]></string>
     <string name="_bx_payment_cbee_menu_item_title_manager"><![CDATA[Self-serve Portal]]></string>
@@ -618,7 +622,7 @@
     <string name="_bx_payment_strp_test_sec_key_cpt"><![CDATA[Secret Key (test)]]></string>
     <string name="_bx_payment_strp_test_sec_key_dsc"><![CDATA[Your Stripe Secret Key for 'test' mode]]></string>
     <string name="_bx_payment_strp_check_amount_cpt"><![CDATA[Enable amount checking]]></string>
-    <string name="_bx_payment_strp_check_amount_dsc"><![CDATA[Enable amount checking for Stripe Webhooks (recomended). However checking should be disabled when discounts and coupons are used.]]></string>
+    <string name="_bx_payment_strp_check_amount_dsc"><![CDATA[Enable amount checking for Stripe Webhooks (recommended). However checking should be disabled when discounts and coupons are used.]]></string>
     <string name="_bx_payment_strp_ssl_cpt"><![CDATA[Enable SSL]]></string>
     <string name="_bx_payment_strp_ssl_dsc"><![CDATA[Enable SSL connection to communicate with Stripe. Note. URLs below will be updated after saving.]]></string>
     <string name="_bx_payment_strp_notify_url_cpt"><![CDATA[Webhooks URL]]></string>
@@ -626,7 +630,7 @@
     <string name="_bx_payment_strp_expiration_email_cpt"><![CDATA[Expiration Email]]></string>
     <string name="_bx_payment_strp_msg_authorized"><![CDATA[The order was successfully authorized.]]></string>
     <string name="_bx_payment_strp_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_strp_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_strp_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_strp_msg_details_changed"><![CDATA[Subscription details were changed.]]></string>
     <string name="_bx_payment_strp_err_details_changed"><![CDATA[Cannot change subscription details. Recheck provided data and try again.]]></string>
     <string name="_bx_payment_strp_msg_billing_changed"><![CDATA[Billing information was changed.]]></string>
@@ -713,7 +717,7 @@
     <string name="_bx_payment_aina_notify_url_cpt"><![CDATA[URL for App Store Server Notifications]]></string>
     <string name="_bx_payment_aina_menu_item_title_cancel"><![CDATA[Cancel]]></string>
     <string name="_bx_payment_aina_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
-    <string name="_bx_payment_aina_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_aina_msg_subscribed"><![CDATA[Thank you! Subscription created. Please check your email for further instructions.]]></string>
     <string name="_bx_payment_txt_name_apple_in_app"><![CDATA[Apple In-App]]></string>
     <string name="_bx_payment_txt_cart_apple_in_app"><![CDATA[Apple In-App]]></string>
     <string name="_bx_payment_queue_pending"><![CDATA[Pending payments]]></string>

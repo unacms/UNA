@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_messenger_use_unique_mode"><![CDATA[Switch to two-column view (simple mode)]]></string_upd>
+</resources>

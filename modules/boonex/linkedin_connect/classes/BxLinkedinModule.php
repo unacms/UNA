@@ -15,6 +15,14 @@ class BxLinkedinModule extends BxBaseModConnectModule
     {
         parent::__construct($aModule);
     }
+
+    /**
+     * The settings the module needs to sign people in are filled in.
+     */
+    public function isConfigured()
+    {
+        return (bool)($this->_oConfig->sApiID && $this->_oConfig->sApiSecret);
+    }
     
     /**
      * Redirect to remote site login form
@@ -26,7 +34,7 @@ class BxLinkedinModule extends BxBaseModConnectModule
         if (isLogged())
             $this->_redirect ($this -> _oConfig -> sDefaultRedirectUrl);
 
-        if (!$this->_oConfig->sApiID || !$this->_oConfig->sApiSecret) {
+        if (!$this->isConfigured()) {
             require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
             bx_import('BxDolLanguages');
             $sCode =  MsgBox( _t('_bx_linkedin_profile_error_api_keys') );

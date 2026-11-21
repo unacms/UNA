@@ -52,7 +52,7 @@ class ApplicationSidebarTest extends BxDolTestCase
     {
         $s = self::read('modules/boonex/artificer/data/template/system/css/common.css');
 
-        $this->assertStringContainsString("--bx-sidebar-width: 16rem;\n    --bx-sidebar-width-narrow: 4rem;", $s);
+        $this->assertStringContainsString("--bx-sidebar-width: var(--bx-sidebar-width-expanded, 16rem); /* the width the member dragged it to (js/sidebar.js), or 16rem */\n    --bx-sidebar-width-narrow: 4rem;", $s);
         $this->assertMatchesRegularExpression('/\.bx-main\.bx-pt-application \.bx-app-sidebar \{\n    position: fixed;\n    top: 0;\n    bottom: 0;\n    left: 0;/', $s, 'Top to bottom.');
 
         $iWide = strpos($s, '@media (min-width: 1280px) {');
@@ -60,7 +60,8 @@ class ApplicationSidebarTest extends BxDolTestCase
         $this->assertNotFalse($iWide);
         $this->assertNotFalse($iDrawer);
         $sWide = substr($s, $iWide, $iDrawer - $iWide);
-        $this->assertStringContainsString(".bx-main.bx-pt-application #bx-toolbar {\n        left: var(--bx-sidebar-width);", $sWide, 'The header starts beside the sidebar.');
+        $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-sidebar {\n        top: var(--bx-app-header);\n        bottom: var(--bx-app-footer);\n        z-index: 4999;", $sWide, 'Wide, the sidebar is between the header and footer strips; the drawer covers them.');
+        $this->assertStringNotContainsString('#bx-toolbar {', $sWide, 'The header spans the page.');
         $this->assertStringContainsString("#main-content {\n        margin-inline-start: var(--bx-sidebar-width);", $sWide);
         $this->assertStringContainsString(".bx-app-sidebar-narrow {\n        --bx-sidebar-width: var(--bx-sidebar-width-narrow);", $sWide);
         $this->assertStringContainsString('.bx-app-sidebar-narrow .bx-app-sidebar [sidebar-toggle-item] {', $sWide, 'Labels hide by a rule, not by classes added per element.');
@@ -90,37 +91,35 @@ class ApplicationSidebarTest extends BxDolTestCase
         $this->assertStringContainsString("'modules/boonex/artificer/js/|sidebar.js'", self::read('modules/boonex/artificer/classes/BxArtificerTemplate.php'));
     }
 
-    public function testSidebarHasTheHeadersSurfaceAndCarriesTheLogoWhenExpanded(): void
+    public function testSidebarHasTheHeadersSurfaceAndCarriesTheLogo(): void
     {
         $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
-        $this->assertSame(1, preg_match('/<header id="bx-toolbar" class="([^"]+)">/', $sApp, $aHeader));
         $this->assertSame(1, preg_match('/<aside id="sidebar" class="([^"]+)"/', $sApp, $aSidebar));
-        $aSurface = array_filter(explode(' ', $aHeader[1]), fn($s) => preg_match('/^(dark:)?bg-|^backdrop-/', $s));
-        $this->assertNotEmpty($aSurface);
-        foreach ($aSurface as $sClass)
-            $this->assertContains($sClass, explode(' ', $aSidebar[1]), 'The sidebar is the colour of the header.');
+        $this->assertSame('bx-app-sidebar bx-main-column narrow', $aSidebar[1], 'No surface of its own on wide screens, as the header strip.');
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+        $this->assertStringContainsString("background-color: rgb(244 244 245); /* the drawer is over the page", substr($sCss, strpos($sCss, '@media (max-width: 1279.98px) {')), 'The drawer has the page\'s colour.');
 
-        // The sidebar has its own logo: a copy of the header's without its element ids, first in the sidebar's top row.
-        $this->assertSame(1, substr_count($sApp, '__main_logo__'), 'The header keeps the logo with its ids.');
-        $this->assertSame(1, substr_count($sApp, '__sys_main_logo_copy__'));
+        // The logo is the sidebar's, with its ids, first in the sidebar's top row; below the breakpoint the standard header has
+        // a copy without them (hidden on wide screens).
+        $this->assertSame(1, substr_count($sApp, '__main_logo__'));
+        $this->assertStringContainsString('<div class="bx-toolbar-item bx-ti-left bx-ti-logo bx-app-header-logo flex-none items-center">__sys_main_logo_copy__</div>', $sApp);
         $iHead = strpos($sApp, '<div class="bx-app-sidebar-head">');
-        $iLogo = strpos($sApp, '<div class="bx-app-sidebar-logo bx-ti-logo">__sys_main_logo_copy__</div>');
+        $iLogo = strpos($sApp, '<div id="bx-logo-container" class="bx-app-sidebar-logo bx-ti-logo">');
         $this->assertTrue($iHead !== false && $iLogo !== false && $iHead < $iLogo && $iLogo < strpos($sApp, 'id="toggleSidebar"'), 'The logo comes before the button.');
+        $this->assertLessThan(strpos($sApp, '<aside id="sidebar"'), strpos($sApp, '</header>'));
 
-        $sFn = self::read('template/scripts/BxBaseFunctions.php');
-        $this->assertStringContainsString("case 'sys_main_logo_copy':\n                \$mixedResult = \$this->getMainLogoCopy();", $sFn);
-        $this->assertStringContainsString("preg_replace('/\\sid=\"[^\"]*\"/', '', \$this->getMainLogo(\$aParams))", $sFn, 'No element id twice on the page.');
-
-        // One of the two shows: the sidebar's while it is expanded and in the drawer, the header's while it is narrow or the drawer is closed.
+        // Narrow: the mark on top (Designer's mark, else the logo's first 36px), the button under it; the drawer shows the logo as it is.
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
         $iWide = strpos($sCss, '@media (min-width: 1280px) {');
         $iDrawer = strpos($sCss, '@media (max-width: 1279.98px) {');
         $sWide = substr($sCss, $iWide, $iDrawer - $iWide);
-        $this->assertStringContainsString(".bx-main.bx-pt-application:not(.bx-app-sidebar-narrow) #bx-logo-container {\n        display: none;", $sWide);
-        $this->assertStringContainsString(".bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo {\n        display: none;", $sWide);
-        $this->assertStringNotContainsString('bx-app-sidebar-logo', substr($sCss, $iDrawer), 'The drawer shows the sidebar\'s logo as it is.');
-        $this->assertStringNotContainsString('contain: layout', $sCss, 'No logo moved out of the header any more.');
-        $this->assertStringNotContainsString('z-index: 4999', $sCss);
+        $this->assertStringNotContainsString(".bx-app-sidebar-narrow .bx-app-sidebar-logo {\n        display: none;", $sWide);
+        $this->assertStringContainsString(".bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo:not(:has(#bx-mark)) img {\n        width: 2.25rem !important;\n        object-fit: cover;\n        object-position: left center;", $sWide);
+        $this->assertStringContainsString(".bx-main.bx-pt-application.bx-app-sidebar-narrow .bx-app-sidebar-logo #bx-mark {\n        display: block !important;", $sWide);
+        $sDrawer = substr($sCss, $iDrawer);
+        $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-sidebar-logo:not(:has(#bx-mark)) img {\n        width: 2.25rem !important;", $sDrawer, 'The drawer\'s row also holds three 44px buttons: the logo\'s mark, as in the narrow sidebar.');
+        $this->assertStringNotContainsString(".bx-app-sidebar-logo {\n        display: none;", $sDrawer, 'The drawer never hides the logo.');
+        $this->assertStringNotContainsString('#bx-logo-container', $sCss, 'The logo is never hidden for being in the header.');
     }
 
     public function testNarrowRowsAreTheirIconAlone(): void
@@ -161,5 +160,69 @@ class ApplicationSidebarTest extends BxDolTestCase
         // 64px less 8px a side: a 48px row round its 32px icon; 16px a side left a 32px sliver under the pointer
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
         $this->assertMatchesRegularExpression('/\.bx-app-sidebar-narrow \.bx-app-sidebar \.bx-mc-cnt \{\n        padding: 0 0\.5rem;/', $sCss);
+    }
+
+    public function testToolsRowAndAccountFoot(): void
+    {
+        $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
+        $iTools = strpos($sApp, '<div class="bx-app-sidebar-tools">');
+        $iBody = strpos($sApp, '<div id="sidebar-content" class="bx-app-sidebar-body">');
+        $iFoot = strpos($sApp, '<div class="bx-app-sidebar-foot">');
+        $this->assertTrue($iTools !== false && $iTools < $iBody && $iBody < $iFoot, 'The context switcher, then the menus, then the account at the foot.');
+        $this->assertMatchesRegularExpression('/<div class="bx-app-sidebar-tools">\s*__sys_app_context_switcher__\s*<\/div>/', $sApp);
+        $this->assertTrue(strpos($sApp, '<bx_menu:sys_toolbar_application />') > strpos($sApp, '__main_logo__') && strpos($sApp, '<bx_menu:sys_toolbar_application />') < strpos($sApp, 'id="toggleSidebar"'), 'Search and Add on the logo\'s row.');
+        $this->assertMatchesRegularExpression('/<div class="bx-app-sidebar-foot">\s*__sys_app_account__/', $sApp);
+        $this->assertStringContainsString(".bx-app-sidebar-head .bx-menu-toolbar .bx-menu-toolbar-item {\n    width: 2.75rem;\n    height: 2.75rem;", self::read('modules/boonex/artificer/data/template/system/css/common.css'), 'Search and Add are 44px, as the header toolbar\'s buttons and NEO\'s.');
+
+        $sSql = self::read('install/sql/system.sql');
+        foreach (['search', 'add-content'] as $sName)
+            $this->assertStringContainsString("('sys_toolbar_application', 'system', '" . $sName . "',", $sSql);
+        $this->assertStringContainsString("('sys_site_panel', 'system', 'member-avatar', '_sys_menu_item_title_system_member_avatar', '', '', '', '', '', '', 2147483646, 0, 0, 1),", $sSql, 'The account is at the foot.');
+
+        $sAccount = self::read('modules/boonex/artificer/template/application_account.html');
+        $this->assertStringContainsString("oBxArtificerUtils.getAccountMenu('#bx-sliding-menu-account', this, {align: 'left', flip: true});", $sAccount, 'At the foot, the menu opens above it.');
+        $this->assertStringContainsString('sidebar-toggle-item>__name__', $sAccount, 'The narrow sidebar shows the picture alone.');
+
+        $sFn = self::read('modules/boonex/artificer/data/template/system/scripts/BxTemplFunctions.php');
+        $this->assertStringContainsString("case 'sys_app_context_switcher':", $sFn);
+        $this->assertStringContainsString("getParam('sys_api_context_switcher')", $sFn, 'The apps\' context switcher setting.');
+    }
+
+    public function testContentIsOneBlockScrollingInside(): void
+    {
+        $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
+        $this->assertStringContainsString('<div id="main-content" class="bx-main-column wide bx-app-content bx-def-color-bg-block bx-def-border-block bx-def-border-radius-block relative w-full h-full overflow-y-auto">', $sApp, 'The blocks\' fill, edge, shadow and corners.');
+
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+        $this->assertStringContainsString("height: 100dvh; /* the window: the content block scrolls inside it, between the strips */", $sCss);
+        $this->assertStringContainsString("    margin: 0 1rem;\n}", $sCss, '16px from the window\'s sides, as the strips are from its top and bottom.');
+        $this->assertStringContainsString("html:has(.bx-main.bx-pt-application) {\n        overflow: hidden;\n        scrollbar-gutter: auto;", substr($sCss, strpos($sCss, '@media (min-width: 1280px) {')), 'Wide, the window does not scroll, so no scrollbar gutter.');
+        // below the breakpoint: a page of the Standard layout, the window scrolling it, no frame and no footer strip
+        $sNarrow = substr($sCss, strpos($sCss, '@media (max-width: 1279.98px) {'));
+        $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-content {\n        height: auto;\n        margin: 0;\n        overflow: visible;\n        border-radius: 0;\n        background-color: transparent;\n        box-shadow: none;", $sNarrow);
+        $this->assertStringContainsString(".bx-main.bx-pt-application .bx-app-footer {\n        display: none;", $sNarrow);
+
+        $this->assertStringContainsString("window.dispatchEvent(new Event('scroll'));", self::read('modules/boonex/artificer/js/sidebar.js'), 'The page\'s scripts listen on the window.');
+    }
+
+    public function testEdgeSizesAndTogglesTheSidebar(): void
+    {
+        $sApp = self::read('modules/boonex/artificer/data/template/system/pt_application.html');
+        $this->assertStringContainsString('<div id="sidebarResizer" class="bx-app-sidebar-resizer" role="separator" aria-orientation="vertical" aria-controls="sidebar" tabindex="0" aria-label="<bx_text_attribute:_sys_txt_sidebar_resize />"', $sApp);
+        $this->assertStringContainsString("localStorage.getItem('sidebarWidth')", $sApp, 'The dragged width before the first paint.');
+
+        $sJs = self::read('modules/boonex/artificer/js/sidebar.js');
+        foreach (['var WIDTH_MIN = 240;', 'var WIDTH_MAX = 400;', 'var WIDTH_SNAP = 160;', "oMain.classList.toggle('bx-app-sidebar-narrow', bNarrow);", "localStorage.setItem(KEY_WIDTH,", "if(bMoved)\n                    fSave();\n                else\n                    fToggle();"] as $sPart)
+            $this->assertStringContainsString($sPart, $sJs);
+
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+        $this->assertStringContainsString('--bx-sidebar-width: var(--bx-sidebar-width-expanded, 16rem);', $sCss);
+        $sWide = substr($sCss, strpos($sCss, '@media (min-width: 1280px) {'));
+        $this->assertStringContainsString(".bx-main.bx-pt-application #toggleSidebar {\n        display: none;", $sWide, 'Wide screens have the handle, not the button.');
+        $this->assertStringContainsString('cursor: col-resize;', $sWide);
+        $this->assertMatchesRegularExpression('/\.bx-app-sidebar-resizer::after \{[^}]*background-color: rgb\(37 99 235\);/', $sWide, 'Hovered, dragged or focused, the handle is the accent colour, as in NEO.');
+
+        $this->assertStringContainsString('_sys_txt_sidebar_resize', self::read('modules/boonex/english/data/langs/system/en.xml'));
+        $this->assertStringContainsString('_sys_txt_sidebar_resize', self::read('migrations/2026111951_application_toolbar_en.xml'));
     }
 }

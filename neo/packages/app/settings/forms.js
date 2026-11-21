@@ -8,8 +8,10 @@ export const settingsForms = {
         auto_ghosts_in_files: true,
         form_container: '@container/form-container w-full gap-4 mx-auto ',
         field_padding: ' gap-1 ',
+        // A label above its field, as on the site (`.bx-form-caption` in UNA's template/css/tailwind.css):
+        // medium, gray-700, gray-300 in dark. No token has that role, so these are the neutral steps.
         caption_classes:
-            'font-semibold text-sm text-card-foreground',
+            'font-medium text-sm text-neutral-700 dark:text-neutral-300',
         /**
          * Forms (by display name) that show each caption as the field's placeholder, with no label.
          * Empty by default: labels follow UNA's label style (see `adaptive_labels`).

@@ -21,6 +21,24 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
         return array();
     }
 
+    /**
+     * The settings the module needs to sign people in (keys, URLs) are filled in.
+     * A module that has settings like these overrides it.
+     */
+    public function isConfigured()
+    {
+        return true;
+    }
+
+    /**
+     * Its "Continue with ..." button is shown on the login and sign-up forms: only once the module is
+     * configured, since before that the button leads to a "Please configure the module" message.
+     */
+    public function isAuthButtonShown()
+    {
+        return $this->isConfigured();
+    }
+
     public function serviceGetProfilesModules ()
     {
         $aModules = array();

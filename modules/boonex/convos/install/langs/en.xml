@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
 
-	<string name="_bx_cnv"><![CDATA[Conversations]]></string>
-	<string name="_bx_convos"><![CDATA[Conversations]]></string>
+	<string name="_bx_cnv"><![CDATA[Private messages]]></string>
+	<string name="_bx_convos"><![CDATA[Private messages]]></string>
 
 	<string name="_bx_cnv_option_preview_messages_num"><![CDATA[Number of preview messages]]></string>
 
-	<string name="_bx_cnv_form_entry"><![CDATA[Conversations]]></string>
+	<string name="_bx_cnv_form_entry"><![CDATA[Private messages]]></string>
 	<string name="_bx_cnv_form_entry_display_add"><![CDATA[New conversation]]></string>
 	<string name="_bx_cnv_form_entry_display_edit"><![CDATA[Edit conversation]]></string>
 	<string name="_bx_cnv_form_entry_display_delete"><![CDATA[Delete conversation]]></string>
@@ -18,13 +18,13 @@
 	<string name="_bx_cnv_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
 	<string name="_bx_cnv_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
 	<string name="_bx_cnv_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this conversation]]></string>
-	<string name="_bx_cnv_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+	<string name="_bx_cnv_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string>
 	<string name="_bx_cnv_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the conversation]]></string>
 	<string name="_bx_cnv_form_entry_input_sys_attachments"><![CDATA[Attachments]]></string>
 	<string name="_bx_cnv_form_entry_input_attachments"><![CDATA[Attachments]]></string>
     <string name="_bx_cnv_form_entry_input_recipients"><![CDATA[Recipients]]></string>
     <string name="_bx_cnv_form_entry_input_sys_recipients"><![CDATA[Recipients]]></string>
-    <string name="_bx_cnv_form_entry_input_recipients_err"><![CDATA[Mandatory field. Please, fill it in with profile(s) you are allowed to contact.]]></string>
+    <string name="_bx_cnv_form_entry_input_recipients_err"><![CDATA[Required field. Please fill it in with profile(s) you are allowed to contact.]]></string>
     <string name="_bx_cnv_form_entry_input_sys_submit_text"><![CDATA[Draft status]]></string>
     <string name="_bx_cnv_form_entry_input_sys_submit_block"><![CDATA[Submit block]]></string>
     <string name="_bx_cnv_form_entry_input_sys_draft_id"><![CDATA[Draft ID]]></string>
@@ -50,14 +50,14 @@
     <string name="_bx_cnv_page_title_sys_folder"><![CDATA[Conversations in folder]]></string>
     <string name="_bx_cnv_page_title_folder"><![CDATA[Folder: {folder}]]></string>
     <string name="_bx_cnv_page_block_title_folder"><![CDATA[Folder: {folder}]]></string>
-    <string name="_bx_cnv_page_block_title_convos"><![CDATA[Conversations]]></string>
+    <string name="_bx_cnv_page_block_title_convos"><![CDATA[Private messages]]></string>
     <string name="_bx_cnv_page_title_sys_edit_entry"><![CDATA[Edit conversation]]></string>
     <string name="_bx_cnv_page_title_edit_entry"><![CDATA[Edit conversation]]></string>
     <string name="_bx_cnv_page_block_title_edit_entry"><![CDATA[Edit conversation]]></string>
 
     <string name="_bx_cnv_menu_set_title_view_entry"><![CDATA[Conversation Actions]]></string>
     <string name="_bx_cnv_menu_title_view_entry"><![CDATA[Conversation Actions]]></string>
-    <string name="_bx_cnv_menu_title_submenu"><![CDATA[Conversations Submenu]]></string>
+    <string name="_bx_cnv_menu_title_submenu"><![CDATA[Private messages submenu]]></string>
     <string name="_bx_cnv_menu_set_title_submenu"><![CDATA[Conversations Submenu]]></string>
     <string name="_bx_cnv_menu_title_folders_more"><![CDATA[Conversations folders]]></string>
     <string name="_bx_cnv_menu_set_title_submenu"><![CDATA[Conversations folders]]></string>
@@ -85,8 +85,8 @@
     <string name="_bx_cnv_menu_item_title_folder_trash"><![CDATA[Trash]]></string>
     <string name="_bx_cnv_menu_item_title_system_folder_more"><![CDATA[More]]></string>
     <string name="_bx_cnv_menu_item_title_folder_more"><![CDATA[More]]></string>
-    <string name="_bx_cnv_menu_item_title_system_convos"><![CDATA[Conversations]]></string>
-    <string name="_bx_cnv_menu_item_title_convos"><![CDATA[Conversations]]></string>
+    <string name="_bx_cnv_menu_item_title_system_convos"><![CDATA[Private messages]]></string>
+    <string name="_bx_cnv_menu_item_title_convos"><![CDATA[Private messages]]></string>
     <string name="_bx_cnv_menu_item_title_system_unread_messages"><![CDATA[Unread messages number]]></string>
     <string name="_bx_cnv_menu_item_title_unread_messages"><![CDATA[Unread messages]]></string>
 
@@ -126,18 +126,18 @@
     <string name="_bx_cnv_email_new_message"><![CDATA[New message]]></string>
     <string name="_bx_cnv_email_new_message_subject"><![CDATA[New message from {SenderDisplayName}]]></string>
     <string name="_bx_cnv_email_new_message_body"><![CDATA[{email_header}
-<p><a href="{PageUrl}">New message</a> from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
-<hr />
-<p>{Message}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{PageUrl}">New message</a> from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
 {email_footer}]]></string>
 
     <string name="_bx_cnv_email_new_reply"><![CDATA[New reply]]></string>
     <string name="_bx_cnv_email_new_reply_subject"><![CDATA[New reply in conversation from {SenderDisplayName}]]></string>
     <string name="_bx_cnv_email_new_reply_body"><![CDATA[{email_header}
-<p>New reply in <a href="{PageUrl}">{PageTitle}</a> conversation from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
-<hr />
-<p>{Message}</p>
-<hr />
-Don't reply to this email, to reply to the sender please go to <a href="{PageUrl}">conversation page</a>.
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New reply in <a href="{PageUrl}">{PageTitle}</a> conversation from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr />
+Don't reply to this email, to reply to the sender please go to <a href="{PageUrl}">conversation page</a>.</div>
 {email_footer}]]></string>
 </resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_antispam_dnsbl_status"><![CDATA[
+<table style="width:100%;"><tr>
+    <td>DNSBL: {0}</td>
+    <td>URI DNSBL: {1}</td>
+    <td>Sign-in behavior: {2}</td>
+    <td>Sign-up behavior: {3}</td>
+</tr></table>
+]]></string_upd>
+    <string_upd name="_bx_antispam_option_dnsbl_behaviour_login"><![CDATA[Sign-in behavior if listed in DNS block lists]]></string_upd>
+    <string_upd name="_bx_antispam_option_dnsbl_behaviour_join"><![CDATA[Sign-up behavior if listed in DNS block lists]]></string_upd>
+    <string_upd name="_bx_antispam_option_disposable_email_domains_behaviour_join"><![CDATA[Sign-up behavior]]></string_upd>
+</resources>

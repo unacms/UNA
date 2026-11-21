@@ -30,6 +30,7 @@ class BxEditorEditor extends BxDolEditor
             selector: '{bx_var_selector}',
 			toolbar: {toolbar},
 			toolbar_inline: {toolbar_inline},
+            css_class: '{bx_var_css_additional_class}',
         }
         {bx_var_editor_name} = bx_ex_editor_init({bx_var_editor_name}, oParams);";
 
@@ -100,7 +101,8 @@ class BxEditorEditor extends BxDolEditor
             'bx_var_form_id' => $aAttrs['form_id'],
             'toolbar' => $sToolbarItems ? '[' . $sToolbarItems . ']' : 'false',
             'toolbar_inline' => $sToolbarItemsInline ? '[' . $sToolbarItemsInline . ']' : 'false',
-            'bx_var_css_additional_class' => $sToolbarItems ? '' : 'bx-form-input-html-editor-empty',
+            // a mini editor (a post in the feed, a comment) starts at two or three lines, see tailwind.css
+            'bx_var_css_additional_class' => trim(($sToolbarItems ? '' : 'bx-form-input-html-editor-empty') . ($iViewMode == BX_EDITOR_MINI ? ' bx-form-input-html-mini' : '')),
             'bx_var_element_name' => str_replace(['-', ' '], '_', $aAttrs['element_name']),
             'bx_var_editor_name' => $sEditorName,
             'bx_url_root' => bx_js_string(BX_DOL_URL_ROOT, BX_ESCAPE_STR_APOS),

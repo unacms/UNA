@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- sentence_case_member -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_oauth_authorize_agreement"><![CDATA[By connecting, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string_upd>
+</resources>

@@ -36,7 +36,11 @@ html.dark {
 .bx-toolbar-item.bx-ti-logo a:hover {
     text-decoration: none;
 }
+/* SVG code as the logo or the mark: as tall as its wrapper's height (Designer's logo height, set inline), and as wide as
+   its viewBox makes it. inherit, not 100%: the wrapper is an inline span where no class makes it a block, and an inline
+   box has no height for a percentage. max-height alone gave an SVG with only a viewBox no size at all. */
 .bx-toolbar-item.bx-ti-logo .bx-logo-inline svg {
+    height: inherit;
     max-height: 100%;
     width: auto;
 }
@@ -72,8 +76,9 @@ html.dark {
     width: 1.25rem;
     height: 1.25rem;
 }
+/* As tall as the results, up to 20rem: no empty box while the results load or when there are none */
 #bx-site-search-popup .bx-site-search-results {
-    height: 20rem;
+    max-height: 20rem;
     overflow-y: auto;
 }
 #bx-site-search-popup .bx-form-advanced .bx-loading-ajax {
@@ -189,6 +194,44 @@ html.dark {
 #bx-content-with-toolbar-wrapper > #bx-content-main {
     flex-grow: 3;
 }
+/* The guest splash page (.bx-landing as the page's whole content, Studio > Designer > Splash) fills the screen between
+   the header and the footer, as in the apps: every wrapper from main down to it is a column that grows, so the footer
+   stays in view. The splash's own "first screen" height (in its code, for a page without these wrappers) gives way
+   here: with it the page's margins and the footer ended up below the fold. Only where the splash is the direct child
+   of .bx-content-main: as a block of a Page builder page it sits in that page's rows and columns, which stay as set. */
+#bx-content-main:has(.bx-content-main > .bx-landing),
+#bx-content-main :has(.bx-content-main > .bx-landing),
+#bx-content-main .bx-content-main:has(> .bx-landing) {
+    display: flex;
+    flex-direction: column;
+}
+#bx-content-main :has(.bx-content-main > .bx-landing),
+#bx-content-main .bx-content-main:has(> .bx-landing),
+#bx-content-main .bx-content-main > .bx-landing {
+    flex: 1 1 auto;
+    box-sizing: border-box;
+    width: 100%;
+}
+#bx-content-main .bx-content-main > .bx-landing {
+    min-height: 0;
+}
+/* No page margins around it (my-4 lg:my-6): the splash has its own padding, and the apps show it flush with the header
+   and the footer. */
+#bx-content-main .bx-content-main:has(> .bx-landing) {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* The footer at the window's width (Designer > Settings > Footer width; its box then has no bx-def-page-width,
+   footer.html): the separator runs from edge to edge and the content keeps the 16px from the window's sides. */
+#bx-footer-wrapper > .bx-footer-box:not(.bx-def-page-width) {
+    padding-left: 0;
+    padding-right: 0;
+}
+#bx-footer-wrapper > .bx-footer-box:not(.bx-def-page-width) > .bx-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
 
 #bx-content-wrapper.htmx-added {
     opacity: 0;
@@ -240,7 +283,6 @@ html.dark {
 /*--- Profile Stats ---*/
 .bx-menu-vertical-more-less li.bx-psmi-show-more,
 .bx-menu-vertical-more-less li.bx-psmi-show-less {
-    text-transform: uppercase;
     font-size: 0.875rem;
 }
 

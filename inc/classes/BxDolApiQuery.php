@@ -159,6 +159,58 @@ class BxDolApiQuery extends BxDolDb implements iBxDolSingleton
     {
         return $this->query("DELETE FROM `sys_api_rate_limits` WHERE `started` < :before", ['before' => (int)$iBefore]);
     }
+
+    /**
+     * Personal access tokens (BxDolApiTokens). $sHash is the hex sha256 of the token, kept as binary(32).
+     * @return int the new token's id, 0 when it could not be added
+     */
+    public function addToken($iAccountId, $sTitle, $sHash, $sHint, $iAdded, $iExpires)
+    {
+        if (!$this->query("INSERT INTO `sys_api_tokens` (`account_id`, `title`, `hash`, `hint`, `added`, `expires`) VALUES (:account, :title, UNHEX(:hash), :hint, :added, :expires)", [
+            'account' => (int)$iAccountId, 'title' => $sTitle, 'hash' => $sHash, 'hint' => $sHint, 'added' => (int)$iAdded, 'expires' => (int)$iExpires,
+        ]))
+            return 0;
+
+        return (int)$this->lastId();
+    }
+
+    public function getTokenByHash($sHash)
+    {
+        return $this->getRow("SELECT `id`, `account_id`, `title`, `hint`, `added`, `expires`, `last_used` FROM `sys_api_tokens` WHERE `hash` = UNHEX(:hash)", ['hash' => $sHash]);
+    }
+
+    public function getTokenById($iId)
+    {
+        return $this->getRow("SELECT `id`, `account_id`, `title`, `hint`, `added`, `expires`, `last_used` FROM `sys_api_tokens` WHERE `id` = :id", ['id' => (int)$iId]);
+    }
+
+    public function getTokensByAccount($iAccountId)
+    {
+        return $this->getAll("SELECT `id`, `account_id`, `title`, `hint`, `added`, `expires`, `last_used` FROM `sys_api_tokens` WHERE `account_id` = :account ORDER BY `added` DESC", ['account' => (int)$iAccountId]);
+    }
+
+    /**
+     * Note a token's use, at most once in $iEvery seconds: one write a minute, not one per request.
+     */
+    public function touchToken($iId, $iNow, $iEvery = 60)
+    {
+        return $this->query("UPDATE `sys_api_tokens` SET `last_used` = :now WHERE `id` = :id AND `last_used` < :before", [
+            'id' => (int)$iId, 'now' => (int)$iNow, 'before' => (int)$iNow - (int)$iEvery,
+        ]);
+    }
+
+    /**
+     * @return bool whether the account had that token
+     */
+    public function deleteToken($iId, $iAccountId)
+    {
+        return (int)$this->query("DELETE FROM `sys_api_tokens` WHERE `id` = :id AND `account_id` = :account", ['id' => (int)$iId, 'account' => (int)$iAccountId]) > 0;
+    }
+
+    public function deleteTokensByAccount($iAccountId)
+    {
+        return $this->query("DELETE FROM `sys_api_tokens` WHERE `account_id` = :account", ['account' => (int)$iAccountId]);
+    }
 }
 
 /** @} */

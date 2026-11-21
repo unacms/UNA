@@ -245,11 +245,74 @@ class BxTemplFunctions extends BxBaseFunctions
                     $mixedResult = '';
                 break;
 
+            case 'sys_app_account':
+                $mixedResult = $this->getApplicationAccount();
+                break;
+
+            case 'sys_app_context_switcher':
+                $mixedResult = $this->getApplicationContextSwitcher();
+                break;
+
             default:
                 $mixedResult = parent::TemplPageAddComponent($sKey);
         }
 
         return $mixedResult;
+    }
+
+    /**
+     * The Application layout's sidebar foot: the member's picture and name, opening the account menu.
+     */
+    public function getApplicationAccount()
+    {
+        if(!isLogged() || !($oProfile = BxDolProfile::getInstance()))
+            return '';
+
+        $sThumb = $oProfile->getThumb();
+
+        return BxDolModule::getInstance($this->_sModule)->_oTemplate->parseHtmlByName('application_account.html', [
+            'name' => bx_process_output($oProfile->getDisplayName()),
+            'bx_if:image' => [
+                'condition' => !empty($sThumb),
+                'content' => ['thumb' => $sThumb],
+            ],
+        ]);
+    }
+
+    /**
+     * The Application layout's context switcher: the contexts the member takes part in, of the module the apps' context switcher
+     * names (Settings > API, sys_api_context_switcher and sys_api_context_connection), as the apps list them. Nothing without it.
+     */
+    public function getApplicationContextSwitcher()
+    {
+        $sModule = getParam('sys_api_context_switcher');
+        $sConnection = getParam('sys_api_context_connection');
+        if(!isLogged() || !$sModule || !$sConnection || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return '';
+
+        $aIds = bx_srv($sModule, 'get_participating_profiles', [bx_get_logged_profile_id(), $sConnection != 'participants' ? $sConnection : false]);
+        if(empty($aIds) || !is_array($aIds))
+            return '';
+
+        $aContexts = [];
+        foreach($aIds as $iId) {
+            $oContext = BxDolProfile::getInstance($iId);
+            if(!$oContext)
+                continue;
+
+            $aContexts[] = [
+                'url' => $oContext->getUrl(),
+                'name' => bx_process_output($oContext->getDisplayName()),
+                'thumb' => $oContext->getThumb(),
+            ];
+        }
+        if(empty($aContexts))
+            return '';
+
+        return BxDolModule::getInstance($this->_sModule)->_oTemplate->parseHtmlByName('application_context_switcher.html', [
+            'title' => bx_process_output(_t('_' . $sModule)),
+            'bx_repeat:contexts' => $aContexts,
+        ]);
     }
 
     public function getColorSchemeSwitcher()
@@ -285,7 +348,7 @@ class BxTemplFunctions extends BxBaseFunctions
                 'link' => 'javascript:void(0)',
                 'onclick' => "javascript:oBxArtificerUtils.setColorScheme(" . $iCode . "); $('#" . $sId . "').dolPopupHide();",
                 'target' => '_self',
-                'icon' => $sIcon,
+                'icon' => $sIcon == 'desktop' ? 'monitor' : $sIcon,
                 'title' => _t('_bx_artificer_txt_color_scheme_' . $sTitle),
                 'attrs_add' => 'data-bx-color-scheme="' . $iCode . '"',
             ];

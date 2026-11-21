@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
-    <string name="_bx_acl"><![CDATA[Paid Levels]]></string>
+    <string name="_bx_acl"><![CDATA[Memberships]]></string>
 
 
     <!-- Option -->
@@ -105,9 +105,9 @@
     <string name="_bx_acl_et_txt_name_subscription_cancel_required"><![CDATA[Subscription cancel required.]]></string>
     <string name="_bx_acl_et_txt_subject_subscription_cancel_required"><![CDATA[Subscription cancel required.]]></string>
     <string name="_bx_acl_et_txt_body_subscription_cancel_required"><![CDATA[{email_header}
-<p>Hello,</p>
-<p>You've paid for a new membership level but your old level's subscription is still active. You need to cancel it manually.</p>
-<p>Old subscription info:<br />Membership level: {level}<br />Order: {order}<br />Date Starts: {date_starts}<br />Date Expires: {date_expires}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Hello,</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've paid for a new membership level but your old level's subscription is still active. You need to cancel it manually.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Old subscription info:<br />Membership level: {level}<br />Order: {order}<br />Date Starts: {date_starts}<br />Date Expires: {date_expires}</p>
 {email_footer}]]></string>
 
 
@@ -115,7 +115,7 @@
     <string name="_bx_acl_msg_empty_owner"><![CDATA['Main seller' is empty. You need to mark some profile as 'Main seller' in Settings of currently active Payment app.]]></string>
     <string name="_bx_acl_msg_performed"><![CDATA[The action was successfully performed.]]></string>
     <string name="_bx_acl_err_price_duplicate"><![CDATA[Note! Similar pricing plan is already exists.]]></string>
-    <string name="_bx_acl_err_cannot_perform"><![CDATA[An error appeared. Please report.]]></string>
+    <string name="_bx_acl_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
 
     <string name="_bx_acl_txt_all_level"><![CDATA[All levels]]></string>
     <string name="_bx_acl_txt_level_caption_standard"><![CDATA[Free]]></string>

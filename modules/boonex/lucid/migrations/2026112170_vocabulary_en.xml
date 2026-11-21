@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_lucid_menu_item_title_system_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_bx_lucid_menu_item_title_login"><![CDATA[Sign in]]></string_upd>
+    <string_upd name="_bx_lucid_menu_item_title_system_join"><![CDATA[Sign up]]></string_upd>
+    <string_upd name="_bx_lucid_menu_item_title_join"><![CDATA[Sign up]]></string_upd>
+</resources>

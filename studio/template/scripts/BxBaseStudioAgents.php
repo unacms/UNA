@@ -37,6 +37,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS => ['icon' => 'mi-agt-providers.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => ['icon' => 'mi-agt-tools.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => ['icon' => 'mi-agt-vector-store.svg'],
+            BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS => ['icon' => 'mi-agt-connectors.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_SETTINGS => ['icon' => 'mi-agt-settings.svg']
         ];
 
@@ -45,6 +46,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS => 'sys_studio_agents_models',
             BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => 'sys_studio_agents_tools',
             BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => 'sys_studio_agents_vector_store',
+            BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS => 'sys_studio_agents_connectors',
         ];
     }
 
@@ -111,6 +113,25 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         $this->aPageJsOptions['sPageUrl'] .= 'vector_store';
 
         return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE]);
+    }
+
+    /**
+     * AI assistants (the MCP server): where to connect, and the operator's own personal access tokens (the same as in
+     * account settings > Connectors). Which agent tools they get is switched on the Tools tab.
+     */
+    protected function getConnectors()
+    {
+        $this->aPageJsOptions['sPageUrl'] .= 'connectors';
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('agents_connectors.html', [
+            'txt_info' => BxDolApiTokens::getInfoText(),
+            'txt_mcp_url' => _t('_sys_api_tokens_txt_mcp_url'),
+            'txt_copy' => _t('_sys_api_tokens_btn_copy'),
+            'mcp_url' => bx_html_attribute(BxDolApiTokens::getMcpUrl()),
+            'clients' => BxDolMcpServer::isEnabled() ? BxDolApiTokens::getMcpClientsCode(BxDolStudioTemplate::getInstance()) : '',
+            'txt_tokens' => _t('_sys_agents_connectors_txt_tokens'),
+            'grid' => $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_CONNECTORS]),
+        ]);
     }
 
     protected function getAgents()
