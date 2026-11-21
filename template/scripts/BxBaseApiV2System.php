@@ -81,13 +81,17 @@ class BxBaseApiV2System
 
         $sDescription = BxDolApiV2Map::text((string)$aPwa['description']['used']);
 
-        // the logo's proportions, from the sizes Designer keeps for an uploaded logo
-        $fAspect = null;
-        if (in_array($aSources['logo']['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true)) {
-            $iWidth = (int)$oDesigns->getSiteLogoWidth();
-            $iHeight = (int)$oDesigns->getSiteLogoHeight();
-            if ($iWidth > 0 && $iHeight > 0)
-                $fAspect = round($iWidth / $iHeight, 4);
+        // the logos' proportions, measured from the uploaded files (BxDolDesigns::getLogoFileAspectRatio)
+        $aAspect = [];
+        foreach (['logo', 'logo_dark'] as $sType) {
+            $aAspect[$sType] = null;
+            if (in_array($aSources[$sType]['source'], [BxDolDesigns::LOGO_SOURCE_TEMPLATE, BxDolDesigns::LOGO_SOURCE_SYSTEM], true)) {
+                $fRatio = $oDesigns->getSiteLogoAspectRatio($sType);
+                if ($fRatio <= 0)
+                    $fRatio = BxDolDesigns::getLogoFileAspectRatio($aSources[$sType]['file_id']);
+                if ($fRatio > 0)
+                    $aAspect[$sType] = round($fRatio, 4);
+            }
         }
 
         // the 180x180 home screen icon, as BxBaseFunctions::getMetaIcons picks it
@@ -105,7 +109,8 @@ class BxBaseApiV2System
             'mark_dark' => static::brandingImage($aSources['mark_dark']),
             'logo' => static::brandingImage($aSources['logo']),
             'logo_dark' => static::brandingImage($aSources['logo_dark']),
-            'logo_aspect' => $fAspect,
+            'logo_aspect' => $aAspect['logo'],
+            'logo_dark_aspect' => $aAspect['logo_dark'],
             'icon' => BxDolApiV2Map::absoluteUrl($sIcon),
             // Designer's own colour only: the template's theme-color (Artificer's slate, Ocean's
             // near-white) colours the browser's title bar and is no brand colour of the site's
@@ -232,7 +237,7 @@ class BxBaseApiV2System
             'Branding' => [
                 'type' => 'object',
                 'description' => 'How the community presents itself, from Studio > Designer (Logo and PWA). The same for guests and members.',
-                'required' => ['name', 'short_name', 'description', 'mark', 'mark_dark', 'logo', 'logo_dark', 'logo_aspect', 'icon', 'accent'],
+                'required' => ['name', 'short_name', 'description', 'mark', 'mark_dark', 'logo', 'logo_dark', 'logo_aspect', 'logo_dark_aspect', 'icon', 'accent'],
                 'properties' => [
                     'name' => ['type' => 'string', 'description' => 'The app name: the PWA name, else the site title, else the host'],
                     'short_name' => ['type' => 'string', 'description' => 'At most about 12 characters, for tight places'],
@@ -241,7 +246,8 @@ class BxBaseApiV2System
                     'mark_dark' => ['type' => ['string', 'null'], 'format' => 'uri', 'description' => 'The mark for dark backgrounds; null when the site has no dark variant'],
                     'logo' => ['type' => ['string', 'null'], 'format' => 'uri', 'description' => 'The wide logo, as `mark`'],
                     'logo_dark' => ['type' => ['string', 'null'], 'format' => 'uri'],
-                    'logo_aspect' => ['type' => ['number', 'null'], 'description' => 'Width / height of an uploaded logo, when Designer has its size'],
+                    'logo_aspect' => ['type' => ['number', 'null'], 'description' => 'Width / height of an uploaded logo, measured from the file; null when it is not an uploaded image or has no size'],
+                    'logo_dark_aspect' => ['type' => ['number', 'null'], 'description' => 'Width / height of `logo_dark`, as `logo_aspect`'],
                     'icon' => ['type' => ['string', 'null'], 'format' => 'uri', 'description' => 'The 180x180 home screen icon (the site\'s, else the template\'s). Until the site has made the icon\'s size, this is a transcoder link that changes with every call, so it is no stable cache key then'],
                     'accent' => ['type' => ['string', 'null'], 'pattern' => '^#[0-9A-F]{6}$', 'description' => 'The theme colour set in Studio > Designer > PWA, as #RRGGBB; null when none is set (the template\'s theme-color is not sent) or it is not a hex colour. A client derives readable shades from it'],
                 ],
