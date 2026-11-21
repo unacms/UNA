@@ -1675,13 +1675,17 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     {
         // getSections() keeps one cache for all its filters, so the GlobalSearch filter is applied here.
         $aResults = [];
-        foreach(BxDolSearch::getSections() as $sName => $aSection)
-            if((int)$aSection['GlobalSearch'] == 1)
+        foreach(BxDolSearch::getSections() as $sName => $aSection) {
+            if((int)$aSection['GlobalSearch'] == 1) {
                 $aResults[$sName] = _t($aSection['title']);
+            }
+        }
 
-        foreach(explode(',', (string)getParam('sys_api_search_sections')) as $sName)
-            if(($sName = trim($sName)) !== '' && !isset($aResults[$sName]))
+        foreach(explode(',', (string)getParam('sys_api_search_sections')) as $sName) {
+            if(($sName = trim($sName)) !== '' && !isset($aResults[$sName])) {
                 $aResults[$sName] = $sName;
+            }
+        }
 
         return $aResults;
     }

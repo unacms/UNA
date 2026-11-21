@@ -284,9 +284,11 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
      */
     public function isLogoTemplateSet()
     {
-        foreach($this->getLogoTemplateParams() as $sOption)
-            if(!in_array(trim((string)getParam($sOption)), ['', '0'], true))
+        foreach($this->getLogoTemplateParams() as $sOption) {
+            if(!in_array(trim((string)getParam($sOption)), ['', '0'], true)) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -399,8 +401,9 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             return false;
 
         $sValue = bx_process_input($sValue);
-        if(!array_key_exists($sValue, $this->getSettingsTemplateList()))
+        if(!array_key_exists($sValue, $this->getSettingsTemplateList())) {
             return false;
+        }
 
         $this->saveSettingValues(['template' => $sValue]);
         return true;
