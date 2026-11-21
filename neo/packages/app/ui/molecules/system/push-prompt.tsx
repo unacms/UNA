@@ -12,6 +12,7 @@ import {
     linkPushMember,
     pushPromptEnabled,
     pushPromptWaitMs,
+    pushSession,
     snoozePushPrompt,
     type PushMember,
 } from 'app/lib/push';
@@ -40,6 +41,8 @@ export default function PushPrompt() {
         if (!provider) return;
 
         const member: PushMember = { id: memberId, hash: memberHash };
+        // The session this member is in: a link asked for here is dropped once it has ended.
+        const session = pushSession();
         let cancelled = false;
 
         const timer = setTimeout(async () => {
@@ -47,7 +50,7 @@ export default function PushPrompt() {
                 const permission = await provider.permission();
                 if (cancelled) return;
                 if (permission === 'granted') {
-                    await linkPushMember(provider, member);
+                    await linkPushMember(provider, member, session);
                     return;
                 }
                 if (permission !== 'default' || askedThisRun || !pushPromptEnabled()) return;
@@ -80,6 +83,9 @@ export default function PushPrompt() {
         const provider = getPushProvider();
         close();
         if (!provider) return;
+        // The system's request can stay open while the member signs out or switches account:
+        // the device is linked only if this is still their session when they answer.
+        const session = pushSession();
         // No await before the request: browsers only show it from the press itself.
         provider.requestPermission()
             .then(async (granted) => {
@@ -89,8 +95,9 @@ export default function PushPrompt() {
                     await snoozePushPrompt();
                     return;
                 }
-                await linkPushMember(provider, { id: memberId, hash: memberHash });
-                playCue('success', { emphasis: 'subtle' });
+                if (await linkPushMember(provider, { id: memberId, hash: memberHash }, session)) {
+                    playCue('success', { emphasis: 'subtle' });
+                }
             })
             .catch((error) => {
                 console.warn('Push notifications:', (error as Error)?.message || error);

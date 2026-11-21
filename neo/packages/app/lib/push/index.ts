@@ -1,6 +1,7 @@
 import { appSetting, persistedGet, persistedSet } from 'app/lib/util';
 import { pushProviders } from 'app/customization/push';
 import { isSnoozed, promptDelayMs, promptEnabled, remainingDelayMs } from './prompt-rules';
+import { createPushSessions } from './sessions';
 import type { PushMember, PushProvider } from './types';
 
 export type { PushMember, PushPermission, PushProvider } from './types';
@@ -53,17 +54,25 @@ export function pushPromptWaitMs(memberId: number | string): number {
     return remainingDelayMs(pushPromptDelayMs(), runOf(memberId).since, Date.now());
 }
 
-/** Links this device with the member for the provider, once per run however many pages ask. */
-export async function linkPushMember(provider: PushProvider, member: PushMember): Promise<void> {
-    const run = runOf(member.id);
-    if (run.linked) return;
-    run.linked = true;
-    try {
+const sessions = createPushSessions();
+
+/** The session now, to pass to `linkPushMember`: take it when the work for a member starts. */
+export function pushSession(): number {
+    return sessions.current();
+}
+
+/**
+ * Links this device with the member for the provider, once per run however many pages ask.
+ * `session` is the one the work started in (`pushSession()`): when that session has ended since
+ * (sign-out, another account), nothing is linked and the answer is `false`.
+ */
+export function linkPushMember(provider: PushProvider, member: PushMember, session: number): Promise<boolean> {
+    return sessions.link(session, async () => {
+        const run = runOf(member.id);
+        if (run.linked) return;
         await provider.login(member);
-    } catch (error) {
-        run.linked = false;
-        throw error;
-    }
+        run.linked = true;
+    });
 }
 
 const SNOOZE_KEY = 'push_prompt_dismissed_at';
@@ -77,8 +86,13 @@ export function snoozePushPrompt(): Promise<void> {
     return persistedSet(SNOOZE_KEY, Date.now());
 }
 
-/** Unlink this device from the member on sign-out. */
-export async function logoutPush() {
+/**
+ * Unlinks this device from the member when their session ends. From here on a link started for
+ * them is dropped, and the unlink runs after one that is already on its way.
+ */
+export function logoutPush(): Promise<void> {
     runMember = null;
-    await getPushProvider()?.logout();
+    return sessions.end(async () => {
+        await getPushProvider()?.logout();
+    });
 }
