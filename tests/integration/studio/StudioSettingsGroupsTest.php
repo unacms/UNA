@@ -30,8 +30,17 @@ class StudioSettingsGroupsTest extends BxDolIntegrationTestCase
 
     protected function linkedType(string $sType, $mixedCategory): string
     {
-        $oSettings = (new ReflectionClass('BxTemplStudioSettings'))->newInstanceWithoutConstructor();
-        return (new ReflectionMethod($oSettings, 'getTypeOfCategory'))->invoke($oSettings, $sType, $mixedCategory);
+        // A Settings page creates BxDolStudioOptionsQuery with `new`, which refuses to run once another test in
+        // this process has made its singleton; set that one aside for the call, as a fresh request would have it.
+        $oSingleton = $GLOBALS['bxDolClasses']['BxDolStudioOptionsQuery'] ?? null;
+        unset($GLOBALS['bxDolClasses']['BxDolStudioOptionsQuery']);
+        try {
+            $oSettings = (new ReflectionClass('BxTemplStudioSettings'))->newInstanceWithoutConstructor();
+            return (new ReflectionMethod($oSettings, 'getTypeOfCategory'))->invoke($oSettings, $sType, $mixedCategory);
+        } finally {
+            if ($oSingleton !== null)
+                $GLOBALS['bxDolClasses']['BxDolStudioOptionsQuery'] = $oSingleton;
+        }
     }
 
     public static function groupsOfCategories(): array
