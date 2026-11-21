@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Operator level, notifications to the person they are about, plain errors and option captions, Share on X. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_upd name="_adm_prm_txt_level_administrator"><![CDATA[Оператор]]></string_upd>
+    <string_upd name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте операторов и модераторов. Модераторы следят за контентом и профилями на самом сайте, не в Студии.]]></string_upd>
+    <string_upd name="_ATT_REJECTED_E"><![CDATA[Ваш профиль не одобрен: в нём не хватает сведений или есть недопустимые. Если у вас есть вопросы, <a target=_blank href="contact.php">напишите нам</a> и укажите ID профиля.]]></string_upd>
+    <string_upd name="_ATT_SUSPENDED_E"><![CDATA[Ваш профиль временно заблокирован. Вы можете активировать его <a target=_blank href="change_status.php">здесь</a>. Если у вас есть вопросы, <a target=_blank href="contact.php">напишите нам</a>.]]></string_upd>
+    <string_upd name="_sys_acl_action_pending"><![CDATA[Ваш аккаунт ждёт одобрения. После одобрения вы сможете <b>{1}</b>. Есть вопросы? <a href="mailto:{7}">Напишите нам</a>.]]></string_upd>
+    <string_upd name="_sys_acl_action_suspended"><![CDATA[Вы не можете {1}, потому что ваш профиль заблокирован. Если вы не знаете почему, <a href="mailto:{7}">напишите нам</a>.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_email_sent_failed"><![CDATA[Не удалось отправить письмо с подтверждением. Попробуйте ещё раз позже.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Не удалось отправить SMS. Попробуйте ещё раз позже.]]></string_upd>
+    <string_upd name="_sys_txt_forgot_pasword_error_occured"><![CDATA[Не удалось отправить письмо для сброса пароля. Попробуйте ещё раз позже.]]></string_upd>
+    <string_upd name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Не удалось отправить код для входа. Попробуйте ещё раз позже.]]></string_upd>
+    <string_upd name="_sys_txt_unsubscribe_error_occured"><![CDATA[Эта ссылка для отписки не работает. Войдите и измените настройки email или напишите нам, и мы отпишем вас.]]></string_upd>
+    <string_upd name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> предлагает вам дружбу]]></string_upd>
+    <string_upd name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> и вы теперь друзья]]></string_upd>
+    <string_upd name="_sys_profile_subscription_added"><![CDATA[У вас новый подписчик: <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+    <string_upd name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} упоминает вас: {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string_upd>
+    <string_upd name="_sys_form_account_input_password_error"><![CDATA[Используйте не меньше 8 символов: хотя бы одну заглавную букву, одну строчную и одну цифру.]]></string_upd>
+    <string_upd name="_sys_location_status_undef"><![CDATA[Выберите страну, чтобы найти адрес]]></string_upd>
+    <string_upd name="_adm_api_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_adm_err_operation_failed"><![CDATA[Операция не удалась. Попробуйте ещё раз, а если снова не получится, загляните в журналы.]]></string_upd>
+    <string_upd name="_adm_str_err_download_failed"><![CDATA[Скачать не удалось. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_cmt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_sys_manage_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Самый большой файл, который может загрузить участник с этим членством, в любом приложении (0 = без ограничений; могут действовать другие системные ограничения).]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_quota_number"><![CDATA[Сколько файлов может загрузить участник с этим членством (0 = без ограничений).]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_quota_size"><![CDATA[Сколько места может занять участник с этим членством во всех приложениях (0 = без ограничений).]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Уменьшать картинки перед загрузкой до этой ширины (0 = не уменьшать)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Уменьшать картинки перед загрузкой до этой высоты (0 = не уменьшать)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[Срок жизни 2FA-кода, секунд (0 = отправлять код при каждом входе)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Максимум профилей в аккаунте (0 = без ограничений)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Максимум попыток входа (0 = без ограничений)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Срок действия встраивания, дней (0 = без ограничений)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[Срок жизни CSRF-токена, секунд (0 = без ограничений)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Блокировать контент после стольких жалоб (0 = не блокировать)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Максимум хештегов в публикации]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Максимум упоминаний в публикации]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Максимум прикреплённых ссылок в публикации (0 = без ограничений)]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Фоновые задачи: максимум параллельных обработчиков]]></string_upd>
+    <string_upd name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в X]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в X]]></string_upd>
+    <string_add name="_view_n_views_one"><![CDATA[{0} просмотр]]></string_add>
+    <string_add name="_view_n_views_few"><![CDATA[{0} просмотра]]></string_add>
+    <string_add name="_vote_n_votes_one"><![CDATA[{0} голос]]></string_add>
+    <string_add name="_vote_n_votes_few"><![CDATA[{0} голоса]]></string_add>
+    <string_add name="_cmt_txt_n_comments_one"><![CDATA[{0} комментарий]]></string_add>
+    <string_add name="_cmt_txt_n_comments_few"><![CDATA[{0} комментария]]></string_add>
+    <string_add name="_report_n_reports_one"><![CDATA[{0} жалоба]]></string_add>
+    <string_add name="_report_n_reports_few"><![CDATA[{0} жалобы]]></string_add>
+    <string_add name="_sys_txt_profile_joined_sample"><![CDATA[теперь с нами]]></string_add>
+    <string_add name="_sys_profile_joined_ntfs"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> теперь с нами]]></string_add>
+    <string_upd name="_sys_txt_confirm_email_success"><![CDATA[Ваш email подтверждён.]]></string_upd>
+    <string_upd name="_sys_conn_msg_success"><![CDATA[Готово.]]></string_upd>
+</resources>
