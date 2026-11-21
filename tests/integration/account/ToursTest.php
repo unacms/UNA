@@ -113,7 +113,7 @@ class ToursTest extends BxDolIntegrationTestCase
         setParam('sys_account_join', BxDolAccount::JOIN_CLOSED);
         $this->assertSame(BxDolTours::JOIN_CLOSED, $oTours->getJoinMode());
         $this->assertSame(BxDolTours::STEP_DONE, $oTours->getStepState('join'), 'chosen is done');
-        $this->assertStringContainsString('settings.php?page=system&category=account', $oTours->getJoinSettingsUrl());
+        $this->assertStringContainsString('settings.php?page=system_members&category=account', $oTours->getJoinSettingsUrl());
 
         setParam('sys_account_join', BxDolAccount::JOIN_INVITE);
         $sExpected = BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites') ? BxDolTours::JOIN_INVITE : BxDolTours::JOIN_OPEN;
