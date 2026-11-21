@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="ru" flag="ru" title="Russian" category="Reviews">
+    <string_upd name="_bx_reviews_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+    <string_upd name="_bx_reviews_option_voting_max_stars"><![CDATA[Максимум звёзд за вариант голосования]]></string_upd>
+</resources>

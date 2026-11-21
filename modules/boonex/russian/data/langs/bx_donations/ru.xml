@@ -102,7 +102,7 @@
     <string name="_bx_donations_msg_performed"><![CDATA[Действие было успешно выполнено.]]></string>
     <string name="_bx_donations_err_price_duplicate"><![CDATA[Аналогичный план пожертвований уже существует.]]></string>
     <string name="_bx_donations_err_min_value"><![CDATA[Значение должно превышать {0}.]]></string>
-    <string name="_bx_donations_err_cannot_perform"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
+    <string name="_bx_donations_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string>
 
     <!-- Other -->
     <string name="_bx_donations_txt_btype_single"><![CDATA[разовая]]></string>

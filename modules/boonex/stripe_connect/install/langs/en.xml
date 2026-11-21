@@ -76,7 +76,7 @@
     <string name="_bx_stripe_connect_btn_account_continue"><![CDATA[Continue with Account Creation]]></string>
     <string name="_bx_stripe_connect_msg_create_account"><![CDATA[You need to <a href="{0}"><b>create</b></a> a connected account first.]]></string>
     <string name="_bx_stripe_connect_err_delete"><![CDATA[Cannot delete account.]]></string>
-    <string name="_bx_stripe_connect_err_perform"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_bx_stripe_connect_err_perform"><![CDATA[The action could not be completed. Please try again.]]></string>
     <string name="_bx_stripe_connect_err_non_unique_acl"><![CDATA[Commission for selected membership level already exists.]]></string>
     <string name="_bx_stripe_connect_log"><![CDATA[Stripe Connect]]></string>
 </resources>
