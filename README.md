@@ -173,13 +173,13 @@ Set `XDEBUG_MODE=debug` in `.env` and run `docker compose up -d`. Xdebug starts 
 
 ## NEO web and mobile apps
 
-NEO is UNA's Next.js web client and its Expo app for iOS and Android. It lives in the [`neo/`](neo/) folder. `docker compose` starts only UNA, not NEO: run NEO on your computer with Node.js against the local UNA.
+NEO is UNA's Next.js web client and its Expo app for iOS and Android. It lives in the [`neo/`](neo/) folder. `docker compose` starts only UNA, not NEO: run NEO on your computer against the local UNA, with Node.js 24 and Yarn 1.22.
 
 1. Install UNA as above, then in Studio → API:
    - Settings: turn on **Enable API**, **Allow access by origin** and **Allow access with API key**.
    - Keys: add a key.
    - Origins: add `http://localhost:3000` (the NEO web address).
-2. In `neo/`, run `yarn` and create `neo/.env.local`:
+2. In `neo/`, run `yarn` (if it stops on a network error, run it again) and create `neo/.env.local`:
 
    ```env
    UNA_URL=http://localhost
@@ -192,6 +192,12 @@ NEO is UNA's Next.js web client and its Expo app for iOS and Android. It lives i
 
    Use your UNA address, with the port if you set `UNA_PORT`.
 3. Start the web app with `yarn web2` in `neo/` and open http://localhost:3000. It runs the Next.js dev server with the variables from `neo/.env.local`. For another port, run `yarn web2 -p 3001` and use that address in `APP_URL`, `NEXT_PUBLIC_APP_URL` and the Studio origin. (`yarn web` is the same server behind the `portless` proxy, which you would have to install separately.)
+
+Good to know:
+
+- The dev server compiles each page the first time you open it, so a first visit can take a minute or more, and later visits are quick. For a fast copy that you don't change, build it once and serve that: `yarn build`, then `yarn prod2` (add `-p 3001` for another port).
+- Messages in NEO's Messenger arrive live only with a sockets server: a [Soketi](https://soketi.app) server set in Studio → Settings → Sockets, and its address and key in `SOCKETS_HOST`, `SOCKETS_PORT` and `SOCKETS_KEY` in `neo/.env.local` (see [`neo/README.md`](neo/README.md)). The Jot server in `docker compose` is for Messenger on the UNA site only. Without sockets, messages are still sent, and others see them when they reload.
+- Links in emails (confirm your email, notifications) open the UNA site. To open NEO instead, enter the NEO address in Studio → API → **Site main URL in email notifications**.
 
 For the native apps, other variables, deployment and the rules for changing NEO, see [`neo/README.md`](neo/README.md) and [`neo/AGENTS.md`](neo/AGENTS.md).
 

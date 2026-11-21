@@ -5320,7 +5320,7 @@ UPDATE `sys_menu_items` SET `parent_id`=@iMiAccountSettingsProfile WHERE `set_na
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'gauge', '', '', 2147483646, 1, 1, 1),
-('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 2147483647, 0, 1, 2),
+('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 192, 0, 1, 2),
 ('sys_account_dashboard', 'system', 'dashboard-subscriptions', '_sys_menu_item_title_system_subscriptions', '_sys_menu_item_title_subscriptions', 'subscriptions.php', '', '', 'credit-card col-blue3', '', '', 2147483646, 1, 1, 3),
 ('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'shopping-cart col-green3', '', '', 2147483646, 1, 1, 4),
 ('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'receipt col-green3', '', '', 2147483646, 1, 1, 5),

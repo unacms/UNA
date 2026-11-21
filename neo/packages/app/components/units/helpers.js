@@ -377,6 +377,7 @@ export function UnitProfileImage({
                     <Letter
                         title={data?.fullname || data?.title}
                         id={data?.author_data?.id}
+                        color={data?.author_data?.color}
                         className="w-full h-full rounded-full sm:rounded-xl"
                         textClassName={`${ROW_AVATAR.letter_font} sm:text-6xl xl:text-7xl`}
                     />

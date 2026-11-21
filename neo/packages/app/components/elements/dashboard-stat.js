@@ -127,11 +127,13 @@ export default function DashboardStatComponent(props) {
 
     const menu = appSetting('dashboard', 'menu')
     const list = appSetting('dashboard', 'modules_list')
-    const modules = hasModules
+    // An account without a profile has no content to count: its tiles would all say 0, above "Create your profile".
+    const hasProfile = currentUser?.module !== 'system'
+    const modules = hasModules && hasProfile
         ? menu || (data?.modules || []).filter((item) => list.includes(item.key))
         : []
     const manageItems = data?.manage?.items || []
-    const showWiki = !!appSetting('wiki', 'enable')
+    const showWiki = !!appSetting('wiki', 'enable') && hasProfile
 
     if (!currentUser) return null
 
@@ -172,6 +174,7 @@ function DashboardStatHeader() {
                     <Profile
                         {...currentUser}
                         url_avatar={currentUser.avatar}
+                        color={currentUser.color}
                         displayType="unit_wo_info"
                         displaySize="xl"
                     />

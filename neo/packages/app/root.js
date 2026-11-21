@@ -82,12 +82,15 @@ export function Root(props) {
             }
             // Each page brings the viewer's informers, whether the site requires a profile or asks for one (UNA's
             // "Accounts without a profile", with the add-profile menu both lead to) and the toolbar's items: an admin
-            // can change them between two pages.
+            // can change them between two pages. And the membership: confirming the email moves the viewer from
+            // Unconfirmed to their level, and the badge under their name follows.
             if (currentUser && (
                 currentUser?.informer != data.user.informer
                 || currentUser?.profile_required !== data.user.profile_required
                 || (!!data.user.profile_prompt && !currentUser?.profile_prompt)
                 || String(currentUser?.toolbar) !== String(data.user.toolbar)
+                || currentUser?.membership !== data.user.membership
+                || currentUser?.confirmed !== data.user.confirmed
             )) {
                 setCurrentUser({
                     informer: data.user.informer,
@@ -95,6 +98,10 @@ export function Root(props) {
                     profile_prompt: data.user.profile_prompt,
                     menu: data.user.menu,
                     toolbar: data.user.toolbar,
+                    membership: data.user.membership,
+                    membership_name: data.user.membership_name,
+                    membership_icon: data.user.membership_icon,
+                    confirmed: data.user.confirmed,
                 });
             }
         }

@@ -1,9 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Animated, Easing, type ViewStyle } from 'react-native';
+import { Animated, Easing } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButtonLink } from 'app/design/controls';
-import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
+import { Icon } from 'app/ui/atoms/icon';
 import { isWeb, hasDropdownActions, flattenMenuItemsForDropdown } from 'app/lib/util';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { useMenuAddItems } from 'app/components/nav/menu-add';
@@ -15,6 +15,8 @@ import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 
 /** What UNA sends beside an empty list (BxDolEmptyState): words in the viewer's language, links of the site. */
 export type EmptyStateData = {
+    /** UNA's icon name (Lucide, as UNA names it: `bell`, `user-plus`). */
+    icon?: string;
     title?: string;
     text?: string;
     buttons?: EmptyStateButtonData[];
@@ -35,118 +37,71 @@ function pressAction(action: string | undefined, event?: { preventDefault?: () =
 }
 
 type EmptyStateProps = {
-    /** The list's skeletons in its own layout (a feed column, tiles...), without their pulse. */
+    /**
+     * @deprecated The list's skeletons are no longer shown under the words: a skeleton list read as still loading.
+     * Kept so callers that pass one keep working.
+     */
     preview?: ReactNode;
-    /** The skeletons were on screen while it loaded: they settle into the preview instead of it fading in. */
+    /** The skeletons were on screen while it loaded: the words fade in as they go. */
     fromSkeletons?: boolean;
-    /** UNA's title, text and buttons for this list. */
+    /** UNA's icon, title, text and buttons for this list. */
     state?: EmptyStateData | null;
     /** The title when UNA sends none. */
     fallbackTitle: string;
-    /** The preview's size once settled, against the list's (skeletonPreviewScale). */
+    /** @deprecated See `preview`. */
     previewScale?: number;
     /** False inside a block beside others (a denied action's message): only as tall as its words. */
     fill?: boolean;
 };
 
-/** How far the preview settles: a quieter, slightly smaller copy of the list. */
-const PREVIEW_OPACITY = 0.55;
 const DURATION_MS = 320;
 
 /**
- * Native: the fade over the preview, from the page's colour at no opacity to the page's colour. The classes the web
- * uses (`from-transparent to-background`) start there from clear black, and a native gradient mixes the colour and
- * the opacity apart, so on a light page the middle of the fade turned grey. Undefined on the web, and until the
- * page's colour is known.
+ * The empty state of a list, centred in the space the list would fill, as UNA's site draws one (BxDolEmptyState,
+ * messageBox.html): UNA's icon in a neutral circle, the title, a line of text and the buttons (a block's Studio app
+ * config can set them). When skeletons were showing while the list loaded, the words fade in as they go; with
+ * reduce motion they appear at once.
  */
-function usePageFade(): ViewStyle | undefined {
-    const page = useNativeTokenColor('bg-background');
-    if (isWeb || typeof page !== 'string' || !/^#[0-9a-f]{6}/i.test(page)) return undefined;
-    const solid = page.slice(0, 7);
-    return {
-        experimental_backgroundImage: [{
-            type: 'linear-gradient',
-            direction: 'to bottom',
-            colorStops: [{ color: `${solid}00`, positions: ['0%'] }, { color: solid, positions: ['100%'] }],
-        }],
-    };
-}
-
-/**
- * The empty state of a list, centred in the space the list would fill: a few of the list's own
- * skeleton items, laid out as the list lays its items out and fading away downwards, then UNA's
- * title, text and buttons (a block's Studio app config can set them; see BxDolEmptyState).
- * When skeletons were showing while the list loaded, they dim and shrink into the preview and
- * the words fade in under it; with reduce motion it appears at once. The preview is decoration,
- * hidden from assistive tech.
- */
-export default function EmptyState({ preview, fromSkeletons = false, state, fallbackTitle, previewScale = 0.75, fill = true }: Readonly<EmptyStateProps>) {
-    // Null until the setting is known: the settle waits for it rather than play for someone who turned motion off.
+export default function EmptyState({ fromSkeletons = false, state, fallbackTitle, fill = true }: Readonly<EmptyStateProps>) {
+    // Null until the setting is known: the fade waits for it rather than play for someone who turned motion off.
     const reduceMotion = useReduceMotionSetting();
-    // 0: as the loading skeletons showed it; 1: settled.
-    const progress = useAnimatedValue(fromSkeletons ? 0 : 1);
     const wordsOpacity = useAnimatedValue(fromSkeletons ? 0 : 1);
 
     useEffect(() => {
         if (!fromSkeletons || reduceMotion === null) return;
         if (reduceMotion) {
-            progress.setValue(1);
             wordsOpacity.setValue(1);
             return;
         }
-        Animated.parallel([
-            Animated.timing(progress, { toValue: 1, duration: DURATION_MS, easing: Easing.bezier(0.2, 0, 0, 1), useNativeDriver: !isWeb }),
-            Animated.timing(wordsOpacity, { toValue: 1, duration: DURATION_MS, delay: 120, easing: Easing.out(Easing.quad), useNativeDriver: !isWeb }),
-        ]).start();
-    }, [fromSkeletons, reduceMotion, progress, wordsOpacity]);
+        Animated.timing(wordsOpacity, { toValue: 1, duration: DURATION_MS, easing: Easing.out(Easing.quad), useNativeDriver: !isWeb }).start();
+    }, [fromSkeletons, reduceMotion, wordsOpacity]);
 
     // The create menu's droplets are out (web): the words fade under them.
     const [menuOpen, setMenuOpen] = useState(false);
     const title = state?.title || fallbackTitle;
     const buttons = state?.buttons ?? [];
-    const pageFade = usePageFade();
 
     // On web at least the list's share of a tall window (60svh), so the words sit mid-page, not in its top third.
     return (
         <View className={'w-full items-center justify-center py-8' + (fill ? ' flex-1 min-h-120 web:min-h-[60svh]' : '')} role="status">
-            {preview ? (
-                <View
-                    aria-hidden
-                    importantForAccessibility="no-hide-descendants"
-                    accessibilityElementsHidden
-                    pointerEvents="none"
-                    className="relative w-full max-h-65 overflow-hidden"
-                >
-                    <Animated.View
-                        style={{
-                            opacity: progress.interpolate({ inputRange: [0, 1], outputRange: [1, PREVIEW_OPACITY] }),
-                            // Shrunk from the top, so the list's first items stay in view.
-                            transformOrigin: 'top',
-                            transform: [{ scale: progress.interpolate({ inputRange: [0, 1], outputRange: [1, previewScale] }) }],
-                        }}
-                    >
-                        {preview}
-                    </Animated.View>
-                    {/* The list fades into the page: the words below read as its end. */}
-                    <View
-                        className={'absolute inset-x-0 bottom-0 h-2/3' + (pageFade ? '' : ' bg-linear-to-b from-transparent to-background')}
-                        style={pageFade}
-                    />
-                </View>
-            ) : null}
-            <Animated.View style={{ opacity: wordsOpacity }} className="items-center gap-2 px-6 -mt-6">
+            <Animated.View style={{ opacity: wordsOpacity }} className="items-center gap-2 px-6">
                 {/* Web: the create menu's droplets fan up over the words, which make way meanwhile. */}
                 <View
                     className={'items-center gap-2 web:transition-opacity web:duration-200 ' + (menuOpen ? 'opacity-0' : 'opacity-100')}
                     aria-hidden={menuOpen || undefined}
                 >
-                    <Text className="text-center text-lg font-semibold text-muted-foreground">{title}</Text>
+                    {state?.icon ? (
+                        <View className="w-12 h-12 mb-1 rounded-full items-center justify-center bg-button" aria-hidden>
+                            <Icon icon={state.icon} size={24} className="text-secondary-foreground" />
+                        </View>
+                    ) : null}
+                    <Text className="text-center text-base font-semibold text-foreground">{title}</Text>
                     {state?.text ? (
-                        <Text className="text-center text-base text-muted-foreground max-w-105">{state.text}</Text>
+                        <Text className="text-center text-sm text-secondary-foreground max-w-105">{state.text}</Text>
                     ) : null}
                 </View>
                 {buttons.length ? (
-                    <Row className="flex-wrap justify-center gap-2 pt-3">
+                    <Row className="flex-wrap justify-center gap-2 pt-2">
                         {buttons.map((button, index) => (
                             <EmptyStateButton key={button.link + index} button={button} onMenuOpenChange={setMenuOpen} />
                         ))}

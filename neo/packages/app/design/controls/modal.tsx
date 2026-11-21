@@ -1,7 +1,7 @@
-import { useEffect, useCallback, useRef, type ComponentType, type ReactNode, type Ref } from 'react';
+import { useEffect, useCallback, useId, useRef, type ComponentType, type ReactNode, type Ref } from 'react';
 import { Modal as ModalDef, Platform } from 'react-native'
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
-import { Pressable, View, ScrollView, Row } from 'app/design/view'
+import { View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
@@ -41,7 +41,7 @@ const DIALOG_INSET = 16;
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
 
-function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any> }) {
+function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef }: { title?: ReactNode; titleId?: string; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any> }) {
     const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
@@ -53,6 +53,7 @@ function ModalHeader({ title, headerBorder, onClose, onBack, closeRef }: { title
             {(title && type === 'string') && (
                 <View className='flex-1 px-11 justify-center items-center'>
                     <Text className={`${modalSettings.title} text-center`}
+                        nativeID={titleId}
                         numberOfLines={1}
                         ellipsizeMode='tail'
                     >{title}</Text>
@@ -83,6 +84,11 @@ export type ModalProps = {
     outerClickClose?: boolean;
     /** String title renders the header with a close button; an element renders as-is. */
     title?: ReactNode;
+    /**
+     * The dialog's name for assistive tech when it has no string title (search, the composer): a string title
+     * names it already.
+     */
+    accessibilityLabel?: string;
     /** With a string title: a back button before it (a step back inside the modal). */
     onBack?: () => void;
     headerBorder?: boolean;
@@ -114,6 +120,7 @@ export function Modal({
     outerClickClose = true,
     onVisible,
     title,
+    accessibilityLabel,
     onBack,
     headerBorder = true,
     maxWidth = 'max-w-3xl',
@@ -442,8 +449,15 @@ export function Modal({
         };
     }, [scrollable, onVisible]);
 
+    const titleId = useId();
+    const hasStringTitle = typeof title === 'string' && title.trim() !== '';
+    const dialogNameProps = hasStringTitle
+        ? { 'aria-labelledby': titleId }
+        : accessibilityLabel ? { 'aria-label': accessibilityLabel } : {};
+
     const content = <><ModalHeader
         title={title}
+        titleId={titleId}
         headerBorder={headerBorder}
         onClose={tryClose}
         onBack={onBack}
@@ -456,22 +470,33 @@ export function Modal({
             style={!isDesktop && isWeb ? {} : styles}
             className={`${padding} flex-auto `}
         >
-            <Pressable
-                onPress={handleContentPress}
+            {/* A click inside stays inside (the fog closes on its own clicks). A plain element: a Pressable would
+                make the whole content one button for assistive tech, with the fields inside it. */}
+            <View
+                onClick={handleContentPress}
                 className="flex-auto web:cursor-default"
             >
                 {children}
-            </Pressable>
+            </View>
         </Cnt></>
 
     if (isWeb) {
         return (
-            <ModalDef visible={onVisible} animationType={animationType} transparent={true} onRequestClose={handleRequestClose}>
-                <Pressable
+            // React Native Web's Modal is the `role="dialog"` element and takes the name: the title, else the label.
+            <ModalDef
+                visible={onVisible}
+                animationType={animationType}
+                transparent={true}
+                onRequestClose={handleRequestClose}
+                {...dialogNameProps}
+            >
+                {/* The fog closes the dialog on a click (Escape closes it from the keyboard). A plain element, not a
+                    button: as a Pressable it was one button around the whole dialog. */}
+                <View
                     ref={fogRef}
                     style={undefined}
                     className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${isDialog ? 'p-4' : ''} ${modalSettings.fog} `}/* justify-start for post form small web */
-                    onPress={handleWebOuterPress}
+                    onClick={handleWebOuterPress}
                 >
                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
                         <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: dialogHeight }} className={`w-full left-0 right-0 z-50 mx-auto ${modalSettings.container} ${dialogClass}`}>
@@ -480,7 +505,7 @@ export function Modal({
 
                         </View>
                     </RemoveScroll>
-                </Pressable>
+                </View>
             </ModalDef>
         )
     }
