@@ -14,6 +14,7 @@ const branding = {
     logo: null,
     logo_dark: null,
     logo_aspect: null,
+    logo_dark_aspect: null,
     icon: 'https://makers.example/icon.png',
     accent: '#0F766E',
 };

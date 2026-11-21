@@ -1362,7 +1362,8 @@ class BxBaseModGeneralTemplate extends BxDolModuleTemplate
     {
         $sCoverSettings = '';
         if(($aCoverData = json_decode($sSettings, true)) && is_array($aCoverData))
-            $sCoverSettings = 'background-position: ' . $aCoverData['x'] . '% ' . $aCoverData['y'] . '%';
+            // Reposition moves a picture up and down only; across it is centred, for a cover narrower than its picture (a phone).
+            $sCoverSettings = 'background-position: 50% ' . (float)$aCoverData['y'] . '%';
 
         return $sCoverSettings;
     }

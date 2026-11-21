@@ -50,6 +50,18 @@ class BxDolDesignsLogoSizeTest extends BxDolTestCase
         $this->assertSame([3, 2], BxDolDesigns::getImageFileSize($sFile));
     }
 
+    public function testStoredFilesWithoutExtension()
+    {
+        // the storage keeps files under their remote id, with no extension
+        $sSvg = $this->file('svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"></svg>');
+        $sPng = $this->file('png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAYAAACddGYaAAAAEUlEQVR42mNkYPhfz4AEGJE5ABxbAgSN0XNvAAAAAElFTkSuQmCC'));
+        foreach ([$sSvg => [300, 100], $sPng => [3, 2]] as $sFile => $aSize) {
+            $sBare = substr($sFile, 0, strrpos($sFile, '.'));
+            rename($sFile, $this->_aFiles[] = $sBare);
+            $this->assertSame($aSize, BxDolDesigns::getImageFileSize($sBare), basename($sFile));
+        }
+    }
+
     public function testUnknown()
     {
         $this->assertSame([], BxDolDesigns::getImageFileSize(''));
