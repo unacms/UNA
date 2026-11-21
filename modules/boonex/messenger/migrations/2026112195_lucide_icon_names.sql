@@ -20,9 +20,9 @@ UPDATE `sys_menu_items` SET `icon` = 'image-play' WHERE `set_name` = 'bx_messeng
 UPDATE `sys_menu_items` SET `icon` = 'settings' WHERE `set_name` = 'bx_messenger_lot_info_menu' AND `name` = 'settings' AND `icon` = 'cogs' AND @bLucide > 0;
 UPDATE `sys_menu_items` SET `icon` = 'menu' WHERE `set_name` = 'bx_messenger_lot_menu' AND `name` = 'list' AND `icon` = 'bars' AND @bLucide > 0;
 UPDATE `sys_menu_items` SET `icon` = 'info' WHERE `set_name` = 'bx_messenger_lot_menu' AND `name` = 'settings' AND `icon` = 'info-circle' AND @bLucide > 0;
-UPDATE `sys_menu_items` SET `icon` = 'message-circle col-blue1' WHERE `set_name` = 'bx_messenger_nav_menu' AND `name` = 'direct' AND `icon` = 'comment col-blue1' AND @bLucide > 0;
-UPDATE `sys_menu_items` SET `icon` = 'at-sign col-green2' WHERE `set_name` = 'bx_messenger_nav_menu' AND `name` = 'mentions_reactions' AND `icon` = 'at col-green2' AND @bLucide > 0;
-UPDATE `sys_menu_items` SET `icon` = 'messages-square col-blue2' WHERE `set_name` = 'bx_messenger_nav_menu' AND `name` = 'threads' AND `icon` = 'comments col-blue2' AND @bLucide > 0;
+UPDATE `sys_menu_items` SET `icon` = 'message-circle' WHERE `set_name` = 'bx_messenger_nav_menu' AND `name` = 'direct' AND `icon` = 'comment' AND @bLucide > 0; -- plain since 2026112193_neutral_nav_icons
+UPDATE `sys_menu_items` SET `icon` = 'at-sign' WHERE `set_name` = 'bx_messenger_nav_menu' AND `name` = 'mentions_reactions' AND `icon` = 'at' AND @bLucide > 0; -- plain since 2026112193_neutral_nav_icons
+UPDATE `sys_menu_items` SET `icon` = 'messages-square' WHERE `set_name` = 'bx_messenger_nav_menu' AND `name` = 'threads' AND `icon` = 'comments' AND @bLucide > 0; -- plain since 2026112193_neutral_nav_icons
 UPDATE `sys_menu_items` SET `icon` = 'messages-square' WHERE `set_name` = 'bx_messenger_profile_snippet_meta' AND `name` = 'message' AND `icon` = 'comments' AND @bLucide > 0;
 UPDATE `sys_menu_items` SET `icon` = 'messages-square' WHERE `set_name` = 'bx_organizations_view_actions' AND `name` = 'messenger' AND `icon` = 'comments' AND @bLucide > 0;
 UPDATE `sys_menu_items` SET `icon` = 'messages-square' WHERE `set_name` = 'bx_organizations_view_actions_all' AND `name` = 'messenger' AND `icon` = 'comments' AND @bLucide > 0;

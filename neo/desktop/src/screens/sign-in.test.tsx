@@ -28,6 +28,7 @@ const info = {
         logo: null,
         logo_dark: null,
         logo_aspect: null,
+        logo_dark_aspect: null,
         icon: null,
         accent: '#0F766E',
     },

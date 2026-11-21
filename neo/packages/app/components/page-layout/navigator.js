@@ -1,7 +1,6 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/sections/conductor';
 import { useMemo } from 'react';
-import { useLayoutSettings } from 'app/context/layout-settings';
 import { useEffect } from 'react';
 import { appSetting, clearNotif, cloneObject } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user'
@@ -20,13 +19,13 @@ function removeBlockFromData(dataOrig, blockName) {
     return data;
 }
 
-function getMenuAndData(props, layout) {
+function getMenuAndData(props) {
     let menu = Object.assign({}, props.data.menu);
     if (!menu.items) menu.items = [];
     let data = props.data;
     const categoriesConfig = props.blocks?.categories;
     const categories = DataByName(props.data, categoriesConfig);
-    if (categoriesConfig && categories && layout === 'hor') {
+    if (categoriesConfig && categories) {
         // 1. build menu items from categories
         const menuItems = categories?.content[0]?.data?.map((obj, index) => ({
             id: index + menu.items.length,
@@ -46,10 +45,9 @@ function getMenuAndData(props, layout) {
 
 export default function PageLayout(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const { layoutName: layout } = useLayoutSettings();
     const { menu: menuData, data: pageData } = useMemo(
-        () => getMenuAndData(props, layout),
-        [props.data, props.blocks, layout]
+        () => getMenuAndData(props),
+        [props.data, props.blocks]
     );
 
     // Copy, never push into `props.data.menu.items`: that array is the page data's own.

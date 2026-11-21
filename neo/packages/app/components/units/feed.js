@@ -12,7 +12,6 @@ import {
     Author,
     AuthorActions,
     UnitFeed,
-    SmallUnit,
     prepareData,
     MainContent,
     FeedEditForm,
@@ -89,7 +88,16 @@ function DefaultUnit({ data }) {
     return <DefaultFeedUnit data={data} />
 }
 
-function DefaultFeedUnit({ data }) {
+/** The compact feed (`feed_unit: small`): the same card with a short preview and no comments under it. */
+function SmallUnit({ data }) {
+    if (data.type == 'timeline_recommendations') {
+        return <TimelineRecommendations data={data} />
+    }
+
+    return <DefaultFeedUnit data={data} compact />
+}
+
+function DefaultFeedUnit({ data, compact = false }) {
     const isSkeleton = data?.skeleton;
     const { t } = useTranslation()
     const [viewState, setViewState] = useState({ view: '' })
@@ -159,7 +167,7 @@ function DefaultFeedUnit({ data }) {
                 </Row>
                 <View className="flex-auto px-4 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
-                        <MainContent url={url} data={data} />
+                        <MainContent url={url} data={data} compact={compact} />
                     </Skeleton>
                 </View>
                 {!!menuCounters?.items?.length && <>
@@ -178,7 +186,7 @@ function DefaultFeedUnit({ data }) {
                         data={menuActions}
                     />
                 </Row>
-                {commentsData && (
+                {commentsData && !compact && (
                     <View className="">
                         <CommentsSection
                             url={url}

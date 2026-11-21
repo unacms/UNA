@@ -454,7 +454,8 @@ class BxBaseIconsetLucide extends BxBaseIconset
             };
 
             window.bx_iconset_init_lucide = function() {
-                document.querySelectorAll('i.sys-icon').forEach(el => {
+                // an emoji (reactions, categories) is the icon's text, not a Lucide name
+                document.querySelectorAll('i.sys-icon:not(.sys-icon-emoji)').forEach(el => {
                     if(el.hasAttribute('data-lucide'))
                         return;
 
