@@ -53,6 +53,20 @@ export const settingsLayout = {
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl p-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
+        /**
+         * The site footer (PageFooter). Its width, as UNA's Designer sets it per page layout and audience (Designer >
+         * Settings > Page, header and footer) and sends it with each page (`footer`; lib/header-layout.ts). null
+         * follows UNA; a fork can fix it for the app: `page` (as wide as the page's content, its separator included)
+         * or `full` (the window).
+         */
+        footer: {
+            width: null,
+            // The footer's box at each width: `page` is as wide as the page's content (`page_content_width_default`)
+            // with its 16px sides, from desktop width; phones and tablets keep the footer across the screen.
+            content_width: { page: 'mx-auto lg:max-w-8xl lg:px-4', full: '' },
+            // The footer's row (its separator and links) in that box: at `page` the box has the side padding.
+            content: { page: 'lg:px-0', full: '' },
+        },
         // The site footer at the end of pages in the iOS / Android apps (PageFooter). Off: the tab bar
         // holds the pages and the member menu the footer's links. Web always shows it.
         native_page_footer: false,
@@ -131,10 +145,22 @@ export const settingsLayout = {
             content_pinned_fixed: '  ',
             // Shrinks (the page title truncates) so the actions on the right keep their room.
             content_left: 'min-w-0 shrink ps-4 gap-3',
-            // The site menu's bar takes the room between the logo and the actions; its tabs sit at its start, its
-            // middle or its end (`content_center_align`), as UNA's Designer places the main menu.
-            content_center: ' hidden flex-1 min-w-0 lg:flex gap-2 items-center ',
+            // The site menu's bar, from `lg`: as wide as its tabs, up to `menu_max_width` and to the room between the
+            // logo and the actions; its tabs sit at its start, its middle or its end (`content_center_align`), as
+            // UNA's Designer places the main menu. 44px high, the tabs' height: before the fit is measured the row
+            // wraps and shows its first line only (components/nav/menu-top.tsx).
+            content_center: ' hidden flex-initial min-w-0 h-11 lg:flex gap-2 items-center ',
             content_right: ' items-end flex-none pe-4 gap-3',
+            // The sides from `lg`, per place of the main menu, web only. A side that grows takes the room the bar
+            // leaves, never less than its own content. In the middle both grow, so they are equal while the header
+            // has the room and the bar is centred on the header; when it has not, the wider side keeps its content,
+            // the other takes the rest and the bar fills what is left between them.
+            content_left_align: { start: '', center: 'web:lg:flex-1 web:lg:min-w-max', end: 'web:lg:flex-1 web:lg:min-w-max' },
+            content_right_align: { start: 'web:lg:flex-1 web:lg:min-w-max', center: 'web:lg:flex-1 web:lg:min-w-max', end: '' },
+            // The widest the main menu's bar gets, in px; null for no limit (it then takes all the room between the
+            // logo and the actions, and is centred on the header only when all its tabs fit). The fit counts with it:
+            // tabs that don't fit in it go under More.
+            menu_max_width: 800,
             /**
              * The header's width and the main menu's place, as UNA's Designer sets them per page layout (Designer >
              * Settings > Header) and sends them with each page (`header`; lib/header-layout.ts). null follows UNA; a
@@ -144,7 +170,7 @@ export const settingsLayout = {
             align: null,
             // The header's row at each width: `page` is as wide as the page's content (`page_content_width_default`).
             content_width: { page: 'lg:max-w-8xl', full: '' },
-            // The tabs in the bar per place. In the middle they are centred on the header (components/nav/menu-top.js).
+            // The tabs in the bar per place (components/nav/menu-top.tsx).
             content_center_align: { start: 'justify-start', center: 'justify-center', end: 'justify-end' },
             // The current page's tab: a line under it (none by default; e.g. 10px under the 44px tabs, on the bottom
             // edge of the 64px header: 'absolute -bottom-2.5 left-0 h-0.5 rounded-full flex-none bg-ring') and the fill

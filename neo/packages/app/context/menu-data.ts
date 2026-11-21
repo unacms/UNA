@@ -1,8 +1,10 @@
 // packages/app/context/menu-data.js
 import { create } from 'zustand';
-import { filterHiddenOn, getDataForMenu } from 'app/lib/util';
+import { filterHiddenOn, getDataForMenu, isWeb } from 'app/lib/util';
 import { useScreenTier } from 'app/context/measure';
-import { createContext, useCallback, useContext, useEffect } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
+import { isMenuOf, menuToRemember, rememberedMenuData, rememberedMenuKey, shouldForgetMenu } from 'app/lib/menu-remember';
+import { persistedGetSync, persistedRemove, persistedSet } from 'app/lib/util/storage';
 
 /** Menu object id (string) or a UNA menu request object. */
 export type MenuObject = string | Record<string, unknown>;
@@ -122,11 +124,30 @@ export function getLoadedMenuData(object: string): any {
     return useMenuDataStore.getState().menus[object]?.data || null;
 }
 
-export const useMenuData = (object: MenuObject | null | undefined) => {
+/** Whose each loaded menu is: the viewer it was first seen with (`isMenuOf`, lib/menu-remember.ts). */
+const menuOwners = new WeakMap<object, string>();
+
+export type MenuDataOptions = {
+    /**
+     * Web: keep the member's copy of this menu on the device and draw it at once on the next visit, until UNA answers
+     * (`menuViewerKey(currentUser)`, lib/menu-remember.ts). For menus only the client draws for a member, such as the
+     * header's: a copy is read in the first render, which the server's HTML must not differ from.
+     */
+    rememberFor?: string | null;
+};
+
+export const useMenuData = (object: MenuObject | null | undefined, options: MenuDataOptions = {}) => {
     const key = typeof object === 'string' ? object : JSON.stringify(object);
     const initial = useContext(InitialMenusContext);
     const seeded = object && typeof object === 'string' ? initial?.[object] : undefined;
-    const data = useMenuDataStore((state) => state.menus[key]?.data ?? false) || seeded || false;
+    const loaded = useMenuDataStore((state) => state.menus[key]?.data ?? false);
+    const viewer = isWeb && object && typeof object === 'string' ? options.rememberFor ?? null : null;
+    // The member's copy from the last visit: shown until UNA answers, then replaced.
+    const remembered = useMemo(
+        () => (viewer ? rememberedMenuData(persistedGetSync(rememberedMenuKey(key)), viewer) : null),
+        [key, viewer]
+    );
+    const data = loaded || seeded || remembered || false;
     const isLoading = useMenuDataStore((state) => state.menus[key]?.loading ?? false);
     const isFetched = useMenuDataStore((state) => state.menus[key]?.fetched ?? false) || !!seeded;
     const fetchMenu = useMenuDataStore((state) => state.fetchMenu);
@@ -136,6 +157,18 @@ export const useMenuData = (object: MenuObject | null | undefined) => {
     useEffect(() => {
         if (object) fetchMenu(object);
     }, [object, fetchMenu, epoch]);
+
+    // UNA's answer replaces the copy; someone else's copy goes (another member, or the member signed out). Only a menu
+    // that arrived for this viewer is kept: one loaded before the viewer changed without a page load (a visitor's,
+    // which the server may have sent with the page, or the previous profile's) stays the other viewer's.
+    useEffect(() => {
+        if (!viewer) return;
+        const storageKey = rememberedMenuKey(key);
+        const own = loaded && loaded !== seeded && isMenuOf(menuOwners, loaded, viewer);
+        const copy = own ? menuToRemember(viewer, loaded) : null;
+        if (copy) void persistedSet(storageKey, copy);
+        else if (shouldForgetMenu(persistedGetSync(storageKey), viewer)) void persistedRemove(storageKey);
+    }, [viewer, key, loaded, seeded]);
 
     const refetch = useCallback(() => {
         if (object) fetchMenu(object, true);

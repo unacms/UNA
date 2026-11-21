@@ -89,6 +89,24 @@ html {
     min-width: 0;
     margin: 0 1rem;
 }
+/* Its footer at Page width (Designer > Settings > Footer width; pt_application.html) lines up with the page's blocks: the
+   side padding of .bx-page-wrapper (px-3 md:px-4 lg:px-6) as the footer's side margins. */
+.bx-main.bx-pt-application .bx-footer-box.bx-def-page-width > footer {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+}
+@media (min-width: 768px) {
+    .bx-main.bx-pt-application .bx-footer-box.bx-def-page-width > footer {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
+@media (min-width: 1024px) {
+    .bx-main.bx-pt-application .bx-footer-box.bx-def-page-width > footer {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+    }
+}
 
 .bx-main.bx-pt-application .bx-app-sidebar {
     position: fixed;

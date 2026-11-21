@@ -13,6 +13,7 @@ import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-m
 import { localeIconName } from 'app/ui/atoms/tag-glyph-icons';
 import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
 import { useScreenPagePath } from 'app/lib/navigation/screen-page-path';
+import { usePageFooterWidth } from 'app/ui/molecules/page/page-footer-width';
 
 /** A footer item as UNA sends it (BxBaseMenuFooter::_getMenuItemAPI), or as a caller passes it in `menu_items`. */
 type FooterMenuItem = {
@@ -531,10 +532,20 @@ const MenuFooter = memo(MenuFooterComponent);
  * The site footer at the end of a page. Native apps show none by default (the tab bar holds the
  * pages, and infinite lists would push it away; the member menu has the footer's links); a fork
  * turns it on with `layout.native_page_footer`.
+ *
+ * Its width is UNA's (Studio > Designer > Settings, per page layout and audience; `usePageFooterWidth`): as wide as
+ * the page's content, its separator included, or as the window. `layout.footer` holds the classes for each.
  */
 export function PageFooter() {
+    const width = usePageFooterWidth();
     if (Platform.OS !== 'web' && !appSetting('layout', 'native_page_footer')) return null;
-    return <MenuFooter />;
+    const box = appSetting('layout', 'footer', 'content_width')?.[width] ?? '';
+    const row = appSetting('layout', 'footer', 'content')?.[width] ?? '';
+    return (
+        <View className={cn('w-full', box)}>
+            <MenuFooter cntClasses={cn(MENU_FOOTER_CLASSES, row)} />
+        </View>
+    );
 }
 
 export default MenuFooter;

@@ -82,6 +82,16 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The footer of the page being shown: Designer's for its layout and audience (BxDolTemplate::getFooterLayout).
+     * A template with footer settings of its own overrides this.
+     * @return array ['width' => 'page' or 'full']
+     */
+    public function getFooterLayout()
+    {
+        return BxDolTemplate::getFooterLayout(BxDolTemplate::getInstance()->getPageType());
+    }
+
+    /**
      * How wide the content of the page being shown is: Designer's for its layout and audience
      * (BxDolTemplate::getPageWidth). A template with a page width of its own overrides this.
      * @return int|string pixels, or 'full'
@@ -99,6 +109,11 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             // The header's content is as wide as the page's, or as the window.
             case 'sys_header_width':
                 $mixedResult = $this->getHeaderLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
+                break;
+
+            // The footer, its separator included, is as wide as the page's content, or as the window.
+            case 'sys_footer_width':
+                $mixedResult = $this->getFooterLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
                 break;
 
             // The page's width for .bx-def-page-width (default.less), set on <body> as --bx-page-width.

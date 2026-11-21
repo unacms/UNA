@@ -677,6 +677,8 @@ class BxBasePage extends BxDolPage
             'type' => $this->getType (),
             // The header for this page's layout and this viewer, as Designer sets it: its width and where the main menu sits.
             'header' => BxDolTemplate::getHeaderLayout($this->getType()),
+            // The footer for this page's layout and this viewer, as Designer sets it: as wide as the page's content, or the window.
+            'footer' => BxDolTemplate::getFooterLayout($this->getType()),
             // How wide the page's content is for this viewer, as Designer sets it: pixels, or 'full'.
             'page_width' => BxDolTemplate::getPageWidth($this->getType()),
             // The favicons uploaded in Designer (fav, svg, dark: '' for each one not uploaded), for the apps' browser tabs.

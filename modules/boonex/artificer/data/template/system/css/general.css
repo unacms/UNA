@@ -222,6 +222,17 @@ html.dark {
     margin-bottom: 0;
 }
 
+/* The footer at the window's width (Designer > Settings > Footer width; its box then has no bx-def-page-width,
+   footer.html): the separator runs from edge to edge and the content keeps the 16px from the window's sides. */
+#bx-footer-wrapper > .bx-footer-box:not(.bx-def-page-width) {
+    padding-left: 0;
+    padding-right: 0;
+}
+#bx-footer-wrapper > .bx-footer-box:not(.bx-def-page-width) > .bx-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 #bx-content-wrapper.htmx-added {
     opacity: 0;
 }

@@ -79,7 +79,7 @@ const ICON_CLASS = {
     off: 'text-secondary-foreground web:group-hover:text-foreground size-6 shrink-0',
 }
 // The label is UNA's main menu label: 14 px medium at the default spacing, the size of the labels in the More list. MenuTop's hidden probe
-// (components/nav/menu-top.js) repeats these classes to measure the bar: change them together.
+// (components/nav/menu-top.tsx) repeats these classes to measure the bar: change them together.
 const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden font-medium'
 const LABEL_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
 const LABEL_SIZE = 'text-sm leading-5'
