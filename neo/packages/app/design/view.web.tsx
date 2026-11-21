@@ -34,7 +34,7 @@ const createLayoutEvent = (node: Element): LayoutEvent => {
     }
 }
 
-const useWebLayout = (forwardedRef: Ref<any> | undefined, onLayout?: (event: LayoutEvent) => void) => {
+const useWebLayout = (forwardedRef: Ref<any> | undefined, onLayout?: (event: LayoutEvent) => void, beforePaint = false) => {
     const nodeRef = useRef<Element | null>(null)
     const lastLayoutRef = useRef<Layout | null>(null)
     const emitLayoutRef = useRef<(() => void) | null>(null)
@@ -53,6 +53,18 @@ const useWebLayout = (forwardedRef: Ref<any> | undefined, onLayout?: (event: Lay
         nodeRef.current = node
         assignRef(forwardedRef, node)
     }, [forwardedRef])
+
+    // `layoutBeforePaint`: the first layout is reported before the browser paints, for an element whose first
+    // paint depends on its own size (the header's main menu fits its tabs in the bar). The state it sets is
+    // rendered in the same frame, so use it only there: every other `onLayout` answers after the paint, below,
+    // which then finds this layout unchanged and stays silent.
+    useLayoutEffect(() => {
+        const node = nodeRef.current
+        if (!node || !hasOnLayout || !beforePaint) return
+        const event = createLayoutEvent(node)
+        lastLayoutRef.current = event.nativeEvent.layout
+        onLayoutRef.current?.(event)
+    }, [hasOnLayout, beforePaint])
 
     useEffect(() => {
         const node = nodeRef.current
@@ -284,8 +296,8 @@ const getAnimatedWebStyle = (motionProps: any): CSSProperties => {
 }
 
 export const interopComponent = (Component: any, displayName: string, baseClassName = 'neo-v'): any => {
-    const Base: any = forwardRef(({ className, onLayout, ...props }: any, ref) => {
-        const layoutRef = useWebLayout(ref, onLayout)
+    const Base: any = forwardRef(({ className, onLayout, layoutBeforePaint, ...props }: any, ref) => {
+        const layoutRef = useWebLayout(ref, onLayout, layoutBeforePaint === true)
 
         return (
             <Component ref={layoutRef} className={cn(baseClassName, className)} {...sanitizeWebProps(props)} />
@@ -415,8 +427,8 @@ export const MotionView: ComponentType<DesignMotionViewProps> = interopRender(
 
 export const Row: ComponentType<DesignViewProps> = interopRender(
     'Row',
-    ({ children, className, onLayout, ...props }: any, ref: any) => {
-        const layoutRef = useWebLayout(ref, onLayout)
+    ({ children, className, onLayout, layoutBeforePaint, ...props }: any, ref: any) => {
+        const layoutRef = useWebLayout(ref, onLayout, layoutBeforePaint === true)
 
         return (
             <div

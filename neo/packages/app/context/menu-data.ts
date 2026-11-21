@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { filterHiddenOn, getDataForMenu, isWeb } from 'app/lib/util';
 import { useScreenTier } from 'app/context/measure';
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
-import { menuToRemember, rememberedMenuData, rememberedMenuKey, shouldForgetMenu } from 'app/lib/menu-remember';
+import { isMenuOf, menuToRemember, rememberedMenuData, rememberedMenuKey, shouldForgetMenu } from 'app/lib/menu-remember';
 import { persistedGetSync, persistedRemove, persistedSet } from 'app/lib/util/storage';
 
 /** Menu object id (string) or a UNA menu request object. */
@@ -124,6 +124,9 @@ export function getLoadedMenuData(object: string): any {
     return useMenuDataStore.getState().menus[object]?.data || null;
 }
 
+/** Whose each loaded menu is: the viewer it was first seen with (`isMenuOf`, lib/menu-remember.ts). */
+const menuOwners = new WeakMap<object, string>();
+
 export type MenuDataOptions = {
     /**
      * Web: keep the member's copy of this menu on the device and draw it at once on the next visit, until UNA answers
@@ -155,12 +158,14 @@ export const useMenuData = (object: MenuObject | null | undefined, options: Menu
         if (object) fetchMenu(object);
     }, [object, fetchMenu, epoch]);
 
-    // UNA's answer replaces the copy; someone else's copy goes (another member, or the member signed out). A menu
-    // the server sent with the page is a visitor's, whoever is signed in by now: it is not kept.
+    // UNA's answer replaces the copy; someone else's copy goes (another member, or the member signed out). Only a menu
+    // that arrived for this viewer is kept: one loaded before the viewer changed without a page load (a visitor's,
+    // which the server may have sent with the page, or the previous profile's) stays the other viewer's.
     useEffect(() => {
         if (!viewer) return;
         const storageKey = rememberedMenuKey(key);
-        const copy = loaded && loaded !== seeded ? menuToRemember(viewer, loaded) : null;
+        const own = loaded && loaded !== seeded && isMenuOf(menuOwners, loaded, viewer);
+        const copy = own ? menuToRemember(viewer, loaded) : null;
         if (copy) void persistedSet(storageKey, copy);
         else if (shouldForgetMenu(persistedGetSync(storageKey), viewer)) void persistedRemove(storageKey);
     }, [viewer, key, loaded, seeded]);

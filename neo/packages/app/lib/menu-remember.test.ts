@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MENU_VIEWER_GUEST, menuToRemember, menuViewerKey, rememberedMenuData, rememberedMenuKey, shouldForgetMenu } from './menu-remember.ts';
+import { MENU_VIEWER_GUEST, isMenuOf, menuToRemember, menuViewerKey, rememberedMenuData, rememberedMenuKey, shouldForgetMenu } from './menu-remember.ts';
 
 const MENU = { items: [{ name: 'home' }], persistent: 1 };
 
@@ -52,4 +52,31 @@ test("another viewer's copy is dropped, also when the viewer signs out", () => {
     assert.equal(shouldForgetMenu(stored, null), false);
     // not a copy at all
     assert.equal(shouldForgetMenu('x', 'user-12'), true);
+});
+
+test('a menu belongs to the viewer it was first seen with', () => {
+    const owners = new WeakMap<object, string>();
+    assert.equal(isMenuOf(owners, MENU, 'user-12'), true);
+    assert.equal(isMenuOf(owners, MENU, 'user-12'), true);
+    // the profile is switched without a page load: the loaded menu is still the first profile's
+    assert.equal(isMenuOf(owners, MENU, 'user-13'), false);
+    // UNA's answer for the new viewer is another object
+    const fresh = { ...MENU };
+    assert.equal(isMenuOf(owners, fresh, 'user-13'), true);
+    assert.equal(isMenuOf(owners, fresh, 'user-12'), false);
+});
+
+test("a visitor's menu is not a member's after signing in on the same page", () => {
+    const owners = new WeakMap<object, string>();
+    assert.equal(isMenuOf(owners, MENU, MENU_VIEWER_GUEST), true);
+    assert.equal(isMenuOf(owners, MENU, 'user-12'), false);
+});
+
+test('nothing is anyone\'s without a viewer or a menu', () => {
+    const owners = new WeakMap<object, string>();
+    assert.equal(isMenuOf(owners, MENU, null), false);
+    assert.equal(isMenuOf(owners, false, 'user-12'), false);
+    assert.equal(isMenuOf(owners, null, 'user-12'), false);
+    // an unknown viewer claims nothing: the first known one does
+    assert.equal(isMenuOf(owners, MENU, 'user-12'), true);
 });

@@ -45,3 +45,19 @@ export function shouldForgetMenu(stored: unknown, viewer: string | null): boolea
     if (stored == null || !viewer) return false;
     return !isRemembered(stored) || stored.viewer !== viewer;
 }
+
+/**
+ * Whose menu `data` is: the viewer it was first seen with. UNA answers a menu for the session's viewer, and the
+ * loaded menus outlive a change of viewer without a page load (signing in from a visitor's page, switching the
+ * profile), so a menu already loaded when the viewer changes is the previous viewer's, never the new one's: it is
+ * not kept for them. `owners` holds what was seen (one WeakMap per app run).
+ */
+export function isMenuOf(owners: WeakMap<object, string>, data: unknown, viewer: string | null): boolean {
+    if (!viewer || !data || typeof data !== 'object') return false;
+    const owner = owners.get(data);
+    if (owner === undefined) {
+        owners.set(data, viewer);
+        return true;
+    }
+    return owner === viewer;
+}

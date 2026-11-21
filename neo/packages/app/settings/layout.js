@@ -134,7 +134,7 @@ export const settingsLayout = {
             // The site menu's bar, from `lg`: as wide as its tabs, up to `menu_max_width` and to the room between the
             // logo and the actions; its tabs sit at its start, its middle or its end (`content_center_align`), as
             // UNA's Designer places the main menu. 44px high, the tabs' height: before the fit is measured the row
-            // wraps and shows its first line only (components/nav/menu-top.js).
+            // wraps and shows its first line only (components/nav/menu-top.tsx).
             content_center: ' hidden flex-initial min-w-0 h-11 lg:flex gap-2 items-center ',
             content_right: ' items-end flex-none pe-4 gap-3',
             // The sides from `lg`, per place of the main menu, web only. A side that grows takes the room the bar
@@ -156,7 +156,7 @@ export const settingsLayout = {
             align: null,
             // The header's row at each width: `page` is as wide as the page's content (`page_content_width_default`).
             content_width: { page: 'lg:max-w-8xl', full: '' },
-            // The tabs in the bar per place (components/nav/menu-top.js).
+            // The tabs in the bar per place (components/nav/menu-top.tsx).
             content_center_align: { start: 'justify-start', center: 'justify-center', end: 'justify-end' },
             // The current page's tab: a line under it (none by default; e.g. 10px under the 44px tabs, on the bottom
             // edge of the 64px header: 'absolute -bottom-2.5 left-0 h-0.5 rounded-full flex-none bg-ring') and the fill
