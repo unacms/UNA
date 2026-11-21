@@ -10,7 +10,7 @@
 /**
  * Polyglot > Languages: the installed languages, each with the language app that holds its settings.
  */
-class BxDolStudioPolyglotLanguages extends BxTemplStudioGrid
+class BxDolStudioPolyglotLanguages extends BxTemplStudioGrid // NOSONAR php:S110, the Dol/Base/Templ layering every Studio grid has
 {
     protected $sLanguageDefault;
 

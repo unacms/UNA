@@ -9,7 +9,7 @@
  */
 defined('BX_DOL') or die('hack attempt');
 
-class BxTemplStudioPolyglotLanguages extends BxBaseStudioPolyglotLanguages
+class BxTemplStudioPolyglotLanguages extends BxBaseStudioPolyglotLanguages // NOSONAR php:S110, the Dol/Base/Templ layering every Studio grid has
 {
     public function __construct($aOptions, $oTemplate = false)
     {

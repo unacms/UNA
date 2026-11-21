@@ -8,7 +8,7 @@
  * @{
  */
 
-class BxBaseStudioPolyglotLanguages extends BxDolStudioPolyglotLanguages
+class BxBaseStudioPolyglotLanguages extends BxDolStudioPolyglotLanguages // NOSONAR php:S110, the Dol/Base/Templ layering every Studio grid has
 {
     public function __construct($aOptions, $oTemplate = false)
     {
