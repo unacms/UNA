@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_posts_option_auto_activation_for_categories"><![CDATA[Auto-activation for categories]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_create_entry"><![CDATA[New post]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_view_entry"><![CDATA[View post]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_home"><![CDATA[Posts home]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_entries_popular"><![CDATA[Popular posts]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_entries_top"><![CDATA[Top posts]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_entries_updated"><![CDATA[Updated posts]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_entries_favorites"><![CDATA[Favorite posts]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_view_entry_comments"><![CDATA[Post comments]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_manage"><![CDATA[Manage own]]></string_upd>
+    <string_upd name="_bx_posts_page_title_sys_manage_administration"><![CDATA[Manage all]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_system_cpa_video_record_video"><![CDATA[Record video]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_system_cpa_poll"><![CDATA[Add poll]]></string_upd>
+    <string_upd name="_bx_posts_menu_item_title_system_add_link"><![CDATA[Add link]]></string_upd>
+</resources>

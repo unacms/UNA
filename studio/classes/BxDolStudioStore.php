@@ -9,7 +9,9 @@
 
 bx_import('BxDolStudioInstallerUtils');
 
-define('BX_DOL_STUDIO_STR_TYPE_DEFAULT', 'downloaded');
+// The App Store opens on its Storefront, the market's featured, latest and popular apps; Downloaded lists the packages
+// already on the server.
+define('BX_DOL_STUDIO_STR_TYPE_DEFAULT', 'goodies');
 
 class BxDolStudioStore extends BxTemplStudioWidget
 {
@@ -25,6 +27,11 @@ class BxDolStudioStore extends BxTemplStudioWidget
 
     protected $sSessionKeyNonOwnerNotified;
 
+    /**
+     * The App Store was opened without naming a page, so it shows the Storefront.
+     */
+    protected $bPageDefault;
+
     function __construct($sPage = "")
     {
         parent::__construct('store');
@@ -39,8 +46,11 @@ class BxDolStudioStore extends BxTemplStudioWidget
         $this->sSessionKeyNonOwnerNotified = 'str_non_owner_notified';
 
         $this->sPage = BX_DOL_STUDIO_STR_TYPE_DEFAULT;
-        if(is_string($sPage) && !empty($sPage))
+        $this->bPageDefault = true;
+        if(is_string($sPage) && !empty($sPage)) {
             $this->sPage = $sPage;
+            $this->bPageDefault = false;
+        }
 
         $this->initClient();
     }
@@ -210,9 +220,14 @@ class BxDolStudioStore extends BxTemplStudioWidget
             $this->sClientKey = $this->oDb->getParam('sys_oauth_key');
     }
 
+    /**
+     * Opening the App Store lands on the Storefront without leaving the site: until the operator is signed in to the UNA
+     * market it says so with a link, rather than sending the browser to the market's sign-in page, which may be offline.
+     * The store's own pages, Downloaded among them, stay a click away.
+     */
     protected function authorizeClient()
     {
-        $mixedResult = BxDolStudioInstallerUtils::getInstance()->getAccessObject(true)->doAuthorize();
+        $mixedResult = BxDolStudioInstallerUtils::getInstance()->getAccessObject(true)->doAuthorize(!$this->bPageDefault);
         if($mixedResult === true)
             $this->initClient();
 

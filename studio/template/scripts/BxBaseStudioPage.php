@@ -258,17 +258,6 @@ class BxBaseStudioPage extends BxDolStudioPage
         return '';
     }
 
-    protected function getPageCaptionHelp()
-    {
-    	$sContent = BxDolRss::getObjectInstance($this->sPageRssHelpObject)->getHolder($this->sPageRssHelpId, $this->iPageRssHelpLength, 0, false);
-
-        $oTemplate = BxDolStudioTemplate::getInstance();
-    	$oTemplate->addJsTranslation('_adm_txt_show_help_content_empty');
-        return $oTemplate->parseHtmlByName('page_caption_help.html', array(
-            'content' => $sContent
-        ));
-    }
-
     protected function getPageCaptionAssistant()
     {
         if(!$this->_bShowHeaderRightAssistant)

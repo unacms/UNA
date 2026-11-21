@@ -8,6 +8,7 @@
  */
 
 define('BX_DOL_LINK_CLASS', 'bx-link'); ///< class to add to every link in user content
+define('BX_DOL_FILE_TRANSFER_TIMEOUT', 300); ///< timeout in seconds for requests that download files or packages, sys_default_curl_timeout is for everything else
 
 define('BX_DATA_TEXT', 1); ///< regular text data type
 define('BX_DATA_TEXT_MULTILINE', 2); ///< regular multiline text data type
@@ -222,7 +223,8 @@ function bx_process_output ($mixedData, $iDataType = BX_DATA_TEXT, $mixedParams 
     case BX_DATA_DATETIME:
         return $mixedData;
     case BX_DATA_DATE_UTC:
-        if (!preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $mixedData, $m))
+        // a zero date ('0000-00-00', what an empty date column keeps) is no date: a date picker shows it empty
+        if (!preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $mixedData, $m) || !(int)$m[1])
             return '';
         return sprintf("%04d-%02d-%02d 00:00:00Z", $m[1], $m[2], $m[3]);
         return $mixedData . "Z";

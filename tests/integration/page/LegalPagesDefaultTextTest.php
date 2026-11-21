@@ -65,7 +65,9 @@ class LegalPagesDefaultTextTest extends BxDolIntegrationTestCase
             // The operator runs the site, not UNA, Inc.; the site's name comes from its settings.
             $this->assertStringContainsString('UNA, Inc.', $sShipped, $sKey);
             $this->assertStringContainsString('{site_title}', $sShipped, $sKey);
-            $this->assertStringContainsString('Note for the site operator', $sShipped, $sKey);
+            // Complete for every visitor: no note to the operator and nothing left to fill in.
+            $this->assertStringNotContainsString('Note for the site operator', $sShipped, $sKey);
+            $this->assertStringNotContainsString('[', $sShipped, $sKey);
         }
     }
 

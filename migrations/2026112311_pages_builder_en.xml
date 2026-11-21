@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Pages: "Advanced" section of the block form, the apps' Profile menu name, and the guests' membership level is "Guests". -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_bp_txt_block_advanced"><![CDATA[Advanced]]></string_add>
+    <string_add name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Profile menu (apps)]]></string_add>
+    <string_upd name="_adm_prm_txt_level_unauthenticated"><![CDATA[Guests]]></string_upd>
+</resources>

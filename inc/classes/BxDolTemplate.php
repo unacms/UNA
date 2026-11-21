@@ -1133,6 +1133,30 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The text of the page's `<title>`: the page's own title followed by the site's name ("Posts · Site"), so browser
+     * tabs, bookmarks and search results say which site a page is on. A title that already names the site (the home
+     * page's "Welcome to Site") is kept as it is, and a page without a title gets the site's name.
+     * @param string $sTitle the page's title, plain text
+     * @return string plain text
+     */
+    public function getPageTitleWithSite($sTitle)
+    {
+        $sSite = trim((string)getParam('site_title'));
+        $sTitle = trim((string)$sTitle);
+
+        if($sTitle === '')
+            return $sSite;
+        // "Welcome to Site" or "Site: about us" name the site already; "Unanswered questions" on a site called "UNA" doesn't.
+        $sTitleLower = mb_strtolower($sTitle);
+        $sSiteLower = mb_strtolower($sSite);
+        $iSite = mb_strlen($sSiteLower);
+        if($sSite === '' || mb_substr($sTitleLower, -$iSite) === $sSiteLower || (mb_substr($sTitleLower, 0, $iSite) === $sSiteLower && !preg_match('/^[\p{L}\p{N}]/u', mb_substr($sTitle, $iSite))))
+            return $sTitle;
+
+        return _t('_sys_page_title_with_site', $sTitle, $sSite);
+    }
+
+    /**
      * Set page injections.
      *
      * @param array $aInjections name => value injections.
@@ -1572,9 +1596,18 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 <meta name="geo.position" content="' . $this->aPage['location']['lat'] . ';' . $this->aPage['location']['lng'] . '" />
                 <meta name="geo.region" content="' . bx_html_attribute($this->aPage['location']['country']) . '" />';
 
-        // A page without an image of its own gets the page or site cover, or the site icon, @see BxBasePage::getMetaImageDefault
-        if(empty($this->aPage['image']) && $bPage && method_exists($oPage, 'getMetaImageDefault') && ($sImage = $oPage->getMetaImageDefault()))
-            $this->addPageMetaImage($sImage, $oPage->getMetaImageInfo($sImage));
+        // A page without an image of its own gets the page or site cover, or the site icon, @see BxBasePage::getMetaImageDefault;
+        // a script that stands in for a page (the splash) the site's icon or logo. Not found and other messages get none.
+        $bNoIndex = !empty($this->aPage['robots']) && is_string($this->aPage['robots']) && str_contains($this->aPage['robots'], 'noindex');
+        if(empty($this->aPage['image']) && !$bNoIndex) {
+            if($bPage && method_exists($oPage, 'getMetaImageDefault')) {
+                if(($sImage = $oPage->getMetaImageDefault()))
+                    $this->addPageMetaImage($sImage, $oPage->getMetaImageInfo($sImage));
+            }
+            else if(!$bPage && ($aImage = BxTemplPage::getSiteMetaImage()) && !empty($aImage['url'])) {
+                $this->addPageMetaImage($aImage['url'], ['width' => $aImage['width'], 'height' => $aImage['height'], 'card' => $aImage['card']]);
+            }
+        }
 
         // Open Graph, which X and others read too; a big picture card needs a big landscape image
         $bPageImage = !empty($this->aPage['image']);
@@ -2212,10 +2245,12 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 $sRet = BxTemplFunctions::getInstance()->getMetaIcons();
                 break;
             case 'page_header':
+                $sTitle = '';
                 if (isset($this->aPage['title']) && !empty($this->aPage['title']))
-                    $sRet = bx_process_output(strip_tags($this->aPage['title']));
-                if(empty($sRet) && isset($this->aPage['header']))
-                    $sRet = bx_process_output(strip_tags($this->aPage['header']));
+                    $sTitle = strip_tags($this->aPage['title']);
+                if($sTitle === '' && isset($this->aPage['header']))
+                    $sTitle = strip_tags($this->aPage['header']);
+                $sRet = bx_process_output($this->getPageTitleWithSite($sTitle));
                 break;
             case 'page_header_text':
                 if(isset($this->aPage['header_text']))
@@ -2266,7 +2301,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'cover':
             	$oCover = BxDolCover::getInstance($this);
 
-            	$bCover = $oCover->isEnabled();
+            	$bCover = $oCover->isEnabled() && !$oCover->isPageCoverOff();
             	if($bCover && ($oPage = BxDolPage::getObjectInstanceByURI()) !== false) {
                     $bCover = $oPage->isPageCover();
                     if($bCover && !$oCover->isCover()) {
@@ -4168,11 +4203,22 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 
         // A state (see BxBaseFunctions::msgBox) shows an icon, the text and actions; a denial of BxDolAcl gets its own.
         $sContent = MsgBox($bArray && !empty($s['state']) ? $s['state'] : $sContent);
-        if($iPage == BX_PAGE_DEFAULT)
+        if($iPage == BX_PAGE_DEFAULT) {
             $sContent = DesignBoxContent($sTitle, $sContent, $iDesignBox);
+
+            // One shell for every message: no cover of the page that couldn't be shown, and the box's title is the
+            // page's heading.
+            $oCover = BxDolCover::getInstance();
+            $oCover->setPageCoverOff();
+            $sContent = preg_replace('#<h2 class="bx-dbt-ttl">(.*?)</h2>#s', '<h1 class="bx-dbt-ttl">$1</h1>', $sContent, 1, $iHeadings);
+            if($iHeadings)
+                $oCover->setPageHasHeading();
+        }
 
         $oTemplate = BxDolTemplate::getInstance();
         $oTemplate->resetPageMeta();
+        // Not found, no access and other messages say nothing search engines should keep.
+        $oTemplate->setPageMetaRobots('noindex');
         $oTemplate->setPageNameIndex ($iPage);
         $oTemplate->setPageHeader ($sTitle);
         $oTemplate->setPageContent ('page_main_code', $sContent);

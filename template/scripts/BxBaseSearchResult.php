@@ -210,59 +210,6 @@ class BxBaseSearchResult extends BxDolSearchResult
         return bx_absolute_url(bx_append_url_params($oPermalinks->permalink($this->aCurrent['rss']['link']), 'rss=1'));
     }
 
-    function showAdminActionsPanel($sWrapperId, $aButtons, $sCheckboxName = 'entry', $bSelectAll = true, $bSelectAllChecked = false, $sCustomHtml = '')
-    {
-        $aBtns = array();
-        foreach ($aButtons as $k => $v) {
-            if(is_array($v)) {
-                $aBtns[] = $v;
-                continue;
-            }
-
-            $aBtns[] = array(
-                'type' => 'submit',
-                'name' => $k,
-                'value' => '_' == $v[0] ? _t($v) : $v,
-                'onclick' => '',
-            );
-        }
-
-        return BxDolTemplate::getInstance()->parseHtmlByName('adminActionsPanel.html', array(
-            'bx_repeat:buttons' => $aBtns,
-            'bx_if:custom_html' => array(
-                'condition' => strlen($sCustomHtml) > 0,
-                'content' => array(
-                    'custom_html' => $sCustomHtml,
-                )
-            ),
-            'bx_if:selectAll' => array(
-                'condition' => $bSelectAll,
-                'content' => array(
-                    'wrapper_id' => $sWrapperId,
-                    'checkbox_name' => $sCheckboxName,
-                    'checked' => ($bSelectAll && $bSelectAllChecked ? 'checked="checked"' : '')
-                )
-            ),
-        ));
-    }
-
-    function showAdminFilterPanel($sFilterValue, $sInputId = 'filter_input_id', $sCheckboxId = 'filter_checkbox_id', $sFilterName = 'filter', $sOnApply = '')
-    {
-        $sFilterValue = bx_html_attribute($sFilterValue);
-        $isChecked = $sFilterValue ? ' checked="checked" ' : '';
-
-        if(empty($sOnApply))
-            $sOnApply = "on_filter_apply(this, '" . $sInputId . "', '" . $sFilterName . "')";
-
-        return BxDolTemplate::getInstance()->parseHtmlByName('adminFilterPanel.html', array(
-            'input_id' => $sInputId,
-            'filter_value' => $sFilterValue,
-            'checkbox_id' => $sCheckboxId,
-            'is_checked' => $isChecked,
-            'on_apply' => $sOnApply,
-        ));
-    }
-
     function showPagination($bAdmin = false, $bChangePage = true, $bPageReload = true)
     {
         $sOnClick = $this->getCurrentOnclick([], false);

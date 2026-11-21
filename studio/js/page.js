@@ -59,28 +59,6 @@ BxDolStudioPage.prototype.togglePopup = function(sName, oLink) {
         case 'assistant':
             break;
 
-        case 'help':
-            oPopupOptions = $.extend({}, oPopupOptions, {
-                onBeforeShow: function() {
-                    var oPopup = $(sId);
-                    var oPopupRss = oPopup.find('.RSSAggrCont');
-                    if(oPopupRss.contents().length)
-                        return;
-
-                    oPopupRss.dolRSSFeed({
-                        onError: function() {
-                            oPopupRss.html(_t('_adm_txt_show_help_content_empty'));
-                            oPopup._dolPopupSetPosition(oPopupOptions);
-                        },
-                        onShow: function() {
-                            oPopup._dolPopupSetPosition(oPopupOptions);
-                        }
-                    });
-
-                    oPopup._dolPopupSetPosition(oPopupOptions);
-                }
-            });
-            break;
     }
 
     if($(sId).html().length > 0)

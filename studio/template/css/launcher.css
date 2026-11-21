@@ -244,17 +244,26 @@ div.bx-std-widget-action i.sys-icon {
     background-position: center center;
     background-size: 40px 10px;
 }
+/* The caption is 0.5rem wider than the tile on each side, into the tile's own inset (at least 0.75rem, tailwind.css), so a
+   long name such as "Organizations" fits on one line and captions of neighbouring tiles stay at least 0.5rem apart. A longer
+   one, or a translation, wraps to a second line instead of being cut; a row of tiles is as tall as its tallest caption. */
 div.bx-std-widget-caption {
     position: relative;
-    width: 4.5rem;
-    height: 1rem;
+    width: 5.5rem; /* the 4.5rem tile and 0.5rem on each side */
+    max-height: 2rem;
     margin-top: 0.75rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
 
     line-height: 1rem;
-    white-space: nowrap;
-    text-align: center; 
-    text-overflow: ellipsis;
+    text-align: center;
+    overflow-wrap: break-word;
+    hyphens: auto;
     overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
 
     font-weight: 400;
     font-size: 0.875rem;

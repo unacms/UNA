@@ -108,13 +108,25 @@ class LinkPreviewHeadTest extends BxDolIntegrationTestCase
 
     public function testPageWithoutDescriptionGetsTheDefault(): void
     {
-        unset($GLOBALS['bxDolClasses']['BxDolPage!' . BxDolPageQuery::getPageObjectNameByURI('about')]);
-        $_GET = ['i' => 'about', 'api' => 1];
-        $aData = BxDolPage::getObjectInstanceByURI('about')->getPageAPI();
+        // Explore has no description and no text block of its own.
+        unset($GLOBALS['bxDolClasses']['BxDolPage!' . BxDolPageQuery::getPageObjectNameByURI('explore')]);
+        $_GET = ['i' => 'explore', 'api' => 1];
+        $aData = BxDolPage::getObjectInstanceByURI('explore')->getPageAPI();
 
         $sDefault = bx_replace_markers(_t('_sys_page_meta_description_default'), ['site_title' => getParam('site_title')]);
         $this->assertStringNotContainsString('_sys_page_meta_description_default', $sDefault, 'The language key is installed.');
         $this->assertSame(htmlspecialchars(BxTemplFunctions::getInstance()->getMetaText($sDefault), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aData['description']);
+    }
+
+    public function testPageWithoutDescriptionDescribesItselfWithItsText(): void
+    {
+        // About has a text block: its first words, not the site's default description.
+        unset($GLOBALS['bxDolClasses']['BxDolPage!' . BxDolPageQuery::getPageObjectNameByURI('about')]);
+        $_GET = ['i' => 'about', 'api' => 1];
+        $aData = BxDolPage::getObjectInstanceByURI('about')->getPageAPI();
+
+        $sText = bx_replace_markers(_t('_sys_page_lang_block_about'), ['site_title' => getParam('site_title')]);
+        $this->assertSame(htmlspecialchars(BxTemplFunctions::getInstance()->getMetaText($sText), ENT_QUOTES | ENT_HTML5, 'UTF-8'), $aData['description']);
     }
 
     public function testHomeHasNoOembedLink(): void

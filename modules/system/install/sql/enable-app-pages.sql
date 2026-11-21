@@ -17,7 +17,6 @@ UPDATE `sys_pages_blocks` SET `config_api`='{"designbox": {"bg": true, "padding"
 
 -- 'active_api' switch
 -- Home: the apps show the home menu as the site does; the sign-in and join blocks stay off, the splash gets them anyway (BxDolSplash::AUTH_BLOCKS)
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `type`='menu' AND `content`='sys_homepage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system` IN ('_sys_page_block_title_system_onboarding_operator', '_sys_page_block_title_system_onboarding');
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title`='_sys_page_block_title_profile_menu';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';
@@ -53,6 +52,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_setting
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_info' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_info';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_delete' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_delete';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_connectors' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_connectors';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_settings_privacy' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_settings_privacy';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_profile_switcher' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_profile_create';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_account_profile_switcher' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_account_profile_switcher';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_profile_settings_cfilter' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_profile_settings_cfilter';

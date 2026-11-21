@@ -55,7 +55,7 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 ('bx_persons_view_profile', 3, 'bx_persons', '', '_bx_persons_page_block_title_profile_location', 13, 2147483647, 'service', 'a:2:{s:6:\"module\";s:10:\"bx_persons\";s:6:\"method\";s:15:\"entity_location\";}', 0, 0, 0, 0),
 ('bx_persons_view_profile', 3, 'bx_persons', '', '_bx_persons_page_block_title_profile_info', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:10:\"bx_persons\";s:6:\"method\";s:11:\"entity_info\";}', 0, 0, 1, 1),
 ('bx_persons_view_profile', 3, 'bx_persons', '', '_bx_persons_page_block_title_profile_all_actions', 13, 2147483647, 'service', 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:18:"entity_all_actions";}', 0, 0, 0, 0),
-('bx_persons_view_profile', 3, 'bx_persons', '', '_bx_persons_page_block_title_profile_membership', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:10:\"bx_persons\";s:6:\"method\";s:18:\"profile_membership\";}', 0, 0, 1, 2),
+('bx_persons_view_profile', 3, 'bx_persons', '', '_bx_persons_page_block_title_profile_membership', 11, 2147483646, 'service', 'a:2:{s:6:\"module\";s:10:\"bx_persons\";s:6:\"method\";s:18:\"profile_membership\";}', 0, 0, 1, 2),
 ('bx_persons_view_profile', 3, 'bx_persons', '', '_bx_persons_page_block_title_profile_location', 3, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:13:\"locations_map\";s:6:\"params\";a:2:{i:0;s:10:\"bx_persons\";i:1;s:12:\"{content_id}\";}s:5:\"class\";s:20:\"TemplServiceMetatags\";}', 0, 0, 1, 3),
 ('bx_persons_view_profile', 2, 'bx_persons', '', '_bx_persons_page_block_title_entry_reports', 11, 2147483647, 'service', 'a:2:{s:6:\"module\";s:10:\"bx_persons\";s:6:\"method\";s:14:\"entity_reports\";}', 0, 0, 1, 6);
 
@@ -194,6 +194,11 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 1, 'bx_persons', '' , '_bx_persons_page_block_title_latest_profiles', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:10:"bx_persons";s:6:"method";s:22:"browse_recent_profiles";}', 1, 0, 0, IFNULL(@iBlockOrder, 0) + 1),
 ('sys_home', 1, 'bx_persons', '_bx_persons_page_block_title_sys_recommended_entries_view_showcase', '_bx_persons_page_block_title_recommended_entries_view_showcase', 11, 2147483647, 'service', 'a:3:{s:6:\"module\";s:10:\"bx_persons\";s:6:\"method\";s:18:\"browse_recommended\";s:6:\"params\";a:3:{s:9:\"unit_view\";s:8:\"showcase\";s:13:\"empty_message\";b:0;s:13:\"ajax_paginate\";b:0;}}', 1, 0, 0, IFNULL(@iBlockOrder, 0) + 2);
 
+-- PAGE: explore
+SET @iBlockOrder = (SELECT `order` FROM `sys_pages_blocks` WHERE `object` = 'sys_explore' AND `cell_id` = 1 ORDER BY `order` DESC LIMIT 1);
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('sys_explore', 1, 'bx_persons', '', '_bx_persons_page_block_title_latest_profiles', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:10:"bx_persons";s:6:"method";s:22:"browse_recent_profiles";s:6:"params";a:2:{i:0;b:0;i:1;b:0;}}', 0, 1, 1, IFNULL(@iBlockOrder, 0) + 1);
+
 -- PAGE: service blocks
 
 SET @iBlockOrder = (SELECT `order` FROM `sys_pages_blocks` WHERE `object` = '' AND `cell_id` = 0 ORDER BY `order` DESC LIMIT 1);
@@ -301,7 +306,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_persons_view_meta', 'bx_persons', '_bx_persons_menu_set_title_view_profile_meta', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `order`) VALUES 
-('bx_persons_view_meta', 'bx_persons', 'membership', '_sys_menu_item_title_system_vm_membership', '_sys_menu_item_title_vm_membership', '', '', '', '', '', 0, 2147483647, '', 1, 0, 10),
+('bx_persons_view_meta', 'bx_persons', 'membership', '_sys_menu_item_title_system_vm_membership', '_sys_menu_item_title_vm_membership', '', '', '', '', '', 0, 2147483646, '', 1, 0, 10),
 ('bx_persons_view_meta', 'bx_persons', 'badges', '_sys_menu_item_title_system_vm_badges', '_sys_menu_item_title_vm_badges', '', '', '', '', '', 0, 2147483647, '', 1, 0, 20),
 ('bx_persons_view_meta', 'bx_persons', 'friends', '_sys_menu_item_title_system_sm_friends', '_sys_menu_item_title_sm_friends', '', '', '', '', '', 0, 2147483647, '', 1, 0, 23),
 ('bx_persons_view_meta', 'bx_persons', 'subscribers', '_sys_menu_item_title_system_sm_subscribers', '_sys_menu_item_title_sm_subscribers', '', '', '', '', '', 0, 2147483647, '', 1, 0, 25),

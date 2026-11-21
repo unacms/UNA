@@ -46,7 +46,7 @@ class BxBaseStudioSettings extends BxDolStudioSettings
                     $aMenu[] = [
                         'name' => $aType['name'],
                         'icon' => $this->getMenuIcon($sGroup, $aType),
-                        'icon_bg' => $sGroup == BX_DOL_STUDIO_STG_GROUP_SYSTEM,
+                        'icon_bg' => $sGroup == BX_DOL_STUDIO_STG_GROUP_SYSTEM, // every group of the system settings
                         'link' => BX_DOL_URL_STUDIO . 'settings.php?page=' . $aType['name'],
                         'title' => $aType['caption'],
                         'selected' => $aType['name'] == $sType

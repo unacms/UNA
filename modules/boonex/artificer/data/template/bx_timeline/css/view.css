@@ -292,6 +292,9 @@ div.bx-tl-item-attachment .bx-tl-iv-duration {
     bottom: 0.25rem;
     background-color: rgba(255, 255, 255, 0.8);
 }
+:where(.dark) div.bx-tl-item-attachment .bx-tl-iv-duration {
+    background-color: rgba(24, 24, 27, 0.8); /* gray-900 */
+}
 
 
 /*+++ Showcase Layout +++*/

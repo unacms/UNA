@@ -28,7 +28,7 @@ body > #bx-std-login-form-box {
 #bx-std-login-form-box .bx-form-input-text:focus-visible,
 #bx-std-login-form-box .bx-form-input-wrapper-password:has(.bx-form-input-password:focus-visible),
 #bx-std-login-form-box .bx-btn:focus-visible {
-    outline: 2px solid #2563eb;
+    outline: 2px solid rgb(var(--bx-accent-600));
     outline-offset: 2px;
 }
 #bx-std-login-form-box .bx-form-input-password:focus-visible {
@@ -37,7 +37,7 @@ body > #bx-std-login-form-box {
 .dark #bx-std-login-form-box .bx-form-input-text:focus-visible,
 .dark #bx-std-login-form-box .bx-form-input-wrapper-password:has(.bx-form-input-password:focus-visible),
 .dark #bx-std-login-form-box .bx-btn:focus-visible {
-    outline-color: #60a5fa;
+    outline-color: rgb(var(--bx-accent-400));
 }
 @media (forced-colors: active) {
     #bx-std-login-form-box .bx-form-input-text:focus-visible,

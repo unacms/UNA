@@ -25,7 +25,7 @@
     <string name="_bx_ntfs_page_title_system_view"><![CDATA[Notifications]]></string>
     <string name="_bx_ntfs_page_title_view"><![CDATA[Notifications]]></string>
     <string name="_bx_ntfs_page_block_title_view"><![CDATA[Notifications]]></string>
-    <string name="_bx_ntfs_page_title_system_settings"><![CDATA[Notifications Settings]]></string>
+    <string name="_bx_ntfs_page_title_system_settings"><![CDATA[Notification settings]]></string>
     <string name="_bx_ntfs_page_title_settings"><![CDATA[Notification settings]]></string>
     <string name="_bx_ntfs_page_block_title_delivery"><![CDATA[Receive via]]></string>
     <string name="_bx_ntfs_page_block_title_settings"><![CDATA[Notifications]]></string>
@@ -33,11 +33,11 @@
     <string name="_bx_ntfs_menu_title_submenu"><![CDATA[Notifications Submenu]]></string>
     <string name="_bx_ntfs_menu_title_public_submenu"><![CDATA[Notifications]]></string>
     <string name="_bx_ntfs_menu_set_title_submenu"><![CDATA[Notifications Submenu]]></string>
-    <string name="_bx_ntfs_menu_item_title_system_notifications_all"><![CDATA[All Notifications]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_notifications_all"><![CDATA[All notifications]]></string>
     <string name="_bx_ntfs_menu_item_title_notifications_all"><![CDATA[All notifications]]></string>
     <string name="_bx_ntfs_menu_title_settings"><![CDATA[Settings Submenu]]></string>
     <string name="_bx_ntfs_menu_set_title_settings"><![CDATA[Settings Submenu]]></string>
-    <string name="_bx_ntfs_menu_item_title_system_notifications_site"><![CDATA[On Site]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_notifications_site"><![CDATA[On site]]></string>
     <string name="_bx_ntfs_menu_item_title_notifications_site"><![CDATA[On site]]></string>
     <string name="_bx_ntfs_menu_item_title_system_notifications_email"><![CDATA[Email]]></string>
     <string name="_bx_ntfs_menu_item_title_notifications_email"><![CDATA[Email]]></string>

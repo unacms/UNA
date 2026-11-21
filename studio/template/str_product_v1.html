@@ -34,7 +34,8 @@
             <div class="bx-std-pa-actions">
                 <div class="bx-std-pc-buttons bx-std-pcb-install gap-4" <bx_if:hide_install>style="display:none"</bx_if:hide_install>>
                     <button type="button" class="bx-btn bx-btn-primary" onclick="javascript:__js_object__.install('__dir__', this)"><bx_text:_adm_btn_install_submit /></button>
-                    <button type="button" class="bx-btn" onclick="javascript:__js_object__.remove('__dir__', this)"><bx_text:_adm_btn_delete_submit /></button>
+                    <!-- Delete is in the More menu (studio/js/context_menu.js), away from Install; the menu reads the package from data-dir. -->
+                    <button type="button" class="bx-btn bx-btn-icon" data-dir="__dir__" data-bx-context-menu="#__more_menu_id__" aria-haspopup="menu" aria-expanded="false" onclick="return oBxDolStudioContextMenu.open(this)" title="__more_title__" aria-label="__more_title__">__more_icon__</button>
                 </div>
                 <div class="bx-std-pc-buttons bx-std-pcb-queued" <bx_if:hide_queued>style="display:none"</bx_if:hide_queued>>
                     <button type="button" class="bx-btn bx-btn-disabled" disabled><bx_text:_adm_btn_queued_submit /></button>

@@ -292,8 +292,13 @@ class BxBaseMenuFooterTest extends BxDolTestCase
     {
         $oFooter = $this->footer();
 
-        $this->assertTrue($this->withOption('sys_sounds_platforms', 'site,ios', fn() => $this->callProtected($oFooter, '_isVisible', [$this->item('sounds')])));
-        $this->assertFalse($this->withOption('sys_sounds_platforms', 'studio,ios,android', fn() => $this->callProtected($oFooter, '_isVisible', [$this->item('sounds')])));
+        // the suite runs as a guest, who hears sounds only with "Play for guests too"
+        $this->withOption('sys_sounds_guests', 'on', function () use ($oFooter) {
+            $this->assertTrue($this->withOption('sys_sounds_platforms', 'site,ios', fn() => $this->callProtected($oFooter, '_isVisible', [$this->item('sounds')])));
+            $this->assertFalse($this->withOption('sys_sounds_platforms', 'studio,ios,android', fn() => $this->callProtected($oFooter, '_isVisible', [$this->item('sounds')])));
+        });
+
+        $this->assertFalse($this->withOption('sys_sounds_guests', '', fn() => $this->callProtected($oFooter, '_isVisible', [$this->item('sounds')])), 'Guests get no Sounds item while guests hear nothing.');
     }
 
     public function testSoundsMenuOffersEachLevel(): void

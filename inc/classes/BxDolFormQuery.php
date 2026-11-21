@@ -141,6 +141,7 @@ class BxDolFormQuery extends BxDolDb
             	'unique' => $a['unique'] ? true : false,
                 'collapsed' => $a['collapsed'] ? true : false,
                 'privacy' => $a['privacy'] ? true : false,
+                'privacy_default' => $a['privacy_default'] ?? '', // who sees the field until its author chooses, '' is everybody
                 'rateable' => $a['rateable'],
                 'html' => $a['html'],
                 'attrs' => $a['attrs'] ? unserialize($a['attrs']) : [],

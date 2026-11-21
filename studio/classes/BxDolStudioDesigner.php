@@ -184,6 +184,13 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 break;
 
             case 'make_default':
+                // Changes the site's template: a POST from the Template page only, with its form's CSRF token.
+                $sToken = isset($_POST['csrf_token']) ? bx_process_input($_POST['csrf_token']) : '';
+                if(!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] != 'POST' || !BxDolForm::isCsrfTokenValid($sToken, false)) {
+                    $aResult = ['code' => 3, 'message' => _t('_sys_txt_form_submission_error_csrf_expired')];
+                    break;
+                }
+
                 $aResult = array('code' => 0, 'message' => '');
                 if(!$this->makeDefault())
                     $aResult = array('code' => 2, 'message' => _t('_adm_dsg_err_make_default'));
@@ -268,6 +275,22 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
 
         $oModule = BxDolModule::getInstance($aModule['name']);
         return $oModule && method_exists($oModule->_oConfig, 'getLogoParams') ? $oModule->_oConfig->getLogoParams() : [];
+    }
+
+    /**
+     * Whether the previewed template has a logo of its own: any of its logo options (getLogoParams()) is set. Those come
+     * before Designer's in the logo chain (BxDolDesigns::getLogoSources). An image option holds a file id, 0 when empty.
+     * @return bool
+     */
+    public function isLogoTemplateSet()
+    {
+        foreach($this->getLogoTemplateParams() as $sOption) {
+            if(!in_array(trim((string)getParam($sOption)), ['', '0'], true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -367,6 +390,10 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         return !empty($aModule) && file_exists(BX_DIRECTORY_PATH_MODULES . $aModule['path'] . 'data/template/system/images/' . $sFile);
     }
 
+    /**
+     * Designer > Template: makes an enabled template the site's template. It is set there only; Designer > Settings
+     * links to it.
+     */
     function makeDefault()
     {
         $sValue = bx_get($this->sParamPrefix . '_value');
@@ -374,7 +401,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             return false;
 
         $sValue = bx_process_input($sValue);
-        return setParam('template', $sValue);
+        if(!array_key_exists($sValue, $this->getSettingsTemplateList())) {
+            return false;
+        }
+
+        $this->saveSettingValues(['template' => $sValue]);
+        return true;
     }
 
     public function submitLogo(&$oForm)
@@ -550,16 +582,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
     }
 
     /**
-     * Designer > Settings: the site template, the default page layouts and the header per layout, each only from what
-     * can be chosen.
+     * Designer > Settings: the default page layouts and the header per layout, each only from what can be chosen. The
+     * site template is chosen in Designer > Template (makeDefault).
      */
     public function submitSettings()
     {
         $aValues = [];
-
-        $sTemplate = bx_process_input(bx_get('template'));
-        if(array_key_exists($sTemplate, $this->getSettingsTemplateList()))
-            $aValues['template'] = $sTemplate;
 
         $aLayouts = $this->getSettingsLayoutList();
         foreach(['sys_pt_default_visitor', 'sys_pt_default_member'] as $sName) {
@@ -605,7 +633,21 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             $aValues['sys_design_radius_smooth_factor'] = (string)min(2, max(1, round((float)$sFactor, 2)));
         }
 
-        // As Studio's settings forms save (BxDolStudioOptions::saveChanges): an alert per changed option, then fresh caches.
+        $sAccent = bx_process_input(bx_get('sys_design_accent'));
+        if(array_key_exists($sAccent, $this->getSettingsAccentList()))
+            $aValues['sys_design_accent'] = $sAccent;
+
+        $this->saveSettingValues($aValues);
+
+        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
+    }
+
+    /**
+     * Saves options of the templates category as Studio's settings forms do (BxDolStudioOptions::saveChanges): an alert
+     * per changed option, then fresh caches.
+     */
+    protected function saveSettingValues($aValues)
+    {
         $aCategory = [];
         BxDolStudioOptionsQuery::getInstance()->getCategories(['type' => 'by_name', 'value' => 'templates'], $aCategory, false); // BX_DOL_STUDIO_STG_CATEGORY_TEMPLATES, defined with BxDolStudioOptions, which this page doesn't load
         foreach($aValues as $sName => $mixedValue) {
@@ -623,8 +665,6 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         }
 
         $this->clearSettingsCache();
-
-        return $this->getJsToast('_adm_dsg_scs_save', BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_SETTINGS);
     }
 
     /**
@@ -648,6 +688,18 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             'small' => _t('_adm_dsg_txt_settings_radius_small'),
             'none' => _t('_adm_dsg_txt_settings_radius_none'),
         ];
+    }
+
+    /**
+     * The accent presets by name (BxDolDesigns::getAccentPresets), with their titles.
+     */
+    public function getSettingsAccentList()
+    {
+        $aResult = [];
+        foreach(array_keys(BxDolDesigns::getAccentPresets()) as $sName)
+            $aResult[$sName] = _t('_adm_dsg_txt_settings_accent_' . $sName);
+
+        return $aResult;
     }
 
     public function getSettingsRadius()

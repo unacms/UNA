@@ -44,12 +44,28 @@ div.adm-bp-block {
 
     box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
 }
-/* a block off on the site and in the apps, or in no cell, is greyed out; its switches stay readable */
+/* a block off on the site and in the apps, or in no cell, is greyed out; its switches stay readable.
+   Only the icon is faded: the title and the line under it take a lighter gray that still meets WCAG AA
+   (gray-500 on white, gray-400 on black). */
 div.adm-bp-block.adm-bpb-inactive .adm-bpb-icon,
-div.adm-bp-block.adm-bpb-inactive .adm-bpb-info,
-div.bx-lr-dump div.adm-bp-block .adm-bpb-icon,
-div.bx-lr-dump div.adm-bp-block .adm-bpb-info {
+div.bx-lr-dump div.adm-bp-block .adm-bpb-icon {
     opacity: 0.5;
+}
+div.adm-bp-block.adm-bpb-inactive .adm-bpb-title a,
+div.adm-bp-block.adm-bpb-inactive .adm-bpb-title span,
+div.adm-bp-block.adm-bpb-inactive .adm-bpb-description,
+div.bx-lr-dump div.adm-bp-block .adm-bpb-title a,
+div.bx-lr-dump div.adm-bp-block .adm-bpb-title span,
+div.bx-lr-dump div.adm-bp-block .adm-bpb-description {
+    color: #71717a; /* gray-500 */
+}
+.dark div.adm-bp-block.adm-bpb-inactive .adm-bpb-title a,
+.dark div.adm-bp-block.adm-bpb-inactive .adm-bpb-title span,
+.dark div.adm-bp-block.adm-bpb-inactive .adm-bpb-description,
+.dark div.bx-lr-dump div.adm-bp-block .adm-bpb-title a,
+.dark div.bx-lr-dump div.adm-bp-block .adm-bpb-title span,
+.dark div.bx-lr-dump div.adm-bp-block .adm-bpb-description {
+    color: #a1a1aa; /* gray-400 */
 }
 div.adm-bp-block-empty {
     height: 4rem;
@@ -213,7 +229,26 @@ div.adm-bp-cbf-counter {
     position: relative;
     float: right;
     line-height: 38px;
-    color: #b5b5b5;
+    color: #71717a; /* gray-500, AA on the white popup */
+}
+.dark div.adm-bp-cbf-counter {
+    color: #a1a1aa; /* gray-400 */
+}
+/* On a phone the block types sit above the blocks, each list scrolling in its own part of the popup. */
+@media (max-width: 639px) {
+    div.adm-bp-cbf-left {
+        position: static;
+        width: auto;
+        height: 10rem;
+    }
+    div.adm-bp-cbf-right {
+        height: 18rem;
+        margin-left: 0;
+        margin-top: 0.75rem;
+    }
+    div.adm-bp-cbf-counter {
+        float: none;
+    }
 }
 
 /*--- Edit Block popup style ---*/
@@ -296,21 +331,25 @@ div.adm-bp-epf-left {
     box-shadow: 1px 0 0 0 rgba(255, 255, 255, 0.025);
 }
 div.adm-bp-epf-left-cnt {}
-/* The modal's sidebar keeps the desktop row layout at every viewport: its column is 14rem wide, unlike the app pages' side menu that
+/* The modals' sidebars (page settings, Add blocks) keep the desktop row layout at every viewport: its column is 14rem wide, unlike the app pages' side menu that
    turns into a strip of square tiles under 1024px and a row of tabs under 768px (general.css). */
+div.adm-bp-cbf-left div.bx-std-pmen-item,
 div.adm-bp-epf-left div.bx-std-pmen-item {
     flex: none;
     height: 3.25rem; /* the 36px tile with 8px above and below, as in the app pages' side menu */
     min-width: 0;
     margin-top: 0.125rem;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item:first-child,
 div.adm-bp-epf-left div.bx-std-pmen-item:first-child {
     margin-top: 0;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item > a,
 div.adm-bp-epf-left div.bx-std-pmen-item > a {
     display: block;
     height: auto;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item-cnt,
 div.adm-bp-epf-left div.bx-std-pmen-item-cnt {
     -webkit-flex-direction: row;
     flex-direction: row;
@@ -319,15 +358,18 @@ div.adm-bp-epf-left div.bx-std-pmen-item-cnt {
     height: auto;
     padding: 0.5rem;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon,
 div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     display: block;
     width: 2.25rem;
     height: 2.25rem;
     margin: 0 0.75rem 0 0;
 }
+.bx-dir-rtl div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon,
 .bx-dir-rtl div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     margin: 0 0 0 0.75rem;
 }
+div.adm-bp-cbf-left div.bx-std-pmen-item .bx-std-pmen-ic-title,
 div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-title {
     display: block;
     -webkit-line-clamp: unset;

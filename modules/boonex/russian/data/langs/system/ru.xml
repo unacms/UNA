@@ -577,6 +577,7 @@
 	<string name="_adm_bp_scs_save"><![CDATA[Изменения успешно сохранены]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Показывать на сайте]]></string>
         <string name="_adm_bp_txt_block_active_api"><![CDATA[Показывать в приложениях]]></string>
+        <string name="_adm_bp_txt_block_advanced"><![CDATA[Дополнительно]]></string>
         <string name="_adm_bp_txt_block_async"><![CDATA[Асинхронный режим]]></string>
         <string name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Фон скрыт на]]></string>
         <string name="_adm_bp_txt_block_cache_lifetime"><![CDATA[Кэш для блока (в секундах)]]></string>
@@ -809,6 +810,7 @@
 	<string name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Просмотр на весь экран]]></string>
 	<string name="_adm_dsg_btn_tmpl_choose_default"><![CDATA[Выбрать шаблон по умолчанию]]></string>
 	<string name="_adm_dsg_btn_tmpl_fullscreen"><![CDATA[На весь экран]]></string>
+	<string name="_adm_dsg_btn_tmpl_make_default"><![CDATA[Сделать основным]]></string>
 	<string name="_adm_dsg_btn_tmpl_preview"><![CDATA[Предпросмотр]]></string>
 	<string name="_adm_dsg_btn_tmpl_reload"><![CDATA[Обновить]]></string>
 	<string name="_adm_dsg_cnf_logo_remove"><![CDATA[Удалить это изображение? Оно будет удалено безвозвратно.]]></string>
@@ -861,6 +863,7 @@
 	<string name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Рисует углы плавной кривой в браузерах, которые это поддерживают, например в Chrome. В остальных углы остаются круглыми.]]></string>
 	<string name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[Плавный угол выглядит меньше круглого того же радиуса. Там, где углы плавные, радиусы умножаются на это число, от 1 до 2.]]></string>
+	<string name="_adm_dsg_inf_settings_section_accent"><![CDATA[Цвет ссылок, кнопок, переключателей и рамки фокуса на сайте, в Студии и в приложениях. Каждый вариант сохраняет читаемость текста (WCAG AA) в светлой и тёмной теме.]]></string>
 	<string name="_adm_dsg_inf_settings_section_corners"><![CDATA[Насколько скруглены углы блоков, кнопок, полей и всплывающих окон на сайте и в Студии. Капсулы и круги сохраняют форму.]]></string>
 	<string name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string>
 	<string name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина страниц, ширина шапки и место главного меню в ней для каждого макета страницы, отдельно для гостей и для участников. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string>
@@ -877,9 +880,12 @@
 	<string name="_adm_dsg_lnk_logo_template"><![CDATA[Открыть настройки логотипа {0}]]></string>
 	<string name="_adm_dsg_lnk_splash_open"><![CDATA[Открыть в новой вкладке]]></string>
 	<string name="_adm_dsg_lnk_tmpl_open"><![CDATA[Открыть сайт с ним]]></string>
+	<string name="_adm_dsg_lnk_tmpl_page"><![CDATA[Открыть «Дизайнер › Шаблон»]]></string>
 	<string name="_adm_dsg_scs_save"><![CDATA[Изменения удачно сохранены]]></string>
         <string name="_adm_dsg_txt_logo_code"><![CDATA[SVG-код]]></string>
         <string name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[Нет. В тёмной теме показывается логотип светлой темы.]]></string>
+        <string name="_adm_dsg_txt_logo_low_contrast_dark"><![CDATA[Этот логотип плохо виден на тёмном фоне. Загрузите светлую версию для тёмной темы.]]></string>
+        <string name="_adm_dsg_txt_logo_note_designer"><![CDATA[Логотип задаётся в «Дизайнер › Лого», для всех шаблонов.]]></string>
         <string name="_adm_dsg_txt_logo_note_previews"><![CDATA[Превью показывают, что рисует шаблон сайта, {0}.]]></string>
         <string name="_adm_dsg_txt_logo_note_system"><![CDATA[Эти логотипы используют все шаблоны. Шаблон может заменить их в своих настройках логотипа.]]></string>
         <string name="_adm_dsg_txt_logo_note_template"><![CDATA[Логотипы здесь заменяют логотипы из «Дизайнер › Лого», только для шаблона {0}.]]></string>
@@ -921,6 +927,14 @@
 	<string name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Использовать service worker]]></string>
 	<string name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
 	<string name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Цвет окна]]></string>
+	<string name="_adm_dsg_txt_settings_accent_blue"><![CDATA[Синий]]></string>
+	<string name="_adm_dsg_txt_settings_accent_graphite"><![CDATA[Графит]]></string>
+	<string name="_adm_dsg_txt_settings_accent_green"><![CDATA[Зелёный]]></string>
+	<string name="_adm_dsg_txt_settings_accent_indigo"><![CDATA[Индиго]]></string>
+	<string name="_adm_dsg_txt_settings_accent_orange"><![CDATA[Оранжевый]]></string>
+	<string name="_adm_dsg_txt_settings_accent_rose"><![CDATA[Розовый]]></string>
+	<string name="_adm_dsg_txt_settings_accent_teal"><![CDATA[Бирюзовый]]></string>
+	<string name="_adm_dsg_txt_settings_accent_violet"><![CDATA[Фиолетовый]]></string>
 	<string name="_adm_dsg_txt_settings_header_align"><![CDATA[Главное меню]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_center"><![CDATA[По центру]]></string>
 	<string name="_adm_dsg_txt_settings_header_align_end"><![CDATA[В конце]]></string>
@@ -942,12 +956,14 @@
 	<string name="_adm_dsg_txt_settings_radius_large"><![CDATA[Большой]]></string>
 	<string name="_adm_dsg_txt_settings_radius_none"><![CDATA[Без скругления]]></string>
 	<string name="_adm_dsg_txt_settings_radius_small"><![CDATA[Маленький]]></string>
+	<string name="_adm_dsg_txt_settings_section_accent"><![CDATA[Цвета]]></string>
 	<string name="_adm_dsg_txt_settings_section_corners"><![CDATA[Углы]]></string>
 	<string name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string>
 	<string name="_adm_dsg_txt_settings_section_header"><![CDATA[Страница и шапка]]></string>
 	<string name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string>
 	<string name="_adm_dsg_txt_settings_section_template"><![CDATA[Шаблон сайта]]></string>
 	<string name="_adm_dsg_txt_settings_template_current"><![CDATA[Используется]]></string>
+	<string name="_adm_dsg_txt_settings_template_note"><![CDATA[Шаблон сайта выбирается в «Дизайнер › Шаблон».]]></string>
 	<string name="_adm_dsg_txt_settings_template_version"><![CDATA[Версия]]></string>
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Текст лого]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Стандартная обложка страницы]]></string>
@@ -979,6 +995,7 @@
 	<string name="_adm_dsg_txt_tmpl_default"><![CDATA[По умолчанию]]></string>
 	<string name="_adm_dsg_txt_tmpl_footer"><![CDATA[Все видят шаблон {0}, если сами не выбрали другой.]]></string>
 	<string name="_adm_dsg_txt_tmpl_frame"><![CDATA[Предпросмотр сайта]]></string>
+	<string name="_adm_dsg_txt_tmpl_make_default_confirm"><![CDATA[Сделать {0} шаблоном сайта? Все увидят его, если сами не выбрали другой.]]></string>
 	<string name="_adm_dsg_txt_tmpl_page"><![CDATA[Страница]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_about"><![CDATA[О сайте]]></string>
 	<string name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Обзор]]></string>
@@ -1082,7 +1099,7 @@
 	<string name="_adm_err_modules_wrong_version_script_update"><![CDATA[Новая версия модуля {0} несовместима с Вашей версией UNA. Пожалуйста, сначала обновите UNA (Студия &gt; Панель &gt; Версия) и затем попробуйте обновить модуль.]]></string>
 	<string name="_adm_err_oauth_cannot_get_token"><![CDATA[Невозможно соединиться с <b>UNA</b>. Пожалуйста, попробуйте позднее.]]></string>
 	<string name="_adm_err_oauth_cannot_read_answer"><![CDATA[Невозможно получить отклик от <b>UNA</b>. Пожалуйста, попробуйте позднее.]]></string>
-	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[Нужно ввести Key и Secret, предоставленные <b>UNA</b> в Настройки -> Общие.]]></string>
+	<string name="_adm_err_oauth_empty_key_secret"><![CDATA[Чтобы открыть магазин, введите ключ и секрет аккаунта UNA в <a href="{0}">настройках</a>.]]></string>
 	<string name="_adm_err_operation_failed"><![CDATA[Операция не удалась. Попробуйте ещё раз, а если снова не получится, загляните в журналы.]]></string>
 	<string name="_adm_form_btn_displays_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_form_btn_displays_edit"><![CDATA[Редактировать дисплей]]></string>
@@ -1235,6 +1252,7 @@
   <string name="_adm_form_txt_badges_empty_select_module"><![CDATA[Значков пока нет. Выберите модуль, чтобы добавить значок.]]></string>
   <string name="_adm_pgt_txt_badges_text"><![CDATA[Текст]]></string>
   <string name="_adm_pgt_txt_badges_icon"><![CDATA[Иконка]]></string>
+  <string name="_adm_pgt_txt_code"><![CDATA[Код]]></string>
 
   <string name="_adm_form_txt_reports_object"><![CDATA[Объект]]></string>
   <string name="_adm_form_txt_reports_author"><![CDATA[Автор]]></string>
@@ -1485,6 +1503,7 @@
         <string name="_adm_lmi_cpt_keys"><![CDATA[Ключи]]></string>
         <string name="_adm_lmi_cpt_pgt_settings"><![CDATA[Настройки (i18n)]]></string>
 	<string name="_adm_lmi_cpt_pgt_keys"><![CDATA[Текстовые ключи]]></string>
+        <string name="_adm_lmi_cpt_pgt_languages"><![CDATA[Языки]]></string>
         <string name="_adm_lmi_cpt_labels"><![CDATA[Метки]]></string>
 	<string name="_adm_lmi_cpt_latest"><![CDATA[Новые]]></string>
 	<string name="_adm_lmi_cpt_levels"><![CDATA[Уровни]]></string>
@@ -1723,6 +1742,7 @@
 	<string name="_adm_pgt_btn_etemplates_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_pgt_btn_etemplates_gl_edit_title"><![CDATA[Редактировать тему]]></string>
 	<string name="_adm_pgt_btn_etemplates_save"><![CDATA[Сохранить]]></string>
+	<string name="_adm_pgt_btn_get_more"><![CDATA[Найти ещё]]></string>
 	<string name="_adm_pgt_btn_nkp_close"><![CDATA[Закрыть]]></string>
 	<string name="_adm_pgt_btn_nkp_create"><![CDATA[Создать]]></string>
 	<string name="_adm_pgt_btn_nkp_save"><![CDATA[Сохранить]]></string>
@@ -1752,12 +1772,17 @@
 	<string name="_adm_pgt_txt_etemplates_subject"><![CDATA[Тема]]></string>
 	<string name="_adm_pgt_txt_key"><![CDATA[Ключ]]></string>
 	<string name="_adm_pgt_txt_keyword"><![CDATA[Ключевое слово...]]></string>
+	<string name="_adm_pgt_txt_language"><![CDATA[Язык]]></string>
 	<string name="_adm_pgt_txt_languages"><![CDATA[Языки]]></string>
 	<string name="_adm_pgt_txt_module"><![CDATA[Модуль]]></string>
 	<string name="_adm_pgt_txt_nkp_add_popup"><![CDATA[Создать новый ключ]]></string>
 	<string name="_adm_pgt_txt_nkp_edit_popup"><![CDATA[Редактировать "{0}" ключ]]></string>
 	<string name="_adm_pgt_txt_nkp_key_name"><![CDATA[Имя ключа]]></string>
 	<string name="_adm_pgt_txt_nkp_module"><![CDATA[Модуль]]></string>
+	<string name="_adm_pgt_txt_status"><![CDATA[Состояние]]></string>
+	<string name="_adm_pgt_txt_status_default"><![CDATA[По умолчанию]]></string>
+	<string name="_adm_pgt_txt_status_off"><![CDATA[Выкл.]]></string>
+	<string name="_adm_pgt_txt_status_on"><![CDATA[Вкл.]]></string>
 	<string name="_adm_pgt_txt_text"><![CDATA[Текст]]></string>
         <string name="_adm_pgt_txt_et_c_content"><![CDATA[Само сообщение будет здесь.]]></string>
         <string name="_adm_pgt_txt_et_hf_inf"><![CDATA[Внимание. Неправильное применение HTML может повредить дизайн email сообщения. Также убедитесь в том, что маркер {unsubscribe} присутствует хотя бы в одном из темплейтов (заголовок и/или основание).]]></string>
@@ -1838,7 +1863,7 @@
 	<string name="_adm_prm_txt_level_quota_size"><![CDATA[Лимит дискового пространства (Mb)]]></string>
 	<string name="_adm_prm_txt_level_standard"><![CDATA[Стандарт]]></string>
 	<string name="_adm_prm_txt_level_suspended"><![CDATA[Заблокирпованный]]></string>
-	<string name="_adm_prm_txt_level_unauthenticated"><![CDATA[Неавторизованный]]></string>
+	<string name="_adm_prm_txt_level_unauthenticated"><![CDATA[Гости]]></string>
 	<string name="_adm_prm_txt_level_unconfirmed"><![CDATA[Неподтверждённый]]></string>
 	<string name="_adm_prm_txt_manage_actions"><![CDATA[Управление действиями]]></string>
 	<string name="_adm_prm_txt_max_file_size"><![CDATA[Макс. размер файла]]></string>
@@ -1927,6 +1952,7 @@
     <string name="_adm_stg_cpt_category_social_settings"><![CDATA[Поделиться]]></string>
     <string name="_adm_stg_cpt_category_api_general"><![CDATA[Общие]]></string>
     <string name="_adm_stg_cpt_category_api_layout"><![CDATA[Планировка]]></string>
+    <string name="_adm_stg_cpt_category_api_preview"><![CDATA[Предварительная версия API v2]]></string>
     <string name="_adm_stg_cpt_category_agents_general"><![CDATA[Общие]]></string>
     <string name="_adm_stg_cpt_category_agents_usage"><![CDATA[Помощники]]></string>
     <string name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Уменьшать картинки перед загрузкой до этой ширины (0 = не уменьшать)]]></string>
@@ -2108,7 +2134,6 @@
     <string name="_adm_stg_cpt_option_sys_audit_report"><![CDATA[Отчёт последнего аудита сервера]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start"><![CDATA[Количество сообщенией, отправляемое из Push очереди при каждом запуске]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient"><![CDATA[Количество сообщенией, отправляемое из Push очереди одному и тому же получателю при каждом запуске]]></string>
-    <string name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Журнал оповещений/хуков]]></string>
     <string name="_adm_stg_cpt_option_sys_alerts_stats"><![CDATA[Статистика оповещений/хуков]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_default"><![CDATA[Поставщик]]></string>
     <string name="_adm_stg_cpt_option_sys_sms_twilio_sid"><![CDATA[Twilio: SID учетной записи]]></string>
@@ -2164,6 +2189,7 @@
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых на странице поиска профиля.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_buttons"><![CDATA[Кнопки отправки и другие кнопки. В приложениях кнопки отвечают только вибрацией.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_choices"><![CDATA[Вкладки, пункты меню, переключатели, флажки, радиокнопки.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[Если выключено, посетители, которые не вошли, ничего не слышат, а их страницы не загружают звуки.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_level"><![CDATA[Каждый может выбрать для себя «Громко», «Тихо» или «Выкл.»: в меню аккаунта на сайте и в Студии, в подвале и на панели управления в приложениях.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_menus"><![CDATA[Открытие и закрытие меню, всплывающих окон, панелей и разделов.]]></string>
     <string name="_adm_stg_inf_option_sys_sounds_navigation"><![CDATA[Панель вкладок и кнопки «Назад» в приложениях, открытие приложений Студии.]]></string>
@@ -2183,6 +2209,7 @@
     <string name="_adm_stg_cpt_option_sys_session_auth"><![CDATA[Аутентификация через сессию]]></string>
     <string name="_adm_stg_cpt_option_sys_default_curl_timeout"><![CDATA[cURL - Таймаут по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_default_socket_timeout"><![CDATA[Таймаут чтения HTTP контекста (в секундах, -1 - неограниченно)]]></string>
+    <string name="_adm_stg_cpt_option_sys_design_accent"><![CDATA[Акцентный цвет]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius"><![CDATA[Размер скругления]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Плавные углы]]></string>
     <string name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Множитель плавных углов]]></string>
@@ -2308,6 +2335,7 @@
     <string name="_adm_stg_cpt_option_sys_sounds_choices"><![CDATA[Звук выбора]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_main"><![CDATA[Основной набор]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_group_off"><![CDATA[Без звука]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Звуки и для гостей]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level"><![CDATA[Уровень для тех, кто его не выбрал]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_full"><![CDATA[Громко]]></string>
     <string name="_adm_stg_cpt_option_sys_sounds_level_off"><![CDATA[Выкл.]]></string>
@@ -2371,7 +2399,7 @@
     <string name="_adm_stg_cpt_type_system_performance"><![CDATA[Производительность]]></string>
     <string name="_adm_stg_cpt_category_sys_bg_jobs"><![CDATA[Фоновые задачи]]></string>
     <string name="_adm_stg_cpt_category_sys_connections"><![CDATA[Исходящие соединения]]></string>
-    <string name="_adm_stg_cpt_type_system_advanced"><![CDATA[Расширенные]]></string>
+    <string name="_adm_stg_cpt_type_advanced"><![CDATA[Дополнительно]]></string>
     <string name="_adm_stg_cpt_category_sys_logs"><![CDATA[Журналы]]></string>
     <string name="_adm_stg_cpt_category_sys_interface"><![CDATA[Интерфейс]]></string>
     <string name="_adm_stg_cpt_category_sys_studio"><![CDATA[Студия]]></string>
@@ -2411,6 +2439,7 @@
     <string name="_adm_str_msg_download_and_install_successfully"><![CDATA[Закачка и последующая установка удачно завершены.]]></string>
     <string name="_adm_str_txt_discount_csign"><![CDATA[({0}{1} для Премиум)]]></string>
     <string name="_adm_str_txt_items_by"><![CDATA[элементов от]]></string>
+    <string name="_adm_str_txt_more_actions"><![CDATA[Другие действия: {0}]]></string>
     <string name="_adm_str_txt_or"><![CDATA[или]]></string>
     <string name="_adm_str_txt_per_week"><![CDATA[неделю]]></string>
     <string name="_adm_str_txt_per_week_short"><![CDATA[нед]]></string>
@@ -2556,7 +2585,6 @@
         <string name="_adm_txt_settings"><![CDATA[Настройки]]></string>
 	<string name="_adm_txt_show_actions"><![CDATA[Действия]]></string>
 	<string name="_adm_txt_show_help"><![CDATA[Помощь]]></string>
-	<string name="_adm_txt_show_help_content_empty"><![CDATA[Помошь недоступна]]></string>
 	<string name="_adm_txt_uninstall"><![CDATA[Демонтировать]]></string>
         <string name="_adm_wgt_cpt_api"><![CDATA[API]]></string>
         <string name="_adm_wgt_cpt_agents"><![CDATA[Агенты]]></string>
@@ -2670,8 +2698,8 @@
 	<string name="_sys_access_denied_to_private_content"><![CDATA[Доступ запрещён. Это приватное содержимое.]]></string>
 	<string name="_sys_actions"><![CDATA[Действия]]></string>
 	<string name="_sys_active"><![CDATA[Активный]]></string>
-  <string name="_sys_account_settings_email_successfully_submitted"><![CDATA[Настройки email-а успешно сохранены]]></string>
-  <string name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Пароль был успешно изменен]]></string>
+  <string name="_sys_account_settings_email_successfully_submitted"><![CDATA[Настройки email сохранены.]]></string>
+  <string name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Пароль изменён.]]></string>
   <string name="_sys_account_settings_info_successfully_submitted"><![CDATA[Настройки аккаунта успешно сохранены]]></string>
 	<string name="_sys_acc_confirmation_type_none"><![CDATA[Нет подтверждения]]></string>
 	<string name="_sys_acc_confirmation_type_email"><![CDATA[email подтвержден]]></string>
@@ -2714,6 +2742,7 @@
         <string name="_sys_acl_action_pending"><![CDATA[Ваш аккаунт ждёт одобрения. После одобрения вы сможете <b>{1}</b>. Есть вопросы? <a href="mailto:{7}">Напишите нам</a>.]]></string>
 	<string name="_sys_acl_action_post_links"><![CDATA[Публикация ссылок]]></string>
         <string name="_sys_acl_action_post_links_desc"><![CDATA[Публикация ссылок в формах]]></string>
+	<string name="_sys_acl_action_use_connectors"><![CDATA[Использовать коннекторы (ключи доступа для ассистентов и приложений)]]></string>
 	<string name="_sys_acl_action_use_macros"><![CDATA[Использовать макросы]]></string>
         <string name="_sys_acl_action_use_macros_desc"><![CDATA[Использовать специально сконструированный вызов, для вставки динамического контента практически в любой текст]]></string>
 	<string name="_sys_acl_action_set_acl_level"><![CDATA[Назначить членство]]></string>
@@ -3016,6 +3045,7 @@
   <string name="_sys_audit_action_account_resend_confirmation_email"><![CDATA[Письмо с подтверждением отправлено повторно]]></string>
   <string name="_sys_audit_action_account_deleted_with_content"><![CDATA[Удален вместе с контентом]]></string>
   <string name="_sys_audit_action_account_deleted"><![CDATA[Удален]]></string>
+  <string name="_sys_audit_action_account_email_change_requested"><![CDATA[Запрошена смена email]]></string>
   <string name="_sys_audit_action_account_email_changed"><![CDATA[Адрес электронной почты изменен]]></string>
   <string name="_sys_audit_action_account_activated"><![CDATA[Активирован]]></string>
   <string name="_sys_audit_action_account_suspended"><![CDATA[Приостановлен]]></string>
@@ -3038,8 +3068,6 @@
   <string name="_sys_add_friend"><![CDATA[Добавить в друзья]]></string>
         <string name="_sys_add_relation"><![CDATA[Добавить связь]]></string>
 	<string name="_sys_adm_installed"><![CDATA[Установленные]]></string>
-	<string name="_sys_admin_apply"><![CDATA[Применить]]></string>
-	<string name="_sys_admin_filter"><![CDATA[Фильтр:]]></string>
   <string name="_sys_audit_filter_profile_select"><![CDATA[Выберите профиль]]></string>
   <string name="_sys_audit_filter_action_select"><![CDATA[Выберите действия]]></string>
 	<string name="_sys_audit_cron_jobs"><![CDATA[Планировщик]]></string>
@@ -3188,6 +3216,14 @@
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{reply_text}</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ответ можно посмотреть здесь: <a href="{page_url}">{page_title}</a>.</p>
 {email_footer}]]></string>
+    <string name="_sys_et_txt_body_confirm_email_change"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Подтвердите {new_email} как email вашего аккаунта на {site_name} по этой ссылке:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">или введите этот код:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пока вы его не подтвердите, вход по {email}. Если вы этого не просили, просто не отвечайте на это письмо.</p>
+{email_footer}]]></string>
     <string name="_sys_et_txt_body_system_reported"><![CDATA[{email_header}
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Была получена новая жалоба <b>{report_type}</b>:</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{report_text}</p>
@@ -3218,6 +3254,21 @@
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Модуль: <b>{Module}</b></p>
 <p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Результат демонтажа: {Result}</p>
 <p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+{email_footer}]]></string>
+    <string name="_sys_et_txt_body_email_change_requested"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Кто-то попросил сменить email вашего аккаунта на {site_name} на {new_email}. Он сменится, когда новый адрес будет подтверждён. До тех пор вход по этому адресу.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Если это были не вы, войдите и смените пароль.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{account_settings_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Сменить пароль</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string>
+    <string name="_sys_et_txt_body_email_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Теперь email вашего аккаунта на {site_name} — {new_email}. По этому адресу больше не войти.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Если это были не вы, ответьте на это письмо или свяжитесь с {site_name}.</p>
 {email_footer}]]></string>
     <string name="_sys_et_txt_body_forgot"><![CDATA[{email_header}
 <h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Привет {name} ({email})</h1>
@@ -3299,16 +3350,30 @@
 {email_footer}]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_success"><![CDATA[<b>{0}</b> модуль: up to {1} версия.<br />]]></string>
 	<string name="_sys_et_txt_body_modules_upgrade_failed"><![CDATA[<b>{0}</b> молуль: {1}<br />]]></string>
+	<string name="_sys_et_txt_body_password_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пароль вашего аккаунта на {site_name} изменён.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Если это были не вы, сразу сбросьте пароль.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Сбросить пароль</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string>
 	<string name="_sys_et_txt_name_system_admin_email"><![CDATA[Посылка сообщения из Студии]]></string>
 	<string name="_sys_et_txt_name_system_comment_replied"><![CDATA[Сообщение для посылки пользователям, чьи комментарии были отвечены]]></string>
+	<string name="_sys_et_txt_name_system_confirm_email_change"><![CDATA[Подтверждение нового email]]></string>
 	<string name="_sys_et_txt_name_system_reported"><![CDATA[Уведомление о новой жалобе]]></string>
 	<string name="_sys_et_txt_name_system_confirmation"><![CDATA[Сообщение для подтверждения эл. адреса профиля]]></string>
         <string name="_sys_et_txt_name_system_welcome"><![CDATA[Приветственное сообщение]]></string>
 	<string name="_sys_et_txt_name_system_delayed_module_uninstall"><![CDATA[Уведомление об отложенном демонтировании модуля]]></string>
+	<string name="_sys_et_txt_name_system_email_change_requested"><![CDATA[Уведомление о смене email]]></string>
+	<string name="_sys_et_txt_name_system_email_changed"><![CDATA[Уведомление: email изменён]]></string>
 	<string name="_sys_et_txt_name_system_forgot"><![CDATA[Сообщение о сбросе пароля]]></string>
 	<string name="_sys_et_txt_name_system_mem_changed"><![CDATA[Сообщение для посылки пользователям, чей уровень членства был изменён]]></string>
         <string name="_sys_et_txt_name_system_mem_prolonged"><![CDATA[Сообщение для посылки пользователям, чей уровень членства был продлён]]></string>
 	<string name="_sys_et_txt_name_system_mem_expiration"><![CDATA[Сообщение об истечении срока членства]]></string>
+	<string name="_sys_et_txt_name_system_password_changed"><![CDATA[Уведомление: пароль изменён]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_active"><![CDATA[Статус профиля изменён на Активный]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_pending"><![CDATA[Статус профиля изменён на Ожидающий]]></string>
 	<string name="_sys_et_txt_name_profile_change_status_suspended"><![CDATA[Статус профиля изменён на Заблокированный]]></string>
@@ -3325,14 +3390,18 @@
 	<string name="_sys_et_txt_name_bg_operation_failed"><![CDATA[Фоновая операция не удалась]]></string>
 	<string name="_sys_et_txt_subject_admin_email"><![CDATA[Сообщение от администратора сайта <SiteName>: <MessageSubject>]]></string>
 	<string name="_sys_et_txt_subject_comment_replied"><![CDATA[{sender_display_name} ответил на Ваш комментарий]]></string>
+	<string name="_sys_et_txt_subject_confirm_email_change"><![CDATA[Подтвердите новый адрес email]]></string>
 	<string name="_sys_et_txt_subject_system_reported"><![CDATA[Уведомление о новой жалобе]]></string>
 	<string name="_sys_et_txt_subject_confirmation"><![CDATA[Пожалуйста, подтвердите свой email. (ОБЯЗАТЕЛЬНО)]]></string>
         <string name="_sys_et_txt_subject_welcome"><![CDATA[Добро пожаловать в {site_name}]]></string>
 	<string name="_sys_et_txt_subject_delayed_module_uninstall"><![CDATA[Отложенный демонтаж модуля {Module}: {Result}]]></string>
+	<string name="_sys_et_txt_subject_email_change_requested"><![CDATA[Ваш адрес email меняется]]></string>
+	<string name="_sys_et_txt_subject_email_changed"><![CDATA[Ваш адрес email изменён]]></string>
 	<string name="_sys_et_txt_subject_forgot"><![CDATA[Сбросьте свой пароль]]></string>
 	<string name="_sys_et_txt_subject_mem_changed"><![CDATA[Уровень Вашего членства был изменён]]></string>
         <string name="_sys_et_txt_subject_mem_prolonged"><![CDATA[Уровень Вашего членства был продлён]]></string>
 	<string name="_sys_et_txt_subject_mem_expiration"><![CDATA[Срок Вашего членства истекает]]></string>
+	<string name="_sys_et_txt_subject_password_changed"><![CDATA[Ваш пароль изменён]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_active"><![CDATA[Профиль активирован]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_pending"><![CDATA[Профиль в ожидании одобрения]]></string>
 	<string name="_sys_et_txt_subject_profile_change_status_suspended"><![CDATA[Профиль заблокирован]]></string>
@@ -3375,16 +3444,20 @@
 	<string name="_sys_form_account_input_delete_confirm_info"><![CDATA[Это действие не может быть отменено.]]></string>
 	<string name="_sys_form_account_input_email"><![CDATA[Email]]></string>
 	<string name="_sys_form_account_input_email_error"><![CDATA[Введите правильный адрес электронной почты]]></string>
+	<string name="_sys_form_account_input_email_info_pending"><![CDATA[Ждёт подтверждения: {0}. Откройте ссылку, которую мы туда отправили. Чтобы отменить, сохраните текущий email.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error"><![CDATA[Этот эл. адрес уже зарегистрирован. Пожалуйста, воспользуйтесь ссылкой <a href="{0}">Забыли пароль?</a>, чтобы восстановить доступ к своему аккаунту.]]></string>
 	<string name="_sys_form_account_input_email_uniq_error_loggedin"><![CDATA[Этот эл. адрес уже кем-то используется.]]></string>
         <string name="_sys_form_account_input_phone_uniq_error_loggedin"><![CDATA[Этот номер телефона уже кем-то используется.]]></string>
-	<string name="_sys_form_account_input_name"><![CDATA[Имя пользователя]]></string>
-	<string name="_sys_form_account_input_name_error"><![CDATA[Имя аккаунта обязательно для заполнения и не должно начинаться с @.]]></string>
+	<string name="_sys_form_account_input_name"><![CDATA[Ваше имя]]></string>
+	<string name="_sys_form_account_input_name_error"><![CDATA[Введите ваше имя. Оно не может начинаться с @.]]></string>
 	<string name="_sys_form_account_input_password"><![CDATA[Создать пароль]]></string>
 	<string name="_sys_form_account_input_password_confirm"><![CDATA[Подтвердить пароль]]></string>
 	<string name="_sys_form_account_input_password_confirm_error"><![CDATA[Не удалось подтвердить пароль]]></string>
 	<string name="_sys_form_account_input_password_current"><![CDATA[Текущий пароль]]></string>
         <string name="_sys_form_account_input_password_error_old_used"><![CDATA[Этот пароль уже был использован ранее, используйте другой]]></string>
+	<string name="_sys_form_account_input_password_info"><![CDATA[Не меньше 8 символов, с заглавной и строчной латинскими буквами и цифрой.]]></string>
+	<string name="_sys_form_account_input_password_new"><![CDATA[Новый пароль]]></string>
+	<string name="_sys_form_account_input_password_new_confirm"><![CDATA[Повторите новый пароль]]></string>
 	<string name="_sys_form_account_input_password_current_error"><![CDATA[Неправильный текущий пароль. Введите пароль, который Вы используете для доступа к этому сайту.]]></string>
 	<string name="_sys_form_account_input_password_error"><![CDATA[Используйте не меньше 8 символов: хотя бы одну заглавную букву, одну строчную и одну цифру.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Это обязательное поле.]]></string>
@@ -3484,6 +3557,7 @@
 	<string name="_sys_form_input_labels_placeholder"><![CDATA[Добавить метку]]></string>
         <string name="_sys_form_input_password_show"><![CDATA[Показать пароль]]></string>
         <string name="_sys_form_input_password_hide"><![CDATA[Скрыть пароль]]></string>
+        <string name="_sys_form_input_privacy_label"><![CDATA[Кто это видит: {0}]]></string>
         <string name="_sys_form_input_textarea_editor"><![CDATA[Редактор:]]></string>
         <string name="_sys_form_labels"><![CDATA[Метки]]></string>
         <string name="_sys_form_labels_display_select"><![CDATA[Выбор метки]]></string>
@@ -3917,6 +3991,7 @@
     <string name="_sys_location_ph_number"><![CDATA[Номер]]></string>
     <string name="_sys_location_ph_street"><![CDATA[Улица]]></string>
     <string name="_sys_location_ph_city"><![CDATA[Город]]></string>
+    <string name="_sys_location_ph_country"><![CDATA[Страна]]></string>
     <string name="_sys_location_ph_state"><![CDATA[Область]]></string>
     <string name="_sys_location_ph_zip"><![CDATA[Почтовый код]]></string>
     <string name="_sys_location_status_undef"><![CDATA[Выберите страну, чтобы найти адрес]]></string>
@@ -3961,6 +4036,7 @@
     <string name="_sys_menu_item_title_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_account_settings_info"><![CDATA[Аккаунт]]></string>
+    <string name="_sys_menu_item_title_account_settings_privacy"><![CDATA[Приватность]]></string>
     <string name="_sys_menu_item_title_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Подключения]]></string>
     <string name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Аккаунт]]></string>
@@ -4074,6 +4150,7 @@
     <string name="_sys_menu_item_title_system_account_settings_delete"><![CDATA[Удалить]]></string>
     <string name="_sys_menu_item_title_system_account_settings_email"><![CDATA[Email]]></string>
     <string name="_sys_menu_item_title_system_account_settings_info"><![CDATA[Аккаунт]]></string>
+    <string name="_sys_menu_item_title_system_account_settings_privacy"><![CDATA[Приватность]]></string>
     <string name="_sys_menu_item_title_system_account_settings_pwd"><![CDATA[Пароль]]></string>
     <string name="_sys_menu_item_title_system_account_settings_connectors"><![CDATA[Подключения]]></string>
     <string name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Аккаунт (раздел)]]></string>
@@ -4403,6 +4480,7 @@
 	<string name="_sys_page_block_title_account_settings_email"><![CDATA[Настройки email-а]]></string>
 	<string name="_sys_page_block_title_account_settings_info"><![CDATA[Редактировать аккаунт]]></string>
 	<string name="_sys_page_block_title_account_settings_menu"><![CDATA[Аккаунт - Настройки]]></string>
+	<string name="_sys_page_block_title_account_settings_privacy"><![CDATA[Кто может видеть вас и писать вам]]></string>
 	<string name="_sys_page_block_title_account_settings_pwd"><![CDATA[Изменить пароль]]></string>
         <string name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
         <string name="_sys_page_block_title_add_content"><![CDATA[Добавить содержимое]]></string>
@@ -4466,6 +4544,7 @@
         <string name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Ваши профили (панель)]]></string>
         <string name="_sys_page_block_title_system_onboarding"><![CDATA[Список «Начало работы»]]></string>
         <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Список «Начало работы» для операторов]]></string>
+        <string name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Меню профиля (приложения)]]></string>
         <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
         <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Панель - жалобы]]></string>
         <string name="_sys_page_block_title_system_cmts_view"><![CDATA[Просмотр комментария]]></string>
@@ -4517,23 +4596,22 @@
 </ul>
 <p>Полностью правила изложены в Правилах пользования, а как мы обращаемся с вашими данными, описано в Политике конфиденциальности.</p>
 <p>Сайт <a href="https://unacms.com">работает на платформе UNA CMS</a> с открытым исходным кодом для создания онлайн-сообществ и социальных сетей.</p>]]></string>
-	<string name="_sys_page_lang_block_terms"><![CDATA[<p><em>Примечание для владельца сайта: это шаблон для начала работы, а не юридическая консультация. Заполните места в квадратных скобках, измените остальное под свой сайт и законы, которые к вам применяются, при необходимости покажите текст юристу, а затем удалите это примечание.</em></p>
-<h3>Об этих правилах</h3>
+	<string name="_sys_page_lang_block_terms"><![CDATA[<h2>Об этих правилах</h2>
 <p>Эти правила действуют для всех, кто заходит на {site_title} (далее «сайт») или пользуется им. Пользуясь сайтом или регистрируясь на нём, вы соглашаетесь с ними. Если вы не согласны, пожалуйста, не пользуйтесь сайтом.</p>
-<h3>Кто управляет сайтом</h3>
-<p>Сайтом {site_title} управляет [имя человека или название организации, которые управляют сайтом] (далее «мы»). Мы устанавливаем эти правила, решаем, как они применяются, и следим за их соблюдением.</p>
+<h2>Кто управляет сайтом</h2>
+<p>Сайтом {site_title} управляет его владелец (далее «мы»). Мы устанавливаем эти правила, решаем, как они применяются, и следим за их соблюдением.</p>
 <p>Сайт сделан на UNA — программе с открытым исходным кодом для сообществ, которую разрабатывает UNA, Inc. UNA, Inc. не управляет этим сайтом, не является стороной этих правил и не контролирует ни их, ни то, что здесь публикуется, ни то, как мы их применяем. Вопросы и жалобы о сайте направляйте нам, а не UNA, Inc.</p>
-<h3>Ваша учётная запись</h3>
+<h2>Ваша учётная запись</h2>
 <ul>
-<li>Для регистрации вам должно быть не меньше [минимальный возраст] лет.</li>
+<li>Для регистрации вам должно быть не меньше 16 лет или больше, если этого требует закон там, где вы живёте.</li>
 <li>Указывайте при регистрации верные данные и поддерживайте их в актуальном состоянии.</li>
 <li>Храните пароль в тайне. Вы отвечаете за то, что происходит в вашей учётной записи, поэтому сразу сообщите нам, если думаете, что ею воспользовался кто-то другой.</li>
 <li>Не создавайте учётную запись за другого человека без его разрешения.</li>
 </ul>
-<h3>Ваши материалы</h3>
+<h2>Ваши материалы</h2>
 <p>Права на то, что вы публикуете, остаются за вами. Публикуя материал, вы разрешаете нам хранить его, показывать выбранной вами аудитории и делать копии, которые нужны для работы сайта. Это разрешение прекращается, когда вы удаляете материал или учётную запись, кроме копий, которыми уже поделились другие участники, и копий, которые мы должны хранить ограниченное время, например резервных.</p>
 <p>Вы отвечаете за то, что публикуете. Публикуйте только то, чем имеете право делиться.</p>
-<h3>Правила поведения</h3>
+<h2>Правила поведения</h2>
 <p>На сайте запрещено:</p>
 <ul>
 <li>нарушать закон, помогать в этом другим или подталкивать их к этому;</li>
@@ -4544,39 +4622,37 @@
 <li>рассылать спам, мошенничать и выдавать себя за другого человека;</li>
 <li>загружать вредоносные программы, пытаться попасть в чужие учётные записи и закрытые разделы, собирать данные других участников без их согласия или мешать работе сайта.</li>
 </ul>
-<p>[Добавьте правила, которые нужны именно вашему сообществу.]</p>
-<h3>Модерация</h3>
+<p>У сообщества могут быть и свои правила, которые показаны на сайте. Они тоже действуют.</p>
+<h2>Модерация</h2>
 <p>Мы можем проверять, скрывать и удалять материалы, а также ограничивать, приостанавливать и закрывать учётные записи, которые нарушают эти правила или создают угрозу сайту и другим людям. Когда это возможно, мы сообщим, что сделали и почему. Чтобы пожаловаться на материал или участника, воспользуйтесь кнопкой «Пожаловаться» на сайте или свяжитесь с нами.</p>
-<h3>Платные функции</h3>
-<p>Если на сайте есть платные уровни участия или другие платные функции, цена, состав и порядок отмены показываются до оплаты. [Опишите условия оплаты, продления, отмены и возврата денег или удалите этот раздел, если на сайте нет ничего платного.]</p>
-<h3>Чужие материалы и другие сайты</h3>
+<h2>Платные функции</h2>
+<p>Если на сайте есть платные уровни участия или другие платные функции, цена, состав и порядок отмены показываются до оплаты. Продление и возврат денег проходят на условиях, показанных при оплате, и по закону, который к вам применяется.</p>
+<h2>Чужие материалы и другие сайты</h2>
 <p>Материалы участников принадлежат их авторам и не обязательно отражают наше мнение. Ссылки на другие сайты даны для удобства. Мы не отвечаем за эти сайты.</p>
-<h3>Удаление учётной записи</h3>
+<h2>Удаление учётной записи</h2>
 <p>Вы можете в любой момент перестать пользоваться сайтом и удалить учётную запись в её настройках. Мы можем закрыть учётную запись, как описано в разделе «Модерация».</p>
-<h3>Отказ от гарантий и ограничение ответственности</h3>
+<h2>Отказ от гарантий и ограничение ответственности</h2>
 <p>Мы предоставляем сайт «как есть» и «по мере доступности». Мы стараемся, чтобы он работал и был безопасным, но не можем обещать, что он всегда будет доступен, без ошибок и в безопасности. В той мере, в какой это допускает закон, мы не отвечаем за косвенные убытки и за убытки от материалов и действий других участников. Эти правила не лишают вас прав, которые даёт вам закон и от которых нельзя отказаться.</p>
-<h3>Изменения правил</h3>
-<p>Мы можем обновлять эти правила. Действующая версия всегда находится на этой странице вместе с датой последнего изменения. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте. Если вы продолжаете пользоваться сайтом после вступления изменений в силу, вы принимаете обновлённые правила.</p>
-<h3>Применимое право</h3>
-<p>[Укажите, законы какой страны или штата применяются к этим правилам и где рассматриваются споры.]</p>
-<h3>Контакты</h3>
-<p>С вопросами об этих правилах обращайтесь к нам: [адрес электронной почты, почтовый адрес или ссылка на страницу контактов].</p>
-<p>Последнее обновление: [дата].</p>]]></string>
-	<string name="_sys_page_lang_block_privacy"><![CDATA[<p><em>Примечание для владельца сайта: это шаблон для начала работы, а не юридическая консультация. Перечислите, что на самом деле собирает ваш сайт и какими сервисами вы пользуетесь, заполните места в квадратных скобках, попросите юриста проверить текст на соответствие законам, которые к вам применяются, а затем удалите это примечание.</em></p>
-<h3>Кто отвечает за ваши данные</h3>
-<p>Сайтом {site_title} (далее «сайт») управляет [имя человека или название организации, которые управляют сайтом] (далее «мы»). Мы решаем, какие персональные данные собирает сайт, зачем и как долго их хранить, и отвечаем за них. В некоторых законах эта роль называется оператором или контролёром данных.</p>
+<h2>Изменения правил</h2>
+<p>Мы можем обновлять эти правила. Действующая версия всегда находится на этой странице. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте. Если вы продолжаете пользоваться сайтом после вступления изменений в силу, вы принимаете обновлённые правила.</p>
+<h2>Применимое право</h2>
+<p>К этим правилам применяется право страны, в которой мы находимся. Если вы живёте в другой стране, за вами сохраняется защита, которую дают её обязательные законы о правах потребителей.</p>
+<h2>Контакты</h2>
+<p>С вопросами об этих правилах обращайтесь к нам по контактам, указанным на сайте.</p>]]></string>
+	<string name="_sys_page_lang_block_privacy"><![CDATA[<h2>Кто отвечает за ваши данные</h2>
+<p>Сайтом {site_title} (далее «сайт») управляет его владелец (далее «мы»). Мы решаем, какие персональные данные собирает сайт, зачем и как долго их хранить, и отвечаем за них. В некоторых законах эта роль называется оператором или контролёром данных.</p>
 <p>Сайт сделан на UNA — программе с открытым исходным кодом для сообществ, которую разрабатывает UNA, Inc. UNA, Inc. не управляет этим сайтом. Сбор, использование и хранение персональных данных здесь полностью зависят от нашего решения и находятся под нашим контролем, а не под контролем UNA, Inc. Вопросы и запросы о ваших данных направляйте нам.</p>
-<h3>Что мы собираем</h3>
+<h2>Что мы собираем</h2>
 <ul>
 <li><strong>Данные учётной записи:</strong> адрес электронной почты и пароль, а также номер телефона, если вы его добавите. Мы не храним пароль в читаемом виде.</li>
 <li><strong>Профиль и материалы:</strong> данные и фотографии профиля, а также то, что вы публикуете, комментируете, оцениваете, на что подписываетесь и куда вступаете. Кто видит каждый материал, зависит от выбранных вами настроек приватности.</li>
 <li><strong>Сообщения:</strong> личные сообщения хранятся на серверах сайта, чтобы их можно было доставить.</li>
 <li><strong>Данные об использовании и устройстве:</strong> какие страницы вы открываете и что делаете, а также время, IP-адрес, браузер, тип устройства и язык. Наши серверы также ведут журналы запросов и ошибок.</li>
-<li><strong>Cookies и локальное хранилище:</strong> один cookie сохраняет вход на сайт, другие запоминают настройки, например язык и тему. Если вы пользуетесь нашим мобильным приложением и разрешили уведомления, мы храним токен устройства, чтобы их отправлять. [Перечислите сервисы аналитики, рекламы и другие сторонние сервисы, которые вы подключили, и cookies, которые они ставят.]</li>
-<li><strong>Платежи:</strong> если вы что-то покупаете на сайте, оплату обрабатывает платёжный сервис. Мы получаем подтверждение оплаты, а не полные данные карты. [Удалите этот пункт, если на сайте нет ничего платного.]</li>
+<li><strong>Cookies и локальное хранилище:</strong> один cookie сохраняет вход на сайт, другие запоминают настройки, например язык и тему. Если вы пользуетесь нашим мобильным приложением и разрешили уведомления, мы храним токен устройства, чтобы их отправлять. Если мы подключим сервисы других компаний, например аналитику или рекламу, мы назовём их в этой политике вместе с cookies, которые они ставят.</li>
+<li><strong>Платежи:</strong> если вы что-то покупаете на сайте, оплату обрабатывает платёжный сервис. Мы получаем подтверждение оплаты, а не полные данные карты.</li>
 <li><strong>От других людей:</strong> другие участники могут упомянуть вас, отметить или пригласить по электронной почте.</li>
 </ul>
-<h3>Зачем мы их используем</h3>
+<h2>Зачем мы их используем</h2>
 <ul>
 <li>чтобы ваша учётная запись работала, а ваши материалы видела выбранная вами аудитория;</li>
 <li>чтобы отправлять письма и уведомления о вашей учётной записи и активности; их можно отключить в настройках, кроме обязательных, например для сброса пароля;</li>
@@ -4585,19 +4661,19 @@
 <li>чтобы понимать, как пользуются сайтом, и улучшать его;</li>
 <li>чтобы выполнять требования закона.</li>
 </ul>
-<p>Если закон требует правового основания для обработки персональных данных, мы опираемся на соглашение с вами (Правила пользования), наш законный интерес в том, чтобы сайт был безопасным и полезным, ваше согласие (его можно отозвать в любой момент) и обязанности, которые возлагает на нас закон. [Проверьте, какие из этих оснований применимы по вашим законам.]</p>
-<h3>Кто может их видеть</h3>
+<p>Если закон требует правового основания для обработки персональных данных, мы опираемся на соглашение с вами (Правила пользования), наш законный интерес в том, чтобы сайт был безопасным и полезным, ваше согласие (его можно отозвать в любой момент) и обязанности, которые возлагает на нас закон.</p>
+<h2>Кто может их видеть</h2>
 <ul>
 <li><strong>Другие участники и посетители</strong> видят ваш профиль и публикации в пределах ваших настроек приватности.</li>
-<li><strong>Сервисы, которые помогают нам вести сайт,</strong> например хостинг, хранилище файлов, отправка писем и приём платежей, обрабатывают данные по нашему поручению и только для оказания своих услуг. [Перечислите их.]</li>
+<li><strong>Сервисы, которые помогают нам вести сайт,</strong> например хостинг, хранилище файлов, отправка писем и приём платежей, обрабатывают данные по нашему поручению и только для оказания своих услуг.</li>
 <li><strong>Государственные органы</strong> получают данные, когда этого требует закон или когда это нужно для защиты чьих-то прав и безопасности.</li>
 <li><strong>Новый владелец</strong> получает данные, если сайт перейдёт к кому-то другому, и эта политика продолжит действовать.</li>
 </ul>
-<p>Мы не продаём ваши персональные данные. [Если вы передаёте данные для рекламы или других целей, опишите это здесь.]</p>
-<p>Наши серверы и сервисы могут находиться в других странах. [Укажите, где они находятся и как защищены данные, которые туда передаются.]</p>
-<h3>Как долго мы их храним</h3>
-<p>Данные учётной записи и материалы хранятся, пока существует учётная запись. Когда вы удаляете учётную запись, мы удаляем профиль и удаляем или обезличиваем ваши материалы в течение [срок], кроме того, что обязаны хранить по закону. Копии в резервных копиях удаляются в течение [срок]. Журналы серверов хранятся [срок].</p>
-<h3>Ваши права</h3>
+<p>Мы не продаём ваши персональные данные и не передаём их для рекламы.</p>
+<p>Наши серверы и сервисы могут находиться в других странах. Если этого требует закон, данные, которые туда передаются, защищены мерами, которые он предусматривает, например стандартными договорными условиями.</p>
+<h2>Как долго мы их храним</h2>
+<p>Данные учётной записи и материалы хранятся, пока существует учётная запись. Когда вы удаляете учётную запись, мы удаляем профиль и удаляем или обезличиваем ваши материалы в течение 30 дней, кроме того, что обязаны хранить по закону. Копии в резервных копиях удаляются в течение 90 дней. Журналы серверов хранятся до 90 дней.</p>
+<h2>Ваши права</h2>
 <ul>
 <li><strong>Доступ и копия:</strong> вы можете узнать у нас, какие данные о вас мы храним, и получить их копию.</li>
 <li><strong>Исправление:</strong> большую часть данных можно исправить самостоятельно в настройках профиля и учётной записи или попросить об этом нас.</li>
@@ -4605,22 +4681,23 @@
 <li><strong>Возражение и согласие:</strong> вы можете возразить против некоторых способов использования данных и отозвать данное согласие, например отписавшись от рассылки.</li>
 </ul>
 <p>Чтобы воспользоваться этими правами, свяжитесь с нами. Сначала нам может понадобиться подтвердить вашу личность. В зависимости от того, где вы живёте, вы также можете подать жалобу в орган по защите персональных данных.</p>
-<h3>Безопасность</h3>
+<h2>Безопасность</h2>
 <p>Мы принимаем разумные меры для защиты ваших данных, например ограничиваем круг людей, у которых есть к ним доступ. Полностью защищённых систем не бывает, поэтому мы не можем этого гарантировать. Используйте надёжный пароль, который вы больше нигде не используете. Если утечка затронет ваши данные, мы сообщим вам, когда этого требует закон.</p>
-<h3>Дети</h3>
-<p>Сайт не предназначен для детей младше [минимальный возраст] лет. Мы сознательно не собираем их данные. Если вы считаете, что ребёнок передал нам персональные данные, свяжитесь с нами, и мы их удалим.</p>
-<h3>Изменения политики</h3>
-<p>Мы можем обновлять эту политику. Действующая версия всегда находится на этой странице вместе с датой последнего изменения. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте.</p>
-<h3>Контакты</h3>
-<p>С вопросами и запросами о ваших данных обращайтесь к нам: [адрес электронной почты, почтовый адрес или ссылка на страницу контактов]. [Добавьте контакты ответственного за защиту данных или представителя, если они есть.]</p>
-<p>Последнее обновление: [дата].</p>]]></string>
+<h2>Дети</h2>
+<p>Сайт не предназначен для детей младше 16 лет. Мы сознательно не собираем их данные. Если вы считаете, что ребёнок передал нам персональные данные, свяжитесь с нами, и мы их удалим.</p>
+<h2>Изменения политики</h2>
+<p>Мы можем обновлять эту политику. Действующая версия всегда находится на этой странице. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте.</p>
+<h2>Контакты</h2>
+<p>С вопросами и запросами о ваших данных обращайтесь к нам по контактам, указанным на сайте.</p>]]></string>
 	<string name="_sys_page_meta_description_default"><![CDATA[{site_title} — онлайн-сообщество, где люди делятся новостями, обсуждают и общаются с теми, кому интересно то же самое.]]></string>
+	<string name="_sys_page_meta_description_entry"><![CDATA[{0} на сайте {1}.]]></string>
 	<string name="_sys_page_title_about"><![CDATA[Об...]]></string>
 	<string name="_sys_page_title_account_profile_switcher"><![CDATA[Мои профили]]></string>
 	<string name="_sys_page_title_account_settings_delete"><![CDATA[Удалить аккаунт]]></string>
 	<string name="_sys_page_title_account_settings_connectors"><![CDATA[Подключения]]></string>
 	<string name="_sys_page_title_account_settings_email"><![CDATA[Настройки email-а]]></string>
 	<string name="_sys_page_title_account_settings_info"><![CDATA[Редактировать аккаунт]]></string>
+	<string name="_sys_page_title_account_settings_privacy"><![CDATA[Приватность]]></string>
 	<string name="_sys_page_title_account_settings_pwd"><![CDATA[Изменить пароль]]></string>
         <string name="_sys_page_title_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
 	<string name="_sys_page_title_add_content"><![CDATA[Добавить содержимое]]></string>
@@ -4648,6 +4725,7 @@
 	<string name="_sys_page_title_system_account_settings_connectors"><![CDATA[Аккаунт - Подключения]]></string>
 	<string name="_sys_page_title_system_account_settings_email"><![CDATA[Аккаунт - Email настройки]]></string>
 	<string name="_sys_page_title_system_account_settings_info"><![CDATA[Аккаунт - Редактировать]]></string>
+	<string name="_sys_page_title_system_account_settings_privacy"><![CDATA[Аккаунт - Приватность]]></string>
 	<string name="_sys_page_title_system_account_settings_pwd"><![CDATA[Аккаунт - Изменить пароль]]></string>
         <string name="_sys_page_title_system_profile_settings_cfilter"><![CDATA[Фильтр контента]]></string>
 	<string name="_sys_page_title_system_add_content"><![CDATA[Добавить содержимое]]></string>
@@ -4693,6 +4771,7 @@
         <string name="_sys_page_block_title_wiki_add_page"><![CDATA[Добавить страницу]]></string>
         <string name="_sys_page_title_sys_wiki_pages_list"><![CDATA[Вики: Меню (список страниц)]]></string>
         <string name="_sys_page_title_wiki_pages_list"><![CDATA[Меню]]></string>
+	<string name="_sys_page_title_with_site"><![CDATA[{0} · {1}]]></string>
 	<string name="_sys_page_title_sys_wiki_page_contents"><![CDATA[Вики: Оглавление (для текущей страницы)]]></string>
         <string name="_sys_page_title_wiki_page_contents"><![CDATA[Оглавление]]></string>
         <string name="_sys_page_title_system_con_friends"><![CDATA[Связи - Друзья]]></string>
@@ -4922,6 +5001,9 @@
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Ваш пароль устарел. Пожалуйста <a href="{0}">измените Ваш пароль</a>.]]></string>
     <string name="_sys_txt_account_cannot_delete"><![CDATA[Невозможно удалить единственную учетную запись оператора.]]></string>
     <string name="_sys_txt_account_deletion_scheduled"><![CDATA[Удаление аккаунта запланировано и будет выполнено через несколько минут.]]></string>
+    <string name="_sys_txt_account_email_change_confirmed"><![CDATA[Новый email подтверждён]]></string>
+    <string name="_sys_txt_account_email_change_failed"><![CDATA[Ссылка больше не действует, или этот email теперь у другого аккаунта. Смените email ещё раз, чтобы получить новую ссылку.]]></string>
+    <string name="_sys_txt_account_email_change_sent"><![CDATA[Мы отправили ссылку для подтверждения на {0}. Пока вы её не откроете, вход по {1}.]]></string>
 
     <string name="_sys_txt_agent_inactive"><![CDATA[Агент не активирован]]></string>
     <string name="_sys_txt_captcha_not_available"><![CDATA[CAPTCHA недоступна]]></string>
@@ -4977,8 +5059,8 @@
     <string name="_sys_txt_err_sound_not_transcoded_yet"><![CDATA[Аудиофайл в обработке]]></string>
     <string name="_sys_txt_forms_unknown_field_err"><![CDATA[Неизвестное поле '{0}']]></string>
     <string name="_sys_txt_forgot_pasword"><![CDATA[Забыли пароль?]]></string>
-    <string name="_sys_txt_forgot_pasword_check_email"><![CDATA[Email отослан, пожалуйста, следуйте инструкциям в нём.]]></string>
-    <string name="_sys_txt_forgot_pasword_check_phone"><![CDATA[SMS отослано, пожалуйста, следуйте инструкциям в нём.]]></string>
+    <string name="_sys_txt_forgot_pasword_check_email"><![CDATA[Если этот email есть у аккаунта, мы отправили на него ссылку для сброса пароля.]]></string>
+    <string name="_sys_txt_forgot_pasword_check_phone"><![CDATA[Если этот номер есть у аккаунта, мы отправили на него SMS со ссылкой для сброса пароля.]]></string>
     <string name="_sys_txt_forgot_pasword_desc"><![CDATA[Введите эл. адрес своего аккаунта, чтобы запросить ссылку на изменение пароля.]]></string>
     <string name="_sys_txt_forgot_pasword_by_both_desc"><![CDATA[Введите эл. адрес или телефон своего аккаунта, чтобы запросить ссылку на изменение пароля.]]></string>
     <string name="_sys_txt_forgot_pasword_by_phone_desc"><![CDATA[Введите телефон своего аккаунта, чтобы запросить ссылку на изменение пароля.]]></string>
@@ -5026,9 +5108,13 @@
     <string name="_sys_txt_n_friends"><![CDATA[{0} друзей]]></string>
     <string name="_sys_txt_n_mutual_friends"><![CDATA[{0} общих друзей]]></string>
     <string name="_sys_txt_one_mutual_friend"><![CDATA[<a href="{0}">{1}</a> общий друг]]></string>
+    <string name="_sys_txt_page_lang_block_review"><![CDATA[Эту заметку видите только вы. На странице всё ещё текст, который идёт с UNA. Проверьте его, измените то, что не подходит вашему сайту, и сохраните в Студии, чтобы скрыть заметку.]]></string>
+    <string name="_sys_txt_page_lang_block_review_action"><![CDATA[Проверить в Студии]]></string>
     <string name="_sys_txt_powered_by"><![CDATA[Сделано с помощью UNA - системя для управления сообществами]]></string>
     <string name="_sys_txt_powered_by_una"><![CDATA[Работает на UNA]]></string>
     <string name="_sys_txt_profile_joined_sample"><![CDATA[теперь с нами]]></string>
+    <string name="_sys_txt_profile_not_available_text"><![CDATA[Возможно, он ждёт проверки или сейчас отключён.]]></string>
+    <string name="_sys_txt_profile_not_available_title"><![CDATA[Этот профиль недоступен]]></string>
     <string name="_sys_txt_report_status_0"><![CDATA[Новая]]></string>
     <string name="_sys_txt_report_status_1"><![CDATA[В обработке]]></string>
     <string name="_sys_txt_report_status_2"><![CDATA[Обработана]]></string>

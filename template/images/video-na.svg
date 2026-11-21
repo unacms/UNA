@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <!-- Poster for a video that is still being processed (BxDolTranscoderVideo::getFileUrlNotReady); video-na.png is this file rendered.
+       No text, so nothing to translate. Transparent, with gray-500 (NEO's control border) lines, so it shows on light and dark surfaces
+       and on a player's black: 4.8:1 on white, 3.1:1 on gray-800, 4.3:1 on black. Glyph: Lucide hourglass (ISC), the video is still being made. -->
+  <rect x="24" y="24" width="1232" height="672" rx="32" stroke="#71717a" stroke-opacity="0.5" stroke-width="4" stroke-dasharray="16 12"/>
+  <g transform="translate(568 288) scale(6)" stroke="#71717a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 22h14"/>
+    <path d="M5 2h14"/>
+    <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
+    <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
+  </g>
+</svg>

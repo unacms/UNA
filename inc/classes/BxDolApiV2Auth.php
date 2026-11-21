@@ -113,6 +113,9 @@ class BxDolApiV2Auth
             // an account that never chose one acts as its first profile, as at sign-in
             if (!$iProfileId && $oAccount && ($oFirst = BxDolProfile::getInstanceByAccount($oAccount->id())))
                 $iProfileId = (int)$oFirst->id();
+            // a membership level without Connectors (Studio > Memberships) doesn't use its tokens either
+            if ($iProfileId && !BxDolApiTokens::isAllowed($iProfileId))
+                throw new BxDolApiV2Problem(403, 'access_denied', 'The membership level of this account does not use access tokens');
             $aToken = ['profile_id' => $iProfileId, 'scopes' => [self::SCOPE], 'client_id' => null, 'personal_id' => (int)$aPersonal['id']];
         }
         elseif (BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth'))

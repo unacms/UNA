@@ -86,3 +86,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_snippet_me
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_snippet_meta_reply' AND `module`='bx_forum' AND `name`='reply-author';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_snippet_meta_reply' AND `module`='bx_forum' AND `name`='reply-date';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_snippet_meta_reply' AND `module`='bx_forum' AND `name`='reply-text';
+
+-- PAGE: explore
+UPDATE `sys_pages_blocks` SET `active_api` = 1, `config_api` = '{"content_type":"browse_simple","header_more_url":"/discussions-home","view":"row"}' WHERE `object` = 'sys_explore' AND `module` = 'bx_forum' AND `title` = '_bx_forum_page_block_title_new_entries';
