@@ -451,7 +451,9 @@
     <string name="_bx_market_cat_duration_month"><![CDATA[ежемесячно]]></string>
     <string name="_bx_market_cat_duration_year"><![CDATA[ежегодно]]></string>
 
-    <string name="_bx_market_vote_counter"><![CDATA[{0} голосов]]></string>
+    <string name="_bx_market_vote_counter"><![CDATA[{0} оценок]]></string>
+    <string name="_bx_market_vote_counter_few"><![CDATA[{0} оценки]]></string>
+    <string name="_bx_market_vote_counter_one"><![CDATA[{0} оценка]]></string>
 
     <string name="_bx_market_txt_msg_status_hidden"><![CDATA[Данный продукт был скрыт.]]></string>
     <string name="_bx_market_txt_msg_status_pending"><![CDATA[Данный продукт ожидает утверждения.]]></string>

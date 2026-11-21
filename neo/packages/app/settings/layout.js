@@ -2,13 +2,12 @@ export const settingsLayout = {
     layout: {
         body: ' bg-background ',
         defaults: {
-            name: 'hor',
             theme: 'auto',
             lang: 'en',
             feed_unit: 'default',
         },
-        avaliable_layouts: ['hor', 'ver', 'mixed'],
-        avaliable_feed_units: ['Full feed', 'Compact feed'],
+        // The home feed's cards: `default` (full posts) or `small` (a short preview and a thumbnail). Labels: `feed_unit_<id>`.
+        avaliable_feed_units: ['default', 'small'],
         avaliable_langs: ['auto', 'en', 'ru', 'es', 'de', 'fr'],
         screen: ' w-full  ',
 

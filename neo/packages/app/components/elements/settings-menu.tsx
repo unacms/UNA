@@ -97,7 +97,7 @@ export default function SettingsMenu({ items, hub = '' }: Readonly<{ items: Sett
         <View className="mx-auto w-full max-w-2xl gap-6 p-4 lg:mx-0 lg:p-0">
             {sections.filter((section) => !section.danger).map((section) => <SettingsSection key={section.key} section={section} />)}
             {/* The app's own preferences (language, theme, feed, sounds), which the dashboard had as tiles; deleting the account stays last. */}
-            <DashboardSettingsMenu settingsLink={false} layouts={false} title={t('Preferences')} />
+            <DashboardSettingsMenu settingsLink={false} title={t('Preferences')} />
             {sections.filter((section) => section.danger).map((section) => <SettingsSection key={section.key} section={section} />)}
         </View>
     )

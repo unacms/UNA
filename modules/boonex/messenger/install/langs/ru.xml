@@ -22,7 +22,7 @@
 	<string name="_bx_messenger_lots_type_all"><![CDATA[Все]]></string>
 	<string name="_bx_messenger_symbols_num_brief_jot"><![CDATA[Количество символов сообщения в списке разговоров]]></string>
 	<string name="_bx_messenger_post_area_message"><![CDATA[Cообщение ...]]></string>
-	<string name="_bx_messenger_title_search"><![CDATA[Найти..]]></string>
+	<string name="_bx_messenger_title_search"><![CDATA[Найти]]></string>
 	<string name="_bx_messenger_not_logged"><![CDATA[Вам необходимо зарегистрироваться!]]></string>
 	<string name="_bx_messenger_not_found"><![CDATA[Разговор не найден!]]></string>
 	<string name="_bx_messenger_jot_number_default"><![CDATA[Количество сообщений в списке сообщений]]></string>

@@ -3204,9 +3204,13 @@ function bx_log($sObject, $mixed, $iLevel = BX_LOG_DEBUG)
         return false;
 }
 
+/**
+ * Age in full years on a birthday (YYYY-MM-DD, with an optional time).
+ * @return int the age, 0 for an empty date (0000-00-00, as MySQL stores it), one that can't be read or one in the future
+ */
 function bx_birthday2age($sBirthday)
 {
-    if(!$sBirthday)
+    if(!$sBirthday || !is_string($sBirthday))
         return 0;
 
     $iPosSpace = strpos($sBirthday, ' ');
@@ -3214,6 +3218,8 @@ function bx_birthday2age($sBirthday)
         $sBirthday = trim(substr($sBirthday, 0, $iPosSpace));
 
     $aDate = explode('-', $sBirthday);
+    if(!preg_match('/^\d{4}$/', $aDate[0]) || (int)$aDate[0] < 1)
+        return 0;
 
     $iCdYear = (int)date('Y');
     $iCdMonth = (int)date('n');
@@ -3225,7 +3231,7 @@ function bx_birthday2age($sBirthday)
     if((isset($aDate[1]) && $iCdMonth < (int)$aDate[1]) || (isset($aDate[1], $aDate[2]) && $iCdMonth == (int)$aDate[1] && $iCdDay < (int)$aDate[2]))
         $iResult -= 1;
 
-    return $iResult;
+    return max(0, $iResult);
 }
 
 function bx_setcookie($sName, $sValue = "", $oExpiresOrOptions = 0, $sPath = 'auto', $sDomain = '', $bSecure = 'auto', $bHttpOnly = false)

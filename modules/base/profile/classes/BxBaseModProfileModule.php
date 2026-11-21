@@ -1480,6 +1480,9 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         if($oProfile !== false)
             $aResult['entry_author'] = $oProfile->id();
 
+        // a new profile "joined", rather than "Ann added a person Ann"
+        $aResult['lang_key'] = '_sys_profile_joined_ntfs';
+
         return $aResult;
     }
 
@@ -1583,6 +1586,10 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
 
         if($mixedResult !== false && ($oAuthor = BxDolProfile::getInstanceByContentAndType($aEvent['object_id'], $this->_aModule['name'])) !== false)
             $mixedResult['object_owner_id'] = $oAuthor->id();
+
+        // a new profile "joined", rather than "added person"
+        if($mixedResult !== false)
+            $mixedResult['sample_action'] = '_sys_txt_profile_joined_sample';
 
         /*
          * Item should be shown to the author only as a 'welcome' item just after join.

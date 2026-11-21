@@ -6,9 +6,11 @@ export type SiteLogo = {
     logo_dark?: string | null;
     /** The logo's width over its height, where UNA knows it (an uploaded file). */
     logo_aspect?: number | null;
+    /** The same for the dark logo. */
+    logo_dark_aspect?: number | null;
 };
 
-export type SiteLogoPick = { light: string; dark: string; aspect: number } | null;
+export type SiteLogoPick = { light: string; dark: string; aspect: number; aspectDark: number } | null;
 
 /** UNA's own full logo is 67:20. */
 export const LOGO_DEFAULT_ASPECT = 67 / 20;
@@ -26,8 +28,10 @@ export function pickSiteLogo(sources: SiteLogo | null | undefined, mode: 'full' 
     const light = useMark ? mark : logo;
     if (!light) return null;
 
-    const dark = (useMark ? sources.mark_dark : sources.logo_dark) || light;
+    const ownDark = (useMark ? sources.mark_dark : sources.logo_dark) || '';
+    const dark = ownDark || light;
     const aspect = useMark ? 1 : Number(sources.logo_aspect) > 0 ? Number(sources.logo_aspect) : LOGO_DEFAULT_ASPECT;
+    const aspectDark = useMark ? 1 : ownDark && Number(sources.logo_dark_aspect) > 0 ? Number(sources.logo_dark_aspect) : aspect;
 
-    return { light, dark, aspect };
+    return { light, dark, aspect, aspectDark };
 }

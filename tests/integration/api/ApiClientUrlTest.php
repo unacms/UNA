@@ -64,7 +64,7 @@ class ApiClientUrlTest extends BxDolIntegrationTestCase
     public function testLogosForTheApps(): void
     {
         $a = BxBaseApiV2System::logos();
-        $this->assertSame(['mark', 'mark_dark', 'logo', 'logo_dark', 'logo_aspect'], array_keys($a));
+        $this->assertSame(['mark', 'mark_dark', 'logo', 'logo_dark', 'logo_aspect', 'logo_dark_aspect'], array_keys($a));
         foreach (['mark', 'mark_dark', 'logo', 'logo_dark'] as $sKey)
             $this->assertTrue($a[$sKey] === null || is_string($a[$sKey]), $sKey);
     }

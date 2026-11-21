@@ -8,11 +8,15 @@ test('no sources: UNA artwork', () => {
 });
 
 test('the logo, its dark version falling back to it', () => {
-    assert.deepEqual(pickSiteLogo({ logo: 'l.png', logo_aspect: 4 }, 'full'), { light: 'l.png', dark: 'l.png', aspect: 4 });
-    assert.deepEqual(pickSiteLogo({ logo: 'l.png', logo_dark: 'd.png' }, 'full'), { light: 'l.png', dark: 'd.png', aspect: LOGO_DEFAULT_ASPECT });
+    assert.deepEqual(pickSiteLogo({ logo: 'l.png', logo_aspect: 4 }, 'full'), { light: 'l.png', dark: 'l.png', aspect: 4, aspectDark: 4 });
+    assert.deepEqual(pickSiteLogo({ logo: 'l.png', logo_dark: 'd.png' }, 'full'), { light: 'l.png', dark: 'd.png', aspect: LOGO_DEFAULT_ASPECT, aspectDark: LOGO_DEFAULT_ASPECT });
 });
 
 test('the mark is square; without one the logo stands in', () => {
-    assert.deepEqual(pickSiteLogo({ logo: 'l.png', mark: 'm.png', mark_dark: 'md.png' }, 'mark'), { light: 'm.png', dark: 'md.png', aspect: 1 });
-    assert.deepEqual(pickSiteLogo({ logo: 'l.png', logo_aspect: 3 }, 'mark'), { light: 'l.png', dark: 'l.png', aspect: 3 });
+    assert.deepEqual(pickSiteLogo({ logo: 'l.png', mark: 'm.png', mark_dark: 'md.png' }, 'mark'), { light: 'm.png', dark: 'md.png', aspect: 1, aspectDark: 1 });
+    assert.deepEqual(pickSiteLogo({ logo: 'l.png', logo_aspect: 3 }, 'mark'), { light: 'l.png', dark: 'l.png', aspect: 3, aspectDark: 3 });
+});
+
+test('the dark logo keeps its own proportions', () => {
+    assert.deepEqual(pickSiteLogo({ logo: 'l.png', logo_dark: 'd.png', logo_aspect: 4, logo_dark_aspect: 3 }, 'full'), { light: 'l.png', dark: 'd.png', aspect: 4, aspectDark: 3 });
 });

@@ -60,12 +60,14 @@ const isWeb = Platform.OS === 'web';
  * The site's own image, light and dark: web draws both and lets the colour scheme pick (the server's HTML can't
  * know it), native the one for its theme.
  */
-function SiteLogoImage({ light, dark, aspect, height, alt }: Readonly<{ light: string; dark: string; aspect: number; height: number; alt: string }>) {
+function SiteLogoImage({ light, dark, aspect, aspectDark, height, alt }: Readonly<{ light: string; dark: string; aspect: number; aspectDark: number; height: number; alt: string }>) {
     const themeSrc = useThemeValue(light, dark)
     const width = Math.round(height * aspect)
+    const widthDark = Math.round(height * aspectDark)
+    const themeWidth = useThemeValue(width, widthDark)
 
     if (!isWeb)
-        return <Image src={themeSrc} width={width} height={height} alt={alt} contentFit="contain" nobg />
+        return <Image src={themeSrc} width={themeWidth} height={height} alt={alt} contentFit="contain" nobg />
 
     if (light === dark)
         return <Image src={light} width={width} height={height} alt={alt} unoptimized style={{ height, width: 'auto' }} />
@@ -73,7 +75,7 @@ function SiteLogoImage({ light, dark, aspect, height, alt }: Readonly<{ light: s
     return (
         <>
             <Image src={light} width={width} height={height} alt={alt} unoptimized className="dark:hidden" style={{ height, width: 'auto' }} />
-            <Image src={dark} width={width} height={height} alt={alt} unoptimized className="hidden dark:block" style={{ height, width: 'auto' }} />
+            <Image src={dark} width={widthDark} height={height} alt={alt} unoptimized className="hidden dark:block" style={{ height, width: 'auto' }} />
         </>
     )
 }

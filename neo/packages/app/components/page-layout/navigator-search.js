@@ -4,7 +4,6 @@ import { DataByName } from 'app/components/block';
 import { SearchPanel } from 'app/ui/molecules/sections/search';
 import { appSetting, parseUrl, parseQueryString } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user'
-import { useLayoutSettings } from 'app/context/layout-settings';
 import { View } from 'app/design/view';
 import { PageTitle } from 'app/ui/molecules/page/page-title';
 
@@ -42,11 +41,6 @@ export default function PageLayout(props) {
         object:'search',
         items:menuItems
     }
-     const { layoutSettings } = useLayoutSettings();
-
-
-    const { layoutName: layout } = useLayoutSettings();
-    const leftSideBar = layout != 'hor' ? false : true
 
     // As UNA's search page: its title (desktop; phones and tablets show it in the header) and the search field above
     // the results, so a search can be changed where its results are.
@@ -64,7 +58,6 @@ export default function PageLayout(props) {
         data={props.data} 
         blocks={props.blocks}
         useSectionAsMenu={true}
-        leftSideBar={leftSideBar}
         onChangeRoute={changeRoute}
     />
     </View>)

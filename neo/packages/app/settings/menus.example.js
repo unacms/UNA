@@ -399,7 +399,7 @@ export const settingsMenus = {
         //     { key: '/tab3', title: 'Terms', url: '/terms', icon: 'Handshake' },
         //     { key: '/tab4', title: 'Privacy', url: '/privacy', icon: 'ShieldCheck' },
         // ],
-        // Profile menu block (vertical layout). Unset, the block's menu from UNA. Uncomment to pin it.
+        // Profile menu block. Unset, the block's menu from UNA. Uncomment to pin it.
         // menu_sidebar: [
         //     {
         //         title: 'Profile',
