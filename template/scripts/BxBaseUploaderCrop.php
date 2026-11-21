@@ -81,7 +81,7 @@ class BxBaseUploaderCrop extends BxDolUploader
                 'link' => 'javascript:void(0)',
                 'onclick' => $sJsObject . '.choosePicture();',
                 'target' => '',
-                'icon' => 'pencil-alt',
+                'icon' => 'pencil-line',
                 'title' => _t('_sys_uploader_crop_change_picture'),
             ], [
                 'id' => $sMenuId . '-remove',
@@ -90,7 +90,7 @@ class BxBaseUploaderCrop extends BxDolUploader
                 'link' => 'javascript:void(0)',
                 'onclick' => $sJsObject . '.removePicture();',
                 'target' => '',
-                'icon' => 'trash-alt',
+                'icon' => 'trash',
                 'title' => _t('_sys_uploader_crop_remove_picture'),
             ]]
         ], $this->_oTemplate);

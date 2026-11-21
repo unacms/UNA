@@ -203,8 +203,8 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_videos_view', 'bx_videos', '_bx_videos_menu_set_title_view_entry', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_videos_view', 'bx_videos', 'edit-video', '_bx_videos_menu_item_title_system_edit_entry', '_bx_videos_menu_item_title_edit_entry', 'page.php?i=edit-video&id={content_id}', '', '', 'pencil-alt', '', 2147483647, 1, 0, 1),
-('bx_videos_view', 'bx_videos', 'delete-video', '_bx_videos_menu_item_title_system_delete_entry', '_bx_videos_menu_item_title_delete_entry', 'page.php?i=delete-video&id={content_id}', '', '', 'remove', '', 2147483647, 1, 0, 2),
+('bx_videos_view', 'bx_videos', 'edit-video', '_bx_videos_menu_item_title_system_edit_entry', '_bx_videos_menu_item_title_edit_entry', 'page.php?i=edit-video&id={content_id}', '', '', 'pencil-line', '', 2147483647, 1, 0, 1),
+('bx_videos_view', 'bx_videos', 'delete-video', '_bx_videos_menu_item_title_system_delete_entry', '_bx_videos_menu_item_title_delete_entry', 'page.php?i=delete-video&id={content_id}', '', '', 'x', '', 2147483647, 1, 0, 2),
 ('bx_videos_view', 'bx_videos', 'approve', '_sys_menu_item_title_system_va_approve', '_sys_menu_item_title_va_approve', 'javascript:void(0)', 'javascript:bx_approve(this, ''{module_uri}'', {content_id});', '', 'check', '', 2147483647, 1, 0, 3);
 
 -- MENU: all actions menu for view entry 
@@ -218,7 +218,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_videos_view_actions', 'bx_videos', 'edit-video', '_bx_videos_menu_item_title_system_edit_entry', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 10),
 ('bx_videos_view_actions', 'bx_videos', 'delete-video', '_bx_videos_menu_item_title_system_delete_entry', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 20),
 ('bx_videos_view_actions', 'bx_videos', 'approve', '_sys_menu_item_title_system_va_approve', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 30),
-('bx_videos_view_actions', 'bx_videos', 'set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_videos'', content_id: {content_id}});', '', 'check-circle', '', '', 0, 2147483647, 'a:2:{s:6:"module";s:9:"bx_videos";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 40),
+('bx_videos_view_actions', 'bx_videos', 'set-badges', '_sys_menu_item_title_system_set_badges', '_sys_menu_item_title_set_badges', 'javascript:void(0)', 'bx_menu_popup(''sys_set_badges'', window, {}, {module: ''bx_videos'', content_id: {content_id}});', '', 'circle-check', '', '', 0, 2147483647, 'a:2:{s:6:"module";s:9:"bx_videos";s:6:"method";s:19:"is_badges_avaliable";}', 1, 0, 40),
 ('bx_videos_view_actions', 'bx_videos', 'comment', '_sys_menu_item_title_system_va_comment', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 200),
 ('bx_videos_view_actions', 'bx_videos', 'view', '_sys_menu_item_title_system_va_view', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 210),
 ('bx_videos_view_actions', 'bx_videos', 'vote', '_sys_menu_item_title_system_va_vote', '', '', '', '', '', '', '', 0, 2147483647, '', 0, 0, 220),
@@ -228,10 +228,10 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_videos_view_actions', 'bx_videos', 'feature', '_sys_menu_item_title_system_va_feature', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 250),
 ('bx_videos_view_actions', 'bx_videos', 'repost', '_sys_menu_item_title_system_va_repost', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 260),
 ('bx_videos_view_actions', 'bx_videos', 'report', '_sys_menu_item_title_system_va_report', '', '', '', '', '', '', '', 0, 2147483647, '', 1, 0, 270),
-('bx_videos_view_actions', 'bx_videos', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'exclamation-triangle', '', '', 0, 2147483647, '', 1, 0, 280),
-('bx_videos_view_actions', 'bx_videos', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_videos&content_id={content_id}', '', '', 'history', '', '', 0, 192, '', 1, 0, 290),
+('bx_videos_view_actions', 'bx_videos', 'notes', '_sys_menu_item_title_system_va_notes', '_sys_menu_item_title_va_notes', 'javascript:void(0)', 'javascript:bx_get_notes(this,  ''{module_uri}'', {content_id});', '', 'triangle-exclamation-point', '', '', 0, 2147483647, '', 1, 0, 280),
+('bx_videos_view_actions', 'bx_videos', 'audit', '_sys_menu_item_title_system_va_audit', '_sys_menu_item_title_va_audit', 'page.php?i=dashboard-audit&module=bx_videos&content_id={content_id}', '', '', 'rotate-ccw-clock', '', '', 0, 192, '', 1, 0, 290),
 ('bx_videos_view_actions', 'bx_videos', 'social-sharing', '_sys_menu_item_title_system_social_sharing', '_sys_menu_item_title_social_sharing', 'javascript:void(0)', 'oBxDolPage.share(this, \'{url_encoded}\')', '', 'share', '', '', 0, 2147483647, '', 1, 0, 300),
-('bx_videos_view_actions', 'bx_videos', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, '', 1, 0, 9999);
+('bx_videos_view_actions', 'bx_videos', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-vertical', '', '', 0, 2147483647, '', 1, 0, 9999);
 
 -- MENU: actions menu for my entries
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -442,15 +442,15 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_videos_administration', 'bulk', 'delete', '_bx_videos_grid_action_title_adm_delete', '', 0, 1, 1),
 ('bx_videos_administration', 'bulk', 'clear_reports', '_bx_videos_grid_action_title_adm_clear_reports', '', 0, 1, 2),
-('bx_videos_administration', 'single', 'edit', '_bx_videos_grid_action_title_adm_edit', 'pencil-alt', 1, 0, 1),
-('bx_videos_administration', 'single', 'delete', '_bx_videos_grid_action_title_adm_delete', 'remove', 1, 1, 2),
-('bx_videos_administration', 'single', 'settings', '_bx_videos_grid_action_title_adm_more_actions', 'cog', 1, 0, 3),
+('bx_videos_administration', 'single', 'edit', '_bx_videos_grid_action_title_adm_edit', 'pencil-line', 1, 0, 1),
+('bx_videos_administration', 'single', 'delete', '_bx_videos_grid_action_title_adm_delete', 'x', 1, 1, 2),
+('bx_videos_administration', 'single', 'settings', '_bx_videos_grid_action_title_adm_more_actions', 'settings', 1, 0, 3),
 ('bx_videos_administration', 'single', 'audit_content', '_bx_videos_grid_action_title_adm_audit_content', 'search', 1, 0, 4),
 ('bx_videos_administration', 'single', 'clear_reports', '_bx_videos_grid_action_title_adm_clear_reports', 'eraser', 1, 0, 5),
 ('bx_videos_common', 'bulk', 'delete', '_bx_videos_grid_action_title_adm_delete', '', 0, 1, 1),
-('bx_videos_common', 'single', 'edit', '_bx_videos_grid_action_title_adm_edit', 'pencil-alt', 1, 0, 1),
-('bx_videos_common', 'single', 'delete', '_bx_videos_grid_action_title_adm_delete', 'remove', 1, 1, 2),
-('bx_videos_common', 'single', 'settings', '_bx_videos_grid_action_title_adm_more_actions', 'cog', 1, 0, 3);
+('bx_videos_common', 'single', 'edit', '_bx_videos_grid_action_title_adm_edit', 'pencil-line', 1, 0, 1),
+('bx_videos_common', 'single', 'delete', '_bx_videos_grid_action_title_adm_delete', 'x', 1, 1, 2),
+('bx_videos_common', 'single', 'settings', '_bx_videos_grid_action_title_adm_more_actions', 'settings', 1, 0, 3);
 
 
 -- UPLOADERS
