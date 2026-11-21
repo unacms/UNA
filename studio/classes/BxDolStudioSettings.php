@@ -32,7 +32,7 @@ class BxDolStudioSettings extends BxTemplStudioWidget
      */
     protected function getTypeOfCategory($sType, $mixedCategory)
     {
-        if(!is_string($mixedCategory) || $mixedCategory === '' || strpos($mixedCategory, ',') !== false)
+        if(!is_string($mixedCategory) || $mixedCategory === '' || str_contains($mixedCategory, ','))
             return $sType;
 
         $aCategory = [];
