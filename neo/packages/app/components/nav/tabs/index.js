@@ -6,11 +6,11 @@ import { fetcher } from 'app/lib/fetcher';
 import { Appearance, BackHandler, Text } from 'react-native';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { useEffect, useState } from 'react';
-import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import Suggestions from 'app/ui/molecules/misc/suggestions';
 import AsyncWorker from 'app/ui/molecules/system/async-worker';
 import Subscriber from 'app/ui/molecules/system/subscriber';
 import InterfaceSounds from 'app/ui/molecules/system/interface-sounds';
+import PushPrompt from 'app/ui/molecules/system/push-prompt-host';
 import { useFonts } from 'expo-font';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import fonts from 'app/customization/design/fonts/fonts';
@@ -189,16 +189,6 @@ export default function Tabs() {
     }, [pathname, router, currentUser]);
 
     useEffect(() => {
-        if (currentUser) {
-            return scheduleOneSignalSubscription(currentUser, {
-                askPermission: appSetting('notifications', 'onesignal_request_on_load') ?? appSetting('native', 'onesignal_request_on_load'),
-            });
-        }
-    }, [currentUser?.id]);
-
-
-
-    useEffect(() => {
         if (currentUser !== null || bootstrapError) return;
 
         let cancelled = false;
@@ -283,6 +273,7 @@ export default function Tabs() {
             <Suggestions />
             <Subscriber />
             <InterfaceSounds />
+            <PushPrompt />
             <View className="flex-1">
                 {nativeTabs ? null : (
                     <View className="w-full z-50"><AsyncWorker /></View>

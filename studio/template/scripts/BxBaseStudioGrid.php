@@ -13,6 +13,9 @@ class BxBaseStudioGrid extends BxDolStudioGrid
     function __construct($aOptions, $oTemplate = false)
     {
         parent::__construct($aOptions, $oTemplate);
+
+        // Studio styles select2, and its other selects are select2 fields (the page builder's page picker)
+        $this->_bAgSelect2 = true;
     }
 
     /**
@@ -30,6 +33,22 @@ class BxBaseStudioGrid extends BxDolStudioGrid
         }
 
         return parent::_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    /**
+     * AG Grid rows get the same Lucide action icons as the classic grid.
+     */
+    protected function _agActionIcon($sIcon)
+    {
+        // _getIconLucide refuses anything that is not an icon name (an action with its own <svg>, for one)
+        if(!is_string($sIcon)) {
+            return $sIcon;
+        }
+
+        $sName = isset($this->_aActionIcons[$sIcon]) ? $this->_aActionIcons[$sIcon] : $sIcon;
+        $sSvg = $this->_getIconLucide($sName);
+
+        return $sSvg !== false ? $sSvg : $sIcon;
     }
 
     /**

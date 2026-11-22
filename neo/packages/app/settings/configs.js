@@ -9,7 +9,6 @@ export const settingsConfigs = {
         show_tabs_non_logged: true, // OLD appSetting('layout', 'show_nav_non_logged_native')
         bluetooth: false, //OLD appSetting('layout', 'bluetooth')
         bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
-        onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
         collapsible_header: true,
         // A page pushed onto a tab's stack (Settings or Documentation from the dashboard, a post from
@@ -80,8 +79,17 @@ export const settingsConfigs = {
         url: '/notifications-view', 
         count_in_title: true, 
         show_plain_text: true,
-        onesignal_prompt_delay_ms: 2 * 60 * 1000,
-        onesignal_request_on_load: true,
+        // Push notifications (app/lib/push). The provider is a key of `pushProviders`; '' turns push off.
+        // OneSignal reads its app id from `config.api_keys.onesignal` (ONE_SIGNAL_API_KEY).
+        push_provider: 'onesignal',
+        // NEO's own dialog (`push_prompt` molecule) asks a member to turn notifications on, then the
+        // system asks. false: never ask (members who allowed them stay linked to their device).
+        push_prompt: true,
+        // How long after a member's first page of a visit the dialog shows. null: two minutes, or the
+        // older `onesignal_prompt_delay_ms` where a project still sets it.
+        push_prompt_delay_ms: null,
+        // How long "Not now" keeps the dialog away on that device.
+        push_prompt_snooze_days: 14,
     },
     messenger: {
         url: '/messenger', 

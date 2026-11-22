@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- AG grids: the bulk bar above the rows says how many rows are selected and can clear the selection. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_grid_txt_n_selected"><![CDATA[{0} selected]]></string_add>
+    <string_add name="_sys_grid_txt_clear_selection"><![CDATA[Clear selection]]></string_add>
+</resources>

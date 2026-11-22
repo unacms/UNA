@@ -2,6 +2,7 @@
   "name": "una-js-libs",
   "homepage": "https://github.com/unacms/una",
   "dependencies": {
+    "ag-grid-community": "36.3.0",
     "@claviska/jquery-minicolors": "^2.3.6",
     "@egjs/hammerjs": "^2.0.17",
     "@stripe/connect-js": "^3.5.0",
@@ -82,6 +83,7 @@
   },
   "scripts": {
     "install-bower-components": "bower install",
+    "build:ag-grid": "node scripts/build-ag-grid.mjs",
     "build:at.js": "mkdir -p plugins_public/at.js; cd node_modules/at.js; cp -r dist/* ../../plugins_public/at.js",
     "build:codemirror": "mkdir -p plugins_public/codemirror; cd node_modules/codemirror; cp -r lib/* ../../plugins_public/codemirror; uglifyjs lib/codemirror.js mode/clike/clike.js mode/css/css.js mode/diff/diff.js mode/htmlembedded/htmlembedded.js mode/htmlmixed/htmlmixed.js mode/javascript/javascript.js  mode/markdown/markdown.js mode/php/php.js mode/properties/properties.js mode/shell/shell.js mode/sql/sql.js mode/xml/xml.js mode/xquery/xquery.js mode/yaml/yaml.js addon/edit/matchbrackets.js -c -m > ../../plugins_public/codemirror/codemirror-ext.min.js; uglifyjs lib/codemirror.js -c -m > ../../plugins_public/codemirror/codemirror.min.js",
     "build:combodate": "mkdir -p plugins_public/combodate; cp bower_components/combodate/src/combodate.js plugins_public/combodate",
@@ -169,7 +171,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "bower": "^1.8.14",
-    "lucide": "^1.72.0",
+    "lucide": "^1.73.0",
     "lucide-static": "^1.73.0",
     "npm-run-all": "^4.1.5",
     "partial-json": "^0.1.7",

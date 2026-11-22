@@ -952,6 +952,24 @@ abbrev@^5.0.0:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-5.0.0.tgz#bab70805adca6637a33eeecdb8b7b5474d6d6425"
   integrity sha512-/XrFJgzQQQHpti1raDJC6m4ws6aNktmjBlhk8Fdlk7LwCEuDoieEJJY9OFHjfiFJFFRM2tK+Ky/IsfbbmlMu1w==
 
+ag-charts-types@14.3.0:
+  version "14.3.0"
+  resolved "https://registry.yarnpkg.com/ag-charts-types/-/ag-charts-types-14.3.0.tgz#79da009db1210569218e6825991a33f624e1e0b1"
+  integrity sha512-6VtzUYBKN5mFY24/Eye3RUn1AAq7s+/B4hEu83ZOK/Pjqx26tHq2MoxiXlBE8F7oQO0VpjV5rZZaw6wxSpMNJg==
+
+ag-grid-community@36.3.0:
+  version "36.3.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-36.3.0.tgz#c918baeeb7c2819f6455d71fcaf10b324c35c993"
+  integrity sha512-0JRaIwE82TuOcx+upA3OnTyhDAIUDqrMxLoBib6yVON0SyfICdpOnwD4QdiT0A1lgrC8SkzLBFRst73bTREF6Q==
+  dependencies:
+    ag-charts-types "14.3.0"
+    ag-stack "36.3.0"
+
+ag-stack@36.3.0:
+  version "36.3.0"
+  resolved "https://registry.yarnpkg.com/ag-stack/-/ag-stack-36.3.0.tgz#7f54ca5dc58d23dea9aa3fa82e9c921b75a9e46b"
+  integrity sha512-KbX/b6cM0GIJ4cz6W3jk8YoDG/XpqOC4WurYl8CDuQtER2d4rihjPI4tOLN4LqS0yfVspZ31ED1273kfG+6m0w==
+
 agent-base@9.0.0, agent-base@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-9.0.0.tgz#ec9efb08314e1e75b0852d74aabf9a387f99834e"
@@ -2870,10 +2888,10 @@ lucide-static@^1.73.0:
   resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.73.0.tgz#76a095f7cffc01db82e977591d850659a2cf1b48"
   integrity sha512-/FfzdRThAPnDVMk643pzENqYUnxudEON/fyOdh31ZiPiw/seE9VoYeIJPRDTCLDNtnF+5pK6CNwf6IkQMfrJ5w==
 
-lucide@^1.72.0:
-  version "1.72.0"
-  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.72.0.tgz#d9ab16375dff012b9a985dd5a6aaed1b5a38193f"
-  integrity sha512-075vCJzyx+LU3xBzfaHjsvrtbiIvVUjbfsdJCG5rPeXs0O/07aH5cDz1zoWn0acupuffXsN/iG6OkvVqYTGunw==
+lucide@^1.73.0:
+  version "1.73.0"
+  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.73.0.tgz#b2c3d6c8513c60a4c7de5bb0f44e53cd6ccbad41"
+  integrity sha512-qiNin5j7qEflnAdLG/9Yb4d5N9qnnP8TOMdn6e66399fgX25Y0eYEPS3PUPWGIPLloOj4X+xLTdF2lk9gSgWpA==
 
 magic-string@^0.30.3:
   version "0.30.21"
