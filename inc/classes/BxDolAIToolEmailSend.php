@@ -51,7 +51,7 @@ class BxDolAIToolEmailSend extends BxDolAITool
             $this->adminLog('email', $email, 'send', null, [
                 'email' => $email,
                 'subject' => $subject,
-                'body' => $this->maskMailBody($body),
+                'body' => BxDolAdminLog::maskText($body),
             ]);
 
         return $bSent;

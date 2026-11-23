@@ -1,7 +1,3 @@
-.bx-admin-log-row {
-    cursor: pointer;
-}
-
 .bx-admin-log-diff {
     display: flex;
     flex-direction: column;

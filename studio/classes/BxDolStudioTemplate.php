@@ -240,7 +240,10 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
     
     function displayPage(&$oPage)
     {
-        if(($mixedResult = $oPage->checkAction()) !== false)
+        $mixedResult = BxDolAdminLog::runStudioAction($oPage, function () use ($oPage) {
+            return $oPage->checkAction();
+        });
+        if($mixedResult !== false)
             return echoJson($mixedResult);
 
         $sPageMenu = $oPage->getPageMenu();

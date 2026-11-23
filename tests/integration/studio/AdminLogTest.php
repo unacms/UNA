@@ -77,6 +77,49 @@ class AdminLogTest extends BxDolIntegrationTestCase
         if (!$this->ready())
             $this->markTestSkipped('sys_admin_log is not installed.');
 
+        $oDb = BxDolDb::getInstance();
+        $aItem = $oDb->getRow("SELECT `id`, `active` FROM `sys_menu_items` ORDER BY `id` ASC LIMIT 1");
+        if (!$aItem)
+            $this->markTestSkipped('No menu item to switch.');
+
+        $iItem = (int)$aItem['id'];
+        $iActive = (int)$aItem['active'];
+
+        $this->bxLoginAsAdmin();
+        $this->turnLogOn();
+
+        $iBefore = $this->maxId();
+        try {
+            $this->runGridPhp([
+                'o' => 'sys_studio_nav_items',
+                'a' => 'enable',
+                'ids' => [$iItem],
+                'checked' => 1 - $iActive,
+                'sskin' => '',
+                'csrf_token' => BxDolForm::getCsrfToken(),
+            ]);
+        }
+        finally {
+            $oDb->query("UPDATE `sys_menu_items` SET `active` = :active WHERE `id` = :id", ['active' => $iActive, 'id' => $iItem]);
+        }
+
+        $aRow = $this->latest('grid:sys_studio_nav_items', (string)$iItem, $iBefore);
+        $this->assertIsArray($aRow);
+        $this->assertSame('enable', $aRow['action']);
+        $this->assertSame('studio', $aRow['source']);
+        $aBefore = json_decode($aRow['before'], true);
+        $aAfter = json_decode($aRow['after'], true);
+        $this->assertSame($iActive, (int)$aBefore[(string)$iItem]['active']);
+        $this->assertSame(1 - $iActive, (int)$aAfter[(string)$iItem]['active']);
+
+        $oDb->query("DELETE FROM `sys_admin_log` WHERE `id` = :id", ['id' => (int)$aRow['id']]);
+    }
+
+    public function testOpeningAnEditFormIsNotLogged(): void
+    {
+        if (!$this->ready())
+            $this->markTestSkipped('sys_admin_log is not installed.');
+
         $iMenu = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `sys_objects_menu` ORDER BY `id` ASC LIMIT 1");
         if ($iMenu <= 0)
             $this->markTestSkipped('No menu to open.');
@@ -85,13 +128,86 @@ class AdminLogTest extends BxDolIntegrationTestCase
         $this->turnLogOn();
 
         $iBefore = $this->maxId();
-        $_GET = [
+        $this->runGridPhp([
             'o' => 'sys_studio_nav_menus',
             'a' => 'edit',
             'ids' => [$iMenu],
             'sskin' => '',
             'csrf_token' => BxDolForm::getCsrfToken(),
-        ];
+        ]);
+
+        $this->assertFalse($this->latest('grid:sys_studio_nav_menus', (string)$iMenu, $iBefore));
+    }
+
+    public function testAGridActionOfAMemberIsNotLoggedEvenWithTheStudioSkin(): void
+    {
+        if (!$this->ready())
+            $this->markTestSkipped('sys_admin_log is not installed.');
+
+        $this->bxLoginAsUser();
+        $this->turnLogOn();
+
+        $_GET['ids'] = ['1'];
+        $oGrid = $this->fakeGrid();
+
+        $iBefore = $this->maxId();
+        $bRan = false;
+        ob_start();
+        BxDolAdminLog::runGrid($oGrid, 'delete', true, function () use (&$bRan) {
+            $bRan = true;
+            echoJson(['grid' => '', 'blink' => [1]]);
+        });
+        ob_end_clean();
+
+        $this->assertTrue($bRan);
+        $this->assertSame($iBefore, $this->maxId());
+    }
+
+    public function testAStudioPageActionIsLoggedOnceAndOnlyWhenItSucceeded(): void
+    {
+        if (!$this->ready())
+            $this->markTestSkipped('sys_admin_log is not installed.');
+
+        $this->bxLoginAsAdmin();
+        $this->turnLogOn();
+
+        $oPage = new BxDolStudioAdminLogTestPage();
+        $iBefore = $this->maxId();
+
+        // The form is only shown: nothing changed.
+        $_GET = ['bp_action' => 'block_edit', 'id' => '7'];
+        BxDolAdminLog::runStudioAction($oPage, fn() => ['popup' => ['html' => '']]);
+        $this->assertSame($iBefore, $this->maxId());
+
+        // A read is not a change.
+        $_GET = ['bp_action' => 'get_page', 'id' => '7'];
+        BxDolAdminLog::runStudioAction($oPage, fn() => ['code' => 0, 'content' => '']);
+        $this->assertSame($iBefore, $this->maxId());
+
+        // The form was saved.
+        $_GET = ['bp_action' => 'block_edit', 'id' => '7', 'title' => 'New', 'password' => 'p'];
+        BxDolAdminLog::runStudioAction($oPage, fn() => ['eval' => 'x']);
+        $aRow = $this->latest('studio:admin_log_test_page', '7', $iBefore);
+        $this->assertIsArray($aRow);
+        $this->assertSame('block_edit', $aRow['action']);
+        $this->assertStringContainsString('"title":"New"', $aRow['after']);
+        $this->assertStringNotContainsString('"password":"p"', $aRow['after']);
+
+        // An action that wrote its own row is not written again.
+        $iMid = $this->maxId();
+        $_GET = ['bp_action' => 'activate', 'id' => '8'];
+        BxDolAdminLog::runStudioAction($oPage, function () {
+            BxDolAdminLog::record(['source' => 'studio', 'object_type' => 'module', 'object_id' => 'x', 'action' => 'enable']);
+            return ['code' => 0];
+        });
+        $this->assertSame($iMid + 1, $this->maxId());
+
+        BxDolDb::getInstance()->query("DELETE FROM `sys_admin_log` WHERE `id` > :id", ['id' => $iBefore]);
+    }
+
+    private function runGridPhp(array $aGet): void
+    {
+        $_GET = $aGet;
 
         $sCwd = getcwd();
         ob_start();
@@ -104,15 +220,21 @@ class AdminLogTest extends BxDolIntegrationTestCase
             if ($sCwd !== false)
                 chdir($sCwd);
         }
+    }
 
-        $aRow = $this->latest('grid:sys_studio_nav_menus', (string)$iMenu, $iBefore);
-        $this->assertIsArray($aRow);
-        $this->assertSame('edit', $aRow['action']);
-        $this->assertSame('studio', $aRow['source']);
-        $this->assertStringContainsString('"' . $iMenu . '"', $aRow['before']);
-        $this->assertNotSame('', $aRow['after']);
+    private function fakeGrid(): object
+    {
+        return new class {
+            public function getObject(): string
+            {
+                return 'sys_admin_log_test';
+            }
 
-        BxDolDb::getInstance()->query("DELETE FROM `sys_admin_log` WHERE `id` = :id", ['id' => (int)$aRow['id']]);
+            public function getSourceOptions(): array
+            {
+                return ['object' => 'sys_admin_log_test', 'source_type' => '', 'table' => '', 'field_id' => ''];
+            }
+        };
     }
 
     private function ready(): bool
@@ -180,4 +302,11 @@ class AdminLogTest extends BxDolIntegrationTestCase
 
         return $a ?: false;
     }
+}
+
+/**
+ * A Studio page for BxDolAdminLog::runStudioAction: its type in the log is studio:admin_log_test_page.
+ */
+class BxDolStudioAdminLogTestPage
+{
 }

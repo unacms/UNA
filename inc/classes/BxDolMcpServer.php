@@ -654,7 +654,9 @@ class BxDolMcpServer
         foreach ($aTool['scoped'] ?? [] as $sArg)
             $aArgs[$sArg] = $this->_oAuth->getProfileId();
 
-        BxDolAITool::setMemberScope($bOperator ? 0 : $this->_oAuth->getProfileId());
+        $iCaller = (int)$this->_oAuth->getProfileId();
+        BxDolAITool::setCallerProfile($iCaller);
+        BxDolAITool::setMemberScope($bOperator ? 0 : $iCaller);
         try {
             $oTool = clone BxDolAIToolFactory::getToolInstance($aTool['id']);
             $oTool->setInputs($aArgs);
@@ -663,6 +665,7 @@ class BxDolMcpServer
         }
         finally {
             BxDolAITool::setMemberScope(0);
+            BxDolAITool::setCallerProfile(0);
         }
 
         if ($mResult instanceof NeuronAI\Tools\ToolOutput)

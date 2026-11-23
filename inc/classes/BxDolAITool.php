@@ -29,6 +29,12 @@ class BxDolAITool extends Tool
      */
     protected static $_iMemberScope = 0;
 
+    /**
+     * The authenticated profile that invoked the tool (an MCP operator or member). 0 in an agent's own chat,
+     * where the bot profile from the SQL log context is the only identity available.
+     */
+    protected static $_iCallerProfile = 0;
+
     public static function setMemberScope(int $iProfileId): void
     {
         self::$_iMemberScope = max(0, $iProfileId);
@@ -37,6 +43,16 @@ class BxDolAITool extends Tool
     public static function getMemberScope(): int
     {
         return self::$_iMemberScope;
+    }
+
+    public static function setCallerProfile(int $iProfileId): void
+    {
+        self::$_iCallerProfile = max(0, $iProfileId);
+    }
+
+    public static function getCallerProfile(): int
+    {
+        return self::$_iCallerProfile;
     }
 
     /**
@@ -171,7 +187,7 @@ class BxDolAITool extends Tool
             BxDolAdminLog::record([
                 'source' => 'agent',
                 'agent_id' => (int)($aCtx['agent_id'] ?? 0),
-                'profile_id' => (int)($aCtx['profile_id'] ?? 0),
+                'profile_id' => BxDolAdminLog::callerProfile((int)($aCtx['profile_id'] ?? 0)),
                 'thread_id' => (string)($aCtx['thread_id'] ?? ''),
                 'object_type' => $sObjectType,
                 'object_id' => $sObjectId,
@@ -181,6 +197,7 @@ class BxDolAITool extends Tool
             ]);
         }
         catch (Throwable $e) {
+            bx_log('sys_audit', $e->getMessage(), BX_LOG_ERR);
         }
     }
 
@@ -213,12 +230,5 @@ class BxDolAITool extends Tool
             return $this->adminLogId($mixed['content']);
 
         return '';
-    }
-
-    protected function maskMailBody(string $s): string
-    {
-        $sMasked = preg_replace('/((?:password|passwd|secret|token|api[_-]?key)\s*[:=]\s*)\S+/iu', '$1' . BxDolAdminLog::MASK, $s);
-
-        return is_string($sMasked) ? $sMasked : $s;
     }
 }

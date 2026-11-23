@@ -11,6 +11,12 @@ class BxDolAdminLog
 {
     const MASK = '********';
     const JSON_MAX = 200000;
+    const REQUEST_VALUE_MAX = 2000;
+
+    /**
+     * Rows written in this request: a Studio page action that already wrote its own row is not written again.
+     */
+    protected static $iRecorded = 0;
 
     public static function enabled(): bool
     {
@@ -46,6 +52,8 @@ class BxDolAdminLog
         try {
             $iProfile = array_key_exists('profile_id', $a) ? (int)$a['profile_id'] : (int)bx_get_logged_profile_id();
 
+            self::$iRecorded++;
+
             return BxDolAdminLogQuery::getInstance()->add([
                 'profile_id' => $iProfile,
                 'source' => (string)($a['source'] ?? 'studio'),
@@ -60,6 +68,7 @@ class BxDolAdminLog
             ]);
         }
         catch (Throwable $e) {
+            bx_log('sys_audit', $e->getMessage(), BX_LOG_ERR);
             return 0;
         }
     }
@@ -71,7 +80,7 @@ class BxDolAdminLog
         self::record([
             'source' => 'agent',
             'agent_id' => (int)($aContext['agent_id'] ?? 0),
-            'profile_id' => (int)($aContext['profile_id'] ?? 0),
+            'profile_id' => self::callerProfile((int)($aContext['profile_id'] ?? 0)),
             'thread_id' => (string)($aContext['thread_id'] ?? ''),
             'object_type' => $sType,
             'object_id' => $sId,
@@ -92,6 +101,26 @@ class BxDolAdminLog
         return 'module';
     }
 
+    /**
+     * The installed module a Studio Store path stands for: a module's own folder, or an update package of it.
+     */
+    public static function moduleByPath(string $sPath): array
+    {
+        $aConfig = BxDolInstallerUtils::getModuleConfig(['path' => $sPath]);
+        if (!$aConfig)
+            return [];
+
+        $oQuery = BxDolModuleQuery::getInstance();
+        if (!empty($aConfig['module_uri']))
+            $aModule = $oQuery->getModuleByUri($aConfig['module_uri'], false);
+        else if (!empty($aConfig['name']))
+            $aModule = $oQuery->getModuleByName($aConfig['name'], false);
+        else
+            $aModule = [];
+
+        return is_array($aModule) ? $aModule : [];
+    }
+
     public static function runGrid($oGrid, string $sAction, bool $bStudioRequest, callable $fn): void
     {
         if (!self::shouldLogGrid($oGrid, $sAction, $bStudioRequest)) {
@@ -100,47 +129,128 @@ class BxDolAdminLog
         }
 
         $aSubject = $oGrid->getSourceOptions();
-        $aIds = self::gridIds($oGrid);
-        $bSnapshot = self::canSnapshot($aSubject) && $aIds;
+        $bCanSnapshot = self::canSnapshot($aSubject);
+        $aIdsBefore = self::gridIds($oGrid);
         $aBefore = [];
-        if ($bSnapshot) {
+        if ($bCanSnapshot && $aIdsBefore) {
             try {
-                $aBefore = BxDolAdminLogQuery::getInstance()->getRows($aSubject['table'], $aSubject['field_id'], $aIds);
+                $aBefore = BxDolAdminLogQuery::getInstance()->getRows($aSubject['table'], $aSubject['field_id'], $aIdsBefore);
             }
             catch (Throwable $e) {
+                bx_log('sys_audit', $e->getMessage(), BX_LOG_ERR);
                 $aBefore = [];
             }
         }
 
+        // The action answers with JSON: keep a copy of it to tell a refused or failed action from one that changed something.
+        $iLevel = ob_get_level();
+        ob_start();
+
         $bWrote = false;
-        $fnWrite = function () use (&$bWrote, $sAction, $aSubject, $aIds, $aBefore, $bSnapshot) {
+        $fnWrite = function () use (&$bWrote, $iLevel, $sAction, $aSubject, $aIdsBefore, $aBefore, $bCanSnapshot, $oGrid) {
             if ($bWrote)
                 return;
             $bWrote = true;
 
+            $sOutput = ob_get_level() > $iLevel ? (string)ob_get_contents() : '';
+            $aResult = json_decode($sOutput, true);
+
+            // An add has no id in the request. The answer's blink (or id) is the row that was just inserted.
+            $aIds = self::gridIds($oGrid);
+            if (!$aIds)
+                $aIds = self::idsFromResult($aResult);
+
             $aAfter = [];
-            if ($bSnapshot) {
+            if ($bCanSnapshot && $aIds) {
                 try {
                     $aAfter = BxDolAdminLogQuery::getInstance()->getRows($aSubject['table'], $aSubject['field_id'], $aIds);
                 }
                 catch (Throwable $e) {
+                    bx_log('sys_audit', $e->getMessage(), BX_LOG_ERR);
                     $aAfter = [];
                 }
             }
 
+            $bSnapshot = $bCanSnapshot && ($aIdsBefore || $aIds);
+            if ($bSnapshot) {
+                if ($aBefore == $aAfter)
+                    return;
+            }
+            elseif (self::isFailedResult($aResult))
+                return;
+
             self::record([
                 'source' => 'studio',
                 'object_type' => 'grid:' . $aSubject['object'],
-                'object_id' => implode(',', $aIds),
+                'object_id' => implode(',', $aIds ?: $aIdsBefore),
                 'action' => $sAction,
                 'before' => $bSnapshot ? $aBefore : '',
                 'after' => $bSnapshot ? $aAfter : '',
             ]);
         };
 
+        // An action that exits still reaches the shutdown function, which PHP runs before it flushes the output buffers.
         register_shutdown_function($fnWrite);
-        $fn();
-        $fnWrite();
+        try {
+            $fn();
+            $fnWrite();
+        }
+        finally {
+            if (ob_get_level() > $iLevel)
+                ob_end_flush();
+        }
+    }
+
+    /**
+     * An action of a Studio page (BxDolStudioTemplate::displayPage): page, menu and form builders, and the rest
+     * that answer a '*_action' parameter. A row is written for an action that succeeded and did not write its own.
+     */
+    public static function runStudioAction($oPage, callable $fn)
+    {
+        $iRecorded = self::$iRecorded;
+        $mixedResult = $fn();
+        if (!is_array($mixedResult) || self::$iRecorded > $iRecorded || !self::enabled())
+            return $mixedResult;
+
+        try {
+            [$sParam, $sAction] = self::requestAction();
+            if ($sAction === '' || self::isReadAction($sAction) || self::isFailedResult($mixedResult))
+                return $mixedResult;
+
+            self::record([
+                'source' => 'studio',
+                'object_type' => 'studio:' . self::pageType($oPage),
+                'object_id' => self::requestObjectId(),
+                'action' => $sAction,
+                'before' => '',
+                'after' => ['request' => self::requestParams($sParam)],
+            ]);
+        }
+        catch (Throwable $e) {
+            bx_log('sys_audit', $e->getMessage(), BX_LOG_ERR);
+        }
+
+        return $mixedResult;
+    }
+
+    /**
+     * An answer that shows a form or an error has changed nothing: a popup (the form, or the form again with its
+     * errors), a non-zero code, a lone message, or nothing.
+     */
+    public static function isFailedResult($mixed): bool
+    {
+        if (!is_array($mixed))
+            return false;
+        if (!$mixed)
+            return true;
+        if (isset($mixed['popup']))
+            return true;
+        if (isset($mixed['code']) && (int)$mixed['code'] !== 0)
+            return true;
+        if (array_keys($mixed) === ['msg'] || array_keys($mixed) === ['message'])
+            return true;
+
+        return false;
     }
 
     public static function mask($mixed)
@@ -233,6 +343,9 @@ class BxDolAdminLog
     {
         if (!self::enabled())
             return false;
+        // The Studio skin parameter is only a hint anyone can add to a request: only an administrator's action is Studio's.
+        if (!isAdmin())
+            return false;
         if (!$bStudioRequest && !($oGrid instanceof BxDolStudioGrid))
             return false;
         if (in_array($sAction, ['display', 'load_more', 'data_ag', 'view', 'show_stat'], true))
@@ -259,6 +372,11 @@ class BxDolAdminLog
         elseif ($m !== false && $m !== '' && $m !== null)
             $a = [$m];
 
+        // Studio edit forms post the row as a hidden input named id, not as ids[].
+        $mOne = bx_get('id');
+        if (!is_array($mOne) && $mOne !== false && $mOne !== '' && $mOne !== null && (string)$mOne !== '0')
+            $a[] = $mOne;
+
         $mRow = bx_get($oGrid->getObject() . '_row');
         if (is_array($mRow))
             $a = array_merge($a, $mRow);
@@ -266,6 +384,32 @@ class BxDolAdminLog
         $aOut = [];
         foreach ($a as $mId) {
             if ($mId === '' || $mId === null || $mId === false || is_array($mId))
+                continue;
+            $aOut[] = (string)$mId;
+        }
+
+        return array_values(array_unique($aOut));
+    }
+
+    /**
+     * The id a grid action reports after it has created a row: blink, or id.
+     */
+    protected static function idsFromResult($mixed): array
+    {
+        if (!is_array($mixed))
+            return [];
+
+        $m = $mixed['blink'] ?? ($mixed['id'] ?? null);
+        if (is_array($m))
+            $a = $m;
+        elseif ($m !== null && $m !== false && $m !== '' && (string)$m !== '0')
+            $a = [$m];
+        else
+            return [];
+
+        $aOut = [];
+        foreach ($a as $mId) {
+            if ($mId === '' || $mId === null || $mId === false || is_array($mId) || (string)$mId === '0')
                 continue;
             $aOut[] = (string)$mId;
         }
@@ -287,12 +431,95 @@ class BxDolAdminLog
         return is_array($a) ? $a : [];
     }
 
-    protected static function isSecretKey(string $sKey): bool
+    protected static function requestAction(): array
     {
-        return (bool)preg_match('/password|passwd|secret|token|api_key|apikey|private_key|client_secret|access_key/i', $sKey);
+        foreach ([$_POST, $_GET] as $a)
+            foreach ($a as $sKey => $mValue)
+                if (is_string($sKey) && is_string($mValue) && $mValue !== '' && preg_match('/^[a-z0-9]+_action$/', $sKey))
+                    return [$sKey, (string)bx_process_input($mValue)];
+
+        return ['', ''];
     }
 
-    protected static function maskText(string $s): string
+    /**
+     * Actions that only read: a list, a preview, a form opened for editing is answered with a popup anyway.
+     */
+    protected static function isReadAction(string $sAction): bool
+    {
+        return (bool)preg_match('/^(get|show|browse|load|search|view|preview|check)([_-]|$)/i', $sAction);
+    }
+
+    protected static function requestObjectId(): string
+    {
+        foreach (['id', 'ids', 'name', 'object', 'value', 'str_value'] as $sKey) {
+            $m = bx_get($sKey);
+            if (is_array($m))
+                $m = implode(',', array_filter($m, 'is_scalar'));
+            if (is_scalar($m) && (string)$m !== '')
+                return (string)bx_process_input((string)$m);
+        }
+
+        return '';
+    }
+
+    protected static function requestParams(string $sActionParam): array
+    {
+        $aOut = [];
+        foreach (array_merge($_GET, $_POST) as $sKey => $mValue) {
+            if (!is_string($sKey) || $sKey === $sActionParam || in_array($sKey, ['csrf_token', '_', BX_DOL_STUDIO_TEMPLATE_CODE_KEY], true))
+                continue;
+
+            $aOut[$sKey] = self::requestValue($mValue);
+        }
+
+        return $aOut;
+    }
+
+    protected static function requestValue($mValue)
+    {
+        if (is_array($mValue))
+            return array_map([self::class, 'requestValue'], $mValue);
+
+        $s = (string)$mValue;
+
+        return get_mb_len($s) > self::REQUEST_VALUE_MAX ? get_mb_substr($s, 0, self::REQUEST_VALUE_MAX) : $s;
+    }
+
+    /**
+     * BxTemplStudioBuilderPage -> builder_page; a module's own Studio page keeps its class name.
+     */
+    protected static function pageType($oPage): string
+    {
+        $sClass = get_class($oPage);
+        $sName = preg_replace('/^Bx(Templ|Base|Dol)Studio/', '', $sClass);
+        if ($sName === $sClass || $sName === '')
+            return $sClass;
+
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $sName));
+    }
+
+    protected static function isSecretKey(string $sKey): bool
+    {
+        // sys_agents_models.key is the provider credential. A language key is the column Key, so the match is exact.
+        if ($sKey === 'key')
+            return true;
+
+        return (bool)preg_match('/password|passwd|secret|token|salt|api_key|apikey|private_key|client_secret|access_key/i', $sKey);
+    }
+
+    /**
+     * The person who asked: an MCP operator or member, ahead of the bot profile a tool acts as.
+     */
+    public static function callerProfile(int $iFallback = 0): int
+    {
+        $iCaller = BxDolAITool::getCallerProfile();
+        if ($iCaller <= 0)
+            $iCaller = BxDolAITool::getMemberScope();
+
+        return $iCaller > 0 ? $iCaller : $iFallback;
+    }
+
+    public static function maskText(string $s): string
     {
         $sMasked = preg_replace('/((?:password|passwd|secret|token|api[_-]?key)\s*[:=]\s*)\S+/iu', '$1' . self::MASK, $s);
 

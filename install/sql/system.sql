@@ -5919,10 +5919,11 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_admin_log_administration', 'added', '_adm_form_txt_admin_log_added', '14%', 0, 0, '', 1),
 ('sys_admin_log_administration', 'profile_id', '_adm_form_txt_admin_log_profile', '16%', 0, 24, '', 2),
 ('sys_admin_log_administration', 'source', '_adm_form_txt_admin_log_source', '12%', 0, 16, '', 3),
-('sys_admin_log_administration', 'agent_id', '_adm_form_txt_admin_log_agent', '14%', 0, 20, '', 4),
+('sys_admin_log_administration', 'agent_id', '_adm_form_txt_admin_log_agent', '12%', 0, 20, '', 4),
 ('sys_admin_log_administration', 'object_type', '_adm_form_txt_admin_log_object', '16%', 0, 24, '', 5),
 ('sys_admin_log_administration', 'object_id', '_adm_form_txt_admin_log_object_id', '14%', 0, 24, '', 6),
-('sys_admin_log_administration', 'action', '_adm_form_txt_admin_log_action', '14%', 0, 16, '', 7),
+('sys_admin_log_administration', 'action', '_adm_form_txt_admin_log_action', '10%', 0, 16, '', 7),
+('sys_admin_log_administration', 'actions', '', '6%', 0, 0, '', 8),
 
 ('sys_badges_administration', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
 ('sys_badges_administration', 'view', '_adm_form_txt_badges_view', '15%', 1, 0, '', 2),
@@ -6028,6 +6029,8 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `conf
 ('sys_studio_groups_roles', 'independent', 'add', '_adm_rl_btn_role_add', '', 0, 1),
 ('sys_studio_groups_roles', 'single', 'edit', '_adm_rl_btn_role_edit', 'pencil-line', 0, 1),
 ('sys_studio_groups_roles', 'single', 'delete', '_adm_rl_btn_role_delete', 'x', 1, 3),
+
+('sys_admin_log_administration', 'single', 'view', '', 'file-text', 0, 1),
 
 ('sys_badges_administration', 'bulk', 'delete', '_adm_form_btn_badges_delete', '', 1, 1),
 ('sys_badges_administration', 'single', 'edit', '', 'pencil-line', 0, 1),

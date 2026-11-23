@@ -28,7 +28,6 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
 
         $this->_sSource = (string)($aOptions['source'] ?? '');
         $this->_sDefaultSortingOrder = 'DESC';
-        $this->_sGridTemplate = 'admin_log_grid.html';
 
         $this->_aFilterAreaLabels = [
             'source' => '_adm_txt_admin_log_source',

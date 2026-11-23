@@ -1107,6 +1107,8 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             $aSet['undone'] = 0;
 
         $oDb->query("INSERT INTO `sys_agents_sql_log` SET " . $oDb->arrayToSQL($aSet));
+
+        BxDolAdminLog::recordSql($aCtx, $sOp, $sTable, $sPkValue, $aSet['before_json'], $aSet['after_json']);
     }
 }
 

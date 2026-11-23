@@ -71,10 +71,14 @@ class BxDolAIToolContentAdd extends BxDolAITool
 
         $a = bx_srv('system', 'add', [$module, $this->convertArrayToKeyValue($data)], 'TemplServiceContent');
 
-        $this->endActingAs($iPrevious);
+        if ($this->adminLogOk($a)) {
+            // The entry as it was saved, read while still acting as its author; the service's answer when it cannot be read.
+            $sId = $this->adminLogId($a);
+            $aAfter = $sId !== '' ? bx_srv('system', 'get_info', [$module, (int)$sId, true], 'TemplServiceContent') : false;
+            $this->adminLog('content:' . $module, $sId, 'add', null, $aAfter ?: $a);
+        }
 
-        if ($this->adminLogOk($a))
-            $this->adminLog('content:' . $module, $this->adminLogId($a), 'add', null, $a);
+        $this->endActingAs($iPrevious);
 
         return $a;
     }

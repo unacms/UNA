@@ -22,6 +22,20 @@ class BxDolAdminLogQueryTest extends BxDolTestCase
         $this->assertSame('sys_smtp_password', $a['name']);
     }
 
+    public function testMaskHidesAProviderKeyButNotALanguageKey(): void
+    {
+        $a = BxDolAdminLog::mask([
+            'id' => 3,
+            'name' => 'openai',
+            'key' => 'sk-live-secret',
+            'Key' => '_adm_lmi_cpt_admin',
+        ]);
+
+        $this->assertSame('********', $a['key']);
+        $this->assertSame('_adm_lmi_cpt_admin', $a['Key']);
+        $this->assertSame('openai', $a['name']);
+    }
+
     public function testAddStoresTheRow(): void
     {
         if (!BxDolDb::getInstance()->isTableExists('sys_admin_log'))
@@ -86,5 +100,28 @@ class BxDolAdminLogQueryTest extends BxDolTestCase
             if ($iId > 0)
                 BxDolDb::getInstance()->query("DELETE FROM `sys_admin_log` WHERE `id` = :id", ['id' => $iId]);
         }
+    }
+
+    public function testMaskHidesTheSaltOfAnAccountRow(): void
+    {
+        $a = BxDolAdminLog::mask(['id' => 1, 'email' => 'a@b.c', 'password' => 'h', 'salt' => 's']);
+
+        $this->assertSame('********', $a['password']);
+        $this->assertSame('********', $a['salt']);
+        $this->assertSame('a@b.c', $a['email']);
+    }
+
+    public function testFailedResultTellsAShownFormOrAnErrorFromAChange(): void
+    {
+        $this->assertTrue(BxDolAdminLog::isFailedResult([]));
+        $this->assertTrue(BxDolAdminLog::isFailedResult(['popup' => '<div></div>']));
+        $this->assertTrue(BxDolAdminLog::isFailedResult(['code' => 1, 'message' => 'Error']));
+        $this->assertTrue(BxDolAdminLog::isFailedResult(['msg' => 'Not allowed']));
+
+        $this->assertFalse(BxDolAdminLog::isFailedResult(['grid' => '', 'blink' => [1]]));
+        $this->assertFalse(BxDolAdminLog::isFailedResult(['enable' => [1]]));
+        $this->assertFalse(BxDolAdminLog::isFailedResult(['code' => 0, 'message' => 'Saved']));
+        $this->assertFalse(BxDolAdminLog::isFailedResult(['eval' => 'x']));
+        $this->assertFalse(BxDolAdminLog::isFailedResult(null));
     }
 }

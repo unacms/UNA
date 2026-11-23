@@ -75,55 +75,6 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
             . $this->filterButton();
     }
 
-    protected function _getRowsDataDesign(&$aData)
-    {
-        $aGrid = [];
-
-        if (empty($aData)) {
-            $aGrid[] = [
-                'bx_if:click' => [
-                    'condition' => false,
-                    'content' => ['id_row' => '', 'row_class' => '', 'row' => '', 'row_id' => ''],
-                ],
-                'bx_if:plain' => [
-                    'condition' => true,
-                    'content' => [
-                        'id_row' => 0,
-                        'row_class' => 'bx-grid-table-row-empty',
-                        'row' => '<td class="bx-def-padding-sec-topbottom" colspan="' . count($this->_aOptions['fields']) . '">' . $this->_getEmptyState() . '</td>',
-                    ],
-                ],
-            ];
-            return $aGrid;
-        }
-
-        foreach ($aData as $aRow) {
-            $sId = (string)$aRow[$this->_aOptions['field_id']];
-            $aCells = [
-                'id_row' => $this->_getRowId($aRow),
-                'row_class' => $this->_isRowDisabled($aRow) ? 'bx-grid-table-row-disabled bx-def-font-grayed' : '',
-                'row' => $this->_getRowDesign($aRow),
-                'row_id' => $sId,
-            ];
-            $aGrid[] = [
-                'bx_if:click' => [
-                    'condition' => true,
-                    'content' => $aCells,
-                ],
-                'bx_if:plain' => [
-                    'condition' => false,
-                    'content' => [
-                        'id_row' => $aCells['id_row'],
-                        'row_class' => $aCells['row_class'],
-                        'row' => $aCells['row'],
-                    ],
-                ],
-            ];
-        }
-
-        return $aGrid;
-    }
-
     protected function _getCellAdded($mixedValue, $sKey, $aField, $aRow)
     {
         return parent::_getCellDefault(bx_time_js($mixedValue), $sKey, $aField, $aRow);
@@ -184,28 +135,17 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
             $this->_sFilterTo = (string)($aParts[5] ?? '');
         }
 
-        $oDb = BxDolDb::getInstance();
-        if (in_array($this->_sFilterSource, ['studio', 'agent', 'api', 'cli'], true))
-            $this->_aOptions['source'] .= $oDb->prepareAsString(' AND `source` = ?', $this->_sFilterSource);
-
-        $iProfile = (int)$this->_sFilterProfile;
-        if ($iProfile > 0)
-            $this->_aOptions['source'] .= $oDb->prepareAsString(' AND `profile_id` = ?', $iProfile);
-
-        $iAgent = (int)$this->_sFilterAgent;
-        if ($iAgent > 0)
-            $this->_aOptions['source'] .= $oDb->prepareAsString(' AND `agent_id` = ?', $iAgent);
-
-        if ($this->_sFilterObject !== '' && preg_match('/^[A-Za-z0-9_:-]{1,128}$/', $this->_sFilterObject))
-            $this->_aOptions['source'] .= $oDb->prepareAsString(' AND `object_type` = ?', $this->_sFilterObject);
-
         $iFrom = $this->_sFilterFrom !== '' ? strtotime($this->_sFilterFrom) : false;
-        if ($iFrom)
-            $this->_aOptions['source'] .= $oDb->prepareAsString(' AND `added` >= ?', $iFrom);
-
         $iTo = $this->_sFilterTo !== '' ? strtotime($this->_sFilterTo) : false;
-        if ($iTo)
-            $this->_aOptions['source'] .= $oDb->prepareAsString(' AND `added` <= ?', $iTo + 86399);
+
+        $this->_aOptions['source'] .= BxDolAdminLogQuery::getInstance()->filterClause([
+            'source' => $this->_sFilterSource,
+            'profile_id' => $this->_sFilterProfile,
+            'agent_id' => $this->_sFilterAgent,
+            'object_type' => $this->_sFilterObject,
+            'from' => $iFrom ?: 0,
+            'to' => $iTo ? $iTo + 86399 : 0,
+        ]);
     }
 
     protected function filterButton(): string

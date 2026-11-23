@@ -186,7 +186,19 @@ class BxDolStudioStore extends BxTemplStudioWidget
                 if(empty($sValue))
                     break;
 
+                $aModuleBefore = BxDolAdminLog::moduleByPath($sValue);
                 $aResult = BxDolStudioInstallerUtils::getInstance()->perform($sValue, 'update', array('html_response' => true));
+                if(is_array($aResult) && (int)($aResult['code'] ?? 1) === BX_DOL_STUDIO_IU_RC_SUCCESS) {
+                    $aModuleAfter = BxDolAdminLog::moduleByPath($sValue);
+                    BxDolAdminLog::record([
+                        'source' => 'studio',
+                        'object_type' => BxDolAdminLog::moduleObjectType($aModuleAfter ?: $aModuleBefore),
+                        'object_id' => (string)(($aModuleAfter ?: $aModuleBefore)['name'] ?? $sValue),
+                        'action' => 'update',
+                        'before' => $aModuleBefore ? ['version' => (string)($aModuleBefore['version'] ?? '')] : '',
+                        'after' => $aModuleAfter ? ['version' => (string)($aModuleAfter['version'] ?? '')] : '',
+                    ]);
+                }
                 break;
 
             case 'delete':

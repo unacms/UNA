@@ -121,6 +121,39 @@ class BxDolAdminLogQuery extends BxDolDb
         return is_array($a) ? $a : [];
     }
 
+    /**
+     * The AND fragment for the admin log grid. Values are whitelisted or cast here, not in the grid.
+     */
+    public function filterClause(array $a): string
+    {
+        $s = '';
+        $sSource = (string)($a['source'] ?? '');
+        if (in_array($sSource, ['studio', 'agent', 'api', 'cli'], true))
+            $s .= $this->prepareAsString(' AND `source` = ?', $sSource);
+
+        $iProfile = (int)($a['profile_id'] ?? 0);
+        if ($iProfile > 0)
+            $s .= $this->prepareAsString(' AND `profile_id` = ?', $iProfile);
+
+        $iAgent = (int)($a['agent_id'] ?? 0);
+        if ($iAgent > 0)
+            $s .= $this->prepareAsString(' AND `agent_id` = ?', $iAgent);
+
+        $sObject = (string)($a['object_type'] ?? '');
+        if ($sObject !== '' && preg_match('/^[A-Za-z0-9_:-]{1,128}$/', $sObject))
+            $s .= $this->prepareAsString(' AND `object_type` = ?', $sObject);
+
+        $iFrom = (int)($a['from'] ?? 0);
+        if ($iFrom > 0)
+            $s .= $this->prepareAsString(' AND `added` >= ?', $iFrom);
+
+        $iTo = (int)($a['to'] ?? 0);
+        if ($iTo > 0)
+            $s .= $this->prepareAsString(' AND `added` <= ?', $iTo);
+
+        return $s;
+    }
+
     public function getAgents(): array
     {
         if (!$this->isTableExists('sys_admin_log') || !$this->isTableExists('sys_agents_agents'))
