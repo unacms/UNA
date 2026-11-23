@@ -6,10 +6,9 @@ import { HeaderOptionsProvider } from 'app/ui/molecules/header/options';
 import { AnalyticsErrorBoundary } from 'app/lib/analytics/error-boundary';
 import { ScreenReadyMarker } from 'app/lib/analytics/screen-ready-marker';
 import { useEffect } from 'react';
-import { useIsFocused } from 'app/lib/hooks/router';
+import { getWindowSafeAreaInsets, useIsFocused } from 'app/lib/hooks/router';
 import { setAppSidebarUrl } from 'app/context/app-sidebar';
 import { InformerStrip } from 'app/components/elements/informer';
-import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { isNativeTabsEnabled } from 'app/lib/util';
 
 /** A page failed to render: the header and the tab bar stay, so the app can go elsewhere. */

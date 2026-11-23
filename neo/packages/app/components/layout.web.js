@@ -75,7 +75,7 @@ const MemoizedContent = React.memo(({ currentUser, layoutName, data, children, b
             {!isDesktop && <Informer />}
             <HeaderOptionsProvider>
                 <PageHeader layoutName={layoutName} pageData={data} />
-                <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} stripInMain={isDesktop} />
+                <Content layoutName={layoutName} currentUser={currentUser} url={data?.url} stripInMain={isDesktop}>{children}</Content>
             </HeaderOptionsProvider>
             <Footer />
             <BottomSheet />

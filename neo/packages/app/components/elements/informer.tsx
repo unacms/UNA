@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
 import { useSetInformerStripHeight } from 'app/context/jotai/layout';
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
@@ -74,7 +73,7 @@ const actionHref = (url: string) => (/^(https?:)?\/\//i.test(url) || url.startsW
  * line up at the top; the button stays on the right while the text has room for 15rem beside it, and goes under the
  * text when it does not.
  */
-function InformerMessage({ item, topInset = 0 }: { item: InformerItem; topInset?: number }) {
+function InformerMessage({ item, topInset = 0 }: Readonly<{ item: InformerItem; topInset?: number }>) {
     const tone = toneOf(item.type);
 
     return (
@@ -108,11 +107,11 @@ export const hasInformerStripNow = (): boolean => hasInformerStrip(useCurrentUse
  * view, page-header.web.js), the apps' first thing on screen, over the header, taking the status bar's inset
  * (`topInset`, layout.js). Nothing when there are none.
  */
-export function InformerStrip({ topInset = 0 }: { topInset?: number }) {
+export function InformerStrip({ topInset = 0 }: Readonly<{ topInset?: number }>) {
     const { currentUser } = useCurrentUser();
     const items = visibleInformers(currentUser ? currentUser.informer : undefined, currentUser);
-    // Web: its height for what is fixed to the window under it (the header below desktop, Home's side columns:
-    // useInformerStripVisibleHeight).
+    // Its height, for what is placed under it: the web header below desktop and Home's side columns
+    // (useInformerStripVisibleHeight), the scroll to a form's first error (ui/molecules/page/page.js).
     const setHeight = useSetInformerStripHeight();
     const hasItems = items.length > 0;
     useEffect(() => {
@@ -127,7 +126,7 @@ export function InformerStrip({ topInset = 0 }: { topInset?: number }) {
         <View
             role="status"
             className="w-full"
-            onLayout={Platform.OS === 'web' ? (e: any) => setHeight(Math.round(e.nativeEvent.layout.height)) : undefined}
+            onLayout={(e: any) => setHeight(Math.round(e.nativeEvent.layout.height))}
         >
             {items.map((item, index) => <InformerMessage key={item.id || 'informer' + index} item={item} topInset={index === 0 ? topInset : 0} />)}
         </View>
