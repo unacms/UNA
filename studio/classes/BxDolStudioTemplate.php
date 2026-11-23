@@ -246,8 +246,10 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
     {
         // The Studio role decides the page's actions as well as whether the page is shown.
         if(method_exists($oPage, 'isAccessAllowed') && !$oPage->isAccessAllowed()) {
-            if(bx_is_dynamic_request())
-                return echoJson(BxDolStudioPage::getAccessDeniedError());
+            if(bx_is_dynamic_request()) {
+                echoJson(BxDolStudioPage::getAccessDeniedError());
+                return;
+            }
 
             $this->displayMsg([403, '_Access denied'], true);
         }
