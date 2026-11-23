@@ -20,11 +20,11 @@
                 </bx_if:actions_independent>
                 <bx_if:actions_bulk>
                     <div id="__id_bulk__" class="bx-grid-ag-bulk">
-                        <button type="button" class="bx-btn bx-grid-ag-bulk-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="__id_bulk__-menu">
+                        <button type="button" class="bx-btn bx-grid-ag-bulk-toggle" aria-haspopup="menu" aria-expanded="false" onclick="bx_menu_popup_inline('#__id_bulk__-menu', this, {pointer: {align: 'right'}});">
                             <u>__txt_actions__</u><span class="bx-grid-ag-bulk-count"></span>
                             <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </button>
-                        <div id="__id_bulk__-menu" class="bx-grid-ag-bulk-menu" hidden>__actions_bulk__</div>
+                        __actions_bulk__
                     </div>
                 </bx_if:actions_bulk>
                 </div>

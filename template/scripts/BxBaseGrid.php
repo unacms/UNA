@@ -1959,7 +1959,7 @@ class BxBaseGrid extends BxDolGrid
                         'condition' => !empty($this->_aOptions['actions_bulk']),
                         'content' => [
                             'id_bulk' => 'bx-grid-ag-bulk-' . $this->_sObject,
-                            'actions_bulk' => $this->_getActions('bulk'),
+                            'actions_bulk' => $this->_agBulkMenu('bx-grid-ag-bulk-' . $this->_sObject . '-menu'),
                             'txt_actions' => _t('_sys_actions'),
                         ],
                     ],
@@ -1972,6 +1972,55 @@ class BxBaseGrid extends BxDolGrid
         $this->_addJsCssAg();
 
         return $this->_oTemplate->parseHtmlByName('grid_ag.html', $aVars);
+    }
+
+    /**
+     * The bulk actions as a site popup menu (the same one a row's settings button opens), hidden
+     * until the Actions button opens it. Each item carries the attributes the classic grid script
+     * binds a bulk action to, so the click runs the action on the selected rows. Destructive
+     * actions come last.
+     */
+    protected function _agBulkMenu($sId)
+    {
+        $aItems = [];
+        $aItemsLast = [];
+        foreach ($this->_aOptions['actions_bulk'] as $sKey => $a) {
+            if (empty($a) || !is_array($a) || empty($a['active']) || (empty($a['title']) && empty($a['icon']))) {
+                continue;
+            }
+
+            $aAttrs = [
+                'bx_grid_action_bulk' => $sKey,
+                'bx_grid_action_confirm' => !empty($a['confirm']) ? 1 : 0,
+                'bx_grid_action_reset_paginate' => false === strpos($sKey, 'delete') ? 0 : 1,
+            ];
+            $sAttrs = '';
+            foreach ($aAttrs as $sName => $mixedValue) {
+                $sAttrs .= ' ' . $sName . '="' . bx_html_attribute($mixedValue) . '"';
+            }
+
+            $aItem = [
+                'id' => $sId . '-' . $sKey,
+                'name' => $sKey,
+                'class' => '',
+                'link' => 'javascript:void(0)',
+                'onclick' => '',
+                'target' => '_self',
+                'icon' => !empty($a['icon']) ? $a['icon'] : '',
+                'title' => !empty($a['title']) ? $a['title'] : $sKey,
+                'attrs_add' => trim($sAttrs),
+            ];
+
+            if (false !== strpos($sKey, 'delete')) {
+                $aItemsLast[] = $aItem;
+            } else {
+                $aItems[] = $aItem;
+            }
+        }
+
+        $oMenu = new BxTemplMenu(['template' => 'menu_vertical.html', 'menu_id' => $sId . '-items', 'menu_items' => array_merge($aItems, $aItemsLast)], $this->_oTemplate);
+
+        return $this->_oFunctions->transBox($sId, $oMenu->getCode(), true);
     }
 
     /**

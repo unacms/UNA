@@ -788,47 +788,26 @@ BxDolGridAg.prototype._syncBulk = function (iCount) {
         eCount.textContent = iCount > 0 ? ' (' + iCount + ')' : '';
 };
 
+/**
+ * The menu is the site's popup menu (bx_menu_popup_inline opens and closes it). The popup is moved
+ * out of the grid when it opens, so the check is on the popup itself: it runs before the grid's
+ * own handler on the item and stops an action with no row selected.
+ */
 BxDolGridAg.prototype._bindBulk = function () {
-    const eBar = document.getElementById('bx-grid-ag-bulk-' + this._sObject);
-    const eToggle = eBar?.querySelector('.bx-grid-ag-bulk-toggle');
-    const eMenu = eBar?.querySelector('.bx-grid-ag-bulk-menu');
-    if (!eToggle || !eMenu)
+    const eMenu = document.getElementById('bx-grid-ag-bulk-' + this._sObject + '-menu');
+    if (!eMenu)
         return;
 
-    const fOpen = (bOpen) => {
-        eMenu.hidden = !bOpen;
-        eToggle.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
-    };
-
-    eToggle.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        fOpen(eMenu.hidden);
-    });
-
-    // Capture: before the grid's own handler, which is on the action button itself.
     eMenu.addEventListener('click', (ev) => {
-        if (!ev.target.closest('[bx_grid_action_bulk]'))
-            return;
-        fOpen(false);
-        if (this._iSelected > 0)
+        if (!ev.target.closest('[bx_grid_action_bulk]') || this._iSelected > 0)
             return;
         ev.preventDefault();
         ev.stopPropagation();
+        jQuery(eMenu).dolPopupHide?.();
         const sText = this._oCfg.text_select_rows || '';
         if (sText && typeof bx_alert === 'function')
             bx_alert(sText);
     }, true);
-
-    document.addEventListener('click', (ev) => {
-        if (!eMenu.hidden && !eBar.contains(ev.target))
-            fOpen(false);
-    });
-    eBar.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Escape' && !eMenu.hidden) {
-            fOpen(false);
-            eToggle.focus();
-        }
-    });
 };
 
 BxDolGridAg.prototype._esc = function (s) {
