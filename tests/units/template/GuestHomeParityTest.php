@@ -72,4 +72,30 @@ class GuestHomeParityTest extends BxDolTestCase
         $this->assertStringContainsString("iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1.5' : ''),", $s, 'Icon triggers overlap the gaps by their 6px sides.');
         $this->assertSame(3, substr_count($s, 'className: visualProps.iconClassName,'), 'Language, theme and sounds.');
     }
+
+    public function testCentredMenuHasEqualSidesFrom2xl(): void
+    {
+        // The site: 20rem sides inside the header's px-4, only with the menu in the middle (Designer).
+        $this->assertStringContainsString('bx-ti-logo flex-none items-center 2xl:[.bx-header-menu-center_&]:min-w-80', self::read('template/_page_toolbar.html'));
+        $this->assertStringContainsString('2xl:[.bx-header-menu-center_&]:flex 2xl:[.bx-header-menu-center_&]:justify-end 2xl:[.bx-header-menu-center_&]:min-w-80', self::read('template/menu_toolbar_right.html'));
+
+        // NEO: its sides carry their own 16px padding, so 21rem.
+        $sLayout = self::read('neo/packages/app/settings/layout.js');
+        $this->assertStringContainsString("content_left_align: { start: '', center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:flex-none web:2xl:min-w-84',", $sLayout);
+        $this->assertStringContainsString("center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:flex-none web:2xl:min-w-84', end: '' },", $sLayout);
+    }
+
+    public function testLogoAtTheHeadersInset(): void
+    {
+        // NEO's desktop logo link keeps its 2px room for the focus ring but not as an offset: the logo is where the site's is.
+        $this->assertStringContainsString('className="flex min-h-11 min-w-11 items-center justify-center p-0.5 -m-0.5"', self::read('neo/packages/app/ui/molecules/header/page-header-parts.js'));
+    }
+
+    public function testPageScrollbarTrackAsNeos(): void
+    {
+        $sCss = self::read('modules/boonex/artificer/data/template/system/css/general.css');
+        $this->assertStringContainsString("html {\n    overflow-y: scroll;\n    scrollbar-gutter: stable;\n    scrollbar-width: thin;\n    scrollbar-color: #d4d4d8 rgba(228, 228, 231, 0.5);\n}", $sCss);
+        $this->assertStringContainsString("html.dark {\n    scrollbar-color: #3f3f46 rgba(63, 63, 70, 0.5);\n}", $sCss);
+        $this->assertStringContainsString('scrollbar-color: rgb(var(--border)) rgb(var(--muted) / 0.5);', self::read('neo/packages/app/design/styles/global.web.css'));
+    }
 }

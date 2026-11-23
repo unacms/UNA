@@ -529,11 +529,11 @@ export const PageHeaderBody = memo(({
                     {appStatic('logo', logoProps)}
                 </NeoButtonLink>
             </View>}
-            {/* Desktop: the logo at 40px as in UNA, 2px inside the link (p-0.5), so its 40px mark sits in a 44px
-                square at the header's px-4 inset, centred over the 44px icons below it (a section's icon circle,
-                the page title's icon) and as tall as the header's buttons. */}
+            {/* Desktop: the logo at 40px as in UNA, at the header's px-4 inset as UNA's logo: the link is 2px larger on
+                each side (p-0.5, taken back by -m-0.5), which keeps it 44px, as tall as the header's buttons, and
+                leaves room for its focus ring. */}
             {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex neo-header-logo">
-                <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center p-0.5">
+                <Link href="/home" alt={t('Home')} className="flex min-h-11 min-w-11 items-center justify-center p-0.5 -m-0.5">
                     {appStatic('logo', { ...logoProps, mode: 'full', height: 40 })}
                 </Link>
             </View>}

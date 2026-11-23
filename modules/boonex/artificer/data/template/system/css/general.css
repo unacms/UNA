@@ -4,14 +4,22 @@ import url(../../../../../../../template/css/general.css);
 
 
 /*--- Page scrollbar: its gutter is always kept, so a page that scrolls and one that doesn't are the same width and the header menu
-      doesn't reflow between them (nor when a popup locks the page's scrolling). It is thin and in the theme's colours; scrollbar-color
-      is inherited, so the page's own scroll boxes match. ---*/
+      doesn't reflow between them (nor when a popup locks the page's scrolling). It is thin. The page's own bar is always drawn
+      with its track filled, as in NEO (global.web.css html: a border-coloured thumb on a muted/50 track), so a page that doesn't
+      scroll shows the track, not an empty gutter. The page's scroll boxes inherit the body's colours: the theme's thumb on no track. ---*/
 html {
+    overflow-y: scroll;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+    scrollbar-color: #d4d4d8 rgba(228, 228, 231, 0.5);
 }
 html.dark {
+    scrollbar-color: #3f3f46 rgba(63, 63, 70, 0.5);
+}
+body {
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+html.dark body {
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 

@@ -4,8 +4,10 @@
         <div class="bx-toolbar-content-wrapper">
             <div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start h-16">
                 <div class="bx-toolbar-items-group relative flex flex-1 items-center justify-start h-16">
-                    <!-- Logo -->
-                    <div id="bx-logo-container" class="bx-toolbar-item bx-ti-left bx-ti-logo flex-none items-center">
+                    <!-- Logo. With the main menu in the middle (Designer), from 2xl the logo's side and the toolbar's side
+                         (menu_toolbar_right.html) are 20rem each, so the menu is centred on the header; below, both
+                         sides are as wide as their content and the menu is centred in the room they leave (_balance). -->
+                    <div id="bx-logo-container" class="bx-toolbar-item bx-ti-left bx-ti-logo flex-none items-center 2xl:[.bx-header-menu-center_&]:min-w-80">
                         <bx_injection:injection_logo_before />
                         __main_logo__
                         <bx_injection:injection_logo_after />
