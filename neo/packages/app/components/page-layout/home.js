@@ -20,7 +20,7 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/profile/badge'
 import Badges from 'app/ui/molecules/profile/badges'
 import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/measure';
-import { useHeaderHeight } from 'app/context/jotai/layout';
+import { useHeaderHeight, useInformerStripVisibleHeight } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { NeoButtonLink } from 'app/design/controls';
 import HomeCover from 'app/components/elements/covers/home-cover';
@@ -183,6 +183,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const { feedUnit } = useLayoutSettings();
 
     const headerHeight = useHeaderHeight();
+    // The fixed side columns start under the informer strip while it is in view (layout.web.js).
+    const columnsTop = headerHeight + useInformerStripVisibleHeight();
     const [sideBarWidth, setSideBarWidth] = useState(undefined);
     const [asideWidth, setAsideWidth] = useState(undefined);
 
@@ -325,8 +327,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const SideBarContent = (
         <View
             style={{
-                top: headerHeight,
-                height: `calc(100vh - ${headerHeight}px)`,
+                top: columnsTop,
+                height: `calc(100vh - ${columnsTop}px)`,
                 width: sideBarWidth,
             }}
             className="flex-auto p-4 gap-0.5 fixed overflow-scroll "
@@ -419,8 +421,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const AsidePanelContent = (
         <View
             style={{
-                top: headerHeight,
-                height: `calc(100vh - ${headerHeight}px)`,
+                top: columnsTop,
+                height: `calc(100vh - ${columnsTop}px)`,
                 width: asideWidth,
             }}
             className="fixed overflow-scroll p-4 gap-4"

@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { Platform } from 'react-native';
+import { useSetInformerStripHeight } from 'app/context/jotai/layout';
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
@@ -100,14 +103,27 @@ function InformerMessage({ item }: { item: InformerItem }) {
 export function InformerStrip() {
     const { currentUser } = useCurrentUser();
     const items = visibleInformers(currentUser ? currentUser.informer : undefined, currentUser);
-    if (!items.length)
+    // Web: its height for what is fixed to the window under the header (Home's side columns, useInformerStripVisibleHeight).
+    const setHeight = useSetInformerStripHeight();
+    const hasItems = items.length > 0;
+    useEffect(() => {
+        if (!hasItems) setHeight(0);
+        return () => setHeight(0);
+    }, [hasItems, setHeight]);
+
+    if (!hasItems)
         return null;
 
     return (
-        <View role="status" className="w-full">
+        <View
+            role="status"
+            className="w-full"
+            onLayout={Platform.OS === 'web' ? (e: any) => setHeight(Math.round(e.nativeEvent.layout.height)) : undefined}
+        >
             {items.map((item, index) => <InformerMessage key={item.id || 'informer' + index} item={item} />)}
         </View>
     );
 }
 
 export default InformerStrip;
+
