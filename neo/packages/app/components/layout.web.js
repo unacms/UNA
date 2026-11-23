@@ -212,13 +212,13 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     // The tab bar renders for logged-in users (or when show_tabbar_on_mobile_non_logged is set)
     // and only when the footer atom is truthy. Avoids phantom scroll on auth/guest pages.
     const showBottomTabBar = footer && (currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged'));
-    const mainClassName = `${(!isChatLayout(layoutName) &&layoutName != 'post' && layoutName != 'task' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} ns--main-content-- w-full mx-auto ne--`;
+    const mainClassName = `${(!isChatLayout(layoutName) &&layoutName != 'post' && layoutName != 'task' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
     const contentKey = (layoutName === 'layout_1_column_wiki' || layoutName === 'wiki')
         ? 'wiki'
         : url;
 
     return (
-        <View className="ns--main-wrapper-- w-full mx-auto items-stretch cnt-root ne--" key={contentKey}>
+        <View className="w-full mx-auto items-stretch cnt-root" key={contentKey}>
             <main id="main-content" tabIndex={-1} className={`${mainClassName} outline-none scroll-mt-24`}>
                 {/* Profiles and home put the informers in their main column themselves. */}
                 {layoutName !== 'profile' && layoutName !== 'profile-alt' && layoutName !== 'home' && <Informer />}

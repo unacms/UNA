@@ -1686,8 +1686,15 @@ class BxBasePage extends BxDolPage
         if(!$oMenu)
             return $bIsApi ? [] : '';
 
-        if($bIsApi)
-            return [bx_api_get_block('menu' . ($this->_sObject == 'sys_sub_wiki_pages_list' ? '_wiki' : ''), ['title' => _t($aBlock['title']), 'content' => $oMenu->getCodeAPI()])];
+        if($bIsApi) {
+            $aMenu = $oMenu->getCodeAPI();
+
+            // A menu without items is no block on the site (BxBaseMenu::getCode gives nothing), so the apps get none either.
+            if(empty($aMenu['items']))
+                return [];
+
+            return [bx_api_get_block('menu' . ($this->_sObject == 'sys_sub_wiki_pages_list' ? '_wiki' : ''), ['title' => _t($aBlock['title']), 'content' => $aMenu])];
+        }
 
         return $oMenu ? $oMenu->getCode() : '';
     }

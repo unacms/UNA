@@ -487,7 +487,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                 direction="horizontal"
-                className={`${appSetting('layout', 'page_content_width_default')} ns--panel-group-- mx-auto flex-auto flex-row ne--`}
+                className={`${appSetting('layout', 'page_content_width_default')} mx-auto flex-auto flex-row`}
                 onLayout={onLayout}
             >
                 {isWeb && (

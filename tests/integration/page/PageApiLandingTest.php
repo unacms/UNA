@@ -96,5 +96,39 @@ class PageApiLandingTest extends BxDolIntegrationTestCase
         $aItem = ['id' => 1, 'name' => 'phpunit', 'title' => 'PHPUnit', 'link' => 'page.php?i=about', 'icon' => 'info-circle'];
         $this->assertSame(1, $oMethod->invoke($oMenu, $aItem + ['icon_only' => 1])['icon_only']);
         $this->assertSame(0, $oMethod->invoke($oMenu, $aItem + ['icon_only' => 0])['icon_only']);
+        $this->assertSame(0, $oMethod->invoke($oMenu, ['icon' => ''] + $aItem + ['icon_only' => 1])['icon_only'], 'Without an icon the item shows its title.');
+    }
+
+    public function testIconOnlyItemsOnTheSite(): void
+    {
+        $oMenu = BxDolMenu::getObjectInstance('sys_site');
+        $oMethod = new ReflectionMethod($oMenu, '_getMenuItem');
+        $oKeeps = new ReflectionProperty($oMenu, '_bIconOnlyKeepsTitle');
+        $bKeeps = $oKeeps->getValue($oMenu);
+        $aItem = ['id' => 1, 'name' => 'phpunit', 'title' => 'PHPUnit', 'link' => 'page.php?i=about', 'icon' => 'info-circle', 'active' => 1, 'visible_for_levels' => 2147483647, 'visibility_custom' => '', 'hidden_on' => 0, 'hidden_on_cxt' => '', 'hidden_on_pt' => 0, 'hidden_on_col' => 0];
+
+        try {
+            $oKeeps->setValue($oMenu, false);
+            $a = $oMethod->invoke($oMenu, $aItem + ['icon_only' => 1]);
+            $this->assertStringContainsString('bx-menu-item-icon-only', $a['class_add']);
+            $this->assertFalse($a['bx_if:title']['condition'], 'An icon only item drops its title.');
+            $this->assertStringContainsString('aria-label="PHPUnit"', $a['attrs'], 'And is named by it.');
+
+            $a = $oMethod->invoke($oMenu, ['icon' => ''] + $aItem + ['icon_only' => 1]);
+            $this->assertStringNotContainsString('bx-menu-item-icon-only', $a['class_add']);
+            $this->assertTrue($a['bx_if:title']['condition'], 'Without an icon the item shows its title anyway.');
+
+            $a = $oMethod->invoke($oMenu, ['icon' => 'a:phpunit'] + $aItem + ['icon_only' => 1]);
+            $this->assertStringContainsString('bx-menu-item-icon-only', $a['class_add'], 'An animated icon counts as an icon.');
+            $this->assertFalse($a['bx_if:title']['condition']);
+
+            $oKeeps->setValue($oMenu, true);
+            $a = $oMethod->invoke($oMenu, $aItem + ['icon_only' => 1]);
+            $this->assertStringContainsString('bx-menu-item-icon-only', $a['class_add']);
+            $this->assertTrue($a['bx_if:title']['condition'], 'The header keeps it for the More list; CSS hides it in the bar.');
+        }
+        finally {
+            $oKeeps->setValue($oMenu, $bKeeps);
+        }
     }
 }

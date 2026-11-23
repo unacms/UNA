@@ -1959,11 +1959,30 @@
     #bx-toolbar .bx-menu-main {
         @apply justify-center;
     }
+    /*
+     * A tab's padding follows what it shows, as NEO's tabs (components/menu-items/topmenu.tsx, TAB_PADDING):
+     * - an icon and a label: 12px before the icon and 16px after the label (the icon's 24px box has ~3px of air, so its
+     *   side gets 4px less to look even);
+     * - a label alone (an item without an icon): 16px on both sides;
+     * - an icon alone (Studio's "Icon only": BxBaseMenu adds bx-menu-item-icon-only and hides the label here, which the
+     *   More list shows; More itself): a 44px square, the icon in its middle.
+     * No border: the tabs' states are the sliding highlight. BxDolMenuMoreAuto measures the tabs in a copy of this row, so
+     * the fit follows these rules too.
+     */
     #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil {
-        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-xl bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even; no border: the tabs' states are the sliding highlight, and NEO's tabs are as wide (components/menu-items/topmenu.tsx) */
+        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-xl bx-stl-mil-hover-text;
     }
-    #bx-toolbar .bx-menu-main > .bx-menu-item-more-auto > .bx-stl-mil {
-        @apply w-11 px-0 justify-center; /* icon-only: a 44px square with the tabs' corners */
+    #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil:not(:has(> .bx-stl-mii > *)) {
+        @apply px-4;
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item:is(.bx-menu-item-icon-only, .bx-menu-item-more-auto) > .bx-stl-mil {
+        @apply w-11 px-0 justify-center;
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item:is(.bx-menu-item-icon-only, .bx-menu-item-more-auto) > .bx-stl-mil > .bx-stl-mii > * {
+        @apply m-0;
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item.bx-menu-item-icon-only > .bx-stl-mil > .bx-stl-mit {
+        @apply hidden; /* named by its aria-label and title */
     }
     #bx-toolbar .bx-menu-main > .bx-menu-item:not(.bx-menu-tab-active) > .bx-stl-mil:hover {
         @apply text-gray-950 dark:text-gray-50; /* the full text colour on hover, as the rows of the More list and NEO's tabs */
@@ -2219,6 +2238,24 @@
     }
     .bx-artificer .bx-menu-main-submenu .bx-menu-item.bx-menu-tab-active .bx-mi-underline {
         @apply bg-blue-500 group-hover:bg-blue-500;
+    }
+    /* The buttons at the end of the subtab row (the manage menu, BxBaseMenuManage: a profile's or a context's cog) are drawn
+       as its tabs (menu_main_submenu.html): the row's full height, the tab's 16px sides, its label colours and hover, and the
+       current tab's colour while their popup is open. NEO draws its tab row's buttons as its tabs too (glass, small). */
+    .bx-menu-main-bar-tools ul,
+    .bx-menu-main-bar-tools .bx-menu-item,
+    .bx-menu-main-bar-tools .bx-menu-item.bx-menu-tab-active {
+        @apply flex items-stretch h-full p-0 border-0 bg-transparent dark:bg-transparent ring-0;
+    }
+    .bx-menu-main-bar-tools .bx-menu-item > a {
+        @apply flex items-center justify-center h-full px-4 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200;
+    }
+    .bx-menu-main-bar .bx-menu-main-bar-tools .bx-menu-item > a[aria-expanded="true"],
+    .bx-menu-main-bar .bx-menu-main-bar-tools .bx-menu-item.bx-menu-tab-active > a {
+        @apply text-blue-700 dark:text-blue-300;
+    }
+    .bx-menu-main-bar-tools .bx-menu-item > a .bx-menu-item-icon {
+        @apply flex items-center text-inherit;
     }
 
     /* Common elements: Profile Stats menu */

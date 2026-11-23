@@ -186,8 +186,9 @@ class BxBaseCategory extends BxDolCategory
             ]);
         }
 
+        // No categories to list: no block, in the apps as on the site.
         if($this->_bIsApi)
-            return [bx_api_get_block('categories_list',  $aVars['bx_repeat:cats'])];
+            return !empty($aVars['bx_repeat:cats']) ? [bx_api_get_block('categories_list',  $aVars['bx_repeat:cats'])] : [];
 
         if($bAsArray)
             return $aVars;

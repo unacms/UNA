@@ -281,10 +281,11 @@ export function CoverMorphBody({
                         </View>
                     ) : null}
                     {showMorphAvatar ? (
+                        // `cover-morph-slot` is a hook: use-cover-morph-driver.web.js measures this slot by it.
                         <View
                             onLayout={onSlotLayout}
                             className={cn(
-                                'ns--cover-morph-slot-- relative shrink-0 overflow-visible web:transition-[width,height]',
+                                'cover-morph-slot relative shrink-0 overflow-visible web:transition-[width,height]',
                                 MORPH_TRANSITION,
                                 compactBar
                                     ? cn(
