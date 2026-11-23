@@ -222,6 +222,15 @@ class BxDolStudioModule extends BxTemplStudioWidget
         if($aResult['code'] != 0)
             return $aResult;
 
+        BxDolAdminLog::record([
+            'source' => 'studio',
+            'object_type' => BxDolAdminLog::moduleObjectType($aModule),
+            'object_id' => (string)($aModule['name'] ?? ''),
+            'action' => $iEnabled == 0 ? 'enable' : 'disable',
+            'before' => ['enabled' => $iEnabled],
+            'after' => ['enabled' => 1 - $iEnabled],
+        ]);
+
         $this->aModule = $oDbModule->getModuleByName($this->sModule);
 
         $iEnabled = 1 - $iEnabled;
@@ -256,6 +265,15 @@ class BxDolStudioModule extends BxTemplStudioWidget
 
         $aResult = BxDolStudioInstallerUtils::getInstance()->perform($aModule['path'], 'uninstall', array('html_response' => true));
         if($aResult['code'] == BX_DOL_STUDIO_IU_RC_SUCCESS) {
+            BxDolAdminLog::record([
+                'source' => 'studio',
+                'object_type' => BxDolAdminLog::moduleObjectType($aModule),
+                'object_id' => (string)($aModule['name'] ?? ''),
+                'action' => 'uninstall',
+                'before' => ['enabled' => (int)($aModule['enabled'] ?? 0)],
+                'after' => '',
+            ]);
+
             $aResult = array_merge($aResult, array(
                 'page' => $aPage['name'],
                 'widget_id' => $iWidgetId,

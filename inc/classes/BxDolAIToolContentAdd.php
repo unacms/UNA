@@ -73,6 +73,9 @@ class BxDolAIToolContentAdd extends BxDolAITool
 
         $this->endActingAs($iPrevious);
 
+        if ($this->adminLogOk($a))
+            $this->adminLog('content:' . $module, $this->adminLogId($a), 'add', null, $a);
+
         return $a;
     }
 }

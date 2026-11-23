@@ -24,6 +24,7 @@ class BxBaseStudioAudit extends BxDolStudioAudit
 
         $this->aMenuItems = [
             BX_DOL_STUDIO_AUD_TYPE_REPORTS => ['icon' => 'mi-aud-reports.svg'],
+            BX_DOL_STUDIO_AUD_TYPE_ADMIN => ['icon' => 'mi-aud-admin.svg'],
             BX_DOL_STUDIO_AUD_TYPE_SETTINGS => ['icon' => 'mi-aud-settings.svg'],
         ];
     }
@@ -49,6 +50,23 @@ class BxBaseStudioAudit extends BxDolStudioAudit
     protected function getReports()
     {
         return $this->getGrid();
+    }
+
+    protected function getAdmin()
+    {
+        $oGrid = BxDolGrid::getObjectInstance('sys_admin_log_administration');
+        if(!$oGrid)
+            return '';
+
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        list($aCssCalendar, $aJsCalendar) = BxBaseFormView::getCssJsCalendar();
+        $oTemplate->addJs(array_merge($aJsCalendar, ['BxDolGrid.js', 'jquery.form.min.js', 'jquery-ui/jquery-ui.min.js']));
+        $oTemplate->addCss(array_merge($aCssCalendar, ['grid.css', 'forms.css', 'admin_log.css']));
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('audit.html', [
+            'content' => $oGrid->getCode(),
+            'js_content' => ''
+        ]);
     }
 
     protected function getSettings()

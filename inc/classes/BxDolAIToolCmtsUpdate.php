@@ -63,8 +63,11 @@ class BxDolAIToolCmtsUpdate extends BxDolAITool
             $a = $aError;
         }
         elseif ($o) {
+            $aBefore = $o->getCommentRow($comment_id);
             $a = $o->edit(['cmt_text' => $comment_text], $comment_id);
             unset($a['content']);
+            if ($this->adminLogOk($a))
+                $this->adminLog('cmts:' . $module, (string)$comment_id, 'update', $aBefore, $o->getCommentRow($comment_id) ?: ['text' => $comment_text]);
         }
         else {
             $a = ['msg' => '_sys_txt_not_found', 'code' => 404];

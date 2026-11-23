@@ -1,0 +1,150 @@
+<?php defined('BX_DOL') or die('hack attempt');
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    UnaCore UNA Core
+ * @{
+ */
+
+class BxDolAdminLogQuery extends BxDolDb
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public static function getInstance(): self
+    {
+        if (!isset($GLOBALS['bxDolClasses'][self::class]))
+            $GLOBALS['bxDolClasses'][self::class] = new self();
+
+        return $GLOBALS['bxDolClasses'][self::class];
+    }
+
+    /**
+     * The only insert into sys_admin_log.
+     */
+    public function add(array $a): int
+    {
+        $aRow = [
+            'added' => (int)($a['added'] ?? time()),
+            'profile_id' => (int)($a['profile_id'] ?? 0),
+            'source' => $this->normalizeSource($a['source'] ?? 'studio'),
+            'agent_id' => (int)($a['agent_id'] ?? 0),
+            'thread_id' => $this->clip((string)($a['thread_id'] ?? ''), 255),
+            'object_type' => $this->clip((string)($a['object_type'] ?? ''), 128),
+            'object_id' => $this->clip((string)($a['object_id'] ?? ''), 255),
+            'action' => $this->clip((string)($a['action'] ?? ''), 64),
+            'before' => (string)($a['before'] ?? ''),
+            'after' => (string)($a['after'] ?? ''),
+            'ip' => $this->clip((string)($a['ip'] ?? ''), 64),
+        ];
+
+        $this->query("INSERT INTO `sys_admin_log` SET " . $this->arrayToSQL($aRow));
+
+        return (int)$this->lastId();
+    }
+
+    public function getById(int $iId): array|false
+    {
+        $a = $this->getRow("SELECT * FROM `sys_admin_log` WHERE `id` = :id LIMIT 1", ['id' => $iId]);
+
+        return $a ?: false;
+    }
+
+    /**
+     * One SELECT for the whole id set.
+     *
+     * @return array<string, array>
+     */
+    public function getRows(string $sTable, string $sField, array $aIds): array
+    {
+        if (!$this->isValidFieldName($sTable, true) || !$this->isValidFieldName($sField, true))
+            return [];
+        if (!$this->isTableExists($sTable) || !$this->isFieldExists($sTable, $sField))
+            return [];
+
+        $aClean = [];
+        foreach ($aIds as $mId) {
+            if ($mId === '' || $mId === null || $mId === false || is_array($mId))
+                continue;
+            $aClean[] = $mId;
+        }
+        if (!$aClean)
+            return [];
+
+        $sIn = $this->implode_escape($aClean);
+        $aRows = $this->getAll("SELECT * FROM `{$sTable}` WHERE `{$sField}` IN ({$sIn})");
+        if (!$aRows)
+            return [];
+
+        $aOut = [];
+        foreach ($aRows as $aRow)
+            if (isset($aRow[$sField]))
+                $aOut[(string)$aRow[$sField]] = $aRow;
+
+        return $aOut;
+    }
+
+    public function deleteOlderThan(int $iDays): void
+    {
+        if ($iDays <= 0 || !$this->isTableExists('sys_admin_log'))
+            return;
+
+        $this->query("DELETE FROM `sys_admin_log` WHERE `added` < :cut", [
+            'cut' => time() - ($iDays * 86400),
+        ]);
+    }
+
+    public function getColumnValues(string $sColumn): array
+    {
+        switch ($sColumn) {
+            case 'source':
+                $sSql = "SELECT DISTINCT `source` FROM `sys_admin_log` WHERE `source` <> '' ORDER BY `source` ASC";
+                break;
+            case 'object_type':
+                $sSql = "SELECT DISTINCT `object_type` FROM `sys_admin_log` WHERE `object_type` <> '' ORDER BY `object_type` ASC LIMIT 200";
+                break;
+            case 'profile_id':
+                $sSql = "SELECT DISTINCT `profile_id` FROM `sys_admin_log` WHERE `profile_id` > 0 ORDER BY `profile_id` ASC LIMIT 200";
+                break;
+            default:
+                return [];
+        }
+
+        if (!$this->isTableExists('sys_admin_log'))
+            return [];
+
+        $a = $this->getColumn($sSql);
+
+        return is_array($a) ? $a : [];
+    }
+
+    public function getAgents(): array
+    {
+        if (!$this->isTableExists('sys_admin_log') || !$this->isTableExists('sys_agents_agents'))
+            return [];
+
+        $a = $this->getPairs("SELECT `a`.`id`, `a`.`name` FROM `sys_agents_agents` AS `a` INNER JOIN (SELECT DISTINCT `agent_id` FROM `sys_admin_log` WHERE `agent_id` > 0) AS `l` ON `l`.`agent_id` = `a`.`id` ORDER BY `a`.`name` ASC", 'id', 'name');
+
+        return is_array($a) ? $a : [];
+    }
+
+    protected function normalizeSource($sSource): string
+    {
+        $sSource = (string)$sSource;
+
+        return in_array($sSource, ['studio', 'agent', 'api', 'cli'], true) ? $sSource : 'studio';
+    }
+
+    protected function clip(string $s, int $iLen): string
+    {
+        if (get_mb_len($s) <= $iLen)
+            return $s;
+
+        return get_mb_substr($s, 0, $iLen);
+    }
+}
+
+/** @} */

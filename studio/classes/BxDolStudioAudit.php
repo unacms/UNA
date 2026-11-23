@@ -8,6 +8,7 @@
  */
 
 define('BX_DOL_STUDIO_AUD_TYPE_REPORTS', 'reports');
+define('BX_DOL_STUDIO_AUD_TYPE_ADMIN', 'admin');
 define('BX_DOL_STUDIO_AUD_TYPE_SETTINGS', 'settings');
 
 define('BX_DOL_STUDIO_AUD_TYPE_DEFAULT', BX_DOL_STUDIO_AUD_TYPE_REPORTS);

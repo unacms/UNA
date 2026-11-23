@@ -161,6 +161,24 @@ class BxDolStudioStore extends BxTemplStudioWidget
                     break;
 
                 $aResult = BxDolStudioInstallerUtils::getInstance()->perform($sValue, 'install', array('auto_enable' => true, 'html_response' => true));
+                if(is_array($aResult) && (int)($aResult['code'] ?? 1) === BX_DOL_STUDIO_IU_RC_SUCCESS) {
+                    $aConfig = BxDolInstallerUtils::getModuleConfig(['path' => $sValue]);
+                    $sName = (string)($aConfig['name'] ?? $sValue);
+                    $aInstalled = $sName !== '' ? BxDolModuleQuery::getInstance()->getModuleByName($sName) : [];
+                    BxDolAdminLog::record([
+                        'source' => 'studio',
+                        'object_type' => BxDolAdminLog::moduleObjectType([
+                            'type' => (string)($aConfig['type'] ?? BX_DOL_MODULE_TYPE_MODULE),
+                        ]),
+                        'object_id' => $sName,
+                        'action' => 'install',
+                        'before' => '',
+                        'after' => is_array($aInstalled) && $aInstalled ? [
+                            'name' => (string)($aInstalled['name'] ?? $sName),
+                            'enabled' => (int)($aInstalled['enabled'] ?? 0),
+                        ] : '',
+                    ]);
+                }
                 break;
 
             case 'update':

@@ -163,4 +163,62 @@ class BxDolAITool extends Tool
         
         return $result;
     }
+
+    protected function adminLog(string $sObjectType, string $sObjectId, string $sAction, $mixedBefore, $mixedAfter): void
+    {
+        try {
+            $aCtx = BxDolAIToolMysqlWrite::currentLogContext();
+            BxDolAdminLog::record([
+                'source' => 'agent',
+                'agent_id' => (int)($aCtx['agent_id'] ?? 0),
+                'profile_id' => (int)($aCtx['profile_id'] ?? 0),
+                'thread_id' => (string)($aCtx['thread_id'] ?? ''),
+                'object_type' => $sObjectType,
+                'object_id' => $sObjectId,
+                'action' => $sAction,
+                'before' => $mixedBefore,
+                'after' => $mixedAfter,
+            ]);
+        }
+        catch (Throwable $e) {
+        }
+    }
+
+    protected function adminLogOk($mixed): bool
+    {
+        if ($mixed === true)
+            return true;
+        if (!is_array($mixed))
+            return false;
+        if (isset($mixed['code']) && (int)$mixed['code'] !== 0)
+            return false;
+        if (!empty($mixed['error']))
+            return false;
+        if (!empty($mixed['msg']) && !isset($mixed['code']))
+            return false;
+
+        return true;
+    }
+
+    protected function adminLogId($mixed): string
+    {
+        if (!is_array($mixed))
+            return '';
+
+        foreach (['id', 'content_id', 'cmt_id', 'comment_id', 'account_id'] as $sKey)
+            if (isset($mixed[$sKey]) && !is_array($mixed[$sKey]) && (string)$mixed[$sKey] !== '' && (string)$mixed[$sKey] !== '0')
+                return (string)$mixed[$sKey];
+
+        if (isset($mixed['content']) && is_array($mixed['content']))
+            return $this->adminLogId($mixed['content']);
+
+        return '';
+    }
+
+    protected function maskMailBody(string $s): string
+    {
+        $sMasked = preg_replace('/((?:password|passwd|secret|token|api[_-]?key)\s*[:=]\s*)\S+/iu', '$1' . BxDolAdminLog::MASK, $s);
+
+        return is_string($sMasked) ? $sMasked : $s;
+    }
 }

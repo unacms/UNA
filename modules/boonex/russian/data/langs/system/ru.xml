@@ -1220,6 +1220,13 @@
     <string name="_adm_form_err_search_forms_title"><![CDATA[Введите имя, более 3 символов]]></string>
     <string name="_adm_form_txt_all_modules"><![CDATA[Все модули]]></string>
     <string name="_adm_form_txt_confirm_delete"><![CDATA[Вы уверены, что хотите удалить это поле? Оно будет удалено со всех дисплеев! Вместо этого можно просто отключить его.]]></string>
+    <string name="_adm_form_txt_admin_log_action"><![CDATA[Действие]]></string>
+    <string name="_adm_form_txt_admin_log_added"><![CDATA[Добавлено]]></string>
+    <string name="_adm_form_txt_admin_log_agent"><![CDATA[Агент]]></string>
+    <string name="_adm_form_txt_admin_log_object"><![CDATA[Объект]]></string>
+    <string name="_adm_form_txt_admin_log_object_id"><![CDATA[Идентификатор]]></string>
+    <string name="_adm_form_txt_admin_log_profile"><![CDATA[Администратор]]></string>
+    <string name="_adm_form_txt_admin_log_source"><![CDATA[Источник]]></string>
     <string name="_adm_form_txt_audit_added"><![CDATA[Добавлено]]></string>
     <string name="_adm_form_txt_audit_profile"><![CDATA[Профиль]]></string>
     <string name="_adm_form_txt_audit_content"><![CDATA[Контент]]></string>
@@ -1470,6 +1477,7 @@
     <string name="_adm_ipbl_sample"><![CDATA[образец]]></string>
     <string name="_adm_lang_cnf_uninstall"><![CDATA[<h3>Удалить "{0}" язык?</h3><p>Удаление "{0}" языка также удалит все его данные. Вы хотите продолжить?</p>]]></string>
     <string name="_adm_lmi_cpt_actions"><![CDATA[Действия]]></string>
+    <string name="_adm_lmi_cpt_admin"><![CDATA[Журнал]]></string>
     <string name="_adm_lmi_cpt_api_config"><![CDATA[Конфигурация]]></string>
     <string name="_adm_lmi_cpt_agents"><![CDATA[Агенты]]></string>
     <string name="_adm_lmi_cpt_ai_providers"><![CDATA[Модели]]></string>
@@ -2040,6 +2048,10 @@
     <string name="_adm_stg_cpt_option_sys_audit_max_records"><![CDATA[Количество записей в логе]]></string>
     <string name="_adm_stg_cpt_option_sys_audit_days_before_expire"><![CDATA[Удалять записи в логе старше, чем (дней)]]></string>
     <string name="_adm_stg_cpt_option_sys_audit_acl_levels"><![CDATA[Активно для уровней]]></string>
+    <string name="_adm_stg_cpt_option_sys_admin_log_days_before_expire"><![CDATA[Удалять записи старше (дней)]]></string>
+    <string name="_adm_stg_inf_option_sys_admin_log_days_before_expire"><![CDATA[0 = без ограничения]]></string>
+    <string name="_adm_stg_cpt_option_sys_admin_log_enable"><![CDATA[Записывать действия администраторов]]></string>
+    <string name="_adm_stg_inf_option_sys_admin_log_enable"><![CDATA[Studio и агенты. Отчеты выше остаются отдельно.]]></string>
     <string name="_adm_stg_cpt_option_sys_autoupdate_force_modified_files"><![CDATA[Принудительное автоматическое обновление]]></string>
     <string name="_adm_stg_inf_option_sys_autoupdate_force_modified_files"><![CDATA[Обновлять основную систему и модули, даже если обнаружены измененные файлы.]]></string>
     <string name="_adm_stg_cpt_option_sys_autoupdate"><![CDATA[Автоматические обновления системы]]></string>
@@ -2512,6 +2524,20 @@
         <string name="_adm_tmi_cpt_scheme"><![CDATA[Цветовая схема]]></string>
 	<string name="_adm_tmi_cpt_launcher"><![CDATA[Загрузчик]]></string>
         <string name="_adm_txt_active_api"><![CDATA[Доступно в приложении]]></string>
+        <string name="_adm_txt_admin_log_after"><![CDATA[После]]></string>
+        <string name="_adm_txt_admin_log_agent_any"><![CDATA[Любой агент]]></string>
+        <string name="_adm_txt_admin_log_before"><![CDATA[До]]></string>
+        <string name="_adm_txt_admin_log_empty"><![CDATA[Ничего не записано.]]></string>
+        <string name="_adm_txt_admin_log_from"><![CDATA[С]]></string>
+        <string name="_adm_txt_admin_log_object_any"><![CDATA[Любой объект]]></string>
+        <string name="_adm_txt_admin_log_popup"><![CDATA[Изменение]]></string>
+        <string name="_adm_txt_admin_log_profile_any"><![CDATA[Любой администратор]]></string>
+        <string name="_adm_txt_admin_log_source_agent"><![CDATA[Агент]]></string>
+        <string name="_adm_txt_admin_log_source_any"><![CDATA[Любой источник]]></string>
+        <string name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string>
+        <string name="_adm_txt_admin_log_source_cli"><![CDATA[Командная строка]]></string>
+        <string name="_adm_txt_admin_log_source_studio"><![CDATA[Studio]]></string>
+        <string name="_adm_txt_admin_log_to"><![CDATA[По]]></string>
         <string name="_adm_txt_assistant_popup_title"><![CDATA[Как я могу помочь?]]></string>
 	<string name="_adm_txt_confirm_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_txt_confirm_ok"><![CDATA[OK]]></string>
