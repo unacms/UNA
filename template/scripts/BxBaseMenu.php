@@ -568,7 +568,7 @@ class BxBaseMenu extends BxDolMenu
         list ($sIcon, $sIconUrl, $sIconA, $sIconHtml) = $this->_getMenuIcon($a);
 
         // "Icon only" needs an icon: an item without one shows its label anyway.
-        $a['icon_only'] = $this->_isMenuItemIconOnly($a, $sIcon || $sIconUrl || $sIconHtml) ? 1 : 0;
+        $a['icon_only'] = $this->_isMenuItemIconOnly($a, $sIcon || $sIconUrl || $sIconA || $sIconHtml) ? 1 : 0;
 
         if(!isset($a['class_add']))
             $a['class_add'] = '';

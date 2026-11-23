@@ -118,6 +118,10 @@ class PageApiLandingTest extends BxDolIntegrationTestCase
             $this->assertStringNotContainsString('bx-menu-item-icon-only', $a['class_add']);
             $this->assertTrue($a['bx_if:title']['condition'], 'Without an icon the item shows its title anyway.');
 
+            $a = $oMethod->invoke($oMenu, ['icon' => 'a:phpunit'] + $aItem + ['icon_only' => 1]);
+            $this->assertStringContainsString('bx-menu-item-icon-only', $a['class_add'], 'An animated icon counts as an icon.');
+            $this->assertFalse($a['bx_if:title']['condition']);
+
             $oKeeps->setValue($oMenu, true);
             $a = $oMethod->invoke($oMenu, $aItem + ['icon_only' => 1]);
             $this->assertStringContainsString('bx-menu-item-icon-only', $a['class_add']);
