@@ -568,11 +568,12 @@ class BxBasePage extends BxDolPage
             return [];
 
         // The module's own add icon, which tells its button from the site's Add menu: the icon of the create item in the
-        // module's "My" menu (Studio > Navigation), a Lucide name; a module without one keeps the plus.
+        // module's "My" menu (Studio > Navigation; the menu object's item set), a Lucide name, as both the site and the apps
+        // draw it. A module without one, or with an uploaded picture or markup there, keeps the plus.
         $sIcon = '';
-        if(!empty($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES']))
-            $sIcon = BxDolMenuQuery::getMenuItemIconByLink($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES'], 'page.php?i=' . $sUri);
-        if($sIcon === '')
+        if(!empty($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES']) && ($aMenu = BxDolMenuQuery::getMenuObject($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES'])) && !empty($aMenu['set_name']))
+            $sIcon = trim(BxDolMenuQuery::getMenuItemIconByLink($aMenu['set_name'], 'page.php?i=' . $sUri));
+        if(!preg_match('/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/', $sIcon))
             $sIcon = 'plus';
 
         $sTitle = _t('_sys_txt_add');

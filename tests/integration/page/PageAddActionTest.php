@@ -104,7 +104,8 @@ class PageAddActionTest extends BxDolIntegrationTestCase
         $this->assertSame($aMenu['add_title'], $aAction['title'] ?? null);
 
         // The module's own add icon: its create item in its "My" menu, the same on both sides.
-        $sIcon = BxDolMenuQuery::getMenuItemIconByLink('bx_groups_my', 'page.php?i=create-group-profile') ?: 'plus';
+        $aMenuObject = BxDolMenuQuery::getMenuObject('bx_groups_my');
+        $sIcon = BxDolMenuQuery::getMenuItemIconByLink($aMenuObject['set_name'], 'page.php?i=create-group-profile') ?: 'plus';
         $this->assertSame($sIcon, $aMenu['add_icon'] ?? null);
         $this->assertSame($sIcon, $aAction['icon'] ?? null);
     }
@@ -160,5 +161,24 @@ class PageAddActionTest extends BxDolIntegrationTestCase
         $aAdd = BxBasePage::getAddEntryParams($oModule);
         $this->assertNotSame([], $aAdd);
         $this->assertFalse($aAdd['allowed']);
+    }
+
+    /** Only a Lucide name reaches the button: an uploaded picture (a number) or markup there gives the plus on both sides. */
+    public function testAnIconThatIsNotALucideNameGivesThePlus(): void
+    {
+        $oDb = BxDolDb::getInstance();
+        $aMenuObject = BxDolMenuQuery::getMenuObject('bx_groups_my');
+        $aBind = ['set' => $aMenuObject['set_name'], 'link' => 'page.php?i=create-group-profile'];
+        $sOld = BxDolMenuQuery::getMenuItemIconByLink($aBind['set'], $aBind['link']);
+        if ($sOld === '')
+            $this->markTestSkipped('No create item in the Groups "My" menu.');
+
+        try {
+            $oDb->query("UPDATE `sys_menu_items` SET `icon` = '123' WHERE `set_name` = :set AND `link` = :link", $aBind);
+            $this->assertSame('plus', BxBasePage::getAddEntryParams(BxDolModule::getInstance(self::MODULE))['icon']);
+        }
+        finally {
+            $oDb->query("UPDATE `sys_menu_items` SET `icon` = :icon WHERE `set_name` = :set AND `link` = :link", $aBind + ['icon' => $sOld]);
+        }
     }
 }
