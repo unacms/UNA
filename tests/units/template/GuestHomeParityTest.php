@@ -95,6 +95,20 @@ class GuestHomeParityTest extends BxDolTestCase
         $this->assertStringContainsString('className="flex min-h-11 min-w-11 items-center justify-center p-0.5 -m-0.5"', self::read('neo/packages/app/ui/molecules/header/page-header-parts.js'));
     }
 
+    public function testFormAndFooterLinksAreMediumAsNeos(): void
+    {
+        // NEO's inline links (theme links: font-medium); content text links stay regular on both.
+        $this->assertStringContainsString(".bx-artificer .bx-db-footer a {\n    font-weight: 500;\n    text-decoration: underline;", self::read('modules/boonex/artificer/data/template/system/css/general.css'));
+        $this->assertStringContainsString(".bx-artificer .bx-form-info a,\n.bx-artificer #bx-form-element-submit_text .bx-form-value a {\n    font-weight: 500;\n}", self::read('modules/boonex/artificer/data/template/system/css/forms.css'));
+
+        // NEO: "Forgot password?" is an accent Link, the footer's links default Links (u-block-notice-link adds no weight).
+        $sLinks = self::read('neo/packages/app/settings/theme/links.js');
+        $this->assertMatchesRegularExpression("/\\bdefault: ' font-medium /", $sLinks);
+        $this->assertMatchesRegularExpression("/\\baccent: ' font-medium /", $sLinks);
+        $this->assertMatchesRegularExpression('/<Link key=\\{i\\} href=\\{href\\} hitarea=\\{false\\} className=/', self::read('neo/packages/app/ui/molecules/page/block-notice.tsx'), 'A default Link.');
+        $this->assertStringContainsString("'u-block-notice-link': 'text-xs leading-4.5 text-muted-foreground underline',", self::read('neo/packages/app/settings/theme/elements.js'), 'No weight of its own.');
+    }
+
     public function testPageScrollbarTrackAsNeos(): void
     {
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/general.css');
