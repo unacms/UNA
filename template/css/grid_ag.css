@@ -490,13 +490,12 @@ html.dark .bx-grid-ag-item,
 }
 
 /* Card rows (from tablets up, set by the script): every row is a card 4px inside its slot, so two
-   cards sit 8px apart. The card is the row's ::before, which the theme also uses for hover and
-   selection, so those states recolour the card. No column is pinned, so a card is one piece. */
+   cards sit 8px apart. The card is the row's ::before, which the theme also uses for
+   selection, so a selected row recolours its card. No column is pinned, so a card is one piece. */
 .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
     --bx-grid-ag-bg: #fafafc;
     --bx-grid-ag-card: #fff;
     --bx-grid-ag-card-border: #e4e4e7;
-    --bx-grid-ag-card-border-hover: #d4d4d8;
     --bx-grid-ag-card-border-selected: rgb(var(--bx-accent-200));
     --ag-row-border-width: 0;
     --ag-cell-horizontal-padding: 16px;
@@ -527,11 +526,6 @@ html.dark .bx-grid-ag-item,
     z-index: 0;
 }
 
-.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-hover:not(.ag-full-width-row)::before {
-    background-color: var(--bx-grid-ag-hover);
-    border-color: var(--bx-grid-ag-card-border-hover);
-}
-
 .bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-selected::before {
     background-color: var(--bx-grid-ag-selected);
     border-color: var(--bx-grid-ag-card-border-selected);
@@ -557,7 +551,6 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
     --bx-grid-ag-bg: #18181b;
     --bx-grid-ag-card: #27272a;
     --bx-grid-ag-card-border: #3f3f46;
-    --bx-grid-ag-card-border-hover: #52525b;
     --bx-grid-ag-card-border-selected: rgb(var(--bx-accent-700));
 }
 

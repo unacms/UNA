@@ -134,6 +134,8 @@ BxDolGridAg.prototype._mount = function () {
         },
         suppressMovableColumns: true,
         suppressCellFocus: true,
+        // A row does not light up under the pointer: only its links and buttons do.
+        suppressRowHoverHighlight: true,
         headerHeight: 44,
         rowHeight: this._iRowHeight + this._iRowGap,
         rowDragManaged: false,
