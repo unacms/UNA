@@ -1304,15 +1304,27 @@ class BxPaymentModule extends BxBaseModPaymentModule
         if($oProvider === false || !$oProvider->isActive())
             return ($sMsg = $this->_sLangsPrefix . 'err_incorrect_provider') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['error' => $sMsg];
 
+        /*
+         * A browser finalize must come from the owner of the pending order. It is checked
+         * before the provider runs, because the provider marks the pending order as used:
+         * a check after it would leave a charged payment unregistered, and a retry would
+         * be refused as already processed. Providers that read the order from the payment
+         * service itself (PayPal IPN has no buyer session) are not checked.
+         */
+        $bVerified = $oProvider->isFinalizeVerified();
+        $iPendingId = 0;
+        if(!$bVerified) {
+            $iPendingId = (int)$oProvider->getFinalizePendingId($aData);
+            if(!$this->isFinalizeAllowed($iPendingId))
+                return ($sMsg = $this->_sLangsPrefix . 'err_incorrect_provider') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['error' => $sMsg];
+        }
+
         $aResult = $oProvider->finalizeCheckout($aData);
         if((int)$aResult['code'] != BX_PAYMENT_RESULT_SUCCESS) 
             return $this->_bIsApi ? [bx_api_get_msg($aResult['message'])] : ['error' => $aResult['message']];
 
         $aPending = $this->_oDb->getOrderPending(['type' => 'id', 'id' => (int)$aResult['pending_id']]);
-        //--- Callbacks verified by the provider itself (for example PayPal IPN) have no buyer session, 
-        //--- all other (browser) requests must belong to the owner of the pending order.
-        $bVerified = !empty($aResult['verified']);
-        if(empty($aPending) || (!$bVerified && (int)$aPending['client_id'] && (int)$aPending['client_id'] !== (int)bx_get_logged_profile_id()))
+        if(empty($aPending) || (!$bVerified && (int)$aPending['id'] !== $iPendingId))
             return ($sMsg = $this->_sLangsPrefix . 'err_incorrect_provider') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['error' => $sMsg];
 
         $bTypeRecurring = $aPending['type'] == BX_PAYMENT_TYPE_RECURRING;
@@ -1374,6 +1386,23 @@ class BxPaymentModule extends BxBaseModPaymentModule
             return ['redirect' => $this->_oConfig->urlDecode($aResult['redirect'])];
 
         return $this->_bIsApi ? [bx_api_get_msg($aResult['message'])] : ['message' => $aResult['message']];
+    }
+
+    /**
+     * Whether the viewer may finalize the pending order: its owner, or anyone for an
+     * order made before joining (no owner yet).
+     */
+    public function isFinalizeAllowed($iPendingId)
+    {
+        if(empty($iPendingId))
+            return false;
+
+        $aPending = $this->_oDb->getOrderPending(['type' => 'id', 'id' => (int)$iPendingId]);
+        if(empty($aPending) || !is_array($aPending))
+            return false;
+
+        $iClientId = (int)$aPending['client_id'];
+        return $iClientId == 0 || $iClientId == (int)bx_get_logged_profile_id();
     }
 
     public function actionFinalizedCheckout($sProvider, $mixedVendorId = "")

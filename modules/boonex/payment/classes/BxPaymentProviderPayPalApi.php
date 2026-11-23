@@ -175,6 +175,15 @@ class BxPaymentProviderPayPalApi extends BxBaseModPaymentProvider implements iBx
         }
     }
 
+    /**
+     * The order and its pending order (custom_id, reference_id) are read from
+     * PayPal's API, not from the request.
+     */
+    public function isFinalizeVerified()
+    {
+        return true;
+    }
+
     public function finalizeCheckout(&$aData)
     {
         $sMethod = '_finalizeCheckout' . bx_gen_method_name(!empty($aData['subscription_id']) && !empty('ba_token') ? BX_PAYMENT_TYPE_RECURRING : BX_PAYMENT_TYPE_SINGLE);

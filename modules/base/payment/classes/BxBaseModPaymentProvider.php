@@ -171,6 +171,27 @@ class BxBaseModPaymentProvider extends BxDol
 
     public function finalizedCheckout() {}
 
+    /**
+     * Whether finalizeCheckout reads the pending order and the payment from the
+     * payment service itself (a server to server callback, or an API call
+     * made with the provider's secret), rather than from the request. Such a
+     * finalize may run without the buyer's session.
+     */
+    public function isFinalizeVerified()
+    {
+        return false;
+    }
+
+    /**
+     * The pending order a browser finalize request is about, read from the
+     * same request data finalizeCheckout reads it from, before anything is
+     * changed. 0 when the request names none.
+     */
+    public function getFinalizePendingId(&$aData)
+    {
+        return isset($aData['pending_id']) ? (int)bx_process_input($aData['pending_id'], BX_DATA_INT) : 0;
+    }
+
     public function isSubscriptionStatus($sStatus, $aSubscription, $sStatusKey = 'status')
     {
         return isset($this->_aSbsStatuses[$aSubscription[$sStatusKey]]) && $this->_aSbsStatuses[$aSubscription[$sStatusKey]] == $sStatus;
