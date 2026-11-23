@@ -19,7 +19,8 @@ class SubmenuToolsParityTest extends BxDolTestCase
 
     public function testSiteManageMenuIsDrawnAsATab(): void
     {
-        $this->assertMatchesRegularExpression('/<div class="bx-menu-main-bar-tools flex-none self-stretch flex items-stretch z-0">\s*<bx_menu:sys_site_manage \/>/', self::read('template/_page_submenu.html'), 'The slot is as tall as the tab row.');
+        foreach (['template/_page_submenu.html', 'template/pt_application.html', 'modules/boonex/artificer/data/template/system/pt_application.html'] as $sFile)
+            $this->assertMatchesRegularExpression('/<div class="bx-menu-main-bar-tools flex-none self-stretch flex items-stretch z-0">\s*<bx_menu:sys_site_manage \/>/', self::read($sFile), $sFile . ': the slot is as tall as the tab row.');
 
         $sCss = self::read('template/css/tailwind.css');
         $this->assertStringContainsString("@apply flex items-stretch h-full p-0 border-0 bg-transparent dark:bg-transparent ring-0;", $sCss, 'No pill of its own, also while its popup marks it active.');
