@@ -568,7 +568,7 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
 }
 
 /* Bulk actions: the "Actions" button at the right end of the header, after the grid's own
-   buttons (grouped). Its menu is the site's popup menu, built on the server. */
+   buttons. Its menu is the site's popup menu, built on the server. */
 /* The grid's own buttons and Actions keep together at the right end, and move to the next line
    together when the header is too narrow for them. */
 .bx-grid-ag-wrap .bx-grid-ag-header-end {
@@ -588,8 +588,21 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
     flex: 0 0 auto;
 }
 
-.bx-grid-ag-wrap .bx-grid-header-controls-independent .bx-btn-group > .bx-btn {
+.bx-grid-ag-wrap .bx-grid-ag-header-btns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag-header-btns > .bx-btn {
     margin: 0;
+}
+
+/* A header button's SVG icon takes the button's text colour, as its font icons do (Studio paints
+   a bare .sys-icon in the accent). */
+.bx-grid-ag-wrap .bx-grid-header .bx-btn svg.sys-icon:not(.sys-colored) {
+    color: inherit;
 }
 
 .bx-grid-ag-bulk-toggle {

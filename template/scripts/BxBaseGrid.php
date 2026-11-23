@@ -2018,9 +2018,10 @@ class BxBaseGrid extends BxDolGrid
             }
         }
 
-        $oMenu = new BxTemplMenu(['template' => 'menu_vertical.html', 'menu_id' => $sId . '-items', 'menu_items' => array_merge($aItems, $aItemsLast)], $this->_oTemplate);
+        // The site's template, in Studio too: a row's settings menu is drawn by it there as well.
+        $oMenu = new BxTemplMenu(['template' => 'menu_vertical.html', 'menu_id' => $sId . '-items', 'menu_items' => array_merge($aItems, $aItemsLast)], BxDolTemplate::getInstance());
 
-        return $this->_oFunctions->transBox($sId, $oMenu->getCode(), true);
+        return BxTemplFunctions::getInstance()->transBox($sId, $oMenu->getCode(), true);
     }
 
     /**
