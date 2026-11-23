@@ -614,21 +614,30 @@ class BxFilesModule extends BxBaseModFilesModule
                 exit;
             }
 
-            // a folder can't go into itself or into one of its subfolders
-            $bLoop = false;
-            $aSeen = [];
-            for ($iParent = $iMoveTo; $iParent > 0 && !isset($aSeen[$iParent]); $iParent = (int)$this->_oDb->getParentFolderId($iParent)) {
-                if (in_array($iParent, $aFilesToMove)) {
-                    $bLoop = true;
-                    break;
+            // persistent connections keep a lock past the request, so it is released however the request ends
+            $oDb = $this->_oDb;
+            register_shutdown_function(function () use ($oDb, $iContext) {
+                $oDb->unlockFolderMoves($iContext);
+            });
+
+            try {
+                // a folder can't go into itself or into one of its subfolders
+                $bLoop = false;
+                $aSeen = [];
+                for ($iParent = $iMoveTo; $iParent > 0 && !isset($aSeen[$iParent]); $iParent = (int)$this->_oDb->getParentFolderId($iParent)) {
+                    if (in_array($iParent, $aFilesToMove)) {
+                        $bLoop = true;
+                        break;
+                    }
+                    $aSeen[$iParent] = true;
                 }
-                $aSeen[$iParent] = true;
+
+                if (!$bLoop)
+                    $this->_oDb->moveFilesToFolder($aFilesToMove, $iMoveTo);
             }
-
-            if (!$bLoop)
-                $this->_oDb->moveFilesToFolder($aFilesToMove, $iMoveTo);
-
-            $this->_oDb->unlockFolderMoves($iContext);
+            finally {
+                $this->_oDb->unlockFolderMoves($iContext);
+            }
 
             if ($bLoop) {
                 echoJson(['message' => _t('_bx_files_txt_error')]);
