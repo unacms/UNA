@@ -64,9 +64,15 @@ class InformerStripTest extends BxDolTestCase
 
     public function testNeoRendersOneStripAtTheLayout(): void
     {
-        $this->assertMatchesRegularExpression('/<main [^>]*>\s*\{\/\*[^}]*\*\/\}\s*<Informer \/>/', self::read('neo/packages/app/components/layout.web.js'), 'Web: first in <main>, on every layout.');
+        $sWeb = self::read('neo/packages/app/components/layout.web.js');
+        $this->assertMatchesRegularExpression('/<main [^>]*>\s*\{\/\*[^}]*\*\/\}\s*\{stripInMain && <Informer \/>\}/', $sWeb, 'Web desktop: first in <main>, under the header.');
+        $this->assertMatchesRegularExpression('/\{!isDesktop && <Informer \/>\}\s*<HeaderOptionsProvider>\s*<PageHeader /', $sWeb, 'Web below desktop: above the header, which carries the title there.');
+        $this->assertStringContainsString('top: stripInView', self::read('neo/packages/app/ui/molecules/header/page-header.web.js'), 'The fixed header starts under what of the strip is still in view.');
+
+        $sNative = self::read('neo/packages/app/components/layout.js');
+        $this->assertLessThan(strpos($sNative, '<PageHeader'), strpos($sNative, '<InformerStrip topInset='), 'Apps: above the header, under the status bar.');
+        $this->assertStringNotContainsString('<InformerStrip', self::read('neo/packages/app/ui/molecules/sections/conductor/native-ui.js'), 'Not in the list as well.');
         $this->assertStringNotContainsString('withInformerBlock', self::read('neo/packages/app/components/page-layout/profile.js'));
-        $this->assertStringContainsString('listTop={<InformerStrip />}', self::read('neo/packages/app/ui/molecules/sections/conductor/native-ui.js'), 'Apps: first in the list, under the header.');
 
         $s = self::read('neo/packages/app/components/elements/informer.tsx');
         $this->assertStringContainsString("'w-full border-b'", $s);

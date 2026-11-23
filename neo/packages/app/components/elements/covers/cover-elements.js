@@ -22,13 +22,15 @@ import { useCoverBackTabKey, useShowCoverBackButton } from 'app/components/eleme
 import { useIsPushedScreen } from 'app/context/tab-chrome'
 import { useTranslation } from 'react-i18next'
 import { playCue } from 'app/lib/sound'
+import { hasInformerStripNow } from 'app/components/elements/informer'
 
 // The page header's floating buttons: centred in its h-16 row (10px above a 44px button), inset by
 // its ps-4 / pe-4 and spaced by its gap-3 (`layout.header.content_left` / `content_right`).
 const COVER_CONTROL_TOP = 10
 
+// The status bar's inset, unless the informer strip is above and takes it (components/layout.js).
 function getNativeTabsTopInset() {
-    return isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0
+    return isNativeTabsEnabled() && !hasInformerStripNow() ? (getWindowSafeAreaInsets().top || 0) : 0
 }
 
 export function nativeTabsTopPadStyle() {

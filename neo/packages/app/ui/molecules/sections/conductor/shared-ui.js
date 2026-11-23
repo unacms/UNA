@@ -707,7 +707,6 @@ function ListBody({
     onRefresh,
     refreshing,
     uniListProps = {},
-    listTop = null,
 }) {
     const NoContent = registeredComponent('molecule', 'no_content')
     // Skeletons only when the list takes longer than SKELETON_DELAY_MS (a blank preload keeps
@@ -734,7 +733,7 @@ function ListBody({
             {!headerInList ? scene.chrome : null}
             <UniList
                 {...uniListProps}
-                ListHeaderComponent={headerInList && (listTop || scene.chrome) ? <>{listTop}{scene.chrome}</> : undefined}
+                ListHeaderComponent={headerInList ? scene.chrome : undefined}
                 data={scene.rows}
                 route={route}
                 unit={route?.endpoint?.unit}
@@ -774,7 +773,6 @@ function ListBody({
  * @param {object}   [props.uniListProps]  Platform UniList settings, spread in.
  * @param {node|Function} [props.afterList] Rendered after the list; a function
  *        receives the `useListScene` result.
- * @param {node}     [props.listTop]  Native (`headerInList`): first in the list's header, above the chrome.
  * @param {...*}     sceneProps            Forwarded to `useListScene`.
  */
 export function ListScene({
@@ -787,7 +785,6 @@ export function ListScene({
     refreshing,
     uniListProps = {},
     afterList,
-    listTop = null,
     ...sceneProps
 }) {
     const scene = useListScene({
@@ -808,7 +805,6 @@ export function ListScene({
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 uniListProps={uniListProps}
-                listTop={listTop}
             />
             {typeof afterList === 'function' ? afterList(scene) : afterList}
         </>

@@ -9,7 +9,6 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { components } from 'app/components/registry'
-import { InformerStrip } from 'app/components/elements/informer'
 import {
     Panel,
     PanelGroup,
@@ -508,9 +507,6 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 )}
                 <Panel className="w-full min-w-0 native:w-full" {...centerPanelProps}>
                     <View className={`${appSetting('layout', 'feed_container')}`}>
-                        {/* The apps: the informer strip above the feed, under the header (the web has it under its header,
-                            layout.web.js). */}
-                        {!isWeb ? <InformerStrip /> : null}
                         {hasSideColumns ? BlocksCenter : null}
                         {FeedContent}
                     </View>

@@ -152,6 +152,7 @@ export const useFooterHeight = () => {
 // header (Home's side columns).
 const informerStripHeightAtom = atom<number>(0);
 export const useSetInformerStripHeight = () => useSetAtom(informerStripHeightAtom);
+export const useInformerStripHeight = () => useAtomValue(informerStripHeightAtom);
 /**
  * How far the informer strip still reaches below the header: its height less the page's scroll, never below 0. A
  * derived atom, so it changes, and re-renders, only while the strip is in view.
