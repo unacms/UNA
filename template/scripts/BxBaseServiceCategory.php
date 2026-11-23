@@ -38,12 +38,15 @@ class BxBaseServiceCategory extends BxDol
     	$bShowEmpty = isset($aParams['show_empty']) ? (bool)$aParams['show_empty'] : false;
     	$bShowEmptyCategories = isset($aParams['show_empty_categories']) ? (bool)$aParams['show_empty_categories'] : false;
 
+        // The apps get no block without categories ("Show empty" is the site's message box).
+        $mixedEmpty = bx_is_api() ? [] : ($bShowEmpty ? MsgBox(_t('_Empty')) : '');
+
         if (!($o = BxDolCategory::getObjectInstance($sObject)))
-            return $bShowEmpty ? MsgBox(_t('_Empty')) : '';
+            return $mixedEmpty;
         
 		$sResult = $o->getCategoriesList($bShowEmptyCategories);
 		if(empty($sResult))
-			return $bShowEmpty ? MsgBox(_t('_Empty')) : '';
+			return $mixedEmpty;
 
         return $sResult;
     }

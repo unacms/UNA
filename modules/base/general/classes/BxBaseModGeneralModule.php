@@ -3615,7 +3615,11 @@ class BxBaseModGeneralModule extends BxDolModule
         $oCategories->setModule($this->getName());
         $mixedResult = $oCategories->getCategoriesList($bAsArray || $this->_bIsApi);
 
-        return !$this->_bIsApi ? $mixedResult : [bx_api_get_block('categories_list',  $mixedResult)];
+        if(!$this->_bIsApi)
+            return $mixedResult;
+
+        // No categories to list: no block, in the apps as on the site.
+        return !empty($mixedResult) ? [bx_api_get_block('categories_list',  $mixedResult)] : [];
     }
 
     /**

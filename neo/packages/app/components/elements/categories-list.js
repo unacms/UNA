@@ -5,6 +5,9 @@ import { NeoButton } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function CategoriesList({ data, blockWrapperProps }) {
+    // No categories: no block (UNA sends none now; an older UNA sent it empty).
+    if (!Array.isArray(data) || !data.length) return null
+
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className=" w-full flex-row flex-wrap">
