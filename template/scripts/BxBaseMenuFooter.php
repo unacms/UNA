@@ -94,23 +94,26 @@ class BxBaseMenuFooter extends BxTemplMenu
     protected function _getTemplateVars ()
     {
         $aVars = parent::_getTemplateVars();
-        if($this->_bIsApi || empty($aVars['bx_repeat:menu_items']))
+        if($this->_bIsApi || empty($aVars['bx_repeat:menu_items'])) {
             return $aVars;
+        }
 
         $aGroups = ['links' => [], 'tools' => []];
         $sGroup = 'links';
         foreach($aVars['bx_repeat:menu_items'] as $aItem) {
-            if(strpos($aItem['class_add'] ?? '', 'bx-menu-footer-tools-start') !== false)
+            if(strpos($aItem['class_add'] ?? '', 'bx-menu-footer-tools-start') !== false) {
                 $sGroup = 'tools';
+            }
 
             $aGroups[$sGroup][] = $aItem;
         }
 
-        foreach($aGroups as $sGroup => $aItems)
+        foreach($aGroups as $sGroup => $aItems) {
             $aVars['bx_if:' . $sGroup] = [
                 'condition' => !empty($aItems),
                 'content' => ['bx_repeat:menu_' . $sGroup => $aItems],
             ];
+        }
 
         return $aVars;
     }
