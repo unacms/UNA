@@ -154,11 +154,13 @@ export const settingsLayout = {
             // The sides from `lg`, per place of the main menu, web only. A side that grows takes the room the bar
             // leaves, never less than its own content. In the middle both grow, so they are equal while the header
             // has the room and the bar is centred on the header; when it has not, the wider side keeps its content,
-            // the other takes the rest and the bar fills what is left between them. From `2xl` a centred menu has sides
-            // of at least 20rem each besides their 16px padding (`min-w-84`; UNA's site: min-w-80 in its header's px-4,
-            // _page_toolbar.html), so the bar is centred on the header whatever the logo and the actions are.
-            content_left_align: { start: '', center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:flex-none web:2xl:min-w-84', end: 'web:lg:flex-1 web:lg:min-w-max' },
-            content_right_align: { start: 'web:lg:flex-1 web:lg:min-w-max', center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:flex-none web:2xl:min-w-84', end: '' },
+            // the other takes the rest and the bar fills what is left between them. From `2xl`, while the header row
+            // (`@container/header`, page-header-parts.js) is 66rem or wider, a centred menu has sides of at least 20rem
+            // each besides their 16px padding (`min-w-84`; UNA's site: min-w-80 in its header's px-4 from 64rem of
+            // content, _page_toolbar.html), so the bar is centred on the header whatever the logo and the actions are.
+            // A narrower page-width header (Designer allows 480px) keeps its sides flexible and the room for the menu.
+            content_left_align: { start: '', center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:@min-[66rem]/header:flex-none web:2xl:@min-[66rem]/header:min-w-84', end: 'web:lg:flex-1 web:lg:min-w-max' },
+            content_right_align: { start: 'web:lg:flex-1 web:lg:min-w-max', center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:@min-[66rem]/header:flex-none web:2xl:@min-[66rem]/header:min-w-84', end: '' },
             // The widest the main menu's bar gets, in px; null for no limit (it then takes all the room between the
             // logo and the actions, and is centred on the header only when all its tabs fit). The fit counts with it:
             // tabs that don't fit in it go under More. 768 (Tailwind's max-w-3xl, 48rem), as UNA's site

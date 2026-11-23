@@ -78,13 +78,15 @@ class GuestHomeParityTest extends BxDolTestCase
     public function testCentredMenuHasEqualSidesFrom2xl(): void
     {
         // The site: 20rem sides inside the header's px-4, only with the menu in the middle (Designer).
-        $this->assertStringContainsString('bx-ti-logo flex-none items-center 2xl:[.bx-header-menu-center_&]:min-w-80', self::read('template/_page_toolbar.html'));
-        $this->assertStringContainsString('2xl:[.bx-header-menu-center_&]:flex 2xl:[.bx-header-menu-center_&]:justify-end 2xl:[.bx-header-menu-center_&]:min-w-80', self::read('template/menu_toolbar_right.html'));
+        $sToolbar = self::read('template/_page_toolbar.html');
+        $this->assertStringContainsString('mx-auto px-4 box-border @container/header">', $sToolbar, 'The header\'s content is the container: a narrow page-width header keeps flexible sides.');
+        $this->assertStringContainsString('bx-ti-logo flex-none items-center 2xl:@5xl/header:[.bx-header-menu-center_&]:min-w-80', $sToolbar);
+        $this->assertStringContainsString('2xl:@5xl/header:[.bx-header-menu-center_&]:flex 2xl:@5xl/header:[.bx-header-menu-center_&]:justify-end 2xl:@5xl/header:[.bx-header-menu-center_&]:min-w-80', self::read('template/menu_toolbar_right.html'));
 
         // NEO: its sides carry their own 16px padding, so 21rem.
         $sLayout = self::read('neo/packages/app/settings/layout.js');
-        $this->assertStringContainsString("content_left_align: { start: '', center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:flex-none web:2xl:min-w-84',", $sLayout);
-        $this->assertStringContainsString("center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:flex-none web:2xl:min-w-84', end: '' },", $sLayout);
+        $this->assertStringContainsString("content_left_align: { start: '', center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:@min-[66rem]/header:flex-none web:2xl:@min-[66rem]/header:min-w-84',", $sLayout);
+        $this->assertStringContainsString("center: 'web:lg:flex-1 web:lg:min-w-max web:2xl:@min-[66rem]/header:flex-none web:2xl:@min-[66rem]/header:min-w-84', end: '' },", $sLayout);
     }
 
     public function testLogoAtTheHeadersInset(): void

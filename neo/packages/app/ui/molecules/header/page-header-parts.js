@@ -626,7 +626,7 @@ export const PageHeaderBody = memo(({
                     header's background stays full width. From `lg` its sides share the room the main menu leaves
                     (`content_left_align`, `content_right_align`), which centres the menu on the header. */}
                 {isWeb ? (
-                    <Row className={`flex-1 min-w-0 self-stretch items-center justify-between gap-4 mx-auto w-full ${appSetting('layout', 'header', 'content_width')?.[headerLayout.width] ?? ''}`}>
+                    <Row className={`@container/header flex-1 min-w-0 self-stretch items-center justify-between gap-4 mx-auto w-full ${appSetting('layout', 'header', 'content_width')?.[headerLayout.width] ?? ''}`}>
                         {headerRow}
                     </Row>
                 ) : headerRow}
