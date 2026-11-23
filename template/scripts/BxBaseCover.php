@@ -178,6 +178,8 @@ class BxBaseCover extends BxDolCover
                         'content' => [
                             'url' => !empty($aAdd) ? $aAdd['url'] : '',
                             'title' => !empty($aAdd) ? bx_html_attribute($aAdd['title']) : '',
+                            'label' => !empty($aAdd) ? bx_process_output($aAdd['title']) : '',
+                            'icon' => !empty($aAdd) ? BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml($aAdd['icon'], ['aria-hidden' => 'true']) : '',
                         ],
                     ],
                 ],

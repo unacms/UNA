@@ -102,6 +102,11 @@ class PageAddActionTest extends BxDolIntegrationTestCase
         $aAction = $this->siteAction();
         $this->assertSame(bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=create-group-profile')), $aAction['url'] ?? null);
         $this->assertSame($aMenu['add_title'], $aAction['title'] ?? null);
+
+        // The module's own add icon: its create item in its "My" menu, the same on both sides.
+        $sIcon = BxDolMenuQuery::getMenuItemIconByLink('bx_groups_my', 'page.php?i=create-group-profile') ?: 'plus';
+        $this->assertSame($sIcon, $aMenu['add_icon'] ?? null);
+        $this->assertSame($sIcon, $aAction['icon'] ?? null);
     }
 
     public function testAMemberWhoseLevelMayNotCreateGetsNoButton(): void
@@ -140,5 +145,20 @@ class PageAddActionTest extends BxDolIntegrationTestCase
             $this->markTestSkipped('No groups-administration page.');
 
         $this->assertSame([], $oPage->getAddEntryAction(), 'An operator\'s page: the apps show its 403 card.');
+    }
+
+    /** Channels have no "create entry" action (they are made from hashtags): no button, and the page still loads. */
+    public function testAModuleWithoutTheCreateActionGetsNoButton(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_channels'))
+            $this->markTestSkipped('bx_channels is not installed.');
+
+        $this->bxLoginAsUser();
+        $oModule = BxDolModule::getInstance('bx_channels');
+        $this->assertSame(0, BxDolAcl::getInstance()->getMembershipActionId('create entry', 'bx_channels'));
+
+        $aAdd = BxBasePage::getAddEntryParams($oModule);
+        $this->assertNotSame([], $aAdd);
+        $this->assertFalse($aAdd['allowed']);
     }
 }
