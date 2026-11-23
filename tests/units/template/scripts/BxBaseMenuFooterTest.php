@@ -130,6 +130,60 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $this->assertContains($aStarts[0], BxBaseMenuFooter::TOOLS, 'It is the first tool, not a link or the copyright.');
     }
 
+    public function testLinksAndToolsAreTwoGroups(): void
+    {
+        $aVars = $this->callProtected($this->footer(), '_getTemplateVars');
+        $aLinks = $aVars['bx_if:links']['content']['bx_repeat:menu_links'];
+        $aTools = $aVars['bx_if:tools']['content']['bx_repeat:menu_tools'];
+
+        $this->assertSame($aVars['bx_repeat:menu_items'], array_merge($aLinks, $aTools), 'Every item is in one group, in its order; the apps still get one list.');
+        $this->assertSame(!empty($aLinks), $aVars['bx_if:links']['condition']);
+        $this->assertSame(!empty($aTools), $aVars['bx_if:tools']['condition']);
+        $this->assertNotEmpty($aTools, 'The default footer has tools (the Powered by badge).');
+        $this->assertStringContainsString('bx-menu-footer-tools-start', $aTools[0]['class_add'], 'The tools group starts at the marked item.');
+        foreach ($aLinks as $aItem)
+            $this->assertNotContains($aItem['name'], BxBaseMenuFooter::TOOLS, 'No tool among the links.');
+
+        // The same layout as NEO's footer (MENU_FOOTER_CLASSES, FOOTER_SECTION_CLASSES): 24px between the groups,
+        // 16px within a group and between rows, the groups at the two ends from lg and centred below.
+        $sNeo = (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . 'neo/packages/app/components/nav/menu-footer.tsx');
+        $this->assertStringContainsString('justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-4', $sNeo);
+        $this->assertStringContainsString("'max-w-full flex-row flex-wrap items-center justify-center gap-4'", $sNeo);
+        foreach (['template/menu_footer.html', 'modules/boonex/artificer/data/template/system/menu_footer.html'] as $sFile) {
+            $s = (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile);
+            $this->assertStringContainsString('<div id="bx-menu-footer" class="bx-menu-object-__object__ flex flex-wrap items-center justify-center lg:justify-between gap-x-6 gap-y-4">', $s, $sFile);
+            $this->assertMatchesRegularExpression('/<bx_if:links>\s*<ul class="bx-menu-hor bx-menu-footer-links max-w-full flex flex-wrap items-center justify-center gap-4">\s*<bx_repeat:menu_links>/', $s, $sFile);
+            $this->assertMatchesRegularExpression('/<bx_if:tools>\s*<ul class="bx-menu-hor bx-menu-footer-tools max-w-full flex flex-wrap items-center justify-center gap-4">\s*<bx_repeat:menu_tools>/', $s, $sFile);
+        }
+    }
+
+    public function testSwitchersAreBorderlessIconButtonsAsInNeo(): void
+    {
+        // The tools that open a menu: no fill at rest, the button fill on hover, focus and press, 28px squares whose
+        // 36px hit areas meet without overlapping. NEO: NeoButton `borderless`, mini, the same sides and hit area.
+        $sCss = (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . 'template/css/tailwind.css');
+        $this->assertMatchesRegularExpression('/#bx-menu-footer > ul > li > a\[aria-haspopup\] \{\s*@apply justify-center size-7 -mx-1 rounded-md duration-150 ease-out;\s*@apply text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;\s*@apply hover:bg-gray-950\/\[0\.08\] dark:hover:bg-gray-50\/\[0\.08\] focus-visible:bg-gray-950\/\[0\.08\] dark:focus-visible:bg-gray-50\/\[0\.08\];\s*@apply active:bg-gray-950\/\[0\.12\] dark:active:bg-gray-50\/\[0\.12\];\s*@apply before:-inset-x-1 before:-inset-y-2;/', $sCss);
+
+        $sNeo = (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . 'neo/packages/app/components/nav/menu-footer.tsx');
+        $this->assertStringContainsString("iconStyle: isText ? 'borderless' : style,", $sNeo);
+        $this->assertStringContainsString("iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1' : ''),", $sNeo);
+        $this->assertStringContainsString('iconHitSlop: isText ? { top: 8, right: 4, bottom: 8, left: 4 } : undefined,', $sNeo);
+        $this->assertSame(3, substr_count($sNeo, 'style: visualProps.iconStyle,'), 'Language, theme and sounds.');
+
+        foreach (['color_scheme', 'sounds'] as $sName) {
+            $aItems = $this->footerItems();
+            if (isset($aItems[$sName]))
+                $this->assertStringContainsString('aria-haspopup="menu"', $aItems[$sName]['attrs'], $sName . ' is styled by its aria-haspopup.');
+        }
+    }
+
+    public function testPoweredByBadgeIsNotClipped(): void
+    {
+        // The logo's glyphs reach the edges of its viewBox, so a clipping box cuts the last letter's antialiased edge.
+        foreach (['template/css/menu.css', 'modules/boonex/artificer/data/template/system/css/menu.css'] as $sFile)
+            $this->assertMatchesRegularExpression('/#bx-menu-footer \.bx-menu-hor > li\.bx-menu-item-powered_by \.sys-icon-svg \{\s*width: auto;\s*overflow: visible;\s*\}/', (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile), $sFile);
+    }
+
     public function testThePageYoureOnIsMarkedCurrent(): void
     {
         $oSelModule = new ReflectionProperty(BxDolMenu::class, 'SEL_MODULE');

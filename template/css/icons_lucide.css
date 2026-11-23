@@ -23,7 +23,7 @@ i.sys-icon:empty:not([data-lucide]) {
 }
 .cmt-counter .cmt-counter-icon i.sys-icon:empty:not([data-lucide]),
 .bx-base-content-card .bx-base-content-card-meta i.sys-icon:empty:not([data-lucide]),
-#bx-menu-footer > li > a > i.sys-icon:empty:not([data-lucide]) {
+#bx-menu-footer > ul > li > a > i.sys-icon:empty:not([data-lucide]) {
     width: 1rem;
     height: 1rem;
 }

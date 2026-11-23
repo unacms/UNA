@@ -268,8 +268,10 @@ div.bx-popup-menu-main.sys-add-content ul {
 }
 
 /*--- Footer Menu ---*/
-#bx-menu-footer.bx-menu-hor > li.bx-menu-item-powered_by .sys-icon-svg {
+/* The UNA logo at its own width; its glyphs reach the edges of its viewBox, so it isn't clipped there. */
+#bx-menu-footer .bx-menu-hor > li.bx-menu-item-powered_by .sys-icon-svg {
     width: auto;
+    overflow: visible;
 }
 
 /*--- Profile Stats/Followings Menu ---*/

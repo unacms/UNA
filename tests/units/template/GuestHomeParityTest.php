@@ -69,9 +69,9 @@ class GuestHomeParityTest extends BxDolTestCase
     {
         $s = self::read('neo/packages/app/components/nav/menu-footer.tsx');
         $this->assertStringContainsString("export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-4 p-4';", $s, 'No minimum height: 1px + 16px + 28px + 16px, as #bx-footer.');
-        $this->assertStringContainsString("iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1.5' : ''),", $s, 'Icon triggers overlap the gaps by their 6px sides.');
+        $this->assertStringContainsString("iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1' : ''),", $s, 'Icon triggers overlap the gaps by their 4px sides.');
         $this->assertSame(3, substr_count($s, 'className: visualProps.iconClassName,'), 'Language, theme and sounds.');
-        $this->assertStringContainsString("iconHitSlop: isText ? { top: 8, right: 2, bottom: 8, left: 2 } : undefined,", $s, 'Squares 4px apart: hit areas that meet, not overlap.');
+        $this->assertStringContainsString("iconHitSlop: isText ? { top: 8, right: 4, bottom: 8, left: 4 } : undefined,", $s, 'Squares 8px apart: 36px hit areas that meet, not overlap.');
         $this->assertSame(3, substr_count($s, 'hitSlop: visualProps.iconHitSlop,'));
     }
 

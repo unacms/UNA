@@ -43,7 +43,9 @@ type FooterVisualProps = {
     className: string;
     textClassName: string;
     contentInsets?: { x: number };
-    /** Classes of the icon-only triggers (language, theme, sounds). */
+    /** The look of the icon-only triggers (language, theme, sounds): buttons, while the links are text. */
+    iconStyle: string;
+    /** Classes of the icon-only triggers. */
     iconClassName: string;
     /** Their extended hit area, when it must not reach a neighbour's. */
     iconHitSlop?: { top: number; right: number; bottom: number; left: number };
@@ -204,7 +206,7 @@ function FooterThemeSwitcher({ visualProps }: Readonly<FooterControlProps>) {
                 image: currentThemeItem.icon,
                 accessibilityLabel: themeLabel,
                 tooltip: themeLabel,
-                style: visualProps.style,
+                style: visualProps.iconStyle,
                 controlSize: visualProps.controlSize,
                 className: visualProps.iconClassName,
                 hitSlop: visualProps.iconHitSlop,
@@ -243,7 +245,7 @@ function FooterSoundsLevel({ visualProps }: Readonly<FooterControlProps>) {
                 image: current.icon,
                 accessibilityLabel: label,
                 tooltip: label,
-                style: visualProps.style,
+                style: visualProps.iconStyle,
                 controlSize: visualProps.controlSize,
                 className: visualProps.iconClassName,
                 hitSlop: visualProps.iconHitSlop,
@@ -322,7 +324,7 @@ function FooterLanguageSwitcher({ langs, visualProps }: Readonly<FooterControlPr
                 image: localeIconName(activeLang) || 'Languages',
                 accessibilityLabel: langLabel,
                 tooltip: langLabel,
-                style: visualProps.style,
+                style: visualProps.iconStyle,
                 controlSize: visualProps.controlSize,
                 className: visualProps.iconClassName,
                 hitSlop: visualProps.iconHitSlop,
@@ -346,11 +348,13 @@ function footerVisualProps(btnStyle: FooterButtonStyle | undefined, variant?: st
         textClassName: itemClassName ?? legacy.textClassName ?? legacy.className ?? (isText ? FOOTER_TEXT_STYLE.textClassName : ''),
         // Text links sit flush; the section's gap spaces them.
         contentInsets: isText ? { x: 0 } : undefined,
-        // The icon-only triggers are 28px squares around a 16px icon. Their 6px sides overlap the gaps, so the icons
-        // are 16px from their neighbours, as the site's bare icons are (#bx-menu-footer). The squares are then 4px
-        // apart, so their hit areas reach 2px to the sides (32px wide, as the site's icons') and 8px up and down.
-        iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1.5' : ''),
-        iconHitSlop: isText ? { top: 8, right: 2, bottom: 8, left: 2 } : undefined,
+        // The icon-only triggers are borderless buttons: no fill at rest, the button fill on hover, focus and press,
+        // as the site's (#bx-menu-footer, tailwind.css). 28px squares (`mini`) around a 16px icon, so the row stays
+        // 28px tall. Their 4px sides overlap the gaps, so the squares are 8px apart and their hit areas reach 4px to
+        // the sides (36px wide) and 8px up and down, meeting a neighbour's without overlapping.
+        iconStyle: isText ? 'borderless' : style,
+        iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1' : ''),
+        iconHitSlop: isText ? { top: 8, right: 4, bottom: 8, left: 4 } : undefined,
     };
 }
 
