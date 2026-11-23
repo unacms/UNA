@@ -723,22 +723,45 @@ function ListBody({
     const pageEmptyState = route?.endpoint?.empty_state
     const emptyState = pageEmptyState?.custom ? pageEmptyState : (scene.emptyState ?? pageEmptyState)
     const shell = route?.endpoint?.block
+    // A search's results sit in their block, as on the site: title, background, padding, the empty
+    // state inside. Only once there is something to show: rows, the empty state, or a search loading
+    // (the form has a value). Before a search there is no block, not even while the first, empty,
+    // reply loads. Web only (the apps' list scrolls the whole screen, its header is the list's own).
+    const isSearched = hasFilterValues(route?.endpoint?.params?.filters)
+    const inShell = !headerInList && !!shell && (!scene.isEmpty || scene.showNoContent || (wantsPreload && isSearched))
     const noContent = NoContent
-        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} fill={!shell || !!headerInList} />
+        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} fill={!inShell} />
         : null
     const emptyFooter =
         headerInList && scene.showNoContent && noContent
             ? noContent
             : (uniListProps.ListFooterComponent ?? null)
+    // In the block the list draws no card of its own (the block is the card): only its rows' spacing.
+    const listEndpoint = useMemo(
+        () => (inShell ? { ...route?.endpoint, designbox: { ...route?.endpoint?.designbox, bg: false }, bg_hidden_on: undefined } : route?.endpoint),
+        [inShell, route?.endpoint]
+    )
+    // Only the results go in the block: the page's other blocks (above or under the list) and, below
+    // the right column's breakpoint, that column's blocks stay outside it, where they were.
+    const { listRows, rowsBefore, rowsAfter } = useMemo(() => {
+        if (!inShell) return { listRows: scene.rows, rowsBefore: EMPTY_LIST_ITEMS, rowsAfter: EMPTY_LIST_ITEMS }
+        const beforeIds = new Set(filterConductorPageBlocks(route?.data).filter((item) => !item.afterList).map((item) => item.id))
+        const blocks = scene.rows.filter((item) => item?.type === 'block')
+        return {
+            listRows: scene.rows.filter((item) => item?.type !== 'block'),
+            rowsBefore: blocks.filter((item) => beforeIds.has(item.id)),
+            rowsAfter: blocks.filter((item) => !beforeIds.has(item.id)),
+        }
+    }, [inShell, scene.rows, route?.data])
 
     const list = (
         <UniList
             {...uniListProps}
             ListHeaderComponent={headerInList ? scene.chrome : undefined}
-            data={scene.rows}
+            data={listRows}
             route={route}
             unit={route?.endpoint?.unit}
-            endpoint={route?.endpoint}
+            endpoint={listEndpoint}
             layout={scene.layout}
             renderItem={scene.renderItem}
             preloadComponent={preloadComponent}
@@ -749,22 +772,23 @@ function ListBody({
             refreshing={refreshing}
         />
     )
-    // A search's results sit in their block, as on the site: title, background, padding, the empty
-    // state inside. Only once there is something to show: before a search there is no block. Web only
-    // (the apps' list scrolls the whole screen, its header is the list's own).
-    const inShell = !headerInList && !!shell && (!scene.isEmpty || scene.showNoContent || wantsPreload)
+    const renderRows = (rows) => rows.map((item) => <View key={item.id} className="w-full">{scene.renderItem({ item })}</View>)
 
     return (
         <>
             {!headerInList ? scene.chrome : null}
             {inShell ? (
-                // In the column's inset like the page's other blocks, 16px under the tabs as the side columns'.
-                <BlockWrapper block={shell} config={shell.config} listShell wrapperClassses={`w-full sm:pt-4 mb-0.5 sm:mb-4 ${scene.blockClassName}`}>
-                    {/* The grid spaces its cards 16px from its edges itself: inside the block's padding they
-                        sit at the padding, as the site's cards do. */}
-                    <View className="-m-4">{list}</View>
-                    {scene.showNoContent ? noContent : null}
-                </BlockWrapper>
+                <>
+                    {renderRows(rowsBefore)}
+                    {/* In the column's inset like the page's other blocks, 16px under the tabs as the side columns'. */}
+                    <BlockWrapper block={shell} config={shell.config} listShell wrapperClassses={`w-full sm:pt-4 mb-0.5 sm:mb-4 ${scene.blockClassName}`}>
+                        {/* The grid spaces its cards 16px from its edges itself: inside the block's padding they
+                            sit at the padding, as the site's cards do. */}
+                        <View className="-m-4">{list}</View>
+                        {scene.showNoContent ? noContent : null}
+                    </BlockWrapper>
+                    {renderRows(rowsAfter)}
+                </>
             ) : (
                 <>
                     {list}
@@ -773,6 +797,16 @@ function ListBody({
             )}
         </>
     )
+}
+
+/** A filter form's values (route.endpoint.params.filters) hold at least one answer. */
+function hasFilterValues(filters) {
+    if (!filters || typeof filters !== 'object') return false
+    return Object.values(filters).some((value) => {
+        if (Array.isArray(value)) return value.some((v) => v !== '' && v != null)
+        if (value && typeof value === 'object') return hasFilterValues(value)
+        return value !== '' && value != null && value !== false
+    })
 }
 
 /**
