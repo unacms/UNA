@@ -3,7 +3,8 @@ import { getPageWidth, appSetting } from 'app/lib/util'
 import AppVersion from 'app/ui/atoms/app-version'
 import { Platform } from 'react-native'
 import { useScroll } from 'app/lib/hooks/use-scroll';
-import { useHeaderHeight, useFooterHeight, useGetScrollValue } from 'app/context/jotai/layout';
+import { useHeaderHeight, useFooterHeight, useGetScrollValue, useInformerStripHeight } from 'app/context/jotai/layout';
+import { useIsDesktop } from 'app/context/measure';
 import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { useEffect, useRef } from 'react';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible'
@@ -31,9 +32,16 @@ export default function Page({ children, data, page_width, processKeyboard=true,
     const { currentUser } = useCurrentUser();
     const tabBarInset = getNativeTabBarOverlayInset(currentUser);
 
+    // The informer strip above the header (components/layout.js, layout.web.js below desktop): the apps keep all of
+    // it on screen, the web what of it has not scrolled away yet.
+    const isDesktop = useIsDesktop();
+    const stripHeight = useInformerStripHeight();
+
     useEffect(() => {
         return pushFormEnsureVisibleHandler(({ windowY }) => {
-            const target = (headerHeightFromAtom || 0) + 16;
+            let stripAbove = stripHeight;
+            if (isWeb) stripAbove = isDesktop ? 0 : Math.max(0, stripHeight - getScrollValue());
+            const target = (headerHeightFromAtom || 0) + stripAbove + 16;
             const delta = windowY - target;
             if (Math.abs(delta) < 40) return;
 
@@ -44,7 +52,7 @@ export default function Page({ children, data, page_width, processKeyboard=true,
 
             scrollContainerByDelta(scrollRef.current, delta, getScrollValue());
         });
-    }, [headerHeightFromAtom, scrollRef, getScrollValue]);
+    }, [headerHeightFromAtom, stripHeight, isDesktop, scrollRef, getScrollValue]);
 
     return (
         <Wrapper

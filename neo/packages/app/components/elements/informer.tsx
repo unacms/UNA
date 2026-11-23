@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
 import { useSetInformerStripHeight } from 'app/context/jotai/layout';
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
-import { useCurrentUser } from 'app/context/user'
+import { useCurrentUser, useCurrentUserStore } from 'app/context/user'
 import { appSetting, cn, stripTags } from 'app/lib/util';
 import { NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
@@ -74,11 +73,11 @@ const actionHref = (url: string) => (/^(https?:)?\/\//i.test(url) || url.startsW
  * line up at the top; the button stays on the right while the text has room for 15rem beside it, and goes under the
  * text when it does not.
  */
-function InformerMessage({ item }: { item: InformerItem }) {
+function InformerMessage({ item, topInset = 0 }: Readonly<{ item: InformerItem; topInset?: number }>) {
     const tone = toneOf(item.type);
 
     return (
-        <View className={cn('w-full border-b', tone.box)}>
+        <View className={cn('w-full border-b', tone.box)} style={topInset > 0 ? { paddingTop: topInset } : undefined}>
             <View className={cn('w-full mx-auto px-4 py-3 flex-row items-start gap-3', appSetting('layout', 'max_width_block'))}>
                 <View className={cn('w-9 h-9 shrink-0 rounded-full items-center justify-center', tone.dot)} aria-hidden>
                     <Icon icon={item.icon || tone.glyph} size={20} className={tone.icon} />
@@ -94,21 +93,31 @@ function InformerMessage({ item }: { item: InformerItem }) {
     );
 }
 
+/** Whether `user` has informers to show in the strip. */
+export const hasInformerStrip = (user: any): boolean => visibleInformers(user ? user.informer : undefined, user).length > 0;
+/** Whether the strip shows: below desktop it is above the page header, which then leaves the top inset to it. */
+export const useHasInformerStrip = (): boolean => hasInformerStrip(useCurrentUser().currentUser);
+/** The same, read once (no re-render), for code outside a component's render. */
+export const hasInformerStripNow = (): boolean => hasInformerStrip(useCurrentUserStore.getState().currentUser);
+
 /**
- * The viewer's informers: one strip right under the header, before the page's cover, tabs and blocks, as UNA's. The
- * web puts it first in the page's `<main>` (layout.web.js), the apps first in the page's list, under the header and
- * its tab row (conductor/native-ui.js TabScene), and Home above its feed (page-layout/home.js). Nothing when there are
- * none.
+ * The viewer's informers as one strip. On desktop web it is right under the header, before the page's cover, tabs and
+ * blocks, as UNA's (first in `<main>`, layout.web.js). Below desktop, where the header carries the page's title, it is
+ * above the header: the web's first thing on the page (the header's fixed layer moves down by what of it is still in
+ * view, page-header.web.js), the apps' first thing on screen, over the header, taking the status bar's inset
+ * (`topInset`, layout.js). Nothing when there are none.
  */
-export function InformerStrip() {
+export function InformerStrip({ topInset = 0 }: Readonly<{ topInset?: number }>) {
     const { currentUser } = useCurrentUser();
     const items = visibleInformers(currentUser ? currentUser.informer : undefined, currentUser);
-    // Web: its height for what is fixed to the window under the header (Home's side columns, useInformerStripVisibleHeight).
+    // Its height, for what is placed under it: the web header below desktop and Home's side columns
+    // (useInformerStripVisibleHeight), the scroll to a form's first error (ui/molecules/page/page.js).
     const setHeight = useSetInformerStripHeight();
     const hasItems = items.length > 0;
+    // Cleared only when there is nothing to show: every screen draws the same strip, so a screen that closes (a page
+    // popped off a tab's stack) must not clear the height the screen under it measured.
     useEffect(() => {
         if (!hasItems) setHeight(0);
-        return () => setHeight(0);
     }, [hasItems, setHeight]);
 
     if (!hasItems)
@@ -118,9 +127,9 @@ export function InformerStrip() {
         <View
             role="status"
             className="w-full"
-            onLayout={Platform.OS === 'web' ? (e: any) => setHeight(Math.round(e.nativeEvent.layout.height)) : undefined}
+            onLayout={(e: any) => setHeight(Math.round(e.nativeEvent.layout.height))}
         >
-            {items.map((item, index) => <InformerMessage key={item.id || 'informer' + index} item={item} />)}
+            {items.map((item, index) => <InformerMessage key={item.id || 'informer' + index} item={item} topInset={index === 0 ? topInset : 0} />)}
         </View>
     );
 }
