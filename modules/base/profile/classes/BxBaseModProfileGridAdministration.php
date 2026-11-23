@@ -231,6 +231,10 @@ class BxBaseModProfileGridAdministration extends BxBaseModGeneralGridAdministrat
         if($oProfile instanceof BxDolProfileUndefined)
             return false;
 
+        // A moderator doesn't suspend staff, and only an operator suspends an operator (the switch is hidden for them too).
+        if(!$this->_oModule->isAllowDeleteOrDisable(bx_get_logged_profile_id(), $oProfile->id()))
+            return false;
+
         $iAction = BX_PROFILE_ACTION_MANUAL;
         $bSendEmailNotification = $this->_oModule->serviceActAsProfile();
         return $isChecked ? $oProfile->activate($iAction, 0, $bSendEmailNotification && $this->_oModule->serviceIsEnableProfileActivationLetter()) : $oProfile->suspend($iAction, 0, $bSendEmailNotification);

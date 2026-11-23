@@ -53,7 +53,7 @@ class AdministrationOwnRowTest extends BxDolIntegrationTestCase
 
         $iOwn = (int)getLoggedId();
         $this->assertTrue($this->call($oGrid, '_isCheckboxDisabled', ['id' => $iOwn]));
-        $this->assertFalse($this->call($oGrid, '_isCheckboxDisabled', ['id' => $iOwn + 100000]));
+        $this->assertFalse($this->call($oGrid, '_isCheckboxDisabled', ['id' => (int)$this->bxAccount('user')->id()]), "a member's account keeps its checkbox");
         $this->assertFalse($this->call($oGrid, '_enable', $iOwn, 0), 'not suspended from the grid');
         $this->assertFalse($this->call($oGrid, '_doDelete', $iOwn), 'not deleted from the grid');
         $this->assertNotFalse(BxDolAccount::getInstance($iOwn));

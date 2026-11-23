@@ -96,6 +96,19 @@ class BxDolStudioRolesUtils extends BxDol implements iBxDolSingleton
         $iRole = $this->getRole($iAccountId);
         return $this->oDb->isActionAllowed($iRole, (int)$aAction['id']);
     }
+
+    /**
+     * Whether the account's Studio role lets it use the Studio page (app) with the name: "use <type>" for the type of the page's app.
+     * A page that isn't an app (has no type) is open to every operator.
+     */
+    public function isPageAllowed($sPageName, $iAccountId = 0)
+    {
+        $aPage = BxDolStudioPageQuery::getInstance()->getPages(['type' => 'by_page_name_full', 'value' => $sPageName]);
+        if(empty($aPage) || !is_array($aPage) || empty($aPage['wid_type']))
+            return true;
+
+        return (bool)$this->isActionAllowed('use ' . $aPage['wid_type'], $iAccountId);
+    }
 }
 
 /** @} */

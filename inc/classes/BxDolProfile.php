@@ -831,7 +831,8 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
         
         $iSwitchToAccountId = $this->getAccountId();
         $iSwitchToProfileId = $this->id();
-        $bCanSwitch = ($iSwitchToAccountId == $iViewerAccountId || $bAllowSwitchToAnyProfile);
+        // "Switch to any profile" doesn't reach staff the viewer may not act on (bx_acl_can_manage_profile).
+        $bCanSwitch = ($iSwitchToAccountId == $iViewerAccountId || ($bAllowSwitchToAnyProfile && bx_acl_can_manage_profile((int)$iViewerProfileId, (int)$iSwitchToProfileId)));
         /**
          * @hooks
          * @hookdef hook-account-check_switch_context 'account', 'check_switch_context' - hook on switch profile

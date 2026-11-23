@@ -38,8 +38,9 @@ BxDolStudioModule.prototype.activate = function(oCheckbox, sName, iWidgetId) {
     aParams[this.sActionsPrefix + '_action'] = 'activate';
     aParams[this.sActionsPrefix + '_value'] = sName;
     aParams[this.sActionsPrefix + '_widget_id'] = iWidgetId;
+    aParams['csrf_token'] = sStudioCsrfToken;
 
-    $.get(
+    $.post(
         this.sActionsUrl, aParams, function(oData) {
             processJsonData(oData);
 
@@ -83,10 +84,11 @@ BxDolStudioModule.prototype.uninstall = function(sName, iWidgetId, iConfirm) {
     aParams[this.sActionsPrefix + '_value'] = sName;
     aParams[this.sActionsPrefix + '_widget_id'] = iWidgetId;
     aParams[this.sActionsPrefix + '_confirmed'] = parseInt(iConfirm);
+    aParams['csrf_token'] = sStudioCsrfToken;
     
     $('.bx-popup-applied:visible').dolPopupHide();
 
-    $.get(
+    $.post(
     	this.sActionsUrl, aParams, function (oData) {
             processJsonData(oData);
     	},

@@ -50,15 +50,17 @@ class BxDolStudioWidget extends BxTemplStudioPage
                     'onchange' => "javascript:" . $sJsObjectLauncher . ".featured('" . $this->aPage['name'] . "', this)"
                 ));
 
-            $this->addAction(array(
-                'type' => 'select',
-                'name' => 'rearrange',
-                'caption' => '_adm_txt_pca_rearrange',
-                'icon' => 'folder-input',
-                'value' => '{widget_type}',
-                'values' => BxDolFormQuery::getDataItems($this->_sTypesPreList),
-                'onchange' => "javascript:" . $sJsObjectLauncher . ".rearrange({widget_id}, this)"
-            ));
+            // Moving an app to another type changes which roles may use it: for app managers only.
+            if(BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS))
+                $this->addAction(array(
+                    'type' => 'select',
+                    'name' => 'rearrange',
+                    'caption' => '_adm_txt_pca_rearrange',
+                    'icon' => 'folder-input',
+                    'value' => '{widget_type}',
+                    'values' => BxDolFormQuery::getDataItems($this->_sTypesPreList),
+                    'onchange' => "javascript:" . $sJsObjectLauncher . ".rearrange({widget_id}, this)"
+                ));
 
             $this->aMarkers['page_name'] = $this->aPage['name'];
         }

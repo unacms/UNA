@@ -26,6 +26,14 @@ class BxDolStudioRoles extends BxTemplStudioWidget
             $this->sPage = $sPage;
     }
 
+    /**
+     * Roles decide what every operator may do, so changing them takes "Manage roles" too.
+     */
+    public function isAccessAllowed()
+    {
+        return parent::isAccessAllowed() && BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_ROLES);
+    }
+
     public function checkAction()
     {
         $sAction = bx_get('rl_action');

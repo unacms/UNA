@@ -2442,6 +2442,31 @@ function bx_acl_is_administrator(int $iProfileId = 0)
 }
 
 /**
+ * Whether one member of staff may act on another person's profile: delete or suspend it, or switch into it. Only an operator
+ * (a Studio account) acts on a profile of an operator's account, and a moderator doesn't act on moderators or administrators.
+ * @param int $iActorProfileId - the profile acting, the logged in one when 0
+ * @param int $iTargetProfileId - the profile acted on
+ * @return bool
+ */
+function bx_acl_can_manage_profile(int $iActorProfileId, int $iTargetProfileId)
+{
+    if(!$iActorProfileId)
+        $iActorProfileId = (int)bx_get_logged_profile_id();
+
+    $oTarget = $iTargetProfileId ? BxDolProfile::getInstance($iTargetProfileId) : false;
+    if($oTarget && ($iTargetAccountId = (int)$oTarget->getAccountId()) && isAdmin($iTargetAccountId)) {
+        $oActor = $iActorProfileId ? BxDolProfile::getInstance($iActorProfileId) : false;
+        if(!$oActor || !($iActorAccountId = (int)$oActor->getAccountId()) || !isAdmin($iActorAccountId))
+            return false;
+    }
+
+    if($iActorProfileId && bx_acl_is_moderator($iActorProfileId) && bx_acl_is_advanced($iTargetProfileId))
+        return false;
+
+    return true;
+}
+
+/**
  * Raise an audit event
  * @param int $iContentId - content id
  * @param string $sContentModule - module name

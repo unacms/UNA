@@ -63,6 +63,10 @@ class BxDolStudioStore extends BxTemplStudioWidget
 
         $sAction = bx_process_input($sAction);
 
+        // Downloading, installing, updating and deleting apps, and the cart, are changes: a POST with the Studio's CSRF token.
+        if(in_array($sAction, ['get-file', 'get-update', 'get-update-and-install', 'install', 'update', 'delete', 'add-to-cart', 'delete-from-cart']) && !self::isWriteRequest())
+            return self::getWriteRequestError();
+
         $aResult = array('code' => BX_DOL_STUDIO_IU_RC_FAILED, 'message' => _t('_adm_mod_err_cannot_process_action'));
         switch($sAction) {
             case 'get-file':
