@@ -126,6 +126,23 @@ class SessionSecurityTest extends BxDolIntegrationTestCase
         BxDolDb::getInstance()->query("DELETE FROM `sys_sessions` WHERE `id` = :id", ['id' => $sOtherAccount]);
     }
 
+    public function testRequestInProgressDoesNotBringBackAnEndedSession(): void
+    {
+        $iId = (int)$this->bxAccount('admin')->id();
+        $this->bxLoginAs('admin', false);
+        $sId = BxDolSession::getInstance()->getId();
+
+        // another request has read the session, then the password changes elsewhere and ends it
+        $oInProgress = $this->bxNextRequest();
+        $this->assertSame($sId, $oInProgress->getId());
+        $this->assertSame(1, bx_end_other_sessions($iId, false));
+
+        // the request in progress goes on and saves something in its session
+        $oInProgress->setValue('phpunit_late', 'yes');
+
+        $this->assertFalse($this->bxRow($sId), 'The ended session stays ended.');
+    }
+
     public function testPasswordResetEndsEverySession(): void
     {
         $iId = (int)$this->bxAccount('admin')->id();

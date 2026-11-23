@@ -83,7 +83,8 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
             return $bRedirect ? $this->_showLoginError($sError) : $sError;
         }
 
-        $sUrl2fa = BxTemplServiceLogin::start2faLogin($iAccountId, $bRememberMe);
+        // the page the member was going to waits through the SMS code steps
+        $sUrl2fa = BxTemplServiceLogin::start2faLogin($iAccountId, $bRememberMe, $this->_getRelocateUrl($sCallbackUrl));
         if ($sUrl2fa) {
             $sUrl2fa = BX_DOL_URL_ROOT . $sUrl2fa;
         }
@@ -321,7 +322,7 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
                 return _t('_sys_txt_error_account_creation');
 
             $isSetPendingApproval = $this->_isSetPendingApprovalAccount($aProfileInfo, $aFieldsAccount, $aFieldsProfile);
-            $iAccountProfileId = $oFormHelperAccount->onAccountCreated ($iAccountId, $isSetPendingApproval, BX_PROFILE_ACTION_EXTERNAL);
+            $iAccountProfileId = $oFormHelperAccount->onAccountCreated ($iAccountId, $isSetPendingApproval, BX_PROFILE_ACTION_EXTERNAL, $isSetLoggedIn);
 
             // create profile
             if (isset($oFormProfile) && $oFormProfile) {

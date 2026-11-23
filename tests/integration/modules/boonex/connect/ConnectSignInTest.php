@@ -73,6 +73,18 @@ class ConnectSignInTest extends BxDolIntegrationTestCase
         $this->assertSame($iAccountId, (int)BxDolSession::getInstance()->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID));
     }
 
+    public function testPageToGoToWaitsThroughTheSmsCode(): void
+    {
+        [$iAccountId, $iProfileId] = $this->bxUser(['locked' => 0, 'logged' => 0]);
+        $this->bxParam('sys_account_activation_2fa_enable', 'on');
+        $this->bxParam('sys_sms_default', 'phpunit');
+
+        $sUrl = BX_DOL_URL_ROOT . 'page.php?i=phpunit-start';
+        $this->bxModule('bx_facebook')->setLogged($iProfileId, $sUrl, false);
+
+        $this->assertSame($sUrl, BxDolSession::getInstance()->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE));
+    }
+
     public function testRemoteSignInOfAllowedAccount(): void
     {
         [$iAccountId, $iProfileId] = $this->bxUser(['locked' => 0]);

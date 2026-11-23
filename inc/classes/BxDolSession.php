@@ -26,6 +26,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
     protected $iUserId;
     protected $aData;
     protected $iTTL;
+    protected $bStored; ///< the row was read from the database: saves only update it, so a session ended meanwhile isn't recreated
 
     protected $bAutoLogout;	//--- Auto logout with broken session
 
@@ -41,6 +42,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         $this->iUserId = 0;
         $this->aData = array();
         $this->iTTL = 0;
+        $this->bStored = false;
 
         $this->bAutoLogout = false; // when changing to 'true', it maybe you will need to increase BX_DOL_SESSION_IDLE_TIMEOUT
         if (defined('BX_SESSION_AUTO_LOGOUT'))
@@ -113,6 +115,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         // if an old session has not been found then generate a new one
         if (!$this->sId) {
             $this->sId = bin2hex(random_bytes(16));
+            $this->bStored = false;
         }
 
         $iLifetime = 60 * (int)getParam('sys_session_lifetime_in_min');
@@ -174,6 +177,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         $this->iUserId = 0;
         $this->iTTL = 0;
         $this->aData = array();
+        $this->bStored = false;
     }
 
     function exists($sId = '')
@@ -187,6 +191,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
 
 
 		$this->sId = $mixedSession['id'];
+        $this->bStored = true;
 		$this->iUserId = (int)$mixedSession['user_id'];
         $this->iTTL = isset($mixedSession['ttl']) ? (int)$mixedSession['ttl'] : 0;
 		$this->aData = unserialize($mixedSession['data']);
@@ -225,6 +230,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if ($iUserId && $iUserId != $this->iUserId) {
             $this->oDb->deleteById($this->sId);
             $this->sId = bin2hex(random_bytes(16));
+            $this->bStored = false;
             $this->sendCookie();
         }
 
@@ -327,11 +333,14 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if($this->iUserId == 0)
             $this->iUserId = getLoggedId();
 
+        // A session read at the start of this request is only updated: if its row was deleted meanwhile
+        // (the password changed, it was signed out elsewhere), this request doesn't bring it back.
         $this->oDb->save($this->sId, array(
             'user_id' => $this->iUserId,
             'ttl' => $this->iTTL,
             'data' => serialize($this->aData)
-        ));
+        ), !$this->bStored);
+        $this->bStored = true;
     }
 }
 

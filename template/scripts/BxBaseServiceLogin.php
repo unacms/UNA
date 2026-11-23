@@ -462,6 +462,10 @@ class BxBaseServiceLogin extends BxDol
             $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
             $oAccount = BxDolAccount::getInstance($oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID));
             $bRememberMe = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER);
+            $sUrlRelocate = $oForm->getCleanValue('relocate');
+            if (!$sUrlRelocate) {
+                $sUrlRelocate = (string)$oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE);
+            }
             self::reset2faLogin();
 
             // The phone the code was sent to is the account's from now on, unless another account
@@ -470,8 +474,7 @@ class BxBaseServiceLogin extends BxDol
                 $oAccount->updatePhone($aCode['phone'], false, true);
 
             $aAccount = bx_login($oAccount->id(), $bRememberMe);
-           
-            $sUrlRelocate = $oForm->getCleanValue('relocate');
+
             if (!$sUrlRelocate || 0 !== strncmp($sUrlRelocate, BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)))
                 $sUrlRelocate = BX_DOL_ROLE_ADMIN == $oForm->getRole() ? BX_DOL_URL_STUDIO . 'launcher.php' : BX_DOL_URL_ROOT . 'member.php';
 
@@ -509,8 +512,9 @@ class BxBaseServiceLogin extends BxDol
      * being completed, and this returns that page's relative URL; '' when the account may sign in now.
      * @param $iAccountId account which proved who it is (a password, a Connect app)
      * @param $bRememberMe keep the session after the code was entered
+     * @param $sRelocate page to go to once the code was entered, when the code form doesn't say
      */
-    public static function start2faLogin($iAccountId, $bRememberMe = false)
+    public static function start2faLogin($iAccountId, $bRememberMe = false, $sRelocate = '')
     {
         $bOn = getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '';
         $oAccount = $bOn ? BxDolAccount::getInstance((int)$iAccountId) : null;
@@ -525,6 +529,7 @@ class BxBaseServiceLogin extends BxDol
         $oSession = BxDolSession::getInstance();
         $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
         $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $bRememberMe);
+        $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE, (string)$sRelocate);
         $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
 
         return BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
@@ -538,7 +543,7 @@ class BxBaseServiceLogin extends BxDol
         // The count of tries stays in sys_keys until it expires: a request that read the session before
         // this one still can't try a code more times than the count allows, and a right code sent twice signs in.
         $oSession = BxDolSession::getInstance();
-        foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER] as $sKey)
+        foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE] as $sKey)
             $oSession->unsetValue($sKey);
     }
 
