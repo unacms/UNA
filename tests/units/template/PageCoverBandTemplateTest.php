@@ -52,14 +52,16 @@ class PageCoverBandTemplateTest extends BxDolTestCase
 
     public function testTheSectionTitleIsTheAppsSectionTitle(): void
     {
-        // NEO's section title (TopSidebar): the icon in a 44px box, 8px before a 24px bold name on a 32px line.
+        // NEO's section title (TopSidebar): a 28px icon in a 44px box, 8px before a 20px bold name on a 28px line.
         $sNeo = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
-        $this->assertStringContainsString('text-2xl leading-8 font-bold tracking-tight', $sNeo);
+        $this->assertStringContainsString('text-xl leading-7 font-bold tracking-tight', $sNeo);
+        $this->assertStringContainsString('size={28}', self::read('neo/packages/app/ui/molecules/section-icon.tsx'));
         $this->assertStringContainsString('size-11', self::read('neo/packages/app/ui/molecules/section-icon.tsx'));
 
         $sHtml = self::read(self::SITE);
         $this->assertStringContainsString('<span class="flex size-11 shrink-0 items-center justify-center', $sHtml);
-        $this->assertStringContainsString('text-2xl leading-8 font-bold tracking-tight', $sHtml);
+        $this->assertStringContainsString('text-xl leading-7 font-bold tracking-tight', $sHtml);
+        $this->assertStringContainsString("['class' => 'size-7', 'aria-hidden' => 'true']", self::read('template/scripts/BxBaseCover.php'));
         $this->assertStringContainsString('flex items-center gap-2 py-2.5', $sHtml);
     }
 }
