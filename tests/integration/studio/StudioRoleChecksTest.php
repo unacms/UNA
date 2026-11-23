@@ -239,6 +239,25 @@ class StudioRoleChecksTest extends BxDolIntegrationTestCase
         $this->assertSame(BxDolStudioPage::getAccessDeniedError(), $oModule->checkAction(), 'Uninstalling is for app managers.');
     }
 
+    public function testStoreChangesTakeManageApps(): void
+    {
+        setParam('sys_security_form_token_enable', 'on');
+        BxDolDb::getInstance()->cleanMemoryAll();
+
+        $this->setStudioRole(BX_DOL_STUDIO_ROLE_OPERATOR);
+        $this->assertFalse(BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS), 'An operator doesn\'t manage apps.');
+
+        foreach (['install', 'update', 'delete', 'get-file', 'get-update', 'get-update-and-install'] as $sAction) {
+            $this->asPost(['str_action' => $sAction, 'str_value' => 'boonex/no_such_app/', 'str_id' => 'bx_no_such_app', 'csrf_token' => BxDolForm::getCsrfToken()]);
+            $this->assertSame(BxDolStudioPage::getAccessDeniedError(), (new BxTemplStudioStore())->checkAction(), 'Store ' . $sAction . ' is for app managers.');
+        }
+
+        // The master role manages apps: the request gets past the role check (and fails on the app that doesn't exist).
+        $this->setStudioRole(BX_DOL_STUDIO_ROLE_MASTER);
+        $this->asPost(['str_action' => 'install', 'str_value' => 'boonex/no_such_app/', 'csrf_token' => BxDolForm::getCsrfToken()]);
+        $this->assertNotSame(BxDolStudioPage::getAccessDeniedError(), (new BxTemplStudioStore())->checkAction());
+    }
+
     /**
      * An app's actions name the app they act on, which may not be the app whose page sent them: the role needs that app's type.
      */

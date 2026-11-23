@@ -67,6 +67,10 @@ class BxDolStudioStore extends BxTemplStudioWidget
         if(in_array($sAction, ['get-file', 'get-update', 'get-update-and-install', 'install', 'update', 'delete', 'add-to-cart', 'delete-from-cart']) && !self::isWriteRequest())
             return self::getWriteRequestError();
 
+        // Downloading, installing, updating and deleting apps are for app managers, as uninstalling is.
+        if(in_array($sAction, ['get-file', 'get-update', 'get-update-and-install', 'install', 'update', 'delete']) && !BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS))
+            return self::getAccessDeniedError();
+
         $aResult = array('code' => BX_DOL_STUDIO_IU_RC_FAILED, 'message' => _t('_adm_mod_err_cannot_process_action'));
         switch($sAction) {
             case 'get-file':
