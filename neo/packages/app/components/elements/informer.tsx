@@ -114,9 +114,10 @@ export function InformerStrip({ topInset = 0 }: Readonly<{ topInset?: number }>)
     // (useInformerStripVisibleHeight), the scroll to a form's first error (ui/molecules/page/page.js).
     const setHeight = useSetInformerStripHeight();
     const hasItems = items.length > 0;
+    // Cleared only when there is nothing to show: every screen draws the same strip, so a screen that closes (a page
+    // popped off a tab's stack) must not clear the height the screen under it measured.
     useEffect(() => {
         if (!hasItems) setHeight(0);
-        return () => setHeight(0);
     }, [hasItems, setHeight]);
 
     if (!hasItems)
