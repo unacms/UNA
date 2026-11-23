@@ -162,10 +162,6 @@ li.bx-mi-hidden {
 }
 
 /*--- Page Submenu ---*/
-.bx-menu-main-submenu {
-    -webkit-justify-content: center;
-    justify-content: center;
-}
 .bx-menu-main-submenu .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item > a {
     width: 100%;
     padding: 0.5rem 1.0rem; 
