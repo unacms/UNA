@@ -7,9 +7,11 @@ import {
     isVisibleColor,
 } from 'app/design/controls/neo-button/color-scheme-context';
 import {
+    useInformerStripHeight,
     useScrollValue,
     useSetScrollValue,
 } from 'app/context/jotai/layout';
+import { useIsDesktop } from 'app/context/measure';
 import {
     getPageHeaderBandClass,
     PageHeaderBody,
@@ -148,6 +150,13 @@ export const PageHeader = ({ pageData }) => {
 
     const scrollY = useScrollValue();
     const setScrollValue = useSetScrollValue();
+    // Below desktop the informer strip is above the header, the first thing on the page (layout.web.js): the header's
+    // band and its fixed layers start under it, and move up with it as it scrolls away.
+    const isDesktop = useIsDesktop();
+    const stripHeight = useInformerStripHeight();
+    const stripAbove = isDesktop ? 0 : stripHeight;
+    const stripInView = Math.max(0, stripAbove - scrollY);
+    const fixedTopStyle = stripInView > 0 ? { top: stripInView } : undefined;
     const usesFixedOverlayHeader = isCollapsibleHeader;
     const [band, setBand] = useState(null);
     const showBand = usesFixedOverlayHeader && header.band;
@@ -266,14 +275,14 @@ export const PageHeader = ({ pageData }) => {
                     ref={setBand}
                     aria-hidden
                     className={`pointer-events-none absolute left-0 right-0 top-0 ${getPageHeaderBandClass()}`}
-                    style={{ height: headerHeight }}
+                    style={{ height: headerHeight, top: stripAbove }}
                 />
             ) : null}
             <View
                 className={flowHeaderContainerClassName}
                 role={usesFixedOverlayHeader && shouldRenderFixedLayer ? undefined : 'banner'}
                 aria-hidden={usesFixedOverlayHeader && shouldRenderFixedLayer ? 'true' : undefined}
-                style={flowHeaderStyle}
+                style={usesFixedOverlayHeader ? flowHeaderStyle : fixedTopStyle}
                 onLayout={onHeaderLayout}
             >
                 <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
@@ -292,6 +301,7 @@ export const PageHeader = ({ pageData }) => {
                     className={fixedHeaderContainerClassName}
                     role="banner"
                     pointerEvents={headerPointerEvents}
+                    style={fixedTopStyle}
                 >
                     <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
                     <View className="relative z-10">

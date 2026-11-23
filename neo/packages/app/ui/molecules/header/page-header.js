@@ -9,6 +9,7 @@ import { useResolveClassNames } from 'uniwind';
 import { NeoButtonColorSchemeContext, colorSchemeForBackground, isVisibleColor } from 'app/design/controls/neo-button/color-scheme-context';
 import { useIsScrolled } from 'app/context/jotai/layout';
 import { getWindowSafeAreaInsets, useIsFocused } from 'app/lib/hooks/router';
+import { useHasInformerStrip } from 'app/components/elements/informer';
 import {
     PageHeaderBody,
     PageHeaderSmall,
@@ -53,7 +54,9 @@ export const PageHeader = ({ pageData }) => {
         onHeaderLayout,
         scrollDirection,
     } = headerState;
-    const edgeToEdgeTop = isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0;
+    // The status bar's inset, unless the informer strip is above the header and takes it (components/layout.js).
+    const hasStrip = useHasInformerStrip();
+    const edgeToEdgeTop = isNativeTabsEnabled() && !hasStrip ? (getWindowSafeAreaInsets().top || 0) : 0;
 
     const isScrolled = useIsScrolled();
     const bandScheme = useHeaderBandScheme(isScrolled, header.band);
