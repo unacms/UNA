@@ -98,6 +98,9 @@ export default function ElementMenu({ data, blockWrapperProps, url, itemsClassNa
             );
         });
 
+    // A menu without items: no block, as on UNA's site (UNA sends none now; an older UNA sent it empty).
+    if (!topLevelItems.length) return null
+
     // A section's own list (the Settings page's `sys_account_settings`) in the sections its items without a link make
     // (`lib/menu-sections.ts`; an older UNA: the items' groups).
     const sectionItems = getMenuSectionListItems(data?.content, topLevelItems);
