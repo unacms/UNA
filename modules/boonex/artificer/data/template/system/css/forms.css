@@ -482,6 +482,11 @@ import url(../../../../../../../template/css/forms.css);
 .bx-artificer .bx-form-element-wrapper > .bx-form-info {
     padding-inline: 0.125rem;
 }
+/* Links in a field's description and on the label's line ("Forgot password?") are medium, as NEO's inline links. */
+.bx-artificer .bx-form-info a,
+.bx-artificer #bx-form-element-submit_text .bx-form-value a {
+    font-weight: 500;
+}
 
 /*
  * Floating labels (the adaptive label style, BxBaseFormView::isLabelAdaptive): as in NEO's 52px fields, the label rests in
