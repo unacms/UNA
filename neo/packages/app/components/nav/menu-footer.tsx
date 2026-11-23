@@ -45,6 +45,8 @@ type FooterVisualProps = {
     contentInsets?: { x: number };
     /** Classes of the icon-only triggers (language, theme, sounds). */
     iconClassName: string;
+    /** Their extended hit area, when it must not reach a neighbour's. */
+    iconHitSlop?: { top: number; right: number; bottom: number; left: number };
 };
 
 /** The legacy `btnStyle` prop: a button look, or ButtonLink's variant and size. */
@@ -205,6 +207,7 @@ function FooterThemeSwitcher({ visualProps }: Readonly<FooterControlProps>) {
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
                 className: visualProps.iconClassName,
+                hitSlop: visualProps.iconHitSlop,
                 textClassName: visualProps.textClassName,
             }}
         />
@@ -243,6 +246,7 @@ function FooterSoundsLevel({ visualProps }: Readonly<FooterControlProps>) {
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
                 className: visualProps.iconClassName,
+                hitSlop: visualProps.iconHitSlop,
                 textClassName: visualProps.textClassName,
             }}
         />
@@ -321,6 +325,7 @@ function FooterLanguageSwitcher({ langs, visualProps }: Readonly<FooterControlPr
                 style: visualProps.style,
                 controlSize: visualProps.controlSize,
                 className: visualProps.iconClassName,
+                hitSlop: visualProps.iconHitSlop,
                 textClassName: visualProps.textClassName,
             }}
         />
@@ -342,8 +347,10 @@ function footerVisualProps(btnStyle: FooterButtonStyle | undefined, variant?: st
         // Text links sit flush; the section's gap spaces them.
         contentInsets: isText ? { x: 0 } : undefined,
         // The icon-only triggers are 28px squares around a 16px icon. Their 6px sides overlap the gaps, so the icons
-        // are 16px from their neighbours, as the site's bare icons are (#bx-menu-footer).
+        // are 16px from their neighbours, as the site's bare icons are (#bx-menu-footer). The squares are then 4px
+        // apart, so their hit areas reach 2px to the sides (32px wide, as the site's icons') and 8px up and down.
         iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1.5' : ''),
+        iconHitSlop: isText ? { top: 8, right: 2, bottom: 8, left: 2 } : undefined,
     };
 }
 
