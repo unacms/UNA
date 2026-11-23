@@ -37,6 +37,9 @@ class BxTemplMenuSite extends BxTemplMenuMoreAuto
         $this->_bApplicationMenu = $this->_sObject == 'sys_application';
 
         if($this->_bSiteMenu) {
+            // The header's tabs: an "Icon only" tab that goes to the More list shows its label there.
+            $this->_bIconOnlyKeepsTitle = true;
+
             $this->_bHx = getParam('bx_artificer_use_htmx') == 'on';
             $this->_mHxPreload = $this->_bHx && true;
             $this->_aHx = [

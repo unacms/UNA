@@ -35,6 +35,14 @@ class BxBaseMenu extends BxDolMenu
      */
     protected $_bScriptItemsRoleButton = true;
 
+    /**
+     * Studio's "Icon only" (`icon_only` in `sys_menu_items`) drops an item's label from the menu, which then names it
+     * by its title (aria-label and tooltip). A menu whose items also show up in a list (the header's main menu,
+     * whose items that don't fit go to its More list) keeps the label in the markup and hides it with CSS in the bar
+     * (the item gets `bx-menu-item-icon-only`), so the list still shows it.
+     */
+    protected $_bIconOnlyKeepsTitle = false;
+
     public function __construct ($aObject, $oTemplate)
     {
         parent::__construct ($aObject);
@@ -559,8 +567,13 @@ class BxBaseMenu extends BxDolMenu
 
         list ($sIcon, $sIconUrl, $sIconA, $sIconHtml) = $this->_getMenuIcon($a);
 
+        // "Icon only" needs an icon: an item without one shows its label anyway.
+        $a['icon_only'] = $this->_isMenuItemIconOnly($a, $sIcon || $sIconUrl || $sIconA || $sIconHtml) ? 1 : 0;
+
         if(!isset($a['class_add']))
             $a['class_add'] = '';
+        if($a['icon_only'])
+            $a['class_add'] .= ' bx-menu-item-icon-only';
         if($bIsSelected)
             $a['class_add'] .= ' bx-menu-tab-active';
         $a['class_add'] .= $this->_getVisibilityClass($a);
@@ -626,7 +639,7 @@ class BxBaseMenu extends BxDolMenu
             'content' => array('icon-a' => $sIconA),
         );
         $a['bx_if:title'] = [
-            'condition' => (bool)$a['title'] && (!isset($a['icon_only']) || (int)$a['icon_only'] == 0),
+            'condition' => (bool)$a['title'] && (!$a['icon_only'] || $this->_bIconOnlyKeepsTitle),
             'content' => [
                 'title' => $a['title'],
                 'title_attr' => $a['title_attr'],
@@ -711,8 +724,9 @@ class BxBaseMenu extends BxDolMenu
             'config' => isset($a['config_api']) ? $a['config_api'] : '',
             'primary' => isset($a['primary']) ? $a['primary'] : 0,
             'persistent' => isset($a['persistent']) ? $a['persistent'] : 0,
-            // Studio's "Icon only": the apps show the item's title next to its icon unless it is on, as the site does.
-            'icon_only' => isset($a['icon_only']) ? (int)$a['icon_only'] : 0,
+            // Studio's "Icon only": the apps show the item's title next to its icon unless it is on, as the site does;
+            // off for an item without an icon, which shows its title anyway.
+            'icon_only' => $this->_isMenuItemIconOnly($a, $sIcon || $sIconUrl || $sIconHtml) ? 1 : 0,
         ];
 
         if(!empty($a['onclick']))
@@ -746,6 +760,14 @@ class BxBaseMenu extends BxDolMenu
         }
 
         return $aResult;
+    }
+
+    /**
+     * Whether the item is drawn by its icon alone: Studio's "Icon only" is on and the item has an icon to draw.
+     */
+    protected function _isMenuItemIconOnly($a, $bHasIcon)
+    {
+        return $bHasIcon && !empty($a['icon_only']) && (int)$a['icon_only'] == 1;
     }
 
     protected function _getMenuIcon ($a)
