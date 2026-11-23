@@ -144,6 +144,13 @@ class BxLinkedinModule extends BxBaseModConnectModule
         return $aProfileFields;
     }
 
+    /**
+     * LinkedIn's userinfo reports whether the email address is verified.
+     */
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        return isset($aProfileInfo['email_verified']) && $this->_isRemoteFlagTrue($aProfileInfo['email_verified']);
+    }
 }
 
 /** @} */

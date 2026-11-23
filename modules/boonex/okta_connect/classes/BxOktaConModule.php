@@ -112,7 +112,12 @@ class BxOktaConModule extends BxBaseModConnectModule
             $aRemoteProfileInfo = $this->_decodeResponseAndHandleError($s);
         }
 
-	    $aRemoteProfileInfo['id'] = $aRemoteProfileInfo[$this->_oConfig->sUserIdField];
+        // the configured claim, or the standard subject: without a stable id each sign-in would create a new account
+        $aRemoteProfileInfo['id'] = $this->_getRemoteId($aRemoteProfileInfo);
+        if ($aRemoteProfileInfo['id'] === '') {
+            $this->_oTemplate->getPage(_t('_Error'), MsgBox(_t('_sys_connect_profile_error_info')));
+            return;
+        }
 /*
         // request profile photo
         $s = bx_file_get_contents("https://graph.microsoft.com/v1.0/me/photo/", array(), 'get', array(
@@ -166,7 +171,7 @@ class BxOktaConModule extends BxBaseModConnectModule
     protected function _convertRemoteFields($aProfileInfo, $sAlternativeName = '')
     {
         $aProfileFields = $aProfileInfo;
-	    $sName =  !empty($aProfileInfo['name']) ? $aProfileInfo['name'] : $aProfileInfo[$this->_oConfig->sUserIdField];
+	    $sName =  !empty($aProfileInfo['name']) ? $aProfileInfo['name'] : $aProfileInfo['id'];
         $aProfileFields['name'] = !empty($aProfileInfo['preferred_username']) ? $aProfileInfo['preferred_username'] : $sName;
         $aProfileFields['fullname'] = $sName; // !empty($aProfileInfo['given_name']) ? $aProfileInfo['given_name'] : $aProfileFields['name'];
         $aProfileFields['last_name'] = !empty($aProfileInfo['family_name']) ? ' ' . $aProfileInfo['family_name'] : '';
@@ -214,6 +219,18 @@ class BxOktaConModule extends BxBaseModConnectModule
         }
     }
 
+    /**
+     * Remote user id: the claim named by sUserIdField when Okta sends it (a custom claim, such as identityId), otherwise `sub`.
+     */
+    protected function _getRemoteId($aProfileInfo)
+    {
+        foreach ([$this->_oConfig->sUserIdField, 'sub'] as $sField)
+            if (isset($aProfileInfo[$sField]) && is_scalar($aProfileInfo[$sField]) && '' !== (string)$aProfileInfo[$sField])
+                return (string)$aProfileInfo[$sField];
+
+        return '';
+    }
+
     protected function _isRemoteEmailVerified($aProfileInfo)
     {
         // enforced when Okta reports it
@@ -228,6 +245,9 @@ class BxOktaConModule extends BxBaseModConnectModule
 
         $iProfileId = $this->_oDb->getProfileId($sRemoteId);
         if (!$iProfileId || !($oProfile = BxDolProfile::getInstance($iProfileId)))
+            return false;
+
+        if (bx_check_login_allowed($oProfile->getAccountId()))
             return false;
 
         $bRememberMe = false;

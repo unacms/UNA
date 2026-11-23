@@ -375,6 +375,9 @@ class BxDolAccount extends BxDolFactory implements iBxDolSingleton
         $this->_oQuery->logPassword($iId);
         
         if((int)$this->_oQuery->updatePassword($sPasswordHash, $sSalt, $iId) > 0) {
+            // the old password's sessions end, other than the one changing it
+            bx_end_other_sessions($iId);
+
             /**
              * @hooks
              * @hookdef hook-account-edited 'account', 'edited' - hook on account edited $oAccount->updatePassword 

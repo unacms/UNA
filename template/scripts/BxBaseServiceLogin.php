@@ -270,15 +270,8 @@ class BxBaseServiceLogin extends BxDol
             $oForm->initChecker();
             if ($oForm->isSubmittedAndValid()) {
                 $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
-                $aAccountInfo = $oAccount->getInfo();
                 // Same SMS two-factor gate as member.php: a correct password does not sign in yet.
-                if((getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '')
-                    && (getParam('sys_account_activation_2fa_lifetime') == 0 || (time() - $aAccountInfo['logged'] > getParam('sys_account_activation_2fa_lifetime')))) {
-                    $oSession = BxDolSession::getInstance();
-                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
-                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $oForm->getRememberMe());
-                    $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
-                    $sUrl = BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
+                if(($sUrl = self::start2faLogin($oAccount->id(), $oForm->getRememberMe()))) {
                     return [
                         bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sUrl)]),
                     ];
@@ -403,6 +396,9 @@ class BxBaseServiceLogin extends BxDol
         if ($oForm->isSubmittedAndValid()) {
             $sNewPhoneNumber = $sPhoneNumber === '' ? trim($oForm->getCleanValue('phone')) : '';
             $sSendTo = $sPhoneNumber !== '' ? $sPhoneNumber : $sNewPhoneNumber;
+            if (!bx_sms_code_send_allowed($oAccount->id(), $sSendTo))
+                return MsgBox(_t('_sys_txt_sms_send_limit'));
+
             $sActivationCode = (string)random_int(100000, 999999);
             $sActivationText =_t('_sys_txt_login_2fa_sms_text', $sActivationCode);
 
@@ -504,6 +500,35 @@ class BxBaseServiceLogin extends BxDol
             header('Location: ' . $sUrlRelocate);
         } 
         return $oForm->getCode();
+    }
+
+    /**
+     * The SMS two-factor gate every sign-in passes (the login form on the site, with AJAX and in the API,
+     * and Connect apps): when it applies to the account, the sign-in waits at login-step2 instead of
+     * being completed, and this returns that page's relative URL; '' when the account may sign in now.
+     * @param $iAccountId account which proved who it is (a password, a Connect app)
+     * @param $bRememberMe keep the session after the code was entered
+     */
+    public static function start2faLogin($iAccountId, $bRememberMe = false)
+    {
+        if (getParam('sys_account_activation_2fa_enable') != 'on' || getParam('sys_sms_default') == '')
+            return '';
+
+        $oAccount = BxDolAccount::getInstance((int)$iAccountId);
+        $aAccountInfo = $oAccount ? $oAccount->getInfo() : false;
+        if (empty($aAccountInfo))
+            return '';
+
+        $iLifetime = (int)getParam('sys_account_activation_2fa_lifetime');
+        if ($iLifetime != 0 && time() - $aAccountInfo['logged'] <= $iLifetime)
+            return '';
+
+        $oSession = BxDolSession::getInstance();
+        $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
+        $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $bRememberMe);
+        $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+
+        return BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
     }
 
     /**

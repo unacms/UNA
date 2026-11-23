@@ -42,22 +42,32 @@ class BxDrupalModule extends BxBaseModConnectModule
         $oForm->setRole(bx_get('role'));
         $bLoginSuccess = $oForm->isSubmittedAndValid();
 
+        // sign in the local account of the Drupal user that the password was checked for, not an account found by the typed login;
+        // the account may still be refused (locked) or continue with two-factor sign-in
+        $mixedLogged = false;
+        $sUrl2fa = '';
+        if ($bLoginSuccess) {
+            $mixedLogged = $this->setLogged($oForm->getProfileId(), '', false, $oForm->getCleanValue('rememberMe') ? true : false);
+            if (is_array($mixedLogged))
+                $sUrl2fa = $mixedLogged['redirect'];
+            elseif (true !== $mixedLogged)
+                $bLoginSuccess = false;
+        }
+
         $bAjxMode = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') ? true : false;
         if ($bAjxMode) {
 
-            if ($bLoginSuccess) {
+            if ($sUrl2fa)
+                $s = _t('_sys_txt_login_2fa_continue', $sUrl2fa);
+            elseif ($bLoginSuccess)
                 $s = 'OK';
-                $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
-                $aAccount = bx_login($oAccount->id(), ($oForm->getCleanValue('rememberMe') ? true : false));
-            }
-            else {
-                $s = $oForm->getLoginError();
-            }
+            else
+                $s = is_string($mixedLogged) ? $mixedLogged : $oForm->getLoginError();
 
             if (isset($_SERVER['HTTP_ACCEPT'])) {
                 if (false !== strpos($_SERVER['HTTP_ACCEPT'], 'application/json') || false !== strpos($_SERVER['HTTP_ACCEPT'], 'text/javascript')) {
                     header('Content-type: application/json; charset=utf-8');
-                    echo json_encode(['res' => $s, 'form' => $oForm->getCode()]);
+                    echo json_encode(['res' => $s, 'form' => $oForm->getCode()] + ($sUrl2fa ? ['redirect' => $sUrl2fa] : []));
                     exit;
                 }
             }
@@ -67,13 +77,12 @@ class BxDrupalModule extends BxBaseModConnectModule
 
             exit;
 
-        } 
+        }
+        elseif ($sUrl2fa) {
+            header('Location: ' . $sUrl2fa);
+            exit;
+        }
         elseif ($bLoginSuccess) {
-            
-            $sId = trim($oForm->getCleanValue('ID'));
-
-            $oAccount = BxDolAccount::getInstance($sId);
-            $aAccount = bx_login($oAccount->id(), ($oForm->getCleanValue('rememberMe') ? true : false));
 
             $sUrlRelocate = $oForm->getCleanValue('relocate');
             if (!$sUrlRelocate || 0 !== strncmp($sUrlRelocate, BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)))
@@ -86,39 +95,50 @@ class BxDrupalModule extends BxBaseModConnectModule
 
             BxDolTemplate::getInstance()->getPageCode();
             exit;
-        }        
+        }
+        elseif (is_string($mixedLogged)) {
+            $this->_oTemplate->getPage(_t('_Error'), MsgBox($mixedLogged));
+            exit;
+        }
 
         bx_require_authentication();
 
         header('Location: ' . BX_DOL_URL_ROOT);
     }
 
+    /**
+     * Find or create the local profile of a Drupal user whose password Drupal has accepted. It doesn't sign anyone in.
+     * @param $aRemoteProfileInfo - the user info Drupal returned
+     * @return local profile id, or an error message string
+     */
     public function serviceHandleUser($aRemoteProfileInfo)
     {
         // it trusts the remote profile info given by the caller, so it is for internal calls only (not for API clients)
         if (BxDolService::isExternalCall($this->getName(), 'handle_user'))
             return false;
 
-        if ($aRemoteProfileInfo && isset($aRemoteProfileInfo['user']) && isset($aRemoteProfileInfo['user']['uid'])) {
+        if (!$aRemoteProfileInfo || !isset($aRemoteProfileInfo['user']) || !isset($aRemoteProfileInfo['user']['uid']))
+            return _t('_sys_connect_profile_error_info');
 
-            // check if user logged in before
-            $iLocalProfileId = $this->_oDb->getProfileId($aRemoteProfileInfo['user']['uid']);
-            
-            if ($iLocalProfileId && $oProfile = BxDolProfile::getInstance($iLocalProfileId)) {
-                // user already exists
-                bx_alert($this->getName(), 'login', 0, $oProfile->id(), array('remote_profile_info' => $aRemoteProfileInfo));
-                $this->setLogged($oProfile->id(), '', false);
-            }             
-            else {  
-                // register new user
-                if (isset($aRemoteProfileInfo['user']) && isset($aRemoteProfileInfo['user']['uid']))
-                    $aRemoteProfileInfo['id'] = $aRemoteProfileInfo['user']['uid'];
-                $this->_createProfile($aRemoteProfileInfo);
-            }
-        } 
-        else {
-            $this->_oTemplate->getPage(_t('_Error'), MsgBox(_t('_sys_connect_profile_error_info')));
+        // check if user logged in before
+        $iLocalProfileId = $this->_oDb->getProfileId($aRemoteProfileInfo['user']['uid']);
+        if ($iLocalProfileId && $oProfile = BxDolProfile::getInstance($iLocalProfileId)) {
+            bx_alert($this->getName(), 'login', 0, $oProfile->id(), array('remote_profile_info' => $aRemoteProfileInfo));
+            return $oProfile->id();
         }
+
+        // register new user, or link an existing account with the same verified email
+        $aRemoteProfileInfo['id'] = $aRemoteProfileInfo['user']['uid'];
+        $mixed = $this->_createProfileRaw($aRemoteProfileInfo, '', true, false);
+        if (is_array($mixed) && isset($mixed['join_page_redirect'])) {
+            $this->_getJoinPage($mixed['profile_fields'], $mixed['remote_profile_info']['id']);
+            exit;
+        }
+
+        if (is_array($mixed) && !empty($mixed['profile_id']))
+            return (int)$mixed['profile_id'];
+
+        return is_string($mixed) && $mixed !== '' ? $mixed : _t('_sys_txt_error_account_creation');
     }
 
     /**

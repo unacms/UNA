@@ -82,17 +82,16 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if (!$bForceStart && $this->getSessionCookie() === null)
             return true;
         
-        if (getParam('sys_session_auth')) {
-            // A remembered session past its end is over, even before the cron job deletes it.
-            if ($this->exists($this->sId) && $this->iTTL && $this->iTTL < time())
-                $this->destroy(false);
-        }
-        else {
-            if ($this->exists($this->sId)) {
-                if ($this->iUserId == getLoggedId())
-                    return true;
-                $this->destroy(false);
-            }
+        // A session that is over (BxDolSessionQuery::exists: past its end, or idle for too long)
+        // isn't taken up again, even before the cron job deletes it: it's deleted, and a new one starts.
+        $bExists = $this->exists($this->sId);
+        if (!$bExists && ($sCookieId = $this->getSessionCookie()))
+            $this->oDb->deleteById($sCookieId);
+
+        if (!getParam('sys_session_auth') && $bExists) {
+            if ($this->iUserId == getLoggedId())
+                return true;
+            $this->destroy(false);
         }
 
 		/**
@@ -111,7 +110,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
 
         // if an old session has not been found then generate a new one
         if (!$this->sId) {
-            $this->sId = genRndPwd(32, true);
+            $this->sId = bin2hex(random_bytes(16));
         }
 
         $iLifetime = 60 * (int)getParam('sys_session_lifetime_in_min');
@@ -184,6 +183,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if($mixedSession === false) 
         	return false;
 
+
 		$this->sId = $mixedSession['id'];
 		$this->iUserId = (int)$mixedSession['user_id'];
         $this->iTTL = isset($mixedSession['ttl']) ? (int)$mixedSession['ttl'] : 0;
@@ -216,6 +216,16 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if (0 == $iUserId && $this->iUserId) { // update last active field when user is logged out
             $this->oDb->updateLastActivityAccount($this->iUserId, time());
         }
+
+        // Signing in gets a new id with the same data: an id that existed before, which someone
+        // else could have planted in the browser (session fixation), never becomes signed in.
+        // The cookie with the new id goes out with this response.
+        if ($iUserId && $iUserId != $this->iUserId) {
+            $this->oDb->deleteById($this->sId);
+            $this->sId = bin2hex(random_bytes(16));
+            $this->sendCookie();
+        }
+
         $this->iUserId = $iUserId;
         $this->save();
     }

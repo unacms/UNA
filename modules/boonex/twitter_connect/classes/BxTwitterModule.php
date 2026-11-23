@@ -141,6 +141,13 @@ class BxTwitterModule extends BxBaseModConnectModule
         $this->_oTwitterService = $oServiceFactory->createService('twitter', $this->_oCredentials, $this->_oStorage);
     }
 
+    /**
+     * X (Twitter) gives the app an email address only when it is verified.
+     */
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        return !empty($aProfileInfo['email']);
+    }
 }
 
 /** @} */

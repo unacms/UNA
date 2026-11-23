@@ -9,6 +9,8 @@
 
 class BxDrupalFormLogin extends BxTemplFormLogin
 {
+    protected $_iProfileId = 0;
+
     public function __construct($aInfo, $oTemplate)
     {
         parent::__construct($aInfo, $oTemplate);
@@ -43,10 +45,25 @@ class BxDrupalFormLogin extends BxTemplFormLogin
         if (empty($mixedData) || is_string($mixedData) || !is_array($mixedData))
             return empty($mixedData) ? _t('_sys_txt_error_occured') : $mixedData;
 
-        // create user if their doesn't exists
-        bx_srv('bx_drupal', 'handle_user', array($mixedData));
+        // find or create the local profile of this Drupal user
+        $mixedProfileId = bx_srv('bx_drupal', 'handle_user', array($mixedData));
+        if (!is_numeric($mixedProfileId) || !($oProfile = BxDolProfile::getInstance((int)$mixedProfileId)))
+            return is_string($mixedProfileId) && $mixedProfileId !== '' ? $mixedProfileId : _t('_sys_txt_error_occured');
 
+        // a locked account can't sign in through Drupal either
+        if (($sError = bx_check_login_allowed($oProfile->getAccountId())))
+            return $sError;
+
+        $this->_iProfileId = $oProfile->id();
         return '';
+    }
+
+    /**
+     * The local profile of the Drupal user whose password was checked, set once the form is valid.
+     */
+    public function getProfileId()
+    {
+        return $this->_iProfileId;
     }
     
     function call ($aData)

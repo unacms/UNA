@@ -84,7 +84,8 @@ class ConnectIdentityTrustTest extends BxDolTestCase
     {
         $o = $this->bxModule('BxDrupalModule', 'boonex/drupal_connect/classes/BxDrupalModule.php', 'bx_drupal');
 
-        $this->assertTrue($this->bxCallProtected($o, '_isRemoteEmailVerified', ['email' => 'a@example.com']));
+        // Drupal reports nothing about the email, so an existing account isn't linked to its user by email
+        $this->assertFalse($this->bxCallProtected($o, '_isRemoteEmailVerified', ['email' => 'a@example.com']));
     }
 
     #[DataProvider('providerForFlags')]

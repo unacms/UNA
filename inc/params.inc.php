@@ -102,6 +102,8 @@ define('BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME', 600); ///< seconds an SMS code of t
 define('BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS', 5); ///< wrong codes after which two-factor login starts over from the password
 define('BX_ACCOUNT_2FA_LOGIN_ATTEMPTS_LIFETIME', 86400); ///< seconds the count of tried codes is kept, resent codes share it: after that the sign-in starts over
 define('BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE', 'PHONE_ACTIVATEION_CODE');
+define('BX_ACCOUNT_SMS_SENDS_LIMIT', 5); ///< SMS codes (two-factor login, phone confirmation) that one account, and one phone, get per BX_ACCOUNT_SMS_SENDS_WINDOW
+define('BX_ACCOUNT_SMS_SENDS_WINDOW', 3600); ///< seconds in which BX_ACCOUNT_SMS_SENDS_LIMIT codes may be sent
 define('BX_ACCOUNT_CONFIRMATION_NONE', 'none');
 define('BX_ACCOUNT_CONFIRMATION_EMAIL', 'email');
 define('BX_ACCOUNT_CONFIRMATION_PHONE', 'phone');
