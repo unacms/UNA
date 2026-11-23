@@ -230,12 +230,12 @@ export const PageHeader = ({ pageData }) => {
     const isScrolled = scrollY > 0;
     const headerContainerBaseClass = resolveHeaderContainerClassName(isScrolled);
     const fixedHeaderClass =
-        ' ns--header-wrapper-fixed-- header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 ne--';
+        ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50';
     const flowTransitionClass =
-        ` ns--header-wrapper--transition-- web:transition-[transform,opacity,background-color,border-color] web:duration-300 web:ease-in-out ne-- `;
+        ` web:transition-[transform,opacity,background-color,border-color] web:duration-300 web:ease-in-out `;
     const flowHeaderContainerClassName = usesFixedOverlayHeader
         ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 overflow-visible ${flowTransitionClass}`
-        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : ' ns--header-position-start-- web:translate-y-0 ne--' } overflow-visible ${flowTransitionClass}`;
+        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : ' web:translate-y-0' } overflow-visible ${flowTransitionClass}`;
     const fixedHeaderMotionClass =
         isClosing || isEntering
             ? 'web:-translate-y-full web:opacity-0'

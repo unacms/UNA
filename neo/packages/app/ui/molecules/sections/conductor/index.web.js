@@ -469,7 +469,7 @@ export function Conductor({
 
     return (
         <View
-            className={`ns--conductor-wrapper-- w-full h-full ne--${isTasksHome ? ' min-h-0 overflow-hidden' : ''}`}
+            className={`w-full h-full${isTasksHome ? ' min-h-0 overflow-hidden' : ''}`}
             style={{
                 minHeight: `calc(100dvh - ${pageHeaderHeight}px)`,
                 ...(isTasksHome && pageHeight > 0 ? { height: pageHeight } : {}),
@@ -488,7 +488,8 @@ export function Conductor({
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
                 // column line reach the page bottom on a short or empty tab, as on wiki pages.
-                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}${sectionRootHidden}`}
+                // `conductor-tab-content` is a hook: web-ui.js and use-cover-morph-driver.web.js find this element by it.
+                className={`conductor-tab-content ${contentWidth} mx-auto${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}${sectionRootHidden}`}
             >
                 <TabSceneHeader
                     route={activeRoute}
