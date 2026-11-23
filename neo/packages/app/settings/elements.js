@@ -70,7 +70,7 @@ export const settingsElements = {
         show_nav_counters: true, // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' ns--sidebar-container-- h-full ne--  ',
+        sidebar_container: ' h-full  ',
         // The card keeps its side margin wherever the column shows: from lg on wiki pages, so
         // the panel doesn't clip its outline shadow (the conductor's column starts at xl).
         sidebar_inner_container: ' mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/60 shadow-card-outline dark:shadow-card-outline-deep rounded-card mt-4',

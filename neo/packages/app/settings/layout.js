@@ -14,8 +14,8 @@ export const settingsLayout = {
 
       
 
-        max_width: ' ns--undefined-- w-full flex-auto web:h-full ne--  ',
-        page_content_width_default: ' ns--page-content-width-- w-full max-w-8xl ne--  ',
+        max_width: ' w-full flex-auto web:h-full  ',
+        page_content_width_default: ' w-full max-w-8xl  ',
         // Web: the page's width, which `max-w-8xl` follows. null: UNA's Designer, per page layout and audience
         // (`page_width` of the page JSON); a CSS length ('88rem') or 'full' sets it for every page.
         page_width: null,
@@ -107,7 +107,7 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' ns--header-wrapper-- w-full z-50 header-fixed web:fixed native:absolute native:top-0 native:left-0 native:right-0  web:top-0  web:transition-[transform,background-color,border-color] web:duration-300 web:ease-in-out  ne--',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute native:top-0 native:left-0 native:right-0  web:top-0  web:transition-[transform,background-color,border-color] web:duration-300 web:ease-in-out ',
             /**
              * Color wash behind glass chrome. Applied as an overlay that
              * extends `fade_extend` below the measured header.
@@ -135,13 +135,13 @@ export const settingsLayout = {
             // gentlest; `material` (ultraThin → thick), `hold`, `tint` also help.
             fade_blur: { material: 'thin', hold: 0.5, opacity: 0.8, extend: 16, tint: { dark: 0.75 } },
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
-            container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none ne-- ',
+            container_scrolled: ' shadow-none ',
             // The card surface (bg-card/60) like blocks; the blur only once the page scrolls under it.
             // Each side keeps its own edge inset (content_left ps-4, content_right pe-4); gap-4
             // spaces the sides from each other, so no two paddings stack between them.
-            content: ' ns--header-content-- items-center justify-between gap-4 h-16 lg:bg-card/60 lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
+            content: ' items-center justify-between gap-4 h-16 lg:bg-card/60 lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
-            content_scrolled: ' ns--header-content-scrolled-- lg:backdrop-blur-lg ',
+            content_scrolled: ' lg:backdrop-blur-lg ',
             content_pinned_fixed: '  ',
             // Shrinks (the page title truncates) so the actions on the right keep their room.
             content_left: 'min-w-0 shrink ps-4 gap-3',

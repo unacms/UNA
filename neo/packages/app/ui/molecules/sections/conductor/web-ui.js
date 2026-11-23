@@ -108,7 +108,7 @@ function scrollTabToStart() {
         return
     }
     coverTabScroll.hold = true
-    const content = document.querySelector('.ns--conductor-tab-content--')
+    const content = document.querySelector('.conductor-tab-content')
     const headerOffset = measureHeaderFixedOffset()
     if (!content || headerOffset <= 0) return
     const top = Math.max(0, Math.round(window.scrollY + content.getBoundingClientRect().top - headerOffset))
@@ -1214,7 +1214,7 @@ export const HeaderContainer = ({
     const isStickyTabBar = layoutName === 'navigator' && getMenuSectionNav(menu) === 'tabs'
     return (
         <View
-            className={`ns--cover-wrapper-- z-40 ne--${isStickyTabBar ? ' lg:sticky lg:top-[var(--conductor-tab-top)]' : ''}`}
+            className={`z-40${isStickyTabBar ? ' lg:sticky lg:top-[var(--conductor-tab-top)]' : ''}`}
             style={isStickyTabBar ? { '--conductor-tab-top': `${stickyTop}px` } : undefined}
         >
             <View className={`header-fixed w-full `}>
