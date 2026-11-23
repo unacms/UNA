@@ -132,6 +132,16 @@ class BxDonationsDb extends BxDolModuleDb
         return (int)$this->query("DELETE FROM `" . $CNF['TABLE_TYPES'] . "` WHERE " . $this->arrayToSQL($aWhere, " AND ")) > 0;
     }
 
+    public function isEntry($iProfileId, $iTypeId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->getOne("SELECT `id` FROM `" . $CNF['TABLE_ENTRIES'] . "` WHERE `profile_id`=:profile_id AND `type_id`=:type_id LIMIT 1", [
+            'profile_id' => (int)$iProfileId,
+            'type_id' => (int)$iTypeId
+        ]) > 0;
+    }
+
     public function registerEntry($iProfileId, $aTypeId, $iCount, $sOrder, $sLicense)
     {
     	$CNF = &$this->_oConfig->CNF;

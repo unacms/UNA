@@ -1,8 +1,9 @@
 <?php
 
 /**
- * A donation plan that is turned off can't be bought any more, but a renewal the
- * payment provider has already charged for it (Stripe, Credits) is still recorded.
+ * A donation plan that is turned off can't be bought by new donors any more, but
+ * its current donors' subscriptions keep renewing, and a renewal the payment
+ * provider has already charged for it (Stripe, Credits) is still recorded.
  * A plan named `test-retired-*` and its entries (order `test-retired-*`) are seeded
  * and deleted afterwards.
  */
@@ -62,6 +63,24 @@ class RetiredPlanRenewalTest extends BxDolIntegrationTestCase
 
         $this->assertTrue($this->_oModule->serviceUnregisterSubscriptionItem(self::CLIENT, $this->_oModule->_oConfig->getOwner(), $this->_iTypeId, 1, self::ORDER, self::LICENSE));
         $this->assertSame(0, $this->_entries());
+    }
+
+    public function testCurrentDonorStillGetsRetiredPlan()
+    {
+        // renewals (BxPaymentSubscriptions::prolong) and order lists read the plan
+        // through get_cart_item with the buyer's id
+        $this->assertSame([], $this->_oModule->serviceGetCartItem($this->_iTypeId, self::CLIENT));
+
+        $this->_register();
+
+        $aItem = $this->_oModule->serviceGetCartItem($this->_iTypeId, self::CLIENT);
+        $this->assertIsArray($aItem);
+        $this->assertEquals($this->_iTypeId, $aItem['id']);
+        $this->assertEquals(1, (int)$aItem['period_recurring']);
+
+        // nobody else can start donating on it
+        $this->assertSame([], $this->_oModule->serviceGetCartItem($this->_iTypeId, self::CLIENT + 1));
+        $this->assertSame([], $this->_oModule->serviceGetCartItem($this->_iTypeId));
     }
 
     public function testActivePlanCanStillBeBought()

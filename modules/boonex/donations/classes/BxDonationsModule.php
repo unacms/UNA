@@ -137,16 +137,18 @@ class BxDonationsModule extends BxBaseModGeneralModule
     }
 
     /**
-     * A plan that is turned off can't be bought, so it isn't returned here.
-     * Payments already made for it (subscription renewals, refunds) are
-     * registered with _getCartItem, which returns it.
+     * A plan that is turned off can't be bought by new donors, so it isn't
+     * returned to them. Someone who already donates on it still gets it, so
+     * their subscription keeps renewing (Stripe, Credits) and their orders
+     * still show it. Payments already made are registered with _getCartItem,
+     * which returns it to anyone.
      */
-    public function serviceGetCartItem($mixedItemId)
+    public function serviceGetCartItem($mixedItemId, $iClientId = 0)
     {
-        return $this->_getCartItem($mixedItemId, true);
+        return $this->_getCartItem($mixedItemId, true, (int)$iClientId);
     }
 
-    protected function _getCartItem($mixedItemId, $bActiveOnly)
+    protected function _getCartItem($mixedItemId, $bActiveOnly, $iClientId = 0)
     {
     	$CNF = &$this->_oConfig->CNF;
 
@@ -158,7 +160,10 @@ class BxDonationsModule extends BxBaseModGeneralModule
             'value' => $mixedItemId
         ]);
 
-        if(empty($aItem) || !is_array($aItem) || ($bActiveOnly && (int)$aItem['active'] == 0))
+        if(empty($aItem) || !is_array($aItem))
+            return [];
+
+        if($bActiveOnly && (int)$aItem['active'] == 0 && (empty($iClientId) || !$this->_oDb->isEntry($iClientId, $aItem[$CNF['FIELD_ID']])))
             return [];
 
         return [
