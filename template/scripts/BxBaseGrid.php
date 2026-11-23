@@ -1881,6 +1881,7 @@ class BxBaseGrid extends BxDolGrid
             'show_total_count' => empty($this->_aOptions['show_total_count']) ? 0 : 1,
             'empty' => _t('_Empty'),
             'text_selected' => _t('_sys_grid_txt_n_selected'),
+            'text_select_rows' => _t('_sys_grid_txt_select_rows'),
             'text_select' => _t('_sys_grid_lbl_select'),
             'text_order' => _t('_sys_grid_lbl_order'),
             'text_expand' => _t('_sys_grid_txt_show_items'),
@@ -1953,14 +1954,15 @@ class BxBaseGrid extends BxDolGrid
                             'counter' => '',
                         ],
                     ],
-                ],
-            ],
-            'bx_if:actions_bulk' => [
-                'condition' => !empty($this->_aOptions['actions_bulk']),
-                'content' => [
-                    'id_bulk' => 'bx-grid-ag-bulk-' . $this->_sObject,
-                    'actions_bulk' => $this->_getActions('bulk'),
-                    'txt_clear' => bx_html_attribute(_t('_sys_grid_txt_clear_selection')),
+                    // Bulk actions: a menu at the right end of the header, opened by an always visible button.
+                    'bx_if:actions_bulk' => [
+                        'condition' => !empty($this->_aOptions['actions_bulk']),
+                        'content' => [
+                            'id_bulk' => 'bx-grid-ag-bulk-' . $this->_sObject,
+                            'actions_bulk' => $this->_getActions('bulk'),
+                            'txt_actions' => _t('_sys_actions'),
+                        ],
+                    ],
                 ],
             ],
         ];

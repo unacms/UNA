@@ -14,23 +14,21 @@
                 </bx_if:counter>
                 <bx_if:actions_independent>
                     <div class="bx-grid-header-controls-independent">
-                        __actions_independent__
+                        <div class="bx-btn-group">__actions_independent__</div>
                     </div>
                 </bx_if:actions_independent>
+                <bx_if:actions_bulk>
+                    <div id="__id_bulk__" class="bx-grid-ag-bulk">
+                        <button type="button" class="bx-btn bx-grid-ag-bulk-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="__id_bulk__-menu">
+                            <u>__txt_actions__</u><span class="bx-grid-ag-bulk-count"></span>
+                            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                        <div id="__id_bulk__-menu" class="bx-grid-ag-bulk-menu" hidden>__actions_bulk__</div>
+                    </div>
+                </bx_if:actions_bulk>
             </div>
         </div>
     </bx_if:display_header>
-    <bx_if:actions_bulk>
-        <div id="__id_bulk__" class="bx-grid-ag-bulk">
-            <span class="bx-grid-ag-bulk-count" hidden></span>
-            <div class="bx-grid-ag-bulk-actions">
-                __actions_bulk__
-            </div>
-            <button type="button" class="bx-grid-ag-bulk-clear" title="__txt_clear__" aria-label="__txt_clear__" hidden>
-                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-        </div>
-    </bx_if:actions_bulk>
     <div id="__id_cont__" class="bx-grid-ag-host">
         <div id="__id_table__" class="bx-grid-ag-selection" hidden></div>
         <div id="__id_grid__" class="bx-grid-ag ag-theme-quartz"></div>

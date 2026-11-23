@@ -55,6 +55,7 @@ function BxDolGridAg(oCfg, oBx) {
     this._adoptBx();
     this._mount();
     this._select2Filters();
+    this._bindBulk();
 }
 
 BxDolGridAg.prototype._adoptBx = function () {
@@ -775,28 +776,59 @@ BxDolGridAg.prototype._syncChecks = function () {
  * The bulk bar sits between the filters and the rows and shows only while rows are selected:
  * how many, the bulk actions, and a button that clears the selection.
  */
+/**
+ * The bulk actions are a menu under the "Actions" button at the right end of the header. The
+ * button is always there and shows how many rows are selected. An action picked with no row
+ * selected says to select rows first instead of doing nothing.
+ */
 BxDolGridAg.prototype._syncBulk = function (iCount) {
+    this._iSelected = iCount;
+    const eCount = document.querySelector('#bx-grid-ag-bulk-' + this._sObject + ' .bx-grid-ag-bulk-count');
+    if (eCount)
+        eCount.textContent = iCount > 0 ? ' (' + iCount + ')' : '';
+};
+
+BxDolGridAg.prototype._bindBulk = function () {
     const eBar = document.getElementById('bx-grid-ag-bulk-' + this._sObject);
-    if (!eBar)
+    const eToggle = eBar?.querySelector('.bx-grid-ag-bulk-toggle');
+    const eMenu = eBar?.querySelector('.bx-grid-ag-bulk-menu');
+    if (!eToggle || !eMenu)
         return;
 
-    // The actions are always there, as in the classic grid. The count and the button that clears
-    // the selection show while rows are selected.
-    const bSelected = iCount > 0;
-    const eCount = eBar.querySelector('.bx-grid-ag-bulk-count');
-    if (eCount) {
-        eCount.textContent = String(this._oCfg.text_selected || '{0}').replace('{0}', iCount);
-        eCount.hidden = !bSelected;
-    }
+    const fOpen = (bOpen) => {
+        eMenu.hidden = !bOpen;
+        eToggle.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
+    };
 
-    const eClear = eBar.querySelector('.bx-grid-ag-bulk-clear');
-    if (eClear) {
-        eClear.hidden = !bSelected;
-        if (!eClear._bxBound) {
-            eClear._bxBound = true;
-            eClear.addEventListener('click', () => this._oApi?.deselectAll?.());
+    eToggle.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        fOpen(eMenu.hidden);
+    });
+
+    // Capture: before the grid's own handler, which is on the action button itself.
+    eMenu.addEventListener('click', (ev) => {
+        if (!ev.target.closest('[bx_grid_action_bulk]'))
+            return;
+        fOpen(false);
+        if (this._iSelected > 0)
+            return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        const sText = this._oCfg.text_select_rows || '';
+        if (sText && typeof bx_alert === 'function')
+            bx_alert(sText);
+    }, true);
+
+    document.addEventListener('click', (ev) => {
+        if (!eMenu.hidden && !eBar.contains(ev.target))
+            fOpen(false);
+    });
+    eBar.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape' && !eMenu.hidden) {
+            fOpen(false);
+            eToggle.focus();
         }
-    }
+    });
 };
 
 BxDolGridAg.prototype._esc = function (s) {
