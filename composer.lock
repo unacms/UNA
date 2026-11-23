@@ -2039,26 +2039,26 @@
         },
         {
             "name": "mpratt/embera",
-            "version": "2.0.42",
+            "version": "2.0.44",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mpratt/Embera.git",
-                "reference": "afa728339c6f078c803c9277a5054ca241b3c469"
+                "reference": "fa0ba8a09975b952f51981fa5f768e38b8c9d660"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpratt/Embera/zipball/afa728339c6f078c803c9277a5054ca241b3c469",
-                "reference": "afa728339c6f078c803c9277a5054ca241b3c469",
+                "url": "https://api.github.com/repos/mpratt/Embera/zipball/fa0ba8a09975b952f51981fa5f768e38b8c9d660",
+                "reference": "fa0ba8a09975b952f51981fa5f768e38b8c9d660",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=5.6"
+                "php": ">=7.1"
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.4",
                 "phpunit/phpunit": "^9.0||^10.0",
-                "symfony/yaml": "^2.1"
+                "symfony/yaml": "^5.4||^6.4||^7.0"
             },
             "suggest": {
                 "ext-curl": "Fetch data using curl instead of using file_get_contents"
@@ -2098,7 +2098,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mpratt/Embera/issues",
-                "source": "https://github.com/mpratt/Embera/tree/2.0.42"
+                "source": "https://github.com/mpratt/Embera/tree/2.0.44"
             },
             "funding": [
                 {
@@ -2106,7 +2106,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2025-01-04T06:07:59+00:00"
+            "time": "2026-11-17T20:06:36+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
