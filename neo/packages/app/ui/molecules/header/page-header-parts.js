@@ -224,7 +224,7 @@ export const TextHeader = memo(({ text }) => {
     const title = (
         <Text
             numberOfLines={Platform.OS === 'web' ? undefined : 1}
-            className="font-bold truncate text-card-foreground text-2xl tracking-tight"
+            className="font-bold truncate text-card-foreground text-xl leading-7 tracking-tight"
         >
             {text}
         </Text>

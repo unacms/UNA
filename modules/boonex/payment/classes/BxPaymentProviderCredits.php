@@ -36,13 +36,15 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
         if(!empty($aPending['order']) || !empty($aPending['error_code']) || !empty($aPending['error_msg']) || (int)$aPending['processed'] != 0)
             return ($sMsg = $this->_sLangsPrefix . 'err_already_processed') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
+        $iBuyerId = (int)$aCartInfo['client_id'];
         $iSellerId = (int)$aCartInfo['vendor_id'];
         $sCustomData = $this->_constructCustomData($aCartInfo['vendor_id'], $iPendingId);
         $sReturnDataUrl = $this->getReturnDataUrl($iSellerId);
 
         switch($aPending['type']) {
             case BX_PAYMENT_TYPE_SINGLE:
-                $aFormData = array(
+                $aFormData = [
+                    'buyer' => $iBuyerId,
                     'currency_code' => $aCartInfo['vendor_currency_code'],
                     'currency_sign' => $aCartInfo['vendor_currency_sign'],
                     'seller' => $iSellerId,
@@ -50,7 +52,7 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
                     'items_count' => count($aCartInfo['items']),
                     'custom' => $sCustomData,
                     'return_data_url' => $sReturnDataUrl,
-                );
+                ];
 
                 $iIndex = 0;
                 foreach($aCartInfo['items'] as $aItem) {
@@ -70,10 +72,11 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
             case BX_PAYMENT_TYPE_RECURRING:
                 $aItem = array_shift($aCartInfo['items']);
 
-                return array(
+                return [
                     'code' => 0,
-                    'popup' => array(
-                        'html' => bx_srv($this->_sModuleCredits, 'get_popup_subscribe', array(array(
+                    'popup' => [
+                        'html' => bx_srv($this->_sModuleCredits, 'get_popup_subscribe', [[
+                            'buyer' => $iBuyerId,
                             'currency_code' => $aCartInfo['vendor_currency_code'],
                             'currency_sign' => $aCartInfo['vendor_currency_sign'],
                             'seller' => $iSellerId,
@@ -84,13 +87,13 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
                             'trial' => isset($aItem['trial_recurring']) ? $aItem['trial_recurring'] : 0,
                             'custom' => $sCustomData,
                             'return_data_url' => $sReturnDataUrl,
-                        ))),
-                        'options' => array(
+                        ]]),
+                        'options' => [
                             'closeOnOuterClick' => true,
                             'removeOnClose' => true
-                        )
-                    )
-                );
+                        ]
+                    ]
+                ];
         }
     }
 
