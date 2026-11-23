@@ -1002,6 +1002,11 @@ function SidebarNavSections({ routes, index, setIndex }) {
  * only), the section nav (navigator only, tree or flat), then whatever the
  * caller passes as `children` — normally the page's own left-column blocks.
  *
+ * The title, the Add buttons and the panel around them belong to the section nav and to
+ * left-column menus. A column with neither (a Search tab's form) holds only its blocks, each a
+ * standard block, as on the site; the page's title row above already carries the section title
+ * and its Add button.
+ *
  * Profile layout uses it purely as a padded container for the blocks.
  *
  * @param {object}   props
@@ -1011,6 +1016,7 @@ function SidebarNavSections({ routes, index, setIndex }) {
  * @param {Function} props.setIndex
  * @param {node}     props.children   Left-column blocks.
  * @param {string}   props.layoutName
+ * @param {boolean}  [props.hasMenuBlocks]  The column holds menu blocks (`use_as_menu`).
  * @param {object}   props.stickyColumnStyle  From `stickySidebarStyle`.
  */
 export const LeftColumnContainer = ({
@@ -1020,6 +1026,7 @@ export const LeftColumnContainer = ({
     setIndex,
     children,
     layoutName,
+    hasMenuBlocks = false,
     stickyColumnStyle,
 }) => {
     const { t } = useTranslation()
@@ -1027,6 +1034,8 @@ export const LeftColumnContainer = ({
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const addMenuItems = getAddMenuItems(menu, 'hideInSideBar', currentUser)
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" style="bordered" />
+    const hasSectionNav = layoutName == 'navigator' && getMenuSectionNav(menu) === 'sidebar' && routes.length > 1
+    const isPlain = layoutName != 'profile' && !hasSectionNav && !hasMenuBlocks
     // Profile has its name in the cover already — no title row here.
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     const sectionIcon = useSectionIcon(menu, undefined, routes)
@@ -1046,6 +1055,20 @@ export const LeftColumnContainer = ({
         if (href) window.history.pushState({}, '', href)
     }, [setIndex])
 
+    if (isPlain) {
+        // Blocks only, placed as the right column's (RightColumnContainer), mirrored.
+        return (
+            <View className="h-full">
+                <View
+                    className={`web:sticky web:overflow-y-auto mt-0.5 sm:mt-0 sm:-me-4 sm:p-4 ${appSetting('conductor', 'sidebar_container')}`}
+                    style={stickyColumnStyle}
+                >
+                    {children}
+                </View>
+            </View>
+        )
+    }
+
     return (
         <View className="h-full">
             <View
@@ -1057,7 +1080,7 @@ export const LeftColumnContainer = ({
                         <SidebarTitle title={title} icon={icon} actions={addButtons} />
                     )}
                     <View className="flex-1 gap-4">
-                        {layoutName == 'navigator' && getMenuSectionNav(menu) === 'sidebar' && routes.length > 1 && (
+                        {hasSectionNav && (
                             <View className={appSetting('conductor', 'sidebar_nav')}>
                                 {hasConductorSubitems(routes) ? (
                                     <SidebarNav

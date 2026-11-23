@@ -37,6 +37,17 @@ class FeedbackPatternsTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('<a class="bx-btn bx-btn-primary" href="' . BX_DOL_URL_ROOT, $sLink);
     }
 
+    public function testEmptyStateCanHaveATitle(): void
+    {
+        $sBox = BxTemplFunctions::getInstance()->emptyState(_t('_sys_txt_empty_search_text'), [], 'search', _t('_sys_txt_empty_search_title'));
+
+        $this->assertStringContainsString(_t('_sys_txt_empty_search_title'), $sBox, 'A search that found nothing says so, as in the apps.');
+        $this->assertStringContainsString(_t('_sys_txt_empty_search_text'), $sBox);
+        $this->assertStringContainsString('lucide-search', $sBox);
+
+        $this->assertStringNotContainsString(_t('_sys_txt_empty_search_title'), BxTemplFunctions::getInstance()->emptyState(), 'No title unless asked for.');
+    }
+
     public function testGuestDenialStateAsksToSignInOrSignUp(): void
     {
         $aState = BxDolAcl::getDenialStateByLevel(MEMBERSHIP_ID_NON_MEMBER, 'text');

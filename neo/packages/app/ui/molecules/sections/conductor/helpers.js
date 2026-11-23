@@ -839,8 +839,8 @@ function processParsedUrl(data) {
     const cellLeft = cell('cell_left')
     const browsePayload = cellCenter.endpoint ?? cellTop.endpoint ?? cellBottom.endpoint
     // A filter form (block App config `use_as_filter`, e.g. a Search tab's form) belongs with the
-    // left column whichever cell UNA puts it in: beside the list from lg, in the Filters sheet below.
-    const isFilter = (item) => !!item?.data?.config_api?.use_as_filter
+    // left column whichever cell UNA puts it in: beside the list from lg, above it below.
+    const isFilter = isLeftColumnFilterForm
     const centerContent = [...cellTop.content, ...cellCenter.content]
     return {
         content: [
@@ -1034,16 +1034,26 @@ export function getMobileLeftColumnItems(leftColumnContent = [], excludedIds = n
     })
 }
 
-/** Split left column into top-menu dropdowns vs filter-sheet blocks. */
+/**
+ * A filter form (block App config `use_as_filter`, a Search tab's form): beside the list while the
+ * left panel is on screen, above the list below it, full width, as UNA's site stacks its columns.
+ * It is the page's main control, so it is never tucked away in the Filters sheet.
+ */
+export const isLeftColumnFilterForm = (item) => !!item?.data?.config_api?.use_as_filter
+
+/**
+ * Split left column into top-menu dropdowns vs filter-sheet blocks. Filter forms are neither: they
+ * stay in the list (see isLeftColumnFilterForm).
+ */
 export function partitionLeftColumn(leftColumnContent = [], layoutName) {
     const menuBlocks = leftColumnContent.filter(
         (item) =>
-            !item?.data?.config_api?.use_as_filter &&
+            !isLeftColumnFilterForm(item) &&
             !!item?.data?.config_api?.use_as_menu &&
             getDropdownItemsFromLeftColumnBlock(item).length > 0
     )
     const filterBlocks = leftColumnContent.filter((item) => {
-        if (item?.data?.config_api?.use_as_filter) return true
+        if (isLeftColumnFilterForm(item)) return false
         if (layoutName !== 'navigator') return false
         if (!item?.data?.config_api?.use_as_menu) return true
         // Menu flag set but no extractable links → keep in Filters
@@ -1055,7 +1065,7 @@ export function partitionLeftColumn(leftColumnContent = [], layoutName) {
 /**
  * Ids that should not also render in the main list.
  * Left panel on screen (web, `isDesktop`): nothing excluded, the panel shows its blocks.
- * Navigator: all left-column ids. Else: menu + filter blocks only.
+ * Navigator: all left-column ids but filter forms. Else: menu + filter blocks only.
  */
 export function getLeftColumnExcludedFromMainIds({
     layoutName,
@@ -1067,7 +1077,10 @@ export function getLeftColumnExcludedFromMainIds({
     if (isDesktop) return new Set()
     if (layoutName === 'navigator') {
         return new Set(
-            leftColumnContent.map((item) => item?.id).filter((id) => id != null)
+            leftColumnContent
+                .filter((item) => !isLeftColumnFilterForm(item))
+                .map((item) => item?.id)
+                .filter((id) => id != null)
         )
     }
     return new Set(
