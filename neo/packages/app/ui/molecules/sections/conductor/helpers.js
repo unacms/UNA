@@ -841,8 +841,10 @@ export const isSearchResultsBlock = (block) => block?.source === 'system:get_res
  * renders that), with its App config. On the endpoint as `block`; ListBody wraps the list in it.
  */
 export function listBlockShell(block) {
-    const { content: _content, content_empty: _contentEmpty, ...shell } = block || {}
-    return { ...shell, config: block?.config_api || null }
+    const shell = { ...block, config: block?.config_api || null }
+    delete shell.content
+    delete shell.content_empty
+    return shell
 }
 
 /**

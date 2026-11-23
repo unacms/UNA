@@ -11,7 +11,7 @@ import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
-import { getSkeletonForList, getSkeletonPreview, skeletonPreviewScale, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
 import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { layoutForList, paddingForList } from 'app/customization/functions'
 import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
@@ -722,37 +722,14 @@ function ListBody({
     // the page's comes from the block's Studio override: later requests have no block to ask.
     const pageEmptyState = route?.endpoint?.empty_state
     const emptyState = pageEmptyState?.custom ? pageEmptyState : (scene.emptyState ?? pageEmptyState)
-    const shell = route?.endpoint?.block
-    // A search's results sit in their block, as on the site: title, background, padding, the empty
-    // state inside. Only once there is something to show: rows, the empty state, or a search loading
-    // (the form has a value). Before a search there is no block, not even while the first, empty,
-    // reply loads. Web only (the apps' list scrolls the whole screen, its header is the list's own).
-    const isSearched = hasFilterValues(route?.endpoint?.params?.filters)
-    const inShell = !headerInList && !!shell && (!scene.isEmpty || scene.showNoContent || (wantsPreload && isSearched))
+    const { shell, inShell, listEndpoint, listRows, rowsBefore, rowsAfter } = useResultsShell({ route, scene, headerInList, wantsPreload })
     const noContent = NoContent
-        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} fill={!inShell} />
+        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} state={emptyState} fromSkeletons={sawSkeletons} fill={!inShell} />
         : null
     const emptyFooter =
         headerInList && scene.showNoContent && noContent
             ? noContent
             : (uniListProps.ListFooterComponent ?? null)
-    // In the block the list draws no card of its own (the block is the card): only its rows' spacing.
-    const listEndpoint = useMemo(
-        () => (inShell ? { ...route?.endpoint, designbox: { ...route?.endpoint?.designbox, bg: false }, bg_hidden_on: undefined } : route?.endpoint),
-        [inShell, route?.endpoint]
-    )
-    // Only the results go in the block: the page's other blocks (above or under the list) and, below
-    // the right column's breakpoint, that column's blocks stay outside it, where they were.
-    const { listRows, rowsBefore, rowsAfter } = useMemo(() => {
-        if (!inShell) return { listRows: scene.rows, rowsBefore: EMPTY_LIST_ITEMS, rowsAfter: EMPTY_LIST_ITEMS }
-        const beforeIds = new Set(filterConductorPageBlocks(route?.data).filter((item) => !item.afterList).map((item) => item.id))
-        const blocks = scene.rows.filter((item) => item?.type === 'block')
-        return {
-            listRows: scene.rows.filter((item) => item?.type !== 'block'),
-            rowsBefore: blocks.filter((item) => beforeIds.has(item.id)),
-            rowsAfter: blocks.filter((item) => !beforeIds.has(item.id)),
-        }
-    }, [inShell, scene.rows, route?.data])
 
     const list = (
         <UniList
@@ -797,6 +774,37 @@ function ListBody({
             )}
         </>
     )
+}
+
+/**
+ * A search's results sit in their block, as on the site (endpoint `block`, listBlockShell): title,
+ * background, padding, the empty state inside. Only once there is something to show: rows, the empty
+ * state, or a search loading (the form has a value). Before a search there is no block, not even while
+ * the first, empty, reply loads. Web only (the apps' list scrolls the whole screen, its header is the
+ * list's own). In the block the list draws no card of its own, and only the results go in: the page's
+ * other blocks (above or under the list) and, below the right column's breakpoint, that column's blocks
+ * stay outside it, where they were.
+ */
+function useResultsShell({ route, scene, headerInList, wantsPreload }) {
+    const shell = route?.endpoint?.block
+    const isSearched = hasFilterValues(route?.endpoint?.params?.filters)
+    const hasSomething = !scene.isEmpty || scene.showNoContent || (wantsPreload && isSearched)
+    const inShell = !headerInList && !!shell && hasSomething
+    const listEndpoint = useMemo(
+        () => (inShell ? { ...route?.endpoint, designbox: { ...route?.endpoint?.designbox, bg: false }, bg_hidden_on: undefined } : route?.endpoint),
+        [inShell, route?.endpoint]
+    )
+    const rows = useMemo(() => {
+        if (!inShell) return { listRows: scene.rows, rowsBefore: EMPTY_LIST_ITEMS, rowsAfter: EMPTY_LIST_ITEMS }
+        const beforeIds = new Set(filterConductorPageBlocks(route?.data).filter((item) => !item.afterList).map((item) => item.id))
+        const blocks = scene.rows.filter((item) => item?.type === 'block')
+        return {
+            listRows: scene.rows.filter((item) => item?.type !== 'block'),
+            rowsBefore: blocks.filter((item) => beforeIds.has(item.id)),
+            rowsAfter: blocks.filter((item) => !beforeIds.has(item.id)),
+        }
+    }, [inShell, scene.rows, route?.data])
+    return { shell, inShell, listEndpoint, ...rows }
 }
 
 /** A filter form's values (route.endpoint.params.filters) hold at least one answer. */

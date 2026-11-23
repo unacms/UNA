@@ -94,12 +94,13 @@ class SearchPageLayoutParityTest extends BxDolTestCase
         $this->assertStringContainsString('...(b.list_block ? { block: b.list_block } : null),', $s, 'Classic pages too.');
 
         $s = self::read('neo/packages/app/ui/molecules/sections/conductor/shared-ui.js');
-        $this->assertStringContainsString('const inShell = !headerInList && !!shell && (!scene.isEmpty || scene.showNoContent || (wantsPreload && isSearched))', $s, 'No block before a search, not even while the first reply loads.');
+        $this->assertStringContainsString('const hasSomething = !scene.isEmpty || scene.showNoContent || (wantsPreload && isSearched)', $s, 'No block before a search, not even while the first reply loads.');
+        $this->assertStringContainsString('const inShell = !headerInList && !!shell && hasSomething', $s);
         $this->assertStringContainsString("designbox: { ...route?.endpoint?.designbox, bg: false }", $s, 'One card: the block, not the list too.');
         $this->assertStringContainsString("listRows: scene.rows.filter((item) => item?.type !== 'block')", $s, 'Other blocks stay outside the results block.');
         $this->assertStringContainsString('<BlockWrapper block={shell} config={shell.config} listShell', $s);
         $this->assertStringContainsString('fill={!inShell}', $s, 'The empty state is only as tall as its words in the block.');
 
-        $this->assertStringContainsString("&& !listShell)\n        contentOnly = true;", self::read('neo/packages/app/components/block-wrapper.js'), 'Other lists stay without a shell.');
+        $this->assertStringContainsString("if (listShell) return false\n    const contentType = config?.content_type || block?.content?.[0]?.type\n    return contentType == 'browse' || contentType == 'browse_list'", self::read('neo/packages/app/components/block-wrapper.js'), 'Other lists stay without a shell.');
     }
 }
