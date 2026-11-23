@@ -5,6 +5,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip'
 import DropdownMenu, { DropdownMenuOpenContext, type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
+import { navbarTabPadding } from 'app/lib/navbar-fit';
 
 /** A tab of the header's site menu (MenuTop). */
 export type MenuTopItemProps = {
@@ -59,14 +60,9 @@ export default function MenuTopItem({ link, title, icon, isTitle, isActive, item
 // sliding hover highlight has them in CSS, which also finds this row by its `h-11`
 // (`.neo-menu-highlight-bar` in design/styles/global.web.css): change them together.
 // One structure with UNA's main menu (Artificer tailwind.css, `#bx-toolbar .bx-menu-main`): the icon, the label and a
-// dropdown's chevron 8 px apart, 12 px before the icon and 16 px after the label (the 24 px icon has ~3 px of air, so
-// its side gets 4 px less to look even), the width its content's. MenuTop's hidden probe repeats these: change together.
+// dropdown's chevron 8 px apart, the width its content's, and the padding by what the tab shows (navbarTabPadding,
+// lib/navbar-fit.ts: icon and label, label alone, icon alone). MenuTop's hidden probe repeats these: change together.
 const ROW_BASE = 'items-center justify-center gap-2 h-11 min-w-11 rounded-xl'
-const ROW_LAYOUT = {
-    labelled: 'ps-3 pe-4',
-    // the icon alone (an icon-only item, or a bar too narrow for labels): a 44 px square
-    plain: 'px-2.5',
-}
 const ROW_STATE = {
     open: 'bg-accent-200/60 dark:bg-accent-900/60 text-accent-foreground',
     active: 'text-accent-foreground',
@@ -84,10 +80,6 @@ const LABEL_BASE = 'whitespace-nowrap text-ellipsis overflow-hidden font-medium'
 const LABEL_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
 const LABEL_SIZE = 'text-sm leading-5'
 const CHEVRON_TONE = { on: 'text-accent-foreground', off: 'text-secondary-foreground web:group-hover:text-foreground' }
-
-function rowLayout(labelled: boolean): string {
-    return labelled ? ROW_LAYOUT.labelled : ROW_LAYOUT.plain
-}
 
 // The current tab's fill is MenuTop's sliding indicator, behind the tab: an open More that is also the current tab
 // (its page is under More) takes only the accent label, or the two fills would stack.
@@ -131,7 +123,6 @@ function MenuTopItemLook({ title, icon, isTitle, isActive = false, isPopup, chev
     // item while the bar is too narrow for labels). When the title is already rendered next to
     // the icon it just repeats it, so skip the tooltip.
     const showTooltip = !isTitle && !!title;
-    const labelled = !!icon && !!isTitle;
     const label = isTitle ? <Text key="menu-title" className={labelClassName(isActiveOrOpen)}>{title}</Text> : null;
     const arrow = chevron ? <MenuTopChevron key="menu-chevron" icon={chevron} isOpen={isOpen} on={isActiveOrOpen} /> : null;
 
@@ -139,7 +130,7 @@ function MenuTopItemLook({ title, icon, isTitle, isActive = false, isPopup, chev
         <Tooltip content={title} enabled={showTooltip}>
             {/* The current tab's fill is MenuTop's sliding indicator (accent-200 at 60%), which stays on the
                 current tab, so an open dropdown draws the same fill of its own behind the accent-foreground label. */}
-            <Row className={`${ROW_BASE} ${rowLayout(labelled)} ${rowState(isOpen, isActive)}`}>
+            <Row className={`${ROW_BASE} ${navbarTabPadding(!!icon, !!isTitle)} ${rowState(isOpen, isActive)}`}>
                 {[
                     // The icon's hover motion is CSS, keyed on the link's (or trigger's) `group` class.
                     <MenuTopIcon key="menu-icon" icon={icon} animated={animated === true} on={isActiveOrOpen} className={iconClassName(isActiveOrOpen, addClassName)} />,

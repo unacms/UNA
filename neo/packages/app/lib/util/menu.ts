@@ -307,6 +307,17 @@ export function withSiteMenuHomeLink(item: MenuItem): MenuItem {
 }
 
 /**
+ * A site menu item's icon for the navbar: none when UNA sends it without one (Studio's icon removed: the tab shows its
+ * label alone, as on the site), else the icon it names, a placeholder when NEO doesn't know that name. An item that
+ * comes without an `icon` field at all (an older UNA) keeps the placeholder, Home its house.
+ */
+export function siteMenuItemIcon(item: MenuItem): string {
+    const raw = typeof item?.icon === 'string' ? item.icon.trim() : item?.icon;
+    if (raw === '') return '';
+    return findIconFromRemote(raw) || (item?.name === 'home' ? 'House' : 'Circle');
+}
+
+/**
  * Navbar from the UNA site menu (`sys_site`), used when the
  * `menu_items.menu_navbar` setting is empty: its items as tabs (the first
  * `maxTabs` when it is above 0), the rest under More. MenuTop then moves the tabs
@@ -324,12 +335,14 @@ export function navbarItemsFromSiteMenu(items: MenuItemList, maxTabs: number): M
             if (getMenuItemChildren(item).length) more.push(item);
             return;
         }
+        const icon = siteMenuItemIcon(item);
         const next: MenuItem = {
             ...item,
             link: normalizeMenuItemHref(item.link),
-            icon: findIconFromRemote(item.icon) || (item.name === 'home' ? 'House' : 'Circle'),
-            // The title shows next to the icon unless Studio marks the item "Icon only", as on the site.
-            showTitle: !Number(item.icon_only),
+            icon,
+            // The title shows next to the icon unless Studio marks the item "Icon only", as on the site; an item
+            // without an icon shows it anyway.
+            showTitle: !icon || !Number(item.icon_only),
             animated: true,
         };
         // Home leads the bar wherever the site menu puts it, and doesn't count as a tab.
