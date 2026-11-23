@@ -34,9 +34,9 @@ class SubmenuToolsParityTest extends BxDolTestCase
     public function testNeoTabRowButtonsAreGlassSmall(): void
     {
         $sUi = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
-        $this->assertStringContainsString("const AddMenu = ({ menu, filter, only, style = 'glass', controlSize = 'small' }) => {", $sUi);
+        $this->assertStringContainsString("const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, controlSize = 'small' }) => {", $sUi);
         $this->assertStringContainsString('toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}', $sUi, 'Search on the tab row: the tabs\' look.');
-        $this->assertStringContainsString('only="actions" style="bordered" controlSize="regular" />}', $sUi, 'Add on the section\'s first line keeps the header\'s 44px buttons.');
+        $this->assertStringContainsString('only="actions" actionStyle="glassProminent" />}', $sUi, 'Add on the section\'s first line: glass prominent, small, as the site\'s (PageAddActionTemplateTest).');
 
         $sTab = self::read('neo/packages/app/components/menu-items/submenu.js');
         $this->assertStringContainsString("const controlSize = 'small';", $sTab);

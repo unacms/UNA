@@ -519,6 +519,67 @@ class BxBasePage extends BxDolPage
         ];
     }
 
+    /**
+     * The "add" action of this page: the + at the end of a section's title row on the site (cover.html) and the "Add"
+     * button the apps draw from `menu.add_url` (getPageAPI), so the two always agree. Only on pages of a content or a
+     * context module with a create page, and only for a viewer who may create that item type (the create page's check).
+     * @return array ['url' => absolute URL of the create page, 'title' => "Add organization"], or an empty array
+     */
+    public function getAddEntryAction()
+    {
+        $sModule = !empty($this->_aObject['module']) ? $this->_aObject['module'] : '';
+        if(!$sModule || $sModule == 'system' || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return [];
+
+        // Not on a page the viewer can't open (an operator's Administration page): the apps show its 403 card there.
+        if($this->_isAvailablePage($this->_aObject) !== true || $this->_isVisiblePage($this->_aObject) !== true)
+            return [];
+
+        if(!bx_srv('system', 'is_module_content', [$sModule]) && !bx_srv('system', 'is_module_context', [$sModule]))
+            return [];
+
+        $oModule = BxDolModule::getInstance($sModule);
+        if(!$oModule || !($aAdd = self::getAddEntryParams($oModule)) || !$aAdd['allowed'])
+            return [];
+
+        return [
+            'url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $aAdd['url'])),
+            'title' => $aAdd['title'],
+        ];
+    }
+
+    /**
+     * A content or context module's create page and its add label, and whether the viewer may create that item type.
+     * @param BxDolModule $oModule
+     * @return array ['url' => page URI, 'title' => "Add organization", 'allowed' => bool], or an empty array when the module
+     *      has no create page
+     */
+    public static function getAddEntryParams($oModule)
+    {
+        $CNF = &$oModule->_oConfig->CNF;
+
+        $sUri = '';
+        if(!empty($CNF['URI_ADD_ENTRY']))
+            $sUri = $CNF['URI_ADD_ENTRY'];
+        else if(!empty($CNF['URI_EDIT_ENTRY']))
+            $sUri = str_replace('edit-', 'create-', $CNF['URI_EDIT_ENTRY']);
+        if(!$sUri)
+            return [];
+
+        $sTitle = _t('_sys_txt_add');
+        if(!empty($CNF['T']['txt_sample_single']) && ($sSample = _t($CNF['T']['txt_sample_single'])) !== $CNF['T']['txt_sample_single'])
+            $sTitle = _t('_sys_txt_add_entry', $sSample);
+
+        // Guests never get it; members as the create page checks them (ACL "create entry", a profile limit).
+        $bAllowed = isLogged() && method_exists($oModule, 'checkAllowedAdd') && $oModule->checkAllowedAdd() === CHECK_ACTION_RESULT_ALLOWED;
+
+        return [
+            'url' => $sUri,
+            'title' => $sTitle,
+            'allowed' => $bAllowed,
+        ];
+    }
+
     public function getPageCoverParams()
     {
         $aParams = [
@@ -754,14 +815,14 @@ class BxBasePage extends BxDolPage
                     'icon' => !empty($CNF['ICON']) ? $CNF['ICON'] : '',
                 ];
 
-                // "Add" button: content and context entries only, a profile isn't added from its list.
-                $sUrlAdd = '';
-                if($bModuleEntries && ($sKey = 'URI_ADD_ENTRY') && !empty($CNF[$sKey]))
-                    $sUrlAdd = $CNF[$sKey];
-                if($bModuleEntries && !$sUrlAdd && ($sKey = 'URI_EDIT_ENTRY') && !empty($CNF[$sKey]))
-                    $sUrlAdd = str_replace('edit-', 'create-', $CNF[$sKey]);
-                if($sUrlAdd)
-                    $aMenuAdd['add_url'] = $sUrlAdd;
+                // "Add" button: content and context entries only, a profile isn't added from its list. `add_url` also gives the
+                // section its Search in the apps, so it stays for a viewer who may not add: `add_allowed` hides the button then.
+                // The site draws the same button from the same data (getAddEntryAction, cover.html).
+                if($bModuleEntries && ($aAdd = self::getAddEntryParams($oModule))) {
+                    $aMenuAdd['add_url'] = $aAdd['url'];
+                    $aMenuAdd['add_title'] = $aAdd['title'];
+                    $aMenuAdd['add_allowed'] = $aAdd['allowed'];
+                }
 
                 $a['menu'] = array_merge($a['menu'], $aMenuAdd);
             }

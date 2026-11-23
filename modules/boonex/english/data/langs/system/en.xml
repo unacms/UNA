@@ -5103,6 +5103,8 @@
     <string name="_sys_txt_account_email_change_confirmed"><![CDATA[Your new email is confirmed]]></string>
     <string name="_sys_txt_account_email_change_failed"><![CDATA[This link no longer works, or another account uses this email now. Change your email again to get a new link.]]></string>
     <string name="_sys_txt_account_email_change_sent"><![CDATA[We sent a confirmation link to {0}. Until you open it, you sign in with {1}.]]></string>
+    <string name="_sys_txt_add"><![CDATA[Add]]></string>
+    <string name="_sys_txt_add_entry"><![CDATA[Add {0}]]></string>
     
     <string name="_sys_txt_agent_inactive"><![CDATA[Agent isn't activated]]></string>
     <string name="_sys_txt_captcha_not_available"><![CDATA[CAPTCHA not available]]></string>

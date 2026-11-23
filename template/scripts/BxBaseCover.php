@@ -159,6 +159,9 @@ class BxBaseCover extends BxDolCover
 
         $sActions = isset($aParams['actions']) ? $aParams['actions'] : '';
 
+        // A section's "add" action (the + the apps draw there too): at the end of its title row, for a viewer who may add.
+        $aAdd = $bSection ? $oPage->getAddEntryAction() : [];
+
         return [
             'band_class' => $bTitle ? 'hidden lg:block' : '',
             'bx_if:title_section' => [
@@ -170,6 +173,13 @@ class BxBaseCover extends BxDolCover
                         'content' => ['icon' => $sIcon],
                     ],
                     'actions' => $sActions,
+                    'bx_if:add' => [
+                        'condition' => !empty($aAdd),
+                        'content' => [
+                            'url' => !empty($aAdd) ? $aAdd['url'] : '',
+                            'title' => !empty($aAdd) ? bx_html_attribute($aAdd['title']) : '',
+                        ],
+                    ],
                 ],
             ],
             'bx_if:title_page' => [
