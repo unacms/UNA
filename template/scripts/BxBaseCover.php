@@ -113,6 +113,25 @@ class BxBaseCover extends BxDolCover
     }
     
     /**
+     * The icon of a section's title: the site menu item's, else the section's module's (its `ICON`), as the apps take
+     * the menu's `icon` when the item has none.
+     * @param string $sMenuIcon the selected site menu item's icon, '' for none
+     * @param string $sModule the page's module
+     * @return string the icon's code, '' for none
+     */
+    public function getSectionIconCode($sMenuIcon, $sModule)
+    {
+        if($sMenuIcon !== '')
+            return $sMenuIcon;
+
+        if($sModule === '' || $sModule == 'system' || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return '';
+
+        $oModule = BxDolModule::getInstance($sModule);
+        return $oModule && !empty($oModule->_oConfig->CNF['ICON']) ? (string)$oModule->_oConfig->CNF['ICON'] : '';
+    }
+
+    /**
      * The page cover's band and title (cover.html): `band_class` hides the band below desktop width where the page has
      * a title, `bx_if:title_section` is the title of a section's page (its tabs show: the section's icon and name),
      * `bx_if:title_page` that of any other page.
@@ -131,8 +150,12 @@ class BxBaseCover extends BxDolCover
         }
 
         $sIcon = '';
-        if($bSection && !empty($aParams['bx_if:icon']['condition']) && !empty($aParams['bx_if:icon']['content']['icon']))
-            $sIcon = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml($aParams['bx_if:icon']['content']['icon'], ['class' => 'size-8', 'aria-hidden' => 'true']);
+        if($bSection) {
+            $sMenuIcon = !empty($aParams['bx_if:icon']['condition']) && !empty($aParams['bx_if:icon']['content']['icon']) ? $aParams['bx_if:icon']['content']['icon'] : '';
+            $sIconCode = $this->getSectionIconCode($sMenuIcon, (string)$oPage->getModule());
+            if($sIconCode !== '')
+                $sIcon = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml($sIconCode, ['class' => 'size-7', 'aria-hidden' => 'true']);
+        }
 
         $sActions = isset($aParams['actions']) ? $aParams['actions'] : '';
 
