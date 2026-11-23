@@ -224,11 +224,14 @@ class BxOktaConModule extends BxBaseModConnectModule
      */
     protected function _getRemoteId($aProfileInfo)
     {
-        foreach ([$this->_oConfig->sUserIdField, 'sub'] as $sField)
-            if (isset($aProfileInfo[$sField]) && is_scalar($aProfileInfo[$sField]) && '' !== (string)$aProfileInfo[$sField])
-                return (string)$aProfileInfo[$sField];
+        $sId = '';
+        foreach ([$this->_oConfig->sUserIdField, 'sub'] as $sField) {
+            if ($sId === '' && isset($aProfileInfo[$sField]) && is_scalar($aProfileInfo[$sField])) {
+                $sId = (string)$aProfileInfo[$sField];
+            }
+        }
 
-        return '';
+        return $sId;
     }
 
     protected function _isRemoteEmailVerified($aProfileInfo)
@@ -244,11 +247,10 @@ class BxOktaConModule extends BxBaseModConnectModule
             return false;
 
         $iProfileId = $this->_oDb->getProfileId($sRemoteId);
-        if (!$iProfileId || !($oProfile = BxDolProfile::getInstance($iProfileId)))
+        $oProfile = $iProfileId ? BxDolProfile::getInstance($iProfileId) : null;
+        if (!$oProfile || bx_check_login_allowed($oProfile->getAccountId())) {
             return false;
-
-        if (bx_check_login_allowed($oProfile->getAccountId()))
-            return false;
+        }
 
         $bRememberMe = false;
         bx_login($oProfile->getAccountId(), $bRememberMe);

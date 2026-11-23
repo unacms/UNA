@@ -271,7 +271,8 @@ class BxBaseServiceLogin extends BxDol
             if ($oForm->isSubmittedAndValid()) {
                 $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
                 // Same SMS two-factor gate as member.php: a correct password does not sign in yet.
-                if(($sUrl = self::start2faLogin($oAccount->id(), $oForm->getRememberMe()))) {
+                $sUrl = self::start2faLogin($oAccount->id(), $oForm->getRememberMe());
+                if($sUrl) {
                     return [
                         bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sUrl)]),
                     ];
@@ -511,17 +512,15 @@ class BxBaseServiceLogin extends BxDol
      */
     public static function start2faLogin($iAccountId, $bRememberMe = false)
     {
-        if (getParam('sys_account_activation_2fa_enable') != 'on' || getParam('sys_sms_default') == '')
-            return '';
-
-        $oAccount = BxDolAccount::getInstance((int)$iAccountId);
+        $bOn = getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '';
+        $oAccount = $bOn ? BxDolAccount::getInstance((int)$iAccountId) : null;
         $aAccountInfo = $oAccount ? $oAccount->getInfo() : false;
-        if (empty($aAccountInfo))
-            return '';
 
+        // the code isn't asked again within the lifetime of the last sign-in
         $iLifetime = (int)getParam('sys_account_activation_2fa_lifetime');
-        if ($iLifetime != 0 && time() - $aAccountInfo['logged'] <= $iLifetime)
+        if (empty($aAccountInfo) || ($iLifetime != 0 && time() - $aAccountInfo['logged'] <= $iLifetime)) {
             return '';
+        }
 
         $oSession = BxDolSession::getInstance();
         $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());

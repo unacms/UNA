@@ -85,8 +85,10 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         // A session that is over (BxDolSessionQuery::exists: past its end, or idle for too long)
         // isn't taken up again, even before the cron job deletes it: it's deleted, and a new one starts.
         $bExists = $this->exists($this->sId);
-        if (!$bExists && ($sCookieId = $this->getSessionCookie()))
+        $sCookieId = $bExists ? null : $this->getSessionCookie();
+        if ($sCookieId) {
             $this->oDb->deleteById($sCookieId);
+        }
 
         if (!getParam('sys_session_auth') && $bExists) {
             if ($this->iUserId == getLoggedId())

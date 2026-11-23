@@ -9,7 +9,7 @@
 
 class BxDrupalFormLogin extends BxTemplFormLogin
 {
-    protected $_iProfileId = 0;
+    protected $iProfileId = 0;
 
     public function __construct($aInfo, $oTemplate)
     {
@@ -42,20 +42,24 @@ class BxDrupalFormLogin extends BxTemplFormLogin
             'password' => $sPassword,   
         ));
 
-        if (empty($mixedData) || is_string($mixedData) || !is_array($mixedData))
-            return empty($mixedData) ? _t('_sys_txt_error_occured') : $mixedData;
+        if (empty($mixedData) || !is_array($mixedData)) {
+            return empty($mixedData) ? _t('_sys_txt_error_occured') : (string)$mixedData;
+        }
 
         // find or create the local profile of this Drupal user
         $mixedProfileId = bx_srv('bx_drupal', 'handle_user', array($mixedData));
-        if (!is_numeric($mixedProfileId) || !($oProfile = BxDolProfile::getInstance((int)$mixedProfileId)))
-            return is_string($mixedProfileId) && $mixedProfileId !== '' ? $mixedProfileId : _t('_sys_txt_error_occured');
+        $oProfile = is_numeric($mixedProfileId) ? BxDolProfile::getInstance((int)$mixedProfileId) : null;
 
         // a locked account can't sign in through Drupal either
-        if (($sError = bx_check_login_allowed($oProfile->getAccountId())))
-            return $sError;
+        $sError = $oProfile ? bx_check_login_allowed($oProfile->getAccountId()) : '';
+        if (!$oProfile && !$sError) {
+            $sError = is_string($mixedProfileId) && $mixedProfileId !== '' ? $mixedProfileId : _t('_sys_txt_error_occured');
+        }
 
-        $this->_iProfileId = $oProfile->id();
-        return '';
+        if ($sError === '') {
+            $this->iProfileId = $oProfile->id();
+        }
+        return $sError;
     }
 
     /**
@@ -63,7 +67,7 @@ class BxDrupalFormLogin extends BxTemplFormLogin
      */
     public function getProfileId()
     {
-        return $this->_iProfileId;
+        return $this->iProfileId;
     }
     
     function call ($aData)

@@ -42,8 +42,9 @@ class BxFormConfirmPhoneCheckerHelper extends BxDolFormCheckerHelper
 
         $oSession = BxDolSession::getInstance();
         $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
-        if (!is_array($aCode) || empty($aCode['code']) || (int)$aCode['expires'] < time())
+        if (!is_array($aCode) || empty($aCode['code']) || (int)$aCode['expires'] < time()) {
             return _t('_sys_form_login_input_code_error_expired', $sUrlStep1);
+        }
 
         // the try is counted before the code is compared, and in the database, so parallel requests share the count
         $oKey = BxDolKey::getInstance();

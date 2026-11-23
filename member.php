@@ -26,8 +26,10 @@ if (isset($_POST['ID'])) { // login form is submitted
     $sUrl2fa = '';
     if ($bLoginSuccess) {
         $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
-        if (($sUrl2fa = BxTemplServiceLogin::start2faLogin($oAccount->id(), $oForm->getRememberMe())))
+        $sUrl2fa = BxTemplServiceLogin::start2faLogin($oAccount->id(), $oForm->getRememberMe());
+        if ($sUrl2fa) {
             $sUrl2fa = BX_DOL_URL_ROOT . $sUrl2fa;
+        }
     }
 
     $bAjxMode = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') ? true : false;

@@ -80,42 +80,55 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
 
         $sError = $iAccountId ? bx_check_login_allowed($iAccountId) : _t('_sys_txt_login_error');
         if ($sError) {
-            if (!$bRedirect)
-                return $sError;
-
-            if ($this->_bIsApi)
-                return [bx_api_get_msg($sError)];
-
-            $this->_oTemplate->getPage(_t('_Error'), MsgBox($sError));
-            exit;
+            return $bRedirect ? $this->_showLoginError($sError) : $sError;
         }
 
         $sUrl2fa = BxTemplServiceLogin::start2faLogin($iAccountId, $bRememberMe);
         if ($sUrl2fa) {
             $sUrl2fa = BX_DOL_URL_ROOT . $sUrl2fa;
-            if (!$bRedirect)
-                return ['redirect' => $sUrl2fa];
         }
         else {
             bx_login($iAccountId, $bRememberMe);
-            if (!$bRedirect)
-                return true;
         }
 
-        //set redirect from the session if it was added
+        if (!$bRedirect) {
+            return $sUrl2fa ? ['redirect' => $sUrl2fa] : true;
+        }
+
+        return $this->_redirectAfterLogin($sUrl2fa ? $sUrl2fa : $this->_getRelocateUrl($sCallbackUrl));
+    }
+
+    /**
+     * Where a member goes once signed in: the given URL, the one saved in the session, or the default.
+     */
+    protected function _getRelocateUrl($sCallbackUrl = '')
+    {
         $oSession = BxDolSession::getInstance();
         $sSessionKey = $this->_oConfig->getName() . '_relocate';
-        if ($oSession->isValue($sSessionKey))
-            $sCallbackUrl = $sCallbackUrl ? $sCallbackUrl : $oSession->getValue($sSessionKey);
+        if (!$sCallbackUrl && $oSession->isValue($sSessionKey)) {
+            $sCallbackUrl = $oSession->getValue($sSessionKey);
+        }
 
-        $sCallbackUrl = $sCallbackUrl ? $sCallbackUrl : $this -> _oConfig -> sDefaultRedirectUrl;
-        if ($sUrl2fa)
-            $sCallbackUrl = $sUrl2fa;
+        return $sCallbackUrl ? $sCallbackUrl : $this->_oConfig->sDefaultRedirectUrl;
+    }
 
-        if($this->_bIsApi)
-            return [bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sCallbackUrl)])];
+    protected function _redirectAfterLogin($sUrl)
+    {
+        if ($this->_bIsApi) {
+            return [bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sUrl)])];
+        }
 
-        header('Location: ' . $sCallbackUrl);
+        header('Location: ' . $sUrl);
+        exit;
+    }
+
+    protected function _showLoginError($sError)
+    {
+        if ($this->_bIsApi) {
+            return [bx_api_get_msg($sError)];
+        }
+
+        $this->_oTemplate->getPage(_t('_Error'), MsgBox($sError));
         exit;
     }
 
@@ -349,10 +362,10 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
         $sRedirectUrl = '';
         if ($oExistingAccount && $isSetLoggedIn) {
             $mixedLogged = $this->setLogged($iProfileId, '', false);
-            if (is_string($mixedLogged))
+            if (is_string($mixedLogged)) {
                 return $mixedLogged;
-            if (is_array($mixedLogged))
-                $sRedirectUrl = $mixedLogged['redirect'];
+            }
+            $sRedirectUrl = is_array($mixedLogged) ? $mixedLogged['redirect'] : '';
         }
 
         // auto-friend members if they are already friends on remote site

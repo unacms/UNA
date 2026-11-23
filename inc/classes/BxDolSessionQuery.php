@@ -96,15 +96,16 @@ class BxDolSessionQuery extends BxDolDb
      * Delete a session without moving the account's last activity: one that goes on under
      * a new id (BxDolSession::setUserId), or one that is over already.
      */
-    function deleteById($sId)
+    public function deleteById($sId)
     {
         return (int)$this->query("DELETE FROM `" . $this->sTable . "` WHERE `id` = :id LIMIT 1", ['id' => $sId]) > 0;
     }
 
-    function deleteByAccountIdExcept($iAccountId, $sKeepId = '')
+    public function deleteByAccountIdExcept($iAccountId, $sKeepId = '')
     {
-        if(!(int)$iAccountId)
+        if(!(int)$iAccountId) {
             return 0;
+        }
 
         return (int)$this->query("DELETE FROM `" . $this->sTable . "` WHERE `user_id` = :id AND `id` != :keep", [
             'id' => (int)$iAccountId,

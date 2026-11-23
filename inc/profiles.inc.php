@@ -205,8 +205,9 @@ function bx_end_other_sessions($iAccountId, $bKeepCurrent = true)
 function bx_sms_code_send_allowed($iAccountId, $sPhone)
 {
     $oKey = BxDolKey::getInstance();
-    if (false === $oKey->useNamedCounter('sms:account:' . (int)$iAccountId, BX_ACCOUNT_SMS_SENDS_LIMIT, BX_ACCOUNT_SMS_SENDS_WINDOW))
+    if (false === $oKey->useNamedCounter('sms:account:' . (int)$iAccountId, BX_ACCOUNT_SMS_SENDS_LIMIT, BX_ACCOUNT_SMS_SENDS_WINDOW)) {
         return false;
+    }
 
     return false !== $oKey->useNamedCounter('sms:phone:' . preg_replace('/\D/', '', (string)$sPhone), BX_ACCOUNT_SMS_SENDS_LIMIT, BX_ACCOUNT_SMS_SENDS_WINDOW);
 }

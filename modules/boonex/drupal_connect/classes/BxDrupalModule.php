@@ -48,21 +48,26 @@ class BxDrupalModule extends BxBaseModConnectModule
         $sUrl2fa = '';
         if ($bLoginSuccess) {
             $mixedLogged = $this->setLogged($oForm->getProfileId(), '', false, $oForm->getCleanValue('rememberMe') ? true : false);
-            if (is_array($mixedLogged))
+            if (is_array($mixedLogged)) {
                 $sUrl2fa = $mixedLogged['redirect'];
-            elseif (true !== $mixedLogged)
+            }
+            elseif (true !== $mixedLogged) {
                 $bLoginSuccess = false;
+            }
         }
 
         $bAjxMode = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') ? true : false;
         if ($bAjxMode) {
 
-            if ($sUrl2fa)
+            if ($sUrl2fa) {
                 $s = _t('_sys_txt_login_2fa_continue', $sUrl2fa);
-            elseif ($bLoginSuccess)
+            }
+            elseif ($bLoginSuccess) {
                 $s = 'OK';
-            else
+            }
+            else {
                 $s = is_string($mixedLogged) ? $mixedLogged : $oForm->getLoginError();
+            }
 
             if (isset($_SERVER['HTTP_ACCEPT'])) {
                 if (false !== strpos($_SERVER['HTTP_ACCEPT'], 'application/json') || false !== strpos($_SERVER['HTTP_ACCEPT'], 'text/javascript')) {
@@ -114,29 +119,43 @@ class BxDrupalModule extends BxBaseModConnectModule
     public function serviceHandleUser($aRemoteProfileInfo)
     {
         // it trusts the remote profile info given by the caller, so it is for internal calls only (not for API clients)
-        if (BxDolService::isExternalCall($this->getName(), 'handle_user'))
+        if (BxDolService::isExternalCall($this->getName(), 'handle_user')) {
             return false;
+        }
 
-        if (!$aRemoteProfileInfo || !isset($aRemoteProfileInfo['user']) || !isset($aRemoteProfileInfo['user']['uid']))
+        $mixedRemoteId = $aRemoteProfileInfo['user']['uid'] ?? null;
+        if (null === $mixedRemoteId) {
             return _t('_sys_connect_profile_error_info');
+        }
 
         // check if user logged in before
-        $iLocalProfileId = $this->_oDb->getProfileId($aRemoteProfileInfo['user']['uid']);
-        if ($iLocalProfileId && $oProfile = BxDolProfile::getInstance($iLocalProfileId)) {
+        $iLocalProfileId = $this->_oDb->getProfileId($mixedRemoteId);
+        $oProfile = $iLocalProfileId ? BxDolProfile::getInstance($iLocalProfileId) : null;
+        if ($oProfile) {
             bx_alert($this->getName(), 'login', 0, $oProfile->id(), array('remote_profile_info' => $aRemoteProfileInfo));
             return $oProfile->id();
         }
 
         // register new user, or link an existing account with the same verified email
-        $aRemoteProfileInfo['id'] = $aRemoteProfileInfo['user']['uid'];
+        $aRemoteProfileInfo['id'] = $mixedRemoteId;
+        return $this->_createProfileId($aRemoteProfileInfo);
+    }
+
+    /**
+     * Create the local profile of a new Drupal user, without signing in.
+     * @return local profile id, or an error message string
+     */
+    protected function _createProfileId($aRemoteProfileInfo)
+    {
         $mixed = $this->_createProfileRaw($aRemoteProfileInfo, '', true, false);
         if (is_array($mixed) && isset($mixed['join_page_redirect'])) {
             $this->_getJoinPage($mixed['profile_fields'], $mixed['remote_profile_info']['id']);
             exit;
         }
 
-        if (is_array($mixed) && !empty($mixed['profile_id']))
+        if (is_array($mixed) && !empty($mixed['profile_id'])) {
             return (int)$mixed['profile_id'];
+        }
 
         return is_string($mixed) && $mixed !== '' ? $mixed : _t('_sys_txt_error_account_creation');
     }
