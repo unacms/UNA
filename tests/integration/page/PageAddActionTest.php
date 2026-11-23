@@ -168,17 +168,17 @@ class PageAddActionTest extends BxDolIntegrationTestCase
     {
         $oDb = BxDolDb::getInstance();
         $aMenuObject = BxDolMenuQuery::getMenuObject('bx_groups_my');
-        $aBind = ['set' => $aMenuObject['set_name'], 'link' => 'page.php?i=create-group-profile'];
-        $sOld = BxDolMenuQuery::getMenuItemIconByLink($aBind['set'], $aBind['link']);
-        if ($sOld === '')
+        // The row the button reads (the first by id): change and restore only that one.
+        $aRow = $oDb->getRow("SELECT `id`, `icon` FROM `sys_menu_items` WHERE `set_name` = :set AND `link` = :link ORDER BY `id` ASC LIMIT 1", ['set' => $aMenuObject['set_name'], 'link' => 'page.php?i=create-group-profile']);
+        if (!$aRow)
             $this->markTestSkipped('No create item in the Groups "My" menu.');
 
         try {
-            $oDb->query("UPDATE `sys_menu_items` SET `icon` = '123' WHERE `set_name` = :set AND `link` = :link", $aBind);
+            $oDb->query("UPDATE `sys_menu_items` SET `icon` = '123' WHERE `id` = :id", ['id' => (int)$aRow['id']]);
             $this->assertSame('plus', BxBasePage::getAddEntryParams(BxDolModule::getInstance(self::MODULE))['icon']);
         }
         finally {
-            $oDb->query("UPDATE `sys_menu_items` SET `icon` = :icon WHERE `set_name` = :set AND `link` = :link", $aBind + ['icon' => $sOld]);
+            $oDb->query("UPDATE `sys_menu_items` SET `icon` = :icon WHERE `id` = :id", ['icon' => $aRow['icon'], 'id' => (int)$aRow['id']]);
         }
     }
 }
