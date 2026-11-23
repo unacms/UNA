@@ -775,6 +775,18 @@
     #bx-menu-footer > ul > li > a[aria-current="page"] {
         @apply text-gray-950 dark:text-gray-50;
     }
+    /* The tools that open a menu (language, theme, sounds: aria-haspopup, BxBaseMenuFooter) are borderless icon buttons, as in
+       NEO's footer (NeoButton `borderless`, mini): 28px squares with the mini corner, no fill at rest, the button fill (the ink
+       at 8%, as .bx-btn) on hover and keyboard focus and 12% while pressed, in the menu items' 150ms ease-out. The icon is the
+       borderless button's (NEO card-foreground: gray-800, 200 in dark), foreground on hover and focus. Their 4px sides
+       overlap the group's gap, so the squares are 8px apart and their 36px hit areas meet without overlapping. */
+    #bx-menu-footer > ul > li > a[aria-haspopup] {
+        @apply justify-center size-7 -mx-1 rounded-md duration-150 ease-out;
+        @apply text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;
+        @apply hover:bg-gray-950/[0.08] dark:hover:bg-gray-50/[0.08] focus-visible:bg-gray-950/[0.08] dark:focus-visible:bg-gray-50/[0.08];
+        @apply active:bg-gray-950/[0.12] dark:active:bg-gray-50/[0.12];
+        @apply before:-inset-x-1 before:-inset-y-2;
+    }
     /* Text items (the copyright notice) line up with the links but don't react to the pointer. */
     #bx-menu-footer .bx-menu-footer-text {
         @apply inline-flex items-center min-h-7;
