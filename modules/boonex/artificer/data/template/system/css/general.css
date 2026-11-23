@@ -223,7 +223,7 @@ html.dark body {
 #bx-content-main .bx-content-main > .bx-landing {
     min-height: 0;
 }
-/* No page margins around it (my-4 lg:my-6): the splash has its own padding, and the apps show it flush with the header
+/* No page margins around it (my-4): the splash has its own padding, and the apps show it flush with the header
    and the footer. */
 #bx-content-main .bx-content-main:has(> .bx-landing) {
     margin-top: 0;

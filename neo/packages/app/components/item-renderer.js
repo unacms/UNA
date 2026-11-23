@@ -14,10 +14,13 @@ function isTasksListBlock(item) {
     return typeof name === 'string' && name.includes('tasks_list');
 }
 
-/** `routeIndex`: unit rows get it instead of `route` (see useListScene). */
-function ItemRenderer_({ route, routeIndex, item, unit, module, unitMode, unitType, sidebar }) {
+/**
+ * `routeIndex`: unit rows get it instead of `route` (see useListScene).
+ * `blockClassName`: extra classes for a page block's wrapper (the conductor's inset for blocks in a list).
+ */
+function ItemRenderer_({ route, routeIndex, item, unit, module, unitMode, unitType, sidebar, blockClassName }) {
     if (item?.type === 'block') {
-        return <BlockItemRenderer item={item} route={route} sidebar={sidebar} />;
+        return <BlockItemRenderer item={item} route={route} sidebar={sidebar} className={blockClassName} />;
     } else {
         return (
             <View key={`${routeIndex ?? route?.index}-${item.id}`}>
@@ -27,7 +30,7 @@ function ItemRenderer_({ route, routeIndex, item, unit, module, unitMode, unitTy
     }
 }
 
-export function BlockItemRenderer({ route, item, sidebar }) {
+export function BlockItemRenderer({ route, item, sidebar, className = '' }) {
     const isTasksList = isTasksListBlock(item);
     const fillViewport = isTasksList && (
         isTasksHomeUri(route?.pageData?.uri) || isTasksHomeUri(route?.key) || isTasksHomeUri(route?.link)
@@ -41,7 +44,9 @@ export function BlockItemRenderer({ route, item, sidebar }) {
             pageTitle: route?.title,
             pageContext: route?.pageData?.context,
         },
-        wrapperClassses: `${item?.block?.classes || ''} ${fillViewport ? 'h-full min-h-0 mb-0' : 'mb-0.5 sm:mb-3 lg:mb-4'} w-full mx-auto ${maxWidthClass}`.trim()
+        // 16px under each block from tablet up, the gap between blocks on UNA's site (.bx-layout-cell gap-4); phones
+        // keep blocks nearly flush, edge to edge.
+        wrapperClassses: `${item?.block?.classes || ''} ${fillViewport ? 'h-full min-h-0 mb-0' : 'mb-0.5 sm:mb-4'} w-full mx-auto ${maxWidthClass} ${className}`.trim()
     }
     );
     if (!block) {

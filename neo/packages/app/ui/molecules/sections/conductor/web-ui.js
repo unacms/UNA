@@ -140,6 +140,9 @@ function scrollTabToStart() {
  *        not, its blocks render above the list. Defaults to desktop.
  * @param {boolean}  [props.isRightColumnShown] Right panel is on screen; when
  *        not, its blocks are appended to the list. Defaults to desktop.
+ * @param {string}   [props.layoutName]  As TabSceneColumns': on a section's list
+ *        (`navigator` with a list) the column has no padding of its own, so
+ *        the page blocks among the rows take the 16px the list's cards have.
  */
 export const TabScene = ({
     pageRoute,
@@ -153,8 +156,10 @@ export const TabScene = ({
     fillViewport = false,
     isLeftColumnShown,
     isRightColumnShown,
+    layoutName,
 }) => {
     const isDesktop = useIsDesktop()
+    const blockClassName = layoutName === 'navigator' && pageRoute?.endpoint?.request_url ? 'sm:px-4' : ''
     const showLeftColumnInList = !(isLeftColumnShown ?? isDesktop)
     const showSidebarInList = !(isRightColumnShown ?? isDesktop)
     const uniRef = useRef()
@@ -270,7 +275,8 @@ export const TabScene = ({
             leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
             onFormChangedValues={onFormChangedValues}
             // Same bottom spacing as the list rows below (see item-renderer).
-            leftColumnClassName="gap-y-4 mb-0.5 sm:mb-3 lg:mb-4"
+            leftColumnClassName="gap-y-4 mb-0.5 sm:mb-4"
+            blockClassName={blockClassName}
             isInited={isInited}
             listReady={listReady}
             refreshing={isRefetching}
@@ -484,10 +490,14 @@ export const TabSceneColumns = ({
             <Panel {...centerPanelProps} className={fillViewport ? 'h-full min-h-0' : undefined}>
                 <View
                     className={`${isRightColumn ? 'flex-auto' : 'w-full mx-auto'
-                        } ${layoutName !== 'navigator'
-                            // No gap above the first block on phones: it meets the cover or tab row, as on native.
-                            ? 'sm:p-3 lg:p-4'
-                            : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
+                        } ${layoutName !== 'navigator' || !pageRoute?.endpoint?.request_url
+                            // The page's 16px sides and the 16px above the first block, as on UNA's site
+                            // (.bx-page-wrapper px-4, .bx-content-main my-4). No bottom padding: the last block's own
+                            // 16px (item-renderer) is the space above the footer. No gap above the first block on
+                            // phones: it meets the cover or tab row, as on native. A section's list (navigator with a
+                            // list) has none: its cards and blocks inset themselves 16px (paddingForList, TabScene).
+                            ? 'sm:px-4 sm:pt-4'
+                            : ''
                         }${fillViewport ? ' h-full min-h-0 overflow-hidden' : ''}`}
                 >
                     {children}
@@ -1008,10 +1018,13 @@ export const LeftColumnContainer = ({
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     const sectionIcon = useSectionIcon(menu, undefined, routes)
     const icon = layoutName == 'profile' ? '' : sectionIcon
+    // The column takes back the center column's 16px inset (-me-4), so the blocks on both sides are 16px apart, as on
+    // UNA's site (.bx-layout-row gap-4); its own padding keeps room inside the scroller for the blocks' outline shadows
+    // (the bottom too: the profile's left-column blocks have no margin of their own).
     const padClass =
         layoutName == 'profile'
-            ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
-            : appSetting('conductor', 'sidebar_container')
+            ? 'mt-0.5 sm:mt-0 sm:-me-4 sm:p-4'
+            : `sm:-me-4 ${appSetting('conductor', 'sidebar_container')}`
 
     /** Tree nav select: switch tab + push URL (same policy as TabMenu). */
     const onSelectSidebar = useCallback((item) => {
@@ -1066,7 +1079,8 @@ export const RightColumnContainer = ({ route, stickyColumnStyle }) => {
     return (
         <View className="h-full">
             <View
-                className={`web:sticky web:overflow-y-auto mt-0.5 sm:m-0 sm:p-3 lg:p-4 ${appSetting('conductor', 'sidebar_container')}`}
+                // Over the center column's 16px inset (-ms-4), as the left column: blocks 16px apart across the columns.
+                className={`web:sticky web:overflow-y-auto mt-0.5 sm:mt-0 sm:-ms-4 sm:px-4 sm:pt-4 ${appSetting('conductor', 'sidebar_container')}`}
                 style={stickyColumnStyle}
             >
                 {items.map((item) => (
