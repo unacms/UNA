@@ -189,11 +189,16 @@ class BxDolStudioStore extends BxTemplStudioWidget
                 $aModuleBefore = BxDolAdminLog::moduleByPath($sValue);
                 $aResult = BxDolStudioInstallerUtils::getInstance()->perform($sValue, 'update', array('html_response' => true));
                 if(is_array($aResult) && (int)($aResult['code'] ?? 1) === BX_DOL_STUDIO_IU_RC_SUCCESS) {
-                    $aModuleAfter = BxDolAdminLog::moduleByPath($sValue);
+                    // The update package is deleted before perform() returns, so the version is read from the installed module.
+                    $sName = (string)($aModuleBefore['name'] ?? '');
+                    $aModuleAfter = $sName !== '' ? BxDolModuleQuery::getInstance()->getModuleByName($sName, false) : [];
+                    if(!is_array($aModuleAfter))
+                        $aModuleAfter = [];
+                    $aModule = $aModuleBefore ?: $aModuleAfter;
                     BxDolAdminLog::record([
                         'source' => 'studio',
-                        'object_type' => BxDolAdminLog::moduleObjectType($aModuleAfter ?: $aModuleBefore),
-                        'object_id' => (string)(($aModuleAfter ?: $aModuleBefore)['name'] ?? $sValue),
+                        'object_type' => BxDolAdminLog::moduleObjectType($aModule),
+                        'object_id' => (string)($aModule['name'] ?? $sValue),
                         'action' => 'update',
                         'before' => $aModuleBefore ? ['version' => (string)($aModuleBefore['version'] ?? '')] : '',
                         'after' => $aModuleAfter ? ['version' => (string)($aModuleAfter['version'] ?? '')] : '',

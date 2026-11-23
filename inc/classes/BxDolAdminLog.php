@@ -172,11 +172,8 @@ class BxDolAdminLog
             }
 
             $bSnapshot = $bCanSnapshot && ($aIdsBefore || $aIds);
-            if ($bSnapshot) {
-                if ($aBefore == $aAfter)
-                    return;
-            }
-            elseif (self::isFailedResult($aResult))
+            // A saved translation can leave this table the same and change the language string instead.
+            if (!self::gridChanged($bSnapshot, $aBefore, $aAfter, $aResult))
                 return;
 
             self::record([
@@ -251,6 +248,18 @@ class BxDolAdminLog
             return true;
 
         return false;
+    }
+
+    /**
+     * A form or an error changed nothing. A success did, even when this grid's own row is unchanged,
+     * because the edit may have been a translation stored in the language tables.
+     */
+    public static function gridChanged(bool $bSnapshot, array $aBefore, array $aAfter, $mixedResult): bool
+    {
+        if (self::isFailedResult($mixedResult) && (!$bSnapshot || $aBefore == $aAfter))
+            return false;
+
+        return true;
     }
 
     public static function mask($mixed)

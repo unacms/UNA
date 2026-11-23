@@ -124,4 +124,14 @@ class BxDolAdminLogQueryTest extends BxDolTestCase
         $this->assertFalse(BxDolAdminLog::isFailedResult(['eval' => 'x']));
         $this->assertFalse(BxDolAdminLog::isFailedResult(null));
     }
+
+    public function testASuccessfulEditIsLoggedWhenTheGridRowIsUnchanged(): void
+    {
+        $aRow = ['1' => ['id' => 1, 'LKey' => '_adm_form_txt_pre_value']];
+
+        $this->assertFalse(BxDolAdminLog::gridChanged(true, $aRow, $aRow, ['popup' => '']));
+        $this->assertFalse(BxDolAdminLog::gridChanged(true, $aRow, $aRow, ['msg' => 'Not allowed']));
+        $this->assertTrue(BxDolAdminLog::gridChanged(true, $aRow, $aRow, ['grid' => '', 'blink' => 1]));
+        $this->assertTrue(BxDolAdminLog::gridChanged(true, $aRow, ['1' => ['id' => 1, 'LKey' => '_other']], ['msg' => 'Saved']));
+    }
 }
