@@ -53,7 +53,7 @@ class SubmenuAlignmentTest extends BxDolTestCase
             $this->assertStringContainsString('<span class="bx-mi-underline absolute inset-x-1 bottom-0 h-0.5 rounded-md"></span>', $s, $sName . ': the current tab\'s underline is as wide as the pill.');
         }
 
-        $this->assertMatchesRegularExpression('/body:not\(\.bx-std\) \.bx-menu-main-submenu > \.bx-menu-item > a:focus-visible \{\s*@apply outline-none;/', self::read('template/css/tailwind.css'), 'The site\'s focus outline is on the pill, not the cell.');
+        $this->assertMatchesRegularExpression('/body:not\(\.bx-std\) \.bx-menu-main-submenu > \.bx-menu-item > a:has\(> \.bx-mi-pill\):focus-visible \{\s*@apply outline-none;/', self::read('template/css/tailwind.css'), 'The site\'s focus outline is on the pill, not the cell; tabs of other templates without a pill keep it.');
         $this->assertMatchesRegularExpression('/\.bx-menu-item \.bx-mi-pill \{\s*display: none;/', self::read('modules/boonex/artificer/data/template/system/css/menu.css'), 'No pill on the tabs in the More popup.');
     }
 }

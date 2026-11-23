@@ -144,8 +144,8 @@
     }
 
     /* A section's tab (Artificer menu_main_submenu.html) draws this outline on its pill (.bx-mi-pill), around the label, not on
-       the row's full height. */
-    body:not(.bx-std) .bx-menu-main-submenu > .bx-menu-item > a:focus-visible {
+       the row's full height. Tabs without a pill (other templates) keep it. */
+    body:not(.bx-std) .bx-menu-main-submenu > .bx-menu-item > a:has(> .bx-mi-pill):focus-visible {
         @apply outline-none;
     }
 
