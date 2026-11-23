@@ -22,6 +22,11 @@
                     </bx_if:section_icon>
                     <h1 class="flex-1 min-w-0 truncate text-2xl leading-8 font-bold tracking-tight text-gray-900 dark:text-gray-50">__title__</h1>
                     <div class="bx-cover-actions shrink-0">__actions__</div>
+                    <bx_if:add>
+                        <!-- The section's add action: glass prominent, small, round, as NEO's (conductor web-ui.js AddMenu). From tablets, as
+                             NEO: on phones the header's own Add (the toolbar) is the one. -->
+                        <a class="bx-cover-add bx-btn bx-btn-primary bx-btn-glass bx-btn-small bx-btn-icon shrink-0 hidden sm:inline-flex" href="__url__" title="__title__" aria-label="__title__"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></a>
+                    </bx_if:add>
                 </div>
             </div>
         </div>

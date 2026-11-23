@@ -5028,6 +5028,8 @@
     <string name="_sys_txt_account_email_change_confirmed"><![CDATA[Новый email подтверждён]]></string>
     <string name="_sys_txt_account_email_change_failed"><![CDATA[Ссылка больше не действует, или этот email теперь у другого аккаунта. Смените email ещё раз, чтобы получить новую ссылку.]]></string>
     <string name="_sys_txt_account_email_change_sent"><![CDATA[Мы отправили ссылку для подтверждения на {0}. Пока вы её не откроете, вход по {1}.]]></string>
+    <string name="_sys_txt_add"><![CDATA[Добавить]]></string>
+    <string name="_sys_txt_add_entry"><![CDATA[Добавить: {0}]]></string>
 
     <string name="_sys_txt_agent_inactive"><![CDATA[Агент не активирован]]></string>
     <string name="_sys_txt_captcha_not_available"><![CDATA[CAPTCHA недоступна]]></string>

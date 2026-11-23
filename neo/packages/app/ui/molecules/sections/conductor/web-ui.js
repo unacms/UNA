@@ -537,6 +537,9 @@ export const TabSceneColumns = ({
  * Configured list first (`menuSettings.add`, minus the ones flagged by
  * `filter` — 'hideInTopBar' / 'hideInSideBar'). When nothing is configured,
  * fall back to the module's own `add_url` ("Add") and a section search.
+ * UNA sends `add_allowed: false` when the viewer may not create that item
+ * type (the section's Search stays) and `add_title` ("Add organization"), the
+ * button's name and tooltip; the site draws the same button from the same data.
  *
  * @param {object} menu        UNA menu JSON.
  * @param {string} filter      Flag name that hides an item at this placement.
@@ -549,10 +552,12 @@ function getAddMenuItems(menu, filter, currentUser) {
 
     if (!items) {
         items = []
-        if (menu.add_url && currentUser) {
+        if (menu.add_url && currentUser && menu.add_allowed !== false) {
             items.push({
                 icon: 'Plus',
                 name: 'Add',
+                // Icon-only: the item type's add label is its name and tooltip.
+                tooltip: menu.add_title || 'Add',
                 link: menu.add_url,
             })
         }
@@ -571,10 +576,12 @@ function getAddMenuItems(menu, filter, currentUser) {
 /**
  * Renders `getAddMenuItems` as buttons. Three kinds:
  * - `section` set → an inline Search trigger
- * - "Add" → opens the create form in a modal (one FormModal for all buttons)
+ * - "Add" → opens the create form in a modal (one FormModal for all buttons);
+ *   `actionStyle` draws it (and other actions) apart from Search: glass prominent
+ *   (the accent) beside the glass tabs, as UNA's site draws its add button
  * - anything else with a link → plain navigation
  */
-const AddMenu = ({ menu, filter, only, style = 'glass', controlSize = 'small' }) => {
+const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, controlSize = 'small' }) => {
     // false = closed, 'loading' while the form JSON is fetched, then the form.
     const [pageData, setPageData] = useState(false)
     const { currentUser } = useCurrentUser()
@@ -605,8 +612,10 @@ const AddMenu = ({ menu, filter, only, style = 'glass', controlSize = 'small' })
                     btn = (
                         <NeoButton
                             label={t(button.title)}
+                            tooltip={button.tooltip ? t(button.tooltip) : undefined}
+                            accessibilityLabel={button.tooltip ? t(button.tooltip) : undefined}
                             image={button.icon}
-                            style={style}
+                            style={actionStyle}
                             controlSize={controlSize}
                             borderShape="circle"
                             onPress={() => {
@@ -1406,9 +1415,10 @@ export const TabBar = ({
 
     if (!routes.length) return null
 
-    // Buttons on the tab row (Search, filters, and Add where it sits there) look like the tabs beside them: glass, small,
-    // round (MenuItemSubmenu, components/menu-items/submenu.js). Change them together.
-    const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
+    // Buttons on the tab row (Search, filters, and Add where it sits there) are as big as the tabs beside them: small,
+    // round (MenuItemSubmenu, components/menu-items/submenu.js), glass; Add is glass prominent (the accent), as on the
+    // title row and UNA's site (cover.html, `.bx-cover-add`). Change them together.
+    const addButtons = <AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" />
     // Profile actions ("Follow", "…") normally sit on the cover. With no cover
     // (`none`) — or when config asks for it — they move into the tab row.
     const profileModule =
@@ -1429,8 +1439,8 @@ export const TabBar = ({
             sectionSidebar={layoutName !== 'navigator' || getMenuSectionNav(menu) === 'sidebar'}
             omitDefaultBackground={omitDefaultBackground}
             addButtons={addButtons}
-            // Regular, as the header's own buttons: the section's two-line header is laid out on the same 44px grid.
-            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" style="bordered" controlSize="regular" />}
+            // Small glass prominent, as the tabs and Search below it are small glass, and as UNA's site draws it.
+            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" />}
             toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
             title={t(menuSettings?.name)}
             icon={sectionIcon}
