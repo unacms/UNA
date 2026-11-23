@@ -394,7 +394,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_organizations_my', 'bx_organizations', '_bx_orgs_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_organizations_my', 'bx_organizations', 'create-organization-profile', '_bx_orgs_menu_item_title_system_new_profile', '_bx_orgs_menu_item_title_new_profile', 'page.php?i=create-organization-profile', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_organizations_my', 'bx_organizations', 'create-organization-profile', '_bx_orgs_menu_item_title_system_new_profile', '_bx_orgs_menu_item_title_new_profile', 'page.php?i=create-organization-profile', '', '', 'building-complex-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `title_public`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 

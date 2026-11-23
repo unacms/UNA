@@ -360,7 +360,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_spaces_my', 'bx_spaces', '_bx_spaces_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_spaces_my', 'bx_spaces', 'create-space-profile', '_bx_spaces_menu_item_title_system_create_profile', '_bx_spaces_menu_item_title_create_profile', 'page.php?i=create-space-profile', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_spaces_my', 'bx_spaces', 'create-space-profile', '_bx_spaces_menu_item_title_system_create_profile', '_bx_spaces_menu_item_title_create_profile', 'page.php?i=create-space-profile', '', '', 'folder-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 

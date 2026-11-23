@@ -241,7 +241,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_videos_my', 'bx_videos', '_bx_videos_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_videos_my', 'bx_videos', 'create-video', '_bx_videos_menu_item_title_system_create_entry', '_bx_videos_menu_item_title_create_entry', 'page.php?i=create-video', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_videos_my', 'bx_videos', 'create-video', '_bx_videos_menu_item_title_system_create_entry', '_bx_videos_menu_item_title_create_entry', 'page.php?i=create-video', '', '', 'clapperboard', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `title_public`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 

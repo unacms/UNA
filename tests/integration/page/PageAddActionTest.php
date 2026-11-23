@@ -102,6 +102,12 @@ class PageAddActionTest extends BxDolIntegrationTestCase
         $aAction = $this->siteAction();
         $this->assertSame(bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=create-group-profile')), $aAction['url'] ?? null);
         $this->assertSame($aMenu['add_title'], $aAction['title'] ?? null);
+
+        // The module's own add icon: its create item in its "My" menu, the same on both sides.
+        $aMenuObject = BxDolMenuQuery::getMenuObject('bx_groups_my');
+        $sIcon = BxDolMenuQuery::getMenuItemIconByLink($aMenuObject['set_name'], 'page.php?i=create-group-profile') ?: 'plus';
+        $this->assertSame($sIcon, $aMenu['add_icon'] ?? null);
+        $this->assertSame($sIcon, $aAction['icon'] ?? null);
     }
 
     public function testAMemberWhoseLevelMayNotCreateGetsNoButton(): void
@@ -140,5 +146,39 @@ class PageAddActionTest extends BxDolIntegrationTestCase
             $this->markTestSkipped('No groups-administration page.');
 
         $this->assertSame([], $oPage->getAddEntryAction(), 'An operator\'s page: the apps show its 403 card.');
+    }
+
+    /** Channels have no "create entry" action (they are made from hashtags): no button, and the page still loads. */
+    public function testAModuleWithoutTheCreateActionGetsNoButton(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_channels'))
+            $this->markTestSkipped('bx_channels is not installed.');
+
+        $this->bxLoginAsUser();
+        $oModule = BxDolModule::getInstance('bx_channels');
+        $this->assertSame(0, BxDolAcl::getInstance()->getMembershipActionId('create entry', 'bx_channels'));
+
+        $aAdd = BxBasePage::getAddEntryParams($oModule);
+        $this->assertNotSame([], $aAdd);
+        $this->assertFalse($aAdd['allowed']);
+    }
+
+    /** Only a Lucide name reaches the button: an uploaded picture (a number) or markup there gives the plus on both sides. */
+    public function testAnIconThatIsNotALucideNameGivesThePlus(): void
+    {
+        $oDb = BxDolDb::getInstance();
+        $aMenuObject = BxDolMenuQuery::getMenuObject('bx_groups_my');
+        // The row the button reads (the first by id): change and restore only that one.
+        $aRow = $oDb->getRow("SELECT `id`, `icon` FROM `sys_menu_items` WHERE `set_name` = :set AND `link` = :link ORDER BY `id` ASC LIMIT 1", ['set' => $aMenuObject['set_name'], 'link' => 'page.php?i=create-group-profile']);
+        if (!$aRow)
+            $this->markTestSkipped('No create item in the Groups "My" menu.');
+
+        try {
+            $oDb->query("UPDATE `sys_menu_items` SET `icon` = '123' WHERE `id` = :id", ['id' => (int)$aRow['id']]);
+            $this->assertSame('plus', BxBasePage::getAddEntryParams(BxDolModule::getInstance(self::MODULE))['icon']);
+        }
+        finally {
+            $oDb->query("UPDATE `sys_menu_items` SET `icon` = :icon WHERE `id` = :id", ['icon' => $aRow['icon'], 'id' => (int)$aRow['id']]);
+        }
     }
 }

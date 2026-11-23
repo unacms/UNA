@@ -228,7 +228,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_stories_my', 'bx_stories', '_bx_stories_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_stories_my', 'bx_stories', 'create-story', '_bx_stories_menu_item_title_system_create_entry', '_bx_stories_menu_item_title_create_entry', 'page.php?i=create-story', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_stories_my', 'bx_stories', 'create-story', '_bx_stories_menu_item_title_system_create_entry', '_bx_stories_menu_item_title_create_entry', 'page.php?i=create-story', '', '', 'circle-fading-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 

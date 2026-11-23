@@ -539,7 +539,9 @@ export const TabSceneColumns = ({
  * fall back to the module's own `add_url` ("Add") and a section search.
  * UNA sends `add_allowed: false` when the viewer may not create that item
  * type (the section's Search stays) and `add_title` ("Add organization"), the
- * button's name and tooltip; the site draws the same button from the same data.
+ * button's name, tooltip and (with `labelled`) label, and `add_icon`, the
+ * module's own add icon (its create item in its "My" menu, a Lucide name); the
+ * site draws the same button from the same data.
  *
  * @param {object} menu        UNA menu JSON.
  * @param {string} filter      Flag name that hides an item at this placement.
@@ -554,9 +556,9 @@ function getAddMenuItems(menu, filter, currentUser) {
         items = []
         if (menu.add_url && currentUser && menu.add_allowed !== false) {
             items.push({
-                icon: 'Plus',
+                icon: menu.add_icon || 'Plus',
                 name: 'Add',
-                // Icon-only: the item type's add label is its name and tooltip.
+                // The item type's add label: its name and tooltip, and its label where AddMenu is `labelled`.
                 tooltip: menu.add_title || 'Add',
                 link: menu.add_url,
             })
@@ -578,10 +580,11 @@ function getAddMenuItems(menu, filter, currentUser) {
  * - `section` set → an inline Search trigger
  * - "Add" → opens the create form in a modal (one FormModal for all buttons);
  *   `actionStyle` draws it (and other actions) apart from Search: glass prominent
- *   (the accent) beside the glass tabs, as UNA's site draws its add button
+ *   (the accent) beside the glass tabs, as UNA's site draws its add button;
+ *   `labelled` draws it as a pill with its label (desktop), else round and icon-only
  * - anything else with a link → plain navigation
  */
-const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, controlSize = 'small' }) => {
+const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, controlSize = 'small', labelled = false }) => {
     // false = closed, 'loading' while the form JSON is fetched, then the form.
     const [pageData, setPageData] = useState(false)
     const { currentUser } = useCurrentUser()
@@ -611,13 +614,14 @@ const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, con
                 } else {
                     btn = (
                         <NeoButton
-                            label={t(button.title)}
+                            label={t(button.title || (labelled ? button.tooltip : undefined))}
                             tooltip={button.tooltip ? t(button.tooltip) : undefined}
                             accessibilityLabel={button.tooltip ? t(button.tooltip) : undefined}
                             image={button.icon}
                             style={actionStyle}
                             controlSize={controlSize}
-                            borderShape="circle"
+                            // `labelled`: a pill with the icon and the label; otherwise round, icon-only.
+                            borderShape={labelled ? 'capsule' : 'circle'}
                             onPress={() => {
                                 setPageData('loading')
                                 handleFormModal(button, null, setPageData)
@@ -1258,6 +1262,8 @@ export const HeaderContainer = ({
 export function TopSidebar({
     styles,
     addButtons,
+    tabletAddButtons = addButtons,
+    phoneAddButtons,
     actionButtons,
     toolButtons,
     children,
@@ -1281,11 +1287,19 @@ export function TopSidebar({
     const showTitle = !!title && conductorTheme.show_title !== false && !isProfile
     const desktopFlex = `hidden ${conductorTheme.hide_top_menu_from}:flex`
     // Tablets (sm to lg): the section's actions and tools at the end of the tab row (the page header shows its icon and
-    // name, as on phones), drawn as the tabs (`addButtons`).
+    // name, as on phones), drawn as the tabs (`tabletAddButtons`: Add round and icon-only).
     const tabletButtons = showAddButtons && (
-        <Row className="hidden sm:flex lg:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
-            {addButtons}
-        </Row>
+        <>
+            {/* Phones: Add alone, round and icon-only (the header's toolbar has Search and the site's Add menu). */}
+            {!!phoneAddButtons && (
+                <Row className="flex sm:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
+                    {phoneAddButtons}
+                </Row>
+            )}
+            <Row className="hidden sm:flex lg:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
+                {tabletAddButtons}
+            </Row>
+        </>
     )
 
     if (isSectionTabBar) {
@@ -1418,7 +1432,11 @@ export const TabBar = ({
     // Buttons on the tab row (Search, filters, and Add where it sits there) are as big as the tabs beside them: small,
     // round (MenuItemSubmenu, components/menu-items/submenu.js), glass; Add is glass prominent (the accent), as on the
     // title row and UNA's site (cover.html, `.bx-cover-add`). Change them together.
-    const addButtons = <AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" />
+    // Add: a pill with its label from lg (`addButtons`, `actionButtons`), round and icon-only at the end of the tab row
+    // on tablets (`tabletAddButtons`, with Search) and phones (`phoneAddButtons`), as the site's `.bx-btn-icon-mobile`.
+    const addButtons = <AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" labelled />
+    const tabletAddButtons = <AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" />
+    const phoneAddButtons = <AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" />
     // Profile actions ("Follow", "…") normally sit on the cover. With no cover
     // (`none`) — or when config asks for it — they move into the tab row.
     const profileModule =
@@ -1439,8 +1457,11 @@ export const TabBar = ({
             sectionSidebar={layoutName !== 'navigator' || getMenuSectionNav(menu) === 'sidebar'}
             omitDefaultBackground={omitDefaultBackground}
             addButtons={addButtons}
+            tabletAddButtons={tabletAddButtons}
+            phoneAddButtons={phoneAddButtons}
             // Small glass prominent, as the tabs and Search below it are small glass, and as UNA's site draws it.
-            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" />}
+            // A pill with its label: this line shows from lg only.
+            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" labelled />}
             toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
             title={t(menuSettings?.name)}
             icon={sectionIcon}

@@ -245,7 +245,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_polls_my', 'bx_polls', '_bx_polls_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_polls_my', 'bx_polls', 'create-poll', '_bx_polls_menu_item_title_system_create_entry', '_bx_polls_menu_item_title_create_entry', 'page.php?i=create-poll', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_polls_my', 'bx_polls', 'create-poll', '_bx_polls_menu_item_title_system_create_entry', '_bx_polls_menu_item_title_create_entry', 'page.php?i=create-poll', '', '', 'list-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 

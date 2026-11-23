@@ -331,7 +331,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_market_my', 'bx_market', '_bx_market_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_market_my', 'bx_market', 'create-product', '_bx_market_menu_item_title_system_create_entry', '_bx_market_menu_item_title_create_entry', 'page.php?i=create-product', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_market_my', 'bx_market', 'create-product', '_bx_market_menu_item_title_system_create_entry', '_bx_market_menu_item_title_create_entry', 'page.php?i=create-product', '', '', 'package-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: actions menu for snippet
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 

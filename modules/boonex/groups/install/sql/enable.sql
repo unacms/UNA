@@ -366,7 +366,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_groups_my', 'bx_groups', '_bx_groups_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_groups_my', 'bx_groups', 'create-group-profile', '_bx_groups_menu_item_title_system_create_profile', '_bx_groups_menu_item_title_create_profile', 'page.php?i=create-group-profile', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_groups_my', 'bx_groups', 'create-group-profile', '_bx_groups_menu_item_title_system_create_profile', '_bx_groups_menu_item_title_create_profile', 'page.php?i=create-group-profile', '', '', 'user-round-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 

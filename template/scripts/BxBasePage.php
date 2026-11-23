@@ -523,7 +523,7 @@ class BxBasePage extends BxDolPage
      * The "add" action of this page: the + at the end of a section's title row on the site (cover.html) and the "Add"
      * button the apps draw from `menu.add_url` (getPageAPI), so the two always agree. Only on pages of a content or a
      * context module with a create page, and only for a viewer who may create that item type (the create page's check).
-     * @return array ['url' => absolute URL of the create page, 'title' => "Add organization"], or an empty array
+     * @return array ['url' => absolute URL of the create page, 'title' => "Add organization", 'icon' => Lucide name], or an empty array
      */
     public function getAddEntryAction()
     {
@@ -545,13 +545,14 @@ class BxBasePage extends BxDolPage
         return [
             'url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $aAdd['url'])),
             'title' => $aAdd['title'],
+            'icon' => $aAdd['icon'],
         ];
     }
 
     /**
      * A content or context module's create page and its add label, and whether the viewer may create that item type.
      * @param BxDolModule $oModule
-     * @return array ['url' => page URI, 'title' => "Add organization", 'allowed' => bool], or an empty array when the module
+     * @return array ['url' => page URI, 'title' => "Add organization", 'icon' => Lucide name, 'allowed' => bool], or an empty array when the module
      *      has no create page
      */
     public static function getAddEntryParams($oModule)
@@ -566,16 +567,29 @@ class BxBasePage extends BxDolPage
         if(!$sUri)
             return [];
 
+        // The module's own add icon, which tells its button from the site's Add menu: the icon of the create item in the
+        // module's "My" menu (Studio > Navigation; the menu object's item set), a Lucide name, as both the site and the apps
+        // draw it. A module without one, or with an uploaded picture or markup there, keeps the plus.
+        $sIcon = '';
+        if(!empty($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES']) && ($aMenu = BxDolMenuQuery::getMenuObject($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES'])) && !empty($aMenu['set_name']))
+            $sIcon = trim(BxDolMenuQuery::getMenuItemIconByLink($aMenu['set_name'], 'page.php?i=' . $sUri));
+        if(!preg_match('/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/', $sIcon))
+            $sIcon = 'plus';
+
         $sTitle = _t('_sys_txt_add');
         if(!empty($CNF['T']['txt_sample_single']) && ($sSample = _t($CNF['T']['txt_sample_single'])) !== $CNF['T']['txt_sample_single'])
             $sTitle = _t('_sys_txt_add_entry', $sSample);
 
         // Guests never get it; members as the create page checks them (ACL "create entry", a profile limit).
-        $bAllowed = isLogged() && method_exists($oModule, 'checkAllowedAdd') && $oModule->checkAllowedAdd() === CHECK_ACTION_RESULT_ALLOWED;
+        // A module without that ACL action (Channels: made from hashtags) has no button: checking it would stop the page.
+        $bAllowed = isLogged() && method_exists($oModule, 'checkAllowedAdd')
+            && BxDolAcl::getInstance()->getMembershipActionId('create entry', $oModule->getName())
+            && $oModule->checkAllowedAdd() === CHECK_ACTION_RESULT_ALLOWED;
 
         return [
             'url' => $sUri,
             'title' => $sTitle,
+            'icon' => $sIcon,
             'allowed' => $bAllowed,
         ];
     }
@@ -821,6 +835,7 @@ class BxBasePage extends BxDolPage
                 if($bModuleEntries && ($aAdd = self::getAddEntryParams($oModule))) {
                     $aMenuAdd['add_url'] = $aAdd['url'];
                     $aMenuAdd['add_title'] = $aAdd['title'];
+                    $aMenuAdd['add_icon'] = $aAdd['icon'];
                     $aMenuAdd['add_allowed'] = $aAdd['allowed'];
                 }
 
