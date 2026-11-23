@@ -80,6 +80,17 @@ class CategoriesMenuEmptyTest extends BxDolIntegrationTestCase
         $this->assertNotEmpty($aResult[0]['data']['content']['items']);
     }
 
+    public function testCategoriesListServiceSendsNoBlockToTheAppsWhenEmpty(): void
+    {
+        $o = new BxTemplServiceCategory();
+        $aParams = ['show_empty' => true];
+
+        $this->assertNotSame('', $o->serviceCategoriesList('bx_no_such_category', $aParams), 'The site keeps its "Empty" message box.');
+
+        $_GET['api'] = 1;
+        $this->assertSame([], $o->serviceCategoriesList('bx_no_such_category', $aParams), 'The apps get no block, not the HTML message box.');
+    }
+
     /**
      * The Posts categories menu with the given category rows (as BxBaseCategory::getCategoriesList gives them).
      */
