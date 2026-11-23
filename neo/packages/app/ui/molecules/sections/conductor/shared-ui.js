@@ -5,12 +5,13 @@ import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import UniList from 'app/ui/atoms/unilist'
 import { BlockByName, BlockByData } from 'app/components/block'
+import { BlockWrapper } from 'app/components/block-wrapper'
 import { decodeTextNode, findElementById, hasNonEmptyContent, isWeb } from 'app/lib/util'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
-import { getSkeletonForList, getSkeletonPreview, skeletonPreviewScale, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
+import { getSkeletonForList, getSkeletonPreview, skeletonSlotsForLayout } from 'app/lib/skeleton-helpers'
 import { useDelayedFlag, useShownWhileLoading } from 'app/lib/hooks/use-delayed-flag'
 import { layoutForList, paddingForList } from 'app/customization/functions'
 import { usePageListEndpoint } from 'app/ui/molecules/page/page-chrome'
@@ -688,6 +689,7 @@ export function useListScene({
         isEmpty,
         feedType,
         emptyState,
+        blockClassName,
     }
 }
 
@@ -720,36 +722,113 @@ function ListBody({
     // the page's comes from the block's Studio override: later requests have no block to ask.
     const pageEmptyState = route?.endpoint?.empty_state
     const emptyState = pageEmptyState?.custom ? pageEmptyState : (scene.emptyState ?? pageEmptyState)
+    const { shell, inShell, listEndpoint, listRows, rowsBefore, rowsAfter } = useResultsShell({ route, scene, headerInList, wantsPreload })
     const noContent = NoContent
-        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} />
+        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} state={emptyState} fromSkeletons={sawSkeletons} fill={!inShell} />
         : null
     const emptyFooter =
         headerInList && scene.showNoContent && noContent
             ? noContent
             : (uniListProps.ListFooterComponent ?? null)
 
+    const list = (
+        <UniList
+            {...uniListProps}
+            ListHeaderComponent={headerInList ? scene.chrome : undefined}
+            data={listRows}
+            route={route}
+            unit={route?.endpoint?.unit}
+            endpoint={listEndpoint}
+            layout={scene.layout}
+            renderItem={scene.renderItem}
+            preloadComponent={preloadComponent}
+            ListFooterComponent={emptyFooter}
+            refer={listRef}
+            onEndReached={handleEndReached}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+        />
+    )
     return (
         <>
             {!headerInList ? scene.chrome : null}
-            <UniList
-                {...uniListProps}
-                ListHeaderComponent={headerInList ? scene.chrome : undefined}
-                data={scene.rows}
-                route={route}
-                unit={route?.endpoint?.unit}
-                endpoint={route?.endpoint}
-                layout={scene.layout}
-                renderItem={scene.renderItem}
-                preloadComponent={preloadComponent}
-                ListFooterComponent={emptyFooter}
-                refer={listRef}
-                onEndReached={handleEndReached}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-            />
-            {!headerInList && scene.showNoContent ? noContent : null}
+            {inShell ? (
+                <ResultsShell route={route} scene={scene} shell={shell} rowsBefore={rowsBefore} rowsAfter={rowsAfter} noContent={noContent}>
+                    {list}
+                </ResultsShell>
+            ) : (
+                <>
+                    {list}
+                    {!headerInList && scene.showNoContent ? noContent : null}
+                </>
+            )}
         </>
     )
+}
+
+/**
+ * A search's results in their block (useResultsShell), with the page's other blocks before and after it.
+ * Those take the column's inset themselves: no list margin around them there (scene.renderItem leaves
+ * it to the list's margin where it has one).
+ */
+function ResultsShell({ route, scene, shell, rowsBefore, rowsAfter, noContent, children }) {
+    const renderRows = (rows) => rows.map((item) => (
+        <View key={item.id} className="w-full"><ItemRenderer route={route} item={item} blockClassName={scene.blockClassName} /></View>
+    ))
+    return (
+        <>
+            {renderRows(rowsBefore)}
+            {/* In the column's inset like the page's other blocks, 16px under the tabs as the side columns'. */}
+            <BlockWrapper block={shell} config={shell.config} listShell wrapperClassses={`w-full sm:pt-4 mb-0.5 sm:mb-4 ${scene.blockClassName}`}>
+                {/* The grid spaces its cards 16px from its edges itself: inside the block's padding they
+                    sit at the padding, as the site's cards do. */}
+                <View className="-m-4">{children}</View>
+                {scene.showNoContent ? noContent : null}
+            </BlockWrapper>
+            {renderRows(rowsAfter)}
+        </>
+    )
+}
+
+/**
+ * A search's results sit in their block, as on the site (endpoint `block`, listBlockShell): title,
+ * background, padding, the empty state inside. Only once there is something to show: rows, the empty
+ * state, or a search loading (the form has a value). Before a search there is no block, not even while
+ * the first, empty, reply loads. Web only (the apps' list scrolls the whole screen, its header is the
+ * list's own). In the block the list draws no card of its own, and only the results go in: the page's
+ * other blocks (above or under the list) and, below the right column's breakpoint, that column's blocks
+ * stay outside it, where they were.
+ */
+function useResultsShell({ route, scene, headerInList, wantsPreload }) {
+    const shell = route?.endpoint?.block
+    const isSearched = hasFilterValues(route?.endpoint?.params?.filters)
+    const hasSomething = !scene.isEmpty || scene.showNoContent || (wantsPreload && isSearched)
+    const inShell = !headerInList && !!shell && hasSomething
+    const listEndpoint = useMemo(
+        () => (inShell ? { ...route?.endpoint, designbox: { ...route?.endpoint?.designbox, bg: false }, bg_hidden_on: undefined } : route?.endpoint),
+        [inShell, route?.endpoint]
+    )
+    const rows = useMemo(() => {
+        if (!inShell) return { listRows: scene.rows, rowsBefore: EMPTY_LIST_ITEMS, rowsAfter: EMPTY_LIST_ITEMS }
+        const beforeIds = new Set(filterConductorPageBlocks(route?.data).filter((item) => !item.afterList).map((item) => item.id))
+        const blocks = scene.rows.filter((item) => item?.type === 'block')
+        return {
+            listRows: scene.rows.filter((item) => item?.type !== 'block'),
+            rowsBefore: blocks.filter((item) => beforeIds.has(item.id)),
+            rowsAfter: blocks.filter((item) => !beforeIds.has(item.id)),
+        }
+    }, [inShell, scene.rows, route?.data])
+    return { shell, inShell, listEndpoint, ...rows }
+}
+
+/** A filter form's values (route.endpoint.params.filters) hold at least one answer. */
+function hasFilterValues(filters) {
+    if (!filters || typeof filters !== 'object') return false
+    return Object.values(filters).some((value) => {
+        if (Array.isArray(value)) return value.some((v) => v !== '' && v != null)
+        if (value && typeof value === 'object') return hasFilterValues(value)
+        return value !== '' && value != null && value !== false
+    })
 }
 
 /**
