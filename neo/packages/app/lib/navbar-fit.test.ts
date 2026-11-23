@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { navbarBoxWidth, navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit, navbarUnfittedTabSide } from './navbar-fit.ts';
+import { navbarBoxWidth, navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabPadding, navbarTabsThatFit, navbarUnfittedTabSide } from './navbar-fit.ts';
 
 // The header at 1440px: Home, People, Posts, Orgs, Albums, Market (as both clients measure them), 8px apart, More 44px.
 const TABS = [104, 111, 101, 96, 116, 112];
@@ -93,4 +93,10 @@ test('the unfitted row breaks where the fit puts More', () => {
 test('a tab sits where its row starts', () => {
     assert.deepEqual(navbarTabBox([100, 50, 44], 1, 300, 8, 0), { x: 108, width: 50 });
     assert.deepEqual(navbarTabBox([100, 50, 44], 0, 300, 8, 90), { x: 90, width: 100 });
+});
+
+test('a tab is padded by what it shows: icon and label, label alone, icon alone', () => {
+    assert.equal(navbarTabPadding(true, true), 'ps-3 pe-4');
+    assert.equal(navbarTabPadding(false, true), 'px-4');
+    assert.equal(navbarTabPadding(true, false), 'px-2.5');
 });
