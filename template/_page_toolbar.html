@@ -1,17 +1,21 @@
 <bx_injection:top />
 <header id="bx-toolbar" class="bx-header bx-def-z-index-nav fixed top-0 w-full shadow-[inset_0_-1px_0_0_rgb(255_255_255/0.5),0_1px_8px_-1px_rgb(0_0_0/0.1),0_1px_0_0_var(--tw-shadow-color,rgb(0_0_0/0.025))] dark:shadow-[inset_0_-1px_0_0_rgb(255_255_255/0.05),0_1px_8px_-1px_rgb(0_0_0/0.5),0_1px_0_0_var(--tw-shadow-color,rgb(0_0_0/0.25))] bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg">
-    <div class="bx-header-cnt __sys_header_width__ __sys_header_align__ mx-auto px-4 box-border">
+    <div class="bx-header-cnt __sys_header_width__ __sys_header_align__ mx-auto px-4 box-border @container/header">
         <div class="bx-toolbar-content-wrapper">
             <div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start h-16">
                 <div class="bx-toolbar-items-group relative flex flex-1 items-center justify-start h-16">
-                    <!-- Logo -->
-                    <div id="bx-logo-container" class="bx-toolbar-item bx-ti-left bx-ti-logo flex-none items-center">
+                    <!-- Logo. With the main menu in the middle (Designer), from 2xl and while the header's content is
+                         64rem or wider (a narrow page-width header keeps the room for the menu), the logo's side and the
+                         toolbar's side (menu_toolbar_right.html) are at least 20rem each, so the menu is centred on the
+                         header; otherwise both sides are as wide as their content and the menu is centred in the room
+                         they leave (_balance). -->
+                    <div id="bx-logo-container" class="bx-toolbar-item bx-ti-left bx-ti-logo flex-none items-center 2xl:@5xl/header:[.bx-header-menu-center_&]:min-w-80">
                         <bx_injection:injection_logo_before />
                         __main_logo__
                         <bx_injection:injection_logo_after />
                     </div>
                     <!-- Menu -->
-                    <div class="bx-toolbar-item bx-ti-menu flex-2 hidden lg:block w-64 min-w-0 ltr:ml-8 rtl:mr-8 ltr:mr-6 rtl:ml-6">
+                    <div class="bx-toolbar-item bx-ti-menu flex-2 hidden lg:block w-64 min-w-0 ms-4 me-2">
                         <nav id="bx-menu-toolbar-1-container" class="bx-toolbar-item bx-ti-menu w-full">
                             <bx_menu:sys_site />
                         </nav>

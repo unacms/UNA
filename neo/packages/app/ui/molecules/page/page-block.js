@@ -30,6 +30,11 @@ function themeClasses(baseClass, padSize, titleSize) {
     if (TITLE_PARTS.has(baseClass) && titleSize) {
         return blockTheme[blockSizeKey(baseClass, titleSize)] ?? blockTheme[baseClass] ?? ''
     }
+    // The footer keeps 16px from the content whatever the block's gap (`u-block-footer-offset`).
+    if (baseClass === 'u-block-footer') {
+        const offset = blockTheme[blockSizeKey('u-block-footer-offset', padSize)] ?? blockTheme['u-block-footer-offset'] ?? ''
+        return `${blockTheme[baseClass] || ''} ${offset}`
+    }
     const sizedGap = baseClass === 'u-block-base' && padSize ? blockTheme['u-block-gap-' + padSize] : null
     if (sizedGap == null) return blockTheme[baseClass] || ''
     return `${withoutGap(blockTheme[baseClass])} ${sizedGap}`

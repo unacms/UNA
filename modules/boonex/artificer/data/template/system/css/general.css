@@ -4,14 +4,22 @@ import url(../../../../../../../template/css/general.css);
 
 
 /*--- Page scrollbar: its gutter is always kept, so a page that scrolls and one that doesn't are the same width and the header menu
-      doesn't reflow between them (nor when a popup locks the page's scrolling). It is thin and in the theme's colours; scrollbar-color
-      is inherited, so the page's own scroll boxes match. ---*/
+      doesn't reflow between them (nor when a popup locks the page's scrolling). It is thin. The page's own bar is always drawn
+      with its track filled, as in NEO (global.web.css html: a border-coloured thumb on a muted/50 track), so a page that doesn't
+      scroll shows the track, not an empty gutter. The page's scroll boxes inherit the body's colours: the theme's thumb on no track. ---*/
 html {
+    overflow-y: scroll;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+    scrollbar-color: #d4d4d8 rgba(228, 228, 231, 0.5);
 }
 html.dark {
+    scrollbar-color: #3f3f46 rgba(63, 63, 70, 0.5);
+}
+body {
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+html.dark body {
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
@@ -642,10 +650,11 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
 
 /* A block's footer (designbox_footer.html, BxBaseFunctions::designBoxFooter): a quiet, centred notice under the block's
    content, ruled off from it edge to edge. Wrapped lines are balanced. The template's own bx-def-* classes give other
-   templates the rule, the spacing and the small grey text; these set Artificer's. */
+   templates the rule, the spacing and the small grey text; these set Artificer's. The rule reaches the block's edges
+   through the content's padding, whatever its size (--bx-db-padding, page_layouts.css). */
 .bx-artificer .bx-db-footer {
-    margin: 1rem -1rem 0;
-    padding: 1rem 1rem 0;
+    margin: 1rem calc(-1 * var(--bx-db-padding, 1rem)) 0;
+    padding: 1rem var(--bx-db-padding, 1rem) 0;
     border-top: 1px solid rgba(10, 10, 12, 0.08);
 
     color: #52525b;

@@ -60,17 +60,21 @@
    is the design box's 16px. "Padding hidden on" below still takes it off. Title: 16px on a 24px line (compact), 20px on
    28px (regular, tailwind.css .bx-db-title) or 24px on 32px (large). Over a description the title sits on a 20px, 24px
    or 32px line, so with the 4px gap and the description's 20px line it is as tall as the header icon: 44px, 48px
-   (Artificer general.css) or 56px. */
+   (Artificer general.css) or 56px.
+   The content's side padding is also --bx-db-padding, which parts that reach the block's edges take back (the
+   footer's rule, Artificer general.css .bx-db-footer); unset, it is the regular 16px. */
 .bx-db-padding-compact > .bx-db-container > .bx-db-header {
     padding: 0.5rem 0.5rem 0;
 }
 .bx-db-padding-compact > .bx-db-container > .bx-content-padding-block {
+    --bx-db-padding: 0.5rem;
     padding: 0.5rem;
 }
 .bx-db-padding-large > .bx-db-container > .bx-db-header {
     padding: 1.5rem 1.5rem 0;
 }
 .bx-db-padding-large > .bx-db-container > .bx-content-padding-block {
+    --bx-db-padding: 1.5rem;
     padding: 1.5rem;
 }
 .bx-db-title-compact > .bx-db-container > .bx-db-header .bx-db-title {
@@ -119,6 +123,7 @@
 .bx-media-phone .bx-db-hide-padding-phone .bx-db-content,
 .bx-media-tablet .bx-db-hide-padding-tablet .bx-db-content,
 .bx-media-desktop .bx-db-hide-padding-desktop .bx-db-content {
+    --bx-db-padding: 0px;
     padding: 0 !important;
 }
 /* The title lines up with the content it no longer insets. */

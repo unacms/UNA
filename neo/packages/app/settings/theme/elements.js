@@ -277,9 +277,15 @@ export const settingsElements = {
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
-        // A footer's notice (the terms under a sign-in or join form): small, muted, centred.
-        'u-block-notice': 'w-full text-center web:text-balance text-xs leading-4 text-muted-foreground',
-        'u-block-notice-link': 'text-xs leading-4 text-muted-foreground underline',
+        // The footer's separator is 16px under the content at every padding size, as on the site (Artificer
+        // .bx-db-footer): its margin takes back the block's gap over 16px (gap-2, gap-4, gap-6 by padding size).
+        'u-block-footer-offset': 'mt-0',
+        'u-block-footer-offset-compact': 'mt-2',
+        'u-block-footer-offset-large': '-mt-2',
+        // A footer's notice (the terms under a sign-in or join form): small, muted, centred; 12px on an 18px line, as
+        // the site's (Artificer .bx-db-footer).
+        'u-block-notice': 'w-full text-center web:text-balance text-xs leading-4.5 text-muted-foreground',
+        'u-block-notice-link': 'text-xs leading-4.5 text-muted-foreground underline',
         'u-block-actions':
             'flex flex-row text-card-foreground gap-2  ',
         // Header "View all" link (small, 36px). -my-1 centres it on the 28px title line without making
