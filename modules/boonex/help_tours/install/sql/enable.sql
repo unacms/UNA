@@ -36,3 +36,6 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('bx_help_tours_items', 'single', 'delete', '_bx_help_tours_grid_action_delete_item', 'remove', 1, 1, 3),
 ('bx_help_tours_items', 'bulk', 'delete', '_bx_help_tours_grid_action_delete_item', 'remove', 0, 1, 1),
 ('bx_help_tours_items', 'independent', 'add', '_bx_help_tours_grid_action_add_item', 'plus', 0, 0, 1);
+
+-- GRIDS: drawn by AG Grid in Studio
+UPDATE `sys_objects_grid` SET `engine` = 'ag' WHERE `object` = 'bx_help_tours_tours' AND `engine` = '';

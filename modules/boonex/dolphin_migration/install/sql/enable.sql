@@ -34,3 +34,6 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('bx_dolphin_migration_transfers', 'bulk', 'run', '_bx_dolphin_migration_start_transfer', '', 0, 1, 1),
 ('bx_dolphin_migration_transfers', 'single', 'remove', '_bx_dolphin_migration_remove_content', 'trash', 1, 1, 2),
 ('bx_dolphin_migration_transfers', 'single', 'clean', '_bx_dolphin_migration_clean', 'eraser ', 1, 1, 1);
+
+-- GRIDS: drawn by AG Grid in Studio
+UPDATE `sys_objects_grid` SET `engine` = 'ag' WHERE `object` = 'bx_dolphin_migration_transfers' AND `engine` = '';
