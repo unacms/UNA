@@ -143,6 +143,12 @@
         @apply outline-offset-0;
     }
 
+    /* A section's tab (Artificer menu_main_submenu.html) draws this outline on its pill (.bx-mi-pill), around the label, not on
+       the row's full height. */
+    body:not(.bx-std) .bx-menu-main-submenu > .bx-menu-item > a:focus-visible {
+        @apply outline-none;
+    }
+
     /* Rich text reads the same on the site and in NEO (.u-vanilla-html in
        neo/packages/app/design/styles/utilities.css): NEO's zinc text colours,
        blue links, 1.5 line height, 16px between paragraphs, lists indented 1.5rem. */
