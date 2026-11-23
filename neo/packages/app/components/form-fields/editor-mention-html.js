@@ -112,6 +112,31 @@ export const EDITOR_LINK_RE = new RegExp(
     'i'
 )
 
+// A link the editor made from a bare domain as it was typed ("unacms.com") keeps
+// the text as its href, which the browser reads as a relative path. Its href starts
+// with a host on a known TLD (or www.) and has no scheme.
+const BARE_HOST_HREF_RE = new RegExp(
+    String.raw`^(?:www\.)?(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+(?:` + COMMON_TLDS + String.raw`)(?:[/?#:]|$)`,
+    'i'
+)
+const SAVE_ANCHOR_RE = /<a\b([^>]*)>/gi
+const SAVE_HREF_RE = /(\shref\s*=\s*)(["'])([^"']*)\2/i
+
+// On save: give the editor's own links to bare domains an https:// scheme, as
+// linkifyHtml does for plain text. Mentions, hashtags, mailto:, paths and anchors
+// are left as they are.
+export function schemeBareLinks(html) {
+    if (!html || typeof html !== 'string' || html.indexOf('<a') === -1) return html
+    return html.replace(SAVE_ANCHOR_RE, (full, attrs) => {
+        if (/(?:^|\s)class\s*=\s*["'][^"']*\b(?:bx-mention-link|bx-tag-link|bx-tag)(?![\w-])/i.test(attrs)) return full
+        const m = attrs.match(SAVE_HREF_RE)
+        if (!m) return full
+        const href = m[3].trim()
+        if (!BARE_HOST_HREF_RE.test(href)) return full
+        return `<a${attrs.replace(m[0], `${m[1]}${m[2]}https://${href}${m[2]}`)}>`
+    })
+}
+
 // Tags whose text content must never be linkified.
 const LINKIFY_SKIP_TAGS = new Set(['a', 'mention', 'code', 'pre', 'codeblock', 'script', 'style'])
 const LINKIFY_VOID_TAGS = new Set(['br', 'img', 'hr', 'input', 'meta', 'link', 'source', 'wbr'])

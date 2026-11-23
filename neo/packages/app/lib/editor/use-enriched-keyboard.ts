@@ -33,6 +33,15 @@ function handleMentionNavKey(key: string, h: any, insertMention: any) {
 }
 
 /**
+ * A new line, as plain Enter makes it in newline mode: the editor's own Enter
+ * shortcuts (a new list item, leaving a quote, a new paragraph).
+ */
+function insertNewline(tipTap: any) {
+    if (tipTap.commands.keyboardShortcut?.('Enter')) return
+    tipTap.chain().focus().splitBlock().run()
+}
+
+/**
  * Enter/mention key routing for the enriched editor.
  *
  * Comment composers run the library in `newline` mode and route Enter
@@ -44,7 +53,10 @@ function handleMentionNavKey(key: string, h: any, insertMention: any) {
  *
  * - native: via the library's `onKeyPress` (returned here);
  * - web: via a capture-phase keydown on the ProseMirror root so TipTap's own
- *   Enter handling never sees the event.
+ *   Enter handling never sees the event. Shift/Option+Enter is a new line in
+ *   every editor on web: ProseMirror binds no Shift-Enter and swallows it, so
+ *   without this it did nothing wherever Enter isn't routed (tablet and phone
+ *   widths, editors that don't submit on Enter).
  */
 export function useEnrichedKeyboard({
     tipTap,
@@ -114,13 +126,15 @@ export function useEnrichedKeyboard({
                 return
             }
 
-            if (!routesEnter || !isCommentEditorEnterKey(event)) return
-            stopKey(event)
-            if (isCommentEditorNewlineEnter(event)) {
-                tipTap.chain().focus().splitBlock().run()
-            } else {
-                onEnterSubmitRef.current?.()
+            if (!isCommentEditorEnterKey(event) || event.isComposing) return
+            if (isCommentEditorNewlineEnter(event) && !event.metaKey && !event.ctrlKey) {
+                stopKey(event)
+                insertNewline(tipTap)
+                return
             }
+            if (!routesEnter) return
+            stopKey(event)
+            onEnterSubmitRef.current?.()
         }
 
         dom.addEventListener('keydown', onKeyDownCapture, true)

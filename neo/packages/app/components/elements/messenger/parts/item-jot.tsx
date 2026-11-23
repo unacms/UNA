@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view';
+import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useMemo, useCallback, type ComponentType } from 'react';
@@ -16,9 +16,10 @@ import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import CarouselJs from 'app/ui/molecules/content/carousel'
 import { Modal } from 'app/design/controls'
 import emitter, { EVENTS } from 'app/context/emitter';
-import { TouchableWithoutFeedback } from 'react-native';
+import { Linking, TouchableWithoutFeedback } from 'react-native';
+import { formatFileSize } from 'app/lib/util/upload';
 import { ContentMore } from 'app/ui/molecules/content/content-more'
-import type { ApiMenuItem, Jot } from 'app/components/elements/messenger/parts/messenger.types';
+import type { ApiMenuItem, Jot, JotAttachment } from 'app/components/elements/messenger/parts/messenger.types';
 
 const registry = components as Record<string, Record<string, any> | undefined>;
 // carousel.js is untyped: `memo` of a JS component infers no props.
@@ -33,6 +34,28 @@ type JotItemProps = {
     /** Saved / removed from saved by the viewer. */
     onSavedChange?: (item: Jot, saved: boolean) => void;
 };
+
+/** A file of the message that isn't an image (zip, pdf ...): its name and size, opening its link. */
+function JotAttachmentRow({ file }: { file: JotAttachment }) {
+    const size = formatFileSize(file.size);
+    return (
+        <Pressable
+            accessibilityRole="link"
+            accessibilityLabel={size ? `${file.name}, ${size}` : file.name}
+            onPress={() => { if (file.url) Linking.openURL(file.url).catch(() => {}); }}
+            className="max-w-xs w-full rounded-xl bg-button web:hover:bg-button-hover px-3 py-2"
+        >
+            <Row className="items-center gap-x-3">
+                <Icon icon="File" size={20} className="text-muted-foreground" />
+                <View className="flex-1 min-w-0">
+                    <Text className="text-sm font-medium text-foreground" numberOfLines={1}>{file.name}</Text>
+                    {size ? <Text className="text-xs text-muted-foreground">{size}</Text> : null}
+                </View>
+                <Icon icon="Download" size={16} className="text-muted-foreground" />
+            </Row>
+        </Pressable>
+    );
+}
 
 type ViewState = { view: '' | 'edited'; data?: Record<string, any> };
 
@@ -181,6 +204,11 @@ export default function JotItem({ item, handleReply, unreadCount = 0, onSavedCha
                             customClassName="u-vanilla-html-small"
                         />
                         {aImg.length > 0 && <View className="max-w-xs w-full"><Carousel data={aImg} /></View>}
+                        {item.attachments?.length ? (
+                            <View className="gap-y-1 mt-1">
+                                {item.attachments.map((file) => <JotAttachmentRow key={file.id} file={file} />)}
+                            </View>
+                        ) : null}
                     </View>}
         </MessageItem>
     </View></TouchableWithoutFeedback>

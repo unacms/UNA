@@ -51,6 +51,15 @@ export type Convo = Loose & {
     menu?: ShortMenu;
 };
 
+/** A file of a message that isn't an image (`attachments` of `serviceGetConvoMessages`). */
+export type JotAttachment = {
+    id: number;
+    name: string;
+    mime_type?: string;
+    size?: number;
+    url: string;
+};
+
 /** One message (`serviceGetConvoMessages`). */
 export type Jot = Loose & {
     id: number | string;
@@ -61,7 +70,10 @@ export type Jot = Loose & {
     reply?: number | string;
     reply_message?: string;
     saved?: number;
+    /** Images, shown in the carousel. */
     files?: Loose[];
+    /** Every other file: zip, pdf ... */
+    attachments?: JotAttachment[];
     menu?: ApiMenu;
     reactions?: Loose;
     author_data?: ProfileData;

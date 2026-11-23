@@ -2,7 +2,7 @@
 // Run with `node --test packages/app/components/form-fields/editor-mention-html.test.ts` from the NEO root.
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { mentionsToUnaLinks, unaLinksToMentions, EDITOR_LINK_RE } from './editor-mention-html.js';
+import { mentionsToUnaLinks, unaLinksToMentions, schemeBareLinks, EDITOR_LINK_RE } from './editor-mention-html.js';
 import { buildUnaMentionHtml, mentionAttributesForUser, mentionDisplayText } from '../../lib/editor/editor-mention-shared.ts';
 
 const TAG_URL = 'https://example.com/searchKeyword.php?keyword=travel';
@@ -110,4 +110,31 @@ test('the editor links URLs and known domains as you type, not file names', () =
     assert.deepEqual(links('unacms.com'), ['unacms.com']);
     assert.deepEqual(links('https://github.com/unacms/UNA/issues'), ['https://github.com/unacms/UNA/issues']);
     assert.deepEqual(links('www.example.org/x'), ['www.example.org/x']);
+});
+
+test('a link the editor made from a bare domain saves with https://', () => {
+    assert.equal(
+        schemeBareLinks('<p>Deploy on <a href="unacms.com">unacms.com</a> now</p>'),
+        '<p>Deploy on <a href="https://unacms.com">unacms.com</a> now</p>',
+    );
+    assert.equal(
+        schemeBareLinks('<a target="_blank" rel="noopener" href="www.example.org/x?y=1">www.example.org/x</a>'),
+        '<a target="_blank" rel="noopener" href="https://www.example.org/x?y=1">www.example.org/x</a>',
+    );
+    assert.equal(schemeBareLinks(`<a href='docs.unacms.com'>docs</a>`), `<a href='https://docs.unacms.com'>docs</a>`);
+});
+
+test('links with a scheme, paths, mentions and hashtags keep their href', () => {
+    const kept = [
+        '<a href="https://unacms.com">unacms.com</a>',
+        '<a href="http://unacms.com">x</a>',
+        '<a href="mailto:a@unacms.com">a@unacms.com</a>',
+        '<a href="/d/she-s-nearly-ready">post</a>',
+        '<a href="#top">top</a>',
+        '<a href="searchKeyword.php?keyword=x">x</a>',
+        '<a class="bx-mention-link" data-profile-id="3" href="u.com">Ann</a>',
+        `<a class="bx-tag-link" dchar="#" title="travel" href="travel.com">#travel</a>`,
+        '<a data-href="unacms.com">x</a>',
+    ];
+    for (const html of kept) assert.equal(schemeBareLinks(html), html);
 });
