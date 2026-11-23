@@ -89,15 +89,15 @@ class BxCreditsModule extends BxBaseModGeneralModule
 
     public function serviceCheckout()
     {
-        $iBuyerId = bx_get_logged_profile_id();
-        if(!$iBuyerId)
-            return ['code' => 1, 'msg' => _t('_bx_credits_err_unknown_buyer')];
-
         $sErrIncorrectData = _t('_bx_credits_err_incorrect_data');
 
         $aData = $this->_oConfig->getCheckoutData();
         if(empty($aData) || !is_array($aData))
-            return ['code' => 2, 'msg' => $sErrIncorrectData];
+            return ['code' => 1, 'msg' => $sErrIncorrectData];
+
+        $iBuyerId = (int)($aData['buyer'] ?? 0);
+        if(!$iBuyerId || $iBuyerId != $this->_iProfileId)
+            return ['code' => 2, 'msg' => _t('_bx_credits_err_unknown_buyer')];
 
         $fConversion = $this->_oConfig->getConversionRateUse();
         $iPrecision = $this->_oConfig->getPrecision();
@@ -113,7 +113,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
         if(!$aPpOrders || !is_array($aPpOrders) || !($aPpOrder = reset($aPpOrders)) || !is_array($aPpOrder)) 
             return ['code' => 3, 'msg' => $sErrIncorrectData];
 
-        if((int)$aPpOrder['seller_id'] != $iSellerId)
+        if((int)$aPpOrder['client_id'] != $iBuyerId || (int)$aPpOrder['seller_id'] != $iSellerId)
             return ['code' => 3, 'msg' => $sErrIncorrectData];
 
         $fAmountM = (float)$aPpOrder['amount'];
@@ -174,13 +174,13 @@ class BxCreditsModule extends BxBaseModGeneralModule
 
     public function serviceSubscribe()
     {
-        $iBuyerId = bx_get_logged_profile_id();
-        if(!$iBuyerId)
-            return ['code' => 1, 'msg' => _t('_bx_credits_err_unknown_buyer')];
-
         $aData = $this->_oConfig->getCheckoutData();
         if(empty($aData) || !is_array($aData))
-            return ['code' => 2, 'msg' => _t('_bx_credits_err_incorrect_data')];
+            return ['code' => 1, 'msg' => _t('_bx_credits_err_incorrect_data')];
+
+        $iBuyerId = (int)($aData['buyer'] ?? 0);
+        if(!$iBuyerId || $iBuyerId != $this->_iProfileId)
+            return ['code' => 2, 'msg' => _t('_bx_credits_err_unknown_buyer')];
 
         $iSellerId = (int)$aData['seller'];
         $fAmount = (float)$aData['amount'];
@@ -274,13 +274,14 @@ class BxCreditsModule extends BxBaseModGeneralModule
 
     public function serviceGetBlockCheckout()
     {
-        $oBuyer = BxDolProfile::getInstance();
-        if(!$oBuyer)
+        $iBuyer = 0;
+        $oBuyer = false;
+        if(!($iBuyer = (int)bx_get('buyer')) || ($iBuyer != $this->_iProfileId) || !($oBuyer = BxDolProfile::getInstance($iBuyer)))
             return ($sMsg = _t('_bx_credits_err_unknown_buyer')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
-        
-        $iSeller = (int)bx_get('seller');
-        $oSeller = BxDolProfile::getInstance($iSeller);
-        if(!$oSeller)
+
+        $iSeller = 0;
+        $oSeller = false;
+        if(!($iSeller = (int)bx_get('seller')) || !($oSeller = BxDolProfile::getInstance($iSeller)))
             return ($sMsg = _t('_bx_credits_err_unknown_seller')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
 
         $fAmountM = $fAmountMInDef = (float)bx_get('amount');
@@ -312,6 +313,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
         }
 
         $this->_oConfig->setCheckoutData([
+            'buyer' => $iBuyer,
             'seller' => $iSeller,
             'amount' => $fAmountC,
             'custom' => bx_process_input(bx_get('custom')),
@@ -324,13 +326,14 @@ class BxCreditsModule extends BxBaseModGeneralModule
 
     public function serviceGetPopupSubscribe($aData)
     {
-        $oBuyer = BxDolProfile::getInstance();
-        if(!$oBuyer)
+        $iBuyer = 0;
+        $oBuyer = false;
+        if(!($iBuyer = (int)$aData['buyer']) || ($iBuyer != $this->_iProfileId) || !($oBuyer = BxDolProfile::getInstance($iBuyer)))
             return ['msg' => _t('_bx_credits_err_unknown_buyer')];
 
-        $iSeller = (int)$aData['seller'];
-        $oSeller = BxDolProfile::getInstance($iSeller);
-        if(!$oSeller)
+        $iSeller = 0;
+        $oSeller = false;
+        if(!($iSeller = (int)$aData['seller']) || !($oSeller = BxDolProfile::getInstance($iSeller)))
             return ['msg' => _t('_bx_credits_err_unknown_seller')];
 
         $fAmountM = $fAmountMInDef = (float)$aData['amount'];
@@ -353,6 +356,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
         ]);
 
         $this->_oConfig->setCheckoutData([
+            'buyer' => $iBuyer,
             'seller' => $iSeller,
             'amount' => $fAmountC,
             'trial' => (int)$aData['trial'] > 0,
