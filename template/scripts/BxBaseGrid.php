@@ -1882,6 +1882,7 @@ class BxBaseGrid extends BxDolGrid
             'empty' => _t('_Empty'),
             'text_selected' => _t('_sys_grid_txt_n_selected'),
             'text_select_rows' => _t('_sys_grid_txt_select_rows'),
+            'text_sort' => _t('_sys_grid_txt_sort_by'),
             'text_select' => _t('_sys_grid_lbl_select'),
             'text_order' => _t('_sys_grid_lbl_order'),
             'text_expand' => _t('_sys_grid_txt_show_items'),

@@ -811,3 +811,10 @@ html.dark .bx-grid-ag-card-caption,
     }
 }
 
+
+.bx-grid-ag-phone-sort {
+    display: block;
+    box-sizing: border-box;
+    width: calc(100% - 24px);
+    margin: 0 12px 8px;
+}

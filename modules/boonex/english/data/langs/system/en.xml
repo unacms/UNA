@@ -3805,6 +3805,7 @@
 	<string name="_sys_grid_txt_n_selected"><![CDATA[{0} selected]]></string>
 	<string name="_sys_grid_txt_clear_selection"><![CDATA[Clear selection]]></string>
 	<string name="_sys_grid_txt_select_rows"><![CDATA[Select rows first.]]></string>
+	<string name="_sys_grid_txt_sort_by"><![CDATA[Sort by]]></string>
 	<string name="_sys_grid_txt_show_items"><![CDATA[Show items]]></string>
 	<string name="_sys_grid_lbl_order"><![CDATA[Order]]></string>
 	<string name="_sys_grid_lbl_select"><![CDATA[Select]]></string>

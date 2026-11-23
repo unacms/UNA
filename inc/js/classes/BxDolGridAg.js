@@ -61,6 +61,7 @@ function BxDolGridAg(oCfg, oBx) {
     this._mount();
     this._select2Filters();
     this._bindBulk();
+    this._phoneSort();
 }
 
 BxDolGridAg.prototype._adoptBx = function () {
@@ -294,6 +295,49 @@ BxDolGridAg.prototype._tabStops = function (aIn) {
 };
 
 /**
+ * Phones have no column header to sort by, so a select above the cards lists the sortable columns,
+ * each way. It is left out when no column sorts.
+ */
+BxDolGridAg.prototype._phoneSort = function () {
+    if (!this._bPhone)
+        return;
+
+    const aCols = (this._oCfg.columns || []).filter((o) => Number(o.sortable) === 1 && o.title);
+    const eHost = document.getElementById('bx-grid-cont-' + this._sObject);
+    if (!aCols.length || !eHost)
+        return;
+
+    const eSel = document.createElement('select');
+    eSel.className = 'bx-grid-ag-phone-sort';
+    eSel.setAttribute('aria-label', this._oCfg.text_sort || '');
+    const fOpt = (sField, sDir, sText) => {
+        const e = document.createElement('option');
+        e.value = sField + '|' + sDir;
+        e.textContent = sText;
+        return e;
+    };
+    eSel.appendChild(fOpt('', 'ASC', this._oCfg.text_sort || ''));
+    for (const oCol of aCols) {
+        eSel.appendChild(fOpt(oCol.name, 'ASC', oCol.title + ' ↑'));
+        eSel.appendChild(fOpt(oCol.name, 'DESC', oCol.title + ' ↓'));
+    }
+
+    const sField = this._oCfg.sorting_field || '';
+    const sDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+    if (sField && aCols.some((o) => o.name === sField)) {
+        this._oPhoneSort = { field: sField, dir: sDir };
+        eSel.value = sField + '|' + sDir;
+    }
+
+    eSel.addEventListener('change', () => {
+        const [sName, sWay] = eSel.value.split('|');
+        this._oPhoneSort = sName ? { field: sName, dir: sWay } : null;
+        this.refresh();
+    });
+    eHost.parentNode.insertBefore(eSel, eHost);
+};
+
+/**
  * The parts of a card, from the grid's columns: the first data column is the card's title, the
  * switches and the actions go on the title's line, every other column is a line of its own under
  * it (a narrow column that is no switch, a date for one, too).
@@ -496,6 +540,9 @@ BxDolGridAg.prototype._getRows = function (params) {
     if (params.sortModel?.length) {
         oSort.field = params.sortModel[0].colId;
         oSort.dir = params.sortModel[0].sort === 'desc' ? 'DESC' : 'ASC';
+    } else if (this._oPhoneSort) {
+        oSort.field = this._oPhoneSort.field;
+        oSort.dir = this._oPhoneSort.dir;
     }
 
     this._fetch(iStart, iPer, oSort, (o) => {

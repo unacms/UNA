@@ -36,6 +36,3 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_se_migration_transfers', 'bulk', 'run', '_bx_se_migration_start_transfer', '', 0, 1, 1);
-
--- GRIDS: drawn by AG Grid in Studio
-UPDATE `sys_objects_grid` SET `engine` = 'ag' WHERE `object` = 'bx_se_migration_transfers' AND `engine` = '';
