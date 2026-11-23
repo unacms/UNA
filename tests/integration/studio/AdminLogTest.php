@@ -52,7 +52,7 @@ class AdminLogTest extends BxDolIntegrationTestCase
         $aValues['mix_id'] = '';
 
         $iBefore = $this->maxId();
-        $oOptions = new BxDolStudioOptions(BX_DOL_STUDIO_STG_TYPE_SYSTEM, BX_DOL_STUDIO_STG_CATEGORY_AUDIT);
+        $oOptions = new BxTemplStudioOptions(BX_DOL_STUDIO_STG_TYPE_SYSTEM, BX_DOL_STUDIO_STG_CATEGORY_AUDIT);
         $oForm = $this->form($aValues);
         $sResult = $oOptions->saveChanges($oForm);
 
