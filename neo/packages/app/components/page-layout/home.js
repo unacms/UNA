@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { components } from 'app/components/registry'
-import { InformerStrip, useBelowInformerStrip } from 'app/components/elements/informer'
+import { InformerStrip } from 'app/components/elements/informer'
 import {
     Panel,
     PanelGroup,
@@ -20,7 +20,7 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/profile/badge'
 import Badges from 'app/ui/molecules/profile/badges'
 import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/measure';
-import { useHeaderHeight } from 'app/context/jotai/layout';
+import { useHeaderHeight, useInformerStripVisibleHeight } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { NeoButtonLink } from 'app/design/controls';
 import HomeCover from 'app/components/elements/covers/home-cover';
@@ -184,7 +184,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
 
     const headerHeight = useHeaderHeight();
     // The fixed side columns start under the informer strip while it is in view (layout.web.js).
-    const columnsTop = useBelowInformerStrip(headerHeight);
+    const columnsTop = headerHeight + useInformerStripVisibleHeight();
     const [sideBarWidth, setSideBarWidth] = useState(undefined);
     const [asideWidth, setAsideWidth] = useState(undefined);
 

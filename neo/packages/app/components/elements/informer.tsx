@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { Platform } from 'react-native';
+import { useSetInformerStripHeight } from 'app/context/jotai/layout';
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
@@ -101,11 +103,23 @@ function InformerMessage({ item }: { item: InformerItem }) {
 export function InformerStrip() {
     const { currentUser } = useCurrentUser();
     const items = visibleInformers(currentUser ? currentUser.informer : undefined, currentUser);
-    if (!items.length)
+    // Web: its height for what is fixed to the window under the header (Home's side columns, useInformerStripVisibleHeight).
+    const setHeight = useSetInformerStripHeight();
+    const hasItems = items.length > 0;
+    useEffect(() => {
+        if (!hasItems) setHeight(0);
+        return () => setHeight(0);
+    }, [hasItems, setHeight]);
+
+    if (!hasItems)
         return null;
 
     return (
-        <View role="status" id={STRIP_ID} className="w-full">
+        <View
+            role="status"
+            className="w-full"
+            onLayout={Platform.OS === 'web' ? (e: any) => setHeight(Math.round(e.nativeEvent.layout.height)) : undefined}
+        >
             {items.map((item, index) => <InformerMessage key={item.id || 'informer' + index} item={item} />)}
         </View>
     );
@@ -113,35 +127,3 @@ export function InformerStrip() {
 
 export default InformerStrip;
 
-const STRIP_ID = 'neo-informer-strip';
-
-/**
- * Web: where content fixed to the window (Home's side columns) starts, `headerHeight` or under the informer strip while
- * the strip is in view, as it scrolls away.
- */
-export function useBelowInformerStrip(headerHeight: number): number {
-    const { currentUser } = useCurrentUser();
-    const count = visibleInformers(currentUser ? currentUser.informer : undefined, currentUser).length;
-    const [top, setTop] = useState(headerHeight);
-
-    useEffect(() => {
-        if (typeof document === 'undefined') return;
-        let frame = 0;
-        const update = () => {
-            frame = 0;
-            const strip = document.getElementById(STRIP_ID);
-            setTop(Math.max(headerHeight, strip ? Math.round(strip.getBoundingClientRect().bottom) : 0));
-        };
-        const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-        update();
-        window.addEventListener('scroll', schedule, { passive: true });
-        window.addEventListener('resize', schedule);
-        return () => {
-            if (frame) cancelAnimationFrame(frame);
-            window.removeEventListener('scroll', schedule);
-            window.removeEventListener('resize', schedule);
-        };
-    }, [headerHeight, count]);
-
-    return top;
-}
