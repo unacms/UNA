@@ -12,7 +12,7 @@ import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDro
 import type { MenuItem } from 'app/lib/util/menu';
 import type { HeaderAlign } from 'app/lib/header-layout';
 import { MENU_HIGHLIGHT_BAR_CLASS, useMenuHighlight } from 'app/ui/atoms/menu-highlight';
-import { navbarBoxWidth, navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabsThatFit, navbarUnfittedTabSide } from 'app/lib/navbar-fit';
+import { navbarBoxWidth, navbarRowStart, navbarRowWidth, navbarTabBox, navbarTabPadding, navbarTabsThatFit, navbarUnfittedTabSide } from 'app/lib/navbar-fit';
 import { menuViewerKey } from 'app/lib/menu-remember';
 
 type Translate = ReturnType<typeof useTranslation>['t'];
@@ -416,7 +416,7 @@ function MenuTopProbe({ items, t, onWidth }: Readonly<{ items: MenuItem[]; t: Tr
                 {items.map((item) => (
                     <Row
                         key={tabKey(item)}
-                        className={`items-center justify-center gap-2 h-11 min-w-11 shrink-0 ${item.icon && item.showTitle ? 'ps-3 pe-4' : 'px-2.5'}`}
+                        className={`items-center justify-center gap-2 h-11 min-w-11 shrink-0 ${navbarTabPadding(!!item.icon, !!item.showTitle)}`}
                         layoutBeforePaint
                         onLayout={(e) => onWidth(tabKey(item), e?.nativeEvent?.layout?.width || 0)}
                     >
