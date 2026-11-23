@@ -2073,6 +2073,7 @@ class BxBaseGrid extends BxDolGrid
             '_sys_grid_secret_reveal',
             '_sys_grid_secret_hide',
             '_sys_grid_secret_password_prompt',
+            '_sys_txt_error_occured',
         ]);
     }
 }

@@ -407,6 +407,16 @@ BxDolGridAg.prototype._loadClient = function () {
     const iLoad = (this._iLoad || 0) + 1;
     this._iLoad = iLoad;
 
+    // A failed request leaves no rows rather than the previous ones, which would pass for the
+    // answer to the new filter or sort, and says so.
+    const fFail = () => {
+        if (iLoad !== this._iLoad)
+            return;
+        this._oApi.setGridOption('rowData', []);
+        const sError = typeof _t === 'function' ? _t('_sys_txt_error_occured') : '';
+        if (sError && typeof bx_alert === 'function')
+            bx_alert(sError);
+    };
     const fLoad = (iStart) => {
         this._fetch(iStart, iPer, oSort, (o) => {
             if (iLoad !== this._iLoad)
@@ -421,7 +431,7 @@ BxDolGridAg.prototype._loadClient = function () {
             this._oApi.setGridOption('rowData', aAll);
             this._oApi.resetRowHeights?.();
             this._reloadExpanded();
-        });
+        }, fFail);
     };
     fLoad(0);
 };
@@ -768,21 +778,23 @@ BxDolGridAg.prototype._syncBulk = function (iCount) {
     if (!eBar)
         return;
 
+    // The actions are always there, as in the classic grid. The count and the button that clears
+    // the selection show while rows are selected.
+    const bSelected = iCount > 0;
     const eCount = eBar.querySelector('.bx-grid-ag-bulk-count');
-    if (eCount)
+    if (eCount) {
         eCount.textContent = String(this._oCfg.text_selected || '{0}').replace('{0}', iCount);
-
-    const bShow = iCount > 0;
-    if (eBar.hidden === !bShow)
-        return;
-    eBar.hidden = !bShow;
-
-    if (!eBar._bxBound) {
-        eBar._bxBound = true;
-        eBar.querySelector('.bx-grid-ag-bulk-clear')?.addEventListener('click', () => this._oApi?.deselectAll?.());
+        eCount.hidden = !bSelected;
     }
 
-    this._fitHeight();
+    const eClear = eBar.querySelector('.bx-grid-ag-bulk-clear');
+    if (eClear) {
+        eClear.hidden = !bSelected;
+        if (!eClear._bxBound) {
+            eClear._bxBound = true;
+            eClear.addEventListener('click', () => this._oApi?.deselectAll?.());
+        }
+    }
 };
 
 BxDolGridAg.prototype._esc = function (s) {
@@ -963,10 +975,19 @@ BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
         set: oMeta[oAg._oExpand.set] || '',
         module: oMeta[oAg._oExpand.module] || ''
     };
+    const fAppend = () => {
+        oReal._oQueryAppend = { set: oQuery.set, module: oQuery.module };
+    };
     const oBx = {
         actionWithId: (...aArgs) => {
-            oReal._oQueryAppend = { set: oQuery.set, module: oQuery.module };
+            fAppend();
             return oReal.actionWithId(...aArgs);
+        },
+        // Links in an item's cells (Visible For) run the items grid's own actions, with this menu's
+        // set: it is put in place on the way down, before the grid's click handler runs.
+        _bindActionsSingle: (jEl) => {
+            jEl?.[0]?.addEventListener('click', fAppend, true);
+            oReal._bindActionsSingle?.(jEl);
         }
     };
     const oChild = { _oBx: oBx, _sFieldId: sField, _oCfg: oAg._oCfg };
