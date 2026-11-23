@@ -8,19 +8,12 @@ import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { patchCachedPageDataByUrl } from 'app/lib/cache/native-tab-page-cache';
 import emitter, { EVENTS } from 'app/context/emitter';
-import { withInformerBlock } from 'app/components/elements/informer';
 import { CONNECTION_PATCHED } from 'app/lib/connection-cache';
 
 const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
     && prev.isCoverDisabled === next.isCoverDisabled
 ));
-
-// Informers ("This project was archived.") come with the page (data.user.informer) and go
-// first in the main column: the conductor joins cell_top and cell_center into it
-// (conductor/helpers.js processParsedUrl). Tabs loaded on switch get it through prepareData.
-// layout.web.js leaves out its top informers here.
-const withInformer = withInformerBlock;
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const [pageData, setPageData] = useState(data);
@@ -40,6 +33,15 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             currentUser?.confirmed,
         );
     }, [currentUser?.id, currentUser?.confirmed]);
+
+    // The informer strip (layout.web.js, conductor/native-ui.js) shows the viewer's informers: a refreshed profile
+    // ("This group is pending approval." after a status change) brings its own, which replace them.
+    const refreshedInformer = pageData?.user?.informer;
+    useEffect(() => {
+        if (!currentUser || !Array.isArray(refreshedInformer)) return;
+        if (JSON.stringify(refreshedInformer) !== JSON.stringify(currentUser.informer || []))
+            setCurrentUser({ informer: refreshedInformer });
+    }, [refreshedInformer]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // When the current page was refetched after a connection change, apply it here.
     useEffect(() => {
@@ -135,8 +137,6 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         };
     }, [pageData.ts, pageData.timestamp, uri, pageData.url]);
 
-    const conductorData = useMemo(() => withInformer(pageData), [pageData]);
-
     // No cover where the app's settings turn it off, or where Studio hides the page's cover on this
     // screen size or in the mobile app ("Cover hidden on"), as UNA does.
     const screenTier = useScreenTier();
@@ -150,8 +150,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             isHideDefaultHeader={true}
             isCoverDisabled={isCoverDisabled}
             menu={menu}
-            data={conductorData}
-            prepareData={withInformer}
+            data={pageData}
             blocks={blocks || getBlocksFromData(pageData)}
         />
     )
