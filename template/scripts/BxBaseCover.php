@@ -131,8 +131,15 @@ class BxBaseCover extends BxDolCover
         }
 
         $sIcon = '';
-        if($bSection && !empty($aParams['bx_if:icon']['condition']) && !empty($aParams['bx_if:icon']['content']['icon']))
-            $sIcon = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml($aParams['bx_if:icon']['content']['icon'], ['class' => 'size-8', 'aria-hidden' => 'true']);
+        if($bSection) {
+            // The site menu item's icon, else the section's module's (as the apps take the menu's `icon`).
+            $sIconCode = !empty($aParams['bx_if:icon']['condition']) && !empty($aParams['bx_if:icon']['content']['icon']) ? $aParams['bx_if:icon']['content']['icon'] : '';
+            if($sIconCode === '' && ($sModule = $oPage->getModule()) && $sModule != 'system' && BxDolModuleQuery::getInstance()->isEnabledByName($sModule) && ($oModule = BxDolModule::getInstance($sModule)) && !empty($oModule->_oConfig->CNF['ICON']))
+                $sIconCode = $oModule->_oConfig->CNF['ICON'];
+
+            if($sIconCode !== '')
+                $sIcon = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml($sIconCode, ['class' => 'size-7', 'aria-hidden' => 'true']);
+        }
 
         $sActions = isset($aParams['actions']) ? $aParams['actions'] : '';
 

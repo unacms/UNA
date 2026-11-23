@@ -1298,7 +1298,7 @@ export function TopSidebar({
                                         // The section's name is the page's heading.
                                         {...headingProps(1)}
                                         numberOfLines={1}
-                                        className="min-w-0 shrink text-2xl leading-8 font-bold tracking-tight text-card-foreground font-main"
+                                        className="min-w-0 shrink text-xl leading-7 font-bold tracking-tight text-card-foreground font-main"
                                     >
                                         {title}
                                     </Text>
@@ -1355,7 +1355,7 @@ export function TopSidebar({
                                     </View>
                                 )}
                                 {/* The phone header title's size and weight (TextHeader), 16px in like the logo. */}
-                                <Text className="text-2xl font-bold tracking-tight text-card-foreground font-main truncate">
+                                <Text className="text-xl leading-7 font-bold tracking-tight text-card-foreground font-main truncate">
                                     {title}
                                 </Text>
                             </Row>
