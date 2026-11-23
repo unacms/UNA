@@ -95,6 +95,13 @@ class GuestHomeParityTest extends BxDolTestCase
         $this->assertStringContainsString('className="flex min-h-11 min-w-11 items-center justify-center p-0.5 -m-0.5"', self::read('neo/packages/app/ui/molecules/header/page-header-parts.js'));
     }
 
+    public function testFormAndFooterLinksAreMediumAsNeos(): void
+    {
+        // NEO's inline links (theme links: font-medium); content text links stay regular on both.
+        $this->assertStringContainsString(".bx-artificer .bx-db-footer a {\n    font-weight: 500;\n    text-decoration: underline;", self::read('modules/boonex/artificer/data/template/system/css/general.css'));
+        $this->assertStringContainsString(".bx-artificer .bx-form-info a,\n.bx-artificer #bx-form-element-submit_text .bx-form-value a {\n    font-weight: 500;\n}", self::read('modules/boonex/artificer/data/template/system/css/forms.css'));
+    }
+
     public function testPageScrollbarTrackAsNeos(): void
     {
         $sCss = self::read('modules/boonex/artificer/data/template/system/css/general.css');
