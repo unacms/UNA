@@ -51,6 +51,18 @@ class PageCoverBandTemplateTest extends BxDolTestCase
         $this->assertStringContainsString('hidden lg:flex', $sNeo);
     }
 
+    /**
+     * The base template's cover holds the title on its band: the band takes its "Cover hidden on" sizes, the title on it
+     * its "Title hidden on" sizes, and the title shows alone where the band is off or hidden.
+     */
+    public function testBaseTemplateHidesTheBandAndTheTitleApart(): void
+    {
+        $sHtml = self::read('template/cover.html');
+        $this->assertMatchesRegularExpression('/<bx_if:band>\s*<div class="bx-cover-gap [^"]*__band_hidden_class__">/', $sHtml);
+        $this->assertStringContainsString('bx-def-font-h1 __title_class__"', $sHtml);
+        $this->assertMatchesRegularExpression('/<bx_if:title_only>\s*<div class="bx-cover-title [^"]*__title_only_class__">/', $sHtml);
+    }
+
     public function testTheSectionTitleIsTheAppsSectionTitle(): void
     {
         // NEO's section title (TopSidebar): a 28px icon in a 44px box, 8px before a 20px bold name on a 28px line.

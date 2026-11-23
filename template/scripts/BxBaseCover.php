@@ -21,6 +21,12 @@ class BxBaseCover extends BxDolCover
      */
     protected $_aPageParts = null;
 
+    /**
+     * The page's own cover was drawn (displayPageCover): its picture, set while drawing it, doesn't make it a cover set
+     * in code (isCover).
+     */
+    protected $_bPageCoverDrawn = false;
+
     protected $_oTemplate;
 
     public function __construct ($oTemplate)
@@ -89,6 +95,10 @@ class BxBaseCover extends BxDolCover
         if(empty($this->_aOptions))
             $aParams = array_merge($aParams, $this->_getPageCoverTitleParams($aParams));
 
+        //--- The title on the band (the base template's cover.html) hides where the page's title row does.
+        if(!empty($aParams['bx_if:title']['condition']))
+            $aParams['bx_if:title']['content']['title_class'] = isset($aParams['title_class']) ? $aParams['title_class'] : '';
+
         //--- The band's markup (its picture, its class, its actions) is inside <bx_if:band>, which gets the cover's params.
         if(!empty($aParams['bx_if:band']['condition']))
             $aParams['bx_if:band']['content'] = $aParams;
@@ -142,6 +152,7 @@ class BxBaseCover extends BxDolCover
         }
 
         $this->_aPageParts = $aParts;
+        $this->_bPageCoverDrawn = true;
         $sResult = $this->display();
         $this->_aPageParts = null;
 
@@ -213,7 +224,9 @@ class BxBaseCover extends BxDolCover
      */
     public function getSubmenuAddAction()
     {
-        if($this->isCover() || ($oPage = BxDolPage::getObjectInstanceByURI()) === false || !$oPage->isVisiblePageSubmenu())
+        // A cover set in code (an entry's, a profile's) has no section title row; the page's own cover sets its picture
+        // while it is drawn, before the tab row, which keeps it the page's.
+        if(($this->isCover() && !$this->_bPageCoverDrawn) || ($oPage = BxDolPage::getObjectInstanceByURI()) === false || !$oPage->isVisiblePageSubmenu())
             return '';
 
         $aParts = $this->getPageParts($oPage);
@@ -316,8 +329,16 @@ class BxBaseCover extends BxDolCover
         $sTitleSrClass = $bTitleRow ? self::getHiddenOnClasses($aParts['title_hidden_on'], true) : '';
         $bTitleSr = $bTitle && !$this->_bPageHasHeading && (!$bTitleRow || $sTitleSrClass !== self::getHiddenOnClasses(0, true));
 
+        // A template whose band holds the title (the base template's cover.html): the title on the band where both show,
+        // the title alone where the band is off or hidden.
+        $sBandHidden = $bBand ? self::getHiddenOnClasses($aParts['band_hidden_on']) : '';
+        $bTitleOnly = $bTitleRow && (!$bBand || $sBandHidden !== '');
+        $sTitleOnlyClass = trim($sTitleClass . ($bBand ? ' ' . self::getHiddenOnClasses($aParts['band_hidden_on'], true) : ''));
+
         return [
             'band_class' => implode(' ', $aBandClasses),
+            'band_hidden_class' => $sBandHidden,
+            'title_class' => $sTitleClass,
             'bx_if:band' => [
                 'condition' => $bBand,
                 'content' => [],
@@ -348,9 +369,9 @@ class BxBaseCover extends BxDolCover
             ],
             // A template whose band holds the title (the base template's cover.html): the title alone without the band.
             'bx_if:title_only' => [
-                'condition' => $bTitleRow && !$bBand,
+                'condition' => $bTitleOnly,
                 'content' => [
-                    'title_class' => $sTitleClass,
+                    'title_only_class' => $sTitleOnlyClass,
                     'title' => $sTitle,
                 ],
             ],

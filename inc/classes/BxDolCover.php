@@ -67,6 +67,8 @@ class BxDolCover extends BxDolFactory implements iBxDolSingleton
             // The page's own cover sets these by the page's Cover and Title (BxBaseCover::displayPageCover); a cover
             // set in code (an entry's) has its band.
             'band_class' => '',
+            'band_hidden_class' => '',
+            'title_class' => '',
             'bx_if:band' => array(
                 'condition' => true,
                 'content' => array(),

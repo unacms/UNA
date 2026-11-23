@@ -153,6 +153,45 @@ class PageTitleSettingsTest extends BxDolIntegrationTestCase
         $this->assertStringNotContainsString('bx-cover-title', $this->site(), 'A guest gets no title row.');
     }
 
+    /**
+     * A section whose title is off has its add action at the end of its tab row, also when its cover has a picture: the
+     * picture the page's own cover sets while it is drawn doesn't make it a cover set in code.
+     */
+    public function testAddMovesToTheTabRowWithACoverPicture(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts'))
+            $this->markTestSkipped('bx_posts is not installed.');
+
+        $oDb = BxDolDb::getInstance();
+        $aBackup = $oDb->getRow("SELECT `id`, `cover`, `title_show`, `title_hidden_on` FROM `sys_objects_page` WHERE `uri` = 'posts-home'");
+        $this->bxLoginAsAdmin();
+        try {
+            $oDb->query("UPDATE `sys_objects_page` SET `cover` = 1, `title_show` = 0, `title_hidden_on` = '' WHERE `id` = :id", ['id' => $aBackup['id']]);
+            $oDb->cleanCache('sys_pages_objects_data');
+            $oDb->cleanMemoryAll();
+            unset($GLOBALS['bxDolClasses']['BxDolPage!bx_posts_home'], $GLOBALS['bxDolClasses']['BxDolCover']);
+
+            $_GET = ['i' => 'posts-home'];
+            $oPage = BxDolPage::getObjectInstanceByURI('posts-home');
+            if (!$oPage || !$oPage->getAddEntryAction())
+                $this->markTestSkipped('The viewer may not add posts.');
+
+            $oCover = BxDolCover::getInstance();
+            $sHtml = $oCover->displayPageCover($oPage);
+            $this->assertStringNotContainsString('bx-cover-add', $sHtml, 'No title row, so no Add in it.');
+
+            // The page's cover picture (or the site's common one), as displayPageCover sets it.
+            (new ReflectionProperty('BxDolCover', '_sCoverImageUrl'))->setValue($oCover, 'http://example.com/cover.jpg');
+            $this->assertTrue($oCover->isCover());
+            $this->assertStringContainsString('bx-cover-add', $oCover->getSubmenuAddAction(), 'Add at the end of the tab row.');
+        }
+        finally {
+            $oDb->query("UPDATE `sys_objects_page` SET `cover` = :c, `title_show` = :t, `title_hidden_on` = :h WHERE `id` = :id", ['c' => $aBackup['cover'], 't' => $aBackup['title_show'], 'h' => $aBackup['title_hidden_on'], 'id' => $aBackup['id']]);
+            $oDb->cleanCache('sys_pages_objects_data');
+            $this->bxBecomeGuest();
+        }
+    }
+
     public function testCustomTitle(): void
     {
         $this->set(['cover' => 0, 'title_show' => 1, 'title_hidden_on' => '', 'cover_title' => '_adm_bp_txt_page_title_show']);

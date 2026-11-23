@@ -1085,6 +1085,10 @@ export const LeftColumnContainer = ({
                     {((!!title || addMenuItems.length > 0) && layoutName != 'profile') && (
                         <SidebarTitle title={title} icon={icon} actions={addButtons} />
                     )}
+                    {/* A section whose title is off keeps its heading here, for screen readers only. */}
+                    {isSectionSidebar && !showTitle && !!menuSettings?.name && (
+                        <Text {...headingProps(1)} className="sr-only">{t(menuSettings.name)}</Text>
+                    )}
                     <View className="flex-1 gap-4">
                         {hasSectionNav && (
                             <View className={appSetting('conductor', 'sidebar_nav')}>
@@ -1300,6 +1304,7 @@ export function TopSidebar({
     toolButtons,
     children,
     title,
+    srTitle = '',
     icon,
     layoutName,
     omitDefaultBackground = false,
@@ -1343,6 +1348,10 @@ export function TopSidebar({
                 <View className={`${widthClass} mx-auto w-full`}>
                     {/* First line, from lg: below it the page header shows the title and the actions. A page whose title
                         is off (Studio → Pages → page → Title) has none: its Add goes to the end of the tab row. */}
+                    {/* Without the title row the page keeps its heading, for screen readers only. */}
+                    {!showTitle && !!srTitle && (
+                        <Text {...headingProps(1)} className="sr-only">{srTitle}</Text>
+                    )}
                     {showTitle && (
                         // 44px icon with 10px above and below: the 64px strip of a compact profile cover, the group centred in it.
                         <Row className={`${desktopFlex} w-full items-center gap-3 min-w-0 px-4 py-2.5`}>
@@ -1500,6 +1509,8 @@ export const TabBar = ({
             toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
             // No section name where the page's title is off on desktop: the Add button moves to the tab row's end.
             title={showTitle ? t(menuSettings?.name) : ''}
+            // On desktop the page's heading stays for screen readers (below it the page header names the page).
+            srTitle={!showTitle && isDesktop ? t(menuSettings?.name) : ''}
             icon={sectionIcon}
             contentWidth={contentWidth}
         >
