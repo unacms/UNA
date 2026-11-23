@@ -50,6 +50,11 @@ function BxDolGridAg(oCfg, oBx) {
     // column is pinned, so a card is one piece. Phones keep the plain table.
     this._bCards = !!globalThis.matchMedia?.('(min-width: 768px)').matches;
     this._iRowGap = this._bCards ? 8 : 0;
+    // Phones: every row is a card that shows the row's columns as lines, with no column header.
+    // A grid whose rows open keeps the table there.
+    this._bPhone = !this._bCards && !this._oCfg.expand;
+    if (this._bPhone)
+        this._iRowHeight = this._cardHeight();
     this._bClient = !!this._oExpand;
 
     this._adoptBx();
@@ -124,6 +129,8 @@ BxDolGridAg.prototype._mount = function () {
 
     if (this._bCards)
         eGrid.classList.add('bx-grid-ag-cards');
+    if (this._bPhone)
+        eGrid.classList.add('bx-grid-ag-phone');
 
     const oOptions = {
         theme: 'legacy',
@@ -171,7 +178,20 @@ BxDolGridAg.prototype._mount = function () {
     if (this._hasKind('order'))
         oOptions.onRowDragEnd = (e) => this._onRowDragEnd(e);
 
-    if (this._hasKind('checkbox')) {
+    if (this._bPhone) {
+        oOptions.columnDefs = [{ colId: '_bx_card', headerName: '', flex: 1, sortable: false, resizable: false, suppressHeaderMenuButton: true }];
+        oOptions.headerHeight = 0;
+        oOptions.isFullWidthRow = () => true;
+        oOptions.fullWidthCellRenderer = BxDolGridAgCard;
+        if (this._hasKind('checkbox'))
+            oOptions.rowSelection = {
+                mode: 'multiRow',
+                checkboxes: false,
+                headerCheckbox: false,
+                enableClickSelection: false,
+                isRowSelectable: (node) => !Number(node.data?.checkbox?.disabled)
+            };
+    } else if (this._hasKind('checkbox')) {
         oOptions.rowSelection = {
             mode: 'multiRow',
             checkboxes: true,
@@ -271,6 +291,35 @@ BxDolGridAg.prototype._tabStops = function (aIn) {
         }
     }
     return a;
+};
+
+/**
+ * The parts of a card, from the grid's columns: the first data column is the card's title, the
+ * switches and the actions go on the title's line, every other column is a line under it.
+ */
+BxDolGridAg.prototype._cardParts = function () {
+    const o = { title: null, controls: [], actions: null, fields: [] };
+    for (const oCol of this._oCfg.columns || []) {
+        if (oCol.kind === 'checkbox' || oCol.kind === 'order')
+            continue;
+        if (oCol.name === 'actions')
+            o.actions = oCol;
+        else if (Number(oCol.controls))
+            o.controls.push(oCol);
+        else if (o.title)
+            o.fields.push(oCol);
+        else
+            o.title = oCol;
+    }
+    return o;
+};
+
+/**
+ * A card's height: its title line, then two of the other columns per line.
+ */
+BxDolGridAg.prototype._cardHeight = function () {
+    const iLines = Math.ceil(this._cardParts().fields.length / 2);
+    return 8 + 20 + 36 + (iLines ? 6 + iLines * 20 : 0);
 };
 
 BxDolGridAg.prototype._hasKind = function (sKind) {
@@ -895,6 +944,108 @@ BxDolGridAgCell.prototype.getGui = function () {
 
 BxDolGridAgCell.prototype.refresh = function () {
     return false;
+};
+
+/**
+ * Phones: a row as a card. The checkbox, the drag handle, the title, the switches and the actions
+ * on one line, the other columns under it as "Caption value". The cells are drawn as the grid's.
+ */
+function BxDolGridAgCard() {}
+
+BxDolGridAgCard.prototype = Object.create(BxDolGridAgCell.prototype);
+BxDolGridAgCard.prototype.constructor = BxDolGridAgCard;
+
+BxDolGridAgCard.prototype.init = function (params) {
+    this.eGui = document.createElement('div');
+    this.eGui.className = 'bx-grid-ag-card';
+
+    const oAg = params.context?.ag;
+    const oData = params.data;
+    if (!oAg || !oData)
+        return;
+
+    const fParams = (oCol) => ({ data: oData, node: params.node, colDef: { field: oCol.name, headerName: oCol.title || '' } });
+    const oParts = oAg._cardParts();
+    const eTop = document.createElement('div');
+    eTop.className = 'bx-grid-ag-card-top';
+
+    if (oAg._hasKind('checkbox')) {
+        const eCheck = document.createElement('input');
+        eCheck.type = 'checkbox';
+        eCheck.className = 'bx-grid-ag-card-check';
+        eCheck.disabled = !!Number(oData.checkbox?.disabled);
+        eCheck.checked = !!params.node?.isSelected?.();
+        if (oAg._oCfg.text_select)
+            eCheck.setAttribute('aria-label', oAg._oCfg.text_select);
+        eCheck.addEventListener('change', () => params.node?.setSelected?.(eCheck.checked));
+        this._fSelected = () => {
+            eCheck.checked = !!params.node.isSelected();
+        };
+        params.node?.addEventListener?.('rowSelected', this._fSelected);
+        this._oNode = params.node;
+        eTop.appendChild(eCheck);
+    }
+
+    if (oAg._hasKind('order')) {
+        const eHandle = document.createElement('div');
+        eHandle.className = 'bx-grid-drag-handle';
+        eHandle.title = oAg._oCfg.text_order || '';
+        const eGrip = document.createElement('i');
+        eGrip.className = 'sys-icon grip-vertical';
+        eGrip.setAttribute('aria-hidden', 'true');
+        eHandle.appendChild(eGrip);
+        params.registerRowDragger?.(eHandle);
+        eTop.appendChild(eHandle);
+    }
+
+    if (oParts.title) {
+        const eTitle = document.createElement('div');
+        eTitle.className = 'bx-grid-ag-card-title';
+        this._draw(eTitle, oData[oParts.title.name], fParams(oParts.title), oAg);
+        eTop.appendChild(eTitle);
+    }
+
+    for (const oCol of oParts.controls) {
+        const eCtl = document.createElement('div');
+        eCtl.className = 'bx-grid-ag-card-control';
+        this._draw(eCtl, oData[oCol.name], fParams(oCol), oAg);
+        eTop.appendChild(eCtl);
+    }
+
+    if (oParts.actions) {
+        const eActs = document.createElement('div');
+        eActs.className = 'bx-grid-ag-card-actions';
+        this._draw(eActs, oData[oParts.actions.name], fParams(oParts.actions), oAg);
+        eTop.appendChild(eActs);
+    }
+
+    this.eGui.appendChild(eTop);
+
+    if (!oParts.fields.length)
+        return;
+
+    const eFields = document.createElement('div');
+    eFields.className = 'bx-grid-ag-card-fields';
+    for (const oCol of oParts.fields) {
+        const eField = document.createElement('div');
+        eField.className = 'bx-grid-ag-card-field';
+        const eCap = document.createElement('span');
+        eCap.className = 'bx-grid-ag-card-caption';
+        eCap.textContent = oCol.title || '';
+        const eVal = document.createElement('span');
+        eVal.className = 'bx-grid-ag-card-value';
+        this._draw(eVal, oData[oCol.name], fParams(oCol), oAg);
+        eField.append(eCap, eVal);
+        eFields.appendChild(eField);
+    }
+    this.eGui.appendChild(eFields);
+};
+
+BxDolGridAgCard.prototype.destroy = function () {
+    if (this._oNode && this._fSelected)
+        this._oNode.removeEventListener?.('rowSelected', this._fSelected);
+    this._oNode = null;
+    this._fSelected = null;
 };
 
 BxDolGridAgCell.prototype._chevron = function (params, oAg) {
