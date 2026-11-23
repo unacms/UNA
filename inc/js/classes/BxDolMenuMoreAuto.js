@@ -328,7 +328,8 @@ BxDolMenuMoreAuto.prototype._layout = function(bAnimate)
 };
 
 /**
- * The width the row can use: its container's content width less the row's own padding.
+ * The width the row can use: its container's content width, or the row's max-width when that is less (the header's
+ * main menu, menu.css), less the row's own padding.
  */
 BxDolMenuMoreAuto.prototype._getAvailable = function()
 {
@@ -336,9 +337,15 @@ BxDolMenuMoreAuto.prototype._getAvailable = function()
     var oStyleParent = window.getComputedStyle(eParent);
     var oStyleMenu = window.getComputedStyle(this._oMenu.get(0));
 
-    return eParent.getBoundingClientRect().width
+    var fRoom = eParent.getBoundingClientRect().width
         - Number.parseFloat(oStyleParent.paddingLeft) - Number.parseFloat(oStyleParent.paddingRight)
-        - Number.parseFloat(oStyleParent.borderLeftWidth) - Number.parseFloat(oStyleParent.borderRightWidth)
+        - Number.parseFloat(oStyleParent.borderLeftWidth) - Number.parseFloat(oStyleParent.borderRightWidth);
+    // A max-width is the row's border box (box-sizing: border-box, Tailwind's preflight).
+    var fMax = Number.parseFloat(oStyleMenu.maxWidth);
+    if(Number.isFinite(fMax) && fMax < fRoom)
+        fRoom = fMax;
+
+    return fRoom
         - Number.parseFloat(oStyleMenu.paddingLeft) - Number.parseFloat(oStyleMenu.paddingRight)
         - Number.parseFloat(oStyleMenu.borderLeftWidth) - Number.parseFloat(oStyleMenu.borderRightWidth);
 };
@@ -478,6 +485,10 @@ BxDolMenuMoreAuto.prototype._apply = function(sLayout)
     else
         this._oItemMore.hide();
 
+    // With items under 'more' the row takes all the width it may have (bx-mma-more, the header's main menu in
+    // menu.css), as NEO's bar, which is as wide as all its tabs: the row's own items sit in its middle.
+    this._oMenu.toggleClass('bx-mma-more', sLayout.includes('0'));
+
     this._sLayout = sLayout;
 };
 
@@ -485,7 +496,8 @@ BxDolMenuMoreAuto.prototype._apply = function(sLayout)
  * A menu in the middle of the header (.bx-header-menu-center, Designer > Settings > Header) is centred in the header,
  * not in its own container, which the logo and the toolbar leave off-centre: the row moves towards the header's middle
  * as far as its container leaves room, so a long row still fills the container. The move is a transform: the
- * container keeps its width and the measurements their values.
+ * container keeps its width and the measurements their values. The row is the menu's box with its items: the header's
+ * main menu is narrower than its container (menu.css), and its items sit in its middle.
  * @return true when the row moved
  */
 BxDolMenuMoreAuto.prototype._balance = function()
@@ -498,8 +510,9 @@ BxDolMenuMoreAuto.prototype._balance = function()
         return this.getClientRects().length > 0;
     }) : $();
     if(aShown.length) {
-        var fLeft = Infinity;
-        var fRight = -Infinity;
+        var oMenuRect = eMenu.getBoundingClientRect();
+        var fLeft = oMenuRect.left;
+        var fRight = oMenuRect.right;
         aShown.each(function() {
             var oRect = this.getBoundingClientRect();
             fLeft = Math.min(fLeft, oRect.left);

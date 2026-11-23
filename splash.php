@@ -73,6 +73,10 @@ check_logged();
 
 $oTemplate = BxDolTemplate::getInstance();
 $oTemplate->setPageNameIndex(BX_PAGE_DEFAULT);
+
+// The splash is the guest's home page: the main menu marks Home as the current page, as on the home page itself
+// (BxBasePageHome) and in the apps.
+BxDolMenu::setSelectedGlobal('system', 'home');
 $oTemplate->setPageHeader(bx_replace_markers(_t('_sys_page_title_home'), array('site_title' => getParam('site_title'))));
 
 // The splash stands in for the home page: it has the home page's description, or the site's default one.

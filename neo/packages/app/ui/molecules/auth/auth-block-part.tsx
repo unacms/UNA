@@ -33,8 +33,10 @@ export default function AuthBlockPart({ auth }: Readonly<{ auth?: AuthBlockData 
     const forgot = auth.forgot?.url && !appSetting('forms', 'sys_login')?.forgot_password_link ? auth.forgot : null
     if (!showMethods && !link && !forgot) return null
 
+    // 14px over it and the block content's 2px gap (`u-block-content`): 16px under the form, as the site's link to the
+    // other form (.sys-lf-join, mt-4).
     return (
-        <View className="w-full gap-4 pt-4">
+        <View className="w-full gap-4 pt-3.5">
             {forgot ? (
                 <Link className="mx-auto" variant="accent" size="sm" href={forgot.url} haptics="Medium">
                     {forgot.action}

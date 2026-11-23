@@ -159,8 +159,9 @@ export const settingsLayout = {
             content_right_align: { start: 'web:lg:flex-1 web:lg:min-w-max', center: 'web:lg:flex-1 web:lg:min-w-max', end: '' },
             // The widest the main menu's bar gets, in px; null for no limit (it then takes all the room between the
             // logo and the actions, and is centred on the header only when all its tabs fit). The fit counts with it:
-            // tabs that don't fit in it go under More.
-            menu_max_width: 800,
+            // tabs that don't fit in it go under More. 768 (Tailwind's max-w-3xl, 48rem), as UNA's site
+            // (.bx-ti-menu .bx-inline-smenu-main in Artificer's general.css).
+            menu_max_width: 768,
             /**
              * The header's width and the main menu's place, as UNA's Designer sets them per page layout (Designer >
              * Settings > Header) and sends them with each page (`header`; lib/header-layout.ts). null follows UNA; a

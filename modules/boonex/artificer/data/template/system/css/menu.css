@@ -142,6 +142,24 @@ li.bx-mi-hidden {
 #bx-toolbar .bx-header-menu-end ul.bx-menu-main {
     justify-content: flex-end;
 }
+/* The header's main menu: its row is as wide as its tabs, 48rem (max-w-3xl) at most, as NEO's bar
+   (layout.header.menu_max_width). Tabs that don't fit go under More (BxDolMenuMoreAuto counts with the max-width), and
+   the row then takes all the width it may have (bx-mma-more) with its tabs in its middle. It sits at the start, in the
+   middle or at the end of its room (16px from the logo and the toolbar, _page_toolbar.html) by the header's alignment;
+   in the middle _balance moves it towards the header's middle as far as the room allows. */
+#bx-toolbar .bx-ti-menu ul.bx-menu-main {
+    width: fit-content;
+    max-width: 48rem;
+}
+#bx-toolbar .bx-ti-menu ul.bx-menu-main.bx-mma-more {
+    width: 100%;
+}
+#bx-toolbar .bx-header-menu-center .bx-ti-menu ul.bx-menu-main {
+    margin-inline: auto;
+}
+#bx-toolbar .bx-header-menu-end .bx-ti-menu ul.bx-menu-main {
+    margin-inline-start: auto;
+}
 
 /*--- Page Submenu ---*/
 .bx-menu-main-submenu {

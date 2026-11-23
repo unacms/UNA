@@ -312,7 +312,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
                     </BlockContent>
                     {/* The block's footer: UNA's notice under the content (the terms a form's visitor agrees to). */}
                     {footerHtml ? (
-                        <BlockFooter isPad={bIsShowPadding} padSize={block.padding_size} className="mt-4 border-t border-button pt-4 items-center justify-center">
+                        <BlockFooter isPad={bIsShowPadding} padSize={block.padding_size} className="border-t border-button pt-4 items-center justify-center">
                             <BlockNotice html={footerHtml} />
                         </BlockFooter>
                     ) : null}
