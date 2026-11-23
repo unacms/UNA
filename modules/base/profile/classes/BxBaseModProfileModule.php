@@ -118,6 +118,25 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         ));
     }
 
+    /**
+     * @see BxDolModule::serviceGetMacroServices
+     */
+    public function serviceGetMacroServices()
+    {
+        return array_merge(parent::serviceGetMacroServices(), [
+            'ProfileUnitSafe' => '',
+            'ProfileUrl' => '',
+            'BrowseRecommended' => '',
+            'BrowseRecentProfiles' => '',
+            'BrowseActiveProfiles' => '',
+            'BrowseTopProfiles' => '',
+            'BrowseOnlineProfiles' => '',
+            'BrowseConnections' => '',
+            'BrowseConnectionsEverywhere' => '',
+            'BrowseByAcl' => '',
+        ]);
+    }
+
     public function serviceModuleSample ()
     {
         return parent::serviceModuleSample() ?: '_sys_sample_profile';

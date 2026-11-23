@@ -102,7 +102,6 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'AccountSettingsInfo' => 'BxBaseServiceAccount',
             'ForgotPassword' => 'BxBaseServiceAccount',
             'SwitchProfile' => 'BxBaseServiceAccount',
-            'AccountProfileSwitcher' => 'BxBaseServiceAccount',
             'AccountProfilePromptSeen' => 'BxBaseServiceAccount',
             'OnboardingHide' => 'BxBaseServiceAccount',
             'EmailConfirmation' => 'BxBaseServiceAccount',
@@ -147,23 +146,13 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetCartItemsCount' => 'BxBasePaymentsServices',
             'GetOrdersCount' => 'BxBasePaymentsServices',
 
-            'Do' => 'BxBaseReportServices',
-            'GetPerformedBy' => 'BxBaseReportServices',
-
-            'Do' => 'BxBaseVoteServices',
-            'GetPerformedBy' => 'BxBaseVoteServices',
-
-            'Perform' => 'BxBaseFeatureServices',
-            
-            'Perform' => 'BxBaseFavoriteServices',
-            'GetPerformedBy' => 'BxBaseFavoriteServices',
-
-            'Perform' => 'BxBaseServiceConnections',
+            // a name allowed in several classes lists them all: each key appears once
+            'Do' => ['BxBaseReportServices', 'BxBaseVoteServices', 'BxBaseScoreServices'],
+            'GetPerformedBy' => ['BxBaseReportServices', 'BxBaseVoteServices', 'BxBaseScoreServices', 'BxBaseFavoriteServices'],
+            'Perform' => ['BxBaseFeatureServices', 'BxBaseFavoriteServices', 'BxBaseServiceConnections', 'BxBaseServiceRecommendations'],
             'GetCardState' => 'BxBaseServiceConnections',
-            'Perform' => 'BxBaseServiceRecommendations',
-            'GetDataApi' => 'BxBaseCmtsServices',
 
-            'GetDataApi' => 'BxBaseUploaderServices',
+            'GetDataApi' => ['BxBaseCmtsServices', 'BxBaseUploaderServices'],
             'GetUploadToken' => 'BxBaseUploaderServices',
 
             'GetStatBlock' => 'BxBaseDashboardServices',
@@ -189,6 +178,30 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetAiAgentChatThreads' => 'BxBaseServices',
             'GetAiAgentChatThread' => 'BxBaseServices',
             'GetMockupBlock' => 'BxBaseServices',
+        );
+    }
+
+    /**
+     * @see BxDolModule::serviceGetMacroServices
+     */
+    public function serviceGetMacroServices()
+    {
+        return array(
+            'Test' => 'BxBaseServiceLogin',
+            'LoginForm' => 'BxBaseServiceLogin',
+            'LoginFormOnly' => 'BxBaseServiceLogin',
+            'MemberAuthCode' => 'BxBaseServiceLogin',
+
+            'KeywordSearch' => 'BxBaseServicesSearch',
+            'KeywordsCloud' => 'BxBaseServiceMetatags',
+            'CategoriesList' => 'BxBaseServiceCategory',
+
+            'ProfileMembership' => 'BxBaseServiceProfiles',
+            'ProfileNotifications' => 'BxBaseServiceProfiles',
+            'GetCountOnlineProfiles' => 'BxBaseServiceProfiles',
+            'BrowseMembers' => 'BxBaseServiceProfiles',
+
+            'GetPerformedBy' => ['BxBaseReportServices', 'BxBaseVoteServices', 'BxBaseScoreServices', 'BxBaseFavoriteServices'],
         );
     }
 

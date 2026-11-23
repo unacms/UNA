@@ -239,13 +239,11 @@ class BxOAuthAPI extends BxDol
         if (!$sClass)
             $sClass = 'Module';
 
-        if (!BxDolRequest::serviceExists($sModule, $sMethod, $sClass))
+        if (!is_string($sModule) || !is_string($sMethod) || !is_string($sClass))
             return false;
 
-        if (!BxDolRequest::serviceExists($sModule, $sCheckMethod, 'system' == $sModule ? 'TemplServices' : $sClass))
-            return false;
-
-        return BxDolService::call($sModule, $sCheckMethod, array($sMethod), 'system' == $sModule ? 'TemplServices' : $sClass);
+        // the list names the class a method is allowed in, see BxDolService::isServiceListed
+        return 'is_public_service' == $sCheckMethod ? BxDolService::isPublicService($sModule, $sMethod, $sClass) : BxDolService::isSafeService($sModule, $sMethod, $sClass);
     }
     
 
@@ -301,11 +299,6 @@ class BxOAuthAPI extends BxDol
             return;
         }
         
-        if (!$bPublic) {
-            bx_login($oProfile->getAccountId(), false);
-            check_logged();
-        }
-
         $sModule = bx_get('module');
         $sMethod = bx_get('method');
 
@@ -319,7 +312,7 @@ class BxOAuthAPI extends BxDol
         if (!($sClass = bx_get('class')))
             $sClass = 'Module';
 
-        if (!preg_match('/^[A-Za-z0-9_]+$/', $sModule) || !preg_match('/^[A-Za-z0-9_]+$/', $sMethod) || !preg_match('/^[A-Za-z0-9_]+$/', $sClass)) {
+        if (!is_string($sModule) || !is_string($sMethod) || !is_string($sClass) || !preg_match('/^[A-Za-z0-9_]+$/', $sModule) || !preg_match('/^[A-Za-z0-9_]+$/', $sMethod) || !preg_match('/^[A-Za-z0-9_]+$/', $sClass)) {
             $this->errorOutput(500, 'error', 'Malformed request');
             return false;
         }
@@ -327,6 +320,17 @@ class BxOAuthAPI extends BxDol
         if (!BxDolRequest::serviceExists($sModule, $sMethod, $sClass)) {
             $this->errorOutput(404, 'not_found', 'Service was not found');
             return false;
+        }
+
+        // api/service and api/market reach here without the check actionCom makes
+        if (!getParam('sys_api_access_unsafe_services') && !$this->isPublicAPI($sModule, $sMethod, $sClass) && ($bPublic || !$this->isSafeAPI($sModule, $sMethod, $sClass))) {
+            $this->errorOutput(403, 'access_denied', 'Only "public" and "safe" services can be called');
+            return false;
+        }
+
+        if (!$bPublic) {
+            bx_login($oProfile->getAccountId(), false);
+            check_logged();
         }
 
         $mixedRet = BxDolService::callExternal($sModule, $sMethod, $aParams, $sClass);

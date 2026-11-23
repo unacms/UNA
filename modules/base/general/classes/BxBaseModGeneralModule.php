@@ -758,6 +758,30 @@ class BxBaseModGeneralModule extends BxDolModule
     }
 
     /**
+     * @see BxDolModule::serviceGetMacroServices
+     */
+    public function serviceGetMacroServices()
+    {
+        return array(
+            'ModuleIcon' => '',
+            'GetLink' => '',
+            'GetSearchResultUnit' => '',
+            'Browse' => '',
+            'BrowseFeatured' => '',
+            'BrowseFavorite' => '',
+            'GetBlockPollResults' => '',
+            'EntityTextBlock' => '',
+            'EntityInfo' => '',
+            'EntityInfoFull' => '',
+            'EntityInfoExtended' => '',
+            'EntityLocation' => '',
+            'EntityComments' => '',
+            'EntityAttachments' => '',
+            'CategoriesMultiList' => '',
+        );
+    }
+
+    /**
      * @page service Service Calls
      * @section bx_base_general Base General
      * @subsection bx_base_general-other Other
