@@ -137,18 +137,24 @@ class BxDonationsModule extends BxBaseModGeneralModule
     }
 
     /**
-     * A plan that is turned off can't be bought by new donors, so it isn't
-     * returned to them. Someone who already donates on it still gets it, so
-     * their subscription keeps renewing (Stripe, Credits) and their orders
-     * still show it. Payments already made are registered with _getCartItem,
-     * which returns it to anyone.
+     * A plan that is turned off can't be bought, so it isn't returned here.
      */
-    public function serviceGetCartItem($mixedItemId, $iClientId = 0)
+    public function serviceGetCartItem($mixedItemId)
     {
-        return $this->_getCartItem($mixedItemId, true, (int)$iClientId);
+        return $this->_getCartItem($mixedItemId, true);
     }
 
-    protected function _getCartItem($mixedItemId, $bActiveOnly, $iClientId = 0)
+    /**
+     * The plan of a subscription that already exists, read by the payments module
+     * when it renews one (BxPaymentSubscriptions::prolong). A plan that was turned
+     * off after the donor subscribed keeps renewing.
+     */
+    public function serviceGetSubscriptionItem($mixedItemId)
+    {
+        return $this->_getCartItem($mixedItemId, false);
+    }
+
+    protected function _getCartItem($mixedItemId, $bActiveOnly)
     {
     	$CNF = &$this->_oConfig->CNF;
 
@@ -160,10 +166,7 @@ class BxDonationsModule extends BxBaseModGeneralModule
             'value' => $mixedItemId
         ]);
 
-        if(empty($aItem) || !is_array($aItem))
-            return [];
-
-        if($bActiveOnly && (int)$aItem['active'] == 0 && (empty($iClientId) || !$this->_oDb->isEntry($iClientId, $aItem[$CNF['FIELD_ID']])))
+        if(empty($aItem) || !is_array($aItem) || ($bActiveOnly && (int)$aItem['active'] == 0))
             return [];
 
         return [

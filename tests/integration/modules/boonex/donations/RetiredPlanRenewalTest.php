@@ -1,9 +1,10 @@
 <?php
 
 /**
- * A donation plan that is turned off can't be bought by new donors any more, but
- * its current donors' subscriptions keep renewing, and a renewal the payment
- * provider has already charged for it (Stripe, Credits) is still recorded.
+ * A donation plan that is turned off can't be bought any more, but the subscriptions
+ * to it keep renewing (`get_subscription_item`, read by BxPaymentSubscriptions::prolong),
+ * and a renewal the payment provider has already charged for it (Stripe, Credits)
+ * is still recorded.
  * A plan named `test-retired-*` and its entries (order `test-retired-*`) are seeded
  * and deleted afterwards.
  */
@@ -65,22 +66,33 @@ class RetiredPlanRenewalTest extends BxDolIntegrationTestCase
         $this->assertSame(0, $this->_entries());
     }
 
-    public function testCurrentDonorStillGetsRetiredPlan()
+    public function testRetiredPlanIsStillASubscriptionItem()
     {
-        // renewals (BxPaymentSubscriptions::prolong) and order lists read the plan
-        // through get_cart_item with the buyer's id
-        $this->assertSame([], $this->_oModule->serviceGetCartItem($this->_iTypeId, self::CLIENT));
-
-        $this->_register();
-
-        $aItem = $this->_oModule->serviceGetCartItem($this->_iTypeId, self::CLIENT);
+        // BxPaymentSubscriptions::prolong reads the plan this way before it records a renewal
+        $aItem = $this->_oModule->serviceGetSubscriptionItem($this->_iTypeId);
         $this->assertIsArray($aItem);
         $this->assertEquals($this->_iTypeId, $aItem['id']);
         $this->assertEquals(1, (int)$aItem['period_recurring']);
+        $this->assertSame('month', $aItem['period_unit_recurring']);
 
-        // nobody else can start donating on it
-        $this->assertSame([], $this->_oModule->serviceGetCartItem($this->_iTypeId, self::CLIENT + 1));
-        $this->assertSame([], $this->_oModule->serviceGetCartItem($this->_iTypeId));
+        // even by someone who already donated on it, it can't be bought again
+        $this->_register();
+        $this->assertSame([], $this->_oModule->serviceGetCartItem($this->_iTypeId, self::CLIENT));
+    }
+
+    public function testPaymentsRenewalReadsRetiredPlan()
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_payment'))
+            $this->markTestSkipped('bx_payment is not installed');
+
+        $aModule = BxDolModuleQuery::getInstance()->getModuleByName('bx_donations');
+        $oPayment = BxDolModule::getInstance('bx_payment');
+
+        $this->assertSame([], $oPayment->callGetCartItem((int)$aModule['id'], [$this->_iTypeId, self::CLIENT]));
+
+        $aItem = $oPayment->callGetSubscriptionItem((int)$aModule['id'], [$this->_iTypeId, self::CLIENT]);
+        $this->assertIsArray($aItem);
+        $this->assertEquals($this->_iTypeId, $aItem['id']);
     }
 
     public function testActivePlanCanStillBeBought()
