@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { components } from 'app/components/registry'
-import { InformerStrip } from 'app/components/elements/informer'
+import { InformerStrip, useBelowInformerStrip } from 'app/components/elements/informer'
 import {
     Panel,
     PanelGroup,
@@ -183,6 +183,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const { feedUnit } = useLayoutSettings();
 
     const headerHeight = useHeaderHeight();
+    // The fixed side columns start under the informer strip while it is in view (layout.web.js).
+    const columnsTop = useBelowInformerStrip(headerHeight);
     const [sideBarWidth, setSideBarWidth] = useState(undefined);
     const [asideWidth, setAsideWidth] = useState(undefined);
 
@@ -325,8 +327,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const SideBarContent = (
         <View
             style={{
-                top: headerHeight,
-                height: `calc(100vh - ${headerHeight}px)`,
+                top: columnsTop,
+                height: `calc(100vh - ${columnsTop}px)`,
                 width: sideBarWidth,
             }}
             className="flex-auto p-4 gap-0.5 fixed overflow-scroll "
@@ -419,8 +421,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const AsidePanelContent = (
         <View
             style={{
-                top: headerHeight,
-                height: `calc(100vh - ${headerHeight}px)`,
+                top: columnsTop,
+                height: `calc(100vh - ${columnsTop}px)`,
                 width: asideWidth,
             }}
             className="fixed overflow-scroll p-4 gap-4"

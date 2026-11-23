@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
@@ -104,10 +105,43 @@ export function InformerStrip() {
         return null;
 
     return (
-        <View role="status" className="w-full">
+        <View role="status" id={STRIP_ID} className="w-full">
             {items.map((item, index) => <InformerMessage key={item.id || 'informer' + index} item={item} />)}
         </View>
     );
 }
 
 export default InformerStrip;
+
+const STRIP_ID = 'neo-informer-strip';
+
+/**
+ * Web: where content fixed to the window (Home's side columns) starts, `headerHeight` or under the informer strip while
+ * the strip is in view, as it scrolls away.
+ */
+export function useBelowInformerStrip(headerHeight: number): number {
+    const { currentUser } = useCurrentUser();
+    const count = visibleInformers(currentUser ? currentUser.informer : undefined, currentUser).length;
+    const [top, setTop] = useState(headerHeight);
+
+    useEffect(() => {
+        if (typeof document === 'undefined') return;
+        let frame = 0;
+        const update = () => {
+            frame = 0;
+            const strip = document.getElementById(STRIP_ID);
+            setTop(Math.max(headerHeight, strip ? Math.round(strip.getBoundingClientRect().bottom) : 0));
+        };
+        const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+        update();
+        window.addEventListener('scroll', schedule, { passive: true });
+        window.addEventListener('resize', schedule);
+        return () => {
+            if (frame) cancelAnimationFrame(frame);
+            window.removeEventListener('scroll', schedule);
+            window.removeEventListener('resize', schedule);
+        };
+    }, [headerHeight, count]);
+
+    return top;
+}
