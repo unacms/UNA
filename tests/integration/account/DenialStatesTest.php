@@ -107,7 +107,7 @@ class DenialStatesTest extends BxDolAccountTestCase
 
             $sInformer = $this->bxInformer();
             $this->assertStringContainsString('id="sys-account-profile-system"', $sInformer, 'A page with its usual content keeps the bar.');
-            $this->assertStringContainsString('bx-informer-wrapper bx-def-page-width', $sInformer, 'The bar sits in the page width and gutters.');
+            $this->assertStringContainsString('bx-informer-msg-cnt bx-def-page-width', $sInformer, 'The strip content sits in the page width and gutters.');
 
             MsgBox(['text' => 'Plain state', 'title' => 'Title']);
             $this->assertStringContainsString('id="sys-account-profile-system"', $this->bxInformer(), 'Another state leaves the bar.');

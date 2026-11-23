@@ -8,6 +8,7 @@ import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user';
 import { getNativeTabBarOverlayInset } from 'app/components/nav/tabs/tab-menu';
+import { InformerStrip } from 'app/components/elements/informer';
 
 /*
  * ============================================================================
@@ -270,6 +271,8 @@ export const TabScene = React.memo(function TabScene({
             handleEndReached={handleEndReached}
             onRefresh={onRefresh}
             uniListProps={uniListProps}
+            // The informer strip first, right under the page header and its tab row, as on the web.
+            listTop={<InformerStrip />}
         />
     )
 });
