@@ -5,8 +5,10 @@
  * AG Grid (Community, MIT) for a grid whose sys_objects_grid.engine is 'ag'.
  * Quartz is the legacy CSS theme: template/css/grid_ag.css restyles it.
  *
- * Every engine=ag grid uses the infinite row model: blocks load as the grid is
- * scrolled, there is no pager. Managed row dragging needs the client row model,
+ * An engine=ag grid uses the infinite row model: blocks load as the grid is
+ * scrolled, there is no pager. A grid whose rows open (expand) uses the client row
+ * model and loads all its rows: only that model lets one row grow and moves the rows
+ * under it down, the infinite one keeps every row as tall as the first. Managed row dragging needs the client row model,
  * so an order column is an unmanaged drag handle: the drop posts the same
  * reorder action the classic grid posts.
  *
@@ -48,6 +50,7 @@ function BxDolGridAg(oCfg, oBx) {
     // column is pinned, so a card is one piece. Phones keep the plain table.
     this._bCards = !!globalThis.matchMedia?.('(min-width: 768px)').matches;
     this._iRowGap = this._bCards ? 8 : 0;
+    this._bClient = !!this._oExpand;
 
     this._adoptBx();
     this._mount();
@@ -133,16 +136,12 @@ BxDolGridAg.prototype._mount = function () {
         suppressCellFocus: true,
         headerHeight: 44,
         rowHeight: this._iRowHeight + this._iRowGap,
-        rowModelType: 'infinite',
-        cacheBlockSize: this._iPerPage,
-        infiniteInitialRowCount: this._iPerPage,
         rowDragManaged: false,
         overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">' + this._esc(this._oCfg.empty || '') + '</span>',
-        datasource: {
-            getRows: (params) => this._getRows(params)
-        },
         onGridReady: (e) => {
             this._oApi = e.api;
+            if (this._bClient)
+                this._loadClient();
         },
         onSelectionChanged: () => this._syncChecks(),
         onModelUpdated: () => this._fitHeight()
@@ -151,8 +150,20 @@ BxDolGridAg.prototype._mount = function () {
     // name them, once the rows that just came into view are drawn.
     const fNameChecks = () => setTimeout(() => this._nameChecks(eGrid), 0);
 
-    if (this._oExpand)
+    if (this._bClient) {
+        oOptions.rowModelType = 'clientSide';
+        oOptions.rowData = [];
+        // The server sorts: a click on a header loads the rows again in the new order.
+        oOptions.onSortChanged = () => this._loadClient();
         oOptions.getRowHeight = (p) => this._rowHeight(p?.data);
+    } else {
+        oOptions.rowModelType = 'infinite';
+        oOptions.cacheBlockSize = this._iPerPage;
+        oOptions.infiniteInitialRowCount = this._iPerPage;
+        oOptions.datasource = {
+            getRows: (params) => this._getRows(params)
+        };
+    }
 
     if (this._hasKind('order'))
         oOptions.onRowDragEnd = (e) => this._onRowDragEnd(e);
@@ -375,7 +386,44 @@ BxDolGridAg.prototype._size = function (sWidth) {
 };
 
 BxDolGridAg.prototype.refresh = function () {
-    this._oApi?.purgeInfiniteCache?.();
+    if (this._bClient)
+        this._loadClient();
+    else
+        this._oApi?.purgeInfiniteCache?.();
+};
+
+/**
+ * Client row model: every row of the grid (with the filter and the sort of now), asked for
+ * 500 at a time until the total the server reports is here. Opened rows stay open.
+ */
+BxDolGridAg.prototype._loadClient = function () {
+    if (!this._oApi)
+        return;
+
+    const oCol = (this._oApi.getColumnState?.() || []).find((c) => c.sort);
+    const oSort = oCol ? { field: oCol.colId, dir: oCol.sort === 'desc' ? 'DESC' : 'ASC' } : { field: '', dir: 'ASC' };
+    const iPer = 500;
+    const aAll = [];
+    const iLoad = (this._iLoad || 0) + 1;
+    this._iLoad = iLoad;
+
+    const fLoad = (iStart) => {
+        this._fetch(iStart, iPer, oSort, (o) => {
+            if (iLoad !== this._iLoad)
+                return;
+            const a = o.data || [];
+            aAll.push(...a);
+            if (a.length && aAll.length < (Number.parseInt(o.total, 10) || 0)) {
+                fLoad(aAll.length);
+                return;
+            }
+            this._setTotal(o);
+            this._oApi.setGridOption('rowData', aAll);
+            this._oApi.resetRowHeights?.();
+            this._reloadExpanded();
+        });
+    };
+    fLoad(0);
 };
 
 BxDolGridAg.prototype._getRows = function (params) {

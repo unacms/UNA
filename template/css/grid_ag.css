@@ -199,9 +199,24 @@ html.dark .bx-grid-ag .ag-selection-checkbox input:focus-visible,
 }
 
 /* The grid's own cell wrapper (the row checkbox, the drag handle) is as tall as the row, so
-   what it holds sits on the row's middle line like every other cell. */
+   what it holds sits on the row's middle line like every other cell. The checkbox cell is a
+   flex box too: its wrapper is not always the cell's direct child. */
 .bx-grid-ag .ag-cell > .ag-cell-wrapper {
     height: 100%;
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-select {
+    display: flex;
+    align-items: center;
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-select .ag-cell-wrapper {
+    align-items: center;
+    height: 100%;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-cell.bx-grid-ag-select {
+    padding-left: 20px;
 }
 
 /* A row action the row does not allow now, as the classic grid greys it. */
