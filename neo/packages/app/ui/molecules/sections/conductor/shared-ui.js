@@ -507,6 +507,8 @@ const BLANK_PRELOAD = <View />
  * @param {Set}     [opts.leftColumnExcludedFromMainIds]  Blocks shown elsewhere.
  * @param {Function} [opts.onFormChangedValues]
  * @param {string}  [opts.leftColumnClassName]
+ * @param {string}  [opts.blockClassName]  Extra classes for the page blocks among the rows (web: the
+ *        navigator's 16px inset, see TabScene).
  * @param {boolean} [opts.isInited=true]   Route has its page JSON.
  * @param {boolean} [opts.listReady=true]  Query settled at least once.
  * @param {boolean} [opts.refreshing=false]
@@ -528,6 +530,7 @@ export function useListScene({
     leftColumnExcludedFromMainIds = null,
     onFormChangedValues,
     leftColumnClassName = 'gap-y-4',
+    blockClassName = '',
     isInited = true,
     listReady = true,
     refreshing = false,
@@ -548,10 +551,14 @@ export function useListScene({
     const routeIndex = route?.index
     const endpointUnit = route?.endpoint?.unit
     const endpointModule = route?.endpoint?.module
+    const paddings = paddingForList(usePageListEndpoint(route?.endpoint))
+    // Page blocks among the rows take `blockClassName` only where the list has no side margin of its own
+    // (notifications, timeline); a grid's margin (`padding_content`, m-2) already puts them 16px in.
+    const rowBlockClassName = /(^|\s)(\S+:)?m-/.test(paddings) ? '' : blockClassName
     const renderItem = useCallback(
         ({ item }) => (
             item?.type === 'block' ? (
-                <ItemRenderer route={route} item={item} />
+                <ItemRenderer route={route} item={item} blockClassName={rowBlockClassName} />
             ) : (
                 <ItemRenderer
                     unitType={unitType}
@@ -563,7 +570,7 @@ export function useListScene({
                 />
             )
         ),
-        [route, routeIndex, endpointUnit, endpointModule, unitType, unitMode]
+        [route, routeIndex, endpointUnit, endpointModule, unitType, unitMode, rowBlockClassName]
     )
 
     const skeletonKey = useMemo(
@@ -572,7 +579,6 @@ export function useListScene({
     )
 
     const layout = layoutForList(route?.endpoint)
-    const paddings = paddingForList(usePageListEndpoint(route?.endpoint))
 
     const Preload = useMemo(
         () => getSkeletonForList(skeletonKey, skeletonCount, true, layout, renderItem, paddings),
@@ -617,7 +623,8 @@ export function useListScene({
         return (
             <>
                 {blocksAboveGrid.map((item) => (
-                    <View key={item.id} className="w-full">{renderItem({ item })}</View>
+                    // Outside the list's margin: the blocks take the section's inset themselves.
+                    <View key={item.id} className="w-full"><ItemRenderer route={route} item={item} blockClassName={blockClassName} /></View>
                 ))}
                 {hasForm ? <ListForm route={route} onChange={onFormChangedValues} /> : null}
                 {hasLeftColumnItems ? (
@@ -634,6 +641,7 @@ export function useListScene({
         hasForm,
         hasLeftColumnItems,
         blocksAboveGrid,
+        blockClassName,
         renderItem,
         route,
         mobileLeftColumnItems,

@@ -515,6 +515,7 @@ export function Conductor({
                         fillViewport={isTasksHome}
                         isLeftColumnShown={isLeftColumnShown}
                         isRightColumnShown={isRightColumnShown}
+                        layoutName={layoutName}
                     />
                 </TabSceneColumns>
             </View>

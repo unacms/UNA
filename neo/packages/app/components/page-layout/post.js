@@ -662,7 +662,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     />
                 </>
             )}
-            <Panel {...centerPanelProps} sizes={{ base: centerBase, responsive: centerResponsive }} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
+            <Panel {...centerPanelProps} sizes={{ base: centerBase, responsive: centerResponsive }} className="mt-0.5 sm:m-0 sm:p-4 ">
                 {embedded ? (
                     <View className="w-full mx-auto">
                         <CommentsBrowse
@@ -735,9 +735,11 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     >
                         <View className="h-full w-full">
                             <View
+                                // 16px between the blocks, and from the center column's: the column takes back
+                                // the center's 16px padding (-ms-4) and keeps its own for the blocks' shadows.
                                 className={embedded
-                                    ? 'web:sticky top-0 w-full hidden sm:flex gap-3 lg:gap-4 mt-0.5 sm:m-0 sm:p-3 lg:p-4'
-                                    : 'web:sticky w-full hidden sm:flex gap-3 lg:gap-4 mt-0.5 sm:m-0 sm:p-3 lg:p-4 web:overflow-y-auto'}
+                                    ? 'web:sticky top-0 w-full hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4'
+                                    : 'web:sticky w-full hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4 web:overflow-y-auto'}
                                 style={embedded ? { top: 0 } : stickySidebarScrollStyle}
                             >
                                 {
