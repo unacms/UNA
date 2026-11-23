@@ -206,7 +206,8 @@ class StudioRoleChecksTest extends BxDolIntegrationTestCase
             $this->assertSame(3, (new BxTemplStudioStore())->checkAction()['code'], 'Store ' . $sAction . ' over GET is refused.');
         }
 
-        foreach (['block_delete', 'block_switch', 'page_delete', 'reorder'] as $sAction) {
+        // Other spellings reach the same methods (block__switch and BLOCK_SWITCH reach actionBlockSwitch), so they are changes too.
+        foreach (['block_delete', 'block_switch', 'page_delete', 'reorder', 'block__switch', 'BLOCK_SWITCH', 'block__delete', 'page__delete', 'Page_Delete', 'REORDER'] as $sAction) {
             $this->asGet(['bp_action' => $sAction, 'bp_type' => 'custom', 'bp_page' => 'no_such_page', 'id' => 0, 'field' => 'active', 'checked' => 0]);
             $this->assertSame(3, (new BxTemplStudioBuilderPage('custom', 'no_such_page'))->checkAction()['code'], 'Pages ' . $sAction . ' over GET is refused.');
         }
@@ -236,5 +237,44 @@ class StudioRoleChecksTest extends BxDolIntegrationTestCase
         $this->setStudioRole(BX_DOL_STUDIO_ROLE_OPERATOR);
         $this->asPost([$sPrefix . '_action' => 'uninstall', $sPrefix . '_value' => 'bx_no_such_app', 'csrf_token' => BxDolForm::getCsrfToken()]);
         $this->assertSame(BxDolStudioPage::getAccessDeniedError(), $oModule->checkAction(), 'Uninstalling is for app managers.');
+    }
+
+    /**
+     * An app's actions name the app they act on, which may not be the app whose page sent them: the role needs that app's type.
+     */
+    public function testAppActionsFollowTheRoleOfTheAppTheyName(): void
+    {
+        setParam('sys_security_form_token_enable', 'on');
+        $oDb = BxDolDb::getInstance();
+        $oDb->cleanMemoryAll();
+
+        $sTypesQuery = "SELECT `p`.`name`, `w`.`type` FROM `sys_std_pages` AS `p` INNER JOIN `sys_std_widgets` AS `w` ON `w`.`page_id` = `p`.`id` INNER JOIN `sys_modules` AS `m` ON `m`.`name` = `w`.`module` WHERE `w`.`module` <> 'system' AND `w`.`module` = `p`.`name` AND `w`.`type` <> '' ORDER BY `p`.`id`";
+        $aPages = $oDb->getPairs($sTypesQuery, 'name', 'type');
+        $sThrough = $sTarget = '';
+        foreach ($aPages as $sName => $sType) {
+            if ($sThrough === '')
+                $sThrough = $sName;
+            else if ($sType != $aPages[$sThrough]) {
+                $sTarget = $sName;
+                break;
+            }
+        }
+        if ($sTarget === '')
+            $this->markTestSkipped('The site has no two installed apps of different types.');
+
+        $this->setStudioRole(BX_DOL_STUDIO_ROLE_OPERATOR);
+        $this->revokeFromOperator('use ' . $aPages[$sTarget]);
+        $this->assertFalse(BxDolStudioRolesUtils::getInstance()->isPageAllowed($sTarget));
+        $this->assertTrue(BxDolStudioRolesUtils::getInstance()->isPageAllowed($sThrough));
+
+        $oModule = BxTemplStudioModule::getObjectInstance($sThrough, '');
+        $this->assertTrue($oModule->isAccessAllowed(), 'The page the request comes through is allowed.');
+        $sPrefix = (new ReflectionProperty($oModule, 'sParamPrefix'))->getValue($oModule);
+
+        // The read-only actions go first, so that a site without the check doesn't reach activate.
+        foreach (['context', 'settings', 'activate'] as $sAction) {
+            $this->asPost([$sPrefix . '_action' => $sAction, $sPrefix . '_value' => $sTarget, $sPrefix . '_widget_id' => 1, 'csrf_token' => BxDolForm::getCsrfToken()]);
+            $this->assertSame(BxDolStudioPage::getAccessDeniedError(), $oModule->checkAction(), $sAction . ' on an app the role may not use is refused.');
+        }
     }
 }
