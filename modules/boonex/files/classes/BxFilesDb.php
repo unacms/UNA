@@ -102,7 +102,11 @@ class BxFilesDb extends BxBaseModFilesDb
 
     public function moveFilesToFolder($aFiles, $iFolder) {
         $CNF = &$this->_oConfig->CNF;
-        $this->query("UPDATE `" . $CNF['TABLE_ENTRIES'] . "` SET `parent_folder_id` = {$iFolder} WHERE `" . $CNF['FIELD_ID'] . "` IN (".implode(',', $aFiles).")");
+        $aFiles = array_map('intval', $aFiles);
+        if (!$aFiles) return;
+        $this->query("UPDATE `" . $CNF['TABLE_ENTRIES'] . "` SET `parent_folder_id` = :folder WHERE `" . $CNF['FIELD_ID'] . "` IN (" . $this->implode_escape($aFiles) . ")", [
+            'folder' => (int)$iFolder,
+        ]);
     }
 
     public function getParentFolderId($iFolder) {

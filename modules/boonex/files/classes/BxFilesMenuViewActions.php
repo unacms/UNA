@@ -159,6 +159,7 @@ class BxFilesMenuViewActionsInline extends BxFilesMenuViewActions {
         $sJsObject = $this->_getJsObjectMenuTools();
         $aJsParams = [
             'sActionUrl' => BX_DOL_URL_ROOT.$this->_oTemplate->getModule()->_oConfig->getBaseUri(),
+            'csrf_token' => (string)BxDolForm::getCsrfToken(),
         ];
         $aResult['js_code'] .= $this->_oTemplate->_wrapInTagJsCode("if(!" . $sJsObject . ") {var " . $sJsObject . " = new BxFilesMenuTools(" . json_encode($aJsParams) . ");}");
 

@@ -319,21 +319,15 @@ class BxFilesModule extends BxBaseModFilesModule
     }
 
     public function actionBookmark($iContentId) {
-        if (!$this->isLogged()) return;
+        if (!$this->isLogged() || !$this->isActionRequestValid()) return;
 
-        $aFilesToBookmark = [];
-        if ($iContentId) $aFilesToBookmark = [$iContentId];
-        elseif (isset($_POST['bulk'])) $aFilesToBookmark = $_POST['bulk'];
+        $iProfileId = bx_get_logged_profile_id();
+        foreach ($this->getActionContentIds($iContentId) as $iContentId) {
+            $aData = $this->_oDb->getContentInfoById($iContentId);
+            if (!$aData || $this->checkAllowedView($aData) !== CHECK_ACTION_RESULT_ALLOWED) continue;
 
-        if ($aFilesToBookmark)
-            foreach ($aFilesToBookmark as $iContentId) {
-                if ($iContentId <= 0) continue;
-
-                $aData = $this->_oDb->getContentInfoById((int)$iContentId);
-                if (!$aData) continue;
-
-                $this->_oDb->bookmarkFile((int)$iContentId, bx_get_logged_profile_id());
-            }
+            $this->_oDb->bookmarkFile($iContentId, $iProfileId);
+        }
     }
 
     public function actionEntryPreview($iContentId) {
@@ -413,6 +407,8 @@ class BxFilesModule extends BxBaseModFilesModule
         setlocale(LC_ALL,'C.UTF-8'); //otherwise pathinfo returns empty string on a non-latin characters filenames
 
         if (isset($_POST['title'])) {
+            if (!$this->isActionRequestValid()) exit;
+
             if ($sNewTitle = bx_get('title')) {
                 $sExt = pathinfo($aData[$CNF['FIELD_TITLE']], PATHINFO_EXTENSION);
                 if ($sExt) $sExt = '.'.$sExt;
@@ -426,9 +422,10 @@ class BxFilesModule extends BxBaseModFilesModule
 
 
         $sActionUrl = BX_DOL_URL_ROOT.$this->_oConfig->getBaseUri();
+        $sCsrfToken = bx_js_string((string)BxDolForm::getCsrfToken());
         echoJson([
             'eval' => "bx_prompt('"._t('_bx_files_form_entry_input_title')."', '".bx_js_string(pathinfo($aData[$CNF['FIELD_TITLE']], PATHINFO_FILENAME))."', function(val) {                
-                $.post('{$sActionUrl}entry_edit_title/{$iContentId}', {title: val.getValue()}, function(sTitle) {
+                $.post('{$sActionUrl}entry_edit_title/{$iContentId}', {title: val.getValue(), csrf_token: '{$sCsrfToken}'}, function(sTitle) {
                     if (sTitle)
                         $('.bx-file-entry[file_id=".$aData[$CNF['FIELD_ID']]."] .bx-files-filename a').html(sTitle);
                 });                
@@ -437,32 +434,28 @@ class BxFilesModule extends BxBaseModFilesModule
     }
 
     public function actionEntryDelete($iContentId) {
-        $aFilesToDelete = [];
-        if ($iContentId) $aFilesToDelete = [$iContentId];
-        elseif (isset($_POST['bulk'])) $aFilesToDelete = $_POST['bulk'];
+        if (!$this->isActionRequestValid()) {
+            echoJson(['message' => _t('_sys_txt_form_submission_error_csrf_expired')]);
+            exit;
+        }
 
-        if ($aFilesToDelete)
-            foreach ($aFilesToDelete as $iContentId) {
-                $iContentId = intval($iContentId);
-                if ($iContentId <= 0) continue;
-
-                $aData = $this->_oDb->getContentInfoById($iContentId);
-
-                $CNF = &$this->_oConfig->CNF;
-
-                if (!$aData) {
-                    echoJson(['message' => _t('_bx_files_txt_error')]);
-                    exit;
-                }
-
-                if ($this->checkAllowedDelete($aData, false) !== CHECK_ACTION_RESULT_ALLOWED) {
-                    continue;
-                }
-
-                $this->serviceDeleteEntity($iContentId);
+        $bBulk = isset($_POST['bulk']);
+        foreach ($this->getActionContentIds($iContentId) as $iContentId) {
+            $aData = $this->_oDb->getContentInfoById($iContentId);
+            if (!$aData) {
+                echoJson(['message' => _t('_bx_files_txt_error')]);
+                exit;
             }
 
-        if (!isset($_POST['bulk'])) {
+            if ($this->checkAllowedDelete($aData, false) !== CHECK_ACTION_RESULT_ALLOWED) {
+                continue;
+            }
+
+            $this->serviceDeleteEntity($iContentId);
+        }
+
+        if (!$bBulk) {
+            $iContentId = (int)$iContentId;
             echoJson([
                 'eval' => "
                     $('.bx-file-entry[file_id={$iContentId}]').fadeOut();
@@ -475,7 +468,7 @@ class BxFilesModule extends BxBaseModFilesModule
     }
 
     public function actionClearGhosts() {
-        if (!isLogged()) die;
+        if (!isLogged() || !$this->isActionRequestValid()) die;
 
         $oStorage = BxDolStorage::getObjectInstance($this->_oConfig->CNF['OBJECT_STORAGE']);
         if ($oStorage) {
@@ -491,12 +484,18 @@ class BxFilesModule extends BxBaseModFilesModule
         $iContext = intval(bx_get('context'));
         $iFolder = intval(bx_get('folder'));
 
-        if (!isLogged()) {
+        if (!isLogged() || !$this->isActionRequestValid()) {
             echoJson(['message' => _t('_Access denied')]);
             exit;
         }
 
         if ($this->checkAllowedAdd() != CHECK_ACTION_RESULT_ALLOWED || $iContext && !$this->serviceIsAllowedAddContentToContext($iContext)) {
+            echoJson(['message' => _t('_Access denied')]);
+            exit;
+        }
+
+        // new files may go only into a folder of the context they are uploaded to
+        if (!$this->isAllowedFolderInContext($iFolder, $iContext)) {
             echoJson(['message' => _t('_Access denied')]);
             exit;
         }
@@ -539,12 +538,12 @@ class BxFilesModule extends BxBaseModFilesModule
         $iFolder = intval(bx_get('current_folder'));
         $sName = trim(bx_get('name'));
 
-        if (!isLogged()) {
+        if (!isLogged() || !$this->isActionRequestValid()) {
             echoJson(['message' => _t('_Access denied')]);
             exit;
         }
 
-        if ($this->checkAllowedAdd() != CHECK_ACTION_RESULT_ALLOWED || $iContext && !$this->serviceIsAllowedAddContentToContext($iContext)) {
+        if ($this->checkAllowedAdd() != CHECK_ACTION_RESULT_ALLOWED || $iContext && !$this->serviceIsAllowedAddContentToContext($iContext) || !$this->isAllowedFolderInContext($iFolder, $iContext)) {
             echoJson(['message' => _t('_Access denied')]);
             exit;
         }
@@ -562,44 +561,60 @@ class BxFilesModule extends BxBaseModFilesModule
     }
 
     public function actionMoveFiles() {
-        $iContentId = intval(bx_get('file'));
+        if (!$this->isActionRequestValid()) {
+            echoJson(['message' => _t('_sys_txt_form_submission_error_csrf_expired')]);
+            exit;
+        }
 
-        $aFilesToMove = [];
-        if ($iContentId) $aFilesToMove = [$iContentId];
-        elseif (isset($_POST['bulk'])) $aFilesToMove = $_POST['bulk'];
-
-        $iContentId = reset($aFilesToMove);
-
-        $aData = $this->_oDb->getContentInfoById($iContentId);
-
-        if (!$aData) {
+        $aFilesToMove = $this->getActionContentIds(intval(bx_get('file')));
+        if (!$aFilesToMove) {
             echoJson(['message' => _t('_bx_files_txt_error')]);
             exit;
         }
 
         $CNF = &$this->_oConfig->CNF;
 
-        $iContext = $aData[$CNF['FIELD_ALLOW_VIEW_TO']] < 0 ? -$aData[$CNF['FIELD_ALLOW_VIEW_TO']] : $aData[$CNF['FIELD_AUTHOR']];
+        // every file must exist, be one the viewer may move, and sit in the same context as the first one
+        $iContext = false;
+        foreach ($aFilesToMove as $iFile) {
+            $aData = $this->_oDb->getContentInfoById($iFile);
+            if (!$aData) {
+                echoJson(['message' => _t('_bx_files_txt_error')]);
+                exit;
+            }
 
-        if (!isAdmin() && ($this->checkAllowedAdd() != CHECK_ACTION_RESULT_ALLOWED || !$this->serviceIsAllowedAddContentToContext($iContext))) {
-            echoJson(['message' => _t('_Access denied')]);
-            exit;
+            $iFileContext = $this->getFileContext($aData);
+            if ($iContext === false)
+                $iContext = $iFileContext;
+
+            if ($iFileContext != $iContext || !$this->isAllowedMove($aData)) {
+                echoJson(['message' => _t('_Access denied')]);
+                exit;
+            }
         }
 
         if (isset($_POST['move_to'])) {
             $iMoveTo = intval(bx_get('move_to'));
             if ($iMoveTo) {
                 $aDataMoveTo = $this->_oDb->getContentInfoById($iMoveTo);
-                if (!$aDataMoveTo) {
+                if (!$aDataMoveTo || $aDataMoveTo['type'] != 'folder') {
                     echoJson(['message' => _t('_bx_files_txt_error')]);
                     exit;
                 }
 
-                $iContextMoveTo = $aDataMoveTo[$CNF['FIELD_ALLOW_VIEW_TO']] < 0 ? -$aDataMoveTo[$CNF['FIELD_ALLOW_VIEW_TO']] : $aDataMoveTo[$CNF['FIELD_AUTHOR']];
-
-                if (!isAdmin() && ($this->checkAllowedAdd() != CHECK_ACTION_RESULT_ALLOWED || !$this->serviceIsAllowedAddContentToContext($iContextMoveTo))) {
+                if ($this->getFileContext($aDataMoveTo) != $iContext || !$this->isAllowedMove($aDataMoveTo)) {
                     echoJson(['message' => _t('_Access denied')]);
                     exit;
+                }
+
+                // a folder can't go into itself or into one of its subfolders
+                $aSeen = [];
+                for ($iParent = $iMoveTo; $iParent > 0 && !isset($aSeen[$iParent]); $iParent = (int)$this->_oDb->getParentFolderId($iParent)) {
+                    if (in_array($iParent, $aFilesToMove)) {
+                        echoJson(['message' => _t('_bx_files_txt_error')]);
+                        exit;
+                    }
+                    $aSeen[$iParent] = true;
                 }
             }
 
@@ -625,6 +640,84 @@ class BxFilesModule extends BxBaseModFilesModule
                 'options' => [],
             ],
         ]);
+    }
+
+    /**
+     * Ids of the files an action works on: the one in the URL, or the posted bulk list.
+     * Each id is an integer above zero, and each appears once.
+     */
+    public function getActionContentIds($iContentId = 0, $mixedBulk = null)
+    {
+        $iContentId = (int)$iContentId;
+        if ($iContentId > 0)
+            return [$iContentId];
+
+        if ($mixedBulk === null)
+            $mixedBulk = isset($_POST['bulk']) ? $_POST['bulk'] : [];
+
+        if (!is_array($mixedBulk))
+            return [];
+
+        $aResult = [];
+        foreach ($mixedBulk as $mixedId) {
+            if (!is_scalar($mixedId)) continue;
+            $iId = (int)$mixedId;
+            if ($iId > 0) $aResult[$iId] = $iId;
+        }
+
+        return array_values($aResult);
+    }
+
+    /**
+     * The profile a file belongs to: its context (group, space...) or its author.
+     */
+    public function getFileContext($aData)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        return (int)$aData[$CNF['FIELD_ALLOW_VIEW_TO']] < 0 ? -(int)$aData[$CNF['FIELD_ALLOW_VIEW_TO']] : (int)$aData[$CNF['FIELD_AUTHOR']];
+    }
+
+    /**
+     * Whether the viewer may move this file or folder, or move files into it:
+     * the author or a moderator, or anyone who may add files to the context it is in.
+     */
+    public function isAllowedMove($aData)
+    {
+        if (isAdmin() || $this->checkAllowedEdit($aData) === CHECK_ACTION_RESULT_ALLOWED)
+            return true;
+
+        $CNF = &$this->_oConfig->CNF;
+        if ((int)$aData[$CNF['FIELD_ALLOW_VIEW_TO']] >= 0)
+            return false;
+
+        return $this->checkAllowedAdd() === CHECK_ACTION_RESULT_ALLOWED && $this->serviceIsAllowedAddContentToContext($this->getFileContext($aData));
+    }
+
+    /**
+     * Whether the viewer may put files into this folder of a context (0 is the context's root).
+     * Without a context, files go into the viewer's own folders.
+     */
+    public function isAllowedFolderInContext($iFolder, $iContext)
+    {
+        if ((int)$iFolder == 0)
+            return true;
+
+        $aFolder = $this->_oDb->getContentInfoById((int)$iFolder);
+        if (!$aFolder || $aFolder['type'] != 'folder')
+            return false;
+
+        if ($this->getFileContext($aFolder) != ((int)$iContext ? (int)$iContext : (int)bx_get_logged_profile_id()))
+            return false;
+
+        return $this->isAllowedMove($aFolder);
+    }
+
+    /**
+     * File actions that change something take a POST with a valid CSRF token.
+     */
+    protected function isActionRequestValid()
+    {
+        return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && BxDolForm::isCsrfTokenValid((string)bx_get('csrf_token', 'post'), false);
     }
 
     public function serviceDeleteEntitiesByAuthor ($iProfileId) {

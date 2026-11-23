@@ -24,6 +24,11 @@ class BxSEMigModule extends BxBaseModGeneralModule
     }		
 	
 	public function actionStartTransfer($aModules){
+		if (!isAdmin()){
+			echo json_encode(array('code' => 2, 'message' => _t('_Access denied')));
+			exit;
+		}
+
 		if (empty($aModules)){
 			echo json_encode(array('code' => 1, 'message' => _t('_bx_se_migration_successfully_finished')));
 			exit;
