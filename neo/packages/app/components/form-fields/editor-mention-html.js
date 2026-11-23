@@ -120,20 +120,23 @@ const BARE_HOST_HREF_RE = new RegExp(
     'i'
 )
 const SAVE_ANCHOR_RE = /<a\b([^>]*)>/gi
-const SAVE_HREF_RE = /(\shref\s*=\s*)(["'])([^"']*)\2/i
+const SAVE_HREF_RE = /(\shref\s*=\s*)(?:"([^"]*)"|'([^']*)')/i
 
 // On save: give the editor's own links to bare domains an https:// scheme, as
 // linkifyHtml does for plain text. Mentions, hashtags, mailto:, paths and anchors
 // are left as they are.
 export function schemeBareLinks(html) {
-    if (!html || typeof html !== 'string' || html.indexOf('<a') === -1) return html
+    if (!html || typeof html !== 'string' || !/<a\b/i.test(html)) return html
     return html.replace(SAVE_ANCHOR_RE, (full, attrs) => {
         if (/(?:^|\s)class\s*=\s*["'][^"']*\b(?:bx-mention-link|bx-tag-link|bx-tag)(?![\w-])/i.test(attrs)) return full
         const m = attrs.match(SAVE_HREF_RE)
         if (!m) return full
-        const href = m[3].trim()
+        const quote = m[2] !== undefined ? '"' : "'"
+        const href = (m[2] ?? m[3]).trim()
         if (!BARE_HOST_HREF_RE.test(href)) return full
-        return `<a${attrs.replace(m[0], `${m[1]}${m[2]}https://${href}${m[2]}`)}>`
+        // Spliced by index: a "$" in the URL is text, not a replacement pattern.
+        const at = m.index
+        return full.slice(0, 2) + attrs.slice(0, at) + `${m[1]}${quote}https://${href}${quote}` + attrs.slice(at + m[0].length) + '>'
     })
 }
 

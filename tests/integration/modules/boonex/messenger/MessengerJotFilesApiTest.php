@@ -81,6 +81,17 @@ class MessengerJotFilesApiTest extends BxDolIntegrationTestCase
         $this->assertNotEmpty($aAttachment['mime_type']);
         $this->assertNotEmpty($aAttachment['url'], 'The attachment has a link to open.');
         $this->assertNotSame($iPng, $aAttachment['id']);
+
+        // The socket event carries no download link: anyone may listen to it.
+        $aBroadcast = (new BxMessengerServices())->serviceGetConvoMessages([
+            'lot' => $aLot[$CNF['FIELD_HASH']],
+            'jot' => $iJotId,
+            'load' => 'ids',
+            'broadcast' => true,
+        ]);
+        $aShared = $aBroadcast['jots'][0]['attachments'][0];
+        $this->assertSame('report.zip', $aShared['name']);
+        $this->assertSame('', $aShared['url']);
     }
 
     protected function bxModule(): BxMessengerModule

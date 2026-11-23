@@ -4646,6 +4646,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
                 'load' => 'ids',
                 'lot' => $sHash,
                 'jot' => $iJotId,
+                'broadcast' => true,
             ]),
         ]);
 

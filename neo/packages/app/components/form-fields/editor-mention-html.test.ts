@@ -122,6 +122,10 @@ test('a link the editor made from a bare domain saves with https://', () => {
         '<a target="_blank" rel="noopener" href="https://www.example.org/x?y=1">www.example.org/x</a>',
     );
     assert.equal(schemeBareLinks(`<a href='docs.unacms.com'>docs</a>`), `<a href='https://docs.unacms.com'>docs</a>`);
+    // An apostrophe in a double-quoted href, an uppercase tag from the HTML source, "$" in a URL.
+    assert.equal(schemeBareLinks(`<a href="example.com/it's">x</a>`), `<a href="https://example.com/it's">x</a>`);
+    assert.equal(schemeBareLinks('<A HREF="unacms.com">x</A>'), '<A HREF="https://unacms.com">x</A>');
+    assert.equal(schemeBareLinks('<a href="example.com/?q=$&amp;r=$1">x</a>'), '<a href="https://example.com/?q=$&amp;r=$1">x</a>');
 });
 
 test('links with a scheme, paths, mentions and hashtags keep their href', () => {

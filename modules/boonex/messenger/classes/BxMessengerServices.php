@@ -325,7 +325,7 @@ class BxMessengerServices extends BxDol
     /**
      * A file of a message as the apps show it: its name, type, size and link.
      * @param array $aFile row of the messenger storage table
-     * @param BxDolStorage|null $oStorageEngine the messenger storage object
+     * @param BxDolStorage|null $oStorageEngine the messenger storage object; null leaves the link empty
      */
     protected function _getFileApi($aFile, $oStorageEngine)
     {
@@ -479,6 +479,9 @@ class BxMessengerServices extends BxDol
 
         $iJot = isset($aOptions['jot']) ? (int)$aOptions['jot'] : 0;
         $iStart = isset($aOptions['start']) ? (int)$aOptions['start'] : 0;
+        // For a socket event, which anyone may listen to: attachments come without their links,
+        // which the apps then ask for as a participant.
+        $bBroadcast = !empty($aOptions['broadcast']);
 
         $iLotId = 0;
         if(isset($aOptions['lot']) && $aOptions['lot'])
@@ -593,7 +596,7 @@ class BxMessengerServices extends BxDol
                         if ($oStorage->isImageFile($aFile[$CNF['FIELD_ST_TYPE']]))
                             $aFiles[] = bx_api_get_image($sStorage, (int)$aFile[$CNF['FIELD_ST_ID']]);
                         else
-                            $aAttachments[] = $this->_getFileApi($aFile, $oStorageEngine);
+                            $aAttachments[] = $this->_getFileApi($aFile, $bBroadcast ? null : $oStorageEngine);
                     }
 
                 $aReactions = [];
@@ -750,7 +753,8 @@ class BxMessengerServices extends BxDol
                     $this->_pusherData('convo_' . $sLotHash, ['convo' => $iLotId, 'action' => 'edited', 'data' => $this->serviceGetConvoMessages([
                         'load' => 'ids',
                         'lot' => $sLotHash, 
-                        'jot' => $iMessageId
+                        'jot' => $iMessageId,
+                        'broadcast' => true
                     ])]);
 
                     return ['code' => 0, 'jot_id' => $iMessageId];

@@ -35,14 +35,29 @@ type JotItemProps = {
     onSavedChange?: (item: Jot, saved: boolean) => void;
 };
 
+/**
+ * The file's link. A message that arrived over the socket has none (anyone may listen there),
+ * so it is asked for, as a participant, when the file is opened.
+ */
+async function attachmentUrl(file: JotAttachment, jot: Jot): Promise<string> {
+    if (file.url) return file.url;
+    const params = JSON.stringify({ lot: jot.lot_id, jot: jot.id, load: 'ids' });
+    const result = await fetcher('/api.php?r=bx_messenger/get_convo_messages/Services&params=' + encodeURIComponent(params));
+    const jots: Jot[] = Array.isArray(result?.data?.jots) ? result.data.jots : [];
+    return jots[0]?.attachments?.find((item) => item.id == file.id)?.url || '';
+}
+
 /** A file of the message that isn't an image (zip, pdf ...): its name and size, opening its link. */
-function JotAttachmentRow({ file }: { file: JotAttachment }) {
+function JotAttachmentRow({ file, jot }: { file: JotAttachment; jot: Jot }) {
     const size = formatFileSize(file.size);
     return (
         <Pressable
             accessibilityRole="link"
             accessibilityLabel={size ? `${file.name}, ${size}` : file.name}
-            onPress={() => { if (file.url) Linking.openURL(file.url).catch(() => {}); }}
+            onPress={async () => {
+                const url = await attachmentUrl(file, jot).catch(() => '');
+                if (url) Linking.openURL(url).catch(() => {});
+            }}
             className="max-w-xs w-full rounded-xl bg-button web:hover:bg-button-hover px-3 py-2"
         >
             <Row className="items-center gap-x-3">
@@ -206,7 +221,7 @@ export default function JotItem({ item, handleReply, unreadCount = 0, onSavedCha
                         {aImg.length > 0 && <View className="max-w-xs w-full"><Carousel data={aImg} /></View>}
                         {item.attachments?.length ? (
                             <View className="gap-y-1 mt-1">
-                                {item.attachments.map((file) => <JotAttachmentRow key={file.id} file={file} />)}
+                                {item.attachments.map((file) => <JotAttachmentRow key={file.id} file={file} jot={item} />)}
                             </View>
                         ) : null}
                     </View>}
