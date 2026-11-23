@@ -487,6 +487,38 @@ class BxBasePage extends BxDolPage
     	return $aResult;
     }
 
+    /**
+     * The page's cover band for the apps, as the site draws it above the page's title and tabs (cover.html): the
+     * picture, else the template's art. None where the site draws no page cover: covers off in Studio > Designer >
+     * Cover, the page's cover off for this viewer, the home page (its own cover, `cover_home`) and the pages of an
+     * entry or a profile, whose cover is the entry's or the profile's (`cover_block`).
+     * @return array image (the page's cover picture, else the site's common cover; '' for none) and image_default
+     *         (the template's art for a cover without a picture: light and dark URLs); [] for no band
+     */
+    public function getPageCoverBandAPI()
+    {
+        $oCover = BxDolCover::getInstance();
+        if(!$oCover->isEnabled() || !$this->isPageCover() || $oCover->isCover())
+            return [];
+
+        if($this instanceof BxBasePageHome || isset($this->_aProfileInfo) || $this instanceof BxBaseModGeneralPageEntry)
+            return [];
+
+        $sImage = '';
+        if(($aCover = $this->getPageCoverImage()))
+            $sImage = (string)BxDolCover::getCoverImageUrl($aCover);
+
+        list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri($this->_oTemplate->getCode()));
+
+        return [
+            'image' => $sImage,
+            'image_default' => [
+                'light' => $sArtLight,
+                'dark' => $sArtDark,
+            ],
+        ];
+    }
+
     public function getPageCoverParams()
     {
         $aParams = [
@@ -753,6 +785,10 @@ class BxBasePage extends BxDolPage
         if($bIsAllowed) {
             $aCoverParams = $this->getPageCoverParams();
             $a['cover_title'] = isset($aCoverParams['title']) ? (string)$aCoverParams['title'] : '';
+
+            // The band UNA's cover draws above the page's title and tabs, for the apps to draw the same.
+            if(($aCoverBand = $this->getPageCoverBandAPI()))
+                $a['cover_band'] = $aCoverBand;
         }
     
         /**

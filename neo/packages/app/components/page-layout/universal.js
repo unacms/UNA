@@ -6,6 +6,7 @@ import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/page/resizable
 import { useBreakpoint } from 'app/context/measure';
 import Page from 'app/ui/molecules/page/page'
 import { PageTitle } from 'app/ui/molecules/page/page-title'
+import { PageCoverBand } from 'app/components/elements/covers/page-cover-band';
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome'
 
 const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
@@ -160,6 +161,8 @@ const PanelCell = memo(({ cell, withHandle, handleClassName, sizable, panelLine,
 export default function PageLayoutUniversal({ data, children, layoutName, pageClasses }) {
     return (
         <Page data={data}>
+            {/* The page's cover band above its title, as on the site (desktop). */}
+            <PageCoverBand data={data} />
             <PageContentUniversal data={data} layoutName={layoutName} pageClasses={pageClasses}>
                 {children}
             </PageContentUniversal>
