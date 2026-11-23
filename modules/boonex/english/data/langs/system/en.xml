@@ -575,6 +575,7 @@
 	<string name="_adm_bp_mi_page_layout"><![CDATA[Layout]]></string>
 	<string name="_adm_bp_mi_page_options"><![CDATA[Options]]></string>
 	<string name="_adm_bp_mi_page_seo"><![CDATA[SEO]]></string>
+	<string name="_adm_bp_mi_page_title"><![CDATA[Title]]></string>
 	<string name="_adm_bp_mi_page_visibility"><![CDATA[Visibility]]></string>
 	<string name="_adm_bp_scs_save"><![CDATA[Changes saved.]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Show on the site]]></string>
@@ -634,14 +635,15 @@
 	<string name="_adm_bp_txt_new_block_popup"><![CDATA[Add New Block]]></string>
 	<string name="_adm_bp_txt_page_cache_lifetime"><![CDATA[Cache]]></string>
 	<string name="_adm_bp_txt_page_cover"><![CDATA[Cover]]></string>
-	<string name="_adm_bp_txt_page_cover_image"><![CDATA[Custom Cover]]></string>
-        <string name="_adm_bp_txt_page_cover_title"><![CDATA[Custom Title]]></string>
+	<string name="_adm_bp_txt_page_cover_image"><![CDATA[Custom cover]]></string>
+        <string name="_adm_bp_txt_page_cover_title"><![CDATA[Custom title]]></string>
+        <string name="_adm_bp_txt_page_cover_title_info"><![CDATA[Replaces the page's or its section's name. Empty uses that name.]]></string>
         <string name="_adm_bp_txt_page_cover_0"><![CDATA[Disabled]]></string>
         <string name="_adm_bp_txt_page_cover_1"><![CDATA[Enabled for all]]></string>
         <string name="_adm_bp_txt_page_cover_2"><![CDATA[Enabled for visitors only]]></string>
         <string name="_adm_bp_txt_page_cover_3"><![CDATA[Enabled for members only]]></string>
         <string name="_adm_bp_txt_page_cover_hidden_on"><![CDATA[Cover hidden on]]></string>
-        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[On the screen sizes you pick, the page shows no cover and no page title, on the site and in the apps.]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[The cover stays off on the screen sizes you pick, on the site and in the apps. The page title has its own settings under Title.]]></string>
         <string name="_adm_bp_txt_page_inj_footer"><![CDATA[In Footer]]></string>
         <string name="_adm_bp_txt_page_inj_head"><![CDATA[In Head]]></string>
 	<string name="_adm_bp_txt_page_layout"><![CDATA[Layout]]></string>
@@ -653,6 +655,10 @@
         <string name="_adm_bp_txt_page_submenu"><![CDATA[Submenu]]></string>
 	<string name="_adm_bp_dsc_page_submenu"><![CDATA[Page submenu can be selected here]]></string>
 	<string name="_adm_bp_txt_page_title"><![CDATA[Display Name]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Title hidden on]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[The page title stays off on the screen sizes you pick, on the site and in the apps.]]></string>
+	<string name="_adm_bp_txt_page_title_show"><![CDATA[Title]]></string>
+	<string name="_adm_bp_txt_page_title_show_info"><![CDATA[The page's name, or its section's, above its tabs and blocks on the site, and in the header of the apps.]]></string>
 	<string name="_adm_bp_txt_page_title_system"><![CDATA[System Name]]></string>
 	<string name="_adm_bp_txt_page_type_id"><![CDATA[Type]]></string>
 	<string name="_adm_bp_dsc_page_type_id"><![CDATA[Page display type. Default value can be changed in Studio -> Designer -> Settings.]]></string>

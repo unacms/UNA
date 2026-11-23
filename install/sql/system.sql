@@ -6560,6 +6560,8 @@ CREATE TABLE IF NOT EXISTS `sys_objects_page` (
   `cover_image` int(11) NOT NULL DEFAULT '0',
   `cover_title` varchar(255) NOT NULL DEFAULT '',
   `cover_hidden_on` varchar(255) NOT NULL DEFAULT '',
+  `title_show` tinyint(4) DEFAULT NULL,
+  `title_hidden_on` varchar(255) DEFAULT NULL,
   `type_id` int(11) NOT NULL DEFAULT '1',
   `layout_id` int(11) NOT NULL,
   `sticky_columns` tinyint(4) NOT NULL DEFAULT '0',

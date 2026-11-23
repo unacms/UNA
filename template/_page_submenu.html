@@ -3,13 +3,15 @@
         <div class="bx-menu-main-bar-cnt -mb-px">
             <bx_injection:injection_top_menu_before />
             <div class="flex items-center h-full text-left">
-                <div class="relative flex-1 h-full">
+                <!-- The tabs scroll in their own column, so they never run under the tools and the add action at the row's end. -->
+                <div class="relative flex-1 min-w-0 h-full overflow-x-auto">
                     <div class="absolute w-full h-full">
                         <bx_menu:sys_site_submenu />
                     </div>
                 </div>
                 <div class="bx-menu-main-bar-tools flex-none self-stretch flex items-stretch z-0">
                     <bx_menu:sys_site_manage />
+                    __site_submenu_add__
                 </div>
             </div>
             <bx_injection:injection_top_menu_after />

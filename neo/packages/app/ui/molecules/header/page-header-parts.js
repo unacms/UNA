@@ -30,7 +30,7 @@ import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
 import { resolveHeaderLayout } from 'app/lib/header-layout';
 import { AppSidebarOpenButton } from 'app/ui/molecules/sidebar/app-sidebar';
-import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
+import { isPageTitleOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
     ' bg-card backdrop-blur-xl shadow-sm ';
@@ -282,17 +282,17 @@ export function usePageHeaderBase(pageData) {
     // tablets, so the logo is their way home there; members see it on Home and on desktop.
     const hasTabBar = !!currentUser && !(appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed);
     const isShowLogo = isDesktop || !hasTabBar || isHome;
-    // The page title follows the page's cover for this viewer (Studio → Pages → page → Cover); a
+    // The page title follows the page's title settings for this viewer (Studio → Pages → page → Title); a
     // page that passes `title` always shows it, one that draws its own heading sets
     // `showTitle={false}` (the splash, login and create-account pages are known from the page data,
     // before they mount). Desktop names the page in its top menu instead, and an error page
     // (403, 404) has no page to name.
     const isOwnHeading = useMemo(() => isOwnHeadingPage(pageData, !currentUser), [pageData, currentUser]);
-    // Cover hidden on this screen size (or in the apps, Studio's "Cover hidden on"): no title from it here.
-    const isCoverShown = isPageCoverShown(pageData?.cover, Boolean(currentUser))
-        && !isPageCoverHiddenOn(pageData?.cover_hidden_on, screenTier, !isWeb);
+    // Off for this viewer, or hidden on this screen size (in the apps, also "mobile app": Studio's "Title hidden on"),
+    // with or without the cover.
+    const isTitleOn = isPageTitleOn(pageData, Boolean(currentUser), screenTier, !isWeb);
     const isShowTitle = !isDesktop && !pageData?.page_status
-        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isCoverShown)));
+        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isTitleOn)));
     const isBackButton = header.backButton;
     // A section's page (it has a section menu) shows the section's icon before its name, as the desktop section header.
     const sectionIcon = useSectionIcon(pageData?.menu?.object ? pageData.menu : null, pageData?.uri);

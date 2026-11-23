@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Pages > page settings: a Title tab apart from Cover, and the Cover tab's words for the cover alone. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_bp_mi_page_title"><![CDATA[Title]]></string_add>
+    <string_add name="_adm_bp_txt_page_title_show"><![CDATA[Title]]></string_add>
+    <string_add name="_adm_bp_txt_page_title_show_info"><![CDATA[The page's name, or its section's, above its tabs and blocks on the site, and in the header of the apps.]]></string_add>
+    <string_add name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Title hidden on]]></string_add>
+    <string_add name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[The page title stays off on the screen sizes you pick, on the site and in the apps.]]></string_add>
+    <string_add name="_adm_bp_txt_page_cover_title_info"><![CDATA[Replaces the page's or its section's name. Empty uses that name.]]></string_add>
+    <string_upd name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[The cover stays off on the screen sizes you pick, on the site and in the apps. The page title has its own settings under Title.]]></string_upd>
+    <string_upd name="_adm_bp_txt_page_cover_title"><![CDATA[Custom title]]></string_upd>
+    <string_upd name="_adm_bp_txt_page_cover_image"><![CDATA[Custom cover]]></string_upd>
+</resources>

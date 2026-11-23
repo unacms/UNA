@@ -6,6 +6,7 @@
 </style>
 </bx_if:logged_in>
 <div class="bx-menu-toolbar-padding pt-16">
+    <bx_if:band>
     <div class="bx-cover-gap bx-def-centered bx-def-padding-leftright bx-def-page-width bx-def-box-sizing">
         <div class="bx-cover-wrapper __class__ bx-def-cover-color-bg" <bx_if:bg>style="background-image:url(__image_url__)"</bx_if:bg>>
             <div class="bx-cover-gradient"></div>
@@ -26,4 +27,13 @@
             </div>
         </div>
     </div>
+    </bx_if:band>
+    <bx_if:title_only>
+        <div class="bx-cover-title bx-def-centered bx-def-padding-leftright bx-def-page-width bx-def-box-sizing __title_class__">
+            <h1 class="bx-def-margin-sec-topbottom bx-def-font-h1">__title__</h1>
+        </div>
+    </bx_if:title_only>
+    <bx_if:title_sr>
+        <h1 class="sr-only __class__">__title__</h1>
+    </bx_if:title_sr>
 </div>

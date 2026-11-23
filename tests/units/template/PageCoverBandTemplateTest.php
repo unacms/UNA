@@ -34,7 +34,8 @@ class PageCoverBandTemplateTest extends BxDolTestCase
         $this->assertStringNotContainsString('__title__', $sBand);
         $this->assertStringNotContainsString('<h1', $sBand);
         $this->assertStringNotContainsString('bx-cover-gradient', $sHtml, 'no scrim: nothing to keep readable on the picture');
-        $this->assertSame(2, substr_count($sHtml, '<h1'), 'one heading per title variant, both after the band');
+        $this->assertSame(3, substr_count($sHtml, '<h1'), 'one heading per title variant and one for screen readers where the title is off or hidden, all after the band');
+        $this->assertStringContainsString('<h1 class="sr-only __class__">__title__</h1>', $sHtml);
     }
 
     public function testTheBandIsAsHighAndShowsOnTheSameScreensOnTheSiteAndInTheApps(): void
@@ -46,7 +47,7 @@ class PageCoverBandTemplateTest extends BxDolTestCase
         $this->assertStringContainsString(' h-44 ', $sNeo);
 
         $sPhp = self::read('template/scripts/BxBaseCover.php');
-        $this->assertStringContainsString("'band_class' => \$bTitle ? 'hidden lg:block' : ''", $sPhp);
+        $this->assertStringContainsString("if(\$bTitle)\n            \$aBandClasses[] = 'hidden lg:block';", $sPhp);
         $this->assertStringContainsString('hidden lg:flex', $sNeo);
     }
 

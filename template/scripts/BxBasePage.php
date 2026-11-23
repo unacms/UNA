@@ -395,7 +395,7 @@ class BxBasePage extends BxDolPage
      */
     protected function _setBlockTitleAsHeading($aBlock, $sCode)
     {
-        if($this->_bHeadingBlock || $this->isPageCover())
+        if($this->_bHeadingBlock || $this->isPageTitle())
             return $sCode;
 
         $sPageTitle = mb_strtolower(trim(strip_tags($this->_getPageTitle())));
@@ -414,22 +414,71 @@ class BxBasePage extends BxDolPage
 
     public function isPageCover()
     {
-        $bResult = false;
-        switch((int)$this->_aObject['cover']) {
+        return self::isShownToViewer($this->_aObject['cover'], isLogged());
+    }
+
+    /**
+     * Whether a part of the page set to one of Studio's audiences (Cover, Title) shows to this viewer.
+     * @param mixed $mixedMode 0 disabled, 1 enabled for all, 2 for guests only, 3 for members only; true or false
+     *        where a page sets it in code (setPageCover)
+     * @param bool $bMember the viewer is signed in
+     * @return bool
+     */
+    public static function isShownToViewer($mixedMode, $bMember)
+    {
+        if(is_bool($mixedMode))
+            return $mixedMode;
+
+        switch((int)$mixedMode) {
             case 1: //--- Enabled for all
-                $bResult = true;
-                break;
+                return true;
 
             case 2: //--- Enabled for visitors only
-                $bResult = !isLogged();
-                break;
+                return !$bMember;
 
             case 3: //--- Enabled for members only
-                $bResult = isLogged();
-                break;
+                return (bool)$bMember;
         }
 
-    	return $bResult;
+        return false;
+    }
+
+    /**
+     * Who sees the page's title (Studio > Pages > page > Title), as `cover`: 0 disabled, 1 all, 2 guests, 3 members.
+     * A page whose title was never set (NULL, as every page before the title had settings of its own) follows its
+     * cover: the title shows where the cover shows, to the same viewers, and not where covers are off in Studio >
+     * Designer > Cover.
+     * @return mixed the mode, or the cover's (an int, or a bool a page set in code); 0 where it follows a cover that
+     *         is off for the whole site
+     */
+    public function getPageTitleMode()
+    {
+        if(isset($this->_aObject['title_show']) && $this->_aObject['title_show'] !== '')
+            return (int)$this->_aObject['title_show'];
+
+        return BxDolCover::getInstance()->isEnabled() ? $this->_aObject['cover'] : 0;
+    }
+
+    /**
+     * Whether the page shows its title to this viewer (Studio > Pages > page > Title), with or without its cover.
+     * @return bool
+     */
+    public function isPageTitle()
+    {
+        return self::isShownToViewer($this->getPageTitleMode(), isLogged());
+    }
+
+    /**
+     * The screen sizes the page's title is hidden on (Studio > Pages > page > Title hidden on), BX_DB_HIDDEN_* bits as
+     * the cover's. A page whose title was never set follows its cover's.
+     * @return int
+     */
+    public function getPageTitleHiddenOn()
+    {
+        if(isset($this->_aObject['title_hidden_on']))
+            return (int)$this->_aObject['title_hidden_on'];
+
+        return $this->getPageCoverHiddenOn();
     }
 
     /**
@@ -615,13 +664,25 @@ class BxBasePage extends BxDolPage
                 $aParams = $aCoverParams;
         }
 
-        if(!empty($this->_aObject['cover_title'])) {
-            $sCoverTitle = _t($this->_aObject['cover_title']);
-            if($sCoverTitle && strcmp($sCoverTitle, $this->_aObject['cover_title']) != 0)
-                $aParams['title'] = $sCoverTitle;
-        }
+        $aParams['title'] = self::getCustomTitle(isset($aParams['title']) ? $aParams['title'] : '', isset($this->_aObject['cover_title']) ? $this->_aObject['cover_title'] : '');
 
     	return $aParams;
+    }
+
+    /**
+     * The page's title with its custom title (Studio > Pages > page > Title > Custom title, `cover_title`): the custom
+     * one where it has a translation in the viewer's language, else the page's or its section's own.
+     * @param string $sTitle the page's or its section's title
+     * @param string $sCustomKey the custom title's language key, '' for none
+     * @return string
+     */
+    public static function getCustomTitle($sTitle, $sCustomKey)
+    {
+        if(empty($sCustomKey))
+            return $sTitle;
+
+        $sCustom = _t($sCustomKey);
+        return $sCustom && strcmp($sCustom, $sCustomKey) != 0 ? $sCustom : $sTitle;
     }
 
     /**
@@ -792,8 +853,13 @@ class BxBasePage extends BxDolPage
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
             'cover' => $this->_aObject['cover'],
-            // Where the cover (and so the page title) is hidden: phone, tablet, desktop, mobile-app.
+            // Where the cover is hidden: phone, tablet, desktop, mobile-app.
             'cover_hidden_on' => self::getHiddenOnNamesAPI($this->getPageCoverHiddenOn()),
+            // Who sees the page's title, as `cover` (0 none, 1 all, 2 guests, 3 members), apart from the cover; a page
+            // whose title was never set gets its cover's.
+            'title_show' => $this->getPageTitleMode(),
+            // Where the page's title is hidden: phone, tablet, desktop, mobile-app.
+            'title_hidden_on' => self::getHiddenOnNamesAPI($this->getPageTitleHiddenOn()),
             'menu_top' => '',
             'menu' => '',
             'menu_bottom' => '',
@@ -1173,7 +1239,7 @@ class BxBasePage extends BxDolPage
      */
     protected function _setHeadingBlockByContent($aCodes)
     {
-        if($this->_bHeadingBlock || $this->isPageCover())
+        if($this->_bHeadingBlock || $this->isPageTitle())
             return;
 
         foreach($aCodes as $sCode) {
