@@ -54,7 +54,7 @@ class SearchPageLayoutParityTest extends BxDolTestCase
     public function testNeoFormColumnIsAPlainBlock(): void
     {
         $s = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
-        $this->assertStringContainsString("const isPlain = layoutName != 'profile' && !hasSectionNav && !hasMenuBlocks", $s, 'No repeated section title, icon or Add button without a section nav or menus.');
+        $this->assertStringContainsString("const isPlain = layoutName != 'profile' && !isSectionSidebar && !hasMenuBlocks", $s, 'No repeated section title, icon or Add button without a section nav or menus.');
         $this->assertStringContainsString('mt-0.5 sm:mt-0 sm:-me-4 sm:p-4 ${appSetting(\'conductor\', \'sidebar_container\')}', $s, 'The blocks alone, placed as the right column\'s.');
 
         $sIndex = self::read('neo/packages/app/ui/molecules/sections/conductor/index.web.js');

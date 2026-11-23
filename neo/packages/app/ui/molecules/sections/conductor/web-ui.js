@@ -1034,8 +1034,11 @@ export const LeftColumnContainer = ({
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const addMenuItems = getAddMenuItems(menu, 'hideInSideBar', currentUser)
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" style="bordered" />
-    const hasSectionNav = layoutName == 'navigator' && getMenuSectionNav(menu) === 'sidebar' && routes.length > 1
-    const isPlain = layoutName != 'profile' && !hasSectionNav && !hasMenuBlocks
+    // A section whose menu asks for a sidebar keeps its panel (title and Add) even with one page: its tab row is
+    // hidden from lg, so the panel is where those are.
+    const isSectionSidebar = layoutName == 'navigator' && getMenuSectionNav(menu) === 'sidebar'
+    const hasSectionNav = isSectionSidebar && routes.length > 1
+    const isPlain = layoutName != 'profile' && !isSectionSidebar && !hasMenuBlocks
     // Profile has its name in the cover already — no title row here.
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     const sectionIcon = useSectionIcon(menu, undefined, routes)
