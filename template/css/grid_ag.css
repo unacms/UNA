@@ -17,6 +17,15 @@
     overflow: clip;
 }
 
+/* In Studio the grid is the content of a Studio block, which is the frame: the grid draws no
+   card of its own inside it, as the classic grid draws none. */
+.bx-std .bx-grid-ag-wrap {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
 .bx-grid-ag-wrap .bx-grid-header {
     border-bottom: 1px solid #f4f4f5;
 }
