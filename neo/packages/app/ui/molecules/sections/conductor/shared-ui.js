@@ -749,7 +749,11 @@ function ListBody({
             refreshing={refreshing}
         />
     )
-    const renderRows = (rows) => rows.map((item) => <View key={item.id} className="w-full">{scene.renderItem({ item })}</View>)
+    // The page's blocks outside the results block: no list margin around them there, so they take the
+    // column's inset themselves (scene.renderItem leaves it to the list's margin where it has one).
+    const renderRows = (rows) => rows.map((item) => (
+        <View key={item.id} className="w-full"><ItemRenderer route={route} item={item} blockClassName={scene.blockClassName} /></View>
+    ))
 
     return (
         <>
