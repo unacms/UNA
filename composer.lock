@@ -4909,16 +4909,16 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "8.14.0",
+            "version": "8.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "481281c74d44aac21e045792ef28b8af69f75686"
+                "reference": "5c40955d6591ce4276fd423da8d4b6fb45fe4a7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/481281c74d44aac21e045792ef28b8af69f75686",
-                "reference": "481281c74d44aac21e045792ef28b8af69f75686",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/5c40955d6591ce4276fd423da8d4b6fb45fe4a7b",
+                "reference": "5c40955d6591ce4276fd423da8d4b6fb45fe4a7b",
                 "shasum": ""
             },
             "require": {
@@ -4957,9 +4957,9 @@
             ],
             "support": {
                 "issues": "https://github.com/twilio/twilio-php/issues",
-                "source": "https://github.com/twilio/twilio-php/tree/8.14.0"
+                "source": "https://github.com/twilio/twilio-php/tree/8.14.1"
             },
-            "time": "2026-11-05T07:54:55+00:00"
+            "time": "2026-11-17T09:50:22+00:00"
         },
         {
             "name": "typesense/typesense-php",
