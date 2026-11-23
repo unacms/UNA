@@ -5,6 +5,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import UniList from 'app/ui/atoms/unilist'
 import { BlockByName, BlockByData } from 'app/components/block'
+import { BlockWrapper } from 'app/components/block-wrapper'
 import { decodeTextNode, findElementById, hasNonEmptyContent, isWeb } from 'app/lib/util'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
@@ -688,6 +689,7 @@ export function useListScene({
         isEmpty,
         feedType,
         emptyState,
+        blockClassName,
     }
 }
 
@@ -720,34 +722,55 @@ function ListBody({
     // the page's comes from the block's Studio override: later requests have no block to ask.
     const pageEmptyState = route?.endpoint?.empty_state
     const emptyState = pageEmptyState?.custom ? pageEmptyState : (scene.emptyState ?? pageEmptyState)
+    const shell = route?.endpoint?.block
     const noContent = NoContent
-        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} />
+        ? <NoContent endpoint={route?.endpoint} preview={scene.skeletonPreview} previewScale={skeletonPreviewScale(scene.skeletonKey)} state={emptyState} fromSkeletons={sawSkeletons} fill={!shell || !!headerInList} />
         : null
     const emptyFooter =
         headerInList && scene.showNoContent && noContent
             ? noContent
             : (uniListProps.ListFooterComponent ?? null)
 
+    const list = (
+        <UniList
+            {...uniListProps}
+            ListHeaderComponent={headerInList ? scene.chrome : undefined}
+            data={scene.rows}
+            route={route}
+            unit={route?.endpoint?.unit}
+            endpoint={route?.endpoint}
+            layout={scene.layout}
+            renderItem={scene.renderItem}
+            preloadComponent={preloadComponent}
+            ListFooterComponent={emptyFooter}
+            refer={listRef}
+            onEndReached={handleEndReached}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+        />
+    )
+    // A search's results sit in their block, as on the site: title, background, padding, the empty
+    // state inside. Only once there is something to show: before a search there is no block. Web only
+    // (the apps' list scrolls the whole screen, its header is the list's own).
+    const inShell = !headerInList && !!shell && (!scene.isEmpty || scene.showNoContent || wantsPreload)
+
     return (
         <>
             {!headerInList ? scene.chrome : null}
-            <UniList
-                {...uniListProps}
-                ListHeaderComponent={headerInList ? scene.chrome : undefined}
-                data={scene.rows}
-                route={route}
-                unit={route?.endpoint?.unit}
-                endpoint={route?.endpoint}
-                layout={scene.layout}
-                renderItem={scene.renderItem}
-                preloadComponent={preloadComponent}
-                ListFooterComponent={emptyFooter}
-                refer={listRef}
-                onEndReached={handleEndReached}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-            />
-            {!headerInList && scene.showNoContent ? noContent : null}
+            {inShell ? (
+                // In the column's inset like the page's other blocks, 16px under the tabs as the side columns'.
+                <BlockWrapper block={shell} config={shell.config} listShell wrapperClassses={`w-full sm:pt-4 mb-0.5 sm:mb-4 ${scene.blockClassName}`}>
+                    {/* The grid spaces its cards 16px from its edges itself: inside the block's padding they
+                        sit at the padding, as the site's cards do. */}
+                    <View className="-m-4">{list}</View>
+                    {scene.showNoContent ? noContent : null}
+                </BlockWrapper>
+            ) : (
+                <>
+                    {list}
+                    {!headerInList && scene.showNoContent ? noContent : null}
+                </>
+            )}
         </>
     )
 }

@@ -79,6 +79,9 @@ function BlockHeaderMenu({ menu, pathname }) {
 // `clip` is opt-in: tile/card shadows paint outside the content box, so blocks
 // never hide overflow by default. Inner scrollers own their own overflow.
 //
+// `listShell`: draw the block's shell (title, background, padding) around a list the caller renders,
+// a search's results (ListBody).
+//
 // `overlayHeader`: for content that scrolls edge to edge under its own chrome (the AI
 // agent chat). The block drops its padding and clips to its own corners, and the
 // header is not laid out above the content: `children` is called as
@@ -103,7 +106,7 @@ export function BlockWrapper(props) {
     )
 }
 
-function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, children }) {
+function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, listShell = false, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
@@ -170,8 +173,10 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
     const cssClasses = extraProps?.cssClasses || "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
 
+    // A list's own block draws no shell (the list is the content), unless the list asks for it
+    // (`listShell`: a search's results, see listBlockShell).
     const content_type = config?.content_type || block?.content?.[0]?.type
-    if ((content_type == 'browse' || content_type == 'browse_list'))
+    if ((content_type == 'browse' || content_type == 'browse_list') && !listShell)
         contentOnly = true;
 
     if (contentOnly) {
