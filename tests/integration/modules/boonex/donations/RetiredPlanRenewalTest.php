@@ -11,6 +11,7 @@ class RetiredPlanRenewalTest extends BxDolIntegrationTestCase
     const NAME = 'test-retired-plan';
     const ORDER = 'test-retired-sub';
     const CLIENT = 987654411;
+    const LICENSE = 'test-retired-license';
 
     protected $_oModule;
     protected $_oDb;
@@ -47,7 +48,7 @@ class RetiredPlanRenewalTest extends BxDolIntegrationTestCase
 
     public function testRenewalOfRetiredPlanIsRecorded()
     {
-        $aItem = $this->_oModule->serviceRegisterSubscriptionItem(self::CLIENT, $this->_oModule->_oConfig->getOwner(), $this->_iTypeId, 1, self::ORDER, 'test-retired-license');
+        $aItem = $this->_register();
 
         $this->assertIsArray($aItem);
         $this->assertEquals($this->_iTypeId, $aItem['id']);
@@ -57,9 +58,9 @@ class RetiredPlanRenewalTest extends BxDolIntegrationTestCase
 
     public function testRefundOfRetiredPlanIsRecorded()
     {
-        $this->_oModule->serviceRegisterSubscriptionItem(self::CLIENT, $this->_oModule->_oConfig->getOwner(), $this->_iTypeId, 1, self::ORDER, 'test-retired-license');
+        $this->_register();
 
-        $this->assertTrue($this->_oModule->serviceUnregisterSubscriptionItem(self::CLIENT, $this->_oModule->_oConfig->getOwner(), $this->_iTypeId, 1, self::ORDER, 'test-retired-license'));
+        $this->assertTrue($this->_oModule->serviceUnregisterSubscriptionItem(self::CLIENT, $this->_oModule->_oConfig->getOwner(), $this->_iTypeId, 1, self::ORDER, self::LICENSE));
         $this->assertSame(0, $this->_entries());
     }
 
@@ -70,6 +71,11 @@ class RetiredPlanRenewalTest extends BxDolIntegrationTestCase
         $aItem = $this->_oModule->serviceGetCartItem($this->_iTypeId);
         $this->assertIsArray($aItem);
         $this->assertEquals($this->_iTypeId, $aItem['id']);
+    }
+
+    protected function _register()
+    {
+        return $this->_oModule->serviceRegisterSubscriptionItem(self::CLIENT, $this->_oModule->_oConfig->getOwner(), $this->_iTypeId, 1, self::ORDER, self::LICENSE);
     }
 
     protected function _entries()

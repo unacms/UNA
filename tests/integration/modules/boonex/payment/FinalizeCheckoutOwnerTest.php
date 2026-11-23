@@ -10,6 +10,10 @@
  */
 class FinalizeCheckoutOwnerTest extends BxDolIntegrationTestCase
 {
+    const DATA = 'test-fin';
+    const SQL_OPTIONS = "FROM `bx_payment_user_values` AS `tuv` INNER JOIN `bx_payment_providers_options` AS `tpo` ON `tuv`.`option_id`=`tpo`.`id` WHERE `tuv`.`user_id`=:user_id AND `tpo`.`name` LIKE 'strp\\_v3\\_%'";
+    const SQL_REPLACE = "REPLACE INTO `bx_payment_user_values` SET `user_id`=:user_id, `option_id`=:option_id, `value`=:value";
+
     protected $_oModule;
     protected $_oDb;
     protected $_iSeller = 0;
@@ -39,7 +43,7 @@ class FinalizeCheckoutOwnerTest extends BxDolIntegrationTestCase
         $this->_oModule = BxDolModule::getInstance('bx_payment');
 
         $this->_cleanup();
-        $this->_aBackup = $this->_oDb->getAll("SELECT `tuv`.* FROM `bx_payment_user_values` AS `tuv` INNER JOIN `bx_payment_providers_options` AS `tpo` ON `tuv`.`option_id`=`tpo`.`id` WHERE `tuv`.`user_id`=:user_id AND `tpo`.`name` LIKE 'strp\\_v3\\_%'", ['user_id' => $this->_iSeller]);
+        $this->_aBackup = $this->_oDb->getAll("SELECT `tuv`.* " . self::SQL_OPTIONS, ['user_id' => $this->_iSeller]);
         $this->_clearOptions();
         $this->_seedOptions(['strp_v3_active' => 'on', 'strp_v3_mode' => '2', 'strp_v3_test_pub_key' => 'pk_test_x', 'strp_v3_test_sec_key' => 'sk_test_x']);
     }
@@ -50,7 +54,7 @@ class FinalizeCheckoutOwnerTest extends BxDolIntegrationTestCase
             $this->_cleanup();
             $this->_clearOptions();
             foreach ($this->_aBackup as $aRow)
-                $this->_oDb->query("REPLACE INTO `bx_payment_user_values` SET `user_id`=:user_id, `option_id`=:option_id, `value`=:value", [
+                $this->_oDb->query(self::SQL_REPLACE, [
                     'user_id' => $aRow['user_id'],
                     'option_id' => $aRow['option_id'],
                     'value' => $aRow['value']
@@ -140,7 +144,8 @@ class FinalizeCheckoutOwnerTest extends BxDolIntegrationTestCase
 
     protected function _pending($iClientId)
     {
-        $this->_oDb->query("INSERT INTO `bx_payment_transactions_pending` SET `client_id`=:client_id, `seller_id`=:seller_id, `type`='single', `provider`='stripe_v3', `items`='', `customs`='', `amount`=10, `currency`='USD', `order`='', `data`='test-fin', `date`=UNIX_TIMESTAMP()", [
+        $this->_oDb->query("INSERT INTO `bx_payment_transactions_pending` SET `client_id`=:client_id, `seller_id`=:seller_id, `type`='single', `provider`='stripe_v3', `items`='', `customs`='', `amount`=10, `currency`='USD', `order`='', `data`=:data, `date`=UNIX_TIMESTAMP()", [
+            'data' => self::DATA,
             'client_id' => $iClientId,
             'seller_id' => $this->_iSeller
         ]);
@@ -150,7 +155,7 @@ class FinalizeCheckoutOwnerTest extends BxDolIntegrationTestCase
 
     protected function _cleanup()
     {
-        $this->_oDb->query("DELETE FROM `bx_payment_transactions_pending` WHERE `data`='test-fin'");
+        $this->_oDb->query("DELETE FROM `bx_payment_transactions_pending` WHERE `data`=:data", ['data' => self::DATA]);
     }
 
     protected function _seedOptions($aValues)
@@ -158,7 +163,7 @@ class FinalizeCheckoutOwnerTest extends BxDolIntegrationTestCase
         $aOptions = $this->_oDb->getAll("SELECT `id`, `name` FROM `bx_payment_providers_options` WHERE `name` LIKE 'strp\\_v3\\_%'");
         foreach ($aOptions as $aOption)
             if (isset($aValues[$aOption['name']]))
-                $this->_oDb->query("REPLACE INTO `bx_payment_user_values` SET `user_id`=:user_id, `option_id`=:option_id, `value`=:value", [
+                $this->_oDb->query(self::SQL_REPLACE, [
                     'user_id' => $this->_iSeller,
                     'option_id' => $aOption['id'],
                     'value' => $aValues[$aOption['name']]
@@ -167,6 +172,6 @@ class FinalizeCheckoutOwnerTest extends BxDolIntegrationTestCase
 
     protected function _clearOptions()
     {
-        $this->_oDb->query("DELETE `tuv` FROM `bx_payment_user_values` AS `tuv` INNER JOIN `bx_payment_providers_options` AS `tpo` ON `tuv`.`option_id`=`tpo`.`id` WHERE `tuv`.`user_id`=:user_id AND `tpo`.`name` LIKE 'strp\\_v3\\_%'", ['user_id' => $this->_iSeller]);
+        $this->_oDb->query("DELETE `tuv` " . self::SQL_OPTIONS, ['user_id' => $this->_iSeller]);
     }
 }
