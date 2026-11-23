@@ -109,6 +109,22 @@ class BxFilesDb extends BxBaseModFilesDb
         ]);
     }
 
+    /**
+     * Moves in one context take turns, so two moves can't each put a folder into the other.
+     */
+    public function lockFolderMoves($iContext, $iTimeout = 10) {
+        return (int)$this->getOne("SELECT GET_LOCK(:name, :timeout)", [
+            'name' => 'bx_files_move_' . (int)$iContext,
+            'timeout' => (int)$iTimeout,
+        ]) === 1;
+    }
+
+    public function unlockFolderMoves($iContext) {
+        $this->getOne("SELECT RELEASE_LOCK(:name)", [
+            'name' => 'bx_files_move_' . (int)$iContext,
+        ]);
+    }
+
     public function getParentFolderId($iFolder) {
         $CNF = &$this->_oConfig->CNF;
         return $this->getOne("SELECT `parent_folder_id` FROM `" . $CNF['TABLE_ENTRIES'] . "` WHERE `" . $CNF['FIELD_ID'] . "` = :folder", [
@@ -167,15 +183,18 @@ class BxFilesDb extends BxBaseModFilesDb
         $aFolder = $this->getContentInfoById($iFolder);
         if (!$aFolder) return $aPath;
 
+        // stops at a folder it has seen already, so a loop in the parents can't hang the page
+        $aSeen = [];
         do {
+            $aSeen[(int)$aFolder[$CNF['FIELD_ID']]] = true;
             $aPath[] = [
                 'folder' => $aFolder[$CNF['FIELD_ID']],
                 'name' => $aFolder[$CNF['FIELD_TITLE']],
             ];
 
-            if (!$aFolder['parent_folder_id']) break;
+            if (!$aFolder['parent_folder_id'] || isset($aSeen[(int)$aFolder['parent_folder_id']])) break;
             $aFolder = $this->getContentInfoById($aFolder['parent_folder_id']);
-        } while (true);
+        } while ($aFolder);
 
         return array_reverse($aPath);
     }

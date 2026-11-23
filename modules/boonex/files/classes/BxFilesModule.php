@@ -606,19 +606,34 @@ class BxFilesModule extends BxBaseModFilesModule
                     echoJson(['message' => _t('_Access denied')]);
                     exit;
                 }
-
-                // a folder can't go into itself or into one of its subfolders
-                $aSeen = [];
-                for ($iParent = $iMoveTo; $iParent > 0 && !isset($aSeen[$iParent]); $iParent = (int)$this->_oDb->getParentFolderId($iParent)) {
-                    if (in_array($iParent, $aFilesToMove)) {
-                        echoJson(['message' => _t('_bx_files_txt_error')]);
-                        exit;
-                    }
-                    $aSeen[$iParent] = true;
-                }
             }
 
-            $this->_oDb->moveFilesToFolder($aFilesToMove, $iMoveTo);
+            // the check and the move hold the context's lock, so another move can't change the parents in between
+            if (!$this->_oDb->lockFolderMoves($iContext)) {
+                echoJson(['message' => _t('_bx_files_txt_error')]);
+                exit;
+            }
+
+            // a folder can't go into itself or into one of its subfolders
+            $bLoop = false;
+            $aSeen = [];
+            for ($iParent = $iMoveTo; $iParent > 0 && !isset($aSeen[$iParent]); $iParent = (int)$this->_oDb->getParentFolderId($iParent)) {
+                if (in_array($iParent, $aFilesToMove)) {
+                    $bLoop = true;
+                    break;
+                }
+                $aSeen[$iParent] = true;
+            }
+
+            if (!$bLoop)
+                $this->_oDb->moveFilesToFolder($aFilesToMove, $iMoveTo);
+
+            $this->_oDb->unlockFolderMoves($iContext);
+
+            if ($bLoop) {
+                echoJson(['message' => _t('_bx_files_txt_error')]);
+                exit;
+            }
 
             echoJson([
                 'eval' => "                        

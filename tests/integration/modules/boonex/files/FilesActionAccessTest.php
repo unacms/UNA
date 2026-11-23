@@ -87,6 +87,27 @@ class FilesActionAccessTest extends BxDolIntegrationTestCase
         $this->assertFalse($this->_oModule->isAllowedFolderInContext($iOwnFolder, $this->_iOther), 'A folder of another context');
     }
 
+    public function testFolderPathStopsAtALoop()
+    {
+        $iA = $this->bxFile($this->_iUser, 'folder');
+        $iB = $this->bxFile($this->_iUser, 'folder');
+        $oDb = BxDolDb::getInstance();
+        $oDb->query("UPDATE `bx_files_main` SET `parent_folder_id` = :b WHERE `id` = :a", ['a' => $iA, 'b' => $iB]);
+        $oDb->query("UPDATE `bx_files_main` SET `parent_folder_id` = :a WHERE `id` = :b", ['a' => $iA, 'b' => $iB]);
+        $this->_oModule->_oDb->cleanMemoryAll();
+
+        $aPath = $this->_oModule->_oDb->getFolderPath($iA);
+        $this->assertSame([$iB, $iA], array_map('intval', array_column($aPath, 'folder')));
+    }
+
+    public function testFolderMovesInAContextTakeTurns()
+    {
+        $this->assertTrue($this->_oModule->_oDb->lockFolderMoves($this->_iUser));
+        $this->_oModule->_oDb->unlockFolderMoves($this->_iUser);
+        $this->assertTrue($this->_oModule->_oDb->lockFolderMoves($this->_iUser), 'The lock is released after a move.');
+        $this->_oModule->_oDb->unlockFolderMoves($this->_iUser);
+    }
+
     public function testChangesNeedPostWithCsrfToken()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
