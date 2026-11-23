@@ -34,6 +34,15 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         );
     }, [currentUser?.id, currentUser?.confirmed]);
 
+    // The informer strip (layout.web.js, conductor/native-ui.js) shows the viewer's informers: a refreshed profile
+    // ("This group is pending approval." after a status change) brings its own, which replace them.
+    const refreshedInformer = pageData?.user?.informer;
+    useEffect(() => {
+        if (!currentUser || !Array.isArray(refreshedInformer)) return;
+        if (JSON.stringify(refreshedInformer) !== JSON.stringify(currentUser.informer || []))
+            setCurrentUser({ informer: refreshedInformer });
+    }, [refreshedInformer]); // eslint-disable-line react-hooks/exhaustive-deps
+
     // When the current page was refetched after a connection change, apply it here.
     useEffect(() => {
         const pageUrl = pageData?.url;
