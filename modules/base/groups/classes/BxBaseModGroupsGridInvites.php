@@ -49,6 +49,14 @@ class BxBaseModGroupsGridinvites extends BxTemplGrid
         return parent::getCodeAPI($bForceReturn);
     }
 
+    public function performActionDelete()
+    {
+        if(($mixedCheck = $this->_oModule->checkAllowedInviteDelete()) !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_getActionResult(['msg' => $mixedCheck]);
+
+        return parent::performActionDelete();
+    }
+
     protected function _getCellName ($mixedValue, $sKey, $aField, $aRow)
     {
         $oProfile = BxDolProfile::getInstance($aRow['invited_profile_id']);
@@ -71,18 +79,16 @@ class BxBaseModGroupsGridinvites extends BxTemplGrid
 
     protected function _getActionDelete ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])
     {
-        $iLoggedId = bx_get_logged_profile_id();
-
-        $aCheck = checkActionModule($iLoggedId, 'delete invites', $this->_sContentModule, false);
-        if($aRow['author_profile_id'] != $iLoggedId && $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
+        if($aRow['author_profile_id'] != bx_get_logged_profile_id() && $this->_oModule->checkAllowedInviteDelete() !== CHECK_ACTION_RESULT_ALLOWED)
             return $this->_bIsApi ? [] : '';
 
         return parent::_getActionDelete($sType, $sKey, $a, $isSmall, $isDisabled, $aRow); 
     }
-    
+
     protected function _getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage)
     {
-        $this->_aOptions['source'] .= $this->_oModule->_oDb->prepareAsString(" AND `group_profile_id` = ?", (int)bx_get('profile_id'));
+        $this->_aOptions['source'] .= $this->_oModule->_oDb->prepareAsString(" AND `group_profile_id` = ?", $this->_iGroupProfileId);
+
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
     }
 }
