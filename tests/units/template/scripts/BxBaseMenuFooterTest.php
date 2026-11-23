@@ -130,6 +130,40 @@ class BxBaseMenuFooterTest extends BxDolTestCase
         $this->assertContains($aStarts[0], BxBaseMenuFooter::TOOLS, 'It is the first tool, not a link or the copyright.');
     }
 
+    public function testLinksAndToolsAreTwoGroups(): void
+    {
+        $aVars = $this->callProtected($this->footer(), '_getTemplateVars');
+        $aLinks = $aVars['bx_if:links']['content']['bx_repeat:menu_links'];
+        $aTools = $aVars['bx_if:tools']['content']['bx_repeat:menu_tools'];
+
+        $this->assertSame($aVars['bx_repeat:menu_items'], array_merge($aLinks, $aTools), 'Every item is in one group, in its order; the apps still get one list.');
+        $this->assertSame(!empty($aLinks), $aVars['bx_if:links']['condition']);
+        $this->assertSame(!empty($aTools), $aVars['bx_if:tools']['condition']);
+        $this->assertNotEmpty($aTools, 'The default footer has tools (the Powered by badge).');
+        $this->assertStringContainsString('bx-menu-footer-tools-start', $aTools[0]['class_add'], 'The tools group starts at the marked item.');
+        foreach ($aLinks as $aItem)
+            $this->assertNotContains($aItem['name'], BxBaseMenuFooter::TOOLS, 'No tool among the links.');
+
+        // The same layout as NEO's footer (MENU_FOOTER_CLASSES, FOOTER_SECTION_CLASSES): 24px between the groups,
+        // 16px within a group and between rows, the groups at the two ends from lg and centred below.
+        $sNeo = (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . 'neo/packages/app/components/nav/menu-footer.tsx');
+        $this->assertStringContainsString('justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-4', $sNeo);
+        $this->assertStringContainsString("'max-w-full flex-row flex-wrap items-center justify-center gap-4'", $sNeo);
+        foreach (['template/menu_footer.html', 'modules/boonex/artificer/data/template/system/menu_footer.html'] as $sFile) {
+            $s = (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile);
+            $this->assertStringContainsString('<div id="bx-menu-footer" class="bx-menu-object-__object__ flex flex-wrap items-center justify-center lg:justify-between gap-x-6 gap-y-4">', $s, $sFile);
+            $this->assertMatchesRegularExpression('/<bx_if:links>\s*<ul class="bx-menu-hor bx-menu-footer-links max-w-full flex flex-wrap items-center justify-center gap-4">\s*<bx_repeat:menu_links>/', $s, $sFile);
+            $this->assertMatchesRegularExpression('/<bx_if:tools>\s*<ul class="bx-menu-hor bx-menu-footer-tools max-w-full flex flex-wrap items-center justify-center gap-4">\s*<bx_repeat:menu_tools>/', $s, $sFile);
+        }
+    }
+
+    public function testPoweredByBadgeIsNotClipped(): void
+    {
+        // The logo's glyphs reach the edges of its viewBox, so a clipping box cuts the last letter's antialiased edge.
+        foreach (['template/css/menu.css', 'modules/boonex/artificer/data/template/system/css/menu.css'] as $sFile)
+            $this->assertMatchesRegularExpression('/#bx-menu-footer \.bx-menu-hor > li\.bx-menu-item-powered_by \.sys-icon-svg \{\s*width: auto;\s*overflow: visible;\s*\}/', (string)file_get_contents(BX_DIRECTORY_PATH_ROOT . $sFile), $sFile);
+    }
+
     public function testThePageYoureOnIsMarkedCurrent(): void
     {
         $oSelModule = new ReflectionProperty(BxDolMenu::class, 'SEL_MODULE');

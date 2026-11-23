@@ -85,6 +85,36 @@ class BxBaseMenuFooter extends BxTemplMenu
         return $bShort ? _t('_sys_txt_copyright_short', date('Y'), $sOwner) : _t('_sys_txt_copyright_full', date('Y'), rtrim($sOwner, '.'));
     }
 
+    /**
+     * Two groups, as in the apps' footer: the links and text up to the first tool (bx-menu-footer-tools-start), and
+     * the tools from it on. menu_footer.html draws each group as a list: from desktop width they sit at the two ends,
+     * on smaller screens each wraps as a whole, onto its own centred line when they don't fit side by side.
+     * The apps get the items as one list (getCodeAPI reads `bx_repeat:menu_items`).
+     */
+    protected function _getTemplateVars ()
+    {
+        $aVars = parent::_getTemplateVars();
+        if($this->_bIsApi || empty($aVars['bx_repeat:menu_items']))
+            return $aVars;
+
+        $aGroups = ['links' => [], 'tools' => []];
+        $sGroup = 'links';
+        foreach($aVars['bx_repeat:menu_items'] as $aItem) {
+            if(strpos($aItem['class_add'] ?? '', 'bx-menu-footer-tools-start') !== false)
+                $sGroup = 'tools';
+
+            $aGroups[$sGroup][] = $aItem;
+        }
+
+        foreach($aGroups as $sGroup => $aItems)
+            $aVars['bx_if:' . $sGroup] = [
+                'condition' => !empty($aItems),
+                'content' => ['bx_repeat:menu_' . $sGroup => $aItems],
+            ];
+
+        return $aVars;
+    }
+
     public function getMenuItems ()
     {
         $aItems = parent::getMenuItems();
