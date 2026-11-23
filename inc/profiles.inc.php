@@ -408,8 +408,9 @@ function bx_check_login_allowed($iAccountId)
     }
 
     // Admin can always login even if he is blocked/banned/suspended/etc
-    if (isAdmin($oAccount->id()))
+    if (isAdmin($oAccount->id())) {
         return '';
+    }
 
     $sErrorMsg = '';
     /**

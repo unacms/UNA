@@ -729,8 +729,9 @@ class BxBaseServiceAccount extends BxDol
                 $oForm->initChecker(['phone' => $sPhoneNumber]);
                 if ($oForm->isSubmittedAndValid()) {
                     $sPhoneNumber = trim($oForm->getCleanValue('phone'));
-                    if (!bx_sms_code_send_allowed($oAccount->id(), $sPhoneNumber))
+                    if (!bx_sms_code_send_allowed($oAccount->id(), $sPhoneNumber)) {
                         return MsgBox(_t('_sys_txt_sms_send_limit'));
+                    }
 
                     $sActivationCode = (string)random_int(100000, 999999);
                     $sActivationText =_t('_sys_txt_confirm_phone_sms_text', $sActivationCode);
@@ -784,8 +785,9 @@ class BxBaseServiceAccount extends BxDol
                     $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
                     if ($aCode['phone'] !== $a['phone']) {
                         $iOwnerId = (int)BxDolAccountQuery::getInstance()->getIdByPhone($aCode['phone']);
-                        if (($iOwnerId && $iOwnerId != $oAccount->id()) || !$oAccount->updatePhone($aCode['phone'], false, $a['phone'] === ''))
+                        if (($iOwnerId && $iOwnerId != $oAccount->id()) || !$oAccount->updatePhone($aCode['phone'], false, $a['phone'] === '')) {
                             return MsgBox(_t('_sys_form_confirm_phone_input_phone_error_not_unique'));
+                        }
                     }
 
                     $oAccount->updatePhoneConfirmed(true);
@@ -1214,8 +1216,9 @@ class BxBaseServiceAccount extends BxDol
         $sPasswordHash = encryptUserPwd($sPassword, $sSalt);
 
         $this->_oAccountQuery->logPassword($iAccountId);
-        if ((int)$this->_oAccountQuery->updatePassword($sPasswordHash, $sSalt, $iAccountId) > 0)
+        if ((int)$this->_oAccountQuery->updatePassword($sPasswordHash, $sSalt, $iAccountId) > 0) {
             bx_end_other_sessions($iAccountId, false);
+        }
 
         /**
          * @hooks

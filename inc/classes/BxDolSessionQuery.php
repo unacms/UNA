@@ -42,7 +42,7 @@ class BxDolSessionQuery extends BxDolDb
     /**
      * Save a session: create it or update it, or with $bInsert false only update a row that still exists.
      */
-    function save($sId, $aSet, $bInsert = true)
+    public function save($sId, $aSet, $bInsert = true)
     {
         $aSet['date'] = time();
         $aUpdate = $aSet;
@@ -55,11 +55,12 @@ class BxDolSessionQuery extends BxDolDb
 
         $this->updateLastActivity($sId);
 
+        $sUpdate = $this->arrayToSQL($aUpdate);
         if (!$bInsert) {
-            return (int)$this->query("UPDATE `" . $this->sTable . "` SET " . $this->arrayToSQL($aUpdate) . " WHERE `id` = :id", ['id' => $sId]) > 0;
+            return (int)$this->query("UPDATE `{$this->sTable}` SET {$sUpdate} WHERE `id` = :id", ['id' => $sId]) > 0;
         }
 
-        return (int)$this->query("INSERT INTO `" . $this->sTable . "` SET " . $this->arrayToSQL($aSet) . " ON DUPLICATE KEY UPDATE " . $this->arrayToSQL($aUpdate)) > 0;
+        return (int)$this->query("INSERT INTO `{$this->sTable}` SET " . $this->arrayToSQL($aSet) . " ON DUPLICATE KEY UPDATE {$sUpdate}") > 0;
     }
 	function update($sId, $aSet = array())
     {

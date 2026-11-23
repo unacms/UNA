@@ -397,8 +397,9 @@ class BxBaseServiceLogin extends BxDol
         if ($oForm->isSubmittedAndValid()) {
             $sNewPhoneNumber = $sPhoneNumber === '' ? trim($oForm->getCleanValue('phone')) : '';
             $sSendTo = $sPhoneNumber !== '' ? $sPhoneNumber : $sNewPhoneNumber;
-            if (!bx_sms_code_send_allowed($oAccount->id(), $sSendTo))
+            if (!bx_sms_code_send_allowed($oAccount->id(), $sSendTo)) {
                 return MsgBox(_t('_sys_txt_sms_send_limit'));
+            }
 
             $sActivationCode = (string)random_int(100000, 999999);
             $sActivationText =_t('_sys_txt_login_2fa_sms_text', $sActivationCode);
@@ -543,8 +544,9 @@ class BxBaseServiceLogin extends BxDol
         // The count of tries stays in sys_keys until it expires: a request that read the session before
         // this one still can't try a code more times than the count allows, and a right code sent twice signs in.
         $oSession = BxDolSession::getInstance();
-        foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE] as $sKey)
+        foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE] as $sKey) {
             $oSession->unsetValue($sKey);
+        }
     }
 
     /**
