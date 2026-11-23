@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, memo, useCallback } from 'react';
 import { appSetting, getBlocksFromData, getPageData, isWeb } from 'app/lib/util';
 import { useScreenTier } from 'app/context/measure';
 import { isPageCoverHiddenOn } from 'app/lib/page-cover';
-import { useFocusEffect } from 'app/lib/hooks/router'
+import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { patchCachedPageDataByUrl } from 'app/lib/cache/native-tab-page-cache';
@@ -35,13 +35,15 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     }, [currentUser?.id, currentUser?.confirmed]);
 
     // The informer strip (layout.web.js, conductor/native-ui.js) shows the viewer's informers: a refreshed profile
-    // ("This group is pending approval." after a status change) brings its own, which replace them.
+    // ("This group is pending approval." after a status change) brings its own, which replace them. Only while this
+    // page is the one on screen: the apps keep a profile mounted in a tab the viewer left.
     const refreshedInformer = pageData?.user?.informer;
+    const isFocused = useIsFocused();
     useEffect(() => {
-        if (!currentUser || !Array.isArray(refreshedInformer)) return;
+        if (!isFocused || !currentUser || !Array.isArray(refreshedInformer)) return;
         if (JSON.stringify(refreshedInformer) !== JSON.stringify(currentUser.informer || []))
             setCurrentUser({ informer: refreshedInformer });
-    }, [refreshedInformer]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [refreshedInformer, isFocused]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // When the current page was refetched after a connection change, apply it here.
     useEffect(() => {
