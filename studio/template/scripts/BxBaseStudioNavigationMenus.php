@@ -211,12 +211,16 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
             return array();
         }
 
+        // The opened row draws the items with the items grid's own columns and their captions.
+        $oItems = BxDolGrid::getObjectInstance($this->_sAgItemsObject, $this->_oTemplate);
+
         return array(
             'expand' => array(
                 'object' => $this->_sAgItemsObject,
                 'field_id' => 'id',
                 'set' => 'set_name',
                 'module' => 'module',
+                'columns' => $oItems && method_exists($oItems, 'getAgColumns') ? $oItems->getAgColumns() : array(),
             ),
         );
     }

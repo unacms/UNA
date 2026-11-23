@@ -511,7 +511,34 @@ BxDolGridAg.prototype._rowHeight = function (oData) {
     if (!this._oExpanded[sId])
         return iRow;
     const n = (this._oChildren[sId] || []).length || 1;
-    return iRow + n * this._iItemHeight + 8;
+    return iRow + this._itemsHeadHeight() + n * this._iItemHeight + 8;
+};
+
+/**
+ * An opened row shows a caption line over its items when the items come with their columns.
+ */
+BxDolGridAg.prototype._itemsHeadHeight = function () {
+    return this._oExpand?.columns?.length ? 36 : 0;
+};
+
+/**
+ * Width of one column of an opened row's items, as the grid sizes its own columns: a share for
+ * a percent, a fixed width for pixels and for the narrow controls (switches, actions).
+ */
+BxDolGridAg.prototype._itemFlex = function (oCol) {
+    if (oCol.kind === 'order')
+        return '0 0 52px';
+    if (Number(oCol.controls))
+        return oCol.name === 'actions' ? '0 0 168px' : '0 0 88px';
+
+    const s = String(oCol.width || '').trim();
+    let m = /^(\d+(?:\.\d+)?)%$/.exec(s);
+    if (m)
+        return (Number.parseFloat(m[1]) || 1) + ' 1 0';
+    m = /^(\d+(?:\.\d+)?)px$/.exec(s);
+    if (m)
+        return '0 0 ' + Number.parseFloat(m[1]) + 'px';
+    return '1 1 0';
 };
 
 BxDolGridAg.prototype._layoutRow = function (node) {
@@ -883,6 +910,20 @@ BxDolGridAgCell.prototype._childItems = function (params, oAg) {
     ePanel.className = 'bx-grid-ag-items';
     ePanel.style.top = (oAg._iRowGap / 2 + oAg._iRowHeight) + 'px';
 
+    const aCols = oAg._oExpand?.columns || [];
+    if (aCols.length) {
+        const eHead = document.createElement('div');
+        eHead.className = 'bx-grid-ag-item is-columns bx-grid-ag-items-head';
+        for (const oCol of aCols) {
+            const eCell = document.createElement('span');
+            eCell.className = 'bx-grid-ag-item-cell';
+            eCell.style.flex = oAg._itemFlex(oCol);
+            eCell.textContent = oCol.kind === 'order' ? '' : (oCol.title || '');
+            eHead.appendChild(eCell);
+        }
+        ePanel.appendChild(eHead);
+    }
+
     if (aItems.length) {
         for (const oItem of aItems)
             ePanel.appendChild(this._childRow(oItem, oAg, oMeta));
@@ -929,6 +970,27 @@ BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
         }
     };
     const oChild = { _oBx: oBx, _sFieldId: sField, _oCfg: oAg._oCfg };
+
+    // Every column of the items grid, in its order, under the captions of the line above.
+    const aCols = oAg._oExpand?.columns || [];
+    if (aCols.length) {
+        eRow.textContent = '';
+        eRow.classList.add('is-columns');
+        for (const oCol of aCols) {
+            if (oCol.kind === 'order') {
+                eHandle.style.flex = oAg._itemFlex(oCol);
+                eRow.appendChild(eHandle);
+                continue;
+            }
+            const eCell = document.createElement('span');
+            eCell.className = 'bx-grid-ag-item-cell' + (Number(oCol.controls) ? ' is-controls' : '');
+            eCell.style.flex = oAg._itemFlex(oCol);
+            this._draw(eCell, oItem[oCol.name], { data: oItem, colDef: { field: oCol.name, headerName: oCol.title || '' } }, oChild);
+            eRow.appendChild(eCell);
+        }
+        return eRow;
+    }
+
     for (const sSwitch of ['switcher', 'switcher_api']) {
         if (oItem[sSwitch]?.type === 'switcher')
             this._switch(eRow, oItem[sSwitch], { data: oItem, colDef: {} }, oChild);

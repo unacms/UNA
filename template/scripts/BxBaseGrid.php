@@ -1816,6 +1816,15 @@ class BxBaseGrid extends BxDolGrid
     }
 
     /**
+     * Columns of this grid as the AG config gives them, for a grid that draws this one's rows
+     * inside its own (a menu row opened onto its items).
+     */
+    public function getAgColumns()
+    {
+        return $this->_agColumns();
+    }
+
+    /**
      * Columns of the AG config: name, title, width, whether the column sorts, and its kind.
      */
     protected function _agColumns()

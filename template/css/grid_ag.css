@@ -313,6 +313,41 @@ html.dark .bx-grid-ag-chevron:hover,
     background: #fafafc;
 }
 
+/* An opened row's items in the items grid's columns, with a caption line like the grid's header. */
+.bx-grid-ag-item.is-columns {
+    gap: 0;
+    padding: 0 0.5rem 0 1.5rem;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0 0.5rem;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-cell.is-controls {
+    overflow: visible;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-cell .bx-grid-ag-actions {
+    justify-content: flex-end;
+}
+
+.bx-grid-ag-items-head {
+    height: 36px !important;
+    font-size: 13px;
+    font-weight: 500;
+    color: #71717a;
+}
+
+.bx-grid-ag-items-head .bx-grid-ag-item-cell {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .bx-grid-ag-item-empty {
     color: #71717a;
 }
