@@ -38,7 +38,6 @@ class BxBaseGrid extends BxDolGrid
     protected $_bAgSelect2 = false; ///< the filter selects of an engine 'ag' grid are select2 fields: only where the page styles select2 (Studio)
     protected $_iAgPerPageMax = 500; ///< the most rows one data_ag request returns (engine 'ag'), unless the grid's own page is larger
     protected $_aFilterAreaLabels = []; // filter name => accessible name (lang key or plain text); filter controls are rendered without a visible caption
-    protected $_sGridTemplate = 'grid.html';
 
     public function __construct ($aOptions, $oTemplate)
     {
@@ -389,7 +388,7 @@ class BxBaseGrid extends BxDolGrid
 
         $this->_addJsCss();
 
-        return $this->_oTemplate->parseHtmlByName($this->_sGridTemplate, $aVars);
+        return $this->_oTemplate->parseHtmlByName('grid.html', $aVars);
     }
 
     protected function _getJsCodeVars()
