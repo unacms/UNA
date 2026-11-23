@@ -75,6 +75,14 @@ class BxBaseCover extends BxDolCover
             'content' => array('title' => isset($aParams['title']) ? $aParams['title'] : ''),
         );
 
+        //--- A page's cover is a band of the picture or the template's art with no words on it, so no picture can
+        //--- hide them; the page's title follows it on the page: with the section's icon above the tabs of a section,
+        //--- as a plain heading above the blocks elsewhere. The band shows from desktop width: below it the title and
+        //--- tabs start the page, as in the apps, whose header holds them there. An entry's cover (no title) keeps
+        //--- its band on every screen.
+        if(empty($this->_aOptions))
+            $aParams = array_merge($aParams, $this->_getPageCoverTitleParams($aParams));
+
         /**
          * @hooks
          * @hookdef hook-system-display_cover 'system', 'display_cover' - hook to override page cover code to be output
@@ -104,6 +112,57 @@ class BxBaseCover extends BxDolCover
         return $this->_oTemplate->parseHtmlByName($this->_sTemplateName, $aParams); 
     }
     
+    /**
+     * The page cover's band and title (cover.html): `band_class` hides the band below desktop width where the page has
+     * a title, `bx_if:title_section` is the title of a section's page (its tabs show: the section's icon and name),
+     * `bx_if:title_page` that of any other page.
+     * @param array $aParams the cover's params (title, actions, bx_if:icon)
+     * @return array
+     */
+    protected function _getPageCoverTitleParams($aParams)
+    {
+        $sTitle = isset($aParams['title']) ? $aParams['title'] : '';
+        $bTitle = !empty($sTitle);
+
+        $bSection = false;
+        if($bTitle && ($oPage = BxDolPage::getObjectInstanceByURI()) !== false && $oPage->isVisiblePageSubmenu()) {
+            $oMenuSubmenu = BxDolMenu::getObjectInstance('sys_site_submenu');
+            $bSection = $oMenuSubmenu !== false && $oMenuSubmenu->isVisible();
+        }
+
+        $sIcon = '';
+        if($bSection && !empty($aParams['bx_if:icon']['condition']) && !empty($aParams['bx_if:icon']['content']['icon']))
+            $sIcon = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml($aParams['bx_if:icon']['content']['icon'], ['class' => 'size-8', 'aria-hidden' => 'true']);
+
+        $sActions = isset($aParams['actions']) ? $aParams['actions'] : '';
+
+        return [
+            'band_class' => $bTitle ? 'hidden lg:block' : '',
+            'bx_if:title_section' => [
+                'condition' => $bSection,
+                'content' => [
+                    'title' => $sTitle,
+                    'bx_if:section_icon' => [
+                        'condition' => $sIcon !== '',
+                        'content' => ['icon' => $sIcon],
+                    ],
+                    'actions' => $sActions,
+                ],
+            ],
+            'bx_if:title_page' => [
+                'condition' => $bTitle && !$bSection,
+                'content' => [
+                    'title' => $sTitle,
+                    'actions' => $sActions,
+                ],
+            ],
+            'bx_if:actions' => [
+                'condition' => !$bTitle,
+                'content' => ['actions' => $sActions],
+            ],
+        ];
+    }
+
     /**
      * Display Empty Cover.
      */

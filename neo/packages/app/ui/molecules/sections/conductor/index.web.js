@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
+import { PageCoverBand } from 'app/components/elements/covers/page-cover-band';
 import { View } from 'app/design/view'
 import {
     appSetting,
@@ -86,6 +87,8 @@ const LOCKED_COLUMN_STYLE = { top: 0, maxHeight: '100%' }
  * @param {string}   [props.keyword]         Search term; part of the list query key.
  * @param {Function} [props.prepareData]     Applied to the page JSON of a tab loaded on switch.
  * @param {string}   props.layoutName        'profile' | 'navigator' | …; drives chrome.
+ * @param {boolean}  [props.showCoverBand=true] Draw the page's cover band above the tab bar (a section's page; a
+ *                                            layout that draws its own above its title passes false).
  */
 export function Conductor({
     isCoverDisabled,
@@ -99,6 +102,7 @@ export function Conductor({
     keyword,
     layoutName,
     prepareData,
+    showCoverBand = true,
 }) {
     // Frozen at mount: busts the list cache once per page visit, so a browser
     // back/forward to the same URL refetches instead of showing stale rows.
@@ -484,6 +488,9 @@ export function Conductor({
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
             {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
             {hideTabs && data?.uri !== menuHub ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
+            {/* The page's cover band above the section's title and tabs, as on the site (desktop; not a profile,
+                whose cover is its own). */}
+            {showCoverBand && layoutName !== 'profile' && !data?.cover_block?.profile ? <PageCoverBand data={data} /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the

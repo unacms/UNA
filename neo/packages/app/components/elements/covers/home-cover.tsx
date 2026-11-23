@@ -65,7 +65,7 @@ const BUTTON_STYLES: Record<'picture' | 'plain', { primary: NeoButtonStyle; othe
 };
 
 /** The template's art for a cover without a picture: its light version, and its dark one in dark mode. */
-function CoverArt({ light, dark }: Readonly<{ light?: string; dark?: string }>) {
+export function CoverArt({ light, dark }: Readonly<{ light?: string; dark?: string }>) {
     if (!light && !dark) return null;
     const lightSrc = light || dark || '';
     const darkSrc = dark || light || '';
