@@ -749,33 +749,43 @@ function ListBody({
             refreshing={refreshing}
         />
     )
-    // The page's blocks outside the results block: no list margin around them there, so they take the
-    // column's inset themselves (scene.renderItem leaves it to the list's margin where it has one).
-    const renderRows = (rows) => rows.map((item) => (
-        <View key={item.id} className="w-full"><ItemRenderer route={route} item={item} blockClassName={scene.blockClassName} /></View>
-    ))
-
     return (
         <>
             {!headerInList ? scene.chrome : null}
             {inShell ? (
-                <>
-                    {renderRows(rowsBefore)}
-                    {/* In the column's inset like the page's other blocks, 16px under the tabs as the side columns'. */}
-                    <BlockWrapper block={shell} config={shell.config} listShell wrapperClassses={`w-full sm:pt-4 mb-0.5 sm:mb-4 ${scene.blockClassName}`}>
-                        {/* The grid spaces its cards 16px from its edges itself: inside the block's padding they
-                            sit at the padding, as the site's cards do. */}
-                        <View className="-m-4">{list}</View>
-                        {scene.showNoContent ? noContent : null}
-                    </BlockWrapper>
-                    {renderRows(rowsAfter)}
-                </>
+                <ResultsShell route={route} scene={scene} shell={shell} rowsBefore={rowsBefore} rowsAfter={rowsAfter} noContent={noContent}>
+                    {list}
+                </ResultsShell>
             ) : (
                 <>
                     {list}
                     {!headerInList && scene.showNoContent ? noContent : null}
                 </>
             )}
+        </>
+    )
+}
+
+/**
+ * A search's results in their block (useResultsShell), with the page's other blocks before and after it.
+ * Those take the column's inset themselves: no list margin around them there (scene.renderItem leaves
+ * it to the list's margin where it has one).
+ */
+function ResultsShell({ route, scene, shell, rowsBefore, rowsAfter, noContent, children }) {
+    const renderRows = (rows) => rows.map((item) => (
+        <View key={item.id} className="w-full"><ItemRenderer route={route} item={item} blockClassName={scene.blockClassName} /></View>
+    ))
+    return (
+        <>
+            {renderRows(rowsBefore)}
+            {/* In the column's inset like the page's other blocks, 16px under the tabs as the side columns'. */}
+            <BlockWrapper block={shell} config={shell.config} listShell wrapperClassses={`w-full sm:pt-4 mb-0.5 sm:mb-4 ${scene.blockClassName}`}>
+                {/* The grid spaces its cards 16px from its edges itself: inside the block's padding they
+                    sit at the padding, as the site's cards do. */}
+                <View className="-m-4">{children}</View>
+                {scene.showNoContent ? noContent : null}
+            </BlockWrapper>
+            {renderRows(rowsAfter)}
         </>
     )
 }
