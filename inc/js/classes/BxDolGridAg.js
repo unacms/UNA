@@ -295,7 +295,8 @@ BxDolGridAg.prototype._tabStops = function (aIn) {
 
 /**
  * The parts of a card, from the grid's columns: the first data column is the card's title, the
- * switches and the actions go on the title's line, every other column is a line under it.
+ * switches and the actions go on the title's line, every other column is a line of its own under
+ * it (a narrow column that is no switch, a date for one, too).
  */
 BxDolGridAg.prototype._cardParts = function () {
     const o = { title: null, controls: [], actions: null, fields: [] };
@@ -304,9 +305,9 @@ BxDolGridAg.prototype._cardParts = function () {
             continue;
         if (oCol.name === 'actions')
             o.actions = oCol;
-        else if (Number(oCol.controls))
+        else if (Number(oCol.controls) && /switcher/.test(oCol.name))
             o.controls.push(oCol);
-        else if (o.title)
+        else if (o.title || Number(oCol.controls))
             o.fields.push(oCol);
         else
             o.title = oCol;
@@ -315,11 +316,11 @@ BxDolGridAg.prototype._cardParts = function () {
 };
 
 /**
- * A card's height: its title line, then two of the other columns per line.
+ * A card's height: its title line, then a line for each of the other columns.
  */
 BxDolGridAg.prototype._cardHeight = function () {
-    const iLines = Math.ceil(this._cardParts().fields.length / 2);
-    return 8 + 20 + 36 + (iLines ? 6 + iLines * 20 : 0);
+    const iLines = this._cardParts().fields.length;
+    return 8 + 20 + 36 + (iLines ? 6 + iLines * 22 : 0);
 };
 
 BxDolGridAg.prototype._hasKind = function (sKind) {

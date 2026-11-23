@@ -691,23 +691,24 @@ html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
 }
 
 .bx-grid-ag-card-fields {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 12px;
-    font-size: 12px;
-    line-height: 20px;
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    line-height: 22px;
 }
 
 .bx-grid-ag-card-field {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     min-width: 0;
     white-space: nowrap;
 }
 
 .bx-grid-ag-card-caption {
-    flex: 0 0 auto;
+    flex: 0 0 7.5rem;
+    overflow: hidden;
     color: #71717a;
+    text-overflow: ellipsis;
 }
 
 .bx-grid-ag-card-value {
@@ -745,8 +746,14 @@ html.dark .bx-grid-ag-card-caption,
 }
 
 @media (max-width: 767px) {
+    /* The search on a line of its own, the selects side by side under it, then the count on the
+       left and the grid's buttons on the right of one line. */
     .bx-grid-ag-wrap .bx-grid-header-cnt {
+        display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
         gap: 8px;
         padding: 12px;
     }
@@ -754,7 +761,7 @@ html.dark .bx-grid-ag-card-caption,
     .bx-grid-ag-wrap .bx-grid-header-controls-filter {
         display: flex;
         flex: 1 1 100%;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         gap: 8px;
         min-width: 0;
     }
@@ -767,6 +774,12 @@ html.dark .bx-grid-ag-card-caption,
         margin: 0;
     }
 
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter > :has(input[type="text"]),
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-form-element-wrapper:has(input[type="text"]) {
+        flex: 1 1 100%;
+        order: -1;
+    }
+
     .bx-grid-ag-wrap .bx-grid-header-controls-filter select,
     .bx-grid-ag-wrap .bx-grid-header-controls-filter input[type="text"],
     .bx-grid-ag-wrap .bx-grid-header-controls-filter .select2-container {
@@ -776,11 +789,14 @@ html.dark .bx-grid-ag-card-caption,
 
     .bx-grid-ag-wrap .bx-grid-header-controls-counter {
         flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
         margin: 0;
-        align-self: center;
+        text-align: left;
     }
 
     .bx-grid-ag-wrap .bx-grid-ag-header-end {
+        flex: 0 0 auto;
         margin-left: auto;
     }
 
@@ -794,3 +810,4 @@ html.dark .bx-grid-ag-card-caption,
         white-space: nowrap;
     }
 }
+
