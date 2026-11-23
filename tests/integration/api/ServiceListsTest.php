@@ -177,6 +177,30 @@ class ServiceListsTest extends BxDolIntegrationTestCase
         $this->assertSame('test', $aOut['method'] ?? null);
     }
 
+    public function testOAuthServiceRunsForTheMemberNotTheGuest()
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_oauth') || !BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts'))
+            $this->markTestSkipped('bx_oauth or bx_posts is not installed.');
+
+        $oModule = BxDolModule::getInstance('bx_oauth');
+        bx_import('API', $oModule->_aModule);
+        $oApi = new BxOAuthAPI($oModule);
+
+        $this->bxLoginAsUser();
+        $iProfileId = bx_get_logged_profile_id();
+        $this->bxBecomeGuest();
+
+        // the list check builds the module before the token's member is signed in
+        unset($GLOBALS['bxDolClasses']['BxPostsModule']);
+        $this->assertTrue($oApi->isSafeAPI('bx_posts', 'module_icon', 'Module'));
+        $this->assertSame(0, (int)BxDolModule::getInstance('bx_posts')->getProfileId());
+
+        $_GET = ['module' => 'bx_posts', 'method' => 'module_icon', 'class' => 'Module'];
+        $aOut = $this->_callOAuthService($oApi, ['user_id' => $iProfileId]);
+        $this->assertArrayNotHasKey('error', $aOut, json_encode($aOut));
+        $this->assertSame((int)$iProfileId, (int)BxDolModule::getInstance('bx_posts')->getProfileId());
+    }
+
     protected function _callOAuthService($oApi, $aToken)
     {
         ob_start();

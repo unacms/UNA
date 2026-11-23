@@ -331,6 +331,14 @@ class BxOAuthAPI extends BxDol
         if (!$bPublic) {
             bx_login($oProfile->getAccountId(), false);
             check_logged();
+
+            // the checks above built the module's objects for a guest (a module keeps the viewer's
+            // profile it was built for): build them again for the member
+            if (($aModule = BxDolModuleQuery::getInstance()->getModuleByName($sModule))) {
+                $sClassCalled = 'system' == $aModule['name'] && 'Module' == $sClass ? 'BaseServices' : $sClass;
+                unset($GLOBALS['bxDolClasses'][$aModule['class_prefix'] . $sClassCalled], $GLOBALS['bxDolClasses'][$aModule['class_prefix'] . 'Module']);
+            }
+            BxDolService::cleanMemoryCache();
         }
 
         $mixedRet = BxDolService::callExternal($sModule, $sMethod, $aParams, $sClass);
