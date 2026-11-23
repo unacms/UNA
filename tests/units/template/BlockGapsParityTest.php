@@ -32,7 +32,7 @@ class BlockGapsParityTest extends BxDolTestCase
     {
         $s = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
         $this->assertStringContainsString("? 'sm:px-4 sm:pt-4'", $s, 'Center column: 16px sides and top, the last block\'s margin under it.');
-        $this->assertStringContainsString("? 'mt-0.5 sm:mt-0 sm:-me-4 sm:px-4 sm:pt-4'", $s, 'Profile left column over the center\'s inset.');
+        $this->assertStringContainsString("? 'mt-0.5 sm:mt-0 sm:-me-4 sm:p-4'", $s, 'Profile left column over the center\'s inset.');
         $this->assertStringContainsString('`sm:-me-4 ${appSetting(\'conductor\', \'sidebar_container\')}`', $s, 'Section sidebar over the center\'s inset.');
         $this->assertStringContainsString('mt-0.5 sm:mt-0 sm:-ms-4 sm:px-4 sm:pt-4', $s, 'Right column over the center\'s inset.');
         $this->assertStringContainsString('leftColumnClassName="gap-y-4 mb-0.5 sm:mb-4"', $s);
@@ -41,7 +41,8 @@ class BlockGapsParityTest extends BxDolTestCase
 
         $sPost = self::read('neo/packages/app/components/page-layout/post.js');
         $this->assertStringContainsString('className="mt-0.5 sm:m-0 sm:p-4 ">', $sPost);
-        $this->assertSame(2, substr_count($sPost, 'hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4'), 'Post page side column, in the page and in the dialog.');
+        $this->assertSame(2, substr_count($sPost, ' hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4'), 'Post page side column, in the page and in the dialog.');
+        $this->assertStringNotContainsString('w-full hidden sm:flex gap-4', $sPost, 'No w-full: the box grows into its negative margin, so the outer gutter stays 16px.');
     }
 
     public function testNeoUniversalLayoutGapsAre16px(): void

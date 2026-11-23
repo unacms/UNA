@@ -1019,10 +1019,11 @@ export const LeftColumnContainer = ({
     const sectionIcon = useSectionIcon(menu, undefined, routes)
     const icon = layoutName == 'profile' ? '' : sectionIcon
     // The column takes back the center column's 16px inset (-me-4), so the blocks on both sides are 16px apart, as on
-    // UNA's site (.bx-layout-row gap-4); its own padding keeps room inside the scroller for the blocks' outline shadows.
+    // UNA's site (.bx-layout-row gap-4); its own padding keeps room inside the scroller for the blocks' outline shadows
+    // (the bottom too: the profile's left-column blocks have no margin of their own).
     const padClass =
         layoutName == 'profile'
-            ? 'mt-0.5 sm:mt-0 sm:-me-4 sm:px-4 sm:pt-4'
+            ? 'mt-0.5 sm:mt-0 sm:-me-4 sm:p-4'
             : `sm:-me-4 ${appSetting('conductor', 'sidebar_container')}`
 
     /** Tree nav select: switch tab + push URL (same policy as TabMenu). */

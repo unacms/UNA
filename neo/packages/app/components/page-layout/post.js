@@ -736,10 +736,11 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         <View className="h-full w-full">
                             <View
                                 // 16px between the blocks, and from the center column's: the column takes back
-                                // the center's 16px padding (-ms-4) and keeps its own for the blocks' shadows.
+                                // the center's 16px padding (-ms-4; no w-full, so the box grows into it and the outer
+                                // gutter stays 16px) and keeps its own for the blocks' shadows.
                                 className={embedded
-                                    ? 'web:sticky top-0 w-full hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4'
-                                    : 'web:sticky w-full hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4 web:overflow-y-auto'}
+                                    ? 'web:sticky top-0 hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4'
+                                    : 'web:sticky hidden sm:flex gap-4 mt-0.5 sm:mt-0 sm:-ms-4 sm:p-4 web:overflow-y-auto'}
                                 style={embedded ? { top: 0 } : stickySidebarScrollStyle}
                             >
                                 {
