@@ -211,8 +211,9 @@ class BxBaseSearchExtended extends BxDolSearchExtended
     	if($aResults === false)
     	    $aResults = $oContentInfo->getSearchResultExtended($aParamsSearch, $iStart, $iPerPage + 1, $this->_bFilterMode);
 
+        // A search that found nothing: the same empty state as the apps get (getResultsAPI).
         if(empty($aResults) || !is_array($aResults))
-            return $this->_bIsApi ? [$this->getResultsAPI([], $iStart, $iPerPage, $aParamsSearch)] : _t('Nothing found');
+            return $this->_bIsApi ? [$this->getResultsAPI([], $iStart, $iPerPage, $aParamsSearch)] : BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->emptyState(_t('_sys_txt_empty_search_text'), [], 'search', _t('_sys_txt_empty_search_title'));
 
         $iResults = count($aResults);
         if($iResults > $iPerPage)

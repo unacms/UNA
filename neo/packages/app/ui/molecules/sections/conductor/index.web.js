@@ -295,7 +295,8 @@ export function Conductor({
     // UNA's left column carries two different things: dropdown menus and filter blocks. While
     // the left panel is on screen they stay in it; below its breakpoint (phones, tablets and
     // narrow desktops alike) the menus become dropdowns at the end of the tab row, the filters a
-    // "Filters" trigger beside them, and neither repeats in the list.
+    // "Filters" trigger beside them, and neither repeats in the list. A filter form (a Search tab's)
+    // goes above the list instead, as on the site (isLeftColumnFilterForm).
     const leftColumnContent = activeRoute?.leftbar?.content ?? EMPTY_CONTENT
 
     const {
@@ -322,8 +323,8 @@ export function Conductor({
         data?.cover_block?.profile?.id === data?.context?.current?.id &&
         isDesktop
 
-    // Filters sheet for use_as_filter (any layout) + navigator non-menu left column, while the
-    // left panel that otherwise holds those blocks is off screen.
+    // Filters sheet for the navigator's non-menu left column, while the left panel that otherwise
+    // holds those blocks is off screen.
     const showFiltersBtn = !isLeftColumnShown && leftColumnFilterBlocks.length > 0
     /** Profile chrome is rendered inline here instead of in the page header. */
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
@@ -456,6 +457,7 @@ export function Conductor({
             setIndex={setIndex}
             menu={menu}
             routes={routes}
+            hasMenuBlocks={leftColumnMenuBlocks.length > 0}
             stickyColumnStyle={isTasksHome ? LOCKED_COLUMN_STYLE : stickyColumnStyle}
         >
             {/* Menu blocks' links line up with the panel's own (LeftColumnContainer pulls those

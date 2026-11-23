@@ -436,36 +436,19 @@ export const settingsLayout = {
                 },
             },
         },
+        // A left column beside the content, as UNA's bar_left layout (template/layout_bar_left.html, md:w-1/3):
+        // a third of the page at every width, so a Search tab's form is as wide as on the site.
         'cols-l-c': {
             adjustable: true,
             sizable: true,
             cells: {
                 left: {
-                    defaultSize: 30,
+                    defaultSize: 33.33,
                     minSize: 15,
-                    maxSize: 30,
+                    maxSize: 40,
                     breakpoint: 'lg',
-                    responsive: {
-                        '2xl':{
-                            defaultSize: 20,
-                            minSize: 15,
-                            maxSize: 30,
-                            
-                        }
-                    }
-                   
                 },
-                center: { 
-                    defaultSize: 70, minSize: 70, maxSize: 80,
-                    responsive: {
-                        '2xl':{
-                                defaultSize: 80,
-                                minSize: 70,
-                                maxSize: 85,
-                                
-                            }
-                        }
-                },
+                center: { defaultSize: 66.67, minSize: 60, maxSize: 85 },
             },
         },
         'cols-c-r': {
