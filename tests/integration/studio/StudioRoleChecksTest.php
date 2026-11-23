@@ -249,13 +249,17 @@ class StudioRoleChecksTest extends BxDolIntegrationTestCase
 
         foreach (['install', 'update', 'delete', 'get-file', 'get-update', 'get-update-and-install'] as $sAction) {
             $this->asPost(['str_action' => $sAction, 'str_value' => 'boonex/no_such_app/', 'str_id' => 'bx_no_such_app', 'csrf_token' => BxDolForm::getCsrfToken()]);
-            $this->assertSame(BxDolStudioPage::getAccessDeniedError(), (new BxTemplStudioStore())->checkAction(), 'Store ' . $sAction . ' is for app managers.');
+            $aResult = (new BxTemplStudioStore())->checkAction();
+            $this->assertSame(1, $aResult['code'], 'Store ' . $sAction . ' is for app managers.');
+            // The Store's scripts show the message as a popup, so it comes wrapped like the Store's other answers.
+            $this->assertStringContainsString(_t('_Access denied'), $aResult['message']);
+            $this->assertStringContainsString('mod_action_result', $aResult['message']);
         }
 
         // The master role manages apps: the request gets past the role check (and fails on the app that doesn't exist).
         $this->setStudioRole(BX_DOL_STUDIO_ROLE_MASTER);
         $this->asPost(['str_action' => 'install', 'str_value' => 'boonex/no_such_app/', 'csrf_token' => BxDolForm::getCsrfToken()]);
-        $this->assertNotSame(BxDolStudioPage::getAccessDeniedError(), (new BxTemplStudioStore())->checkAction());
+        $this->assertStringNotContainsString(_t('_Access denied'), (string)(new BxTemplStudioStore())->checkAction()['message']);
     }
 
     /**
