@@ -2278,12 +2278,25 @@
     }
 
 
-    /* Common elements: Informers. A message sits in the page like a block: the page wrapper's gutter (informer.html),
-       the block's corners and padding (bx-def-border-radius-block, bx-content-padding-block on each message). The
-       36px icon, the first line of the text and the 36px button line up at the top; the button stays on the right
-       while the text has room for 15rem beside it, and goes under the text when it does not. */
+    /* Common elements: Informers. One strip under the header, before the page's cover, tabs and blocks (informer.html):
+       each message is a row of it, its tint from edge to edge with a line under it, its content as wide as the page
+       and 16px in, as the header's. The 36px icon, the first line of the text and the 36px button line up at the top;
+       the button stays on the right while the text has room for 15rem beside it, and goes under the text when it
+       does not. */
     .bx-informer-msg {
-        @apply flex items-start gap-3 ring-1 ring-inset text-sm leading-5;
+        @apply border-b text-sm leading-5;
+    }
+    .bx-informer-msg-cnt {
+        @apply flex items-start gap-3 py-3;
+    }
+    /* Under the fixed header the page keeps 64px for it (the cover templates' .bx-menu-toolbar-padding pt-16). With
+       messages the strip, first in <main> (_sub_header.html), takes them, and the cover after it starts right under it.
+       The Application layout starts its content under its header already. */
+    .bx-main:not(.bx-pt-application) #bx-informer-strip:has(.bx-informer-msg) {
+        @apply pt-16;
+    }
+    .bx-main:not(.bx-pt-application) #bx-informer-strip:has(.bx-informer-msg) ~ * .bx-menu-toolbar-padding {
+        @apply pt-0;
     }
     .bx-informer-indicator {
         @apply flex-none flex items-center justify-center w-9 h-9 rounded-full;
@@ -2304,19 +2317,19 @@
         @apply flex-none whitespace-nowrap;
     }
     .bx-informer-msg-info {
-        @apply bg-blue-50 text-blue-800 ring-blue-200 dark:bg-blue-500/10 dark:text-blue-200 dark:ring-blue-500/25;
+        @apply bg-blue-50 text-blue-800 border-blue-200 dark:bg-blue-500/10 dark:text-blue-200 dark:border-blue-500/25;
     }
     .bx-informer-msg-info .bx-informer-indicator {
         @apply bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300;
     }
     .bx-informer-msg-alert {
-        @apply bg-yellow-50 text-yellow-800 ring-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-200 dark:ring-yellow-500/25;
+        @apply bg-yellow-50 text-yellow-800 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-200 dark:border-yellow-500/25;
     }
     .bx-informer-msg-alert .bx-informer-indicator {
         @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300;
     }
     .bx-informer-msg-error {
-        @apply bg-red-50 text-red-800 ring-red-200 dark:bg-red-500/10 dark:text-red-200 dark:ring-red-500/25;
+        @apply bg-red-50 text-red-800 border-red-200 dark:bg-red-500/10 dark:text-red-200 dark:border-red-500/25;
     }
     .bx-informer-msg-error .bx-informer-indicator {
         @apply bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300;

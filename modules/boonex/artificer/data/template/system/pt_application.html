@@ -102,6 +102,8 @@
              and corners), scrolling inside it. -->
         <div id="main-content" class="bx-main-column wide bx-app-content bx-def-color-bg-block bx-def-border-block bx-def-border-radius-block relative w-full h-full overflow-y-auto">
             <main role="main" id="bx-content-main" tabindex="-1">
+                <!-- The informer: across the content's block, before the cover, the tabs and the content -->
+                <div id="bx-informer-strip" class="bx-informer-strip">__informer__</div>
                 <bx_injection:injection_between_cover_logo />
                 __cover__
                 <bx_injection:injection_between_cover_top_menu />
@@ -125,7 +127,6 @@
                 </div>
                 <bx_injection:injection_between_content_menu />
                 <div id="bx-content-wrapper" class="bx-def-page-width mx-auto">
-                    __informer__
                     <div class="bx-page-wrapper mx-auto px-3 md:px-4 lg:px-6 box-border">
                         <div id="bx-content-container" class="bx-content-container">
                             <div class="bx-content-main my-2 lg:my-3">
