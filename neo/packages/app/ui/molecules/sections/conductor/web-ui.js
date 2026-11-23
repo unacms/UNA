@@ -564,7 +564,7 @@ function getAddMenuItems(menu, filter, currentUser) {
  * - "Add" → opens the create form in a modal (one FormModal for all buttons)
  * - anything else with a link → plain navigation
  */
-const AddMenu = ({ menu, filter, only, controlSize = 'small' }) => {
+const AddMenu = ({ menu, filter, only, style = 'glass', controlSize = 'small' }) => {
     // false = closed, 'loading' while the form JSON is fetched, then the form.
     const [pageData, setPageData] = useState(false)
     const { currentUser } = useCurrentUser()
@@ -585,7 +585,7 @@ const AddMenu = ({ menu, filter, only, controlSize = 'small' }) => {
                             section={button.section}
                             params={{
                                 trigger: {
-                                    style: 'bordered',
+                                    style,
                                     controlSize,
                                 },
                             }}
@@ -596,7 +596,7 @@ const AddMenu = ({ menu, filter, only, controlSize = 'small' }) => {
                         <NeoButton
                             label={t(button.title)}
                             image={button.icon}
-                            style="bordered"
+                            style={style}
                             controlSize={controlSize}
                             borderShape="circle"
                             onPress={() => {
@@ -1003,7 +1003,7 @@ export const LeftColumnContainer = ({
     const { currentUser } = useCurrentUser()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const addMenuItems = getAddMenuItems(menu, 'hideInSideBar', currentUser)
-    const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
+    const addButtons = <AddMenu menu={menu} filter="hideInSideBar" style="bordered" />
     // Profile has its name in the cover already — no title row here.
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     const sectionIcon = useSectionIcon(menu, undefined, routes)
@@ -1258,11 +1258,10 @@ export function TopSidebar({
     const showTitle = !!title && conductorTheme.show_title !== false && !isProfile
     const desktopFlex = `hidden ${conductorTheme.hide_top_menu_from}:flex`
     // Tablets (sm to lg): the section's actions and tools at the end of the tab row (the page header shows its icon and
-    // name, as on phones).
+    // name, as on phones), drawn as the tabs (`addButtons`).
     const tabletButtons = showAddButtons && (
         <Row className="hidden sm:flex lg:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
-            {actionButtons}
-            {toolButtons}
+            {addButtons}
         </Row>
     )
 
@@ -1393,6 +1392,8 @@ export const TabBar = ({
 
     if (!routes.length) return null
 
+    // Buttons on the tab row (Search, filters, and Add where it sits there) look like the tabs beside them: glass, small,
+    // round (MenuItemSubmenu, components/menu-items/submenu.js). Change them together.
     const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
     // Profile actions ("Follow", "…") normally sit on the cover. With no cover
     // (`none`) — or when config asks for it — they move into the tab row.
@@ -1415,8 +1416,8 @@ export const TabBar = ({
             omitDefaultBackground={omitDefaultBackground}
             addButtons={addButtons}
             // Regular, as the header's own buttons: the section's two-line header is laid out on the same 44px grid.
-            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" controlSize="regular" />}
-            toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" controlSize="regular" />}
+            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" style="bordered" controlSize="regular" />}
+            toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
             title={t(menuSettings?.name)}
             icon={sectionIcon}
             contentWidth={contentWidth}
