@@ -1543,6 +1543,13 @@ export const TabBar = ({
                             />
                         </Row>
                     )}
+                    {/* A context's or a person's Search ("Search in Garden club"), before the profile's actions; phones
+                        have it at the header's end. */}
+                    {!!(menu?.search?.context || menu?.search?.author) && (
+                        <Row className="hidden sm:flex items-center shrink-0 pl-1 pr-2">
+                            <AddMenu menu={menu} filter="hideInTopBar" only="search" labelled={isDesktop} />
+                        </Row>
+                    )}
                     {!!pageData.cover_block?.actions_menu && showActionsInTabBar ? (
                         <Row className={`${conductorTheme.more_menu_container || 'items-center shrink-0 pl-1'} pr-3 lg:pr-4`}>
                             <Row className="items-center">
