@@ -5008,6 +5008,8 @@
     <string name="_sys_search_window_keys"><![CDATA[↑ ↓ — выбрать, Enter — открыть, Esc — закрыть]]></string>
     <string name="_sys_search_window_loading"><![CDATA[Ищем…]]></string>
     <string name="_sys_search_window_more"><![CDATA[Показать ещё]]></string>
+    <string name="_sys_search_window_no_results"><![CDATA[Ничего не найдено]]></string>
+    <string name="_sys_search_window_no_results_for"><![CDATA[Ничего не найдено по запросу «{0}»]]></string>
     <string name="_sys_search_window_open"><![CDATA[Открыть]]></string>
     <string name="_sys_search_window_placeholder"><![CDATA[Поиск…]]></string>
     <string name="_sys_search_window_placeholder_ai"><![CDATA[Найдите или задайте вопрос…]]></string>

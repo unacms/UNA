@@ -118,7 +118,8 @@ class BxBaseSearchWindow extends BxDol
         return [
             'chips' => $this->_getChips($aScope, $aQuery),
             'results' => $this->_getResults($aScope, $aQuery, $aResults, $aAll, $bHasQuery, $bPage),
-            'count' => $bHasQuery ? $this->_getCountText($aResults) : '',
+            // the status region's words: the count, or that nothing was found for the words
+            'count' => $bHasQuery ? ($this->_getCountNumber($aResults) === '0' && $this->_isTried($aQuery) ? ($aQuery['keyword'] !== '' ? _t('_sys_search_window_no_results_for', $aQuery['keyword']) : _t('_sys_search_window_no_results')) : $this->_getCountText($aResults)) : '',
             'results_url' => $aScope['results_url'],
             'ai' => !empty($aScope['ai']),
             'query' => $this->_oSearch->toUrlParams($aQuery),
@@ -426,9 +427,23 @@ class BxBaseSearchWindow extends BxDol
             ];
         }
 
+        // nothing found: after words or a filter the member chose, the list says so in its own rows; a window only opened
+        // with a scope (a context's Search) shows its hint instead, no empty state before anything was tried
         $sEmpty = '';
-        if(!$aGroupsOut)
-            $sEmpty = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->emptyState(_t('_sys_search_window_empty'), [], 'search', _t('_sys_search_window_empty_title'));
+        if(!$aGroupsOut) {
+            if(!$this->_isTried($aQuery))
+                return $this->_oTemplate->parseHtmlByName('search_window_hint.html', [
+                    'text' => _t($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL ? '_sys_search_window_hint' : '_sys_search_window_hint_scope'),
+                ]);
+
+            $sEmpty = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->emptyState(
+                _t('_sys_search_window_empty'),
+                [],
+                'search-x',
+                $aQuery['keyword'] !== '' ? _t('_sys_search_window_no_results_for', $aQuery['keyword']) : _t('_sys_search_window_no_results'),
+                'rows'
+            );
+        }
 
         return $this->_oTemplate->parseHtmlByName('search_window_results.html', [
             'bx_if:tabs' => [
@@ -441,6 +456,19 @@ class BxBaseSearchWindow extends BxDol
             'bx_repeat:groups' => $aGroupsOut,
             'empty' => $sEmpty,
         ]);
+    }
+
+    /**
+     * Whether the member searched for something: words, or a filter of their own (not the scope the window opened with).
+     */
+    protected function _isTried($aQuery)
+    {
+        // the author is also the scope of a person's Search ("Search in Marcus Bell"): alone it is not a search yet
+        foreach(['keyword', 'date_from', 'date_to', 'filters', 'title_only'] as $sKey)
+            if(!empty($aQuery[$sKey]))
+                return true;
+
+        return false;
     }
 
     protected function _getCountText($aResults)

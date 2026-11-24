@@ -1,0 +1,19 @@
+<!-- An empty state in a list of rows (BxBaseFunctions::emptyState, layout 'rows'): the words as one row of the list, its icon where a
+     row's picture is, then two faint placeholder rows, still (not loading), so the list keeps its shape and nearly its size. -->
+<div class="bx-empty-state-rows flex flex-col">
+    <div class="flex items-center gap-3 p-2">
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 [&_svg]:size-5" aria-hidden="true">__icon__</div>
+        <div class="flex min-w-0 flex-col">
+            <div class="truncate text-sm font-medium text-gray-900 dark:text-gray-100">__title__</div>
+            <bx_if:text><div class="text-xs text-gray-500 dark:text-gray-400">__text__</div></bx_if:text>
+        </div>
+    </div>
+    <div class="flex items-center gap-3 p-2 opacity-60" aria-hidden="true">
+        <div class="size-10 shrink-0 rounded-xl bg-gray-100 dark:bg-gray-700/60"></div>
+        <div class="flex flex-1 flex-col gap-2"><div class="h-2.5 w-2/5 rounded-full bg-gray-100 dark:bg-gray-700/60"></div><div class="h-2 w-1/4 rounded-full bg-gray-100 dark:bg-gray-700/60"></div></div>
+    </div>
+    <div class="flex items-center gap-3 p-2 opacity-40" aria-hidden="true">
+        <div class="size-10 shrink-0 rounded-xl bg-gray-100 dark:bg-gray-700/60"></div>
+        <div class="flex flex-1 flex-col gap-2"><div class="h-2.5 w-1/3 rounded-full bg-gray-100 dark:bg-gray-700/60"></div><div class="h-2 w-1/5 rounded-full bg-gray-100 dark:bg-gray-700/60"></div></div>
+    </div>
+</div>

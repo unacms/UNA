@@ -247,6 +247,27 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertStringContainsString('data-search-context="12"', $sButton);
     }
 
+    public function testNothingFoundIsSaidInRowsOnlyAfterASearch(): void
+    {
+        $iOwner = $this->seedPooledPerson();
+        $this->asViewer($iOwner);
+        $o = BxDolSearchUnified::getInstance();
+        $oWindow = new BxTemplSearchWindow();
+
+        // a person's Search, nothing typed: the hint, no empty state
+        $aParts = $oWindow->getParts($o->normalize(['author' => $iOwner]));
+        $this->assertStringNotContainsString('bx-empty-state-rows', $aParts['results']);
+        $this->assertStringContainsString('bx-search-window-hint', $aParts['results']);
+
+        // words that find nothing: the list says so in its own rows, and the status region too
+        $sWord = 'zzq' . bin2hex(random_bytes(5));
+        $aParts = $oWindow->getParts($o->normalize(['keyword' => $sWord]));
+        $this->assertStringContainsString('bx-empty-state-rows', $aParts['results']);
+        $this->assertStringContainsString(_t('_sys_search_window_no_results_for', $sWord), $aParts['results']);
+        $this->assertSame(_t('_sys_search_window_no_results_for', $sWord), $aParts['count']);
+        $this->assertStringNotContainsString('bx-msg-box-state', $aParts['results'], 'not the centred card');
+    }
+
     public function testOneQueryFormat(): void
     {
         $o = BxDolSearchUnified::getInstance();

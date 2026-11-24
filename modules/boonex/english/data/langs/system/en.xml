@@ -5083,6 +5083,8 @@
     <string name="_sys_search_window_keys"><![CDATA[↑ ↓ to choose, Enter to open, Esc to close]]></string>
     <string name="_sys_search_window_loading"><![CDATA[Searching…]]></string>
     <string name="_sys_search_window_more"><![CDATA[Show more]]></string>
+    <string name="_sys_search_window_no_results"><![CDATA[No results]]></string>
+    <string name="_sys_search_window_no_results_for"><![CDATA[No results for “{0}”]]></string>
     <string name="_sys_search_window_open"><![CDATA[Open]]></string>
     <string name="_sys_search_window_placeholder"><![CDATA[Search…]]></string>
     <string name="_sys_search_window_placeholder_ai"><![CDATA[Search or ask a question…]]></string>

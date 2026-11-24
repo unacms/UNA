@@ -408,6 +408,8 @@ class BxBaseServicesSearch extends BxDol
         $aResult['remove'] = _t('_sys_search_chip_remove', '{0}');
         $aResult['created_by_value'] = _t('_sys_search_chip_created_by_value', '{0}');
         $aResult['in'] = _t('_sys_search_chip_in', '{0}');
+        $aResult['no_results'] = _t('_sys_search_window_no_results');
+        $aResult['no_results_for'] = _t('_sys_search_window_no_results_for', '{0}');
 
         return $aResult;
     }

@@ -624,7 +624,7 @@ BxDolSearchWindow.prototype._request = function(oQuery, onSuccess)
         },
         error: function(oXhr, sStatus) {
             if(sStatus != 'abort')
-                $this._oRoot.find('.bx-search-window-results').html($('<p class="bx-search-window-hint text-sm text-red-700 dark:text-red-400" role="alert"></p>').text(_t('_sys_search_window_error')));
+                $this._oRoot.find('.bx-search-window-results').html($('<p class="bx-search-window-hint px-2 py-3 text-sm text-red-700 dark:text-red-400" role="alert"></p>').text(_t('_sys_search_window_error')));
         },
         complete: function(oXhr, sStatus) {
             if(sStatus == 'abort')

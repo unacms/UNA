@@ -1126,16 +1126,14 @@
     .bx-search-window-popup {
         max-height: min(44rem, calc(100vh - 5rem)); /* 4rem above it (BxDolSearchWindow.open), 1rem below */
     }
-    /* The window keeps its height while it asks again: the last results stay, dimmed, until the new ones replace them, and the hint and
-       an error have one fixed height, so only a real change in the results moves the window's bottom edge (its top never moves). */
+    /* The window keeps its height while it asks again: the last results stay, dimmed, until the new ones replace them, so only a real
+       change in the results moves the window's bottom edge (its top never moves). Before a search the window is only its field, the
+       chips and a line of hint; nothing found is three rows tall, as a few results (BxBaseFunctions::emptyState, 'rows'). */
     .bx-search-window-results {
-        @apply transition-opacity duration-150; /* 10rem tall at least where the window has room (search_window.html), else it shrinks so the footer stays */
+        @apply transition-opacity duration-150;
     }
     .bx-search-window-results[aria-busy="true"] {
         @apply opacity-50;
-    }
-    .bx-search-window-hint {
-        @apply flex min-h-40 items-center justify-center;
     }
     /* "+ Filter" and a filter's own picker (Created by, Date, a module's field) open as a small dropdown under the chips, over the
        results, with the site's popup surface and menu rows (.bx-menu-ver in a .bx-popup), not as rows of full-width fields. */

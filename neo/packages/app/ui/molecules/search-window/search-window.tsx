@@ -3,7 +3,7 @@ import { Text } from 'app/design/typography';
 import { View, Row, ScrollView } from 'app/design/view';
 import { ModalHeaderBar, NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
-import { appStatic } from 'app/lib/app-static';
+import EmptyState from 'app/ui/molecules/misc/empty-state';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { hasSearchQuery, searchResultsHref, withSearchValue, type SearchQuery } from 'app/lib/search-window';
@@ -27,8 +27,8 @@ function countText(count: number, more: boolean): string {
  * count, sort and a tab per module, then the full results page. The header's Search, a section's or context's Search
  * and Cmd/Ctrl+K open it in a dialog (SearchWindowHost); the results page and Explore have it in the page.
  */
-/** The hint, the empty state, an error and the first load share one height: only real results change the window's size. */
-const STATE_BOX = 'min-h-40 items-center justify-center gap-2 py-6';
+/** The hint, an error and the first load: one short line, so the window before a search is only its field and chips. */
+const STATE_LINE = 'px-2 py-3';
 
 /** Inside a block (Explore, the results page) the block's padding is the edge: the field and chips line up with its title. */
 const INSET = { modal: 'px-4', page: '', explore: '' } as const;
@@ -67,6 +67,9 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
     const scope = data?.scope;
     const results = data?.results;
     const hasQuery = hasSearchQuery(query);
+    // words or a filter: the scope the window opened with (a context, a module, a person's author) is not a search yet
+    const tried = !!(query.keyword || query.date_from || query.date_to || query.filters || query.title_only);
+    const noResults = query.keyword ? fillString(strings.no_results_for, query.keyword) : (strings.no_results || '');
     const oneGroup = results && 'group' in results && results.group ? results.group : null;
     const groups: SearchGroupData[] = oneGroup
         // a page with no row the viewer may see can still have more after it (UNA checks a capped number per request)
@@ -209,14 +212,14 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
 
             <View className={'pb-2 ' + LIST[mode]}>
                     {/* the result count for screen readers (the tabs show it): one region, mounted before its text changes */}
-                    <Text className="sr-only" role="status" aria-live="polite">{hasQuery && results ? fillString(strings.count, total) : ''}</Text>
+                    <Text className="sr-only" role="status" aria-live="polite">{hasQuery && results ? (tried && !groups.length ? noResults : fillString(strings.count, total)) : ''}</Text>
                     {!hasQuery ? (mode === 'explore' ? null : (
-                        <View className={STATE_BOX}><Text className="text-center text-sm text-muted-foreground">{strings.hint || ''}</Text></View>
+                        <View className={STATE_LINE}><Text className="text-sm text-muted-foreground">{strings.hint || ''}</Text></View>
                     )) : error && !results ? (
-                        <View className={STATE_BOX}><Text className="text-center text-sm text-destructive">{strings.error || ''}</Text></View>
+                        <View className={STATE_LINE}><Text className="text-sm text-destructive">{strings.error || ''}</Text></View>
                     ) : !results ? (
                         // the first answer for the words: the box the hint had, so nothing moves while it loads
-                        <View className={STATE_BOX} aria-busy />
+                        <View className={STATE_LINE + ' h-11'} aria-busy />
                     ) : results ? (
                         <>
                             {/* a failed request for new words: the last results stay, dimmed, under the error */}
@@ -279,12 +282,15 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             )}
 
                             {/* kept while new words load (dimmed), so the window does not shrink and grow back */}
-                            {!groups.length && (
-                                <View className={STATE_BOX + (loading ? ' opacity-50' : '')}>
-                                    {appStatic('components_content_empty', {})}
-                                    <Text className="text-center text-sm text-muted-foreground">{strings.empty}</Text>
+                            {/* nothing found: after words or a filter of the member's own, the list says so in its own rows (the
+                                shared EmptyState, `rows`); a window only opened with a scope shows its hint, no empty state */}
+                            {!groups.length && (tried ? (
+                                <View className={'pt-3' + (loading ? ' opacity-50' : '')}>
+                                    <EmptyState layout="rows" fallbackTitle={noResults} state={{ icon: 'SearchX', title: noResults, text: strings.empty }} />
                                 </View>
-                            )}
+                            ) : (
+                                <View className={STATE_LINE}><Text className="text-sm text-muted-foreground">{strings.hint || ''}</Text></View>
+                            ))}
                         </>
                     ) : null}
             </View>
