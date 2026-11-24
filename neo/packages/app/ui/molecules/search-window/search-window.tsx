@@ -67,7 +67,8 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
     const hasQuery = hasSearchQuery(query);
     const oneGroup = results && 'group' in results && results.group ? results.group : null;
     const groups: SearchGroupData[] = oneGroup
-        ? (oneGroup.items.length ? [{ ...oneGroup, items: extra?.key === queryKey ? [...oneGroup.items, ...extra.items] : oneGroup.items }] : [])
+        // a page with no row the viewer may see can still have more after it (UNA checks a capped number per request)
+        ? (oneGroup.items.length || oneGroup.cursor ? [{ ...oneGroup, items: extra?.key === queryKey ? [...oneGroup.items, ...extra.items] : oneGroup.items }] : [])
         : (results?.groups ?? []);
     const cursor = oneGroup ? (extra?.key === queryKey ? extra.cursor : oneGroup.cursor) : '';
     const total = oneGroup ? countText(oneGroup.count, oneGroup.count_more) : countText(results?.total ?? 0, !!results?.total_more);
@@ -228,7 +229,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                                     })}
                                     {!oneGroup && (group.count > group.items.length || group.count_more) && (
                                         <NeoButton
-                                            label={fillString(strings.show_all, countText(group.count, group.count_more), group.title)}
+                                            label={group.count ? fillString(strings.show_all, countText(group.count, group.count_more), group.title) : strings.more}
                                             style="borderless"
                                             controlSize="small"
                                             classNames={{ root: 'self-start' }}
