@@ -338,6 +338,16 @@ class SearchWindowTest extends ApiV2TestCase
         $sHtml = (new BxTemplServicesSearch())->serviceGetBlockSearchWindow();
         $this->assertStringContainsString('data-mode="explore"', $sHtml);
         $this->assertStringNotContainsString('bx-search-window-hint', $sHtml, 'Explore shows its featured blocks until a search, not a hint');
+
+        // the page is the search: no section Search of its own (the system's "Pages" search is in the apps' sections)
+        $oSearch = BxDolSearchUnified::getInstance();
+        $oSearch->setApiSections(true);
+        try {
+            $this->assertSame([], BxDolPage::getObjectInstanceByURI('explore')->getSearchAction());
+        }
+        finally {
+            $oSearch->setApiSections(false);
+        }
     }
 
     public function testAPageSearchesItsSectionUnlessTheSectionTurnedItOff(): void

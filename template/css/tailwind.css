@@ -1081,6 +1081,42 @@
         @apply bg-blue-700 border-blue-700;
     }
 
+    /* Button group (.bx-btn-group around .bx-btn segments, as NEO's NeoButtonGroup): one shape, the segments' own fills joined edge to edge,
+       the group's outer corners on its first and last segment and square ones between, a hairline between segments, each segment with its own
+       focus ring (lifted over its neighbours), hover and press. A main button with attached ones, such as an active filter and its remove button.
+       common.css has the older rules (corners, a white divider); these replace its divider. Studio has its own (see "Joined button groups"). */
+    body:not(.bx-std) .bx-btn-group {
+        @apply inline-flex items-stretch;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn {
+        @apply m-0 focus-visible:z-10;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn:not(:first-child) {
+        @apply rounded-s-none;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn:not(:last-child) {
+        @apply rounded-e-none;
+    }
+    /* an icon-only segment (.bx-btn-icon, round on its own) takes the outer corners of a labelled button of its size */
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon:first-child {
+        @apply rounded-s-xl;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon:last-child {
+        @apply rounded-e-xl;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon.bx-btn-small:first-child {
+        @apply rounded-s-[calc(10px_*_var(--bx-radius-scale))];
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon.bx-btn-small:last-child {
+        @apply rounded-e-[calc(10px_*_var(--bx-radius-scale))];
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn + .bx-btn:not(:focus-visible) {
+        @apply border-s-black/10 dark:border-s-white/10;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn:not(:first-child)::after {
+        content: none;
+    }
+
     /* Search window (BxBaseSearchWindow, inc/js/classes/BxDolSearchWindow.js): a wider dialog than other popups, as tall as its content up
        to the window less room around it, the results scrolling inside. Active chips, a pressed "Title only" and the current results tab take
        the open button's accent colours (the rule above), so the window reads like NEO's (Chip selected). */
@@ -1088,7 +1124,18 @@
         @apply w-full md:w-[42rem];
     }
     .bx-search-window-popup {
-        max-height: min(44rem, calc(100vh - 4rem));
+        max-height: min(44rem, calc(100vh - 5rem)); /* 4rem above it (BxDolSearchWindow.open), 1rem below */
+    }
+    /* The window keeps its height while it asks again: the last results stay, dimmed, until the new ones replace them, and the hint and
+       an error have one fixed height, so only a real change in the results moves the window's bottom edge (its top never moves). */
+    .bx-search-window-results {
+        @apply transition-opacity duration-150; /* 10rem tall at least (search_window.html) */
+    }
+    .bx-search-window-results[aria-busy="true"] {
+        @apply opacity-50;
+    }
+    .bx-search-window-hint {
+        @apply flex min-h-40 items-center justify-center;
     }
     .bx-search-window-input::-webkit-search-cancel-button {
         @apply hidden;

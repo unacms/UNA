@@ -275,6 +275,8 @@ export function Modal({
         'center': 'sm:items-center items-start ',
     };
     const sClassPosition = positionClasses[position] || positionClasses.center;
+    // Web: a `top` dialog keeps its top edge where it is (only its bottom moves as its content grows or shrinks), the others centre.
+    const webAlign = position === 'top' && !autoHeight ? 'justify-start sm:pt-12' : 'sm:justify-center';
     const Cnt: ComponentType<any> = scrollable ? (isWeb ? ScrollView : ModalKbAwareScroll) : View
     const modalBottomOffset = 24 + (insets?.bottom ?? 0)
 
@@ -498,7 +500,7 @@ export function Modal({
                     className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${isDialog ? 'p-4' : ''} ${modalSettings.fog} `}/* justify-start for post form small web */
                     onClick={handleWebOuterPress}
                 >
-                    <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
+                    <RemoveScroll className={`flex-1  flex flex-col w-full ${webAlign} ${autoHeight && 'justify-center'} overflow-hidden`} >
                         <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: dialogHeight }} className={`w-full left-0 right-0 z-50 mx-auto ${modalSettings.container} ${dialogClass}`}>
                        
                             {content}

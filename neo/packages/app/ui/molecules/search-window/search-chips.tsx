@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { View, Row } from 'app/design/view';
-import { NeoButton, Input } from 'app/design/controls';
+import { NeoButton, NeoButtonGroup, Input } from 'app/design/controls';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
@@ -14,6 +14,8 @@ type ChipsProps = {
     onChange: (query: SearchQuery) => void;
     /** At the row's end (the sort), the row wrapping on phones. */
     trailing?: ReactNode;
+    /** The window's side padding (none inside a block). */
+    inset?: string;
 };
 
 function fill(text: string | undefined, ...values: Array<string | number>): string {
@@ -39,13 +41,13 @@ function timezone(): string {
     }
 }
 
-/** A chip with a value: the accent look, and a remove button after it. */
+/** A chip with a value: one button group in the accent look, its value and a remove button. */
 function SetChip({ caption, icon, removeLabel, onRemove }: { caption: string; icon?: string; removeLabel: string; onRemove: () => void }) {
     return (
-        <Row className="items-center">
-            <NeoButton label={caption} image={icon} controlSize="small" selected interactive={false} />
-            <NeoButton image="X" controlSize="small" borderShape="circle" selected accessibilityLabel={removeLabel} onPress={onRemove} classNames={{ root: '-ms-1' }} />
-        </Row>
+        <NeoButtonGroup controlSize="small" accessibilityLabel={caption}>
+            <NeoButton label={caption} image={icon} selected interactive={false} />
+            <NeoButton image="X" selected accessibilityLabel={removeLabel} onPress={onRemove} />
+        </NeoButtonGroup>
     );
 }
 
@@ -54,7 +56,7 @@ function SetChip({ caption, icon, removeLabel, onRemove }: { caption: string; ic
  * Created by, Date, and in a module's scope its own search fields (category, gender...). In global search "Filter"
  * picks a module to look in.
  */
-export default function SearchChips({ query, scope, strings, onChange, trailing }: ChipsProps) {
+export default function SearchChips({ query, scope, strings, onChange, trailing, inset = 'px-3' }: ChipsProps) {
     const { currentUser } = useCurrentUser();
     const [findPerson, setFindPerson] = useState(false);
     const filters = searchFilters(query);
@@ -155,7 +157,7 @@ export default function SearchChips({ query, scope, strings, onChange, trailing 
                 const values = ([] as string[]).concat((filters[c.name] as string | string[] | undefined) ?? []);
                 const titles = (c.options ?? []).filter((o) => values.includes(o.value)).map((o) => o.title);
                 return (
-                    <Row key={c.name} className="items-center">
+                    <NeoButtonGroup key={c.name} controlSize="small" accessibilityLabel={c.caption}>
                         <DropdownMenu
                             items={(c.options ?? []).map((o) => ({ id: o.value, title: o.title, selected: values.includes(o.value) }))}
                             onSelect={(item) => {
@@ -165,12 +167,12 @@ export default function SearchChips({ query, scope, strings, onChange, trailing 
                             }}
                             triggerAccessibilityLabel={c.caption}
                         >
-                            <NeoButton label={titles.length ? c.caption + ': ' + titles.join(', ') : c.caption} image="ListFilter" controlSize="small" selected={titles.length > 0} interactive />
+                            <NeoButton label={titles.length ? c.caption + ': ' + titles.join(', ') : c.caption} image="ListFilter" selected={titles.length > 0} interactive />
                         </DropdownMenu>
                         {titles.length > 0 && (
-                            <NeoButton image="X" controlSize="small" borderShape="circle" selected accessibilityLabel={fill(strings.remove, c.caption)} onPress={() => onChange(withSearchFilter(query, c.name, null))} classNames={{ root: '-ms-1' }} />
+                            <NeoButton image="X" selected accessibilityLabel={fill(strings.remove, c.caption)} onPress={() => onChange(withSearchFilter(query, c.name, null))} />
                         )}
-                    </Row>
+                    </NeoButtonGroup>
                 );
             }
         }
@@ -178,7 +180,7 @@ export default function SearchChips({ query, scope, strings, onChange, trailing 
     };
 
     return (
-        <View className="gap-2 px-3 pt-3">
+        <View className={'gap-2 pt-3 ' + inset}>
             <Row className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
                 {scope.chips.map(chip)}
                 {scope.scope === 'global' && scope.groups.length > 1 && (

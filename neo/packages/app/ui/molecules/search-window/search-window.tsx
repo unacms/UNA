@@ -27,6 +27,12 @@ function countText(count: number, more: boolean): string {
  * count, sort and a tab per module, then the full results page. The header's Search, a section's or context's Search
  * and Cmd/Ctrl+K open it in a dialog (SearchWindowHost); the results page and Explore have it in the page.
  */
+/** The hint, the empty state, an error and the first load share one height: only real results change the window's size. */
+const STATE_BOX = 'min-h-40 items-center justify-center gap-2 py-6';
+
+/** Inside a block (Explore, the results page) the block's padding is the edge: the field and chips line up with its title. */
+const INSET = { modal: 'px-3', page: '', explore: '' } as const;
+
 export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFocus = true, onClose, onQueryChange }: SearchWindowProps) {
     const [query, setQuery] = useState<SearchQuery>(initialQuery);
     const [keyword, setKeyword] = useState<string>(initialQuery.keyword ?? '');
@@ -126,7 +132,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
     return (
         <View className="w-full">
             <Redirect ref={redirectRef} />
-            <Row className="items-center gap-2 border-b border-border px-3 py-2">
+            <Row className={'items-center gap-2 border-b border-border py-2 ' + INSET[mode]}>
                 <Icon icon="Search" size={20} className="text-muted-foreground" />
                 {/* borderless, as UNA's window: the dialog's top row is the field */}
                 <TextInputClear
@@ -162,6 +168,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
             {/* the chips, and the sort at the end of their row once there is something to sort */}
             {scope && (
                 <SearchChips
+                    inset={INSET[mode]}
                     query={query}
                     scope={scope}
                     strings={strings}
@@ -188,11 +195,14 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                 />
             )}
 
-            <View className="px-3 pb-3">
+            <View className={'pb-3 ' + INSET[mode]}>
                     {!hasQuery ? (mode === 'explore' ? null : (
-                        <Text className="py-6 text-center text-sm text-muted-foreground">{strings.hint || ''}</Text>
-                    )) : error && !data ? (
-                        <Text className="py-6 text-center text-sm text-destructive">{strings.error || ''}</Text>
+                        <View className={STATE_BOX}><Text className="text-center text-sm text-muted-foreground">{strings.hint || ''}</Text></View>
+                    )) : error && !results ? (
+                        <View className={STATE_BOX}><Text className="text-center text-sm text-destructive">{strings.error || ''}</Text></View>
+                    ) : !results ? (
+                        // the first answer for the words: the box the hint had, so nothing moves while it loads
+                        <View className={STATE_BOX} aria-busy />
                     ) : results ? (
                         <>
                             {/* a failed request for new words: the last results stay, dimmed, under the error */}
@@ -227,7 +237,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             )}
 
                             {groups.map((group) => (
-                                <View key={group.name} className={'py-1' + (error ? ' opacity-50' : '')}>
+                                <View key={group.name} className={'py-1 web:transition-opacity' + (error || loading ? ' opacity-50' : '')}>
                                     <Row className="items-center gap-2 py-2">
                                         <Icon icon={group.icon} size={16} className="text-foreground" />
                                         <Text className="text-sm font-semibold text-foreground" role="heading" aria-level={3}>{group.title}</Text>
@@ -258,8 +268,9 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                                 />
                             )}
 
-                            {!groups.length && !loading && (
-                                <View className="py-6">
+                            {/* kept while new words load (dimmed), so the window does not shrink and grow back */}
+                            {!groups.length && (
+                                <View className={STATE_BOX + (loading ? ' opacity-50' : '')}>
                                     {appStatic('components_content_empty', {})}
                                     <Text className="text-center text-sm text-muted-foreground">{strings.empty}</Text>
                                 </View>
@@ -269,7 +280,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
             </View>
 
             {mode !== 'page' && hasQuery && (
-                <Row className="items-center justify-end border-t border-border px-3 py-2">
+                <Row className={'items-center justify-end border-t border-border py-2 ' + INSET[mode]}>
                     <NeoButtonLink
                         href={searchResultsHref(query)}
                         label={strings.full}

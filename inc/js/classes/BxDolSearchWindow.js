@@ -52,7 +52,11 @@ BxDolSearchWindow.open = function(oScope, oTrigger)
     oWindow.setScope(oScope || {});
     oWindow._oTrigger = oTrigger ? $(oTrigger) : null;
 
+    // its top edge stays where it opens, 4rem from the window's top (NEO's dialog too): only the bottom moves as results come and go
     oPopup.dolPopup({
+        position: 'fixed',
+        left: 'center',
+        top: '4rem',
         onShow: function() {
             if(oWindow._oTrigger)
                 oWindow._oTrigger.attr('aria-expanded', 'true');
@@ -494,7 +498,7 @@ BxDolSearchWindow.prototype._request = function(oQuery, onSuccess)
         },
         error: function(oXhr, sStatus) {
             if(sStatus != 'abort')
-                $this._oRoot.find('.bx-search-window-results').html($('<p class="py-6 text-center text-sm text-red-700 dark:text-red-400"></p>').text(_t('_sys_search_window_error')));
+                $this._oRoot.find('.bx-search-window-results').html($('<p class="bx-search-window-hint text-sm text-red-700 dark:text-red-400" role="alert"></p>').text(_t('_sys_search_window_error')));
         },
         complete: function(oXhr, sStatus) {
             if(sStatus == 'abort')

@@ -6279,6 +6279,68 @@ body:not(.bx-std) .bx-btn.bx-btn-primary[aria-expanded="true"] {
   background-color: rgb(var(--bx-accent-700) / var(--tw-bg-opacity, 1));
 }
 
+/* Button group (.bx-btn-group around .bx-btn segments, as NEO's NeoButtonGroup): one shape, the segments' own fills joined edge to edge,
+       the group's outer corners on its first and last segment and square ones between, a hairline between segments, each segment with its own
+       focus ring (lifted over its neighbours), hover and press. A main button with attached ones, such as an active filter and its remove button.
+       common.css has the older rules (corners, a white divider); these replace its divider. Studio has its own (see "Joined button groups"). */
+
+body:not(.bx-std) .bx-btn-group {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn {
+  margin: 0px;
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn:focus-visible {
+  z-index: 10;
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn:not(:first-child) {
+  border-start-start-radius: 0px;
+  border-end-start-radius: 0px;
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn:not(:last-child) {
+  border-start-end-radius: 0px;
+  border-end-end-radius: 0px;
+}
+
+/* an icon-only segment (.bx-btn-icon, round on its own) takes the outer corners of a labelled button of its size */
+
+body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon:first-child {
+  border-start-start-radius: var(--bx-radius-xl);
+  border-end-start-radius: var(--bx-radius-xl);
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon:last-child {
+  border-start-end-radius: var(--bx-radius-xl);
+  border-end-end-radius: var(--bx-radius-xl);
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon.bx-btn-small:first-child {
+  border-start-start-radius: calc(10px * var(--bx-radius-scale));
+  border-end-start-radius: calc(10px * var(--bx-radius-scale));
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon.bx-btn-small:last-child {
+  border-start-end-radius: calc(10px * var(--bx-radius-scale));
+  border-end-end-radius: calc(10px * var(--bx-radius-scale));
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn + .bx-btn:not(:focus-visible) {
+  border-inline-start-color: rgb(0 0 0 / 0.1);
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn + .bx-btn:not(:focus-visible):is(.dark *) {
+  border-inline-start-color: rgb(255 255 255 / 0.1);
+}
+
+body:not(.bx-std) .bx-btn-group > .bx-btn:not(:first-child)::after {
+  content: none;
+}
+
 /* Search window (BxBaseSearchWindow, inc/js/classes/BxDolSearchWindow.js): a wider dialog than other popups, as tall as its content up
        to the window less room around it, the results scrolling inside. Active chips, a pressed "Title only" and the current results tab take
        the open button's accent colours (the rule above), so the window reads like NEO's (Chip selected). */
@@ -6294,7 +6356,29 @@ body:not(.bx-std) .bx-btn.bx-btn-primary[aria-expanded="true"] {
 }
 
 .bx-search-window-popup {
-  max-height: min(44rem, calc(100vh - 4rem));
+  max-height: min(44rem, calc(100vh - 5rem));
+  /* 4rem above it (BxDolSearchWindow.open), 1rem below */
+}
+
+/* The window keeps its height while it asks again: the last results stay, dimmed, until the new ones replace them, and the hint and
+       an error have one fixed height, so only a real change in the results moves the window's bottom edge (its top never moves). */
+
+.bx-search-window-results {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  /* 10rem tall at least (search_window.html) */
+}
+
+.bx-search-window-results[aria-busy="true"] {
+  opacity: 0.5;
+}
+
+.bx-search-window-hint {
+  display: flex;
+  min-height: 10rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .bx-search-window-input::-webkit-search-cancel-button {

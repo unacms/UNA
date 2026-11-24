@@ -160,6 +160,7 @@ class BxBaseSearchWindow extends BxDol
                 }, $aAdd),
             ]);
             $aChips[] = $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
+                'group' => '',
                 'class' => 'bx-search-window-chip-add',
                 'attrs' => 'aria-expanded="false" aria-controls="' . $sPanelId . '" data-panel="' . $sPanelId . '"',
                 'icon' => $this->_getIcon('plus', 'size-4'),
@@ -204,6 +205,7 @@ class BxBaseSearchWindow extends BxDol
             case 'scope':
                 $sIcon = $this->_getIcon($aChip['name'] == 'context' ? 'users-round' : ($aChip['icon'] ?? 'search'), 'size-4');
                 return $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
+                    'group' => 'bx-btn-group',
                     'class' => 'bx-search-window-chip-active bx-search-window-chip-scope',
                     'attrs' => 'data-name="' . $aChip['name'] . '" data-value="' . bx_html_attribute($aChip['value']) . '" disabled="disabled"',
                     'icon' => $sIcon,
@@ -256,6 +258,7 @@ class BxBaseSearchWindow extends BxDol
         }
 
         return $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
+            'group' => $bActive && $aChip['type'] != 'toggle' ? 'bx-btn-group' : '',
             'class' => $bActive ? 'bx-search-window-chip-active' : '',
             'attrs' => $sAttrs,
             'icon' => $sIcon,
