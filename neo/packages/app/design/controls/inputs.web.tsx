@@ -156,6 +156,7 @@ export const Input = forwardRef<any, CustomInputProps>(
     ({ className = '', style, rounded = InputRounded.default, size = DEFAULT_SIZE, multiline, pickerTrigger, ...props }, ref) => {
         const Component = multiline ? 'textarea' : 'input';
         const labelInside = useContext(InputLabelInsideContext) && isLabelInsideSize(size);
+        const invalid = props['aria-invalid'] === true || props['aria-invalid'] === 'true';
         return (
             <Component
                 ref={ref}
@@ -164,6 +165,7 @@ export const Input = forwardRef<any, CustomInputProps>(
                     inputSettings.size[size] ?? inputSettings.size.regular,
                     labelInside && inputSettings.adaptive_input_inside,
                     rounded === InputRounded.full && inputSettings.rounded.full,
+                    invalid && inputSettings.invalid,
                     !pickerTrigger && (props.readOnly || props.editable === false) && inputSettings.locked,
                     className,
                 )}
@@ -193,7 +195,7 @@ export const InputWithIcons = forwardRef<any, InputWithIconsProps>(
             ) : null}
             <Input
                 ref={ref}
-                className={`w-full ${className || ''} ${typeof startDecorator === 'string' ? 'pl-12' : startDecorator ? 'pl-10' : ''} ${endDecorator ? 'pr-11' : ''}`}
+                className={`w-full ${className || ''} ${typeof startDecorator === 'string' ? 'pl-11.75' : startDecorator ? 'pl-9.75' : ''} ${endDecorator ? 'pr-10.75' : ''}`}
                 style={style}
                 rounded={rounded}
                 {...props}

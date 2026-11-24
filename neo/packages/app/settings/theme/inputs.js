@@ -38,11 +38,13 @@ export const settingsInputs = {
         // Size that inputs, selects and switch rows use when a field doesn't pass one.
         default_size: 'large',
         // Shared control heights + default radius — text inputs, selects, matching surfaces.
+        // Padding is 1px under the 12/16px text inset (and 6/8px top) because the 1px border of `base`
+        // makes it up: text starts where the wells' content and the adaptive label do.
         size:{
-            small: 'px-3 py-1.5 leading-4 min-h-9 rounded-control-sm',
-            regular: 'px-3 py-2 leading-5 min-h-11 rounded-xl',
+            small: 'px-2.75 py-1.25 leading-4 min-h-9 rounded-control-sm',
+            regular: 'px-2.75 py-1.75 leading-5 min-h-11 rounded-xl',
             // 52px, the height of a large NeoButton.
-            large: 'px-4 py-2 leading-6 min-h-13 rounded-xl',
+            large: 'px-3.75 py-1.75 leading-6 min-h-13 rounded-xl',
         },
         // Height-only tokens for chip wells / wrappers that bring their own padding.
         surface_size:{
@@ -65,12 +67,27 @@ export const settingsInputs = {
             regular: 'p-1 gap-1',
             large: 'p-2 gap-1.5',
         },
-        base: 
-        'text-card-foreground placeholder:text-muted-foreground  bg-card shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring/80 web:focus-visible:border web:focus-visible:shadow-none web:overflow-hidden',
-        // A read only / disabled input: no focus, and it shows it.
-        locked: 'bg-muted text-muted-foreground shadow-none dark:shadow-none web:cursor-not-allowed',
+        // One 1px border in every state, so focus, error and read only change colours only and the
+        // text never moves. At rest it is the hairline the wells and boxes draw (`shadow-input-outline`:
+        // black/10, white/5 in dark). Focus (web; `:focus-within`, so a wrapper drawn with `base` takes it
+        // too): the border turns `ring` (accent-600 light, accent-500 dark: 3:1 or more against the field and
+        // the page) and a soft 3px `ring`/25 halo outside it, a box-shadow that takes no room. The global
+        // 2px `:focus-visible` outline is turned off here, as the border and halo replace it.
+        base:
+        'text-card-foreground placeholder:text-muted-foreground bg-card border border-black/10 dark:border-white/5 text-base placeholder-muted-foreground web:transition-[border-color,box-shadow] web:duration-150 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-within:border-ring web:focus-within:ring-[3px] web:focus-within:ring-ring/25 web:focus-visible:outline-none! web:overflow-hidden',
+        // A box that holds bare inputs (the date picker's time box): the same border, and the same focus
+        // border and halo while any input inside has focus.
+        surface: 'bg-card border border-black/10 dark:border-white/5 web:transition-[border-color,box-shadow] web:duration-150 web:focus-within:border-ring web:focus-within:ring-[3px] web:focus-within:ring-ring/25',
+        // Native has no focus selector: `Input` adds this while the field has focus (no halo; the
+        // border colour alone, as iOS and Android fields do).
+        focused: 'border-ring',
+        // An invalid field (`aria-invalid`): the same border and halo in the destructive colour. After
+        // `focused`, so it wins on native too.
+        invalid: 'border-destructive web:focus-within:border-destructive web:focus-within:ring-destructive/25',
+        // A read only / disabled input: no focus, and it shows it. The border stays, transparent.
+        locked: 'bg-muted text-muted-foreground border-transparent dark:border-transparent web:cursor-not-allowed',
         // Height/padding come from `size` (same as Input) so select stays in sync.
-        select: ' pr-10 bg-card shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+        select: ' pr-9.75 bg-card border border-black/10 dark:border-white/5 web:transition-[border-color,box-shadow] web:duration-150 web:focus:border-ring web:focus:ring-[3px] web:focus:ring-ring/25 web:focus-visible:outline-none! flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground ',
 
         // Adaptive / floating eyebrow labels (`forms.adaptive_labels`)
         // Chip owns height; web `[&_label]` kills the inherited line-height strut
@@ -98,8 +115,9 @@ export const settingsInputs = {
         // iOS draws the label text 1.5pt higher in its box than the web does (Inter, leading-none);
         // this moves it down in both states, so the resting label is centred as on web.
         adaptive_label_ios_text_offset: 1.5,
-        // pt-5.5 + leading-6 + pb-1 = 50px, so the 1px focus border fits in min-h-13 without the box growing.
-        adaptive_input_inside: 'pt-5.5 pb-1',
+        // 1px border + pt-5.25 + leading-6 + pb-0.75 + 1px border = 50px, inside min-h-13 (52px): the text
+        // sits 23px down, under the floated label.
+        adaptive_input_inside: 'pt-5.25 pb-0.75',
     },
     switcher: {
         // Container (height/padding via size.*)
