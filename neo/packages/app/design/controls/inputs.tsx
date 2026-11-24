@@ -99,6 +99,12 @@ export const Input = forwardRef<TextInputInstance, CustomInputProps>(
     }
 );
 
+/** Room for the start decorator: a 20px icon by name, or a node of its own (1px under the inset; the border makes it up). */
+function startDecoratorPad(decorator?: string | ReactNode): string {
+    if (!decorator) return '';
+    return typeof decorator === 'string' ? 'pl-11.75' : 'pl-9.75';
+}
+
 function renderInputDecorator(decorator?: string | ReactNode) {
     if (!decorator) return null;
     if (typeof decorator === 'string') {
@@ -117,7 +123,7 @@ export const InputWithIcons = forwardRef<TextInputInstance, InputWithIconsProps>
             ) : null}
             <Input
                 ref={ref}
-                className={`w-full ${className || ''} ${typeof startDecorator === 'string' ? 'pl-11.75' : startDecorator ? 'pl-9.75' : ''} ${endDecorator ? 'pr-10.75' : ''}`}
+                className={`w-full ${className || ''} ${startDecoratorPad(startDecorator)} ${endDecorator ? 'pr-10.75' : ''}`}
                 style={style}
                 rounded={rounded}
                 {...props}

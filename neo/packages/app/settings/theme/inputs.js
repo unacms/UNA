@@ -72,22 +72,23 @@ export const settingsInputs = {
         // black/10, white/5 in dark). Focus (web; `:focus-within`, so a wrapper drawn with `base` takes it
         // too): the border turns `ring` (accent-600 light, accent-500 dark: 3:1 or more against the field and
         // the page) and a soft 3px `ring`/25 halo outside it, a box-shadow that takes no room. The global
-        // 2px `:focus-visible` outline is turned off here, as the border and halo replace it.
+        // 2px `:focus-visible` outline is turned off here, as the border and halo replace it, except in forced
+        // colours (Windows High Contrast), which drop box-shadows and border colours: there the outline stays.
         base:
-        'text-card-foreground placeholder:text-muted-foreground bg-card border border-black/10 dark:border-white/5 text-base placeholder-muted-foreground web:transition-[border-color,box-shadow] web:duration-150 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-within:border-ring web:focus-within:ring-[3px] web:focus-within:ring-ring/25 web:focus-visible:outline-none! web:overflow-hidden',
+        'text-card-foreground placeholder:text-muted-foreground bg-card border border-black/10 dark:border-white/5 text-base placeholder-muted-foreground web:transition-[border-color,box-shadow] web:duration-150 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-within:border-ring web:focus-within:ring-[3px] web:focus-within:ring-ring/25 web:not-forced-colors:focus-visible:outline-none! web:overflow-hidden',
         // A box that holds bare inputs (the date picker's time box): the same border, and the same focus
         // border and halo while any input inside has focus.
         surface: 'bg-card border border-black/10 dark:border-white/5 web:transition-[border-color,box-shadow] web:duration-150 web:focus-within:border-ring web:focus-within:ring-[3px] web:focus-within:ring-ring/25',
         // Native has no focus selector: `Input` adds this while the field has focus (no halo; the
         // border colour alone, as iOS and Android fields do).
-        focused: 'border-ring',
+        focused: 'border-ring dark:border-ring',
         // An invalid field (`aria-invalid`): the same border and halo in the destructive colour. After
         // `focused`, so it wins on native too.
-        invalid: 'border-destructive web:focus-within:border-destructive web:focus-within:ring-destructive/25',
+        invalid: 'border-destructive dark:border-destructive web:focus-within:border-destructive web:focus-within:ring-destructive/25',
         // A read only / disabled input: no focus, and it shows it. The border stays, transparent.
         locked: 'bg-muted text-muted-foreground border-transparent dark:border-transparent web:cursor-not-allowed',
         // Height/padding come from `size` (same as Input) so select stays in sync.
-        select: ' pr-9.75 bg-card border border-black/10 dark:border-white/5 web:transition-[border-color,box-shadow] web:duration-150 web:focus:border-ring web:focus:ring-[3px] web:focus:ring-ring/25 web:focus-visible:outline-none! flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground ',
+        select: ' pr-9.75 bg-card border border-black/10 dark:border-white/5 web:transition-[border-color,box-shadow] web:duration-150 web:focus:border-ring web:focus:ring-[3px] web:focus:ring-ring/25 web:not-forced-colors:focus-visible:outline-none! flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground ',
 
         // Adaptive / floating eyebrow labels (`forms.adaptive_labels`)
         // Chip owns height; web `[&_label]` kills the inherited line-height strut

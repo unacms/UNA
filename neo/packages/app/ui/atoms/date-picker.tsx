@@ -65,7 +65,7 @@ function TimeSpinField({ value, onChangeText, onBlur, onStep, label }: {
                 onChangeText={onChangeText}
                 onBlur={onBlur}
                 placeholder="00"
-                className="h-full w-9 shrink-0 px-1 text-center text-base tabular-nums leading-none text-card-foreground bg-transparent border-0 outline-none shadow-none ring-0 focus:outline-none focus:ring-0 web:focus-visible:outline-none! focus-visible:ring-0 web:focus:shadow-none web:focus-visible:shadow-none"
+                className="h-full w-9 shrink-0 px-1 text-center text-base tabular-nums leading-none text-card-foreground bg-transparent border-0 outline-none shadow-none ring-0 focus:outline-none focus:ring-0 web:not-forced-colors:focus-visible:outline-none! focus-visible:ring-0 web:focus:shadow-none web:focus-visible:shadow-none"
                 maxLength={2}
                 placeholderTextColor="#6b7280"
                 value={value}
