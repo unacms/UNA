@@ -1,0 +1,94 @@
+name: PR preview
+
+# PR previews on Railway are opt-in. Adding the `preview` label starts UNA CI for the PR's branch,
+# which tests it and deploys both halves into Railway environment pr-<n>; after that, each push
+# to the PR redeploys the half it changed. Removing the label, or closing the PR, deletes the
+# environment.
+#
+# Label events are handled here rather than in ci.yml: a ci.yml run for some other label would
+# report its required checks as skipped, which counts as passed.
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types: [labeled, unlabeled, closed]
+
+permissions:
+  contents: read
+
+# The teardown joins the PR's CI group, so it cancels a preview deploy still in progress instead
+# of racing it.
+concurrency:
+  group: ${{ (github.event.action == 'closed' || (github.event.action == 'unlabeled' && github.event.label.name == 'preview')) && format('ci-pr-{0}', github.event.pull_request.number) || format('preview-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event.action == 'closed' || (github.event.action == 'unlabeled' && github.event.label.name == 'preview') }}
+
+jobs:
+  start:
+    # Same-repo PRs only: forks and Dependabot get no secrets.
+    name: Start preview
+    if: >-
+      github.event.action == 'labeled' && github.event.label.name == 'preview'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+    # A run started with GITHUB_TOKEN is the one kind of event that token may trigger.
+    - name: Run UNA CI for the PR
+      run: gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$HEAD_REF" -f pr="$PR_NUMBER"
+
+  teardown:
+    name: Remove PR Railway environment
+    if: >-
+      (github.event.action == 'closed' || (github.event.action == 'unlabeled' && github.event.label.name == 'preview'))
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
+      PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
+      PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        sparse-checkout: |
+          .github/actions
+          scripts/railway
+
+    # Previews created before they moved to Railway domains (2026-10-20) still have DNS records
+    # on unacms.app; this step can go once those PRs are closed.
+    - name: Remove preview domains
+      if: env.VERCEL_TOKEN != ''
+      continue-on-error: true
+      run: |
+        scripts/railway/domains.sh client-unalias "$PREVIEW_CLIENT_HOST"
+        scripts/railway/domains.sh dns-remove "$PREVIEW_CLIENT_HOST"
+        scripts/railway/domains.sh dns-remove "$PREVIEW_API_HOST"
+
+    - uses: ./.github/actions/railway-cli
+
+    - name: Delete PR environment
+      run: |
+        if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
+          echo "Set secrets RAILWAY_API_TOKEN (account token) and RAILWAY_PROJECT_ID" >&2
+          exit 1
+        fi
+        base="${RAILWAY_BASE_ENVIRONMENT:-production}"
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
+        # The PR's CI run in progress is cancelled above (concurrency), so nothing can create
+        # the environment after this. A PR without a preview has none.
+        if railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y; then
+          echo "Deleted $RAILWAY_PR_ENVIRONMENT"
+        else
+          echo "No environment $RAILWAY_PR_ENVIRONMENT to delete"
+        fi
