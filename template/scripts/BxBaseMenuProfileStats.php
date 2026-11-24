@@ -68,8 +68,9 @@ class BxBaseMenuProfileStats extends BxTemplMenuAccountNotifications
     }
 
     /**
-     * Forget the member's menu, the site's (`menu_<object>_p<id>` and its variants) and the apps' counts, after
-     * something that changes a count (their content added or deleted).
+     * Forget the member's menu, the site's (`menu_<object>_p<id>`) and the apps' counts, after something that
+     * changes a count (their content added or deleted). Exact keys only: Memcache and Memcached flush the whole
+     * server for a prefix.
      */
     public static function clearCacheForProfile ($iProfileId)
     {
@@ -79,7 +80,7 @@ class BxBaseMenuProfileStats extends BxTemplMenuAccountNotifications
 
         foreach (['sys_profile_stats', 'sys_profile_stats_tiles'] as $sObject) {
             bx_content_cache_del('menu_' . $sObject . '_p' . $iProfileId);
-            bx_content_cache_del_by_prefix('menu_' . $sObject . '_p' . $iProfileId . '_');
+            bx_content_cache_del('menu_' . $sObject . '_p' . $iProfileId . '_api_addons');
         }
     }
 

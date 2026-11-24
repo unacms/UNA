@@ -13,12 +13,14 @@ class ProfileStatsAppsSqlTest extends \PHPUnit\Framework\TestCase
      * Items that stay off in the apps, with the reason: the apps can't open their page.
      * - bx_convos: a Convos folder (`modules/?r=convos/...`) is no page; the apps have Messenger.
      * - bx_market, bx_jobs: the page the item opens is not on for the apps.
+     * - bx_courses: its page (joined-courses) shows only the courses one created in the apps, not the joined ones.
      * - the rest: the module has no enable-app.sql, so none of its pages is in the apps.
      */
     private const SITE_ONLY = [
         'bx_convos' => ['profile-stats-unread-messages'],
         'bx_market' => ['profile-stats-my-market'],
         'bx_jobs' => ['profile-stats-my-jobs'],
+        'bx_courses' => ['profile-stats-my-courses'],
     ];
 
     private static function read(string $sPath): string
@@ -90,7 +92,6 @@ class ProfileStatsAppsSqlTest extends \PHPUnit\Framework\TestCase
             'modules/system/migrations/2026112460_profile_stats_connections_in_apps.sql' => '`active_api` = 0;',
             'modules/boonex/persons/migrations/2026112460_profile_stats_as_on_site.sql' => '`active_api` = 1;',
             'modules/boonex/organizations/migrations/2026112460_profile_stats_as_on_site.sql' => '`active_api` = 1;',
-            'modules/boonex/courses/migrations/2026112460_profile_stats_courses_in_apps.sql' => '`active_api` = 0;',
         ];
         foreach ($aFiles as $sFile => $sOld) {
             $sSql = self::read(self::ROOT . $sFile);

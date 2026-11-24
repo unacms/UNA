@@ -88,6 +88,7 @@ class ProfileStatsApiTest extends BxDolIntegrationTestCase
         foreach ($aKeys as $sKey)
             bx_content_cache_set($sKey, [1 => '7'], BxBaseMenuProfileStats::API_COUNTERS_TTL);
         bx_content_cache_set('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons', [1 => '7'], 60);
+        bx_content_cache_set('menu_sys_profile_stats_unrelated', [1 => '7'], 60);
 
         // what a module's entry form calls after an entry is added or deleted
         BxBaseMenuProfileStats::clearCacheForProfile($iProfileId);
@@ -95,6 +96,8 @@ class ProfileStatsApiTest extends BxDolIntegrationTestCase
         foreach ($aKeys as $sKey)
             $this->assertNull(bx_content_cache_get($sKey, BxBaseMenuProfileStats::API_COUNTERS_TTL), $sKey);
         $this->assertNotNull(bx_content_cache_get('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons', 60), 'Another profile\'s counts stay.');
+        $this->assertNotNull(bx_content_cache_get('menu_sys_profile_stats_unrelated', 60), 'Nothing else is flushed.');
+        bx_content_cache_del('menu_sys_profile_stats_unrelated');
         bx_content_cache_del('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons');
     }
 
