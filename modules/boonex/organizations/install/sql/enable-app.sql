@@ -90,7 +90,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_my
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_submenu' AND `module`='bx_organizations' AND `name`='organizations-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_submenu' AND `module`='bx_organizations' AND `name`='organizations-active';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_submenu' AND `module`='bx_organizations' AND `name`='organizations-online';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_submenu' AND `module`='bx_organizations' AND `name`='organizations-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_submenu' AND `module`='bx_organizations' AND `name`='organizations-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_view_submenu' AND `module`='bx_organizations' AND `name`='view-organization-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_organizations_view_submenu' AND `module`='bx_organizations' AND `name`='organization-profile-info';

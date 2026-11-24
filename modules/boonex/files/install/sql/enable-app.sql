@@ -73,7 +73,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_my' AND `m
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_submenu' AND `module`='bx_files' AND `name`='files-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_submenu' AND `module`='bx_files' AND `name`='files-popular';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_submenu' AND `module`='bx_files' AND `name`='files-top';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_submenu' AND `module`='bx_files' AND `name`='files-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_submenu' AND `module`='bx_files' AND `name`='files-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_snippet_meta' AND `module`='bx_files' AND `name`='date';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_files_snippet_meta' AND `module`='bx_files' AND `name`='size';

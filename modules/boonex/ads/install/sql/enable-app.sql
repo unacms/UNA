@@ -78,7 +78,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_my' AND `mod
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_submenu' AND `module`='bx_ads' AND `name`='ads-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_submenu' AND `module`='bx_ads' AND `name`='ads-popular';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_submenu' AND `module`='bx_ads' AND `name`='ads-categories';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_submenu' AND `module`='bx_ads' AND `name`='ads-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_submenu' AND `module`='bx_ads' AND `name`='ads-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_snippet_meta' AND `module`='bx_ads' AND `name`='date';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_ads_snippet_meta' AND `module`='bx_ads' AND `name`='author';

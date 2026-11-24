@@ -305,7 +305,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_files_submenu', 'bx_files', 'files-home', '_bx_files_menu_item_title_system_entries_public', '_bx_files_menu_item_title_entries_public', 'page.php?i=files-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_files_submenu', 'bx_files', 'files-popular', '_bx_files_menu_item_title_system_entries_popular', '_bx_files_menu_item_title_entries_popular', 'page.php?i=files-popular', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_files_submenu', 'bx_files', 'files-top', '_bx_files_menu_item_title_system_entries_top', '_bx_files_menu_item_title_entries_top', 'page.php?i=files-top', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_files_submenu', 'bx_files', 'files-search', '_bx_files_menu_item_title_system_entries_search', '_bx_files_menu_item_title_entries_search', 'page.php?i=files-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_files_submenu', 'bx_files', 'files-search', '_bx_files_menu_item_title_system_entries_search', '_bx_files_menu_item_title_entries_search', 'page.php?i=files-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_files_submenu', 'bx_files', 'files-manage', '_bx_files_menu_item_title_system_entries_manage', '_bx_files_menu_item_title_entries_manage', 'page.php?i=files-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: sub-menu for view entry
