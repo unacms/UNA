@@ -21,6 +21,7 @@ export type PersistedPrefs = {
     sidebarNarrow: boolean;
     sidebarWidth: number | null;
     sidebarCollapsed: string[];
+    menusExpanded: string[];
 };
 
 export type SessionPrefs = {
@@ -48,6 +49,8 @@ const PERSISTED_DEFAULTS: PersistedPrefs = {
     sidebarWidth: null,
     /** The Application sidebar's groups the member closed (a followings group's menu and item names). */
     sidebarCollapsed: [],
+    /** Menus whose "Show more" the member opened, as `<menu object>:<profile id>` (the home's profile stats menu). */
+    menusExpanded: [],
 };
 
 const SESSION_DEFAULTS: SessionPrefs = {

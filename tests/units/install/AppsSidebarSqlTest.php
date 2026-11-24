@@ -124,7 +124,8 @@ class AppsSidebarSqlTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString("`set_name`='sys_site_panel' AND `module`='system' AND `name`='public-menu'", $sApp, 'The Site Panel\'s Public Menu stays off in the apps.');
         $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name`='member-followings';", $sApp);
         $this->assertStringContainsString("SET `active_api`=1, `config_api`='{\"drawer\":true}' WHERE `set_name`='sys_site_panel' AND `module`='system' AND `name` IN ('homepage-menu', 'account-menu', 'footer-menu');", $sApp, 'The drawer\'s three are on in the apps, and marked for the drawer.');
-        $this->assertStringNotContainsString("`set_name`='sys_profile_stats' AND `module`='system' AND `name`='friend-suggestions'", $sApp);
+        // Connections is on in the apps too: the member's own menu lists the same items on the site and in the apps.
+        $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='system' AND `name`='friend-suggestions';", $sApp);
 
         // no module adds its Messages or Notifications to the site menu or the member menu for the apps,
         // and no migration of this tree changes a row of the site's three menus
