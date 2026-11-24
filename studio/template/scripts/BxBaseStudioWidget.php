@@ -214,12 +214,12 @@ class BxBaseStudioWidget extends BxDolStudioWidget
 
         /**
          * A grid's header has a title row (BxDolGrid::setHeaderTitleRow): the block's title goes there, beside the grid's
-         * buttons and above its filters, as the page builder's caption, and the block draws no caption of its own. A block
-         * whose grid is not its content but a part of it, or with caption actions, controls or a top panel of its own, keeps
+         * buttons and above its filters, as the page builder's caption, and the block draws no caption of its own (the grid
+         * may follow the page's scripts). A block whose grid is not its content but a part of it, or with caption actions, controls or a top panel of its own, keeps
          * its caption, and the grid's title row keeps only the grid's buttons.
          */
         if(is_string($sContent) && str_contains($sContent, BxDolGrid::HEADER_TITLE_SLOT)) {
-            $bTitleInGrid = preg_match('/^\s*<div id="bx-grid-wrap-/', $sContent) && empty($aBlock['actions']) && empty($aBlock['panel_top']) && $this->getBlockCaptionControls($aBlock) === '';
+            $bTitleInGrid = preg_match('/^\s*(?:<script\b[^>]*>.*?<\/script>\s*)*<div id="bx-grid-wrap-/s', $sContent) && empty($aBlock['actions']) && empty($aBlock['panel_top']) && $this->getBlockCaptionControls($aBlock) === '';
 
             $sTitle = $bCaption && $bTitleInGrid ? $this->getBlockCaptionText($aBlock) : '';
             $sContent = preg_replace_callback('/' . preg_quote(BxDolGrid::HEADER_TITLE_SLOT, '/') . '/', function() use($sTitle) {

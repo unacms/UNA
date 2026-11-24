@@ -134,6 +134,17 @@ class GridHeaderTitleRowTest extends BxDolTestCase
         $this->assertTrue(strpos($s, 'id="bx-grid-wrap-test_grid"') < strpos($s, 'bx-std-block-caption'));
     }
 
+    public function testTheGridMayFollowThePageScripts(): void
+    {
+        BxDolGrid::setHeaderTitleRow(true);
+        $sScript = "<script language=\"javascript\">\nvar oTools = new Tools({\"a\":\"<div>\"});\n</script>\n";
+
+        $s = $this->widget()->getBlockCode(['caption' => 'Reports', 'content' => $sScript . $this->grid()->getCode()]);
+
+        $this->assertStringContainsString('<h2 class="bx-std-bcap-text">Reports</h2>', $s);
+        $this->assertSame(1, substr_count($s, 'class="bx-std-block-caption"'));
+    }
+
     public function testABlockWithMoreThanTheGridKeepsItsCaption(): void
     {
         BxDolGrid::setHeaderTitleRow(true);
