@@ -20,9 +20,16 @@ jobs:
     name: Install SQL changes have a migration
     runs-on: ubuntu-latest
     steps:
+    # History without the contents of old files: the checks diff names and read today's files.
     - uses: actions/checkout@v6
       with:
         fetch-depth: 0
+        filter: blob:none
+        sparse-checkout-cone-mode: false
+        sparse-checkout: |
+          /*
+          !/upgrade/
+          !/neo/
 
     - name: Migration files are valid
       run: php periodic/migration.php --check

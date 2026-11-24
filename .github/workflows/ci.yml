@@ -1,56 +1,212 @@
 name: UNA CI
 
+# What runs, and when (docs/ci.md is the team's version of this):
+# - `changes` reads the diff once. Every other job runs only when it has something to do, so a
+#   neo-only PR runs no PHPUnit and a PHP-only PR runs no NEO lint.
+# - Pushes to master always run the whole PHPUnit suite. PRs run it whenever anything outside neo/
+#   changed (or the API client's openapi.json, which ApiV2SpecFileTest compares with the PHP code).
+# - PR previews on Railway are opt-in: a PR gets one once it has the `preview` label
+#   (preview.yml starts this workflow for it), and each later push deploys only the half that
+#   changed. Master deploys the half that changed to production.
+# - "[no deploy]" in a PR title or in the head commit on master skips every deploy; the tests
+#   still run. "Run workflow" on master deploys both halves by hand.
+
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number to build a preview for (empty on master deploys production)
+        required: false
+        default: ''
+      deploy:
+        description: Deploy the PR's preview (false only runs the checks)
+        type: boolean
+        default: true
 
 permissions:
   contents: read
   pull-requests: write
 
-# A newer push to a PR, or closing it, cancels that PR's run in progress, so the teardown can't
-# race a preview deploy that is still creating the environment. Master pushes never cancel.
+env:
+  # What the dependency cache holds: Composer's plugins/ and what the yarn build writes.
+  DEPS_PATHS: |
+    plugins
+    plugins_public
+    modules/boonex/messenger/js/emoji
+    modules/boonex/messenger/template/css/*.css
+
+# A newer push to a PR cancels that PR's run in progress. preview.yml joins the same group when a
+# PR is closed or loses its `preview` label, so the teardown can't race a preview deploy that is
+# still creating the environment. Master pushes never cancel.
 concurrency:
-  group: ci-${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.sha }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ (github.event.pull_request.number || inputs.pr) && format('ci-pr-{0}', github.event.pull_request.number || inputs.pr) || format('ci-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || inputs.pr != '' }}
 
 jobs:
-  dependencies:
-    # Composer (plugins/) and Yarn (plugins_public/, via the postinstall build) are the same
-    # tree for every PHP version, so they are installed once and the test legs download them.
-    name: Install dependencies
-    if: github.event_name == 'push' || github.event.action != 'closed'
+  changes:
+    name: What changed
     runs-on: ubuntu-latest
     outputs:
-      una: ${{ steps.changes.outputs.una }}
+      mode: ${{ steps.plan.outputs.mode }}
+      pr: ${{ steps.plan.outputs.pr }}
+      test_una: ${{ steps.plan.outputs.test_una }}
+      lint_neo: ${{ steps.plan.outputs.lint_neo }}
+      deploy_una: ${{ steps.plan.outputs.deploy_una }}
+      deploy_neo: ${{ steps.plan.outputs.deploy_neo }}
+      deps_key: ${{ steps.plan.outputs.deps_key }}
+      timings_key: ${{ steps.timings.outputs.cache-matched-key }}
     steps:
+    # History without file contents: enough for `git diff --name-only` and `git ls-tree`, about
+    # 3 s instead of 30.
     - uses: actions/checkout@v6
       with:
-        fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+        fetch-depth: 0
+        filter: blob:none
+        sparse-checkout: .github
 
-    # A PR that changes only neo/ skips PHPUnit; the PHP 8.5 Units leg still builds the package
-    # for the preview deploy. Pushes to master always run the tests. The API client's OpenAPI
-    # file is the exception: ApiV2SpecFileTest compares it with what the PHP code serves.
-    - name: Check for changes outside neo/
-      id: changes
+    # One snapshot of master's timings for every leg, so the legs of one PHP version all split
+    # Integration the same way even when master saves new timings meanwhile.
+    - name: Pick master's test timings
+      id: timings
+      uses: actions/cache/restore@v6
+      with:
+        key: phpunit-timings-${{ github.run_id }}
+        restore-keys: phpunit-timings-
+        path: phpunit-timings.json
+        lookup-only: true
+
+    - name: Decide what runs
+      id: plan
       env:
-        BASE_REF: ${{ github.event.pull_request.base.ref }}
+        EVENT: ${{ github.event_name }}
+        ACTION: ${{ github.event.action }}
+        REF: ${{ github.ref }}
+        PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+        BASE_REF: ${{ github.event.pull_request.base.ref || 'master' }}
+        BEFORE: ${{ github.event.before }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+        REPO: ${{ github.repository }}
+        GH_TOKEN: ${{ github.token }}
+        INPUT_DEPLOY: ${{ inputs.deploy }}
       run: |
-        if [ "${{ github.event_name }}" = "pull_request" ] \
-          && git diff --quiet "origin/$BASE_REF...HEAD" -- . ':(exclude)neo/' \
-          && git diff --quiet "origin/$BASE_REF...HEAD" -- neo/desktop/una-api/openapi.json; then
-          echo "una=false" >> "$GITHUB_OUTPUT"
-          echo "Only neo/ changed, PHPUnit is skipped."
+        # No pipefail: `grep -q` may close the pipe before printf is done.
+        set -eu
+        out() { echo "$1=$2" >> "$GITHUB_OUTPUT"; echo "$1=$2"; }
+
+        if [ -n "$PR_NUMBER" ]; then mode=pr; else mode=production; fi
+        out mode "$mode"
+        out pr "$PR_NUMBER"
+
+        # The dependency cache holds what `composer install` and `yarn install` produce, so its key
+        # covers everything they read: the lockfiles and patches, and the sources the yarn build
+        # compiles (src/, the AG Grid entry, the messenger module, and every template and script
+        # Tailwind scans for class names; see tailwind.config.js). It is a superset on purpose:
+        # an extra miss costs one install, a missing input ships stale assets. The ids come from
+        # git's trees, so no file is downloaded. The month keeps the unpinned installs (messenger,
+        # bower) from staying frozen for long.
+        inputs='^(composer\.(json|lock)|package\.json|yarn\.lock|bower\.json|tsconfig[^/]*\.json|rollup\.config\.js|tailwind\.config[^/]*\.js|patches/|scripts/|src/|inc/js/|template/|studio/template/|modules/base/|modules/[^/]+/[^/]+/(js|template|data/template)/|modules/boonex/messenger/)'
+        deps_hash=$(git ls-tree -r --full-tree HEAD | re="$inputs" awk -F '\t' '$2 ~ ENVIRON["re"]' | sha256sum | cut -c1-40)
+        out deps_key "una-deps-v2-$(date -u +%Y-%m)-$deps_hash"
+
+        # Which files changed. Everything counts as changed when the range is unknown.
+        all=false
+        if [ "$EVENT" = pull_request ] || [ "$mode" = pr ]; then
+          files=$(git diff --name-only "origin/$BASE_REF...HEAD")
+        elif [ "$EVENT" = push ] && [ -n "$BEFORE" ] && [ "${BEFORE//0/}" != "" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+          files=$(git diff --name-only "$BEFORE" HEAD)
         else
-          echo "una=true" >> "$GITHUB_OUTPUT"
+          files=''; all=true
         fi
+        echo "Changed files: $(printf '%s\n' "$files" | grep -c . || true)"
+
+        has() { [ "$all" = true ] || printf '%s\n' "$files" | grep -qE "$1"; }
+        # These change how CI itself runs, so they run everything.
+        if has '^\.github/(workflows/(ci|preview)\.yml|actions/|scripts/)'; then all=true; fi
+        una=false; neo=false; neo_deploy=false
+        { [ "$all" = true ] || printf '%s\n' "$files" | grep -v '^neo/' | grep -q .; } && una=true
+        has '^neo/desktop/una-api/openapi\.json$' && una=true
+        has '^neo/' && neo=true
+        has '^(neo/|scripts/railway/neo)' && neo_deploy=true
+
+        # The marker is matched without regard to case. A preview started by preview.yml reads the
+        # title from the PR, so the marker holds there too.
+        if [ "$EVENT" = workflow_dispatch ] && [ "$mode" = pr ]; then
+          PR_TITLE=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq .title)
+        fi
+        if [ "$mode" = pr ]; then text=$PR_TITLE; else text=$COMMIT_MESSAGE; fi
+        no_deploy=false
+        printf '%s' "$text" | grep -qi '\[no deploy\]' && no_deploy=true
+
+        if [ "$mode" = production ]; then
+          # Master always runs the whole suite. A push deploys the half that changed; "Run
+          # workflow" on master deploys both.
+          out test_una true
+          out lint_neo false
+          deploy_una=$una; deploy_neo=$neo_deploy
+          if [ "$EVENT" = workflow_dispatch ]; then deploy_una=true; deploy_neo=true; fi
+          if [ "$REF" != refs/heads/master ] || [ "$no_deploy" = true ]; then deploy_una=false; deploy_neo=false; fi
+        else
+          out test_una "$una"
+          out lint_neo "$neo"
+          # Previews: same-repo PRs only (forks and Dependabot get no secrets), with the label.
+          # The first build of an environment deploys both halves.
+          preview=false
+          # preview.yml dispatches with deploy=false to bring back checks a teardown cancelled.
+          if [ "$EVENT" = workflow_dispatch ]; then
+            first=true
+            [ "$INPUT_DEPLOY" != false ] && preview=true
+          else
+            printf '%s' "$PR_LABELS" | grep -q '"preview"' && preview=true
+            first=false; case "$ACTION" in opened|reopened) first=true;; esac
+          fi
+          if [ "$HEAD_REPO" != "$REPO" ] || [ "$PR_AUTHOR" = 'dependabot[bot]' ] || [ "$no_deploy" = true ]; then preview=false; fi
+          deploy_una=false; deploy_neo=false
+          if [ "$preview" = true ]; then
+            { [ "$una" = true ] || [ "$first" = true ]; } && deploy_una=true
+            { [ "$neo_deploy" = true ] || [ "$first" = true ]; } && deploy_neo=true
+          fi
+        fi
+        out deploy_una "$deploy_una"
+        out deploy_neo "$deploy_neo"
+
+  dependencies:
+    # Composer (plugins/) and Yarn (plugins_public/, via the postinstall build) are the same tree
+    # for every leg. They are cached under a key of the lockfiles and the build's inputs, so most
+    # runs only look the cache up; a miss installs once here and the legs restore it.
+    name: Install dependencies
+    needs: changes
+    if: needs.changes.outputs.test_una == 'true' || needs.changes.outputs.deploy_una == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Look up the cache
+      id: lookup
+      uses: actions/cache/restore@v6
+      with:
+        key: ${{ needs.changes.outputs.deps_key }}
+        path: ${{ env.DEPS_PATHS }}
+        lookup-only: true
+
+    - uses: actions/checkout@v6
+      if: steps.lookup.outputs.cache-hit != 'true'
+      with:
+        filter: blob:none
+        sparse-checkout-cone-mode: false
+        sparse-checkout: |
+          /*
+          !/upgrade/
 
     # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
-    # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
+    # with the current shivammathur/setup-php release. Every Setup PHP step must match.
     - name: Setup PHP
+      if: steps.lookup.outputs.cache-hit != 'true'
       uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: '8.5'
@@ -59,51 +215,50 @@ jobs:
         tools: composer
 
     - name: Setup Node
+      if: steps.lookup.outputs.cache-hit != 'true'
       uses: actions/setup-node@v6
       with:
         node-version: '24'
         cache: yarn
 
     - name: Install PHP dependencies
+      if: steps.lookup.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-dev
 
     - name: Install JS dependencies
+      if: steps.lookup.outputs.cache-hit != 'true'
       run: yarn install --frozen-lockfile
 
-    - name: Upload dependencies
-      uses: actions/upload-artifact@v7
+    - name: Save the cache
+      if: steps.lookup.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v6
       with:
-        name: una-dependencies
-        retention-days: 1
-        include-hidden-files: true
-        if-no-files-found: error
-        path: |
-          plugins
-          plugins_public
-          modules/boonex/messenger/js/emoji
-          modules/boonex/messenger/template/css/*.css
+        key: ${{ needs.changes.outputs.deps_key }}
+        path: ${{ env.DEPS_PATHS }}
 
   test:
-    # Units and Integration each get a runner per PHP version. Deploy waits on every leg, and a
-    # failure in one does not cancel the other. The package is built only on the PHP 8.5 Units
-    # leg so it is uploaded once.
-    name: ${{ matrix.suite == 'Units' && 'Unit tests' || 'Integration tests' }} (PHP ${{ matrix.php }})
-    needs: dependencies
-    if: github.event_name == 'push' || github.event.action != 'closed'
+    # Two legs per PHP version, each with its own database: Units and half of Integration, and the
+    # other half. phpunit-shard.php balances the halves by the seconds master last recorded and
+    # "Tests" checks that every Integration file ran exactly once. The names are the required
+    # checks of the master ruleset, so the legs always start (a skipped matrix job reports under
+    # its unexpanded name, and the PR would wait for these forever); with nothing to test their
+    # steps are skipped. "Unit tests" also runs half of Integration.
+    name: ${{ matrix.shard == 1 && 'Unit tests' || 'Integration tests' }} (PHP ${{ matrix.php }})
+    needs: [changes, dependencies]
+    if: ${{ !cancelled() && needs.changes.result == 'success' }}
     runs-on: ubuntu-latest
     env:
-      RUN_TESTS: ${{ needs.dependencies.outputs.una != 'false' }}
-      BUILD_LEG: ${{ matrix.suite == 'Units' && matrix.php == '8.5' }}
+      RUN_TESTS: ${{ needs.changes.outputs.test_una }}
     strategy:
       fail-fast: false
       matrix:
-        suite: [Units, Integration]
         php: ['8.3', '8.5']
+        shard: [1, 2]
 
     # Only the tests need the database: an empty image keeps the service from starting.
     services:
       mysql:
-        image: ${{ needs.dependencies.outputs.una != 'false' && 'mariadb:11' || '' }}
+        image: ${{ needs.changes.outputs.test_una == 'true' && 'mariadb:11' || '' }}
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: una
@@ -118,36 +273,57 @@ jobs:
           --health-retries=10
 
     steps:
+    # upgrade/ is two thirds of the tree, and nothing the tests load reads it.
     - uses: actions/checkout@v6
-      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
+      if: env.RUN_TESTS == 'true'
+      with:
+        filter: blob:none
+        sparse-checkout-cone-mode: false
+        sparse-checkout: |
+          /*
+          !/upgrade/
 
     # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
-    # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
+    # with the current shivammathur/setup-php release. Every Setup PHP step must match.
     - name: Setup PHP
-      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
+      if: env.RUN_TESTS == 'true'
       uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
         ini-values: short_open_tag=On, memory_limit=256M
-        tools: phing, phpunit:12
+        tools: phpunit:12
 
-    - name: Download dependencies
-      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
-      uses: actions/download-artifact@v7
+    - name: Restore dependencies
+      if: env.RUN_TESTS == 'true'
+      uses: actions/cache/restore@v6
       with:
-        name: una-dependencies
+        key: ${{ needs.changes.outputs.deps_key }}
+        path: ${{ env.DEPS_PATHS }}
+        fail-on-cache-miss: true
+
+    - name: Restore master's test timings
+      if: env.RUN_TESTS == 'true' && needs.changes.outputs.timings_key != ''
+      uses: actions/cache/restore@v6
+      with:
+        key: ${{ needs.changes.outputs.timings_key }}
+        path: phpunit-timings.json
+        fail-on-cache-miss: true
+
+    - name: Plan this shard
+      if: env.RUN_TESTS == 'true'
+      run: php .github/scripts/phpunit-shard.php plan ${{ matrix.shard }} 2 phpunit-timings.json
 
     - name: Prepare writable paths
-      if: env.RUN_TESTS == 'true' || env.BUILD_LEG == 'true'
+      if: env.RUN_TESTS == 'true'
       run: |
         mkdir -p cache cache_public logs tmp storage
         chmod a+rwX inc cache cache_public logs tmp storage
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
 
-    # `phing package` copies the sources and needs no installed site.
     # The installer creates admin@example.com. Integration tests also sign in as user@example.com.
     - name: Install UNA
+      id: install
       if: env.RUN_TESTS == 'true'
       run: |
         # OAuth before the modules that require it. English, Artificer and Persons are the
@@ -193,21 +369,115 @@ jobs:
           --server_http_host=localhost \
           --server_php_self=/install/index.php
         php tests/seed.php
-        # Every script which loads inc/header.inc.php redirects to the installer while the
-        # install folder exists, as a site served over HTTP (storage.php) would. Units read
-        # install/sql, so only the Integration leg removes it.
-        if [ "${{ matrix.suite }}" = "Integration" ]; then rm -rf install; fi
 
-    - name: Run PHPUnit
-      if: env.RUN_TESTS == 'true'
-      run: phpunit -c tests/phpunit.xml --testsuite "${{ matrix.suite }}"
+    # Units read install/sql, so they run while the install folder is there.
+    - name: Run Units
+      if: env.RUN_TESTS == 'true' && matrix.shard == 1
+      run: phpunit -c tests/phpunit.xml --testsuite Units --log-junit logs/junit-units.xml
 
+    # Every script which loads inc/header.inc.php redirects to the installer while the install
+    # folder exists, as a site served over HTTP (storage.php) would.
+    # Runs even when Units failed, so one leg reports both.
+    - name: Run Integration
+      if: ${{ !cancelled() && env.RUN_TESTS == 'true' && steps.install.outcome == 'success' }}
+      run: |
+        rm -rf install
+        phpunit -c tests/phpunit.shard.xml --testsuite Integration --log-junit logs/junit-integration.xml
+
+    - name: Upload test reports
+      if: env.RUN_TESTS == 'true' && (success() || failure())
+      uses: actions/upload-artifact@v7
+      with:
+        name: junit-php${{ matrix.php }}-shard${{ matrix.shard }}
+        retention-days: 7
+        path: logs/junit-*.xml
+        if-no-files-found: ignore
+
+  tests:
+    # One check over all legs: fails when a leg failed, or when the legs together did not run
+    # every Integration file exactly once. On master it records the seconds each file took, which
+    # the next runs balance their shards by.
+    name: Tests
+    needs: [changes, test]
+    if: ${{ !cancelled() && needs.changes.outputs.test_una == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: All legs passed
+      if: needs.test.result != 'success'
+      run: |
+        echo "A test leg did not pass (${{ needs.test.result }})." >&2
+        exit 1
+
+    - uses: actions/checkout@v6
+      with:
+        filter: blob:none
+        sparse-checkout: |
+          .github
+          tests
+
+    - uses: actions/download-artifact@v7
+      with:
+        pattern: junit-*
+        path: reports
+
+    - name: Every Integration file ran once per PHP version
+      run: |
+        for php in 8.3 8.5; do
+          echo "PHP $php"
+          php .github/scripts/phpunit-shard.php verify reports/junit-php$php-shard*/junit-integration.xml
+        done
+
+    - name: Record timings
+      if: github.event_name == 'push'
+      run: php .github/scripts/phpunit-shard.php timings phpunit-timings.json reports/junit-php8.5-shard*/junit-*.xml
+
+    - name: Save timings
+      if: github.event_name == 'push'
+      uses: actions/cache/save@v6
+      with:
+        key: phpunit-timings-${{ github.run_id }}
+        path: phpunit-timings.json
+
+  package:
+    # The install package that Railway runs; built only when it will be deployed.
+    name: Build package
+    needs: [changes, dependencies]
+    if: needs.changes.outputs.deploy_una == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        filter: blob:none
+        sparse-checkout-cone-mode: false
+        sparse-checkout: |
+          /*
+          !/upgrade/
+          !/neo/
+
+    # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
+    # with the current shivammathur/setup-php release. Every Setup PHP step must match.
+    - name: Setup PHP
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+      with:
+        php-version: '8.5'
+        extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
+        ini-values: short_open_tag=On, memory_limit=256M
+        tools: phing
+
+    - name: Restore dependencies
+      uses: actions/cache/restore@v6
+      with:
+        key: ${{ needs.changes.outputs.deps_key }}
+        path: ${{ env.DEPS_PATHS }}
+        fail-on-cache-miss: true
+
+    # `phing package` copies the sources and needs no installed site.
     - name: Build package
-      if: success() && matrix.suite == 'Units' && matrix.php == '8.5'
-      run: phing package -Dbuild=${{ github.run_number }}
+      run: |
+        test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
+        phing package -Dbuild=${{ github.run_number }}
 
     - name: Upload package artifact
-      if: success() && matrix.suite == 'Units' && matrix.php == '8.5'
       uses: actions/upload-artifact@v7
       with:
         name: una-package
@@ -219,36 +489,43 @@ jobs:
     # yet, so this fails only on errors the PR adds: both run on the PR and on its base, and
     # neo/scripts/check-new-errors.js compares them per file and rule (line numbers ignored).
     name: NEO lint and typecheck
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    needs: changes
+    if: needs.changes.outputs.lint_neo == 'true'
     runs-on: ubuntu-latest
     env:
-      BASE_REF: ${{ github.event.pull_request.base.ref }}
+      BASE_REF: ${{ github.event.pull_request.base.ref || 'master' }}
     steps:
     - uses: actions/checkout@v6
       with:
         fetch-depth: 0
-
-    - name: Check for NEO changes
-      id: changes
-      run: |
-        if git diff --quiet "origin/$BASE_REF...HEAD" -- neo/; then
-          echo "neo=false" >> "$GITHUB_OUTPUT"
-          echo "No changes under neo/, nothing to check."
-        else
-          echo "neo=true" >> "$GITHUB_OUTPUT"
-        fi
+        filter: blob:none
+        sparse-checkout: neo
 
     - name: Setup Node
-      if: steps.changes.outputs.neo == 'true'
       uses: actions/setup-node@v6
       with:
         node-version: '24'
 
+    # yarn.lock isn't committed (see neo/AGENTS.md), so the installed tree is cached under the
+    # package.json files and patches, and installed afresh every month.
+    - name: Cache key
+      id: keys
+      run: echo "neo_deps=neo-deps-v1-$(date -u +%Y-%m)-${{ hashFiles('neo/package.json', 'neo/apps/*/package.json', 'neo/packages/*/package.json', 'neo/patches/**') }}" >> "$GITHUB_OUTPUT"
+
+    - name: Restore NEO dependencies
+      id: neo-deps
+      uses: actions/cache/restore@v6
+      with:
+        key: ${{ steps.keys.outputs.neo_deps }}
+        path: |
+          neo/node_modules
+          neo/apps/*/node_modules
+          neo/packages/*/node_modules
+
     - name: Install NEO dependencies
-      if: steps.changes.outputs.neo == 'true'
+      if: steps.neo-deps.outputs.cache-hit != 'true'
       working-directory: neo
-      # yarn.lock isn't committed (see neo/AGENTS.md), so this resolves the package.json ranges.
-      # The npm registry now and then answers 502 for one tarball; retry instead of failing the PR.
+      # The npm registry now and then answers 502 for one tarball, which no code change fixes.
       run: |
         # --ignore-scripts keeps dependencies' install scripts from running in CI. NEO's own
         # postinstall is only patch-package, so run that one explicitly: the result is the
@@ -263,30 +540,70 @@ jobs:
         done
         exit 1
 
+    - name: Save NEO dependencies
+      if: steps.neo-deps.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v6
+      with:
+        key: ${{ steps.keys.outputs.neo_deps }}
+        path: |
+          neo/node_modules
+          neo/apps/*/node_modules
+          neo/packages/*/node_modules
+
     - name: Lint and typecheck the PR
-      if: steps.changes.outputs.neo == 'true'
       working-directory: neo
       run: |
         yarn --silent lint -f json -o "$RUNNER_TEMP/lint-head.json" || true
         node scripts/typecheck.js > "$RUNNER_TEMP/typecheck-head.txt" 2>&1 || true
 
+    # The base's results depend only on the base commit and the installed tree, so a PR reuses
+    # what an earlier PR on the same base found.
+    - name: Base commit
+      id: base
+      run: echo "sha=$(git rev-parse "origin/$BASE_REF")" >> "$GITHUB_OUTPUT"
+
+    - name: Restore the base branch's results
+      id: base-results
+      uses: actions/cache/restore@v6
+      with:
+        key: neo-base-results-v1-${{ steps.base.outputs.sha }}-${{ steps.keys.outputs.neo_deps }}
+        path: |
+          ${{ runner.temp }}/lint-base.json
+          ${{ runner.temp }}/typecheck-base.txt
+
     - name: Lint and typecheck the base branch
-      if: steps.changes.outputs.neo == 'true'
+      id: base-run
+      if: steps.base-results.outputs.cache-hit != 'true'
       run: |
-        git worktree add "$RUNNER_TEMP/base" "origin/$BASE_REF"
-        cd "$RUNNER_TEMP/base/neo"
+        git worktree add --no-checkout "$RUNNER_TEMP/base" "origin/$BASE_REF"
+        cd "$RUNNER_TEMP/base"
+        git sparse-checkout set neo
+        git checkout --quiet
+        cd neo
         # Reuse the PR's install instead of a second `yarn install`.
         ln -s "$GITHUB_WORKSPACE/neo/node_modules" node_modules
-        for app in apps/next apps/expo; do
-          if [ -d "$GITHUB_WORKSPACE/neo/$app/node_modules" ]; then
-            ln -s "$GITHUB_WORKSPACE/neo/$app/node_modules" "$app/node_modules"
-          fi
+        for dir in "$GITHUB_WORKSPACE"/neo/apps/*/node_modules "$GITHUB_WORKSPACE"/neo/packages/*/node_modules; do
+          [ -d "$dir" ] || continue
+          rel=${dir#"$GITHUB_WORKSPACE/neo/"}
+          [ -d "$(dirname "$rel")" ] && [ ! -e "$rel" ] && ln -s "$dir" "$rel"
         done
         yarn --silent lint -f json -o "$RUNNER_TEMP/lint-base.json" || true
         node scripts/typecheck.js > "$RUNNER_TEMP/typecheck-base.txt" 2>&1 || true
+        # Only results that look complete are kept for other PRs.
+        if [ -s "$RUNNER_TEMP/lint-base.json" ] && [ -s "$RUNNER_TEMP/typecheck-base.txt" ]; then
+          echo "complete=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Save the base branch's results
+      if: steps.base-run.outputs.complete == 'true'
+      uses: actions/cache/save@v6
+      with:
+        key: neo-base-results-v1-${{ steps.base.outputs.sha }}-${{ steps.keys.outputs.neo_deps }}
+        path: |
+          ${{ runner.temp }}/lint-base.json
+          ${{ runner.temp }}/typecheck-base.txt
 
     - name: Fail on new errors
-      if: steps.changes.outputs.neo == 'true'
       working-directory: neo
       run: >-
         node scripts/check-new-errors.js
@@ -294,19 +611,16 @@ jobs:
         --typecheck "$RUNNER_TEMP/typecheck-head.txt" "$RUNNER_TEMP/typecheck-base.txt"
 
   preview-env:
-    # Same-repo PRs only: forks and Dependabot get no secrets, and Dependabot PRs need no preview.
     name: Prepare PR environment
-    if: >-
-      github.event_name == 'pull_request' && github.event.action != 'closed'
-      && github.event.pull_request.head.repo.full_name == github.repository
-      && github.event.pull_request.user.login != 'dependabot[bot]'
+    needs: changes
+    if: needs.changes.outputs.mode == 'pr' && (needs.changes.outputs.deploy_una == 'true' || needs.changes.outputs.deploy_neo == 'true')
     runs-on: ubuntu-latest
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_TEMPLATE_ENVIRONMENT: pr-template
-      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ needs.changes.outputs.pr }}
       UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
     steps:
     - uses: actions/checkout@v6
@@ -377,14 +691,23 @@ jobs:
 
   deploy:
     name: Deploy PR to Railway (una)
-    needs: [test, preview-env]
+    needs: [changes, test, package, preview-env]
+    # A neo-only PR runs no PHPUnit (test is skipped) but still gets UNA on its first preview.
+    if: >-
+      !cancelled() && needs.changes.outputs.mode == 'pr' && needs.changes.outputs.deploy_una == 'true'
+      && needs.package.result == 'success' && needs.preview-env.result == 'success'
+      && (needs.test.result == 'success' || needs.test.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ needs.changes.outputs.pr }}
     steps:
     - uses: actions/checkout@v6
+      with:
+        sparse-checkout: |
+          .github/actions
+          scripts/railway
 
     - uses: actions/download-artifact@v7
       with:
@@ -392,14 +715,7 @@ jobs:
         path: packages
 
     - name: Prepare artefact
-      run: |
-        mkdir -p deploy
-        unzip -q packages/*.zip -d /tmp/una-pkg
-        pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
-        cp -a "$pkg_dir"/. deploy/
-        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore \
-          scripts/railway/configure.php scripts/railway/seed.php scripts/railway/languages.php deploy/
-        chmod +x deploy/entrypoint.sh
+      run: scripts/railway/stage-una.sh packages deploy
 
     - uses: ./.github/actions/railway-cli
 
@@ -409,14 +725,21 @@ jobs:
   deploy-neo:
     # NEO isn't covered by `test`, so it builds alongside it.
     name: Deploy PR to Railway (neo)
-    needs: preview-env
+    needs: [changes, preview-env]
+    if: needs.changes.outputs.mode == 'pr' && needs.changes.outputs.deploy_neo == 'true'
     runs-on: ubuntu-latest
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ needs.changes.outputs.pr }}
     steps:
     - uses: actions/checkout@v6
+      with:
+        filter: blob:none
+        sparse-checkout: |
+          .github/actions
+          scripts/railway
+          neo
 
     - uses: ./.github/actions/railway-cli
 
@@ -427,17 +750,17 @@ jobs:
 
   preview-comment:
     name: Comment preview URLs
-    needs: [preview-env, deploy, deploy-neo]
-    if: always() && needs.preview-env.result == 'success'
+    needs: [changes, preview-env, deploy, deploy-neo]
+    if: ${{ !cancelled() && needs.preview-env.result == 'success' }}
     runs-on: ubuntu-latest
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ needs.changes.outputs.pr }}
       UNA_RESULT: ${{ needs.deploy.result }}
       NEO_RESULT: ${{ needs.deploy-neo.result }}
       GH_TOKEN: ${{ github.token }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_NUMBER: ${{ needs.changes.outputs.pr }}
     steps:
     - uses: actions/checkout@v6
       with:
@@ -455,10 +778,16 @@ jobs:
         }
         una_url=$(service_url una || true)
         neo_url=$(service_url neo || true)
-        state() { [ "$1" = success ] && echo "" || echo " (deploy: $1)"; }
+        state() {
+          case "$1" in
+            success) echo "" ;;
+            skipped) echo ", unchanged by this push" ;;
+            *) echo " (deploy: $1)" ;;
+          esac
+        }
 
         marker="<!-- railway-preview -->"
-        body=$(printf '%s\n**Preview**: %s (NEO web client%s)\n**API**: %s (UNA%s)\n\nRailway environment: `%s`. A fresh UNA install takes about 10 minutes.' \
+        body=$(printf '%s\n**Preview**: %s (NEO web client%s)\n**API**: %s (UNA%s)\n\nRailway environment: `%s`. A fresh UNA install takes about 10 minutes. Remove the `preview` label to delete the environment.' \
           "$marker" "$neo_url" "$(state "$NEO_RESULT")" "$una_url" "$(state "$UNA_RESULT")" "$RAILWAY_PR_ENVIRONMENT")
 
         comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
@@ -468,14 +797,16 @@ jobs:
         if [ -n "$comment_id" ]; then
           gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" -f body="$body"
         else
-          gh pr comment "$PR_NUMBER" --body "$body"
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$body"
         fi
 
   deploy-production:
     # Runs next to the Jenkins deploy to ci.una.io, which is unchanged.
     name: Deploy master to Railway (api.unacms.app)
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [changes, test, package]
+    if: >-
+      !cancelled() && needs.changes.outputs.mode == 'production' && needs.changes.outputs.deploy_una == 'true'
+      && needs.test.result == 'success' && needs.package.result == 'success'
     runs-on: ubuntu-latest
     concurrency:
       group: railway-production
@@ -492,6 +823,10 @@ jobs:
       UNA_API_KEY: ${{ secrets.UNA_API_KEY }}
     steps:
     - uses: actions/checkout@v6
+      with:
+        sparse-checkout: |
+          .github/actions
+          scripts/railway
 
     - uses: actions/download-artifact@v7
       with:
@@ -499,14 +834,7 @@ jobs:
         path: packages
 
     - name: Prepare artefact
-      run: |
-        mkdir -p deploy
-        unzip -q packages/*.zip -d /tmp/una-pkg
-        pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
-        cp -a "$pkg_dir"/. deploy/
-        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore \
-          scripts/railway/configure.php scripts/railway/seed.php scripts/railway/languages.php deploy/
-        chmod +x deploy/entrypoint.sh
+      run: scripts/railway/stage-una.sh packages deploy
 
     - uses: ./.github/actions/railway-cli
 
@@ -550,7 +878,8 @@ jobs:
     # The NEO web client for unacms.app. NEO_PRODUCTION_HOST (a repository variable) is the
     # public host; until it is set, the client is only on its Railway domain.
     name: Deploy master to Railway (neo)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: changes
+    if: needs.changes.outputs.mode == 'production' && needs.changes.outputs.deploy_neo == 'true'
     runs-on: ubuntu-latest
     concurrency:
       group: railway-production-neo
@@ -567,6 +896,12 @@ jobs:
       NEO_PRODUCTION_HOST: ${{ vars.NEO_PRODUCTION_HOST }}
     steps:
     - uses: actions/checkout@v6
+      with:
+        filter: blob:none
+        sparse-checkout: |
+          .github/actions
+          scripts/railway
+          neo
 
     - uses: ./.github/actions/railway-cli
 
@@ -603,54 +938,3 @@ jobs:
         done
         echo "NEO did not answer 200 at $NEO_URL (last: $code)" >&2
         exit 1
-
-  teardown:
-    name: Remove PR Railway environment
-    if: >-
-      github.event_name == 'pull_request' && github.event.action == 'closed'
-      && github.event.pull_request.head.repo.full_name == github.repository
-      && github.event.pull_request.user.login != 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    env:
-      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
-      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-      RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
-      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_TEAM: yasko
-      PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
-      PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
-    steps:
-    - uses: actions/checkout@v6
-      with:
-        sparse-checkout: |
-          .github/actions
-          scripts/railway
-
-    # Previews created before they moved to Railway domains (2026-10-20) still have DNS records
-    # on unacms.app; this step can go once those PRs are closed.
-    - name: Remove preview domains
-      if: env.VERCEL_TOKEN != ''
-      continue-on-error: true
-      run: |
-        scripts/railway/domains.sh client-unalias "$PREVIEW_CLIENT_HOST"
-        scripts/railway/domains.sh dns-remove "$PREVIEW_CLIENT_HOST"
-        scripts/railway/domains.sh dns-remove "$PREVIEW_API_HOST"
-
-    - uses: ./.github/actions/railway-cli
-
-    - name: Delete PR environment
-      run: |
-        if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
-          echo "Set secrets RAILWAY_API_TOKEN (account token) and RAILWAY_PROJECT_ID" >&2
-          exit 1
-        fi
-        base="${RAILWAY_BASE_ENVIRONMENT:-production}"
-        railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-        # The run for the PR's last push is cancelled above (workflow concurrency), so nothing
-        # can create the environment after this. A PR closed before its first deploy has none.
-        if railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y; then
-          echo "Deleted $RAILWAY_PR_ENVIRONMENT"
-        else
-          echo "No environment $RAILWAY_PR_ENVIRONMENT to delete"
-        fi
