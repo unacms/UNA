@@ -52,6 +52,7 @@ export default function SearchWindowHost() {
             maxWidth="max-w-2xl"
             padding="p-0"
             fillHeight={!isDesktop}
+            scrollable
             skipUnsavedGuard
         >
             {state.open && <SearchWindow key={JSON.stringify(state.query)} initialQuery={state.query} mode="modal" onClose={close} />}

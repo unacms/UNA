@@ -32,12 +32,11 @@ export function useSearchWindowData(
     const [allGroups, setAllGroups] = useState<SearchGroupData[]>([]);
     const lastAiToken = useRef(aiToken);
     const onAiQueryRef = useRef(onAiQuery);
-    const allGroupsRef = useRef<SearchGroupData[]>([]);
+    const allKeyRef = useRef('');
     const key = JSON.stringify(query);
 
     useEffect(() => {
         onAiQueryRef.current = onAiQuery;
-        allGroupsRef.current = allGroups;
     });
 
     useEffect(() => {
@@ -53,15 +52,20 @@ export function useSearchWindowData(
                 setData(result);
                 setError(!result);
                 const results = result?.results;
-                if (results && !('group' in results && results.group) && results.groups)
+                // the tabs' modules and counts are the "All" view's of this search (without its tab and page)
+                const { tab: _tab, cursor: _cursor, ...rest } = JSON.parse(key) as SearchQuery;
+                const allKey = JSON.stringify(rest);
+                if (results && !('group' in results && results.group) && results.groups) {
                     setAllGroups(results.groups);
-                // opened on one module's tab (a shared link): its neighbours' tabs come from the "All" view
-                else if (results && 'group' in results && results.group && result?.query?.tab && result.scope?.scope !== 'module' && !allGroupsRef.current.length) {
-                    const { tab: _tab, cursor: _cursor, ...rest } = JSON.parse(key) as SearchQuery;
+                    allKeyRef.current = allKey;
+                }
+                else if (results && 'group' in results && results.group && result?.query?.tab && result.scope?.scope !== 'module' && allKeyRef.current !== allKey) {
                     const all = await fetchSearchWindow(rest, { signal: controller.signal });
                     const allResults = all?.results;
-                    if (!controller.signal.aborted && allResults && !('group' in allResults && allResults.group) && allResults.groups)
+                    if (!controller.signal.aborted && allResults && !('group' in allResults && allResults.group) && allResults.groups) {
                         setAllGroups(allResults.groups);
+                        allKeyRef.current = allKey;
+                    }
                 }
                 // the AI may have read the words into chips: the window takes UNA's query back
                 if (ai && result?.query && JSON.stringify(result.query) !== key)

@@ -424,9 +424,13 @@ class BxBaseServicesSearch extends BxDol
 
         if(bx_is_api()) {
             $oSearch->setApiSections(true);
-            return [bx_api_get_block('search_window', [
+            // a `static` item with its element's name: an app built before it draws nothing there, not an error
+            return [bx_api_get_block('static', [
+                'element' => 'search_window',
                 'mode' => 'explore',
-                'query' => $oSearch->toUrlParams($oSearch->normalize($_GET)),
+                'query' => (object)$oSearch->toUrlParams($oSearch->normalize($_GET)),
+                // the phone header's Search opens Explore with the field focused
+                'focus' => bx_get('search') ? 1 : 0,
             ])];
         }
 

@@ -78,7 +78,6 @@ const InviteInContext = dynamic(() => import('./invite-in-context'), { loading: 
 const NotificationsSettings = dynamic(() => import('./notifications-settings'), { loading: DynamicFallback });
 const SearchSections = dynamic(() => import('./search-sections'), { loading: DynamicFallback });
 const SearchAi = dynamic(() => import('./search-ai'), { loading: DynamicFallback });
-const SearchWindow = dynamic(() => import('./search-window'), { loading: DynamicFallback });
 // Named exports of one module (one chunk): the loader resolves to the component itself.
 const ReputationSummary = dynamic(() => import('./reputation').then((m) => m.ReputationSummary), { loading: DynamicFallback });
 const ReputationWidget = dynamic(() => import('./reputation').then((m) => m.ReputationWidget), { loading: DynamicFallback });
@@ -96,7 +95,6 @@ export const componentsMapDefault = {
     invite_in_context: InviteInContext,
     search_sections: SearchSections,
     search_ai: SearchAi,
-    search_window: SearchWindow,
     reputation_summary: ReputationSummary,
     reputation_leaderboard: ReputationLeaderboard,
     reputation_levels: ReputationLevels,

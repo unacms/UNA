@@ -6,19 +6,25 @@ import { PageTitle } from 'app/ui/molecules/page/page-title';
 import { PageCoverBand } from 'app/components/elements/covers/page-cover-band';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import SearchWindow from 'app/ui/molecules/search-window/search-window';
-import { normalizeSearchQuery, searchResultsHref } from 'app/lib/search-window';
+import { normalizeSearchQuery, searchResultsHref, type SearchQuery } from 'app/lib/search-window';
+
+type SearchPageLayoutProps = {
+    /** UNA's page: its address (`url`, with the query) and its cover and title. */
+    data?: { url?: string; [key: string]: unknown } | null;
+    [key: string]: unknown;
+};
 
 /**
  * The results page (`search-keyword`): the search window in the page, opened on the query in its address, as UNA's
  * site shows it. The window keeps the address in step with its query, so a search can be shared as a link.
  */
-export default function PageLayout(props) {
+export default function PageLayout(props: SearchPageLayoutProps) {
     const initialQuery = useMemo(() => {
         const params = parseQueryString(parseUrl(String(props.data?.url ?? '')).queryString);
         return normalizeSearchQuery(params);
     }, [props.data?.url]);
 
-    const onQueryChange = (query) => {
+    const onQueryChange = (query: SearchQuery) => {
         if (Platform.OS !== 'web' || typeof window === 'undefined') return;
         const href = searchResultsHref(query, window.location.pathname);
         if (href !== window.location.pathname + window.location.search)

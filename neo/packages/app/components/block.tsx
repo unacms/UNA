@@ -1,4 +1,4 @@
-import { useExploreSearchActive } from 'app/context/jotai/search-window';
+import { useExploreSearchActive } from 'app/context/explore-search';
 import type { ComponentType, ReactNode } from 'react';
 import { memo, useMemo } from 'react';
 import { BlockDataByName, findElementBySource, hasNonEmptyContent } from 'app/lib/util';
@@ -176,7 +176,7 @@ export default function Block(props: BlockProps) {
     const block = props.block;
     // Explore with a search typed: its search block's results stand in place of the page's other blocks
     const exploreSearchActive = useExploreSearchActive();
-    if (exploreSearchActive && !blockContentItems(block?.content).some((item) => (item?.content_type || item?.type) === 'search_window'))
+    if (exploreSearchActive && !blockContentItems(block?.content).some((item) => item?.data?.element === 'search_window'))
         return null;
 
     const { name: extraPropsName, key, ...extraPropsRest } = props?.extraProps ?? {};

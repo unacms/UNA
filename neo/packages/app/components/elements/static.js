@@ -8,6 +8,8 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 const CORE = {
     // The Sign up page's picture, heading and text (UNA's `system:create_account_intro`).
     page_intro: dynamic(() => import('app/ui/molecules/content/page-intro'), { loading: DynamicFallback }),
+    // Explore's search (UNA's `system:get_block_search_window`)
+    search_window: dynamic(() => import('app/ui/molecules/search-window/explore-search'), { loading: DynamicFallback }),
 }
 
 /**

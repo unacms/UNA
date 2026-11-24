@@ -27,17 +27,3 @@ export function useCloseSearchWindow(): () => void {
     const set = useSetAtom(searchWindowAtom);
     return useCallback(() => set((state) => ({ ...state, open: false })), [set]);
 }
-
-/**
- * Explore with a search typed: its results stand in place of the page's other blocks until the field is cleared
- * (X's Explore). The page's block list reads it.
- */
-export const exploreSearchActiveAtom = atom<boolean>(false);
-
-export function useExploreSearchActive(): boolean {
-    return useAtomValue(exploreSearchActiveAtom);
-}
-
-export function useSetExploreSearchActive(): (active: boolean) => void {
-    return useSetAtom(exploreSearchActiveAtom);
-}

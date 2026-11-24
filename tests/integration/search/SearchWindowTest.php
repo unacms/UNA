@@ -311,8 +311,8 @@ class SearchWindowTest extends ApiV2TestCase
         finally {
             unset($_GET['api'], $_GET['keyword']);
         }
-        $this->assertSame('search_window', $aBlocks[0]['type'] ?? '');
-        $this->assertSame(['mode' => 'explore', 'query' => ['keyword' => 'garden']], $aBlocks[0]['data']);
+        $this->assertSame('static', $aBlocks[0]['type'] ?? '', 'older apps draw nothing for an element they lack');
+        $this->assertEquals(['element' => 'search_window', 'mode' => 'explore', 'query' => (object)['keyword' => 'garden'], 'focus' => 0], $aBlocks[0]['data']);
 
         $sHtml = (new BxTemplServicesSearch())->serviceGetBlockSearchWindow();
         $this->assertStringContainsString('data-mode="explore"', $sHtml);

@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text } from 'app/design/typography';
 import { View, Row, ScrollView } from 'app/design/view';
 import { NeoButton, NeoButtonLink, Input } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { appStatic } from 'app/lib/app-static';
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { hasSearchQuery, searchResultsHref, withSearchValue, type SearchQuery } from 'app/lib/search-window';
@@ -12,16 +11,6 @@ import { useSearchWindowData, fetchSearchWindow } from './use-search-window';
 import SearchChips from './search-chips';
 import SearchHit from './search-hit';
 import type { SearchGroupData, SearchHitData, SearchWindowProps } from './search-window.types';
-
-/** The results: they scroll inside the dialog; in a page (the results page, Explore) the page scrolls. */
-function Body({ inDialog, children }: { inDialog: boolean; children: ReactNode }) {
-    if (!inDialog) return <View className="px-3 pb-3">{children}</View>;
-    return (
-        <KbAvoidingView className="min-h-0 flex-1">
-            <ScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="px-3 pb-3">{children}</ScrollView>
-        </KbAvoidingView>
-    );
-}
 
 /** `{0}`, `{1}` in a string UNA sent. */
 export function fillString(text: string | undefined, ...values: Array<string | number>): string {
@@ -99,6 +88,8 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
     };
 
     const onKeyPress = (event: any) => {
+        // the web sends both keydown and keypress: arrows come as keydown, so take only that there
+        if (event?.type === 'keypress') return;
         const key = event?.nativeEvent?.key ?? event?.key;
         if (key === 'ArrowDown' || key === 'ArrowUp') {
             event.preventDefault?.();
@@ -133,7 +124,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
     const tabs = scope && scope.scope !== 'module' && allGroups.length > 1 ? allGroups : null;
 
     return (
-        <View className={mode === 'modal' ? 'min-h-0 flex-1 web:h-[80vh] web:lg:h-[36rem]' : 'w-full'}>
+        <View className="w-full">
             <Redirect ref={redirectRef} />
             <Row className="items-center gap-2 border-b border-border px-3 py-2">
                 <Icon icon="Search" size={20} className="text-muted-foreground" />
@@ -147,6 +138,8 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                     onChangeText={onChangeText}
                     onSubmitEditing={onSubmit}
                     onKeyPress={onKeyPress}
+                    // the web's arrows come as keydown (a key press has none)
+                    {...({ onKeyDown: onKeyPress } as Record<string, unknown>)}
                     returnKeyType="search"
                     autoCorrect={false}
                     autoCapitalize="none"
@@ -165,13 +158,15 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
 
             {scope && <SearchChips query={query} scope={scope} strings={strings} onChange={change} />}
 
-            <Body inDialog={mode === 'modal'}>
+            <View className="px-3 pb-3">
                     {!hasQuery ? (mode === 'explore' ? null : (
                         <Text className="py-6 text-center text-sm text-muted-foreground">{strings.hint || ''}</Text>
                     )) : error && !data ? (
                         <Text className="py-6 text-center text-sm text-destructive">{strings.error || ''}</Text>
                     ) : results ? (
                         <>
+                            {/* a failed request for new words: the last results stay, dimmed, under the error */}
+                            {error && <Text className="pt-3 text-sm text-destructive" role="alert">{strings.error || ''}</Text>}
                             <Row className="items-center justify-between gap-3 pb-2 pt-3">
                                 <Text className="text-sm font-medium text-muted-foreground" role="status" aria-live="polite">
                                     {fillString(strings.count, total)}
@@ -218,7 +213,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             )}
 
                             {groups.map((group) => (
-                                <View key={group.name} className="py-1">
+                                <View key={group.name} className={'py-1' + (error ? ' opacity-50' : '')}>
                                     <Row className="items-center gap-2 py-2">
                                         <Icon icon={group.icon} size={16} className="text-foreground" />
                                         <Text className="text-sm font-semibold text-foreground" role="heading" aria-level={3}>{group.title}</Text>
@@ -257,7 +252,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             )}
                         </>
                     ) : null}
-            </Body>
+            </View>
 
             {mode !== 'page' && hasQuery && (
                 <Row className="items-center justify-end border-t border-border px-3 py-2">
