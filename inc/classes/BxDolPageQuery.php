@@ -85,7 +85,7 @@ class BxDolPageQuery extends BxDolDb
                 $aResult[$aRow['section']] = [
                     'module' => $aRow['module'],
                     'title' => $aRow['title'],
-                    'home' => strpos($aRow['home'], 'page.php?i=') === 0 ? substr($aRow['home'], strlen('page.php?i=')) : '',
+                    'home' => bx_mb_strpos($aRow['home'], 'page.php?i=') === 0 ? get_mb_substr($aRow['home'], get_mb_len('page.php?i='), get_mb_len($aRow['home'])) : '',
                     'pages' => [],
                 ];
 

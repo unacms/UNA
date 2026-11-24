@@ -320,10 +320,15 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         if($sClass === '')
             return 0;
 
-        if(!class_exists($sClass, false) && !empty($aPage['override_class_file']) && file_exists(BX_DIRECTORY_PATH_ROOT . $aPage['override_class_file']))
-            require_once(BX_DIRECTORY_PATH_ROOT . $aPage['override_class_file']);
+        // A module's class from its file, as getObjectInstance makes the page; a system one (BxTempl*) is autoloaded.
+        if(!empty($aPage['override_class_file'])) {
+            if(!file_exists(BX_DIRECTORY_PATH_ROOT . $aPage['override_class_file']))
+                return 0;
 
-        if(!class_exists($sClass) || !is_subclass_of($sClass, 'BxDolPage'))
+            require_once(BX_DIRECTORY_PATH_ROOT . $aPage['override_class_file']);
+        }
+
+        if(!is_subclass_of($sClass, 'BxDolPage'))
             return 0;
 
         return (int)$sClass::getOwnerCoverMode();

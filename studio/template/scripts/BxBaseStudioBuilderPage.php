@@ -383,7 +383,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
             $this->onSavePage($oForm, $this->aPageRebuild);
 
-            if($oForm->update($this->aPageRebuild['id'])) {
+            // "Same as section" alone changes no other field: the update then counts no rows, and still saves.
+            $bToSection = !empty($this->aPageFieldsToSection);
+            $mixedUpdated = $oForm->update($this->aPageRebuild['id']);
+            if($mixedUpdated || ($bToSection && $mixedUpdated !== false)) {
                 $this->onPageChanged($oForm, $this->aPageRebuild);
                 $iLevelId = $oForm->getCleanValue('layout_id');
                 if(!empty($iLevelId) && $iLevelId != $this->aPageRebuild['layout_id']) {
@@ -1750,6 +1753,17 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         }
 
         $aRow = $aSection['row'];
+
+        // The section's picture as an upload of the section's, so its files field lists it: the migration that made
+        // sections gave the section a page's picture, an upload of that page's.
+        $bPictureShown = false;
+        $iSectionContentId = self::getSectionContentId((int)$aRow['id']);
+        if(($iPicture = (int)$aRow['cover_image']) && ($oStorage = BxDolStorage::getObjectInstance($this->sStorage)) !== false && ($aGhost = $oStorage->getGhost($iPicture))) {
+            if((int)$aGhost['content_id'] != $iSectionContentId)
+                $oStorage->updateGhostsContentId($iPicture, (int)$aGhost['profile_id'], $iSectionContentId, true);
+            $bPictureShown = true;
+        }
+
         $bTitleAsCover = !isset($aRow['title_show']) || $aRow['title_show'] === '';
 
         $aTitleValues = $this->_getAudienceValues();
@@ -1789,7 +1803,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     'images_transcoder' => $this->sTranscoderCover,
                     'uploaders' => $this->aUploadersCover,
                     'multiple' => false,
-                    'content_id' => self::getSectionContentId((int)$aRow['id']),
+                    'content_id' => $iSectionContentId,
                     'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate('cover_image'),
                     'caption' => _t('_adm_bp_txt_page_cover_image'),
                 ),
@@ -1840,6 +1854,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                 'cover_hidden_on' => $this->_getSubmittedHiddenOn($oForm->getCleanValue('cover_hidden_on')),
                 'cover_image' => $this->_getSubmittedFileId($oForm->getCleanValue('cover_image')),
             );
+
+            // A picture the form could not show (no upload of the section's to list) stays: only removing a shown one clears it.
+            if(!$aValues['cover_image'] && !$bPictureShown)
+                $aValues['cover_image'] = (int)$aRow['cover_image'];
 
             $mixedTitle = $oForm->getCleanValue('title_show');
             if($mixedTitle === 'cover' || $mixedTitle === false || $mixedTitle === null) {
