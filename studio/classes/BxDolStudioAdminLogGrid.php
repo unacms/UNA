@@ -106,7 +106,8 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
         if (!$this->_aModuleTitles)
             foreach (BxDolModuleQuery::getInstance()->getModules() as $aModule) {
                 $this->_aModuleTitles[$aModule['name']] = $aModule['title'];
-                if (!empty($aModule['db_prefix']))
+                // The core's sys_ prefix covers every system table: one without a title keeps its own name.
+                if (!empty($aModule['db_prefix']) && $aModule['name'] !== 'system')
                     $this->_aModulePrefixes[$aModule['db_prefix']] = $aModule['title'];
             }
     }
