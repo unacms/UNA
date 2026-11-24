@@ -55,6 +55,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     protected $aPageSettings = array(
         array('name' => 'options', 'title' => '_adm_bp_mi_page_options', 'icon' => 'mi-bp-options.svg', 'active' => 1),
         array('name' => 'cover', 'title' => '_adm_bp_mi_page_cover', 'icon' => 'mi-bp-cover.svg', 'active' => 0),
+        array('name' => 'title', 'title' => '_adm_bp_mi_page_title', 'icon' => 'mi-bp-title.svg', 'active' => 0),
         array('name' => 'layout', 'title' => '_adm_bp_mi_page_layout', 'icon' => 'mi-bp-layout.svg', 'active' => 0),
         array('name' => 'visibility', 'title' => '_adm_bp_mi_page_visibility', 'icon' => 'mi-bp-visibility.svg', 'active' => 0),
         array('name' => 'cache', 'title' => '_adm_bp_mi_page_cache', 'icon' => 'mi-bp-cache.svg', 'active' => 0),
@@ -1404,8 +1405,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                         'pass' => 'Int',
                     )
                 ),
-                // Per screen size, as a block's "Hidden on": the cover (and its title) stays off there; the apps
-                // show the title in their header instead where the cover is hidden on phones and tablets.
+                // Per screen size, as a block's "Hidden on": the cover stays off there. The title has its own (Title tab).
                 'cover_hidden_on' => array(
                     'type' => 'select_multiple',
                     'name' => 'cover_hidden_on',
@@ -1437,11 +1437,81 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                         'pass' => 'Int',
                     )
                 ),
+            )
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsCoverFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsCover($aPage, $bCreate, true);
+    }
+
+    /**
+     * The page's title, apart from its cover: who sees it, the screen sizes it is hidden on and its custom text. A page
+     * whose title was never set shows its cover's values (BxBasePage::getPageTitleMode), which saving stores.
+     */
+    protected function getSettingsTitle($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $iCover = isset($aPage['cover']) ? (int)$aPage['cover'] : 1;
+        $bTitleSet = isset($aPage['title_show']) && $aPage['title_show'] !== '';
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-title',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => array (
+                'title_show' => array(
+                    'type' => 'select',
+                    'name' => 'title_show',
+                    'caption' => _t('_adm_bp_txt_page_title_show'),
+                    'info' => _t('_adm_bp_txt_page_title_show_info'),
+                    'value' => $bTitleSet ? (int)$aPage['title_show'] : (BxDolCover::getInstance()->isEnabled() ? $iCover : 0),
+                    'values' => array(
+                        array('key' => 0, 'value' => _t('_adm_bp_txt_page_cover_0')),
+                        array('key' => 1, 'value' => _t('_adm_bp_txt_page_cover_1')),
+                        array('key' => 2, 'value' => _t('_adm_bp_txt_page_cover_2')),
+                        array('key' => 3, 'value' => _t('_adm_bp_txt_page_cover_3'))
+                    ),
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                ),
+                // Per screen size, as the cover's: the title row on the site, the header's title in the apps.
+                'title_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'title_hidden_on',
+                    'caption' => _t('_adm_bp_txt_page_title_hidden_on'),
+                    'info' => _t('_adm_bp_txt_page_title_hidden_on_info'),
+                    // This settings form has no db binding to unpack the bits, so the options come as a list.
+                    'value' => BxDolFormCheckerHelper::displaySet(isset($aPage['title_hidden_on']) ? $aPage['title_hidden_on'] : (isset($aPage['cover_hidden_on']) ? $aPage['cover_hidden_on'] : 0)),
+                    'values' => array(
+                        BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
+                        BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
+                        BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
+                        BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
+                    ),
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                // Stored as before, in `cover_title`, so the custom titles set on the Cover tab carry over.
                 'cover_title' => array(
                     'type' => 'text_translatable',
                     'name' => 'cover_title',
                     'caption' => _t('_adm_bp_txt_page_cover_title'),
-                    'info' => '',
+                    'info' => _t('_adm_bp_txt_page_cover_title_info'),
                     'value' => isset($aPage['cover_title']) ? $aPage['cover_title'] : '',
                     'db' => array (
                         'pass' => 'Xss',
@@ -1457,9 +1527,9 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         return $oForm->getCode();
     }
 
-    protected function getSettingsCoverFields($aPage = array(), $bCreate = true)
+    protected function getSettingsTitleFields($aPage = array(), $bCreate = true)
     {
-    	return $this->getSettingsCover($aPage, $bCreate, true);
+    	return $this->getSettingsTitle($aPage, $bCreate, true);
     }
 
     protected function getSettingsLayout($aPage = array(), $bCreate = true, $bInputsOnly = false)

@@ -166,6 +166,9 @@
 .bx-menu-main-bar:not(.bx-menu-more-auto) {
     overflow-x: auto;
 }
+.bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-tabs {
+    overflow-x: auto;
+}
 
 .bx-menu-main-bar-cnt {
     height: 2.5rem;

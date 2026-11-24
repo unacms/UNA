@@ -573,6 +573,7 @@
 	<string name="_adm_bp_mi_page_layout"><![CDATA[Отображение]]></string>
 	<string name="_adm_bp_mi_page_options"><![CDATA[Опции]]></string>
 	<string name="_adm_bp_mi_page_seo"><![CDATA[Оптимизация для поисковых машин]]></string>
+	<string name="_adm_bp_mi_page_title"><![CDATA[Заголовок]]></string>
 	<string name="_adm_bp_mi_page_visibility"><![CDATA[Видимость]]></string>
 	<string name="_adm_bp_scs_save"><![CDATA[Изменения успешно сохранены]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Показывать на сайте]]></string>
@@ -634,12 +635,13 @@
 	<string name="_adm_bp_txt_page_cover"><![CDATA[Обложка]]></string>
 	<string name="_adm_bp_txt_page_cover_image"><![CDATA[Собственная обложка]]></string>
         <string name="_adm_bp_txt_page_cover_title"><![CDATA[Собственный заголовок]]></string>
+        <string name="_adm_bp_txt_page_cover_title_info"><![CDATA[Заменяет название страницы или её раздела. Если пусто, показывается это название.]]></string>
         <string name="_adm_bp_txt_page_cover_0"><![CDATA[Отключен]]></string>
         <string name="_adm_bp_txt_page_cover_1"><![CDATA[Включен для всех]]></string>
         <string name="_adm_bp_txt_page_cover_2"><![CDATA[Включен только для гостей]]></string>
         <string name="_adm_bp_txt_page_cover_3"><![CDATA[Включен только для пользователей]]></string>
         <string name="_adm_bp_txt_page_cover_hidden_on"><![CDATA[Обложка скрыта на]]></string>
-        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[На выбранных размерах экрана страница показывается без обложки и без названия, на сайте и в приложениях.]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[На выбранных размерах экрана обложка не показывается, на сайте и в приложениях. У заголовка страницы свои настройки на вкладке «Заголовок».]]></string>
         <string name="_adm_bp_txt_page_inj_footer"><![CDATA[В основание]]></string>
         <string name="_adm_bp_txt_page_inj_head"><![CDATA[В заголовок]]></string>
 	<string name="_adm_bp_txt_page_layout"><![CDATA[Отображение]]></string>
@@ -651,6 +653,10 @@
         <string name="_adm_bp_txt_page_submenu"><![CDATA[Подменю]]></string>
 	<string name="_adm_bp_dsc_page_submenu"><![CDATA[В данном поле можно выбрать подменю страницы]]></string>
 	<string name="_adm_bp_txt_page_title"><![CDATA[Отображаемое имя]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Заголовок скрыт на]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[На выбранных размерах экрана заголовок страницы не показывается, на сайте и в приложениях.]]></string>
+	<string name="_adm_bp_txt_page_title_show"><![CDATA[Заголовок]]></string>
+	<string name="_adm_bp_txt_page_title_show_info"><![CDATA[Название страницы или её раздела над вкладками и блоками на сайте и в заголовке приложений.]]></string>
 	<string name="_adm_bp_txt_page_title_system"><![CDATA[Системное имя]]></string>
 	<string name="_adm_bp_txt_page_type_id"><![CDATA[Тип]]></string>
 	<string name="_adm_bp_dsc_page_type_id"><![CDATA[Способ отображения страницы. Значение по умолчанию может быть изменено в Студия -> Дизайнер -> Настройки.]]></string>
