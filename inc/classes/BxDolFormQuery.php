@@ -261,6 +261,16 @@ class BxDolFormQuery extends BxDolDb
         ));
     }
 
+    /**
+     * Whether a field has privacy on (Studio > Forms > a field > Privacy), by the field's id.
+     */
+    static public function isInputPrivacyEnabled($iInputId)
+    {
+        return (int)BxDolDb::getInstance()->getOne("SELECT `privacy` FROM `sys_form_inputs` WHERE `id`=:id LIMIT 1", array(
+            'id' => (int)$iInputId,
+        )) != 0;
+    }
+
     static public function getInputPrivacy($iInputId, $iAuthorId, $sPrivacyField = '')
     {
         $sMethod = 'getRow';

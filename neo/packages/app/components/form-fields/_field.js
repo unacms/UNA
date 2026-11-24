@@ -11,6 +11,7 @@ import i18n from 'i18next'
 import { queueFormEnsureVisible } from 'app/lib/form/form-ensure-visible'
 import { nativeDriver } from 'app/lib/platform/animation'
 import { InputLabelInsideContext } from 'app/design/controls/input-label-context'
+import FieldPrivacy from './field-privacy'
 import { hasAdaptiveLabel } from 'app/lib/form/label-style'
 
 const isWeb = Platform.OS === 'web'
@@ -192,6 +193,7 @@ export default function Field({
     size,
     captionAccessory: captionAccessoryProp,
     fieldLink,
+    privacy_chooser,
 }) {
     const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
@@ -348,6 +350,12 @@ export default function Field({
             )}
             {!!error && !Array.isArray(error) && (
                 <FormError errorText={error} errorId={errorId} />
+            )}
+            {!!privacy_chooser && (
+                <FieldPrivacy
+                    key={`${privacy_chooser.input_id}-${privacy_chooser.value}`}
+                    chooser={privacy_chooser}
+                />
             )}
             {linkUnderControl ? (
                 <Row className="mt-1 items-start justify-between gap-3">
