@@ -83,7 +83,7 @@ class BxBaseApiV2Search
         }
 
         return [
-            'query' => $oSearch->toUrlParams($aQuery),
+            'query' => (object)$oSearch->toUrlParams($aQuery),
             'scope' => $aScope['scope'],
             'context' => $aScope['context'] ? ['id' => (string)$aScope['context']['id'], 'title' => $aScope['context']['title']] : null,
             'chips' => $aScope['chips'],

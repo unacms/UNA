@@ -25,6 +25,7 @@ function BxDolSearchWindow(oRoot)
         this._oQuery = {};
 
     this._iTimer = 0;
+    this._iSeq = 0;
     this._oRequest = null;
     this._iMinLen = 2;
 
@@ -163,6 +164,11 @@ BxDolSearchWindow.prototype._bind = function()
     });
 
     oRoot.on('input', '.bx-search-window-input', function() {
+        // a reply to the words before these must not bring them back
+        $this._iSeq++;
+        if($this._oRequest)
+            $this._oRequest.abort();
+
         var sValue = $.trim($(this).val());
         if(sValue)
             $this._oQuery.keyword = sValue;
@@ -411,10 +417,14 @@ BxDolSearchWindow.prototype._getResultsUrl = function()
  */
 BxDolSearchWindow.prototype._run = function(bAi)
 {
-    var $this = this, oQuery = $.extend({}, this._oQuery);
+    var $this = this, oQuery = $.extend({}, this._oQuery), iSeq = this._iSeq;
     delete oQuery.cursor;
 
     this._request($.extend({}, oQuery, bAi && this._bAi ? {ai: 1} : {}), function(oData) {
+        // the field changed since: its own request comes
+        if(iSeq !== $this._iSeq)
+            return;
+
         if(oData.query && typeof(oData.query) == 'object' && !Array.isArray(oData.query))
             $this._oQuery = oData.query;
 

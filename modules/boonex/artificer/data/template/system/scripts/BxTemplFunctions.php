@@ -238,11 +238,10 @@ class BxTemplFunctions extends BxBaseFunctions
         $mixedResult = false;
 
         switch($sKey) {
+            // The search window is on every page: a section's and a context's Search and Cmd/Ctrl+K open it. The
+            // header search setting decides only whether the header's Search opens it or the results page.
             case 'sys_toolbar_search':
-                if(getParam('bx_artificer_header_search') == 'on')
-                    $mixedResult = parent::TemplPageAddComponent($sKey);
-                else
-                    $mixedResult = '';
+                $mixedResult = parent::TemplPageAddComponent($sKey);
                 break;
 
             case 'sys_app_account':

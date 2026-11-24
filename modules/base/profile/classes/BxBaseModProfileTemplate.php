@@ -774,7 +774,10 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
         //--- The page's Search (a group's: in the group; a person's: what they created), before the actions,
         //--- as a section's Search is in its title row.
         if(!$bUseAsBlock && !empty($aParams['page']) && $aParams['page'] instanceof BxDolPage && ($aSearch = $aParams['page']->getSearchAction()))
-            $sActionsMenu = BxDolCover::getInstance(BxDolTemplate::getInstance())->getSearchButton($aSearch, 'self-start me-2') . '<div class="relative flex-1 min-w-0 self-stretch">' . $sActionsMenu . '</div>';
+            $sActionsMenu = $this->parseHtmlByName('cover_actions_search.html', [
+                'search' => BxDolCover::getInstance(BxDolTemplate::getInstance())->getSearchButton($aSearch, 'self-start me-2'),
+                'actions' => $sActionsMenu,
+            ]);
 
         //--- Process Meta menu
         $sMetaMenu = '';

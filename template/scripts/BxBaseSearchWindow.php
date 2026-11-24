@@ -322,7 +322,8 @@ class BxBaseSearchWindow extends BxDol
             ]);
 
         $bOneGroup = isset($aResults['group']);
-        $aGroups = $bOneGroup ? (!empty($aResults['group']['items']) ? [$aResults['group']] : []) : $aResults['groups'];
+        // a page with no row the viewer may see can still have more after it (the rows checked per request are capped)
+        $aGroups = $bOneGroup ? (!empty($aResults['group']['items']) || $aResults['group']['cursor'] !== '' ? [$aResults['group']] : []) : $aResults['groups'];
 
         // tabs: "All" and a tab per module with results; a module scope has none
         $aTabs = [];
@@ -344,7 +345,7 @@ class BxBaseSearchWindow extends BxDol
                     'condition' => !$bOneGroup && ($aGroup['count'] > count($aGroup['items']) || $aGroup['count_more']),
                     'content' => [
                         'name' => $aGroup['name'],
-                        'title' => bx_process_output(_t('_sys_search_window_show_all', $sCount, $aGroup['title'])),
+                        'title' => bx_process_output($aGroup['count'] ? _t('_sys_search_window_show_all', $sCount, $aGroup['title']) : _t('_sys_search_window_more')),
                     ],
                 ],
                 'bx_if:more' => [

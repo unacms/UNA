@@ -321,6 +321,8 @@ class BxDolSearchUnified extends BxDol
      */
     public function getFieldChips($sModule)
     {
+        // the fields' lists are read with BX_DATA_LISTS_KEY_PREFIX, a constant of BxDolForm's file, which autoloading
+        // brings only with the class (as BxBaseServicesSearch::_getSearchExtendedObject does)
         bx_import('BxDolForm');
         $aObject = BxDolSearchExtendedQuery::getSearchObject($sModule);
         if(!$aObject || empty($aObject['active']) || empty($aObject['fields']))
@@ -435,7 +437,8 @@ class BxDolSearchUnified extends BxDol
         $bTotalMore = false;
         foreach($aModules as $sModule) {
             $aRes = $this->_collect($aGroups[$sModule], $aQuery, $aContext, [], self::ALL_PER_GROUP, self::ALL_COUNT_CAP, true);
-            if(!$aRes['count'])
+            // a module whose checked rows were all hidden may still have more after them: its tab goes on there
+            if(!$aRes['count'] && !$aRes['count_more'])
                 continue;
 
             $iTotal += $aRes['count'];
