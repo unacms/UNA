@@ -291,6 +291,34 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertSame($aChosen, BxTemplServicesSearch::applySearchAi($aChosen, true));
     }
 
+    public function testExploreIsTheSearchPage(): void
+    {
+        $aBlock = BxDolDb::getInstance()->getRow("SELECT `active`, `active_api`, `order`, `content` FROM `sys_pages_blocks` WHERE `object` = 'sys_explore' AND `module` = 'system' AND `title_system` = '_sys_page_block_title_system_search_window'");
+        $this->assertNotEmpty($aBlock, 'Explore has the search block (install SQL, migration 2026112593)');
+        $this->assertSame(['1', '1', '0'], [(string)$aBlock['active'], (string)$aBlock['active_api'], (string)$aBlock['order']], 'on for the site and the apps, first');
+
+        // a tab for everyone, second after Home (migration 2026112596)
+        $aTab = BxDolDb::getInstance()->getRow("SELECT `visible_for_levels`, `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_tabbar' AND `name` = 'explore'");
+        if ($aTab)
+            $this->assertSame(['2147483647', '2'], [(string)$aTab['visible_for_levels'], (string)$aTab['order']]);
+
+        // the apps get the window with the page's query; the site the window in Explore mode
+        $_GET['api'] = 1;
+        $_GET['keyword'] = 'garden';
+        try {
+            $aBlocks = (new BxTemplServicesSearch())->serviceGetBlockSearchWindow();
+        }
+        finally {
+            unset($_GET['api'], $_GET['keyword']);
+        }
+        $this->assertSame('static', $aBlocks[0]['type'] ?? '', 'older apps draw nothing for an element they lack');
+        $this->assertEquals(['element' => 'search_window', 'mode' => 'explore', 'query' => (object)['keyword' => 'garden'], 'focus' => 0], $aBlocks[0]['data']);
+
+        $sHtml = (new BxTemplServicesSearch())->serviceGetBlockSearchWindow();
+        $this->assertStringContainsString('data-mode="explore"', $sHtml);
+        $this->assertStringNotContainsString('bx-search-window-hint', $sHtml, 'Explore shows its featured blocks until a search, not a hint');
+    }
+
     public function testAPageSearchesItsSectionUnlessTheSectionTurnedItOff(): void
     {
         $oPage = BxDolPage::getObjectInstanceByURI('posts-home');

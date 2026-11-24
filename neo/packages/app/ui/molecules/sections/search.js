@@ -11,7 +11,6 @@ import {
     NeoButtonRef,
     NeoButtonLink,
     Input,
-    Modal,
 } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
 import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/search-results'
@@ -19,6 +18,8 @@ import { useTranslation } from 'react-i18next'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { appStatic } from 'app/lib/app-static'
+import { useOpenSearchWindow } from 'app/context/jotai/search-window'
+import { searchQueryFromScope, searchResultsHref, normalizeSearchQuery } from 'app/lib/search-window'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { BottomSheetScrollView } from 'app/ui/atoms/bottomsheet-scroll-view'
 import { useIsDesktop } from 'app/context/measure';
@@ -27,16 +28,17 @@ import { Block, BlockContent } from 'app/ui/molecules/page/page-block';
 export default function ElementSearch(oProps) {
     const { t } = useTranslation()
     const isDesktop = useIsDesktop();
-    const { setBottomSheetData } = useBottomSheetData()
+    const openSearchWindow = useOpenSearchWindow()
     const sType = oProps?.type ? oProps.type : 'default'
     const oParams = oProps?.params ? oProps.params : {}
-    const [showModal, setShowModal] = useState(false)
 
+    // The search window (UNA's one search, as on the site): global from the header, a module's or a context's
+    // with the scope its button gives (`section`, `scope`). On phones the header's global Search is Explore's.
     const handleOpenPopupDefault = () => {
         if (oParams?.trigger?.onPress) {
             oParams.trigger.onPress()
         }
-        setShowModal(true)
+        openSearchWindow(searchQueryFromScope(oProps?.scope ?? (oProps?.section ? { section: oProps.section } : null)))
     }
 
     const toolbarNeoButtonDefaults = getHeaderToolbarNeoButtonDefaults(isDesktop);
@@ -46,11 +48,12 @@ export default function ElementSearch(oProps) {
             <ElementSearchData
                 {...oProps}
                 resInPopup={true}
-                setBottomSheetData={setBottomSheetData}
             />
         ) : (
             <NeoButtonRef
                 key="ddp-trigger"
+                // `labelled`: a pill with the scope's label ("Search posts"), as a section's Add beside it
+                label={oProps.labelled && oProps?.scope?.title ? oProps.scope.title : undefined}
                 title={oProps.title === undefined ? '' : oProps.title}
                 image={
                     oParams?.trigger?.icon
@@ -58,14 +61,16 @@ export default function ElementSearch(oProps) {
                         : 'Search'
                 }
                 tooltip={
-                    oProps.tooltip === undefined ? 'Search' : oProps.tooltip
+                    oProps.tooltip === undefined ? t('Search') : oProps.tooltip
                 }
                 // An icon-only button: screen readers read this, not the icon's name ("search").
-                accessibilityLabel={t('Search')}
+                accessibilityLabel={oProps?.scope?.title || t('Search')}
+                aria-haspopup="dialog"
+                aria-keyshortcuts={!oProps?.section && !oProps?.scope ? 'Control+K Meta+K' : undefined}
                 {...toolbarNeoButtonDefaults}
                 {...(oParams?.trigger &&
                     (({ onPress, ...rest }) => rest)(oParams.trigger))}
-                borderShape="circle"
+                borderShape={oProps.labelled && oProps?.scope?.title ? 'capsule' : 'circle'}
                 onPress={handleOpenPopupDefault}
             />
         )
@@ -78,26 +83,7 @@ export default function ElementSearch(oProps) {
         )
     }
 
-    return (
-        <>
-            {sResult}
-            <Modal
-                title={t('Search')}
-                onVisible={!!showModal}
-                onClose={() => {
-                    setShowModal(false)
-                }}
-                transparent={false}
-            >
-                <ElementSearchData
-                    onClose={() => {
-                        setShowModal(false)
-                    }}
-                    {...oProps}
-                />
-            </Modal>
-        </>
-    )
+    return sResult
 }
 
 /**
@@ -107,7 +93,9 @@ export default function ElementSearch(oProps) {
 export function SearchPanel(props) {
     const { t } = useTranslation()
     const [inputValue, setInputValue] = useState(props.value)
-    const href = '/search-keyword?keyword=' + encodeURIComponent(inputValue || '') + (props.section ? '&section=' + encodeURIComponent(props.section) : '')
+    // the page's other params stay (a date, list=1), so a new keyword searches where the page was
+    const href = searchResultsHref({ ...normalizeSearchQuery(props.params ?? {}), ...normalizeSearchQuery({ keyword: inputValue, section: props.section }) })
+        + (props.params?.list ? (inputValue || props.section ? '&' : '?') + 'list=1' : '')
     return (
         <View className={appSetting('layout', 'max_width_block') + ' mx-auto w-full px-3 sm:px-4 pb-3'}>
             <Block>

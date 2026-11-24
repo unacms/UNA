@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Explore's search block (Studio > Pages > Explore). -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_page_block_title_system_search_window"><![CDATA[Поиск]]></string_add>
+</resources>

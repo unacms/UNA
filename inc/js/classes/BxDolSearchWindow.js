@@ -15,7 +15,8 @@ function BxDolSearchWindow(oRoot)
 {
     this._oRoot = $(oRoot);
     this._sUrl = this._oRoot.attr('data-url');
-    this._bPage = this._oRoot.attr('data-mode') == 'page';
+    this._sMode = this._oRoot.attr('data-mode');
+    this._bPage = this._sMode == 'page' || this._sMode == 'explore';
     this._bAi = this._oRoot.attr('data-ai') == '1';
     this._oQuery = {};
     try {
@@ -30,6 +31,7 @@ function BxDolSearchWindow(oRoot)
     this._iMinLen = 2;
 
     this._bind();
+    this._toggleExplore();
 }
 
 BxDolSearchWindow.POPUP = '#bx-search-window';
@@ -447,9 +449,25 @@ BxDolSearchWindow.prototype._run = function(bAi)
         $this._oRoot.find('.bx-search-window-status').text(oData.count || '');
         $this._initIcons();
 
-        if($this._bPage && window.history && window.history.replaceState)
+        if($this._sMode == 'page' && window.history && window.history.replaceState)
             window.history.replaceState(null, '', oData.results_url);
+
+        $this._toggleExplore();
     });
+};
+
+/**
+ * Explore: the page's other blocks (featured content) until a search is typed, the results in their place then.
+ */
+BxDolSearchWindow.prototype._toggleExplore = function()
+{
+    if(this._sMode != 'explore')
+        return;
+
+    var q = this._oQuery, bQuery = !!(q.keyword || q.context || q.author || q.date_from || q.filters);
+    var oOwn = this._oRoot.parents('.bx-page-block-container:first');
+    $('.bx-page-block-container').not(oOwn).toggleClass('hidden', bQuery);
+    this._oRoot.find('.bx-search-window-footer').toggleClass('hidden', !bQuery);
 };
 
 BxDolSearchWindow.prototype._load = function()
@@ -468,7 +486,7 @@ BxDolSearchWindow.prototype._request = function(oQuery, onSuccess)
 
     this._oRequest = $.ajax({
         url: this._sUrl,
-        data: $.extend({window: 1}, oQuery),
+        data: $.extend({window: 1, mode: this._sMode}, oQuery),
         dataType: 'json',
         success: function(oData) {
             if(oData && typeof(oData) == 'object')
