@@ -1850,7 +1850,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             return false;
 
         // only a field with privacy on (Studio > Forms > a field) has it
-        if(!(int)BxDolDb::getInstance()->getOne("SELECT `privacy` FROM `sys_form_inputs` WHERE `id` = :id LIMIT 1", ['id' => $iInputId]))
+        if(!BxDolFormQuery::isInputPrivacyEnabled($iInputId))
             return false;
 
         $sTitle = false;

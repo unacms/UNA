@@ -45,6 +45,8 @@ export default function FieldPrivacy({ chooser }: FieldPrivacyProps) {
     const { t } = useTranslation()
     const [isModal, setIsModal] = useState(false)
     const [saved, setSaved] = useState<Current | null>(null)
+    // One save at a time: a second choice made while the first is on its way could be written before it
+    const [isSaving, setIsSaving] = useState(false)
 
     const groups = Array.isArray(chooser?.values) ? chooser.values : []
     if (!chooser?.input_id || groups.length === 0) return null
@@ -70,9 +72,10 @@ export default function FieldPrivacy({ chooser }: FieldPrivacyProps) {
     const select = async (value: string | number) => {
         const next = String(value)
         setIsModal(false)
-        if (next === current.value) return
+        if (isSaving || next === current.value) return
 
         const option = options.find((item) => item.value === next)
+        setIsSaving(true)
         setSaved({ value: next, title: option?.label || '', label: '' })
 
         let data: any = null
@@ -96,6 +99,7 @@ export default function FieldPrivacy({ chooser }: FieldPrivacyProps) {
             setSaved(current)
             playCue('error')
         }
+        setIsSaving(false)
     }
 
     return (
@@ -116,6 +120,7 @@ export default function FieldPrivacy({ chooser }: FieldPrivacyProps) {
                     image={visibilityById(current.value, t)?.icon || FALLBACK_ICON}
                     label={title}
                     accessibilityLabel={current.label || title}
+                    disabled={isSaving}
                     onPress={() => setIsModal(true)}
                 />
             </Row>
