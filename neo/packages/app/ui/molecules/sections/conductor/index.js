@@ -511,6 +511,9 @@ export function Conductor({
             {useLocalHeader
                 ? <PageHeaderOptions hidden />
                 : <PageHeaderOptions sub={headerComponent} />}
+            {/* The page header's title follows the current tab's own title settings (Studio → Pages → page → Title):
+                a tab switch keeps the page the section was opened on as `data`. */}
+            <PageHeaderOptions page={tabRoute?.pageData ?? data} />
             <View className="w-full flex-1 " style={headerMode === 'dynamic' ? { overflow: 'hidden' } : undefined}>
                 {useLocalHeader && headerMode !== 'dynamic' ? headerComponent : null}
                 <TabScene
