@@ -219,9 +219,7 @@ class BxBaseStudioFormsDisplays extends BxDolStudioFormsDisplays
         $this->oDb->getInputs(array('type' => 'by_object_display', 'object' => $aRow['object'], 'display' => $aRow['display_name'], 'active' => 1), $aFields, false);
 
         $sLink = sprintf($this->sUrlViewFields, $aRow['module'], $aRow['object'], $aRow['display_name']);
-        $mixedValue = $this->_oTemplate->parseLink($sLink, _t('_adm_form_txt_forms_n_fields', count($aFields)), array(
-            'title' => _t('_adm_form_txt_displays_manage_fields') 
-        ));
+        $mixedValue = $this->_getCellCount(count($aFields), $sLink, _t('_adm_form_txt_forms_n_fields', count($aFields)), _t('_adm_form_txt_displays_manage_fields'));
 
         return parent::_getCellDefault ($mixedValue, $sKey, $aField, $aRow);
     }

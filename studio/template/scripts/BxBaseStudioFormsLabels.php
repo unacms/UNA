@@ -180,9 +180,7 @@ class BxBaseStudioFormsLabels extends BxDolStudioFormsLabels
         $iItems = $this->_oLabel->getLabels(array('type' => 'parent', 'parent' => $aRow['id'], 'count_only' => true));
 
         $sLink = bx_append_url_params($this->_sBaseUrl, array('parent' => $aRow['id']));
-        $mixedValue = $this->_oTemplate->parseLink($sLink, _t('_adm_form_txt_labels_n_items', $iItems), array(
-            'title' => _t('_adm_form_txt_labels_manage_items')
-        ));
+        $mixedValue = $this->_getCellCount($iItems, $sLink, _t('_adm_form_txt_labels_n_items', $iItems), _t('_adm_form_txt_labels_manage_items'));
 
         return parent::_getCellDefault ($mixedValue, $sKey, $aField, $aRow);
     }

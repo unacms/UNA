@@ -155,9 +155,7 @@ class BxBaseStudioRolesLevels extends BxDolStudioRolesLevels
         $aActions = $this->oDb->getActions(array('type' => 'by_role_id', 'role_id' => $aRow['id']));
 
         $sLink = BX_DOL_URL_STUDIO . 'builder_roles.php?page=ractions&role=' . $aRow['id'];
-        $mixedValue = $this->_oTemplate->parseLink($sLink, _t('_adm_rl_txt_n_actions', count($aActions)), array(
-            'title' => _t('_adm_rl_txt_manage_actions')
-        ));
+        $mixedValue = $this->_getCellCount(count($aActions), $sLink, _t('_adm_rl_txt_n_actions', count($aActions)), _t('_adm_rl_txt_manage_actions'));
 
         return parent::_getCellDefault ($mixedValue, $sKey, $aField, $aRow);
     }

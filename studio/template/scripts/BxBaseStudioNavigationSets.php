@@ -322,9 +322,7 @@ class BxBaseStudioNavigationSets extends BxDolStudioNavigationSets
         $this->oDb->getSets(array('type' => 'by_name', 'value' => $aRow['set_name']), $aSets, false);
 
         $sLink = sprintf($this->sUrlViewItems, $aRow['module'], $aRow['set_name']);
-        $mixedValue = $this->_oTemplate->parseLink($sLink, _t('_adm_nav_txt_n_items', $aSets['items_count']), array(
-            'title' => _t('_adm_nav_txt_manage_items')
-        ));
+        $mixedValue = $this->_getCellCount($aSets['items_count'], $sLink, _t('_adm_nav_txt_n_items', $aSets['items_count']), _t('_adm_nav_txt_manage_items'));
 
         return parent::_getCellDefault ($mixedValue, $sKey, $aField, $aRow);
     }

@@ -44,10 +44,10 @@ function BxDolGridAg(oCfg, oBx) {
     this._oItemsBx = null;
     this._iRowHeight = 52;
     this._iItemHeight = 44;
-    // From tablets up every row is a card: the row is taller by the gap between the cards, and no
-    // column is pinned, so a card is one piece. Phones keep the plain table.
+    // From tablets up no column is pinned and the cells have more room (bx-grid-ag-cards). Rows are plain list
+    // rows at every width, with no gap between them.
     this._bCards = !!globalThis.matchMedia?.('(min-width: 768px)').matches;
-    this._iRowGap = this._bCards ? 8 : 0;
+    this._iRowGap = 0;
 
     this._adoptBx();
     this._mount();
@@ -186,6 +186,7 @@ BxDolGridAg.prototype._mount = function () {
     eGrid.addEventListener('keydown', (ev) => this._onTab(ev, eGrid), true);
 
     this._oApi = bxAgGrid.createGrid(eGrid, oOptions);
+    this._watchHug();
 };
 
 /**
@@ -328,8 +329,28 @@ BxDolGridAg.prototype._columnOrder = function (oCol) {
         headerName: '',
         width: 52,
         maxWidth: 64,
-        rowDrag: true
+        rowDrag: true,
+        rowDragText: (p) => this._dragText(p?.rowNode?.data)
     });
+};
+
+/**
+ * What a dragged row's label says: its first text column, as text (the drag handle's own value is an object).
+ */
+BxDolGridAg.prototype._dragText = function (oData) {
+    for (const oCol of this._oCfg.columns || []) {
+        if (oCol.hug || oCol.kind)
+            continue;
+
+        const m = oData?.[oCol.name];
+        const v = String((m && typeof m === 'object' ? (m.value ?? m.data?.text) : m) ?? '');
+        // Markup the server flagged is read in an inert document, so nothing in it loads or runs.
+        const s = (m?.html ? new DOMParser().parseFromString(v, 'text/html').body.textContent : v).trim();
+        if (s)
+            return s;
+    }
+
+    return '';
 };
 
 BxDolGridAg.prototype._columnData = function (oCol) {
@@ -352,6 +373,9 @@ BxDolGridAg.prototype._columnData = function (oCol) {
     if (sSortField && sSortField === oCol.name && oDef.sortable)
         oDef.sort = sSortDir;
 
+    if (oCol.hug)
+        return { ...oDef, ...this._columnHug(oCol) };
+
     if (!oCol.controls)
         return { ...oDef, ...this._size(oCol.width) };
 
@@ -365,13 +389,78 @@ BxDolGridAg.prototype._size = function (sWidth) {
     const s = String(sWidth || '').trim();
     let m = /^(\d+(?:\.\d+)?)%$/.exec(s);
     if (m)
-        return { flex: Number.parseFloat(m[1]) || 1, minWidth: 80 };
+        return { flex: Number.parseFloat(m[1]) || 1, minWidth: this._iTextMinWidth };
 
     m = /^(\d+(?:\.\d+)?)px$/.exec(s);
     if (m)
         return { width: Number.parseFloat(m[1]), flex: 0, minWidth: 48 };
 
-    return { flex: 1, minWidth: 80 };
+    return { flex: 1, minWidth: this._iTextMinWidth };
+};
+
+/**
+ * Column widths by what a column shows (BxBaseGrid::_getColumnKind, the 'hug' of a column in the config).
+ * A switch, the row's action buttons, a count in its capsule or an icon is as wide as what is in it: it starts at a
+ * width that fits its usual content, and _fitHug widens it to its widest drawn cell or its title, so a button never
+ * wraps or clips. It never narrows again while the grid is open, so the columns don't jump while rows scroll in.
+ * Text columns share what is left (_size), each at least _iTextMinWidth wide, and cut long text with an ellipsis: a
+ * narrow grid cuts its text before it pushes the buttons out of sight.
+ */
+BxDolGridAg.prototype._iTextMinWidth = 72;
+
+BxDolGridAg.prototype._columnHug = function (oCol) {
+    const oStart = { switcher: 76, actions: 64, count: 72, icon: 64 };
+    return {
+        width: oStart[oCol.hug] || 64,
+        minWidth: 48,
+        flex: 0,
+        resizable: false,
+        suppressSizeToFit: true,
+        cellClass: 'bx-grid-ag-hug',
+        headerClass: 'bx-grid-ag-hug'
+    };
+};
+
+BxDolGridAg.prototype._hugIds = function () {
+    return (this._oCfg.columns || []).filter((o) => o.hug && o.hug !== 'checkbox' && o.hug !== 'order').map((o) => o.name);
+};
+
+BxDolGridAg.prototype._watchHug = function () {
+    const aIds = this._hugIds();
+    if (!aIds.length || !this._oApi?.addEventListener)
+        return;
+
+    // The cells' own padding is the room around what is in them: only a little more, so a title is not cut by a
+    // fraction of a pixel.
+    this._oApi.setGridOption?.('autoSizePadding', 4);
+    this._oHugWidths = {};
+    let iTimer = 0;
+    const fFit = () => {
+        clearTimeout(iTimer);
+        iTimer = setTimeout(() => this._fitHug(aIds), 30);
+    };
+    for (const sEvent of ['firstDataRendered', 'modelUpdated', 'viewportChanged'])
+        this._oApi.addEventListener(sEvent, fFit);
+};
+
+BxDolGridAg.prototype._fitHug = function (aIds) {
+    const oApi = this._oApi;
+    if (!oApi?.autoSizeColumns || oApi.isDestroyed?.())
+        return;
+
+    oApi.autoSizeColumns(aIds, false);
+
+    const aKeep = [];
+    for (const sId of aIds) {
+        const iNow = oApi.getColumn(sId)?.getActualWidth?.() || 0;
+        const iWas = this._oHugWidths[sId] || 0;
+        if (iNow < iWas)
+            aKeep.push({ key: sId, newWidth: iWas });
+        else
+            this._oHugWidths[sId] = iNow;
+    }
+    if (aKeep.length)
+        oApi.setColumnWidths(aKeep);
 };
 
 BxDolGridAg.prototype.refresh = function () {
@@ -1016,12 +1105,30 @@ BxDolGridAgCell.prototype._text = function (eGui, mixed, oAg, bHtml) {
     // A column cuts long text with an ellipsis: plain text is there in full when pointed at.
     if (!e.firstElementChild)
         e.title = e.textContent;
+    else
+        this._fullTextOnHover(e);
     if (!e.firstElementChild || !globalThis.jQuery)
         return;
 
     if (jQuery.fn.bxProcessHtml)
         jQuery(e).bxProcessHtml();
     oAg._oBx?._bindActionsSingle?.(jQuery(e));
+};
+
+/**
+ * A name that is a link, cut by its column: pointing at it shows the whole name, instead of the link's own title
+ * ("Manage items"), which comes back when the name fits again.
+ */
+BxDolGridAgCell.prototype._fullTextOnHover = function (e) {
+    const eLink = e.childElementCount === 1 && e.firstElementChild.tagName === 'A' && !e.firstElementChild.classList.contains('bx-btn') ? e.firstElementChild : null;
+    if (!eLink)
+        return;
+
+    const sOwn = eLink.getAttribute('title') || '';
+    eLink.addEventListener('mouseenter', () => {
+        const bCut = e.scrollWidth > e.clientWidth;
+        eLink.title = bCut ? eLink.textContent : sOwn;
+    });
 };
 
 BxDolGridAgCell.prototype._pair = function (v, sA, sB) {

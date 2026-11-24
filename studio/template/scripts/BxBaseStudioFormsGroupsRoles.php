@@ -296,9 +296,7 @@ class BxBaseStudioFormsGroupsRoles extends BxDolStudioFormsGroupsRoles
         }
 
         $sLink = 'javascript: glGrids.'.$this->_sObject.'.action(\'edit\', {id: '.$aRow['id'].'});';
-        $mixedValue = $this->_oTemplate->parseLink($sLink, _t('_adm_prm_txt_n_actions', $iAllowedPermissions), array(
-            'title' => _t('_adm_prm_txt_manage_actions')
-        ));
+        $mixedValue = $this->_getCellCount($iAllowedPermissions, $sLink, _t('_adm_prm_txt_n_actions', $iAllowedPermissions), _t('_adm_prm_txt_manage_actions'));
 
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }

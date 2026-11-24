@@ -249,6 +249,14 @@
     .bx-std .bx-def-color-bg-hl-hover:hover {
         @apply bg-black/[0.04] dark:bg-white/[0.04];
     }
+    /* A grid's row under the pointer takes the menu items' hover fill (.bx-menu-highlight-list) in their 150ms ease-out, over the
+       alternate rows' tint; the AG engine's rows do the same (grid_ag.css). Not while a row is dragged. */
+    .bx-grid-table tbody.bx-grid-table-data > tr {
+        transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .bx-grid-table tbody.bx-grid-table-data:not(:has(.bx-grid-gragging-row)) > tr:not(.bx-grid-table-row-empty):hover {
+        @apply bg-gray-200/50 dark:bg-gray-700/50;
+    }
 
     .bx-artificer .col-red1 {
         @apply text-red-500;
@@ -1157,6 +1165,16 @@
     }
     body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-large {
         @apply w-[3.25rem] min-w-[3.25rem];
+    }
+    /* A capsule (.bx-btn-capsule): a short label such as a count, a grid's "15" items (BxBaseGrid::_getCellCount), in a round-ended button at least as wide as it is tall. After the sizes' corners, which it replaces. */
+    body:not(.bx-std) .bx-btn.bx-btn-capsule {
+        @apply min-w-11 rounded-full tabular-nums;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-capsule.bx-btn-small {
+        @apply min-w-9;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-capsule.bx-btn-mini {
+        @apply min-w-7;
     }
     body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-xlarge {
         @apply w-16 min-w-16;
@@ -3001,6 +3019,9 @@
     }
     .bx-std .bx-btn.bx-btn-large {
         @apply h-[3.25rem] min-h-[3.25rem] px-6 rounded-xl text-base leading-6;
+    }
+    .bx-std .bx-btn.bx-btn-capsule {
+        @apply min-w-9 rounded-full tabular-nums;
     }
     /* The header's skip link is a .bx-btn.sr-only: keep it off-screen until focused (sr-only spelled out, Tailwind refuses to @apply it here), the button rules above would otherwise put it in the flow. */
     .bx-std .bx-btn.sr-only:not(:focus) {
