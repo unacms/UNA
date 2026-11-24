@@ -2889,10 +2889,10 @@ lucide-static@^1.73.0:
   resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.73.0.tgz#76a095f7cffc01db82e977591d850659a2cf1b48"
   integrity sha512-/FfzdRThAPnDVMk643pzENqYUnxudEON/fyOdh31ZiPiw/seE9VoYeIJPRDTCLDNtnF+5pK6CNwf6IkQMfrJ5w==
 
-lucide@^1.76.0:
-  version "1.76.0"
-  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.76.0.tgz#30124914a77e5e6b78bee34b5d8ddd1814726984"
-  integrity sha512-70XF2WJ156zj40BnibNXNnE9yq5Cf8tegPRgiryAXQHOZXBZV66jqqFluT+Td1weQNrhkURr/cQum2ReAJsydg==
+lucide@^1.77.0:
+  version "1.77.0"
+  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.77.0.tgz#d1b80a4775d77fa4c3aecfd06eae92110df9e678"
+  integrity sha512-DqoScWUEDcTC0KXPKKlZIIdOE++crPcGAQ60KfBNiT+Aq0sgQtxY/1sBCKBzLLo2yLLhYUperyUGHV5PwlBaIQ==
 
 magic-string@^0.30.3:
   version "0.30.21"
