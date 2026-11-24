@@ -12,12 +12,11 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
 {
     public function getCode($isDisplayHeader = true)
     {
-        list($aCssCalendar, $aJsCalendar) = BxBaseFormView::getCssJsCalendar();
-        $this->_oTemplate->addCss(array_merge($aCssCalendar, ['admin_log.css', 'forms.css']));
-        $this->_oTemplate->addJs($aJsCalendar);
+        $this->_oTemplate->addCss(['admin_log.css', 'forms.css']);
 
+        // Every filter applies as soon as it is picked: the grid gets all of them joined, in the order applyFilter reads.
         $sObject = bx_js_string($this->_sObject);
-        $sJs = "function bx_admin_log_filter(){var o=glGrids['" . $sObject . "'];if(!o)return;var v=function(n){var e=jQuery('#bx-grid-'+n+'-" . $sObject . "');return e.length?e.val():'';};o.setFilter([v('source'),v('profile_id'),v('agent_id'),v('object_type'),v('from_date'),v('to_date')].join('#-#'), true);}";
+        $sJs = "function bx_admin_log_filter(){var o=glGrids['" . $sObject . "'];if(!o)return;var v=function(n){var e=jQuery('#bx-grid-'+n+'-" . $sObject . "');return e.length?e.val():'';};o.setFilter([v('source'),v('profile_id'),v('agent_id'),v('object_type'),v('period')].join('#-#'), true);}";
 
         return BxDolTemplate::getInstance()->_wrapInTagJsCode($sJs) . parent::getCode($isDisplayHeader);
     }
@@ -53,7 +52,25 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
         $this->_aOptions['source'] = $this->_sSource;
         $this->applyFilter($sFilter);
 
-        return parent::_getDataSql('', $sOrderField, $sOrderDir, $iStart, $iPerPage);
+        $aData = parent::_getDataSql('', $sOrderField, $sOrderDir, $iStart, $iPerPage);
+
+        // the titles of this page's rows, read at once rather than cell by cell
+        if (is_array($aData) && $aData) {
+            $aTypes = $aOptions = [];
+            foreach ($aData as $aRow) {
+                $aTypes[] = (string)$aRow['object_type'];
+                if ($aRow['object_type'] === 'option')
+                    $aOptions[] = (string)$aRow['object_id'];
+            }
+            $this->loadLabels(array_unique($aTypes), $aOptions);
+        }
+
+        return $aData;
+    }
+
+    protected function _getFilterOnChange()
+    {
+        return 'bx_admin_log_filter()';
     }
 
     protected function _getFilterControls()
@@ -65,14 +82,15 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
             'cli' => '_adm_txt_admin_log_source_cli',
         ];
 
+        $aPeriods = [];
+        foreach (self::PERIODS as $iDays)
+            $aPeriods[(string)$iDays] = '_adm_txt_admin_log_period_' . $iDays;
+
         return $this->_getFilterSelectOne('source', $this->_sFilterSource, $aSources, '_adm_txt_admin_log_source_any')
             . $this->_getFilterSelectOne('profile_id', $this->_sFilterProfile, $this->_aProfiles, '_adm_txt_admin_log_profile_any')
             . $this->_getFilterSelectOne('agent_id', $this->_sFilterAgent, $this->_aAgents, '_adm_txt_admin_log_agent_any')
             . $this->_getFilterSelectOne('object_type', $this->_sFilterObject, $this->_aObjects, '_adm_txt_admin_log_object_any')
-            . $this->_getFilterDatePicker('from_date', $this->_sFilterFrom)
-            . $this->_getFilterLabel('-')
-            . $this->_getFilterDatePicker('to_date', $this->_sFilterTo)
-            . $this->filterButton();
+            . $this->_getFilterSelectOne('period', $this->_sFilterPeriod, $aPeriods, '_adm_txt_admin_log_period_any');
     }
 
     protected function _getCellAdded($mixedValue, $sKey, $aField, $aRow)
@@ -110,17 +128,17 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
 
     protected function _getCellObjectType($mixedValue, $sKey, $aField, $aRow)
     {
-        return parent::_getCellDefault($this->esc((string)$mixedValue), $sKey, $aField, $aRow);
+        return parent::_getCellDefault($this->esc($this->getObjectTypeTitle((string)$mixedValue)), $sKey, $aField, $aRow);
     }
 
     protected function _getCellObjectId($mixedValue, $sKey, $aField, $aRow)
     {
-        return parent::_getCellDefault($this->esc((string)$mixedValue), $sKey, $aField, $aRow);
+        return parent::_getCellDefault($this->esc($this->getObjectName($aRow)), $sKey, $aField, $aRow);
     }
 
     protected function _getCellAction($mixedValue, $sKey, $aField, $aRow)
     {
-        return parent::_getCellDefault($this->esc((string)$mixedValue), $sKey, $aField, $aRow);
+        return parent::_getCellDefault($this->esc($this->getActionTitle((string)$mixedValue)), $sKey, $aField, $aRow);
     }
 
     protected function applyFilter(string $sFilter): void
@@ -131,32 +149,20 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
             $this->_sFilterProfile = (string)($aParts[1] ?? '');
             $this->_sFilterAgent = (string)($aParts[2] ?? '');
             $this->_sFilterObject = (string)($aParts[3] ?? '');
-            $this->_sFilterFrom = (string)($aParts[4] ?? '');
-            $this->_sFilterTo = (string)($aParts[5] ?? '');
+            $this->_sFilterPeriod = (string)($aParts[4] ?? '');
         }
 
-        $iFrom = $this->_sFilterFrom !== '' ? strtotime($this->_sFilterFrom) : false;
-        $iTo = $this->_sFilterTo !== '' ? strtotime($this->_sFilterTo) : false;
+        $iDays = (int)$this->_sFilterPeriod;
+        if (!in_array($iDays, self::PERIODS, true))
+            $this->_sFilterPeriod = '';
 
         $this->_aOptions['source'] .= BxDolAdminLogQuery::getInstance()->filterClause([
             'source' => $this->_sFilterSource,
             'profile_id' => $this->_sFilterProfile,
             'agent_id' => $this->_sFilterAgent,
             'object_type' => $this->_sFilterObject,
-            'from' => $iFrom ?: 0,
-            'to' => $iTo ? $iTo + 86399 : 0,
+            'from' => $this->_sFilterPeriod !== '' ? time() - $iDays * 86400 : 0,
         ]);
-    }
-
-    protected function filterButton(): string
-    {
-        $aInput = $this->_getFilterButton(true);
-        $aInput['tr_attrs'] = ['class' => 'bx-grid-controls-filter-button'];
-        $aInput['attrs']['onClick'] = 'javascript:bx_admin_log_filter()';
-
-        $oForm = new BxTemplFormView([]);
-
-        return $oForm->genRow($aInput);
     }
 
     protected function diffRows(string $sBefore, string $sAfter): array

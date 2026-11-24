@@ -105,7 +105,7 @@ class AdminLogTest extends BxDolIntegrationTestCase
 
         $aRow = $this->latest('grid:sys_studio_nav_items', (string)$iItem, $iBefore);
         $this->assertIsArray($aRow);
-        $this->assertSame('enable', $aRow['action']);
+        $this->assertSame($iActive ? 'disable' : 'enable', $aRow['action']);
         $this->assertSame('studio', $aRow['source']);
         $aBefore = json_decode($aRow['before'], true);
         $aAfter = json_decode($aRow['after'], true);
@@ -235,6 +235,40 @@ class AdminLogTest extends BxDolIntegrationTestCase
                 return ['object' => 'sys_admin_log_test', 'source_type' => '', 'table' => '', 'field_id' => ''];
             }
         };
+    }
+
+    public function testTheGridShowsTypesActionsAndObjectsByTheirTitles(): void
+    {
+        if (!$this->ready())
+            $this->markTestSkipped('sys_admin_log is not installed.');
+        if (_t('_adm_txt_admin_log_t_sys_options') === '_adm_txt_admin_log_t_sys_options')
+            $this->markTestSkipped('The Studio log titles are not in the language yet.');
+
+        $this->bxLoginAsAdmin();
+
+        $oGrid = BxDolGrid::getObjectInstance('sys_admin_log_administration');
+        $this->assertInstanceOf(BxDolStudioAdminLogGrid::class, $oGrid);
+
+        // types: a short name, a table, a module's content, a type with no title
+        $this->assertSame(_t('_adm_txt_admin_log_t_sys_options'), $oGrid->getObjectTypeTitle('option'));
+        $this->assertSame(_t('_adm_txt_admin_log_t_sys_menu_items'), $oGrid->getObjectTypeTitle('menu_item'));
+        $this->assertSame(_t('_adm_txt_admin_log_t_sys_menu_items'), $oGrid->getObjectTypeTitle('sys_menu_items'));
+        $this->assertSame(_t('_adm_txt_admin_log_t_content', 'no_such_module'), $oGrid->getObjectTypeTitle('content:no_such_module'));
+        $this->assertSame('sys_no_such_table', $oGrid->getObjectTypeTitle('sys_no_such_table'));
+
+        // actions: the whole name, its last word, an agent's SQL verb, an action with no title
+        $this->assertSame(_t('_adm_txt_admin_log_a_edit'), $oGrid->getActionTitle('block_edit'));
+        $this->assertSame(_t('_adm_txt_admin_log_a_insert'), $oGrid->getActionTitle('INSERT'));
+        $this->assertSame('no_such_action', $oGrid->getActionTitle('no_such_action'));
+
+        // an object: the title of the changed row with its id, a module by its title
+        $sName = $oGrid->getObjectName([
+            'object_type' => 'grid:sys_studio_nav_items',
+            'object_id' => '5',
+            'before' => '',
+            'after' => json_encode(['5' => ['id' => 5, 'title_system' => 'Home']]),
+        ]);
+        $this->assertSame(_t('_adm_txt_admin_log_item', 'Home', '5'), $sName);
     }
 
     private function ready(): bool

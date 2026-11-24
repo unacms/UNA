@@ -164,6 +164,34 @@ class BxDolAdminLogQuery extends BxDolDb
         return is_array($a) ? $a : [];
     }
 
+    /**
+     * Grid object => its table, for the grids named in a page of log rows.
+     */
+    public function getGridTables(array $aObjects): array
+    {
+        $aObjects = array_values(array_filter(array_map('strval', $aObjects), fn($s) => $s !== ''));
+        if (!$aObjects)
+            return [];
+
+        $a = $this->getPairs("SELECT `object`, `table` FROM `sys_objects_grid` WHERE `object` IN (" . $this->implode_escape($aObjects) . ")", 'object', 'table');
+
+        return is_array($a) ? $a : [];
+    }
+
+    /**
+     * Setting name => its caption language key, for the settings named in a page of log rows.
+     */
+    public function getOptionCaptions(array $aNames): array
+    {
+        $aNames = array_values(array_filter(array_map('strval', $aNames), fn($s) => $s !== ''));
+        if (!$aNames)
+            return [];
+
+        $a = $this->getPairs("SELECT `name`, `caption` FROM `sys_options` WHERE `name` IN (" . $this->implode_escape($aNames) . ")", 'name', 'caption');
+
+        return is_array($a) ? $a : [];
+    }
+
     protected function normalizeSource($sSource): string
     {
         $sSource = (string)$sSource;

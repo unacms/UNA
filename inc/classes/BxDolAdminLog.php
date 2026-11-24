@@ -128,6 +128,10 @@ class BxDolAdminLog
             return;
         }
 
+        // The grid's on/off switch is one action, 'enable', with checked=0 when it turns a row off.
+        if ($sAction === 'enable' && bx_get('checked') !== false && !(int)bx_get('checked'))
+            $sAction = 'disable';
+
         $aSubject = $oGrid->getSourceOptions();
         $bCanSnapshot = self::canSnapshot($aSubject);
         $aIdsBefore = self::gridIds($oGrid);

@@ -949,7 +949,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_admin_log_enable', '_adm_stg_cpt_option_sys_admin_log_enable', '_adm_stg_inf_option_sys_admin_log_enable', 'on', 'checkbox', '', '', '', 5),
-(@iCategoryId, 'sys_admin_log_days_before_expire', '_adm_stg_cpt_option_sys_admin_log_days_before_expire', '_adm_stg_inf_option_sys_admin_log_days_before_expire', '365', 'digit', '', '', '', 6);
+(@iCategoryId, 'sys_admin_log_days_before_expire', '_adm_stg_cpt_option_sys_admin_log_days_before_expire', '', '365', 'digit', '', '', '', 6);
 
 
 --
