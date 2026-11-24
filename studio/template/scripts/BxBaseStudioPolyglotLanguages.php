@@ -28,7 +28,8 @@ class BxBaseStudioPolyglotLanguages extends BxDolStudioPolyglotLanguages // NOSO
      */
     protected function _getCellTitle($mixedValue, $sKey, $aField, $aRow)
     {
-        if(!$this->_bIsApi && ($sUrl = $this->getLanguageUrl($aRow)) !== '') {
+        // Not for the API. The rows of a grid drawn by AG Grid are built with _bIsApi on, and keep the link.
+        if(!bx_is_api() && ($sUrl = $this->getLanguageUrl($aRow)) !== '') {
             $mixedValue = '<a href="' . bx_html_attribute($sUrl) . '">' . $mixedValue . '</a>';
         }
 

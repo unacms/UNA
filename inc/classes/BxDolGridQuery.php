@@ -27,6 +27,15 @@ class BxDolGridQuery extends BxDolDb
         return (bool)$oDb->getOne($oDb->prepare("SELECT 1 FROM `sys_objects_grid` WHERE `object` = ? LIMIT 1", $sObject));
     }
 
+    /**
+     * The engine of a grid object ('' for the classic grid), or false when there is no such object.
+     */
+    public static function getGridEngine ($sObject)
+    {
+        $oDb = BxDolDb::getInstance();
+        return $oDb->getOne($oDb->prepare("SELECT `engine` FROM `sys_objects_grid` WHERE `object` = ? LIMIT 1", $sObject));
+    }
+
     public static function setGridEngine ($sObject, $sEngine)
     {
         $oDb = BxDolDb::getInstance();

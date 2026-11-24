@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- AG grids on phones: the select above the cards that picks the sort. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_grid_txt_sort_by"><![CDATA[Сортировать по]]></string_add>
+</resources>

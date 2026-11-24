@@ -5677,7 +5677,7 @@ CREATE TABLE IF NOT EXISTS `sys_objects_grid` (
   `visible_for_levels` int(11) NOT NULL DEFAULT '2147483647',
   `responsive` tinyint(4) NOT NULL DEFAULT '1',
   `show_total_count` tinyint(4) NOT NULL DEFAULT '0',
-  `engine` varchar(16) NOT NULL DEFAULT '',
+  `engine` varchar(16) NOT NULL DEFAULT 'ag',
   `override_class_name` varchar(255) NOT NULL,
   `override_class_file` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -5727,7 +5727,6 @@ INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `fie
 ('sys_studio_nav_items', 'Sql', 'SELECT * FROM `sys_menu_items` WHERE 1 ', 'sys_menu_items', 'id', 'order', 'active', 'active_api', '', 100, NULL, 'start_it', '', 'link', 'title_system', 'like', '', '', 'ag', 'BxTemplStudioNavigationItems', '');
 
 -- GRIDS: studio navigation menus
-UPDATE `sys_objects_grid` SET `engine` = 'ag' WHERE `object` = 'sys_studio_nav_menus' AND `engine` = '';
 
 CREATE TABLE IF NOT EXISTS `sys_grid_fields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -8307,3 +8306,4 @@ CREATE TABLE `sys_logger` (
     INDEX `idx_channel`    (`channel`),
     INDEX `idx_created_at` (`created_at`)
 );
+

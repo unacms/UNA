@@ -103,12 +103,28 @@ class StudioStorePolyglotTest extends BxDolIntegrationTestCase
         $sLang = getParam('lang_default');
         $aLanguage = BxDolDb::getInstance()->getRow("SELECT * FROM `sys_localization_languages` WHERE `Name` = :name", ['name' => $sLang]);
         $this->assertNotEmpty($aLanguage);
-        $this->assertStringContainsString(bx_process_output($aLanguage['Title']), $aBlock['content']);
-        $this->assertStringContainsString('>' . _t('_adm_pgt_txt_status_default') . '<', $aBlock['content']);
+        // The classic grid prints its rows in the block; a grid drawn by AG Grid sends them as data, cell by cell.
+        $sRows = $aBlock['content'];
+        if (str_contains($sRows, 'bx-grid-ag-wrap')) {
+            $aCells = [];
+            $aData = $this->call(BxDolGrid::getObjectInstance('sys_studio_lang_languages'), '_getDataAg');
+            array_walk_recursive($aData, function ($mixedValue) use (&$aCells) {
+                if (is_string($mixedValue))
+                    $aCells[] = $mixedValue;
+            });
+            $sRows = implode("
+", $aCells);
+        }
+
+        $this->assertStringContainsString(bx_process_output($aLanguage['Title']), $sRows);
+        // The status is a cell's whole text: between the cell's tags in the classic grid, a value of its own for AG Grid.
+        $this->assertMatchesRegularExpression('/(^|>|
+)' . preg_quote(_t('_adm_pgt_txt_status_default'), '/') . '(<|
+|$)/', $sRows);
 
         $sModule = BxDolDb::getInstance()->getOne("SELECT `name` FROM `sys_modules` WHERE `type` = 'language' AND `uri` = :uri", ['uri' => $sLang]);
         if ($sModule)
-            $this->assertStringContainsString('href="' . bx_html_attribute(BX_DOL_URL_STUDIO . 'language.php?name=' . $sModule) . '"', $aBlock['content']);
+            $this->assertStringContainsString('href="' . bx_html_attribute(BX_DOL_URL_STUDIO . 'language.php?name=' . $sModule) . '"', $sRows);
     }
 
     public function testLanguagesGridStatus(): void

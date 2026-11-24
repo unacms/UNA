@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- AG grids: the switch between rows and cards in the grid's header. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_grid_txt_view"><![CDATA[View]]></string_add>
+    <string_add name="_sys_grid_txt_view_rows"><![CDATA[Rows]]></string_add>
+    <string_add name="_sys_grid_txt_view_cards"><![CDATA[Cards]]></string_add>
+</resources>

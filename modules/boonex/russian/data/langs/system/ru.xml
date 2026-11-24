@@ -1241,6 +1241,9 @@
     <string name="_adm_form_err_search_forms_title"><![CDATA[Введите имя, более 3 символов]]></string>
     <string name="_adm_form_txt_all_modules"><![CDATA[Все модули]]></string>
     <string name="_adm_form_txt_confirm_delete"><![CDATA[Вы уверены, что хотите удалить это поле? Оно будет удалено со всех дисплеев! Вместо этого можно просто отключить его.]]></string>
+    <string name="_adm_form_txt_crumb_display"><![CDATA[Отображение]]></string>
+    <string name="_adm_form_txt_crumb_list"><![CDATA[Список данных]]></string>
+    <string name="_adm_form_txt_crumb_search_form"><![CDATA[Форма поиска]]></string>
     <string name="_adm_form_txt_audit_added"><![CDATA[Добавлено]]></string>
     <string name="_adm_form_txt_audit_profile"><![CDATA[Профиль]]></string>
     <string name="_adm_form_txt_audit_content"><![CDATA[Контент]]></string>
@@ -3773,6 +3776,7 @@
 	<string name="_sys_form_err_not_unique_value"><![CDATA[Поле должно иметь уникальное значение]]></string>
 	<string name="_sys_form_txt_optional"><![CDATA[(необязательно)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Выбрать файл]]></string>
+    <string name="_sys_form_txt_unselect_all"><![CDATA[Снять всё]]></string>
     <string name="_sys_form_wiki"><![CDATA[Вики]]></string>
     <string name="_sys_form_display_wiki_edit"><![CDATA[Вики: редактирование]]></string>
     <string name="_sys_form_display_wiki_translate"><![CDATA[Вики: перевод]]></string>
@@ -3796,6 +3800,11 @@
 	<string name="_sys_grid_lbl_apps"><![CDATA[Приложения]]></string>
 	<string name="_sys_grid_txt_n_selected"><![CDATA[Выбрано: {0}]]></string>
 	<string name="_sys_grid_txt_clear_selection"><![CDATA[Снять выделение]]></string>
+	<string name="_sys_grid_txt_select_rows"><![CDATA[Сначала выберите строки.]]></string>
+	<string name="_sys_grid_txt_sort_by"><![CDATA[Сортировать по]]></string>
+	<string name="_sys_grid_txt_view"><![CDATA[Вид]]></string>
+	<string name="_sys_grid_txt_view_cards"><![CDATA[Карточки]]></string>
+	<string name="_sys_grid_txt_view_rows"><![CDATA[Строки]]></string>
 	<string name="_sys_grid_txt_show_items"><![CDATA[Показать пункты]]></string>
 	<string name="_sys_grid_lbl_order"><![CDATA[Порядок]]></string>
 	<string name="_sys_grid_lbl_select"><![CDATA[Выбор]]></string>

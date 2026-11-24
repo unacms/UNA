@@ -524,7 +524,8 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $oDb = BxDolDb::getInstance();
 
-        $sQuery = preg_replace("/^SELECT.*FROM/mU", "SELECT COUNT(*) FROM ", $sQuery);
+        // the first FROM outside of parentheses: a column may be a subquery with a FROM of its own
+        $sQuery = preg_replace('/^SELECT\b(?:[^()]|(\((?:[^()]++|(?1))*\)))*?\bFROM\b/mi', 'SELECT COUNT(*) FROM', $sQuery, 1);
         if(strpos($sQuery, 'GROUP BY') === false)
             return $oDb->getOne($sQuery);
         else

@@ -13,9 +13,9 @@ class BxBaseGridAgEngineTest extends BxDolTestCase
         parent::tearDown();
     }
 
-    protected function grid(array $aOptions = []): BxTemplGrid
+    protected function grid(array $aOptions = [], string $sClass = 'BxTemplGrid'): BxTemplGrid
     {
-        $oGrid = (new ReflectionClass('BxTemplGrid'))->newInstanceWithoutConstructor();
+        $oGrid = (new ReflectionClass($sClass))->newInstanceWithoutConstructor();
         $this->bxSetProtected($oGrid, '_bIsApi', false, BxDolGrid::class);
         $this->bxSetProtected($oGrid, '_sObject', 'test_grid', BxDolGrid::class);
         $this->bxSetProtected($oGrid, '_oTemplate', BxDolTemplate::getInstance(), BxBaseGrid::class);
@@ -129,7 +129,7 @@ class BxBaseGridAgEngineTest extends BxDolTestCase
         $this->assertCount(1, $a['data']);
         $this->assertSame(2, $a['total']);
         $this->assertArrayNotHasKey('total_f', $a);
-        $this->assertSame(2, $a['data'][0]['id']);
+        $this->assertSame(2, $a['data'][0]['_id']);
         $this->assertSame('text', $a['data'][0]['title']['type']);
         $this->assertSame('B', $a['data'][0]['title']['value']);
         $this->assertSame('switcher', $a['data'][0]['switcher']['type']);
@@ -328,5 +328,122 @@ class BxBaseGridAgEngineTest extends BxDolTestCase
         $this->assertSame([], $a['data']);
         $this->assertSame(0, $a['total']);
         $this->assertFalse($this->bxGetProtected($oGrid, '_bIsApi', BxDolGrid::class));
+    }
+
+    /**
+     * AG Grid always asks for the total. The count query replaces the columns of the main query only: a column that
+     * is a subquery has a FROM of its own (the module's title of Polyglot > Text Keys).
+     */
+    public function testTotalCountKeepsASubqueryColumnOutOfTheCount(): void
+    {
+        $oGrid = $this->grid();
+        $iExpected = (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `sys_localization_categories`");
+
+        $sPlain = "SELECT `tlc`.`ID` AS `id`, `tlc`.`Name` AS `name` FROM `sys_localization_categories` AS `tlc` WHERE 1";
+        $this->assertSame($iExpected, (int)$this->bxCallProtected($oGrid, '_getDataSqlCounter', $sPlain, ''));
+
+        $sSubquery = "SELECT `tlc`.`ID` AS `id`, IFNULL((SELECT `tm`.`title` FROM `sys_modules` AS `tm` WHERE `tm`.`lang_category`=`tlc`.`Name` LIMIT 1), `tlc`.`Name`) AS `module` FROM `sys_localization_categories` AS `tlc` WHERE 1";
+        $this->assertSame($iExpected, (int)$this->bxCallProtected($oGrid, '_getDataSqlCounter', $sSubquery, ''));
+
+        $sLines = "SELECT
+    `tlc`.`ID` AS `id`
+FROM `sys_localization_categories` AS `tlc`
+WHERE 1";
+        $this->assertSame($iExpected, (int)$this->bxCallProtected($oGrid, '_getDataSqlCounter', $sLines, ''));
+    }
+
+    /**
+     * The transfers of the migration modules: the row's id is a module name, and a column of the same name shows its
+     * title, in the classic grid's markup. The id stays apart (_id), the column shows what is inside its <td>.
+     */
+    public function testAgRowsKeepTheIdApartFromAColumnOfTheSameName(): void
+    {
+        $oGrid = $this->grid([
+            'engine' => 'ag',
+            'field_id' => 'module',
+            'source' => [['module' => 'profiles', 'title' => 'x']],
+            'fields' => [
+                'module' => ['name' => 'module', 'title' => 'Module', 'width' => '100%', 'chars_limit' => 0, 'translatable' => 0],
+            ],
+        ], BxBaseGridAgEngineTestCustomGrid::class);
+
+        $a = $this->bxCallProtected($oGrid, '_getDataAg');
+
+        $this->assertSame('profiles', $a['data'][0]['_id']);
+        $this->assertSame(['type' => 'text', 'value' => 'Profiles', 'html' => 1], $a['data'][0]['module']);
+    }
+
+    /**
+     * Permissions' and roles' actions: a switch acts on an id the grid builds (level and action). AG Grid's rows carry
+     * it; the API's shape does not change.
+     */
+    public function testASwitchSendsItsOwnIdInAgRowsOnly(): void
+    {
+        $aSwitch = ['name' => 'switcher', 'title' => 'Active', 'width' => '1%', 'chars_limit' => 0, 'translatable' => 0];
+        $oGrid = $this->grid([
+            'engine' => 'ag',
+            'source' => [['id' => 1, 'title' => 'A', 'active' => 1]],
+            'fields' => ['switcher' => $aSwitch],
+        ], BxBaseGridAgEngineTestCustomGrid::class);
+
+        $a = $this->bxCallProtected($oGrid, '_getDataAg');
+        $this->assertSame(urlencode('3#-#1'), $a['data'][0]['switcher']['id']);
+
+        // The API: the switch as before, no id of its own.
+        $this->bxSetProtected($oGrid, '_bIsApi', true, BxDolGrid::class);
+        $aApi = $this->bxCallProtected($oGrid, '_getCellSwitcher', 1, 'switcher', $aSwitch, ['id' => 1, 'active' => 1]);
+        $this->assertSame(['type' => 'switcher', 'data' => 1, 'fld' => 'active', 'action' => 'enable'], $aApi);
+
+        // A switch on the row's own id sends none either.
+        $oPlain = $this->grid(['engine' => 'ag', 'source' => [['id' => 1, 'title' => 'A', 'active' => 1]], 'fields' => ['switcher' => $aSwitch]]);
+        $a = $this->bxCallProtected($oPlain, '_getDataAg');
+        $this->assertArrayNotHasKey('id', $a['data'][0]['switcher']);
+    }
+
+    /**
+     * Help Tours' preview: an action the grid draws as a link keeps its href in AG Grid's rows.
+     */
+    public function testALinkActionKeepsItsHref(): void
+    {
+        $oGrid = $this->grid([
+            'engine' => 'ag',
+            'source' => [['id' => 5, 'title' => 'A', 'active' => 1]],
+            'actions_single' => ['preview' => ['title' => 'Preview', 'icon' => 'eye', 'icon_only' => 1, 'confirm' => 0, 'active' => 1]],
+            'fields' => [
+                'actions' => ['name' => 'actions', 'title' => '', 'width' => '1%', 'chars_limit' => 0, 'translatable' => 0],
+            ],
+        ], BxBaseGridAgEngineTestCustomGrid::class);
+
+        $a = $this->bxCallProtected($oGrid, '_getDataAg');
+        $aAction = $a['data'][0]['actions']['data'][0];
+
+        $this->assertSame('preview', $aAction['name']);
+        $this->assertSame('https://example.com/?help_tour_preview=5', $aAction['attr']['href']);
+        $this->assertSame('_blank', $aAction['attr']['target']);
+    }
+}
+
+/**
+ * A grid with the cells and actions some grids have of their own (the transfers' module, the permissions' switch,
+ * the tours' preview link).
+ */
+class BxBaseGridAgEngineTestCustomGrid extends BxTemplGrid
+{
+    protected function _getCellModule($mixedValue, $sKey, $aField, $aRow)
+    {
+        return '<td>' . ucfirst($mixedValue) . '</td>';
+    }
+
+    protected function _getCellSwitcher($mixedValue, $sKey, $aField, $aRow)
+    {
+        $aRow[$this->_aOptions['field_id']] = urlencode('3#-#' . $aRow[$this->_aOptions['field_id']]);
+        return parent::_getCellSwitcher($mixedValue, $sKey, $aField, $aRow);
+    }
+
+    public function _getActionPreview($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
+    {
+        $a['attr']['href'] = 'https://example.com/?help_tour_preview=' . $aRow['id'];
+        $a['attr']['target'] = '_blank';
+        return $this->_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
     }
 }

@@ -49,9 +49,10 @@ class BxHelpToursGridTours extends BxTemplGrid
         $a['attr']['href'] = bx_absolute_url(bx_append_url_params(BxDolPermalinks::getInstance()->permalink($sUrl), ['help_tour_preview' => $aRow['id']]));
         $a['attr']['target'] = '_blank';
 
-        $sButton = $this->_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
-        $sA = str_replace('button', 'a', $sButton);
-        return $sA;
+        // A link: the classic grid's button tag becomes an <a>. The grid's data (the API, AG Grid) keeps the action as it
+        // is, with its href.
+        $mixedButton = $this->_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+        return is_array($mixedButton) ? $mixedButton : str_replace('button', 'a', $mixedButton);
     }
 
     private function getAddEditForm($iEntry) {

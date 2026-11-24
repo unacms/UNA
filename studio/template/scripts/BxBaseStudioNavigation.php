@@ -47,6 +47,11 @@ class BxBaseStudioNavigation extends BxDolStudioNavigation
             BX_DOL_STUDIO_NAV_TYPE_SETS => ['icon' => 'mi-nav-sets.svg'],
             BX_DOL_STUDIO_NAV_TYPE_ITEMS => ['icon' => 'mi-nav-items.svg']
         ];
+        // A menu row opens onto its items when both grids are drawn by AG Grid, so Items is no
+        // page of its own then. Its URL still works.
+        if($this->isItemsInMenus())
+            unset($aMenuItems[BX_DOL_STUDIO_NAV_TYPE_ITEMS]);
+
         foreach($aMenuItems as $sMenuItem => $aItem)
             $aMenu[] = [
                 'name' => $sMenuItem,
@@ -54,7 +59,8 @@ class BxBaseStudioNavigation extends BxDolStudioNavigation
                 'icon_bg' => true,
                 'link' => $this->sSubpageUrl . $sMenuItem,
                 'title' => _t('_adm_lmi_cpt_' . $sMenuItem),
-                'selected' => $sMenuItem == $this->sPage
+                // the Items page is a part of Menus when Items has no menu item of its own
+                'selected' => $sMenuItem == $this->sPage || ($sMenuItem == BX_DOL_STUDIO_NAV_TYPE_MENUS && $this->sPage == BX_DOL_STUDIO_NAV_TYPE_ITEMS && !isset($aMenuItems[BX_DOL_STUDIO_NAV_TYPE_ITEMS]))
             ];
 
         return parent::getPageMenu($aMenu);
@@ -67,6 +73,15 @@ class BxBaseStudioNavigation extends BxDolStudioNavigation
 
         $sModule = bx_process_input($sModule);
         return array('code' => 0, 'message' => '', 'content' => $this->getItemsObject()->getSetsSelector($sModule));
+    }
+
+    protected function isItemsInMenus()
+    {
+        foreach(['menus', 'items'] as $sKey)
+            if(BxDolGridQuery::getGridEngine($this->aGridObjects[$sKey]) !== 'ag')
+                return false;
+
+        return true;
     }
 
     protected function getMenus()

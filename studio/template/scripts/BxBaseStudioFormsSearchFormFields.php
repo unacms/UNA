@@ -101,7 +101,12 @@ class BxBaseStudioFormsSearchFormFields extends BxDolStudioFormsSearchFields
     {
         parent::_getFilterControls();
 
-        $sContent = $this->getModulesSelectOne('getSearchForms') . $this->getFormsSelector($this->sModule);
+        // Search Forms > module (goes to its search forms) > form (switches in place among the module's search forms) >
+        // which of the form's fields this page shows.
+        $sContent = $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_forms.php?page=search_forms', (string)$this->sModule, $this->_getCrumbModules('getSearchForms', '_adm_form_txt_all_modules', false, true), [
+            ['label' => _t('_adm_form_txt_crumb_search_form'), 'control' => $this->getFormsSelector($this->sModule)],
+            ['text' => _t('_adm_lmi_cpt_' . ($this->_sObject == 'sys_studio_search_forms_sortable_fields' ? 'search_sortable_fields' : 'search_fields'))],
+        ]);
 
         $oForm = new BxTemplStudioFormView(array());
 

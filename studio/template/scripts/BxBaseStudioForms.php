@@ -68,18 +68,54 @@ class BxBaseStudioForms extends BxDolStudioForms
     {
         $sJsObject = $this->getPageJsObject();
 
+        // A page that is a step of a list (a form's displays and their fields, a data list's items, a search form's
+        // fields) is reached through that list's breadcrumbs when their grids are drawn by AG Grid, so it is no page of
+        // its own in the menu then, and the list stays selected on it. Its URL still works.
+        $aMenuItems = $this->aMenuItems;
+        $aStepOf = [];
+        foreach($this->getListSteps() as $sList => $aSteps) {
+            if(!$this->isGridsAg(array_merge([$sList], $aSteps)))
+                continue;
+
+            foreach($aSteps as $sStep) {
+                unset($aMenuItems[$sStep]);
+                $aStepOf[$sStep] = $sList;
+            }
+        }
+
         $aMenu = [];
-        foreach($this->aMenuItems as $sMenuItem => $aItem)
+        foreach($aMenuItems as $sMenuItem => $aItem)
             $aMenu[] = [
                 'name' => $sMenuItem,
                 'icon' => $aItem['icon'],
                 'icon_bg' => true,
                 'link' => $this->sSubpageUrl . $sMenuItem,
                 'title' => _t('_adm_lmi_cpt_' . $sMenuItem),
-                'selected' => $sMenuItem == $this->sPage
+                'selected' => $sMenuItem == $this->sPage || ($aStepOf[$this->sPage] ?? '') === $sMenuItem
             ];
 
         return parent::getPageMenu($aMenu);
+    }
+
+    /**
+     * The lists and the pages that are steps under them, by page name.
+     */
+    protected function getListSteps()
+    {
+        return [
+            BX_DOL_STUDIO_FORM_TYPE_FORMS => [BX_DOL_STUDIO_FORM_TYPE_DISPLAYS, BX_DOL_STUDIO_FORM_TYPE_FIELDS],
+            BX_DOL_STUDIO_FORM_TYPE_PRE_LISTS => [BX_DOL_STUDIO_FORM_TYPE_PRE_VALUES],
+            BX_DOL_STUDIO_FORM_TYPE_SEARCH_FORMS => [BX_DOL_STUDIO_FORM_TYPE_SEARCH_FIELDS, BX_DOL_STUDIO_FORM_TYPE_SEARCH_SORTABLE_FIELDS],
+        ];
+    }
+
+    protected function isGridsAg($aPages)
+    {
+        foreach($aPages as $sPage)
+            if(empty($this->aGridObjects[$sPage]) || BxDolGridQuery::getGridEngine($this->aGridObjects[$sPage]) !== 'ag')
+                return false;
+
+        return true;
     }
 
     function actionGetForms()

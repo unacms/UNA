@@ -10,6 +10,7 @@
 
 class BxBaseStudioFormsSearchForms extends BxDolStudioFormsSearchForms
 {
+    protected $_bFilterModuleInUrl = true;
     protected $_sFilter;
 
     protected $sUrlViewFields;
@@ -199,36 +200,26 @@ class BxBaseStudioFormsSearchForms extends BxDolStudioFormsSearchForms
     {
         parent::_getFilterControls();
 
-        $sContent = "";
-
         $sJsObject = $this->getJsObject();
-        $oForm = new BxTemplStudioFormView(array());
+        $sModule = $this->_getFilterModule();
 
-        $aInputModules = array(
-            'type' => 'select',
-            'name' => 'module',
-            'attrs' => array(
-                'id' => 'bx-grid-module-' . $this->_sObject,
-                'aria-label' => _t('_adm_grid_lbl_module'),
-                'onChange' => 'javascript:' . $this->getJsObject() . '.onChangeFilter()'
-            ),
-            'value' => '',
-            'values' => $this->getModules(false)
-        );
+        // Search Forms > module (only those with search forms) > search form: a search form leads to its fields.
+        $aNext = [];
+        if($sModule !== '') {
+            $aForms = [];
+            $this->oDb->getSearchForms(['type' => 'by_module', 'module' => $sModule], $aForms, false);
 
-        $aCounter = array();
-        $this->oDb->getSearchForms(array('type' => 'counter_by_modules'), $aCounter, false);
-        foreach($aInputModules['values'] as $sKey => $sValue){
-            if (isset($aCounter[$sKey]) && $aCounter[$sKey] > 0)
-                $aInputModules['values'][$sKey] = $aInputModules['values'][$sKey] . " (" . (isset($aCounter[$sKey]) ? $aCounter[$sKey] : "0") . ")";
-            else
-                unset($aInputModules['values'][$sKey]);
+            $aValues = [];
+            foreach($aForms as $aForm)
+                $aValues[$aForm['object']] = _t($aForm['title']);
+            asort($aValues);
+
+            $aNext[] = ['label' => _t('_adm_form_txt_crumb_search_form'), 'control' => $this->_getCrumbGoSelect('form', '', array_merge(['' => _t('_adm_form_txt_search_forms_fields_select_object')], $aValues), BX_DOL_URL_STUDIO . 'builder_forms.php?page=search_fields&module=' . rawurlencode($sModule) . '&form=')];
         }
 
-        $aInputModules['values'] = array_merge(array('' => _t('_adm_form_txt_all_modules')), $aInputModules['values']);
+        $sContent = $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_forms.php?page=search_forms', $sModule, $this->_getCrumbModules('getSearchForms', '_adm_form_txt_all_modules', false, true), $aNext);
 
-        $sContent .= $oForm->genRow($aInputModules);
-
+        $oForm = new BxTemplStudioFormView(array());
         $aInputSearch = array(
             'type' => 'text',
             'name' => 'keyword',
