@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- AG grids: a bulk action picked from the Actions menu with no row selected asks to select rows first. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_grid_txt_select_rows"><![CDATA[Сначала выберите строки.]]></string_add>
+</resources>

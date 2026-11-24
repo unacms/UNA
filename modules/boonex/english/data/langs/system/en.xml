@@ -1251,6 +1251,9 @@
     <string name="_adm_form_err_search_forms_title"><![CDATA[Enter name, more than 3 characters]]></string>
     <string name="_adm_form_txt_all_modules"><![CDATA[All Modules]]></string>
     <string name="_adm_form_txt_confirm_delete"><![CDATA[Are you sure you want to delete this field? It will be deleted from all Displays! You may just turn it off instead.]]></string>
+    <string name="_adm_form_txt_crumb_display"><![CDATA[Display]]></string>
+    <string name="_adm_form_txt_crumb_list"><![CDATA[Data list]]></string>
+    <string name="_adm_form_txt_crumb_search_form"><![CDATA[Search form]]></string>
     <string name="_adm_form_txt_audit_added"><![CDATA[Added]]></string>
     <string name="_adm_form_txt_audit_profile"><![CDATA[Profile]]></string>
     <string name="_adm_form_txt_audit_content"><![CDATA[Content]]></string>
@@ -3802,6 +3805,7 @@
 	<string name="_sys_form_err_not_unique_value"><![CDATA[The field should have unique value]]></string>
 	<string name="_sys_form_txt_optional"><![CDATA[(optional)]]></string>
 	<string name="_sys_form_txt_select_file"><![CDATA[Select a file]]></string>
+	<string name="_sys_form_txt_unselect_all"><![CDATA[Unselect all]]></string>
 	<string name="_sys_form_wiki"><![CDATA[Wiki]]></string>
 	<string name="_sys_form_display_wiki_edit"><![CDATA[Wiki Edit]]></string>
 	<string name="_sys_form_display_wiki_translate"><![CDATA[Wiki Translate]]></string>
@@ -3826,6 +3830,11 @@
 	<string name="_sys_grid_lbl_apps"><![CDATA[Apps]]></string>
 	<string name="_sys_grid_txt_n_selected"><![CDATA[{0} selected]]></string>
 	<string name="_sys_grid_txt_clear_selection"><![CDATA[Clear selection]]></string>
+	<string name="_sys_grid_txt_select_rows"><![CDATA[Select rows first.]]></string>
+	<string name="_sys_grid_txt_sort_by"><![CDATA[Sort by]]></string>
+	<string name="_sys_grid_txt_view"><![CDATA[View]]></string>
+	<string name="_sys_grid_txt_view_cards"><![CDATA[Cards]]></string>
+	<string name="_sys_grid_txt_view_rows"><![CDATA[Rows]]></string>
 	<string name="_sys_grid_txt_show_items"><![CDATA[Show items]]></string>
 	<string name="_sys_grid_lbl_order"><![CDATA[Order]]></string>
 	<string name="_sys_grid_lbl_select"><![CDATA[Select]]></string>

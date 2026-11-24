@@ -141,7 +141,7 @@ class BxDolMStudioPage extends BxTemplStudioModule
                       }, {$this -> _oModule -> _oConfig -> _iCheckInterval})
                   }
               };
-        $("button[bx_grid_action_bulk='run']").bind('click', check);
+        $("[bx_grid_action_bulk='run']").bind('click', check); // the classic grid's button, the AG grid's menu item
         </script>
 EOF;
 

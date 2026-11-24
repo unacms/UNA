@@ -183,6 +183,13 @@ div.bx-std-pmen-item .bx-std-tile-btn svg,
 div.bx-std-pmen-item .bx-std-tile-btn .sys-icon {
     border-radius: 0;
 }
+/* A module's own side menu art drawn white, for the colored tiles it was made for (Accounts' std-mi-*.svg): on a gray tile
+   button it takes the text color, as the line art does. */
+div.bx-std-pmen-item .bx-std-tile-btn svg[fill="white"],
+div.bx-std-pmen-item .bx-std-tile-btn svg[fill="#fff"],
+div.bx-std-pmen-item .bx-std-tile-btn svg[fill="#ffffff"] {
+    fill: currentColor;
+}
 /* App art: its 36px tile (8px corners), as large as a tile button; the tile's darker edge line sits over the art's outer pixel
    (tailwind.css). */
 div.bx-std-pmen-item .bx-std-pmen-ic-icon:not(.bx-std-tile-btn) > img,

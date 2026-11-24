@@ -36,4 +36,3 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('bx_editor_toolbar', 'order', '', '2%', 0, '0', '', 1),
 ('bx_editor_toolbar', 'switcher', '', '8%', 0, '0', '', 2),
 ('bx_editor_toolbar', 'name', '_bx_editor_grid_column_title_name', '70%', 1, '16', '', 3);
-

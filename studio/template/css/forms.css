@@ -86,3 +86,22 @@ div.bx-form-input-language-current {
 textarea.bx-form-input-textarea-small + .CodeMirror {
     height: 6rem;
 }
+
+/* A list of checkboxes: Select all / Unselect all above its options (BxBaseFormView::_genInputsSet). */
+.bx-form-input-checkbox_set-toggle {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    margin-bottom: 0.25rem;
+}
+.bx-form-input-checkbox_set-toggle button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: rgb(var(--bx-accent-600));
+    font-size: 13px;
+    cursor: pointer;
+}
+.bx-form-input-checkbox_set-toggle button:hover {
+    text-decoration: underline;
+}
