@@ -273,6 +273,27 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertSame([$iPublic], array_map('intval', array_column($aData['results']['group']['items'], 'id')));
     }
 
+    public function testTheAppsGlobalSearchHasItsModulesAndASectionKeepsItsOwn(): void
+    {
+        $sOption = getParam('sys_api_search_sections');
+        setParam('sys_api_search_sections', 'bx_persons');
+        try {
+            $o = BxDolSearchUnified::getInstance();
+            $o->setApiSections(true);
+            $aScope = $o->getScope($o->normalize([]));
+            $this->assertNotContains('bx_posts', array_column($aScope['groups'], 'name'), 'global search: the listed modules');
+            $this->assertSame(['bx_persons'], array_keys($o->getGlobalModules()), 'and the AI reader\'s choices');
+
+            // a section's Search searches its module even when the apps' global search leaves it out
+            $aQuery = $o->normalize(['section' => 'bx_posts']);
+            $this->assertSame(['bx_posts'], $aQuery['section']);
+            $this->assertSame('module', $o->getScope($aQuery)['scope']);
+        }
+        finally {
+            setParam('sys_api_search_sections', $sOption);
+        }
+    }
+
     public function testTheAiFillsTheModuleAndTheDatesOnlyWhenAModelIsOn(): void
     {
         $o = BxDolSearchUnified::getInstance();

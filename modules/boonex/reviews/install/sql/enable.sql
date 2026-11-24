@@ -311,7 +311,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_reviews_submenu', 'bx_reviews', 'reviews-home', '_bx_reviews_menu_item_title_system_entries_public', '_bx_reviews_menu_item_title_entries_public', 'page.php?i=reviews-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_reviews_submenu', 'bx_reviews', 'reviews-popular', '_bx_reviews_menu_item_title_system_entries_popular', '_bx_reviews_menu_item_title_entries_popular', 'page.php?i=reviews-popular', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_reviews_submenu', 'bx_reviews', 'reviews-top', '_bx_reviews_menu_item_title_system_entries_top', '_bx_reviews_menu_item_title_entries_top', 'page.php?i=reviews-top', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_reviews_submenu', 'bx_reviews', 'reviews-search', '_bx_reviews_menu_item_title_system_entries_search', '_bx_reviews_menu_item_title_entries_search', 'page.php?i=reviews-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_reviews_submenu', 'bx_reviews', 'reviews-search', '_bx_reviews_menu_item_title_system_entries_search', '_bx_reviews_menu_item_title_entries_search', 'page.php?i=reviews-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_reviews_submenu', 'bx_reviews', 'reviews-manage', '_bx_reviews_menu_item_title_system_entries_manage', '_bx_reviews_menu_item_title_entries_manage', 'page.php?i=reviews-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: sub-menu for view entry

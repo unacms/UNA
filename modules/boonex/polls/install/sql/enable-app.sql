@@ -65,7 +65,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_my' AND `m
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_submenu' AND `module`='bx_polls' AND `name`='polls-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_submenu' AND `module`='bx_polls' AND `name`='polls-popular';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_submenu' AND `module`='bx_polls' AND `name`='polls-top';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_submenu' AND `module`='bx_polls' AND `name`='polls-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_submenu' AND `module`='bx_polls' AND `name`='polls-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_snippet_meta' AND `module`='bx_polls' AND `name`='date';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_polls_snippet_meta' AND `module`='bx_polls' AND `name`='comments';

@@ -310,7 +310,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_workspaces_submenu', 'bx_workspaces', 'workspaces-home', '_bx_workspaces_menu_item_title_system_entries_recent', '_bx_workspaces_menu_item_title_entries_recent', 'page.php?i=workspaces-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_workspaces_submenu', 'bx_workspaces', 'workspaces-active', '_bx_workspaces_menu_item_title_system_entries_active', '_bx_workspaces_menu_item_title_entries_active', 'page.php?i=workspaces-active', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_workspaces_submenu', 'bx_workspaces', 'workspaces-online', '_bx_workspaces_menu_item_title_system_entries_online', '_bx_workspaces_menu_item_title_entries_online', 'page.php?i=workspaces-online', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_workspaces_submenu', 'bx_workspaces', 'workspaces-search', '_bx_workspaces_menu_item_title_system_entries_search', '_bx_workspaces_menu_item_title_entries_search', 'page.php?i=workspaces-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_workspaces_submenu', 'bx_workspaces', 'workspaces-search', '_bx_workspaces_menu_item_title_system_entries_search', '_bx_workspaces_menu_item_title_entries_search', 'page.php?i=workspaces-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_workspaces_submenu', 'bx_workspaces', 'workspaces-manage', '_bx_workspaces_menu_item_title_system_entries_manage', '_bx_workspaces_menu_item_title_entries_manage', 'page.php?i=workspaces-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: view submenu

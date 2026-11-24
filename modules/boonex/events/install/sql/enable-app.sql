@@ -90,7 +90,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_submenu' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_submenu' AND `module`='bx_events' AND `name`='events-top';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_submenu' AND `module`='bx_events' AND `name`='events-upcoming';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_submenu' AND `module`='bx_events' AND `name`='events-calendar';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_submenu' AND `module`='bx_events' AND `name`='events-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_submenu' AND `module`='bx_events' AND `name`='events-joined';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_submenu' AND `module`='bx_events' AND `name`='events-followed';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_events_view_submenu' AND `module`='bx_events' AND `name`='view-event-profile';

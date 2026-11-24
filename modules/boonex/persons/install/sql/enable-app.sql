@@ -73,7 +73,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_view_met
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_submenu' AND `module`='bx_persons' AND `name`='persons-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_submenu' AND `module`='bx_persons' AND `name`='persons-active';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_submenu' AND `module`='bx_persons' AND `name`='persons-online';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_submenu' AND `module`='bx_persons' AND `name`='persons-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_submenu' AND `module`='bx_persons' AND `name`='persons-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_view_submenu' AND `module`='bx_persons' AND `name`='view-persons-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_persons_view_submenu' AND `module`='bx_persons' AND `name`='persons-profile-info';

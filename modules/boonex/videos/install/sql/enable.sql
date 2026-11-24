@@ -254,7 +254,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_videos_submenu', 'bx_videos', 'videos-home', '_bx_videos_menu_item_title_system_entries_public', '_bx_videos_menu_item_title_entries_public', 'page.php?i=videos-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_videos_submenu', 'bx_videos', 'videos-popular', '_bx_videos_menu_item_title_system_entries_popular', '_bx_videos_menu_item_title_entries_popular', 'page.php?i=videos-popular', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_videos_submenu', 'bx_videos', 'videos-top', '_bx_videos_menu_item_title_system_entries_top', '_bx_videos_menu_item_title_entries_top', 'page.php?i=videos-top', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_videos_submenu', 'bx_videos', 'videos-search', '_bx_videos_menu_item_title_system_entries_search', '_bx_videos_menu_item_title_entries_search', 'page.php?i=videos-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_videos_submenu', 'bx_videos', 'videos-search', '_bx_videos_menu_item_title_system_entries_search', '_bx_videos_menu_item_title_entries_search', 'page.php?i=videos-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_videos_submenu', 'bx_videos', 'videos-manage', '_bx_videos_menu_item_title_system_entries_manage', '_bx_videos_menu_item_title_entries_manage', 'page.php?i=videos-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: sub-menu for view entry

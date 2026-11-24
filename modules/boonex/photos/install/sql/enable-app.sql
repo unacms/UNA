@@ -73,7 +73,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_my' AND `
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' AND `module`='bx_photos' AND `name`='photos-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' AND `module`='bx_photos' AND `name`='photos-popular';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' AND `module`='bx_photos' AND `name`='photos-top';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' AND `module`='bx_photos' AND `name`='photos-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_submenu' AND `module`='bx_photos' AND `name`='photos-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_snippet_meta' AND `module`='bx_photos' AND `name`='rating';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_photos_snippet_meta' AND `module`='bx_photos' AND `name`='comments';
