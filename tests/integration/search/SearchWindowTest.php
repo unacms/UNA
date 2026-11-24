@@ -23,6 +23,8 @@ class SearchWindowTest extends ApiV2TestCase
 
     protected function tearDown(): void
     {
+        BxDolSearchUnified::getInstance()->setApiSections(false);
+        unset($GLOBALS['bxDolClasses']['BxDolAiSearchParser']);
         $this->asViewer(0);
         $GLOBALS['glForceCurrentProfileId'] = $this->_mForced;
         $GLOBALS['logged'] = $this->_mLogged;
@@ -67,7 +69,8 @@ class SearchWindowTest extends ApiV2TestCase
     protected function comment(int $iAuthor, int $iPost, string $sText): int
     {
         $this->asViewer($iAuthor);
-        // without the request's params: a form posted by an earlier test would add its own fields
+        // a fresh comment form (one an earlier test rendered keeps its CSRF field) and no request params
+        BxDolForm::unSetObjectInstance('sys_comment', 'sys_comment_post');
         $a = BxDolApiV2Search::isolated(function () use ($iAuthor, $iPost, $sText) {
             return BxDolCmts::getObjectInstance('bx_posts', $iPost)->add(['cmt_author_id' => $iAuthor, 'cmt_parent_id' => 0, 'cmt_text' => $sText]);
         });
@@ -124,12 +127,14 @@ class SearchWindowTest extends ApiV2TestCase
                 $this->assertSame(count($aPosts) + count($aCmts), $iCount, 'the count is what may be opened');
             }
 
-        // comments come with their module where a keyword is searched in all its content
-        list(, $aCmts) = $this->found(['keyword' => $sWord, 'section' => 'bx_posts'], $iOther);
+        // comments come with their module in the "All" view and its tab; the module scope is its entries only
+        list(, $aCmts) = $this->found(['keyword' => $sWord, 'tab' => 'bx_posts'], $iOther);
         $this->assertSame([$iCmtPublic], $aCmts);
+        list(, $aCmts) = $this->found(['keyword' => $sWord, 'section' => 'bx_posts'], $iOther);
+        $this->assertSame([], $aCmts);
 
         // the owner gets every one of them
-        list($aPosts, $aCmts) = $this->found(['keyword' => $sWord, 'section' => 'bx_posts'], $iOwner);
+        list($aPosts, $aCmts) = $this->found(['keyword' => $sWord, 'tab' => 'bx_posts'], $iOwner);
         $this->assertEqualsCanonicalizing(array_merge([$iPublic, $iPrivate], $aSecret ? [$aSecret[1]] : []), $aPosts);
         $this->assertEqualsCanonicalizing([$iCmtPublic, $iCmtPrivate], $aCmts);
 
@@ -257,6 +262,24 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertSame([$iPublic], array_map('intval', array_column($aData['results']['group']['items'], 'id')));
     }
 
+    public function testTheAiFillsTheModuleAndTheDatesOnlyWhenAModelIsOn(): void
+    {
+        $o = BxDolSearchUnified::getInstance();
+        $aQuery = $o->normalize(['keyword' => 'posts about gardens in january 2026']);
+
+        // no judge model (as installed): the words as typed
+        $GLOBALS['bxDolClasses']['BxDolAiSearchParser'] = new SearchWindowTestParser(false);
+        $this->assertSame($aQuery, BxTemplServicesSearch::applySearchAi($aQuery, true));
+
+        // a model (mocked: the parser's answer for those words) fills the chips, and leaves a chosen module alone
+        $GLOBALS['bxDolClasses']['BxDolAiSearchParser'] = new SearchWindowTestParser(true);
+        $a = BxTemplServicesSearch::applySearchAi($aQuery, true);
+        $this->assertSame(['gardens', ['bx_posts'], '2026-01-01', '2026-01-31', 'created'], [$a['keyword'], $a['section'], $a['date_from'], $a['date_to'], $a['date_field']]);
+        $this->assertSame($aQuery, BxTemplServicesSearch::applySearchAi($aQuery, false), 'not asked');
+        $aChosen = $o->normalize(['keyword' => 'gardens', 'section' => 'bx_posts']);
+        $this->assertSame($aChosen, BxTemplServicesSearch::applySearchAi($aChosen, true));
+    }
+
     public function testAPageSearchesItsSectionUnlessTheSectionTurnedItOff(): void
     {
         $oPage = BxDolPage::getObjectInstanceByURI('posts-home');
@@ -282,5 +305,36 @@ class SearchWindowTest extends ApiV2TestCase
                 BxDolDb::getInstance()->query("DELETE FROM `sys_pages_sections` WHERE `object` = :object", ['object' => $sSection]);
             BxDolDb::getInstance()->cleanMemory('sys_pages_sections');
         }
+    }
+}
+
+/**
+ * The search parser with a judge model or without one, answering as a model would for "posts about gardens in january 2026".
+ */
+class SearchWindowTestParser extends BxDolAiSearchParser
+{
+    protected $_bOn;
+
+    public function __construct($bOn)
+    {
+        $this->_bOn = $bOn;
+    }
+
+    public function isAvailable(): bool
+    {
+        return $this->_bOn;
+    }
+
+    public function parse(string $sQuery, array $aOptions = []): array
+    {
+        return [
+            'query' => $sQuery,
+            'keyword' => 'gardens',
+            'section' => isset($aOptions['sections']['bx_posts']) ? 'bx_posts' : '',
+            'section_title' => '',
+            'date' => ['field' => 'created', 'mode' => 'absolute', 'anchor' => '', 'from' => '2026-01-01', 'to' => '2026-01-31'],
+            'confidence' => ['section' => 1, 'date' => 1, 'keyword' => 1],
+            'judge' => ['model' => 'mock', 'ms' => 0, 'usage' => []],
+        ];
     }
 }

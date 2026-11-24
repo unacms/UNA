@@ -106,6 +106,19 @@ class BxAlbumsContentInfoMedia extends BxDolContentInfo
         return $aMedia;
     }
 
+    /**
+     * A picture or video may be seen where its album may be.
+     */
+    public function isViewAllowed ($iContentId)
+    {
+        $aMedia = $this->_oModule->_oDb->getMediaInfoById($iContentId);
+        if(empty($aMedia) || !is_array($aMedia))
+            return false;
+
+        $aAlbum = $this->_oModule->_oDb->getContentInfoById((int)$aMedia['content_id']);
+        return !empty($aAlbum) && $this->_oModule->checkAllowedView($aAlbum) === CHECK_ACTION_RESULT_ALLOWED;
+    }
+
     public function getContentSearchResultUnit ($iContentId, $sUnitTemplate = '')
     {
         $aMedia = $this->_oModule->_oDb->getMediaInfoById($iContentId);

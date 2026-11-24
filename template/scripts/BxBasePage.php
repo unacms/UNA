@@ -971,9 +971,14 @@ class BxBasePage extends BxDolPage
             }
         }
 
-        // The page's Search: the search window with the page's scope (getSearchAction), as the site's Search button.
-        if(($aSearch = $this->getSearchAction()))
+        // The page's Search: the search window with the page's scope (getSearchAction), as the site's Search button,
+        // in the modules the apps search (sys_api_search_sections).
+        BxDolSearchUnified::getInstance()->setApiSections(true);
+        if(($aSearch = $this->getSearchAction())) {
             $a['search'] = $aSearch;
+            if(isset($a['menu']) && is_array($a['menu']))
+                $a['menu']['search'] = $aSearch;
+        }
 
         // The words of the apps' own landing pages (the home splash, Sign up), in the viewer's language, so Studio's
         // language strings reach them; a project's own text in the app wins.

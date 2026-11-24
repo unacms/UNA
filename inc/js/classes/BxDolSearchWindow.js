@@ -97,6 +97,11 @@ BxDolSearchWindow.init = function()
             if(!$(BxDolSearchWindow.POPUP).length)
                 return;
 
+            // a text field or an editor keeps its own Cmd/Ctrl+K (an editor's "insert link"); the window's own field doesn't
+            var oTarget = $(oEvent.target);
+            if(oTarget.is('input, textarea, select, [contenteditable], [contenteditable] *') && !oTarget.parents(BxDolSearchWindow.POPUP).length)
+                return;
+
             oEvent.preventDefault();
             if($(BxDolSearchWindow.POPUP).is(':visible'))
                 $(BxDolSearchWindow.POPUP).find('.bx-search-window-input').focus().select();
@@ -132,17 +137,27 @@ BxDolSearchWindow.prototype._bind = function()
     var $this = this, oRoot = this._oRoot;
 
     oRoot.on('submit', '.bx-search-window-form', function(oEvent) {
-        // Enter opens the selected result, else the full results
+        oEvent.preventDefault();
+
+        // Enter opens the selected result
         var oActive = oRoot.find('.bx-search-window-item-active a').first();
         if(oActive.length) {
-            oEvent.preventDefault();
             window.location = oActive.attr('href');
             return;
         }
 
-        oEvent.preventDefault();
-        if($this._bPage)
+        // with AI on, the first Enter on new words lets it read them (a module, dates); typing alone never asks the model
+        var sKeyword = $.trim(oRoot.find('.bx-search-window-input').val());
+        if($this._bAi && sKeyword && sKeyword !== $this._sAiKeyword) {
+            $this._sAiKeyword = sKeyword;
+            clearTimeout($this._iTimer);
             $this._run(true);
+            return;
+        }
+
+        // then the full results
+        if($this._bPage)
+            $this._run(false);
         else
             window.location = $this._getResultsUrl();
     });
@@ -160,7 +175,7 @@ BxDolSearchWindow.prototype._bind = function()
             return;
 
         $this._iTimer = setTimeout(function() {
-            $this._run(true);
+            $this._run(false);
         }, 300);
     });
 

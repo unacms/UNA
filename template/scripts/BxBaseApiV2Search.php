@@ -67,7 +67,9 @@ class BxBaseApiV2Search
         $aIn['title_only'] = $oReq->queryBool('title_only') ? 1 : 0;
         $aIn['per_page'] = $oReq->limit();
 
+        // the modules the site searches for its apps (sys_api_search_sections), as GET /search/content does
         $oSearch = BxDolSearchUnified::getInstance();
+        $oSearch->setApiSections(true);
         $aQuery = BxDolApiV2Search::isolated(function () use ($oSearch, $aIn) {
             return $oSearch->normalize($aIn);
         });

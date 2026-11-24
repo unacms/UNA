@@ -45,11 +45,17 @@ class BxDolSearchUnified extends BxDol
     const KEYWORD_MAX = 200;
     /** rows read from a section at once while looking for visible ones */
     const BATCH = 20;
+    /** rows a module's results check at most per request, so rows the viewer may not see can't make a search slow:
+     * the count shows "+" and the next page goes on after them */
+    const SCAN_MAX = 120;
 
     protected static $_oInstance;
 
     /** search groups by module name, see getGroups */
     protected $_aGroups = null;
+
+    /** only the modules the apps search (sys_api_search_sections), see setApiSections */
+    protected $_bApiSections = false;
 
     public static function getInstance()
     {
@@ -155,6 +161,18 @@ class BxDolSearchUnified extends BxDol
     }
 
     /**
+     * Search for the apps: only the modules Studio > API > Settings lists for them (sys_api_search_sections, with their
+     * comments), when it lists any; the site searches every global search section.
+     */
+    public function setApiSections($b)
+    {
+        if($this->_bApiSections != (bool)$b)
+            $this->_aGroups = null;
+
+        $this->_bApiSections = (bool)$b;
+    }
+
+    /**
      * Searchable modules in the site's search order: the sections of global search (Studio > Search, `GlobalSearch`)
      * of enabled modules, grouped by the module they belong to, comments with their module.
      * @return array module name => ['name', 'title', 'icon', 'sections' => [section name => 'main'|'cmts'|'pages'], 'profile' => bool, 'context' => bool]
@@ -203,6 +221,13 @@ class BxDolSearchUnified extends BxDol
             $this->_aGroups[$sModule]['sections'][$sSection] = $sKind;
         }
 
+        // the apps' modules
+        $aApi = $this->_bApiSections ? array_filter(array_map('trim', explode(',', (string)getParam('sys_api_search_sections')))) : [];
+        if($aApi)
+            foreach($this->_aGroups as $sModule => $aGroup)
+                if(!array_intersect(array_keys($aGroup['sections']), $aApi))
+                    unset($this->_aGroups[$sModule]);
+
         // a module only with comments in search (its own section is off) isn't a group
         foreach($this->_aGroups as $sModule => $aGroup)
             if(!in_array('main', $aGroup['sections']) && !in_array('pages', $aGroup['sections']))
@@ -223,6 +248,10 @@ class BxDolSearchUnified extends BxDol
 
         $aSections = BxDolSearch::getSections(true);
         if($sModule === '' || $sModule == 'system' || !isset($aSections[$sModule]) || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return '';
+
+        $aApi = $this->_bApiSections ? array_filter(array_map('trim', explode(',', (string)getParam('sys_api_search_sections')))) : [];
+        if($aApi && !in_array($sModule, $aApi))
             return '';
 
         $aModule = BxDolModuleQuery::getInstance()->getModuleByName($sModule);
@@ -449,7 +478,8 @@ class BxDolSearchUnified extends BxDol
     {
         $aSections = [];
         foreach($aGroup['sections'] as $sSection => $sKind) {
-            if($sKind == 'cmts' && ($aContext || $aQuery['title_only'] || count($aQuery['section']) == 1 && !$aQuery['keyword']))
+            // a module's comments are with it in the "All" view and its tab, not in the module scope (its entries only)
+            if($sKind == 'cmts' && ($aContext || $aQuery['title_only'] || count($aQuery['section']) == 1 || $aQuery['keyword'] === ''))
                 continue;
             if($sKind == 'cmts' && !empty($aQuery['filters']))
                 continue;
@@ -474,7 +504,14 @@ class BxDolSearchUnified extends BxDol
         $iCount = 0;
         $bMore = false;
         $iLimit = max($iNeed, $iCountCap);
+        $iScanned = 0;
+        $bCapped = false;
         while(true) {
+            if($iScanned >= self::SCAN_MAX) {
+                $bCapped = true;
+                break;
+            }
+
             // refill empty queues
             foreach($aSections as $sSection => $sKind)
                 if(!$aQueues[$sSection] && !$aDone[$sSection]) {
@@ -493,6 +530,7 @@ class BxDolSearchUnified extends BxDol
                 break;
 
             $aRow = array_shift($aQueues[$sBest]);
+            $iScanned++;
             $aOffsetsNow = [];
             foreach($aSections as $sSection => $sKind)
                 $aOffsetsNow[$sSection] = $aRead[$sSection] - count($aQueues[$sSection]);
@@ -516,13 +554,22 @@ class BxDolSearchUnified extends BxDol
                 break;
         }
 
-        $bCountMore = $iCountCap && $iCount > $iCountCap;
+        // checked as far as the cap: what is left may hold more
+        if($bCapped) {
+            $bMore = $bMore || count($aItems) >= $iNeed || array_filter($aDone, function($b) { return !$b; }) || array_filter($aQueues);
+            if($bMore && count($aItems) < $iNeed)
+                $aNext = [];
+        }
+
+        $bCountMore = ($iCountCap && $iCount > $iCountCap) || ($bCapped && $bMore);
 
         $sCursor = '';
         if($bMore) {
             $aCursorOut = [];
+            // a page cut short by the cap goes on where the check stopped
+            $aFrom = $aNext ? $aNext : $aOffsetsNow ?? $aOffsets;
             foreach($aSections as $sSection => $sKind)
-                $aCursorOut[$sSection] = $aDone[$sSection] && $aNext[$sSection] >= $aRead[$sSection] ? -1 : $aNext[$sSection];
+                $aCursorOut[$sSection] = $aDone[$sSection] && !$aQueues[$sSection] && $aFrom[$sSection] >= $aRead[$sSection] ? -1 : $aFrom[$sSection];
             $sCursor = $this->_encodeCursor($aCursorOut);
         }
 
@@ -759,8 +806,20 @@ class BxDolSearchUnified extends BxDol
             return $oCi->getContentSearchResultUnit($aItem['id'], $aItem['kind'] == 'cmts' ? 'comment_live_search.html' : 'unit_live_search.html');
 
         $aData = $oCi->getContentInfoAPI($aItem['id'], getParam('sys_api_extended_units') == 'on');
-        if(!$aData || !is_array($aData))
-            return false;
+        // content without an API unit of its own (an album's pictures): its title, link and thumbnail
+        if(!$aData || !is_array($aData)) {
+            $sLink = (string)$oCi->getContentLink($aItem['id']);
+            if($sLink === '')
+                return false;
+
+            $aData = [
+                'id' => (int)$aItem['id'],
+                'title' => strip_tags((string)($aItem['row']['title'] ?? '')),
+                'url' => bx_api_get_relative_url(bx_absolute_url($sLink)),
+                'image' => (string)$oCi->getContentThumb($aItem['id']),
+                'added' => (int)$aItem['row']['date'],
+            ];
+        }
 
         $aData['search_kind'] = $aItem['kind'] == 'cmts' ? 'comment' : ($this->getGroups()[$oResult->getModuleName()]['profile'] ?? false ? 'profile' : 'content');
         $aData['search_module'] = $oResult->getModuleName();

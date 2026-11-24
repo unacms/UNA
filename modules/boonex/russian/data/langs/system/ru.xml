@@ -4966,6 +4966,9 @@
     <string name="_sys_score_err_duplicate_vote"><![CDATA[Повторный голос]]></string>
     <string name="_sys_search_action_context"><![CDATA[Поиск в «{0}»]]></string>
     <string name="_sys_search_action_section"><![CDATA[Поиск: {0}]]></string>
+    <string name="_sys_search_chip_all"><![CDATA[Все]]></string>
+    <string name="_sys_search_chip_any_time"><![CDATA[В любое время]]></string>
+    <string name="_sys_search_chip_anyone"><![CDATA[Любой]]></string>
     <string name="_sys_search_chip_apply"><![CDATA[Применить]]></string>
     <string name="_sys_search_chip_created_by"><![CDATA[Автор]]></string>
     <string name="_sys_search_chip_created_by_me"><![CDATA[Я]]></string>
@@ -4979,8 +4982,14 @@
     <string name="_sys_search_chip_date_starts"><![CDATA[Начало]]></string>
     <string name="_sys_search_chip_date_to"><![CDATA[По]]></string>
     <string name="_sys_search_chip_filter"><![CDATA[Фильтр]]></string>
+    <string name="_sys_search_chip_find_person"><![CDATA[Найти человека…]]></string>
     <string name="_sys_search_chip_in"><![CDATA[В: {0}]]></string>
+    <string name="_sys_search_chip_past_month"><![CDATA[За 30 дней]]></string>
+    <string name="_sys_search_chip_past_week"><![CDATA[За 7 дней]]></string>
+    <string name="_sys_search_chip_past_year"><![CDATA[За год]]></string>
     <string name="_sys_search_chip_remove"><![CDATA[Убрать «{0}»]]></string>
+    <string name="_sys_search_chip_starts_month"><![CDATA[Начало в ближайшие 30 дней]]></string>
+    <string name="_sys_search_chip_starts_week"><![CDATA[Начало в ближайшие 7 дней]]></string>
     <string name="_sys_search_chip_title_only"><![CDATA[Только в названиях]]></string>
     <string name="_sys_search_main_title"><![CDATA[Поиск - Домой]]></string>
     <string name="_sys_select"><![CDATA[Выбрать]]></string>

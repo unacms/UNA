@@ -106,7 +106,7 @@ class BxBaseServicesSearch extends BxDol
         // the results block has nothing. Hashtag, location and category links, Elasticsearch and a search_keyword hook
         // keep the classic form and results.
         if($this->_isSearchWindowPage())
-            return (new BxTemplSearchWindow())->getPage(BxDolSearchUnified::getInstance()->normalize($_GET));
+            return $this->_getSearchWindowPage();
 
         return $this->_getSearchObject()->getForm(BX_DB_PADDING_DEF, false, true);
     }
@@ -142,9 +142,9 @@ class BxBaseServicesSearch extends BxDol
                 'list' => bx_get('list') ? 1 : 0
             ]]);
 
-        // the search window in the form block has the results (serviceSearchKeywordForm)
+        // the search window has the results, in whichever of the page's two blocks comes first
         if($this->_isSearchWindowPage())
-            return '';
+            return $this->_getSearchWindowPage();
 
         $sCode = '';
         if($bKeyword) {
@@ -341,7 +341,9 @@ class BxBaseServicesSearch extends BxDol
             $aParams = bx_api_get_browse_params($aParams);
         $aParams = !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : [];
 
+        // the apps search the modules Studio > API > Settings lists for them (sys_api_search_sections)
         $oSearch = BxDolSearchUnified::getInstance();
+        $oSearch->setApiSections(true);
         $aQuery = static::applySearchAi($oSearch->normalize($aParams), !empty($aParams['ai']));
 
         $aResult = [
@@ -349,6 +351,7 @@ class BxBaseServicesSearch extends BxDol
             'scope' => $oSearch->getScope($aQuery),
         ];
         $aResult['scope']['results_url'] = bx_api_get_relative_url($aResult['scope']['results_url']);
+        $aResult['strings'] = static::getSearchWindowStrings(!empty($aResult['scope']['ai']), $aResult['scope']['scope']);
 
         if(empty($aParams['scope_only'])) {
             $aResult['has_query'] = $oSearch->hasQuery($aQuery) ? 1 : 0;
@@ -357,6 +360,55 @@ class BxBaseServicesSearch extends BxDol
         }
 
         return [bx_api_get_block('search_window', $aResult)];
+    }
+
+    /**
+     * The words of the search window for the apps, in the viewer's language, so the apps and the site say the same:
+     * `{0}` and `{1}` stand for a number and a name where they have them.
+     */
+    public static function getSearchWindowStrings ($bAi, $sScope)
+    {
+        $aKeys = [
+            'title' => '_sys_search_window_title',
+            'placeholder' => $bAi ? '_sys_search_window_placeholder_ai' : '_sys_search_window_placeholder',
+            'error' => '_sys_search_window_error',
+            'hint' => $sScope == BxDolSearchUnified::SCOPE_GLOBAL ? '_sys_search_window_hint' : '_sys_search_window_hint_scope',
+            'tab_all' => '_sys_search_window_tab_all',
+            'tabs' => '_sys_search_window_tabs',
+            'more' => '_sys_search_window_more',
+            'empty' => '_sys_search_window_empty',
+            'empty_title' => '_sys_search_window_empty_title',
+            'sort' => '_sys_search_window_sort',
+            'sort_best' => '_sys_search_window_sort_best',
+            'sort_new' => '_sys_search_window_sort_new',
+            'full' => '_sys_search_window_full',
+            'filters' => '_sys_search_window_filters',
+            'filter' => '_sys_search_chip_filter',
+            'me' => '_sys_search_chip_created_by_me',
+            'anyone' => '_sys_search_chip_anyone',
+            'find_person' => '_sys_search_chip_find_person',
+            'person_placeholder' => '_sys_search_chip_created_by_placeholder',
+            'any_time' => '_sys_search_chip_any_time',
+            'past_week' => '_sys_search_chip_past_week',
+            'past_month' => '_sys_search_chip_past_month',
+            'past_year' => '_sys_search_chip_past_year',
+            'starts_week' => '_sys_search_chip_starts_week',
+            'starts_month' => '_sys_search_chip_starts_month',
+            'all' => '_sys_search_chip_all',
+            'close' => '_sys_close',
+        ];
+
+        $aResult = [];
+        foreach($aKeys as $sName => $sKey)
+            $aResult[$sName] = _t($sKey);
+
+        $aResult['count'] = _t('_sys_search_window_count', '{0}');
+        $aResult['show_all'] = _t('_sys_search_window_show_all', '{0}', '{1}');
+        $aResult['remove'] = _t('_sys_search_chip_remove', '{0}');
+        $aResult['created_by_value'] = _t('_sys_search_chip_created_by_value', '{0}');
+        $aResult['in'] = _t('_sys_search_chip_in', '{0}');
+
+        return $aResult;
     }
 
     /**
@@ -857,6 +909,20 @@ class BxBaseServicesSearch extends BxDol
             'api_filter_date_from' => ['value' => $iFrom, 'field' => $sField, 'operator' => '>=', 'table' => $sTable],
             'api_filter_date_to' => ['value' => $iTo, 'field' => $sField, 'operator' => '<=', 'table' => $sTable],
         ];
+    }
+
+    /**
+     * The results page's search window, once: the first of the page's blocks to ask (the form, or the results when
+     * the form block is off) draws it, the other nothing.
+     */
+    protected function _getSearchWindowPage()
+    {
+        static $bDrawn = false;
+        if($bDrawn)
+            return '';
+
+        $bDrawn = true;
+        return (new BxTemplSearchWindow())->getPage(BxDolSearchUnified::getInstance()->normalize($_GET));
     }
 
     /**

@@ -5041,6 +5041,9 @@
     <string name="_sys_score_err_duplicate_vote"><![CDATA[Duplicate vote]]></string>
     <string name="_sys_search_action_context"><![CDATA[Search in {0}]]></string>
     <string name="_sys_search_action_section"><![CDATA[Search {0}]]></string>
+    <string name="_sys_search_chip_all"><![CDATA[All]]></string>
+    <string name="_sys_search_chip_any_time"><![CDATA[Any time]]></string>
+    <string name="_sys_search_chip_anyone"><![CDATA[Anyone]]></string>
     <string name="_sys_search_chip_apply"><![CDATA[Apply]]></string>
     <string name="_sys_search_chip_created_by"><![CDATA[Created by]]></string>
     <string name="_sys_search_chip_created_by_me"><![CDATA[Me]]></string>
@@ -5054,8 +5057,14 @@
     <string name="_sys_search_chip_date_starts"><![CDATA[Starts]]></string>
     <string name="_sys_search_chip_date_to"><![CDATA[To]]></string>
     <string name="_sys_search_chip_filter"><![CDATA[Filter]]></string>
+    <string name="_sys_search_chip_find_person"><![CDATA[Find someone…]]></string>
     <string name="_sys_search_chip_in"><![CDATA[In: {0}]]></string>
+    <string name="_sys_search_chip_past_month"><![CDATA[Past 30 days]]></string>
+    <string name="_sys_search_chip_past_week"><![CDATA[Past 7 days]]></string>
+    <string name="_sys_search_chip_past_year"><![CDATA[Past year]]></string>
     <string name="_sys_search_chip_remove"><![CDATA[Remove {0}]]></string>
+    <string name="_sys_search_chip_starts_month"><![CDATA[Starting in the next 30 days]]></string>
+    <string name="_sys_search_chip_starts_week"><![CDATA[Starting in the next 7 days]]></string>
     <string name="_sys_search_chip_title_only"><![CDATA[Title only]]></string>
     <string name="_sys_search_main_title"><![CDATA[Search Home]]></string>
     <string name="_sys_select"><![CDATA[Select]]></string>

@@ -42,4 +42,13 @@
     <string_add name="_sys_search_window_title"><![CDATA[Поиск]]></string_add>
     <string_add name="_adm_bp_txt_section_search"><![CDATA[Поиск в разделе]]></string_add>
     <string_add name="_adm_bp_txt_section_search_info"><![CDATA[Кнопка «Поиск» в строке заголовка раздела (или в строке вкладок), которая ищет по содержимому раздела.]]></string_add>
+    <string_add name="_sys_search_chip_anyone"><![CDATA[Любой]]></string_add>
+    <string_add name="_sys_search_chip_find_person"><![CDATA[Найти человека…]]></string_add>
+    <string_add name="_sys_search_chip_any_time"><![CDATA[В любое время]]></string_add>
+    <string_add name="_sys_search_chip_past_week"><![CDATA[За 7 дней]]></string_add>
+    <string_add name="_sys_search_chip_past_month"><![CDATA[За 30 дней]]></string_add>
+    <string_add name="_sys_search_chip_past_year"><![CDATA[За год]]></string_add>
+    <string_add name="_sys_search_chip_starts_week"><![CDATA[Начало в ближайшие 7 дней]]></string_add>
+    <string_add name="_sys_search_chip_starts_month"><![CDATA[Начало в ближайшие 30 дней]]></string_add>
+    <string_add name="_sys_search_chip_all"><![CDATA[Все]]></string_add>
 </resources>
