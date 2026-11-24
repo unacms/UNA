@@ -43,6 +43,11 @@ const handleClick = async (event, oProps, setBottomSheetData, redirectdRef, butt
         const request_url = '/api.php?r=system/set_badges/TemplServices&params[]=' + oProps.data.content_id + '&params[]=' + val + '&params[]=' + oProps.data.module;
         await fetcher(request_url);
         setBottomSheetData(false);
+        // Show the new badges without a manual refresh: drop cached lists, refetch the current page
+        // and ask the lists on it (search results, browse blocks) to reload.
+        storageClear();
+        emitter.emit(EVENTS.connections, { action: 'changed', reload: true });
+        emitter.emit(EVENTS.page, { action: 'reload' });
     };
 
     if (oProps.content_type == 'memberships') {
