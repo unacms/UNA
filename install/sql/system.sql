@@ -5462,7 +5462,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 -- app tab bar menu (NEO bottom bar and native tabs; guests see level 1 items, members the rest)
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_tabbar', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', 'page.php?i=home', '', '', 'house', '', 2147483647, 1, 1, 1),
-('sys_tabbar', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass', '', 1, 1, 1, 2),
+('sys_tabbar', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass', '', 2147483647, 1, 1, 2),
 ('sys_tabbar', 'system', 'friends', '_sys_mobile_friends', '_sys_mobile_friends', 'page.php?i=friends', '', '', 'users-round', '', 2147483646, 1, 1, 2),
 ('sys_tabbar', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info', '', 1, 1, 1, 3),
 ('sys_tabbar', 'system', 'terms', '_sys_menu_item_title_system_terms', '_sys_menu_item_title_terms', 'page.php?i=terms', '', '', 'handshake', '', 1, 1, 1, 4),

@@ -297,6 +297,11 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertNotEmpty($aBlock, 'Explore has the search block (install SQL, migration 2026112593)');
         $this->assertSame(['1', '1', '0'], [(string)$aBlock['active'], (string)$aBlock['active_api'], (string)$aBlock['order']], 'on for the site and the apps, first');
 
+        // a tab for everyone, second after Home (migration 2026112596)
+        $aTab = BxDolDb::getInstance()->getRow("SELECT `visible_for_levels`, `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_tabbar' AND `name` = 'explore'");
+        if ($aTab)
+            $this->assertSame(['2147483647', '2'], [(string)$aTab['visible_for_levels'], (string)$aTab['order']]);
+
         // the apps get the window with the page's query; the site the window in Explore mode
         $_GET['api'] = 1;
         $_GET['keyword'] = 'garden';

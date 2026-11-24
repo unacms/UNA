@@ -14,6 +14,7 @@ import { hasAppDrawer } from 'app/context/app-sidebar'
 import ToolbarLink, { tierButtonProps } from './toolbar-link'
 import { useSectionActions, SectionAddButton, ExploreSearchButton } from './section-actions'
 import { useScreenTier } from 'app/context/measure'
+import { useTabList } from 'app/lib/navigation/tab-bar-menu'
 
 // A toolbar slot: its button, a placeholder while its data loads, or no slot at all.
 const SLOT = { shown: 'shown', loading: 'loading', hidden: 'hidden' }
@@ -50,6 +51,9 @@ export default function HeaderElement({ url, uri, pageData = null }) {
     // section's Add ("Add post"); elsewhere global search, which is Explore's field, and the site's Add menu.
     const isPhone = useScreenTier() === 'phone'
     const sectionActions = useSectionActions(pageData)
+    const { tabList } = useTabList(currentUser)
+    const hasExploreTab = (Platform.OS == 'web' ? (!!currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged')) : true)
+        && tabList.some((tab) => /(^|\/)explore(\?|$)/.test(String(tab?.url ?? '')))
     const bSearch = appSetting('layout', 'search') == true;
     const bNotifs = appSetting('notifications', 'url') ? true : false;
     const isWeb = Platform.OS == 'web'
@@ -97,6 +101,9 @@ export default function HeaderElement({ url, uri, pageData = null }) {
         switch (item.component) {
             case "search":
                 if (!bSearch) return SLOT.hidden
+                // Phones: global search is the Explore tab where the tab bar has it; the header keeps Search for a
+                // section's or context's scope, and where no Explore tab shows (a guest without the tab bar)
+                if (isPhone && !sectionActions.search && hasExploreTab) return SLOT.hidden
                 return currentUser ? shownIf(inUnaToolbar('search')) : guestSlot('search')
             case "launcher":
                 return menuSlot(launcherMenu)
