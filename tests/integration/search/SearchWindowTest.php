@@ -70,9 +70,10 @@ class SearchWindowTest extends ApiV2TestCase
     {
         $this->asViewer($iAuthor);
         // a fresh comment form (one an earlier test rendered keeps its CSRF field) and no request params
-        BxDolForm::unSetObjectInstance('sys_comment', 'sys_comment_post');
-        $a = BxDolApiV2Search::isolated(function () use ($iAuthor, $iPost, $sText) {
-            return BxDolCmts::getObjectInstance('bx_posts', $iPost)->add(['cmt_author_id' => $iAuthor, 'cmt_parent_id' => 0, 'cmt_text' => $sText]);
+        $oCmts = BxDolCmts::getObjectInstance('bx_posts', $iPost);
+        (function () { $this->_unsetFormObject(); })->call($oCmts);
+        $a = BxDolApiV2Search::isolated(function () use ($oCmts, $iAuthor, $sText) {
+            return $oCmts->add(['cmt_author_id' => $iAuthor, 'cmt_parent_id' => 0, 'cmt_text' => $sText]);
         });
         $this->assertNotEmpty($a['id'] ?? null, 'a comment was made');
         return (int)$a['id'];
