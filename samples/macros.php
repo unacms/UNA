@@ -52,18 +52,24 @@ function PageCompMainCode()
             continue;
         $oModuleReflection = new ReflectionClass(get_class($oModule));
 
-        $a = bx_srv($aModule['name'], 'get_safe_services');
+        // macros may call only what the module's macro list allows (BxDolService::isMacroService)
+        $a = bx_srv($aModule['name'], 'get_macro_services');
         if (!$a)
             continue;
         echo '<h3>' . $aModule['title'] . '</h3>';
         echo '<p>';
-        foreach ($a as $sService => $sClass) {
+        foreach ($a as $sService => $mixedClass) {
+            // a list value is a class name, '' for the module class, or an array of class names
+            $sClass = is_array($mixedClass) ? (string)reset($mixedClass) : (string)$mixedClass;
+            $oModuleReflection = new ReflectionClass(get_class($oModule));
             if ($sClass) {
                 if (0 === strncmp('BxPayment', $sClass, 9))
                     bx_import(substr($sClass, 9), 'bx_payment');
                 $oModuleReflection = new ReflectionClass($sClass);
             }
 
+            if (!$oModuleReflection->hasMethod('service' . $sService))
+                continue;
             $oMethodReflection = $oModuleReflection->getMethod('service' . $sService);
             $sDeclaringClass = $oMethodReflection->getDeclaringClass()->getName();
             

@@ -45,26 +45,35 @@ class BxAntispamLassoModeration extends BxDol
 
     public function processEvent()
     {
-        $sInput = @file_get_contents("php://input");
-        if(!$sInput)
+        return $this->processPayload(@file_get_contents("php://input"), $this->_getSignatureHeader());
+    }
+
+    /**
+     * Check a webhook event's signature and apply it.
+     * @param string $sInput request body
+     * @param string $sSignature X-Lasso-Signature header
+     * @return int HTTP status code to answer with
+     */
+    public function processPayload($sInput, $sSignature)
+    {
+        if(!$sInput || !is_string($sInput))
             return 200;
 
-        $aHeaders = getallheaders();
-        if(empty($aHeaders['X-Lasso-Signature'])) {
-            $this->log($sInput, 'Webhook: Cannot get Signature.');
+        // without a secret anyone could sign an event: refuse every event until one is set
+        if(!is_string($this->_sWebhookSecret) || trim($this->_sWebhookSecret) === '') {
+            $this->log('', 'Webhook: No secret is set.');
             return 404;
         }
 
-        $sInputHmac = hash_hmac('sha256', $sInput, $this->_sWebhookSecret, true);
-        $sInputHmac = 'sha256=' . base64_encode($sInputHmac);
-        if($sInputHmac !== $aHeaders['X-Lasso-Signature']) {
-            $this->log($sInput, 'Webhook: Wrong Signature.');
-            $this->log([
-                'secret' => $this->_sWebhookSecret,
-                'sig_get' => $aHeaders['X-Lasso-Signature'],
-                'sig_calc' => $sInputHmac
-            ]);
+        if(!is_string($sSignature) || $sSignature === '') {
+            $this->log('', 'Webhook: Cannot get Signature.');
+            return 404;
+        }
 
+        $sInputHmac = 'sha256=' . base64_encode(hash_hmac('sha256', $sInput, $this->_sWebhookSecret, true));
+        if(!hash_equals($sInputHmac, $sSignature)) {
+            // neither the secret nor a signature made with it goes to the log
+            $this->log('', 'Webhook: Wrong Signature.');
             return 404;
         }
 
@@ -109,6 +118,17 @@ class BxAntispamLassoModeration extends BxDol
         }
 
         return 200;
+    }
+
+    protected function _getSignatureHeader()
+    {
+        $aHeaders = function_exists('getallheaders') ? getallheaders() : [];
+        if(is_array($aHeaders))
+            foreach($aHeaders as $sName => $sValue)
+                if(is_string($sName) && strcasecmp($sName, 'X-Lasso-Signature') === 0 && is_string($sValue))
+                    return trim($sValue);
+
+        return isset($_SERVER['HTTP_X_LASSO_SIGNATURE']) && is_string($_SERVER['HTTP_X_LASSO_SIGNATURE']) ? trim($_SERVER['HTTP_X_LASSO_SIGNATURE']) : '';
     }
 
     public function addContent($sModule, $iId, $aData = [])

@@ -26,6 +26,18 @@ class BxWikiModule extends BxDolModule
     }
 
     /**
+     * @see BxDolModule::serviceGetMacroServices
+     */
+    public function serviceGetMacroServices()
+    {
+        return array_merge(parent::serviceGetMacroServices(), [
+            'Contents' => '',
+            'MissingTranslations' => '',
+            'OutdatedTranslations' => '',
+        ]);
+    }
+
+    /**
      * @page service Service Calls
      * @section bx_wiki Wiki
      * @subsection bx_wiki-macros Macros
