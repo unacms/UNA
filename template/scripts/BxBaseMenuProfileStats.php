@@ -68,9 +68,9 @@ class BxBaseMenuProfileStats extends BxTemplMenuAccountNotifications
     }
 
     /**
-     * Forget the member's menu, the site's (`menu_<object>_p<id>`) and the apps' counts, after something that
-     * changes a count (their content added or deleted). Exact keys only: Memcache and Memcached flush the whole
-     * server for a prefix.
+     * Forget the member's menu, the site's (`menu_<object>_p<id>` and its copy for each selected item, named as
+     * BxBaseMenu::_getCacheKeySelected names them) and the apps' counts, after something that changes a count (their
+     * content added or deleted). Exact keys only: Memcache and Memcached flush the whole server for a prefix.
      */
     public static function clearCacheForProfile ($iProfileId)
     {
@@ -79,8 +79,15 @@ class BxBaseMenuProfileStats extends BxTemplMenuAccountNotifications
             return;
 
         foreach (['sys_profile_stats', 'sys_profile_stats_tiles'] as $sObject) {
-            bx_content_cache_del('menu_' . $sObject . '_p' . $iProfileId);
-            bx_content_cache_del('menu_' . $sObject . '_p' . $iProfileId . '_api_addons');
+            $sKey = 'menu_' . $sObject . '_p' . $iProfileId;
+            bx_content_cache_del($sKey);
+            bx_content_cache_del($sKey . '_api_addons');
+
+            $aItems = bx_content_cache_get($sKey . '_items');
+            if (is_array($aItems))
+                foreach ($aItems as $a)
+                    if (isset($a['module'], $a['name']))
+                        bx_content_cache_del($sKey . '_sel' . substr(hash('sha256', $a['module'] . ':' . $a['name']), 0, 16));
         }
     }
 

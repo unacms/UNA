@@ -90,6 +90,13 @@ class ProfileStatsApiTest extends BxDolIntegrationTestCase
         bx_content_cache_set('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons', [1 => '7'], 60);
         bx_content_cache_set('menu_sys_profile_stats_unrelated', [1 => '7'], 60);
 
+        // the site's copy for a selected item (BxBaseMenu::_getCacheKeySelected)
+        $sItems = 'menu_sys_profile_stats_p' . $iProfileId . '_items';
+        $sSelected = 'menu_sys_profile_stats_p' . $iProfileId . '_sel' . substr(hash('sha256', 'bx_posts:profile-stats-my-posts'), 0, 16);
+        bx_content_cache_set($sItems, [['module' => 'bx_posts', 'name' => 'profile-stats-my-posts']]);
+        bx_content_cache_set($sSelected, 'menu');
+        $aKeys[] = $sSelected;
+
         // what a module's entry form calls after an entry is added or deleted
         BxBaseMenuProfileStats::clearCacheForProfile($iProfileId);
 
@@ -98,6 +105,7 @@ class ProfileStatsApiTest extends BxDolIntegrationTestCase
         $this->assertNotNull(bx_content_cache_get('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons', 60), 'Another profile\'s counts stay.');
         $this->assertNotNull(bx_content_cache_get('menu_sys_profile_stats_unrelated', 60), 'Nothing else is flushed.');
         bx_content_cache_del('menu_sys_profile_stats_unrelated');
+        bx_content_cache_del($sItems);
         bx_content_cache_del('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons');
     }
 
