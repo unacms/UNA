@@ -1088,7 +1088,7 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
+            'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
             $this->_getCellWidthStyle($sKey, $aField) // add default styles
         );
 
@@ -1486,13 +1486,67 @@ class BxBaseGrid extends BxDolGrid
     }
 
     /**
-     * A column of controls (the row's checkbox, drag handle, switch and action buttons) is as wide as what is in it:
-     * its width in `sys_grid_fields` is left out and its cells get this class (css/grid.css). Text columns share the
-     * room that is left by their widths.
+     * A column of controls: the row's checkbox, drag handle, switch and action buttons.
      */
     protected function _isControlsColumn ($sKey)
     {
         return in_array($sKey, ['checkbox', 'switcher', 'switcher_api', 'actions']) || (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey);
+    }
+
+    /**
+     * What a column shows, which decides its width:
+     * - checkbox, order (drag handle), switcher, actions: the column of controls (_isControlsColumn);
+     * - count: a number in a capsule that opens what it counts (_getCellCount);
+     * - icon: an icon;
+     * - text: anything else.
+     * Every kind but text is as wide as what is in it (_isHugColumn). The kind comes from the column itself: its name
+     * (checkbox, switcher, switcher_api, actions, icon) or the grid's order field. A column that shows a count, or an
+     * icon under another name, says so in its `sys_grid_fields`.`params`: a serialized array with 'kind' => 'count'
+     * (or 'icon', 'text'), which wins over the name.
+     */
+    protected function _getColumnKind ($sKey)
+    {
+        $aField = isset($this->_aOptions['fields'][$sKey]) && is_array($this->_aOptions['fields'][$sKey]) ? $this->_aOptions['fields'][$sKey] : [];
+        if(!empty($aField['kind']) && in_array($aField['kind'], ['count', 'icon', 'text'])) {
+            return $aField['kind'];
+        }
+
+        $aByName = ['checkbox' => 'checkbox', 'switcher' => 'switcher', 'switcher_api' => 'switcher', 'actions' => 'actions'];
+        if(!empty($this->_aOptions['field_order'])) {
+            $aByName[$this->_aOptions['field_order']] = 'order';
+        }
+        if(isset($aByName[$sKey])) {
+            return $aByName[$sKey];
+        }
+
+        return strtolower($sKey) == 'icon' ? 'icon' : 'text';
+    }
+
+    /**
+     * A column that is as wide as what is in it (every kind but text, see _getColumnKind): its width in
+     * `sys_grid_fields` is left out and its cells get .bx-grid-cell-hug (css/grid.css). Text columns share the room
+     * that is left by their widths.
+     */
+    protected function _isHugColumn ($sKey)
+    {
+        return $this->_isControlsColumn($sKey) || $this->_getColumnKind($sKey) != 'text';
+    }
+
+    /**
+     * A count that opens what it counts (a menu's items, a level's actions, a form's fields): the number in a
+     * capsule button, named in full for assistive tech. The column says it shows a count (_getColumnKind).
+     * @param int $iCount the number
+     * @param string $sLink where it goes: a URL or a javascript: call
+     * @param string $sLabel the count in words, as "15 items"
+     * @param string $sTitle what it does, shown when pointed at, as "Manage items"
+     */
+    protected function _getCellCount ($iCount, $sLink, $sLabel, $sTitle = '')
+    {
+        // parseLinkByName names a javascript: action a button (role="button"), as parseLink did for these cells.
+        return $this->_oTemplate->parseLinkByName('grid_cell_count.html', htmlspecialchars($sLink, ENT_QUOTES), (int)$iCount, [
+            'title' => $sTitle !== '' ? $sTitle : $sLabel,
+            'aria-label' => $sLabel,
+        ]);
     }
 
     /**
@@ -1505,12 +1559,12 @@ class BxBaseGrid extends BxDolGrid
 
     protected function _getCellHugClass ($sKey)
     {
-        return $this->_isControlsColumn($sKey) ? ' bx-grid-cell-hug' : '';
+        return $this->_isHugColumn($sKey) ? ' bx-grid-cell-hug' : '';
     }
 
     protected function _getCellWidthStyle ($sKey, $aField)
     {
-        if(!isset($aField['width']) || $this->_isControlsColumn($sKey)) {
+        if(!isset($aField['width']) || $this->_isHugColumn($sKey)) {
             return false;
         }
 
@@ -1537,7 +1591,7 @@ class BxBaseGrid extends BxDolGrid
         $fSum = 0;
         $aFields = !empty($this->_aOptions['fields']) && is_array($this->_aOptions['fields']) ? $this->_aOptions['fields'] : [];
         foreach($aFields as $sKey => $aField) {
-            if($this->_isControlsColumn($sKey)) {
+            if($this->_isHugColumn($sKey)) {
                 continue;
             }
 
@@ -1883,6 +1937,7 @@ class BxBaseGrid extends BxDolGrid
                 'sortable' => in_array($sKey, $aOrderFields) ? 1 : 0,
                 'controls' => $this->_isControlsColumn($sKey) ? 1 : 0,
                 'kind' => $this->_agCellKind($sKey, $aField),
+                'hug' => $this->_isHugColumn($sKey) ? $this->_getColumnKind($sKey) : '',
             ];
         }
 
