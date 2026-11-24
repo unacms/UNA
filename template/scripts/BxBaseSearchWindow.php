@@ -129,34 +129,39 @@ class BxBaseSearchWindow extends BxDol
     {
         $aChips = [];
         $aPanels = [];
-        $aFields = [];
+        $aUnset = [];
         foreach($aScope['chips'] as $aChip) {
-            if($aChip['type'] == 'options') {
-                $aFields[] = $aChip;
-                // a field chip shows once it has a value; "+ Filter" adds the others
-                if(empty($aChip['value']))
-                    continue;
+            // a filter shows as a chip once it is picked (the scope always: where the window was opened chose it);
+            // "+ Filter" lists the others
+            if($aChip['type'] != 'scope' && empty($aChip['value'])) {
+                $aUnset[] = $aChip;
+                continue;
             }
 
             $aChips[] = $this->_getChip($aChip, $aPanels);
         }
 
-        // "+ Filter": the module's fields without a value, or the modules to look in
+        // "+ Filter": the filters not picked (Title only, Created by, Date, the module's fields), then the modules to look in
         $aAdd = [];
-        foreach($aFields as $aField)
-            if(empty($aField['value']))
-                $aAdd[] = ['name' => 'field', 'value' => $aField['name'], 'title' => $aField['caption']];
+        $aTypeIcons = ['toggle' => 'type', 'profile' => 'user-round', 'date_range' => 'calendar', 'options' => 'list-filter'];
+        foreach($aUnset as $aField)
+            $aAdd[] = [
+                'name' => $aField['type'] == 'toggle' ? 'toggle' : 'field',
+                'value' => $aField['name'],
+                'title' => $aField['caption'],
+                'icon' => $aTypeIcons[$aField['type']] ?? 'list-filter',
+            ];
 
         if($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL)
             foreach($aScope['groups'] as $aGroup)
-                $aAdd[] = ['name' => 'section', 'value' => $aGroup['name'], 'title' => _t('_sys_search_chip_in', $aGroup['title'])];
+                $aAdd[] = ['name' => 'section', 'value' => $aGroup['name'], 'title' => _t('_sys_search_chip_in', $aGroup['title']), 'icon' => $aGroup['icon'] ?? 'search'];
 
         if($aAdd) {
             $sPanelId = 'bx-search-window-panel-add';
             $aPanels[] = $this->_oTemplate->parseHtmlByName('search_window_panel_add.html', [
                 'id' => $sPanelId,
                 'bx_repeat:items' => array_map(function($a) {
-                    return ['name' => $a['name'], 'value' => bx_html_attribute($a['value']), 'title' => bx_process_output($a['title'])];
+                    return ['name' => $a['name'], 'value' => bx_html_attribute($a['value']), 'title' => bx_process_output($a['title']), 'icon' => $this->_getIcon($a['icon'], 'size-4')];
                 }, $aAdd),
             ]);
             $aChips[] = $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
@@ -169,9 +174,9 @@ class BxBaseSearchWindow extends BxDol
             ]);
         }
 
-        // hidden panels of the field chips, so "+ Filter" can open them
-        foreach($aFields as $aField)
-            if(empty($aField['value']))
+        // hidden panels of the filters not picked, so "+ Filter" can open them
+        foreach($aUnset as $aField)
+            if($aField['type'] != 'toggle')
                 $aPanels[] = $this->_getPanel($aField);
 
         // the sort, at the row's end, once there is something to sort
@@ -258,13 +263,13 @@ class BxBaseSearchWindow extends BxDol
         }
 
         return $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
-            'group' => $bActive && $aChip['type'] != 'toggle' ? 'bx-btn-group' : '',
+            'group' => $bActive ? 'bx-btn-group' : '',
             'class' => $bActive ? 'bx-search-window-chip-active' : '',
             'attrs' => $sAttrs,
             'icon' => $sIcon,
             'caption' => bx_process_output($sCaption),
             'bx_if:remove' => [
-                'condition' => $bActive && $aChip['type'] != 'toggle',
+                'condition' => $bActive,
                 'content' => [
                     'name' => $aChip['name'],
                     'value' => '',

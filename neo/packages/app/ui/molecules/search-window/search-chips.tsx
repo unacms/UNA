@@ -51,15 +51,50 @@ function SetChip({ caption, icon, removeLabel, onRemove }: { caption: string; ic
     );
 }
 
+type DatePreset = { id: string; title: string; days: number; ahead: boolean; field: string };
+
+/** Date presets: the past week, month and year, and for a module with start dates the coming week and month. */
+function datePresets(c: SearchChip, strings: Record<string, string>): DatePreset[] {
+    const starts = (c.fields ?? []).some((f) => f.value === 'starts');
+    return [
+        { id: 'w', title: strings.past_week ?? '', days: 7, ahead: false, field: '' },
+        { id: 'm', title: strings.past_month ?? '', days: 30, ahead: false, field: '' },
+        { id: 'y', title: strings.past_year ?? '', days: 365, ahead: false, field: '' },
+        ...(starts ? [
+            { id: 'sw', title: strings.starts_week ?? '', days: 7, ahead: true, field: 'starts' },
+            { id: 'sm', title: strings.starts_month ?? '', days: 30, ahead: true, field: 'starts' },
+        ] : []),
+    ];
+}
+
+type FilterMenuItem = { id: string; title: string; icon?: string; type?: string };
+
 /**
- * The window's filter chips under its field, from UNA's scope descriptor: the scope ("In: …", removable), Title only,
- * Created by, Date, and in a module's scope its own search fields (category, gender...). In global search "Filter"
- * picks a module to look in.
+ * The window's filter chips under its field, from UNA's scope descriptor. Only what is set shows as a chip, a button
+ * group with its remove button: the scope ("In: …", chosen by where the window was opened), and the filters the member
+ * picked. "+ Filter" holds the others: Title only, Created by, Date, in a module's scope its own search fields
+ * (category, gender...), and in global search the modules to look in.
  */
 export default function SearchChips({ query, scope, strings, onChange, trailing, inset = 'px-3' }: ChipsProps) {
     const { currentUser } = useCurrentUser();
     const [findPerson, setFindPerson] = useState(false);
     const filters = searchFilters(query);
+
+    const optionValues = (c: SearchChip) => ([] as string[]).concat((filters[c.name] as string | string[] | undefined) ?? []);
+    const isSet = (c: SearchChip) => {
+        if (c.type === 'scope') return true;
+        if (c.type === 'options') return optionValues(c).length > 0;
+        if (c.type === 'date_range') return !!(c.value as { from?: string } | null)?.from;
+        return !!c.value;
+    };
+
+    const setDate = (preset: DatePreset) => {
+        const [from, to] = presetRange(preset.days, preset.ahead);
+        let next = withSearchValue(query, 'date_from', from);
+        next = withSearchValue(next, 'date_to', to);
+        next = withSearchValue(next, 'date_field', preset.field || null);
+        onChange(withSearchValue(next, 'timezone', timezone()));
+    };
 
     const chip = (c: SearchChip) => {
         const remove = (key: keyof SearchQuery) => () => onChange(withSearchValue(query, key, null));
@@ -77,84 +112,26 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
                 );
 
             case 'toggle':
-                return (
-                    <NeoButton
-                        key={c.name}
-                        label={c.caption}
-                        image="Type"
-                        controlSize="small"
-                        selected={!!c.value}
-                        accessibilityState={{ checked: !!c.value }}
-                        onPress={() => onChange(withSearchValue(query, c.name as keyof SearchQuery, c.value ? null : '1'))}
-                    />
-                );
+                return <SetChip key={c.name} caption={c.caption} icon="Type" removeLabel={fill(strings.remove, c.caption)} onRemove={remove(c.name as keyof SearchQuery)} />;
 
-            case 'profile': {
-                if (c.value)
-                    return <SetChip key={c.name} caption={fill(strings.created_by_value, c.value_title ?? '')} icon="UserRound" removeLabel={fill(strings.remove, c.caption)} onRemove={remove('author')} />;
-                const items = [
-                    ...(currentUser ? [{ id: 'me', title: strings.me }] : []),
-                    { id: 'find', title: strings.find_person },
-                ];
-                return (
-                    <DropdownMenu
-                        key={c.name}
-                        items={items}
-                        onSelect={(item) => {
-                            if (item.id === 'me') onChange(withSearchValue(query, 'author', String(currentUser ? currentUser.id : '')));
-                            else setFindPerson(true);
-                        }}
-                        triggerAccessibilityLabel={c.caption}
-                    >
-                        <NeoButton label={c.caption} image="UserRound" controlSize="small" interactive />
-                    </DropdownMenu>
-                );
-            }
+            case 'profile':
+                return <SetChip key={c.name} caption={fill(strings.created_by_value, c.value_title ?? '')} icon="UserRound" removeLabel={fill(strings.remove, c.caption)} onRemove={remove('author')} />;
 
             case 'date_range': {
-                const value = c.value as { from: string; to: string; field: string } | null;
-                if (value?.from)
-                    return (
-                        <SetChip
-                            key={c.name}
-                            caption={value.from + (value.to && value.to !== value.from ? ' – ' + value.to : '')}
-                            icon="Calendar"
-                            removeLabel={fill(strings.remove, c.caption)}
-                            onRemove={() => onChange(withSearchValue(withSearchValue(withSearchValue(query, 'date_from', null), 'date_to', null), 'date_field', null))}
-                        />
-                    );
-                const starts = (c.fields ?? []).some((f) => f.value === 'starts');
-                const presets = [
-                    { id: 'w', title: strings.past_week, days: 7, ahead: false, field: '' },
-                    { id: 'm', title: strings.past_month, days: 30, ahead: false, field: '' },
-                    { id: 'y', title: strings.past_year, days: 365, ahead: false, field: '' },
-                    ...(starts ? [
-                        { id: 'sw', title: strings.starts_week, days: 7, ahead: true, field: 'starts' },
-                        { id: 'sm', title: strings.starts_month, days: 30, ahead: true, field: 'starts' },
-                    ] : []),
-                ];
+                const value = c.value as { from: string; to: string; field: string };
                 return (
-                    <DropdownMenu
+                    <SetChip
                         key={c.name}
-                        items={presets.map((p) => ({ id: p.id, title: p.title }))}
-                        onSelect={(item) => {
-                            const preset = presets.find((p) => p.id === item.id);
-                            if (!preset) return;
-                            const [from, to] = presetRange(preset.days, preset.ahead);
-                            let next = withSearchValue(query, 'date_from', from);
-                            next = withSearchValue(next, 'date_to', to);
-                            next = withSearchValue(next, 'date_field', preset.field || null);
-                            onChange(withSearchValue(next, 'timezone', timezone()));
-                        }}
-                        triggerAccessibilityLabel={c.caption}
-                    >
-                        <NeoButton label={c.caption} image="Calendar" controlSize="small" interactive />
-                    </DropdownMenu>
+                        caption={value.from + (value.to && value.to !== value.from ? ' – ' + value.to : '')}
+                        icon="Calendar"
+                        removeLabel={fill(strings.remove, c.caption)}
+                        onRemove={() => onChange(withSearchValue(withSearchValue(withSearchValue(query, 'date_from', null), 'date_to', null), 'date_field', null))}
+                    />
                 );
             }
 
             case 'options': {
-                const values = ([] as string[]).concat((filters[c.name] as string | string[] | undefined) ?? []);
+                const values = optionValues(c);
                 const titles = (c.options ?? []).filter((o) => values.includes(o.value)).map((o) => o.title);
                 return (
                     <NeoButtonGroup key={c.name} controlSize="small" accessibilityLabel={c.caption}>
@@ -167,11 +144,9 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
                             }}
                             triggerAccessibilityLabel={c.caption}
                         >
-                            <NeoButton label={titles.length ? c.caption + ': ' + titles.join(', ') : c.caption} image="ListFilter" selected={titles.length > 0} interactive />
+                            <NeoButton label={c.caption + ': ' + titles.join(', ')} image="ListFilter" selected interactive />
                         </DropdownMenu>
-                        {titles.length > 0 && (
-                            <NeoButton image="X" selected accessibilityLabel={fill(strings.remove, c.caption)} onPress={() => onChange(withSearchFilter(query, c.name, null))} />
-                        )}
+                        <NeoButton image="X" selected accessibilityLabel={fill(strings.remove, c.caption)} onPress={() => onChange(withSearchFilter(query, c.name, null))} />
                     </NeoButtonGroup>
                 );
             }
@@ -179,14 +154,59 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
         return null;
     };
 
+    // "+ Filter": the filters not set, each under its name, then the modules to look in
+    const menu: FilterMenuItem[] = [];
+    // one list (no column of sections), each filter's rows after a separator and naming their filter
+    const separate = () => { if (menu.length) menu.push({ id: 'sep' + menu.length, title: '', type: 'separator' }); };
+    for (const c of scope.chips) {
+        if (isSet(c)) continue;
+        switch (c.type) {
+            case 'toggle':
+                menu.push({ id: 't:' + c.name, title: c.caption, icon: 'Type' });
+                break;
+            case 'profile':
+                separate();
+                if (currentUser) menu.push({ id: 'p:me', title: fill(strings.created_by_value, strings.me ?? ''), icon: 'UserRound' });
+                menu.push({ id: 'p:find', title: fill(strings.created_by_value, strings.find_person ?? ''), icon: 'UserRoundSearch' });
+                break;
+            case 'date_range':
+                separate();
+                for (const preset of datePresets(c, strings)) menu.push({ id: 'd:' + preset.id, title: preset.title, icon: 'Calendar' });
+                break;
+            case 'options':
+                separate();
+                for (const o of c.options ?? []) menu.push({ id: 'o:' + c.name + ':' + o.value, title: c.caption + ': ' + o.title, icon: 'ListFilter' });
+                break;
+        }
+    }
+    if (scope.scope === 'global' && scope.groups.length > 1) {
+        separate();
+        for (const g of scope.groups) menu.push({ id: 's:' + g.name, title: fill(strings.in, g.title), icon: g.icon });
+    }
+
+    const onFilter = (id: string) => {
+        const [kind, name = '', ...rest] = id.split(':');
+        const value = rest.join(':');
+        if (kind === 't') onChange(withSearchValue(query, name as keyof SearchQuery, '1'));
+        else if (kind === 'p' && name === 'me') onChange(withSearchValue(query, 'author', String(currentUser ? currentUser.id : '')));
+        else if (kind === 'p') setFindPerson(true);
+        else if (kind === 'd') {
+            const c = scope.chips.find((x) => x.type === 'date_range');
+            const preset = c ? datePresets(c, strings).find((p) => p.id === name) : undefined;
+            if (preset) setDate(preset);
+        }
+        else if (kind === 'o') onChange(withSearchFilter(query, name, [value]));
+        else if (kind === 's') onChange(withSearchValue(query, 'section', name));
+    };
+
     return (
         <View className={'gap-2 pt-3 ' + inset}>
             <Row className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
-                {scope.chips.map(chip)}
-                {scope.scope === 'global' && scope.groups.length > 1 && (
+                {scope.chips.filter(isSet).map(chip)}
+                {menu.length > 0 && (
                     <DropdownMenu
-                        items={scope.groups.map((g) => ({ id: g.name, title: fill(strings.in, g.title), icon: g.icon }))}
-                        onSelect={(item) => onChange(withSearchValue(query, 'section', String(item.id)))}
+                        items={menu}
+                        onSelect={(item) => onFilter(String(item.id))}
                         triggerAccessibilityLabel={strings.filter}
                     >
                         <NeoButton label={strings.filter} image="Plus" controlSize="small" interactive />

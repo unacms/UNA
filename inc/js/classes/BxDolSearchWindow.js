@@ -261,13 +261,19 @@ BxDolSearchWindow.prototype._bind = function()
         $this.focusInput();
     });
 
-    // "+ Filter": a module to look in, or one of the module's fields
+    // "+ Filter": a module to look in, Title only, or a filter to set in its panel (Created by, Date, the module's fields)
     oRoot.on('click', '.bx-search-window-add', function() {
         var sName = $(this).attr('data-add'), sValue = $(this).attr('data-value');
         if(sName == 'section') {
             $this._oQuery.section = sValue;
             delete $this._oQuery.tab;
             $this._run(true);
+            return;
+        }
+        if(sName == 'toggle') {
+            $this._oQuery[sValue] = 1;
+            $this._run(true);
+            $this.focusInput();
             return;
         }
 
