@@ -1453,6 +1453,13 @@
         @apply min-h-[3.25rem] py-2 leading-6;
     }
 
+    /* Small fields (.bx-form-input-small): as tall as a small button (bx-btn-small, 36px) with 14px text, for a field in a row of
+       small buttons (the search window's sort beside its chips), as Studio's toolbar fields. */
+    .bx-artificer .bx-form-input-select.bx-form-input-small,
+    .bx-artificer .bx-form-input-text.bx-form-input-small {
+        @apply min-h-0 h-9 py-0 text-sm leading-5;
+    }
+
     /* A single select is a menu, not a text field: NEO's chevron (Lucide chevron-down, 20px, muted: gray-600, gray-400 in dark) 16px from the end. */
     .bx-artificer select.bx-form-input-select:not([multiple]) {
         @apply appearance-none bg-no-repeat ltr:pr-11 rtl:pl-11 ltr:[background-position:right_1rem_center] rtl:[background-position:left_1rem_center];

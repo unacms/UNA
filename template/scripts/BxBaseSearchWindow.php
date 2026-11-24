@@ -173,10 +173,23 @@ class BxBaseSearchWindow extends BxDol
             if(empty($aField['value']))
                 $aPanels[] = $this->_getPanel($aField);
 
+        // the sort, at the row's end, once there is something to sort
+        $bSort = $this->_oSearch->hasQuery($aQuery);
+
         return $this->_oTemplate->parseHtmlByName('search_window_chips.html', [
             'label' => bx_html_attribute(_t('_sys_search_window_filters')),
             'chips' => implode('', $aChips),
             'panels' => implode('', $aPanels),
+            'bx_if:sort' => [
+                'condition' => $bSort,
+                'content' => [
+                    'sort_label' => bx_html_attribute(_t('_sys_search_window_sort')),
+                    'sort_best' => _t('_sys_search_window_sort_best'),
+                    'sort_new' => _t('_sys_search_window_sort_new'),
+                    'sort_best_selected' => $aQuery['sort'] == 'best' ? 'selected="selected"' : '',
+                    'sort_new_selected' => $aQuery['sort'] == 'new' ? 'selected="selected"' : '',
+                ],
+            ],
         ]);
     }
 
@@ -377,11 +390,6 @@ class BxBaseSearchWindow extends BxDol
 
         return $this->_oTemplate->parseHtmlByName('search_window_results.html', [
             'count' => $this->_getCountText($aResults),
-            'sort_label' => bx_html_attribute(_t('_sys_search_window_sort')),
-            'sort_best' => _t('_sys_search_window_sort_best'),
-            'sort_new' => _t('_sys_search_window_sort_new'),
-            'sort_best_selected' => $aQuery['sort'] == 'best' ? 'selected="selected"' : '',
-            'sort_new_selected' => $aQuery['sort'] == 'new' ? 'selected="selected"' : '',
             'bx_if:tabs' => [
                 'condition' => count($aTabs) > 1,
                 'content' => [

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { View, Row } from 'app/design/view';
 import { NeoButton, Input } from 'app/design/controls';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -12,6 +12,8 @@ type ChipsProps = {
     scope: SearchScopeData;
     strings: Record<string, string>;
     onChange: (query: SearchQuery) => void;
+    /** At the row's end (the sort), the row wrapping on phones. */
+    trailing?: ReactNode;
 };
 
 function fill(text: string | undefined, ...values: Array<string | number>): string {
@@ -52,7 +54,7 @@ function SetChip({ caption, icon, removeLabel, onRemove }: { caption: string; ic
  * Created by, Date, and in a module's scope its own search fields (category, gender...). In global search "Filter"
  * picks a module to look in.
  */
-export default function SearchChips({ query, scope, strings, onChange }: ChipsProps) {
+export default function SearchChips({ query, scope, strings, onChange, trailing }: ChipsProps) {
     const { currentUser } = useCurrentUser();
     const [findPerson, setFindPerson] = useState(false);
     const filters = searchFilters(query);
@@ -188,6 +190,7 @@ export default function SearchChips({ query, scope, strings, onChange }: ChipsPr
                         <NeoButton label={strings.filter} image="Plus" controlSize="small" interactive />
                     </DropdownMenu>
                 )}
+                {!!trailing && <View className="ms-auto">{trailing}</View>}
             </Row>
             {findPerson && <PersonFinder strings={strings} onPick={(id) => { setFindPerson(false); onChange(withSearchValue(query, 'author', id)); }} />}
         </View>

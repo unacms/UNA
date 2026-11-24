@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Text } from 'app/design/typography';
 import { View, Row, ScrollView } from 'app/design/view';
-import { NeoButton, NeoButtonLink, Input } from 'app/design/controls';
+import { NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { appStatic } from 'app/lib/app-static';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -121,16 +121,17 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
         if (autoFocus) setTimeout(() => inputRef.current?.focus?.(), 50);
     }, [autoFocus]);
 
-    const tabs = scope && scope.scope !== 'module' && allGroups.length > 1 ? allGroups : null;
+    const tabs = scope && scope.scope !== 'module' && allGroups.length > 0 ? allGroups : null;
 
     return (
         <View className="w-full">
             <Redirect ref={redirectRef} />
             <Row className="items-center gap-2 border-b border-border px-3 py-2">
                 <Icon icon="Search" size={20} className="text-muted-foreground" />
-                <Input
+                {/* borderless, as UNA's window: the dialog's top row is the field */}
+                <TextInputClear
                     ref={inputRef}
-                    className="min-w-0 flex-1"
+                    className="min-w-0 flex-1 bg-transparent border-0 p-0 h-11 text-lg text-foreground placeholder:text-muted-foreground web:outline-none web:focus:outline-none web:focus-visible:outline-none"
                     role="searchbox"
                     accessibilityLabel={strings.title || 'Search'}
                     placeholder={strings.placeholder || ''}
@@ -143,6 +144,8 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                     returnKeyType="search"
                     autoCorrect={false}
                     autoCapitalize="none"
+                    // the caret is the focus, as in UNA's window (no field box to ring)
+                    style={{ outline: 'none', boxShadow: 'none' } as Record<string, string>}
                 />
                 {loading && <View className="size-4 rounded-full border-2 border-border border-t-accent-foreground web:animate-spin" aria-hidden />}
                 {mode === 'modal' && (
@@ -156,7 +159,34 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                 )}
             </Row>
 
-            {scope && <SearchChips query={query} scope={scope} strings={strings} onChange={change} />}
+            {/* the chips, and the sort at the end of their row once there is something to sort */}
+            {scope && (
+                <SearchChips
+                    query={query}
+                    scope={scope}
+                    strings={strings}
+                    onChange={change}
+                    trailing={hasQuery ? (
+                                        <DropdownMenu
+                                            items={[
+                                                { id: 'best', title: strings.sort_best, selected: query.sort !== 'new' },
+                                                { id: 'new', title: strings.sort_new, selected: query.sort === 'new' },
+                                            ]}
+                                            onSelect={(item) => change(withSearchValue(query, 'sort', item.id === 'new' ? 'new' : null))}
+                                            triggerAccessibilityLabel={(strings.sort || '') + ': ' + (query.sort === 'new' ? strings.sort_new : strings.sort_best)}
+                                        >
+                                            <NeoButton
+                                                label={query.sort === 'new' ? strings.sort_new : strings.sort_best}
+                                                image="ChevronDown"
+                                                imagePlacement="trailing"
+                                                style="bordered"
+                                                controlSize="small"
+                                                interactive
+                                            />
+                                        </DropdownMenu>
+                    ) : null}
+                />
+            )}
 
             <View className="px-3 pb-3">
                     {!hasQuery ? (mode === 'explore' ? null : (
@@ -171,23 +201,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                                 <Text className="text-sm font-medium text-muted-foreground" role="status" aria-live="polite">
                                     {fillString(strings.count, total)}
                                 </Text>
-                                <DropdownMenu
-                                    items={[
-                                        { id: 'best', title: strings.sort_best, selected: query.sort !== 'new' },
-                                        { id: 'new', title: strings.sort_new, selected: query.sort === 'new' },
-                                    ]}
-                                    onSelect={(item) => change(withSearchValue(query, 'sort', item.id === 'new' ? 'new' : null))}
-                                    triggerAccessibilityLabel={(strings.sort || '') + ': ' + (query.sort === 'new' ? strings.sort_new : strings.sort_best)}
-                                >
-                                    <NeoButton
-                                        label={query.sort === 'new' ? strings.sort_new : strings.sort_best}
-                                        image="ChevronDown"
-                                        imagePlacement="trailing"
-                                        style="borderless"
-                                        controlSize="small"
-                                        interactive
-                                    />
-                                </DropdownMenu>
+
                             </Row>
 
                             {tabs && (
