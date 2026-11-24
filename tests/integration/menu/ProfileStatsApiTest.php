@@ -29,7 +29,7 @@ class ProfileStatsApiTest extends BxDolIntegrationTestCase
     public function testApiCarriesItemsCountsAndTheLimit(): void
     {
         $this->bxLoginAsUser();
-        bx_content_cache_del('menu_sys_profile_stats_api_addons_p' . bx_get_logged_profile_id());
+        bx_content_cache_del('menu_sys_profile_stats_p' . bx_get_logged_profile_id() . '_api_addons');
 
         $aCode = $this->menu()->getCodeAPI();
 
@@ -60,7 +60,7 @@ class ProfileStatsApiTest extends BxDolIntegrationTestCase
             $this->markTestSkipped('The content cache is off.');
 
         $this->bxLoginAsUser();
-        $sKey = 'menu_sys_profile_stats_api_addons_p' . bx_get_logged_profile_id();
+        $sKey = 'menu_sys_profile_stats_p' . bx_get_logged_profile_id() . '_api_addons';
         bx_content_cache_del($sKey);
 
         $aFirst = $this->menu()->getCodeAPI();
@@ -75,6 +75,27 @@ class ProfileStatsApiTest extends BxDolIntegrationTestCase
         $this->assertSame('42', $aSecond['items'][0]['addon']);
 
         bx_content_cache_del($sKey);
+    }
+
+    public function testAddingContentClearsTheCounts(): void
+    {
+        if (!getParam('sys_content_cache_enable'))
+            $this->markTestSkipped('The content cache is off.');
+
+        $this->bxLoginAsUser();
+        $iProfileId = (int)bx_get_logged_profile_id();
+        $aKeys = ['menu_sys_profile_stats_p' . $iProfileId, 'menu_sys_profile_stats_p' . $iProfileId . '_api_addons'];
+        foreach ($aKeys as $sKey)
+            bx_content_cache_set($sKey, [1 => '7'], BxBaseMenuProfileStats::API_COUNTERS_TTL);
+        bx_content_cache_set('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons', [1 => '7'], 60);
+
+        // what a module's entry form calls after an entry is added or deleted
+        BxBaseMenuProfileStats::clearCacheForProfile($iProfileId);
+
+        foreach ($aKeys as $sKey)
+            $this->assertNull(bx_content_cache_get($sKey, BxBaseMenuProfileStats::API_COUNTERS_TTL), $sKey);
+        $this->assertNotNull(bx_content_cache_get('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons', 60), 'Another profile\'s counts stay.');
+        bx_content_cache_del('menu_sys_profile_stats_p' . $iProfileId . '0_api_addons');
     }
 
     public function testOwnerParamGoesBeforeTheFragment(): void

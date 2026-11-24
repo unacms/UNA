@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { View } from 'app/design/view'
 import { appSetting, filterHiddenOn, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useScreenTier } from 'app/context/measure'
@@ -6,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { components } from 'app/components/registry'
+import { setPref, usePref } from 'app/context/prefs'
 
 /** A link the app can open: none for a script the site runs (`javascript:...`), as the drawer's rows (rowHref). */
 function itemLink(link) {
@@ -29,7 +29,14 @@ export default function ElementProfileMenu({ data, blockWrapperProps }) {
     const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const { currentUser } = useCurrentUser();
     const tier = useScreenTier();
-    const [expanded, setExpanded] = useState(false);
+    // Folded until the member shows more; the choice stays on the device for that profile, as the site keeps it for
+    // the session (menu.php set_collapsed).
+    const foldKey = `${data?.object || 'sys_profile_stats'}:${currentUser?.id ?? ''}`;
+    const menusExpanded = usePref('menusExpanded') || [];
+    const expanded = menusExpanded.includes(foldKey);
+    const toggle = () => setPref('menusExpanded', expanded
+        ? menusExpanded.filter((item) => item !== foldKey)
+        : [...menusExpanded, foldKey]);
     // `menu_sidebar` setting pins the links; unset, the block's menu from UNA.
     const staticItems = appSetting('menu_items', 'menu_sidebar');
     const isStatic = Array.isArray(staticItems) && staticItems.length > 0;
@@ -38,10 +45,11 @@ export default function ElementProfileMenu({ data, blockWrapperProps }) {
         : filterHiddenOn(menuItemsByNameNew('menu_post', data, currentUser), tier)
     ).filter((item) => isStatic || itemLink(item.link));
 
-    const moreAfter = isStatic ? 0 : Number(data?.more_after) || 0;
+    const moreAfter = isStatic || !data?.more_title ? 0 : Number(data?.more_after) || 0;
     const folds = moreAfter > 0 && menu_items.length > moreAfter;
     const shown = folds && !expanded ? menu_items.slice(0, moreAfter) : menu_items;
-    const toggleTitle = expanded ? (data?.less_title || t('Show less')) : (data?.more_title || t('Show more'));
+    // UNA's own words for the control (an older UNA sends none: the list then shows every item).
+    const toggleTitle = expanded ? data?.less_title : data?.more_title;
 
     return (
         <BlockWrapper {...blockWrapperProps}>
@@ -62,7 +70,7 @@ export default function ElementProfileMenu({ data, blockWrapperProps }) {
                         icon={expanded ? 'ChevronUp' : 'ChevronDown'}
                         title={toggleTitle}
                         expanded={expanded}
-                        onPress={() => setExpanded((value) => !value)}
+                        onPress={toggle}
                         className="profile-menu-more"
                     />
                 )}

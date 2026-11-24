@@ -67,13 +67,29 @@ class BxBaseMenuProfileStats extends BxTemplMenuAccountNotifications
         return $aResult;
     }
 
+    /**
+     * Forget the member's menu, the site's (`menu_<object>_p<id>` and its variants) and the apps' counts, after
+     * something that changes a count (their content added or deleted).
+     */
+    public static function clearCacheForProfile ($iProfileId)
+    {
+        $iProfileId = (int)$iProfileId;
+        if (!$iProfileId)
+            return;
+
+        foreach (['sys_profile_stats', 'sys_profile_stats_tiles'] as $sObject) {
+            bx_content_cache_del('menu_' . $sObject . '_p' . $iProfileId);
+            bx_content_cache_del_by_prefix('menu_' . $sObject . '_p' . $iProfileId . '_');
+        }
+    }
+
     protected function _getApiAddonsCacheKey ()
     {
         $iProfileId = (int)bx_get_logged_profile_id();
         if (!$iProfileId || !getParam('sys_content_cache_enable'))
             return '';
 
-        return 'menu_' . $this->_sObject . '_api_addons_p' . $iProfileId;
+        return 'menu_' . $this->_sObject . '_p' . $iProfileId . '_api_addons';
     }
 
     /**
