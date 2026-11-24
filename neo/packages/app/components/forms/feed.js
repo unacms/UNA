@@ -1,5 +1,5 @@
 import { View, Row, Pressable } from 'app/design/view'
-import { NeoButton } from 'app/design/controls'
+import { NeoButton, useModalRoom } from 'app/design/controls'
 import { useState, useRef, useMemo, useEffect } from 'react'
 import { getFormFieldByData } from 'app/lib/form/form-helpers'
 import KbAvoidingView, { useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view'
@@ -290,6 +290,13 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     // that room instead.
     const [editorArea, setEditorArea] = useState(0);
     const [belowHeight, setBelowHeight] = useState(0);
+    // In a dialog as tall as its content (desktop) the editor grows with the text from 160px, the dialog with it, up
+    // to the room the modal has (less the composer's own rows), and then scrolls inside. Where the modal fills the
+    // screen (phones) the editor fills the form's height instead.
+    const modalRoom = useModalRoom();
+    const [formHeight, setFormHeight] = useState(0);
+    const chrome = formHeight && editorArea ? formHeight - editorArea : 0;
+    const growMax = modalRoom && chrome ? Math.max(160, modalRoom - chrome) : 0;
     // Only the enriched editor takes the room as a scroll inset; TenTap keeps the strip.
     const insetInEditor = belowHeight === 0 && appSetting('editor', 'engine') === 'enriched';
 
@@ -356,7 +363,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     };
     if (isFormOnly) {
         return (
-            <RNView style={{ position: 'relative', width: '100%', flex: 1, gap: 12 }}>
+            <RNView style={{ position: 'relative', width: '100%', flex: 1, gap: 12 }} onLayout={(e) => setFormHeight(Math.floor(e.nativeEvent.layout.height))}>
                 <View className="items-start justify-start ">
                     <Row className="w-full items-center justify-between gap-x-2">
                         <View className="min-w-0 max-w-full shrink">
@@ -427,8 +434,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         linkify: true,
                                         autofocus: true,
                                         classes: 'flex-auto',
-                                        initialHeight: editorArea || 160,
-                                        maxHeight: editorArea || screenHeight / 2 - 80,
+                                        initialHeight: modalRoom ? 160 : (editorArea || 160),
+                                        maxHeight: modalRoom ? (growMax || 160) : (editorArea || screenHeight / 2 - 80),
                                         contentInsetBottom: insetInEditor ? DOCK_ROOM : 0,
                                         // Cmd/Ctrl+Enter posts; plain Enter is a newline.
                                         onEnterSubmit: handleEditorEnterSubmit,

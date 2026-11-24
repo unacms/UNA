@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useId, useRef, type ComponentType, type ReactNode, type Ref } from 'react';
+import { createContext, useContext, useEffect, useCallback, useId, useRef, useState, type ComponentType, type ReactNode, type Ref } from 'react';
 import { Modal as ModalDef, Platform } from 'react-native'
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { View, ScrollView, Row } from 'app/design/view'
@@ -42,7 +42,7 @@ const DIALOG_INSET = 16;
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
 
-function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef }: { title?: ReactNode; titleId?: string; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any> }) {
+function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef, onHeight }: { title?: ReactNode; titleId?: string; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any>; onHeight?: (height: number) => void }) {
     const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
@@ -50,7 +50,7 @@ function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef }
     // A string title reads as a block's title (its size and 16px padding); Back and Close are the
     // small (36px) bordered circle buttons a block's header uses, 16px from the edges.
     return (
-        <Row className={`items-center justify-${align} ${headerBorder ? modalSettings.header : modalSettings.header_plain}`}>
+        <Row className={`items-center justify-${align} ${headerBorder ? modalSettings.header : modalSettings.header_plain}`} onLayout={onHeight ? (e: any) => onHeight(Math.round(e.nativeEvent.layout.height)) : undefined}>
             {(title && type === 'string') && (
                 <View className='flex-1 px-11 justify-center items-center'>
                     <Text className={`${modalSettings.title} text-center`}
@@ -92,6 +92,21 @@ export function ModalHeaderBar({ children, onClose, headerBorder = true }: { chi
             {onClose && <ModalClose onClose={onClose} />}
         </Row>
     );
+}
+
+/**
+ * The room a modal gives its body: on a dialog that takes the height of its content (desktop), the most its body
+ * can hold (the window less the dialog's inset, its header and the body's padding), so content that grows (the feed
+ * composer's editor) grows the dialog up to there and then scrolls inside. `null` where the modal fills the screen
+ * (phones) or its height is fixed: content fills what it has.
+ */
+const ModalRoomContext = createContext<number | null>(null);
+export const useModalRoom = () => useContext(ModalRoomContext);
+
+/** The vertical padding of a Tailwind padding class (`p-4`, `px-3 py-2`, `p-0`), in px. */
+function paddingY(cls: string): number {
+    const y = /(?:^|\s)py-(\d+(?:\.5)?)(?:\s|$)/.exec(cls) ?? /(?:^|\s)p-(\d+(?:\.5)?)(?:\s|$)/.exec(cls);
+    return y ? Number(y[1]) * 4 * 2 : 0;
 }
 
 export type ModalProps = {
@@ -282,10 +297,16 @@ export function Modal({
 
     const offset = (title ? 56 : isIos ? insets?.bottom + insets?.top : 0);
     const styles = { maxHeight: heightActual - offset - dialogInset }
+    // a web dialog sized by its content: what its body can hold before the dialog meets the window's inset
+    const [headerHeight, setHeaderHeight] = useState(0);
     // The panel never grows past the room inside the fog (`max-h-full`), so its body shrinks to
     // fit whatever the header really takes; `offset` above is only the header's minimum.
     let dialogHeight: number | 'auto' = heightActual;
     if (isDialog) dialogHeight = fillHeight ? heightActual - dialogInset : 'auto';
+    // web, a dialog as tall as its content: the most its body holds (a `top` dialog sits 48px lower: `sm:pt-16`)
+    const bodyRoom = isWeb && dialogHeight === 'auto' && heightActual > 0
+        ? Math.max(0, heightActual - dialogInset - (position === 'top' && !autoHeight ? 48 : 0) - headerHeight - paddingY(padding))
+        : null;
     const dialogClass = isDialog ? maxWidth + ' max-h-full ' + modalSettings.dialog : '';
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
     const isOuterClose = (typeof onClose === 'function' && outerClickClose !== false);
@@ -484,6 +505,7 @@ export function Modal({
         onClose={tryClose}
         onBack={onBack}
         closeRef={closeRef}
+        onHeight={setHeaderHeight}
     />
         <Cnt
             ref={scrollable ? scrollRef : undefined}
@@ -498,7 +520,7 @@ export function Modal({
                 onClick={handleContentPress}
                 className="flex-auto web:cursor-default"
             >
-                {children}
+                <ModalRoomContext.Provider value={bodyRoom}>{children}</ModalRoomContext.Provider>
             </View>
         </Cnt></>
 
