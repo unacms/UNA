@@ -146,6 +146,9 @@ class BxBaseStudioWidget extends BxDolStudioWidget
         if(empty($sPage))
             $sPage = $this->sPage;
 
+        // Grids built for this page are blocks' contents: their headers get a title row (BxDolGrid::setHeaderTitleRow).
+        BxDolGrid::setHeaderTitleRow(true);
+
         $sMethod = 'get' . bx_gen_method_name($sPage);
         if(method_exists($this, $sMethod)) {
             $mixedContent = $this->$sMethod();
@@ -207,9 +210,29 @@ class BxBaseStudioWidget extends BxDolStudioWidget
         else if(!empty($aBlock['items']))
             $sContent = $aBlock['items'];
 
+        $bCaption = !in_array($iType, [BX_DB_CONTENT_ONLY, BX_DB_NO_CAPTION]);
+
+        /**
+         * A grid's header has a title row (BxDolGrid::setHeaderTitleRow): the block's title goes there, beside the grid's
+         * buttons and above its filters, as the page builder's caption, and the block draws no caption of its own (the grid
+         * may follow the page's scripts). A block whose grid is not its content but a part of it, or with caption actions, controls or a top panel of its own, keeps
+         * its caption, and the grid's title row keeps only the grid's buttons.
+         */
+        if(is_string($sContent) && str_contains($sContent, BxDolGrid::HEADER_TITLE_SLOT)) {
+            $bTitleInGrid = preg_match('/^\s*(?:<script\b[^>]*>.*?<\/script>\s*)*<div id="bx-grid-wrap-/s', $sContent) && empty($aBlock['actions']) && empty($aBlock['panel_top']) && $this->getBlockCaptionControls($aBlock) === '';
+
+            $sTitle = $bCaption && $bTitleInGrid ? $this->getBlockCaptionText($aBlock) : '';
+            $sContent = preg_replace_callback('/' . preg_quote(BxDolGrid::HEADER_TITLE_SLOT, '/') . '/', function() use($sTitle) {
+                return $sTitle;
+            }, $sContent, 1);
+
+            if($bTitleInGrid)
+                $bCaption = false;
+        }
+
     	return BxDolStudioTemplate::getInstance()->parseHtmlByName('page_block.html', array(
             'type' => $aTypeI2S[$iType],
-            'caption' => !in_array($iType, [BX_DB_CONTENT_ONLY, BX_DB_NO_CAPTION]) ? $this->getBlockCaption($aBlock) : '',
+            'caption' => $bCaption ? $this->getBlockCaption($aBlock) : '',
             'panel_top' => $this->getBlockPanelTop($aBlock),
             'items' => $sContent,
             'panel_bottom' => $this->getBlockPanelBottom($aBlock)
@@ -218,15 +241,7 @@ class BxBaseStudioWidget extends BxDolStudioWidget
 
     public function getBlockCaption($aBlock)
     {
-        if(($sK = 'caption') && empty($aBlock[$sK])) {
-            if(($sPageCaption = $this->aPage['subcaption'] ?? false))
-                $aBlock[$sK] = $sPageCaption;
-            else if(($sPageCaption = $this->aPage['caption'] ?? false)) {
-                $_sPageCaption = _t($sPageCaption);
-                if(strcmp($sPageCaption, $_sPageCaption) !== 0)
-                    $aBlock[$sK] = $_sPageCaption;
-            }
-        }
+        $aBlock = $this->getBlockWithCaption($aBlock);
 
         if(empty($aBlock) || !is_array($aBlock) || (empty($aBlock['caption']) && empty($aBlock['actions'])))
             return '';
@@ -292,7 +307,7 @@ class BxBaseStudioWidget extends BxDolStudioWidget
             }
 
         return $oTemplate->parseHtmlByName('block_caption.html', [
-            'caption' => is_array($aBlock['caption']) ? call_user_func_array('_t', $aBlock['caption']) : _t($aBlock['caption']),
+            'caption' => $this->getBlockCaptionText($aBlock),
             'bx_if:show_actions' => [
                 'condition' => !empty($aTmplActions),
                 'content' => [
@@ -306,6 +321,33 @@ class BxBaseStudioWidget extends BxDolStudioWidget
                 ]
             ],
         ]);
+    }
+
+    /**
+     * The block's title: its own caption, or the page's subcaption (the selected side menu item) or caption.
+     */
+    public function getBlockCaptionText($aBlock)
+    {
+        $aBlock = $this->getBlockWithCaption($aBlock);
+        if(empty($aBlock['caption']))
+            return '';
+
+        return is_array($aBlock['caption']) ? call_user_func_array('_t', $aBlock['caption']) : _t($aBlock['caption']);
+    }
+
+    protected function getBlockWithCaption($aBlock)
+    {
+        if(is_array($aBlock) && ($sK = 'caption') && empty($aBlock[$sK])) {
+            if(($sPageCaption = $this->aPage['subcaption'] ?? false))
+                $aBlock[$sK] = $sPageCaption;
+            else if(($sPageCaption = $this->aPage['caption'] ?? false)) {
+                $_sPageCaption = _t($sPageCaption);
+                if(strcmp($sPageCaption, $_sPageCaption) !== 0)
+                    $aBlock[$sK] = $_sPageCaption;
+            }
+        }
+
+        return $aBlock;
     }
 
     /**

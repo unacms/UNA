@@ -8,6 +8,7 @@ import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user';
 import { getNativeTabBarOverlayInset } from 'app/components/nav/tabs/tab-menu';
+import { useHasInformerStrip } from 'app/components/elements/informer';
 
 /*
  * ============================================================================
@@ -66,7 +67,9 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
 
     // With native tabs there is no navigation header, so the chrome is the
     // topmost thing on screen and has to clear the status bar itself.
-    const nativeTabsTopInset = isNativeTabsEnabled() ? (stableTopInset || 0) : 0;
+    // The informer strip above takes it (components/layout.js).
+    const hasStrip = useHasInformerStrip();
+    const nativeTabsTopInset = isNativeTabsEnabled() && !hasStrip ? (stableTopInset || 0) : 0;
 
     const coverMode = appSetting(
         'cover',

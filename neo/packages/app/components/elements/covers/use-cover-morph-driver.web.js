@@ -30,7 +30,7 @@ export function useCoverMorphDriver({
 
         const start = () => {
             if (cleaned) return
-            const content = document.querySelector('.ns--conductor-tab-content--')
+            const content = document.querySelector('.conductor-tab-content')
 
             if (skipIdentityBar) {
                 const tabbar = tabBarRef.current
@@ -104,7 +104,7 @@ export function useCoverMorphDriver({
             const measure = () => {
                 // Slot shrinks when collapsed; keep the expanded-state range.
                 if (!lastCollapsed || range <= 0) {
-                    const slot = bar.querySelector('.ns--cover-morph-slot--')
+                    const slot = bar.querySelector('.cover-morph-slot')
                     const slotH = slot?.offsetHeight || 44
                     range = computeMorphCollapseRange(
                         avatarExpandedPx,

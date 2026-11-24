@@ -141,21 +141,9 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 break;
 
             case 'sys_toolbar_search':
-                $oSearch = new BxTemplSearch();
-                $oSearch->setLiveSearch(true);
-                $oSearch->setIdSuffix('_popup');
-
-                // The search popup of the toolbar's 'search' item: the field, the live results and all results, as in the apps.
-                $mixedResult = $this->_oTemplate->parseHtmlByName('_page_toolbar_search_popup.html', [
-                    'id' => 'bx-site-search-popup',
-                    'title' => _t('_Search'),
-                    'content' => $this->_oTemplate->parseHtmlByName('_page_toolbar_search.html', [
-                        'sys_site_search' => $oSearch->getForm(BX_DB_PADDING_DEF, false, true),
-                        'results' => $oSearch->getResultsContainer(),
-                        'empty' => MsgBox(_t('_Empty')),
-                        'min_len' => (int)getParam('sys_search_keyword_min_len'),
-                    ]),
-                ]);
+                // The search window of the toolbar's 'search' item and of Cmd/Ctrl+K: the field, the filter chips and
+                // the results, as in the apps (BxBaseSearchWindow).
+                $mixedResult = (new BxTemplSearchWindow($this->_oTemplate))->getPopup();
                 break;
         }
 
@@ -221,11 +209,13 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      * @param array $aButton optional action: ['title' => translated, 'link' => url] and/or 'onclick' => js; a button
      *  with only 'onclick' is a <button>
      * @param string $sIcon Lucide icon name
+     * @param string $sTitle optional translated title above the line, as the apps show it
      */
-    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox')
+    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox', $sTitle = '')
     {
         return $this->msgBoxState('bx-empty-' . bin2hex(random_bytes(4)), [
             'icon' => $sIcon,
+            'title' => $sTitle,
             'text' => $sText !== '' ? $sText : _t('_Empty'),
             'buttons' => !empty($aButton) ? [$aButton] : [],
         ]);

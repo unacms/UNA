@@ -143,6 +143,12 @@
         @apply outline-offset-0;
     }
 
+    /* A section's tab (Artificer menu_main_submenu.html) draws this outline on its pill (.bx-mi-pill), around the label, not on
+       the row's full height. Tabs without a pill (other templates) keep it. */
+    body:not(.bx-std) .bx-menu-main-submenu > .bx-menu-item > a:has(> .bx-mi-pill):focus-visible {
+        @apply outline-none;
+    }
+
     /* Rich text reads the same on the site and in NEO (.u-vanilla-html in
        neo/packages/app/design/styles/utilities.css): NEO's zinc text colours,
        blue links, 1.5 line height, 16px between paragraphs, lists indented 1.5rem. */
@@ -242,6 +248,14 @@
     .bx-std .bx-def-color-bg-hl-even:nth-child(even),
     .bx-std .bx-def-color-bg-hl-hover:hover {
         @apply bg-black/[0.04] dark:bg-white/[0.04];
+    }
+    /* A grid's row under the pointer takes the menu items' hover fill (.bx-menu-highlight-list) in their 150ms ease-out, over the
+       alternate rows' tint; the AG engine's rows do the same (grid_ag.css). Not while a row is dragged. */
+    .bx-grid-table tbody.bx-grid-table-data > tr {
+        transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .bx-grid-table tbody.bx-grid-table-data:not(:has(.bx-grid-gragging-row)) > tr:not(.bx-grid-table-row-empty):hover {
+        @apply bg-gray-200/50 dark:bg-gray-700/50;
     }
 
     .bx-artificer .col-red1 {
@@ -755,34 +769,42 @@
     }
 
     /* Footer: quiet text links, as in NEO's footer (NeoButton style `text`): 14px, secondary text that turns
-       foreground on hover and focus, at least 28px tall. Each link's touch area reaches into the menu's gaps
-       (gap-x-4 gap-y-2, menu_footer.html) without overlapping a neighbour. The page you're on stays in the
+       foreground on hover and focus, at least 28px tall. Each link's touch area reaches into its group's 16px
+       gaps (gap-4, menu_footer.html) without overlapping a neighbour. The page you're on stays in the
        foreground colour (aria-current, BxBaseMenuFooter). */
-    #bx-menu-footer > li {
+    #bx-menu-footer > ul > li {
         @apply text-sm font-normal text-gray-600 dark:text-gray-400;
     }
-    #bx-menu-footer > li > a {
+    #bx-menu-footer > ul > li > a {
         @apply relative inline-flex items-center min-h-7 font-normal transition-colors hover:no-underline;
         @apply hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;
         @apply before:absolute before:-inset-x-2 before:-inset-y-1 before:content-[''];
     }
-    #bx-menu-footer > li > a[aria-current="page"] {
+    #bx-menu-footer > ul > li > a[aria-current="page"] {
         @apply text-gray-950 dark:text-gray-50;
+    }
+    /* The tools that open a menu (language, theme, sounds: aria-haspopup, BxBaseMenuFooter) are borderless icon buttons, as in
+       NEO's footer (NeoButton `borderless`, mini): 28px squares with the mini corner, no fill at rest, the button fill (the ink
+       at 8%, as .bx-btn) on hover and keyboard focus and 12% while pressed, in the menu items' 150ms ease-out. The icon is the
+       borderless button's (NEO card-foreground: gray-800, 200 in dark), foreground on hover and focus. Their 4px sides
+       overlap the group's gap, so the squares are 8px apart and their 36px hit areas meet without overlapping. */
+    #bx-menu-footer > ul > li > a[aria-haspopup] {
+        @apply justify-center size-7 -mx-1 rounded-md duration-150 ease-out;
+        @apply text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;
+        @apply hover:bg-gray-950/[0.08] dark:hover:bg-gray-50/[0.08] focus-visible:bg-gray-950/[0.08] dark:focus-visible:bg-gray-50/[0.08];
+        @apply active:bg-gray-950/[0.12] dark:active:bg-gray-50/[0.12];
+        @apply before:-inset-x-1 before:-inset-y-2;
     }
     /* Text items (the copyright notice) line up with the links but don't react to the pointer. */
     #bx-menu-footer .bx-menu-footer-text {
         @apply inline-flex items-center min-h-7;
-    }
-    /* From desktop width the tools (language, theme, sounds, Powered by) sit on the right, as in the apps. */
-    #bx-menu-footer > li.bx-menu-footer-tools-start {
-        @apply lg:ms-auto;
     }
     /* The language in use, by its code, as in the apps. */
     #bx-menu-footer .bx-menu-footer-lang {
         @apply text-xs font-semibold uppercase tracking-wide;
     }
     /* Icons at the text's size, as in the apps: 16px beside 14px text. */
-    #bx-menu-footer > li > a > .lucide {
+    #bx-menu-footer > ul > li > a > .lucide {
         @apply size-4;
     }
     /* The Powered by badge is the UNA logo; its name ("Powered by UNA", a language string) shows above it on hover and
@@ -793,11 +815,11 @@
         @apply opacity-0 transition-opacity duration-150;
     }
     @media (hover: hover) {
-        #bx-menu-footer > li > a:hover .bx-menu-footer-tooltip {
+        #bx-menu-footer > ul > li > a:hover .bx-menu-footer-tooltip {
             @apply opacity-100;
         }
     }
-    #bx-menu-footer > li > a:focus-visible .bx-menu-footer-tooltip {
+    #bx-menu-footer > ul > li > a:focus-visible .bx-menu-footer-tooltip {
         @apply opacity-100;
     }
 
@@ -813,13 +835,13 @@
         @apply w-7 h-7;
     }
 
-    /* Common elements: Pages. */
+    /* Common elements: Pages. Blocks are 16px apart, across columns and down a column, at every width, as NEO's page grid (Conductor, the universal layout); the page's sides and the space above and below the blocks (.bx-content-main, _page_content_beg.html) are 16px too. */
     .bx-layout-wrapper{
-        @apply gap-4 lg:gap-6 flex flex-col;
+        @apply gap-4 flex flex-col;
     }
     /* Column gutters are the row's gap. The md:w-* fractions are flex bases and every column shrinks with the same factor, so the gap is absorbed in proportion: 1/2 + 1/2 stays a true 50/50 and 1/3 + 2/3 keeps its ratio. min-w-0 lets a column with wide content still shrink instead of pushing the row wider. */
     .bx-layout-row{
-        @apply w-full flex relative flex-wrap md:flex-nowrap gap-4 lg:gap-6;
+        @apply w-full flex relative flex-wrap md:flex-nowrap gap-4;
     }
     /* A row whose cells are all empty (say, only members-only blocks on a guest's page) would still take a row gap above and below it, doubling the space between its neighbours. Hide it; a block added later (async loading) brings it back. Studio's builder keeps its empty rows. */
     body:not(.bx-std) .bx-layout-row:not(:has(.bx-layout-cell > *)) {
@@ -832,10 +854,10 @@
 
     .bx-layout-cell, 
     .bx-search-results-container {
-        @apply flex flex-col gap-4 lg:gap-6;
+        @apply flex flex-col gap-4;
     }
     .bx-layout-gap{
-        @apply gap-4 lg:gap-6;
+        @apply gap-4;
     }
     .bx-def-color-bg-page{
         @apply bg-gray-100 dark:bg-gray-950;
@@ -1059,6 +1081,27 @@
         @apply bg-blue-700 border-blue-700;
     }
 
+    /* Search window (BxBaseSearchWindow, inc/js/classes/BxDolSearchWindow.js): a wider dialog than other popups, as tall as its content up
+       to the window less room around it, the results scrolling inside. Active chips, a pressed "Title only" and the current results tab take
+       the open button's accent colours (the rule above), so the window reads like NEO's (Chip selected). */
+    .bx-artificer .bx-popup-width.bx-search-window-box {
+        @apply w-full md:w-[42rem];
+    }
+    .bx-search-window-popup {
+        max-height: min(44rem, calc(100vh - 4rem));
+    }
+    .bx-search-window-input::-webkit-search-cancel-button {
+        @apply hidden;
+    }
+    body:not(.bx-std) .bx-btn.bx-search-window-chip-active,
+    body:not(.bx-std) .bx-btn.bx-search-window-chip[aria-pressed="true"],
+    body:not(.bx-std) .bx-btn.bx-search-window-tab[aria-selected="true"] {
+        @apply bg-blue-200/60 hover:bg-blue-200/60 dark:bg-blue-900/60 dark:hover:bg-blue-900/60 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
+    }
+    .bx-search-window-items > .bx-search-window-item-active {
+        @apply rounded-xl ring-2 ring-blue-600 dark:ring-blue-400;
+    }
+
     /* Help tour (Shepherd): the vendored plugins_public/shepherd/css/shepherd.css paints the primary button #3288e6 with 75% white text (#cce1f9, 2.71:1) and is
        regenerated by `yarn build:shepherd`, so the fix lives here. The selector names .shepherd-button-primary because Tailwind keeps a component rule only when its
        selector contains a class it saw while scanning content (that class is in template/homepage_tour.html and modules/boonex/help_tours/template/tour.html).
@@ -1144,8 +1187,41 @@
     body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-large {
         @apply w-[3.25rem] min-w-[3.25rem];
     }
+    /* A capsule (.bx-btn-capsule): a short label such as a count, a grid's "15" items (BxBaseGrid::_getCellCount), in a round-ended button at least as wide as it is tall. After the sizes' corners, which it replaces. */
+    body:not(.bx-std) .bx-btn.bx-btn-capsule {
+        @apply min-w-11 rounded-full tabular-nums;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-capsule.bx-btn-small {
+        @apply min-w-9;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-capsule.bx-btn-mini {
+        @apply min-w-7;
+    }
     body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-xlarge {
         @apply w-16 min-w-16;
+    }
+    /* A labelled button that is icon-only below lg (.bx-btn-icon-mobile; its label in .bx-btn-icon-mobile-label stays its name for
+       screen readers), as NeoButton's showTitleFromSize="lg": round on phones and tablets, a pill with the icon and the label from lg,
+       the icon 6px from the label as NEO's small button. A section's add button (cover.html). */
+    body:not(.bx-std) .bx-btn.bx-btn-icon-mobile {
+        @apply gap-1.5 rounded-full;
+    }
+    @media not all and (min-width: 1024px) {
+        /* sr-only spelled out: Tailwind refuses to @apply it in a .bx-btn rule (.bx-btn.sr-only exists). */
+        body:not(.bx-std) .bx-btn.bx-btn-icon-mobile .bx-btn-icon-mobile-label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        body:not(.bx-std) .bx-btn.bx-btn-icon-mobile.bx-btn-small {
+            @apply w-9 min-w-9 px-0;
+        }
     }
 
     /* A menu's button size (Studio > Navigation > a menu > Button size; BxDolMenu::BUTTON_SIZE_*): the menu puts .bx-menu-btn-size-* on each of
@@ -1266,8 +1342,8 @@
         @apply text-gray-800 dark:text-gray-200;
         @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
         @apply transition-shadow duration-200;
-        @apply focus-within:outline focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-blue-600 dark:focus-within:outline-blue-500;
-        @apply focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600/80 dark:focus-within:ring-blue-500/80;
+        @apply focus-within:outline-none focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600 dark:focus-within:ring-blue-500;
+        @apply focus-within:shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:focus-within:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password,
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
@@ -1284,8 +1360,9 @@
     }
 
     /* Site inputs as NEO's Input (packages/app/settings/theme/inputs.js): a single-line field is 52px, a large button's height, with 16px sides,
-       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus has the ring every focused element has
-       in NEO: a 2px solid accent outline (blue-600, blue-500 in dark, 3:1 and more on the page and on a card) around a 1px accent edge. Textareas
+       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus is NEO's input
+       focus: the 1px edge turns the full accent (blue-600, blue-500 in dark, 3:1 and more on the field, the page and a card) with a soft
+       3px accent halo at 25% outside it, a box-shadow like the edge, so nothing moves. Textareas
        and lists keep their height. */
     .bx-artificer .bx-form-input-slider,
     .bx-artificer .bx-form-input-doublerange,
@@ -1317,8 +1394,8 @@
     .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html):focus-visible,
     .bx-artificer .bx-form-input-text:focus-visible,
     .bx-artificer .bx-form-input-price:focus-visible {
-        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
-        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+        @apply outline-none ring-1 ring-inset ring-blue-600 dark:ring-blue-500;
+        @apply shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     /* A plain textarea grows with its text (field-sizing; jquery.webForms.js where a browser has no field-sizing) from four lines to
        sixteen, then scrolls; its handle resizes it in height only. A limit's counter is under it (form_field_textarea.html). */
@@ -1330,7 +1407,7 @@
 
     /* A rich text editor looks like the text inputs: the card's fill, the inset hairline, 12px corners, and the accent focus ring
        around the whole editor while its text has the focus. Editor (bx_editor) is one box; Quill's toolbar and text are two, and
-       their wrapper draws the box around both, with a hairline between them. */
+       their wrapper draws the box around both, with a hairline between them. Its focus is the inputs' accent edge and halo. */
     .bx-artificer .bx-form-input-html-editor,
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) {
         @apply rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200;
@@ -1349,8 +1426,8 @@
     }
     .bx-artificer .bx-form-input-html-editor:focus-within,
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill):focus-within {
-        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
-        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+        @apply outline-none ring-1 ring-inset ring-blue-600 dark:ring-blue-500;
+        @apply shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-toolbar.ql-snow {
         @apply border-0 border-b border-solid border-black/10 dark:border-white/5 bg-transparent px-3 py-2;
@@ -1959,11 +2036,30 @@
     #bx-toolbar .bx-menu-main {
         @apply justify-center;
     }
+    /*
+     * A tab's padding follows what it shows, as NEO's tabs (components/menu-items/topmenu.tsx, TAB_PADDING):
+     * - an icon and a label: 12px before the icon and 16px after the label (the icon's 24px box has ~3px of air, so its
+     *   side gets 4px less to look even);
+     * - a label alone (an item without an icon): 16px on both sides;
+     * - an icon alone (Studio's "Icon only": BxBaseMenu adds bx-menu-item-icon-only and hides the label here, which the
+     *   More list shows; More itself): a 44px square, the icon in its middle.
+     * No border: the tabs' states are the sliding highlight. BxDolMenuMoreAuto measures the tabs in a copy of this row, so
+     * the fit follows these rules too.
+     */
     #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil {
-        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-xl bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even; no border: the tabs' states are the sliding highlight, and NEO's tabs are as wide (components/menu-items/topmenu.tsx) */
+        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 border-0 rounded-xl bx-stl-mil-hover-text;
     }
-    #bx-toolbar .bx-menu-main > .bx-menu-item-more-auto > .bx-stl-mil {
-        @apply w-11 px-0 justify-center; /* icon-only: a 44px square with the tabs' corners */
+    #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil:not(:has(> .bx-stl-mii > *)) {
+        @apply px-4;
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item:is(.bx-menu-item-icon-only, .bx-menu-item-more-auto) > .bx-stl-mil {
+        @apply w-11 px-0 justify-center;
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item:is(.bx-menu-item-icon-only, .bx-menu-item-more-auto) > .bx-stl-mil > .bx-stl-mii > * {
+        @apply m-0;
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item.bx-menu-item-icon-only > .bx-stl-mil > .bx-stl-mit {
+        @apply hidden; /* named by its aria-label and title */
     }
     #bx-toolbar .bx-menu-main > .bx-menu-item:not(.bx-menu-tab-active) > .bx-stl-mil:hover {
         @apply text-gray-950 dark:text-gray-50; /* the full text colour on hover, as the rows of the More list and NEO's tabs */
@@ -2220,6 +2316,24 @@
     .bx-artificer .bx-menu-main-submenu .bx-menu-item.bx-menu-tab-active .bx-mi-underline {
         @apply bg-blue-500 group-hover:bg-blue-500;
     }
+    /* The buttons at the end of the subtab row (the manage menu, BxBaseMenuManage: a profile's or a context's cog) are drawn
+       as its tabs (menu_main_submenu.html): the row's full height, the tab's 16px sides, its label colours and hover, and the
+       current tab's colour while their popup is open. NEO draws its tab row's buttons as its tabs too (glass, small). */
+    .bx-menu-main-bar-tools ul,
+    .bx-menu-main-bar-tools .bx-menu-item,
+    .bx-menu-main-bar-tools .bx-menu-item.bx-menu-tab-active {
+        @apply flex items-stretch h-full p-0 border-0 bg-transparent dark:bg-transparent ring-0;
+    }
+    .bx-menu-main-bar-tools .bx-menu-item > a {
+        @apply flex items-center justify-center h-full px-4 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200;
+    }
+    .bx-menu-main-bar .bx-menu-main-bar-tools .bx-menu-item > a[aria-expanded="true"],
+    .bx-menu-main-bar .bx-menu-main-bar-tools .bx-menu-item.bx-menu-tab-active > a {
+        @apply text-blue-700 dark:text-blue-300;
+    }
+    .bx-menu-main-bar-tools .bx-menu-item > a .bx-menu-item-icon {
+        @apply flex items-center text-inherit;
+    }
 
     /* Common elements: Profile Stats menu */
     .bx-artificer .bx-menu-profile-stats.bx-menu-ver li.bx-menu-tab-active {
@@ -2241,12 +2355,25 @@
     }
 
 
-    /* Common elements: Informers. A message sits in the page like a block: the page wrapper's gutter (informer.html),
-       the block's corners and padding (bx-def-border-radius-block, bx-content-padding-block on each message). The
-       36px icon, the first line of the text and the 36px button line up at the top; the button stays on the right
-       while the text has room for 15rem beside it, and goes under the text when it does not. */
+    /* Common elements: Informers. One strip under the header, before the page's cover, tabs and blocks (informer.html):
+       each message is a row of it, its tint from edge to edge with a line under it, its content as wide as the page
+       and 16px in, as the header's. The 36px icon, the first line of the text and the 36px button line up at the top;
+       the button stays on the right while the text has room for 15rem beside it, and goes under the text when it
+       does not. */
     .bx-informer-msg {
-        @apply flex items-start gap-3 ring-1 ring-inset text-sm leading-5;
+        @apply border-b text-sm leading-5;
+    }
+    .bx-informer-msg-cnt {
+        @apply flex items-start gap-3 py-3;
+    }
+    /* Under the fixed header the page keeps 64px for it (the cover templates' .bx-menu-toolbar-padding pt-16). With
+       messages the strip, first in <main> (_sub_header.html), takes them, and the cover after it starts right under it.
+       The Application layout starts its content under its header already. */
+    .bx-main:not(.bx-pt-application) #bx-informer-strip:has(.bx-informer-msg) {
+        @apply pt-16;
+    }
+    .bx-main:not(.bx-pt-application) #bx-informer-strip:has(.bx-informer-msg) ~ * .bx-menu-toolbar-padding {
+        @apply pt-0;
     }
     .bx-informer-indicator {
         @apply flex-none flex items-center justify-center w-9 h-9 rounded-full;
@@ -2267,19 +2394,19 @@
         @apply flex-none whitespace-nowrap;
     }
     .bx-informer-msg-info {
-        @apply bg-blue-50 text-blue-800 ring-blue-200 dark:bg-blue-500/10 dark:text-blue-200 dark:ring-blue-500/25;
+        @apply bg-blue-50 text-blue-800 border-blue-200 dark:bg-blue-500/10 dark:text-blue-200 dark:border-blue-500/25;
     }
     .bx-informer-msg-info .bx-informer-indicator {
         @apply bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300;
     }
     .bx-informer-msg-alert {
-        @apply bg-yellow-50 text-yellow-800 ring-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-200 dark:ring-yellow-500/25;
+        @apply bg-yellow-50 text-yellow-800 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-200 dark:border-yellow-500/25;
     }
     .bx-informer-msg-alert .bx-informer-indicator {
         @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300;
     }
     .bx-informer-msg-error {
-        @apply bg-red-50 text-red-800 ring-red-200 dark:bg-red-500/10 dark:text-red-200 dark:ring-red-500/25;
+        @apply bg-red-50 text-red-800 border-red-200 dark:bg-red-500/10 dark:text-red-200 dark:border-red-500/25;
     }
     .bx-informer-msg-error .bx-informer-indicator {
         @apply bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300;
@@ -2913,6 +3040,9 @@
     }
     .bx-std .bx-btn.bx-btn-large {
         @apply h-[3.25rem] min-h-[3.25rem] px-6 rounded-xl text-base leading-6;
+    }
+    .bx-std .bx-btn.bx-btn-capsule {
+        @apply min-w-9 rounded-full tabular-nums;
     }
     /* The header's skip link is a .bx-btn.sr-only: keep it off-screen until focused (sr-only spelled out, Tailwind refuses to @apply it here), the button rules above would otherwise put it in the flow. */
     .bx-std .bx-btn.sr-only:not(:focus) {

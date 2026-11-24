@@ -10,6 +10,15 @@
 require_once('./inc/header.inc.php');
 require_once(BX_DIRECTORY_PATH_INC . "design.inc.php");
 
+// The search window (BxBaseSearchWindow): the chips and results of a query, as JSON.
+if (bx_get('window')) {
+    bx_import('BxDolLanguages');
+
+    header('Content-type: application/json; charset=utf-8');
+    echo json_encode(BxTemplServicesSearch::getSearchWindowParts($_GET));
+    exit;
+}
+
 if (bx_get('keyword')){
     bx_import('BxDolLanguages');
 

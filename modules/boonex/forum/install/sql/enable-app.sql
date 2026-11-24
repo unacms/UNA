@@ -76,7 +76,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_view_actio
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_view_actions' AND `module`='bx_forum' AND `name`='delete-discussion';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_my' AND `module`='bx_forum' AND `name`='create-discussion';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_submenu' AND `module`='bx_forum' AND `name`='discussions-home';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_submenu' AND `module`='bx_forum' AND `name`='discussions-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_submenu' AND `module`='bx_forum' AND `name`='discussions-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_snippet_meta_main' AND `module`='bx_forum' AND `name`='comments';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_forum_snippet_meta_main' AND `module`='bx_forum' AND `name`='status';

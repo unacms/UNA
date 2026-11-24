@@ -103,7 +103,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_submenu' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_submenu' AND `module`='bx_albums' AND `name`='albums-top';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_submenu' AND `module`='bx_albums' AND `name`='albums-popular-media';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_submenu' AND `module`='bx_albums' AND `name`='albums-top-media';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_submenu' AND `module`='bx_albums' AND `name`='albums-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_submenu' AND `module`='bx_albums' AND `name`='albums-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_view_submenu' AND `module`='bx_albums' AND `name`='view-album';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_albums_view_submenu' AND `module`='bx_albums' AND `name`='view-album-comments';

@@ -201,13 +201,13 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 
 -- PAGE: search for entries
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
-('bx_market_search', '_bx_market_page_title_sys_entries_search', '_bx_market_page_title_entries_search', 'bx_market', 5, 2147483647, 1, 'products-search', 'page.php?i=products-search', '', '', '', 0, 1, 0, 'BxMarketPageBrowse', 'modules/boonex/market/classes/BxMarketPageBrowse.php');
+('bx_market_search', '_bx_market_page_title_sys_entries_search', '_bx_market_page_title_entries_search', 'bx_market', 1, 2147483647, 1, 'products-search', 'page.php?i=products-search', '', '', '', 0, 1, 0, 'BxMarketPageBrowse', 'modules/boonex/market/classes/BxMarketPageBrowse.php');
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_market_search', 1, 'bx_market', '_bx_market_page_block_title_search_form', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:9:"bx_market";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 1),
-('bx_market_search', 1, 'bx_market', '_bx_market_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:9:"bx_market";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
+('bx_market_search', 2, 'bx_market', '_bx_market_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:9:"bx_market";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
 ('bx_market_search', 1, 'bx_market', '_bx_market_page_block_title_search_form_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:14:"bx_market_cmts";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 3),
-('bx_market_search', 1, 'bx_market', '_bx_market_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:14:"bx_market_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
+('bx_market_search', 2, 'bx_market', '_bx_market_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:14:"bx_market_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
 
 -- PAGE: module manage own
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
@@ -331,7 +331,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_market_my', 'bx_market', '_bx_market_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_market_my', 'bx_market', 'create-product', '_bx_market_menu_item_title_system_create_entry', '_bx_market_menu_item_title_create_entry', 'page.php?i=create-product', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_market_my', 'bx_market', 'create-product', '_bx_market_menu_item_title_system_create_entry', '_bx_market_menu_item_title_create_entry', 'page.php?i=create-product', '', '', 'package-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: actions menu for snippet
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -386,7 +386,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_market_submenu', 'bx_market', 'products-top', '_bx_market_menu_item_title_system_entries_top', '_bx_market_menu_item_title_entries_top', 'page.php?i=products-top', '', '', '', '', 2147483647, 1, 1, 5),
 ('bx_market_submenu', 'bx_market', 'products-updated', '_bx_market_menu_item_title_system_entries_updated', '_bx_market_menu_item_title_entries_updated', 'page.php?i=products-updated', '', '', '', '', 2147483647, 1, 1, 6),
 ('bx_market_submenu', 'bx_market', 'products-categories', '_bx_market_menu_item_title_system_entries_categories', '_bx_market_menu_item_title_entries_categories', 'page.php?i=products-categories', '', '', '', '', 2147483647, 1, 1, 7),
-('bx_market_submenu', 'bx_market', 'products-search', '_bx_market_menu_item_title_system_entries_search', '_bx_market_menu_item_title_entries_search', 'page.php?i=products-search', '', '', '', '', 2147483647, 1, 1, 8),
+('bx_market_submenu', 'bx_market', 'products-search', '_bx_market_menu_item_title_system_entries_search', '_bx_market_menu_item_title_entries_search', 'page.php?i=products-search', '', '', '', '', 2147483647, 0, 1, 8),
 ('bx_market_submenu', 'bx_market', 'products-manage', '_bx_market_menu_item_title_system_entries_manage', '_bx_market_menu_item_title_entries_manage', 'page.php?i=products-manage', '', '', '', '', 2147483646, 1, 1, 9),
 ('bx_market_submenu', 'bx_market', 'more-auto', '_bx_market_menu_item_title_system_more_auto', '_bx_market_menu_item_title_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', 2147483647, 1, 0, 9999);
 

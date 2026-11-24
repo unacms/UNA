@@ -69,9 +69,9 @@ class GuestHomeParityTest extends BxDolTestCase
     {
         $s = self::read('neo/packages/app/components/nav/menu-footer.tsx');
         $this->assertStringContainsString("export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center lg:justify-between flex-row flex-wrap gap-x-6 gap-y-4 p-4';", $s, 'No minimum height: 1px + 16px + 28px + 16px, as #bx-footer.');
-        $this->assertStringContainsString("iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1.5' : ''),", $s, 'Icon triggers overlap the gaps by their 6px sides.');
+        $this->assertStringContainsString("iconClassName: cn(legacy.containerClassName ?? '', isText ? '-mx-1' : ''),", $s, 'Icon triggers overlap the gaps by their 4px sides.');
         $this->assertSame(3, substr_count($s, 'className: visualProps.iconClassName,'), 'Language, theme and sounds.');
-        $this->assertStringContainsString("iconHitSlop: isText ? { top: 8, right: 2, bottom: 8, left: 2 } : undefined,", $s, 'Squares 4px apart: hit areas that meet, not overlap.');
+        $this->assertStringContainsString("iconHitSlop: isText ? { top: 8, right: 4, bottom: 8, left: 4 } : undefined,", $s, 'Squares 8px apart: 36px hit areas that meet, not overlap.');
         $this->assertSame(3, substr_count($s, 'hitSlop: visualProps.iconHitSlop,'));
     }
 
@@ -93,6 +93,20 @@ class GuestHomeParityTest extends BxDolTestCase
     {
         // NEO's desktop logo link keeps its 2px room for the focus ring but not as an offset: the logo is where the site's is.
         $this->assertStringContainsString('className="flex min-h-11 min-w-11 items-center justify-center p-0.5 -m-0.5"', self::read('neo/packages/app/ui/molecules/header/page-header-parts.js'));
+    }
+
+    public function testFormAndFooterLinksAreMediumAsNeos(): void
+    {
+        // NEO's inline links (theme links: font-medium); content text links stay regular on both.
+        $this->assertStringContainsString(".bx-artificer .bx-db-footer a {\n    font-weight: 500;\n    text-decoration: underline;", self::read('modules/boonex/artificer/data/template/system/css/general.css'));
+        $this->assertStringContainsString(".bx-artificer .bx-form-info a,\n.bx-artificer #bx-form-element-submit_text .bx-form-value a {\n    font-weight: 500;\n}", self::read('modules/boonex/artificer/data/template/system/css/forms.css'));
+
+        // NEO: "Forgot password?" is an accent Link, the footer's links default Links (u-block-notice-link adds no weight).
+        $sLinks = self::read('neo/packages/app/settings/theme/links.js');
+        $this->assertMatchesRegularExpression("/\\bdefault: ' font-medium /", $sLinks);
+        $this->assertMatchesRegularExpression("/\\baccent: ' font-medium /", $sLinks);
+        $this->assertMatchesRegularExpression('/<Link key=\\{i\\} href=\\{href\\} hitarea=\\{false\\} className=/', self::read('neo/packages/app/ui/molecules/page/block-notice.tsx'), 'A default Link.');
+        $this->assertStringContainsString("'u-block-notice-link': 'text-xs leading-4.5 text-muted-foreground underline',", self::read('neo/packages/app/settings/theme/elements.js'), 'No weight of its own.');
     }
 
     public function testPageScrollbarTrackAsNeos(): void

@@ -395,7 +395,7 @@ class BxBasePage extends BxDolPage
      */
     protected function _setBlockTitleAsHeading($aBlock, $sCode)
     {
-        if($this->_bHeadingBlock || $this->isPageCover())
+        if($this->_bHeadingBlock || $this->isPageTitle())
             return $sCode;
 
         $sPageTitle = mb_strtolower(trim(strip_tags($this->_getPageTitle())));
@@ -414,22 +414,71 @@ class BxBasePage extends BxDolPage
 
     public function isPageCover()
     {
-        $bResult = false;
-        switch((int)$this->_aObject['cover']) {
+        return self::isShownToViewer($this->_aObject['cover'], isLogged());
+    }
+
+    /**
+     * Whether a part of the page set to one of Studio's audiences (Cover, Title) shows to this viewer.
+     * @param mixed $mixedMode 0 disabled, 1 enabled for all, 2 for guests only, 3 for members only; true or false
+     *        where a page sets it in code (setPageCover)
+     * @param bool $bMember the viewer is signed in
+     * @return bool
+     */
+    public static function isShownToViewer($mixedMode, $bMember)
+    {
+        if(is_bool($mixedMode))
+            return $mixedMode;
+
+        switch((int)$mixedMode) {
             case 1: //--- Enabled for all
-                $bResult = true;
-                break;
+                return true;
 
             case 2: //--- Enabled for visitors only
-                $bResult = !isLogged();
-                break;
+                return !$bMember;
 
             case 3: //--- Enabled for members only
-                $bResult = isLogged();
-                break;
+                return (bool)$bMember;
         }
 
-    	return $bResult;
+        return false;
+    }
+
+    /**
+     * Who sees the page's title (Studio > Pages > page > Title), as `cover`: 0 disabled, 1 all, 2 guests, 3 members.
+     * A page whose title was never set (NULL, as every page before the title had settings of its own) follows its
+     * cover: the title shows where the cover shows, to the same viewers, and not where covers are off in Studio >
+     * Designer > Cover.
+     * @return mixed the mode, or the cover's (an int, or a bool a page set in code); 0 where it follows a cover that
+     *         is off for the whole site
+     */
+    public function getPageTitleMode()
+    {
+        if(isset($this->_aObject['title_show']) && $this->_aObject['title_show'] !== '')
+            return (int)$this->_aObject['title_show'];
+
+        return BxDolCover::getInstance()->isEnabled() ? $this->_aObject['cover'] : 0;
+    }
+
+    /**
+     * Whether the page shows its title to this viewer (Studio > Pages > page > Title), with or without its cover.
+     * @return bool
+     */
+    public function isPageTitle()
+    {
+        return self::isShownToViewer($this->getPageTitleMode(), isLogged());
+    }
+
+    /**
+     * The screen sizes the page's title is hidden on (Studio > Pages > page > Title hidden on), BX_DB_HIDDEN_* bits as
+     * the cover's. A page whose title was never set follows its cover's.
+     * @return int
+     */
+    public function getPageTitleHiddenOn()
+    {
+        if(isset($this->_aObject['title_hidden_on']))
+            return (int)$this->_aObject['title_hidden_on'];
+
+        return $this->getPageCoverHiddenOn();
     }
 
     /**
@@ -487,6 +536,175 @@ class BxBasePage extends BxDolPage
     	return $aResult;
     }
 
+    /**
+     * The page's cover band for the apps, as the site draws it above the page's title and tabs (cover.html): the
+     * picture, else the template's art. None where the site draws no page cover: covers off in Studio > Designer >
+     * Cover, the page's cover off for this viewer, the home page (its own cover, `cover_home`) and the pages of an
+     * entry or a profile, whose cover is the entry's or the profile's (`cover_block`).
+     * @return array image (the page's cover picture, else the site's common cover; '' for none) and image_default
+     *         (the template's art for a cover without a picture: light and dark URLs); [] for no band
+     */
+    public function getPageCoverBandAPI()
+    {
+        $oCover = BxDolCover::getInstance();
+        if(!$oCover->isEnabled() || !$this->isPageCover() || $oCover->isCover())
+            return [];
+
+        // The owner's own list of a profile's items (owner=1) has the page's own band, as on the site: a page that shows
+        // its owner's cover has set it (isCover above).
+        if($this instanceof BxBasePageHome || $this instanceof BxBaseModGeneralPageEntry)
+            return [];
+
+        $sImage = '';
+        if(($aCover = $this->getPageCoverImage()))
+            $sImage = (string)BxDolCover::getCoverImageUrl($aCover);
+
+        list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri($this->_oTemplate->getCode()));
+
+        return [
+            'image' => $sImage,
+            'image_default' => [
+                'light' => $sArtLight,
+                'dark' => $sArtDark,
+            ],
+        ];
+    }
+
+    /**
+     * The "add" action of this page: the + at the end of a section's title row on the site (cover.html) and the "Add"
+     * button the apps draw from `menu.add_url` (getPageAPI), so the two always agree. Only on pages of a content, a
+     * context or a profile module with a create page ("Add person" on People: an account with no profile may create
+     * one), and only for a viewer who may create that item type (the create page's check).
+     * @return array ['url' => absolute URL of the create page, 'title' => "Add organization", 'icon' => Lucide name], or an empty array
+     */
+    public function getAddEntryAction()
+    {
+        $sModule = !empty($this->_aObject['module']) ? $this->_aObject['module'] : '';
+        if(!$sModule || $sModule == 'system' || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return [];
+
+        // Not on a page the viewer can't open (an operator's Administration page): the apps show its 403 card there.
+        if($this->_isAvailablePage($this->_aObject) !== true || $this->_isVisiblePage($this->_aObject) !== true)
+            return [];
+
+        if(!bx_srv('system', 'is_module_content', [$sModule]) && !bx_srv('system', 'is_module_context', [$sModule]) && !bx_srv('system', 'is_module_profile', [$sModule])) {
+            return [];
+        }
+
+        $oModule = BxDolModule::getInstance($sModule);
+        if(!$oModule || !($aAdd = self::getAddEntryParams($oModule)) || !$aAdd['allowed'])
+            return [];
+
+        return [
+            'url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $aAdd['url'])),
+            'title' => $aAdd['title'],
+            'icon' => $aAdd['icon'],
+        ];
+    }
+
+    /**
+     * The search this page opens: the search window with the page's scope, from the Search button of its title row (or
+     * tab row) on the site, and in the apps from the page's `search` (the section actions in the header on phones, the
+     * section's Search on wider screens). A section's pages search their module; a context's pages (a group, an event, a
+     * space: its own page or its tabs, `profile_id`) search what is posted in it, its module's tab that module only; a
+     * person's pages what they created. Nothing where the module isn't searched (Studio > Search), the section's Search
+     * is off, or the viewer may not see the context.
+     * @return array ['section' => module or '', 'context' => profile id or 0, 'author' => profile id or 0, 'title' => button label], or an empty array
+     */
+    public function getSearchAction()
+    {
+        if(!$this->isSectionSearch())
+            return [];
+
+        if($this->_isAvailablePage($this->_aObject) !== true || $this->_isVisiblePage($this->_aObject) !== true)
+            return [];
+
+        $oSearch = BxDolSearchUnified::getInstance();
+        $sModule = !empty($this->_aObject['module']) ? $this->_aObject['module'] : '';
+
+        // the profile the page is about: its `profile_id`, or the entry a context or profile module's page shows
+        $oProfile = false;
+        if(($iProfileId = (int)bx_get('profile_id')) > 0)
+            $oProfile = BxDolProfile::getInstance($iProfileId);
+        else if(($iContentId = (int)bx_get('id')) > 0 && $sModule && $sModule != 'system' && (bx_srv('system', 'is_module_context', [$sModule]) || bx_srv('system', 'is_module_profile', [$sModule])))
+            $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $sModule);
+
+        $aResult = ['section' => '', 'context' => 0, 'author' => 0, 'title' => ''];
+        if($oProfile && ($sProfileModule = $oProfile->getModule()) && $sProfileModule != 'system') {
+            if(bx_srv('system', 'is_module_context', [$sProfileModule])) {
+                if(!($aContext = $oSearch->getContextInfo($oProfile->id())))
+                    return [];
+                $aResult['context'] = $aContext['id'];
+                $aResult['title'] = _t('_sys_search_action_context', $aContext['title']);
+            }
+            else if(($aAuthor = $oSearch->getProfileInfo($oProfile->id())) && $oProfile->checkAllowedProfileView() === CHECK_ACTION_RESULT_ALLOWED) {
+                $aResult['author'] = $aAuthor['id'];
+                $aResult['title'] = _t('_sys_search_action_context', $aAuthor['title']);
+            }
+        }
+
+        // a module's page: the module, unless it is the context's own module (a group's page searches the group)
+        if($sModule && ($sModuleTitle = $oSearch->getModuleSearchTitle($sModule)) !== '' && (!$oProfile || $oProfile->getModule() != $sModule)) {
+            $aResult['section'] = $sModule;
+            if(!$aResult['title'])
+                $aResult['title'] = _t('_sys_search_action_section', mb_strtolower($sModuleTitle));
+        }
+
+        // a page that is neither a module's nor about a profile: the header's global search is there
+        if(!$aResult['section'] && !$aResult['context'] && !$aResult['author'])
+            return [];
+
+        return $aResult;
+    }
+
+    /**
+     * A content or context module's create page and its add label, and whether the viewer may create that item type.
+     * @param BxDolModule $oModule
+     * @return array ['url' => page URI, 'title' => "Add organization", 'icon' => Lucide name, 'allowed' => bool], or an empty array when the module
+     *      has no create page
+     */
+    public static function getAddEntryParams($oModule)
+    {
+        $CNF = &$oModule->_oConfig->CNF;
+
+        $sUri = '';
+        if(!empty($CNF['URI_ADD_ENTRY']))
+            $sUri = $CNF['URI_ADD_ENTRY'];
+        else if(!empty($CNF['URI_EDIT_ENTRY']))
+            $sUri = str_replace('edit-', 'create-', $CNF['URI_EDIT_ENTRY']);
+        if(!$sUri)
+            return [];
+
+        // The module's own add icon, which tells its button from the site's Add menu: the icon of the create item in the
+        // module's "My" menu (Studio > Navigation; the menu object's item set), a Lucide name, as both the site and the apps
+        // draw it. A module without one, or with an uploaded picture or markup there, keeps the plus.
+        $sIcon = '';
+        if(!empty($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES']) && ($aMenu = BxDolMenuQuery::getMenuObject($CNF['OBJECT_MENU_ACTIONS_MY_ENTRIES'])) && !empty($aMenu['set_name']))
+            $sIcon = trim(BxDolMenuQuery::getMenuItemIconByLink($aMenu['set_name'], 'page.php?i=' . $sUri));
+        if(!preg_match('/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/', $sIcon))
+            $sIcon = 'plus';
+
+        $sTitle = _t('_sys_txt_add');
+        if(!empty($CNF['T']['txt_sample_single']) && ($sSample = _t($CNF['T']['txt_sample_single'])) !== $CNF['T']['txt_sample_single'])
+            $sTitle = _t('_sys_txt_add_entry', $sSample);
+
+        // Guests never get it; members exactly as the create page checks them (addDataForm: checkAllowedAdd, which is
+        // ACL "create entry" with its count and period limits and, for profiles, the account's profile limit), only
+        // checked here: the create page counts the action when the entry is saved. An account with no profile is checked
+        // at the Account level, which may create a profile.
+        // A module without that ACL action (Channels: made from hashtags) has no button: checking it would stop the page.
+        $bAllowed = isLogged() && method_exists($oModule, 'checkAllowedAdd')
+            && BxDolAcl::getInstance()->getMembershipActionId('create entry', $oModule->getName())
+            && $oModule->checkAllowedAdd() === CHECK_ACTION_RESULT_ALLOWED;
+
+        return [
+            'url' => $sUri,
+            'title' => $sTitle,
+            'icon' => $sIcon,
+            'allowed' => $bAllowed,
+        ];
+    }
+
     public function getPageCoverParams()
     {
         $aParams = [
@@ -508,13 +726,25 @@ class BxBasePage extends BxDolPage
                 $aParams = $aCoverParams;
         }
 
-        if(!empty($this->_aObject['cover_title'])) {
-            $sCoverTitle = _t($this->_aObject['cover_title']);
-            if($sCoverTitle && strcmp($sCoverTitle, $this->_aObject['cover_title']) != 0)
-                $aParams['title'] = $sCoverTitle;
-        }
+        $aParams['title'] = self::getCustomTitle(isset($aParams['title']) ? $aParams['title'] : '', isset($this->_aObject['cover_title']) ? $this->_aObject['cover_title'] : '');
 
     	return $aParams;
+    }
+
+    /**
+     * The page's title with its custom title (Studio > Pages > page > Title > Custom title, `cover_title`): the custom
+     * one where it has a translation in the viewer's language, else the page's or its section's own.
+     * @param string $sTitle the page's or its section's title
+     * @param string $sCustomKey the custom title's language key, '' for none
+     * @return string
+     */
+    public static function getCustomTitle($sTitle, $sCustomKey)
+    {
+        if(empty($sCustomKey))
+            return $sTitle;
+
+        $sCustom = _t($sCustomKey);
+        return $sCustom && strcmp($sCustom, $sCustomKey) != 0 ? $sCustom : $sTitle;
     }
 
     /**
@@ -685,8 +915,13 @@ class BxBasePage extends BxDolPage
             'layout_parsed' => !is_numeric(trim(current(array_keys($aElements)), 'cell_')),
             'cover_block' => '',
             'cover' => $this->_aObject['cover'],
-            // Where the cover (and so the page title) is hidden: phone, tablet, desktop, mobile-app.
+            // Where the cover is hidden: phone, tablet, desktop, mobile-app.
             'cover_hidden_on' => self::getHiddenOnNamesAPI($this->getPageCoverHiddenOn()),
+            // Who sees the page's title, as `cover` (0 none, 1 all, 2 guests, 3 members), apart from the cover; a page
+            // whose title was never set gets its cover's.
+            'title_show' => $this->getPageTitleMode(),
+            // Where the page's title is hidden: phone, tablet, desktop, mobile-app.
+            'title_hidden_on' => self::getHiddenOnNamesAPI($this->getPageTitleHiddenOn()),
             'menu_top' => '',
             'menu' => '',
             'menu_bottom' => '',
@@ -722,17 +957,27 @@ class BxBasePage extends BxDolPage
                     'icon' => !empty($CNF['ICON']) ? $CNF['ICON'] : '',
                 ];
 
-                // "Add" button: content and context entries only, a profile isn't added from its list.
-                $sUrlAdd = '';
-                if($bModuleEntries && ($sKey = 'URI_ADD_ENTRY') && !empty($CNF[$sKey]))
-                    $sUrlAdd = $CNF[$sKey];
-                if($bModuleEntries && !$sUrlAdd && ($sKey = 'URI_EDIT_ENTRY') && !empty($CNF[$sKey]))
-                    $sUrlAdd = str_replace('edit-', 'create-', $CNF[$sKey]);
-                if($sUrlAdd)
-                    $aMenuAdd['add_url'] = $sUrlAdd;
+                // "Add" button: content and context entries and profiles ("Add person" on People). `add_url` also gives the
+                // section its Search in the apps, so it stays for a viewer who may not add: `add_allowed` hides the button then.
+                // The site draws the same button from the same data (getAddEntryAction, cover.html).
+                if($aAdd = self::getAddEntryParams($oModule)) {
+                    $aMenuAdd['add_url'] = $aAdd['url'];
+                    $aMenuAdd['add_title'] = $aAdd['title'];
+                    $aMenuAdd['add_icon'] = $aAdd['icon'];
+                    $aMenuAdd['add_allowed'] = $aAdd['allowed'];
+                }
 
                 $a['menu'] = array_merge($a['menu'], $aMenuAdd);
             }
+        }
+
+        // The page's Search: the search window with the page's scope (getSearchAction), as the site's Search button,
+        // in the modules the apps search (sys_api_search_sections).
+        BxDolSearchUnified::getInstance()->setApiSections(true);
+        if(($aSearch = $this->getSearchAction())) {
+            $a['search'] = $aSearch;
+            if(isset($a['menu']) && is_array($a['menu']))
+                $a['menu']['search'] = $aSearch;
         }
 
         // The words of the apps' own landing pages (the home splash, Sign up), in the viewer's language, so Studio's
@@ -753,6 +998,10 @@ class BxBasePage extends BxDolPage
         if($bIsAllowed) {
             $aCoverParams = $this->getPageCoverParams();
             $a['cover_title'] = isset($aCoverParams['title']) ? (string)$aCoverParams['title'] : '';
+
+            // The band UNA's cover draws above the page's title and tabs, for the apps to draw the same.
+            if(($aCoverBand = $this->getPageCoverBandAPI()))
+                $a['cover_band'] = $aCoverBand;
         }
     
         /**
@@ -789,7 +1038,8 @@ class BxBasePage extends BxDolPage
                     call_user_func_array([$oMenuManage, 'setObjectManage'], $aObjectManage);
 
                     $aMenuManage = $oMenuManage->getCodeAPI();
-                    if(!empty($aMenuManage) && is_array($aMenuManage)) {
+                    // Into the profile's cover only: the owner's own list (owner=1) has none, the page's own band instead.
+                    if(!empty($aMenuManage) && is_array($aMenuManage) && is_array($a['cover_block'])) {
                         if(isset($a['cover_block'], $a['cover_block']['actions_menu']) && is_array($a['cover_block']['actions_menu']))
                             $a['cover_block']['actions_menu']['items'] = array_merge($a['cover_block']['actions_menu']['items'], $aMenuManage['items']);
                         else
@@ -1061,7 +1311,7 @@ class BxBasePage extends BxDolPage
      */
     protected function _setHeadingBlockByContent($aCodes)
     {
-        if($this->_bHeadingBlock || $this->isPageCover())
+        if($this->_bHeadingBlock || $this->isPageTitle())
             return;
 
         foreach($aCodes as $sCode) {
@@ -1650,8 +1900,15 @@ class BxBasePage extends BxDolPage
         if(!$oMenu)
             return $bIsApi ? [] : '';
 
-        if($bIsApi)
-            return [bx_api_get_block('menu' . ($this->_sObject == 'sys_sub_wiki_pages_list' ? '_wiki' : ''), ['title' => _t($aBlock['title']), 'content' => $oMenu->getCodeAPI()])];
+        if($bIsApi) {
+            $aMenu = $oMenu->getCodeAPI();
+
+            // A menu without items is no block on the site (BxBaseMenu::getCode gives nothing), so the apps get none either.
+            if(empty($aMenu['items']))
+                return [];
+
+            return [bx_api_get_block('menu' . ($this->_sObject == 'sys_sub_wiki_pages_list' ? '_wiki' : ''), ['title' => _t($aBlock['title']), 'content' => $aMenu])];
+        }
 
         return $oMenu ? $oMenu->getCode() : '';
     }

@@ -1968,6 +1968,15 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         return parent::checkAllowedCompose ($aDataEntry, $isPerformAction);
     }
 
+    public function checkAllowedInviteDelete($isPerformAction = false)
+    {
+        $aCheck = checkActionModule($this->_iProfileId, 'delete invites', $this->getName(), $isPerformAction);
+        if($aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
+            return $aCheck[CHECK_ACTION_MESSAGE];
+
+        return CHECK_ACTION_RESULT_ALLOWED;
+    }
+
     public function checkAllowedFans(&$aDataEntry, $isPerformAction = false)
     {
         $CNF = &$this->_oConfig->CNF;

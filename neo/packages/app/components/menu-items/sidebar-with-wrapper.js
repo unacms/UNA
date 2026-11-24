@@ -10,6 +10,8 @@ export default function MenuItemSidebarWithWrapper({
     isActive,
     onPress,
     addon,
+    // A row that shows or hides others ("Show more"): whether they show, for `aria-expanded`.
+    expanded,
     className = '',
 }) {
     const MenuItemSidebar = components['menu-item']['sidebar']
@@ -38,6 +40,7 @@ export default function MenuItemSidebarWithWrapper({
         selectedState: 'pressed',
         className: `group ${className}`.trim(),
         onPress,
+        ...(expanded === undefined ? {} : { 'aria-expanded': !!expanded }),
     }
 
     if (finalLink) {

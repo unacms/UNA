@@ -7,9 +7,11 @@ import {
     isVisibleColor,
 } from 'app/design/controls/neo-button/color-scheme-context';
 import {
+    useInformerStripHeight,
     useScrollValue,
     useSetScrollValue,
 } from 'app/context/jotai/layout';
+import { useIsDesktop } from 'app/context/measure';
 import {
     getPageHeaderBandClass,
     PageHeaderBody,
@@ -148,6 +150,13 @@ export const PageHeader = ({ pageData }) => {
 
     const scrollY = useScrollValue();
     const setScrollValue = useSetScrollValue();
+    // Below desktop the informer strip is above the header, the first thing on the page (layout.web.js): the header's
+    // band and its fixed layers start under it, and move up with it as it scrolls away.
+    const isDesktop = useIsDesktop();
+    const stripHeight = useInformerStripHeight();
+    const stripAbove = isDesktop ? 0 : stripHeight;
+    const stripInView = Math.max(0, stripAbove - scrollY);
+    const fixedTopStyle = stripInView > 0 ? { top: stripInView } : undefined;
     const usesFixedOverlayHeader = isCollapsibleHeader;
     const [band, setBand] = useState(null);
     const showBand = usesFixedOverlayHeader && header.band;
@@ -230,12 +239,12 @@ export const PageHeader = ({ pageData }) => {
     const isScrolled = scrollY > 0;
     const headerContainerBaseClass = resolveHeaderContainerClassName(isScrolled);
     const fixedHeaderClass =
-        ' ns--header-wrapper-fixed-- header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 ne--';
+        ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50';
     const flowTransitionClass =
-        ` ns--header-wrapper--transition-- web:transition-[transform,opacity,background-color,border-color] web:duration-300 web:ease-in-out ne-- `;
+        ` web:transition-[transform,opacity,background-color,border-color] web:duration-300 web:ease-in-out `;
     const flowHeaderContainerClassName = usesFixedOverlayHeader
         ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 overflow-visible ${flowTransitionClass}`
-        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : ' ns--header-position-start-- web:translate-y-0 ne--' } overflow-visible ${flowTransitionClass}`;
+        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : ' web:translate-y-0' } overflow-visible ${flowTransitionClass}`;
     const fixedHeaderMotionClass =
         isClosing || isEntering
             ? 'web:-translate-y-full web:opacity-0'
@@ -266,14 +275,14 @@ export const PageHeader = ({ pageData }) => {
                     ref={setBand}
                     aria-hidden
                     className={`pointer-events-none absolute left-0 right-0 top-0 ${getPageHeaderBandClass()}`}
-                    style={{ height: headerHeight }}
+                    style={{ height: headerHeight, top: stripAbove }}
                 />
             ) : null}
             <View
                 className={flowHeaderContainerClassName}
                 role={usesFixedOverlayHeader && shouldRenderFixedLayer ? undefined : 'banner'}
                 aria-hidden={usesFixedOverlayHeader && shouldRenderFixedLayer ? 'true' : undefined}
-                style={flowHeaderStyle}
+                style={usesFixedOverlayHeader ? flowHeaderStyle : fixedTopStyle}
                 onLayout={onHeaderLayout}
             >
                 <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
@@ -292,6 +301,7 @@ export const PageHeader = ({ pageData }) => {
                     className={fixedHeaderContainerClassName}
                     role="banner"
                     pointerEvents={headerPointerEvents}
+                    style={fixedTopStyle}
                 >
                     <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
                     <View className="relative z-10">

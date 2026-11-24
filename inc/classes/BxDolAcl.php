@@ -869,7 +869,8 @@ class BxDolAcl extends BxDolFactory implements iBxDolSingleton
         if (count($aActions) > 1)
             trigger_error('Duplicate action - name:' . $sAction . ', module:' . $sModule, E_USER_ERROR);
         $aAction = array_pop($aActions);
-        return $aAction['id'];
+        // 0 for an action the module does not have (callers test !$iActionId), without a warning.
+        return isset($aAction['id']) ? $aAction['id'] : 0;
     }
 
     function getExpirationLetter($iProfileId, $sLevelName, $iLevelExpireDays )

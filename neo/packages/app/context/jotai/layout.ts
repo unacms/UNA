@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { atom, useSetAtom, useAtomValue, type Atom, type PrimitiveAtom, type WritableAtom } from 'jotai';
 
 type NumberAtom = PrimitiveAtom<number>;
@@ -146,4 +146,22 @@ export const useSetFooterHeight = () => useSetAtom(footerHeightAtom);
 export const useFooterHeight = () => {
     const height = useAtomValue(footerHeightAtom);
     return useHydrated() ? height : 0;
+};
+
+// The informer strip's height (components/elements/informer.tsx, web), for what is fixed to the window under the
+// header (Home's side columns).
+const informerStripHeightAtom = atom<number>(0);
+export const useSetInformerStripHeight = () => useSetAtom(informerStripHeightAtom);
+export const useInformerStripHeight = () => useAtomValue(informerStripHeightAtom);
+/**
+ * How far the informer strip still reaches below the header: its height less the page's scroll, never below 0. A
+ * derived atom, so it changes, and re-renders, only while the strip is in view.
+ */
+export const useInformerStripVisibleHeight = () => {
+    const tabKey = useTabChromeKey();
+    const visible = useMemo(
+        () => atom((get) => Math.max(0, get(informerStripHeightAtom) - get(getScrollValueAtomForTab(tabKey)))),
+        [tabKey]
+    );
+    return useAtomValue(visible);
 };

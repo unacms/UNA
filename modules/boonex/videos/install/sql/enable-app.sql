@@ -61,7 +61,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_my' AND `
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_submenu' AND `module`='bx_videos' AND `name`='videos-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_submenu' AND `module`='bx_videos' AND `name`='videos-popular';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_submenu' AND `module`='bx_videos' AND `name`='videos-top';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_submenu' AND `module`='bx_videos' AND `name`='videos-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_submenu' AND `module`='bx_videos' AND `name`='videos-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_snippet_meta' AND `module`='bx_videos' AND `name`='date';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_videos_snippet_meta' AND `module`='bx_videos' AND `name`='rating';

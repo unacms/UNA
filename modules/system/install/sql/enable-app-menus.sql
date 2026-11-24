@@ -103,6 +103,7 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_social_sharing'
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_dashboard_manage_tools' AND `module`='system' AND `name`='cmts-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_content_manage' AND `module`='system' AND `name`='cmts';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='system' AND `name`='profile-stats-profile';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_profile_stats' AND `module`='system' AND `name`='friend-suggestions';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_account' AND `module`='system' AND `name`='profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_account' AND `module`='system' AND `name`='stats';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_dashboard_account' AND `module`='system' AND `name`='preferences';

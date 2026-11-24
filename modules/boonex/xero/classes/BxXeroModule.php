@@ -33,12 +33,16 @@ class BxXeroModule extends BxDolModule
      */
     public function actionAuthorize()
     {
+        $this->_requireAdmin();
+
         header('Location: ' . $this->_oApi->authorize());
         exit;
     }
 
     public function actionCallback()
     {
+        $this->_requireAdmin();
+
         $sCode = bx_process_input(bx_get('code'));
         if($sCode === false) {
             header('Location: ' . $this->_oConfig->getAuthorizeUrl(1));
@@ -90,6 +94,11 @@ class BxXeroModule extends BxDolModule
 
     public function actionTest()
     {
+        if(!isAdmin()) {
+            echo _t('_Access denied');
+            return;
+        }
+
         $mixedResult = $this->_oApi->actionTest();
         if($mixedResult !== false)
             $mixedResult = _t('_bx_xero_txt_organization', $mixedResult);
@@ -97,6 +106,18 @@ class BxXeroModule extends BxDolModule
             $mixedResult = _t('_bx_xero_txt_err_unknown');
 
         echo $mixedResult;
+    }
+
+    /**
+     * Connecting the site to Xero and testing the connection are for admins only.
+     */
+    protected function _requireAdmin()
+    {
+        if(isAdmin())
+            return;
+
+        BxDolTemplate::getInstance()->displayAccessDenied();
+        exit;
     }
 
     /**

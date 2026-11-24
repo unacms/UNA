@@ -179,11 +179,9 @@ class BxBaseStudioFormsSearchForms extends BxDolStudioFormsSearchForms
         $this->oDb->getSearchFields(array('type' => 'by_object', 'object' => $aRow['object']), $aFields, false);
 
         $sLink = sprintf($this->sUrlViewFields, $aRow['module'], $aRow['object']);
-        $mixedValue = $this->_oTemplate->parseLink($sLink, _t('_adm_form_txt_search_forms_n_fields', count($aFields)), array(
-            'title' => _t('_adm_form_txt_search_forms_manage_fields')
-        ));
+        $sCount = $this->_getCellCount(count($aFields), $sLink, _t('_adm_form_txt_search_forms_n_fields', count($aFields)), _t('_adm_form_txt_search_forms_manage_fields'));
 
-        return parent::_getCellDefault ($mixedValue, $sKey, $aField, $aRow);
+        return parent::_getCellDefault ($sCount, $sKey, $aField, $aRow);
     }
     
     protected function _getCellSortableFields ($mixedValue, $sKey, $aField, $aRow)
@@ -192,11 +190,9 @@ class BxBaseStudioFormsSearchForms extends BxDolStudioFormsSearchForms
         $this->oDb->getSortableFields(array('type' => 'by_object', 'object' => $aRow['object']), $aFields, false);
 
         $sLink = sprintf($this->sUrlViewSortableFields, $aRow['module'], $aRow['object']);
-        $mixedValue = $this->_oTemplate->parseLink($sLink, _t('_adm_form_txt_search_forms_n_fields', count($aFields)), array(
-            'title' => _t('_adm_form_txt_search_forms_manage_fields')
-        ));
+        $sCount = $this->_getCellCount(count($aFields), $sLink, _t('_adm_form_txt_search_forms_n_fields', count($aFields)), _t('_adm_form_txt_search_forms_manage_fields'));
 
-        return parent::_getCellDefault ($mixedValue, $sKey, $aField, $aRow);
+        return parent::_getCellDefault ($sCount, $sKey, $aField, $aRow);
     }
 
     protected function _getFilterControls ()

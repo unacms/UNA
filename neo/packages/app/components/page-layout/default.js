@@ -2,6 +2,7 @@ import { View } from 'app/design/view';
 import { appStatic } from 'app/lib/app-static';
 import Page from 'app/ui/molecules/page/page';
 import { PageTitle } from 'app/ui/molecules/page/page-title';
+import { PageCoverBand } from 'app/components/elements/covers/page-cover-band';
 import { PageChromeProvider } from 'app/ui/molecules/page/page-chrome';
 
 export default function PageLayout({ children, data, pageClasses }) {
@@ -9,6 +10,8 @@ export default function PageLayout({ children, data, pageClasses }) {
 
     return (
         <Page data={data}>
+            {/* The page's cover band above its title, as on the site (desktop). */}
+            <PageCoverBand data={data} />
             {/* Page override slot: the static component `components_<uri>` renders above the
                 UNA blocks when the registry has one (see appStatic). UNA shows nothing about it,
                 and only layouts mapped to this component get it (page-layout/_map.js). */}

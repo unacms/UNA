@@ -566,18 +566,12 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             $sCoverPopupId = $this->MODULE . '-popup-cover';
             $bIsAllowEditCover = $oModule->checkAllowedChangeCover($aData) === CHECK_ACTION_RESULT_ALLOWED;
 
-            $oPage = false;
-            if(isset($aParams['page']) && is_a($aParams['page'], 'BxDolPage'))
-                $oPage = $aParams['page'];
-
+            // A profile without a cover picture has the site's (Studio > Designer > Cover), else the template's art: not
+            // the picture of the page it is shown on, which would differ from tab to tab and from the apps.
             $bUrlCover = false;
             $sUrlCover = $this->urlCover($aData, false);
-            if(!$sUrlCover && $oPage !== false && $oPage->isPageCover()) {
-                $aCover = $oPage->getPageCoverImage();
-                
-                if(!empty($aCover))
-                    $sUrlCover = BxDolCover::getCoverImageUrl($aCover);
-            }
+            if(!$sUrlCover && ($iSiteCover = (int)getParam('sys_site_cover_common')) != 0)
+                $sUrlCover = BxDolCover::getCoverImageUrl(['id' => $iSiteCover, 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER]);
 
             if(!empty($sUrlCover))
                 $bUrlCover = true;
@@ -776,6 +770,14 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             if(!$sActionsMenu && ($oMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_ACTIONS_VIEW_ENTRY'], $this)) !== false)
                 $sActionsMenu = $oMenu->getCode();
         }
+
+        //--- The page's Search (a group's: in the group; a person's: what they created), before the actions,
+        //--- as a section's Search is in its title row.
+        if(!$bUseAsBlock && !empty($aParams['page']) && $aParams['page'] instanceof BxDolPage && ($aSearch = $aParams['page']->getSearchAction()))
+            $sActionsMenu = $this->parseHtmlByName('cover_actions_search.html', [
+                'search' => BxDolCover::getInstance(BxDolTemplate::getInstance())->getSearchButton($aSearch, 'self-start me-2'),
+                'actions' => $sActionsMenu,
+            ]);
 
         //--- Process Meta menu
         $sMetaMenu = '';

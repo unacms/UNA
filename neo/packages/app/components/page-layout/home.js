@@ -9,7 +9,6 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { components } from 'app/components/registry'
-import { InformerList } from 'app/components/elements/informer'
 import {
     Panel,
     PanelGroup,
@@ -20,7 +19,7 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/profile/badge'
 import Badges from 'app/ui/molecules/profile/badges'
 import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/measure';
-import { useHeaderHeight } from 'app/context/jotai/layout';
+import { useHeaderHeight, useInformerStripVisibleHeight } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { NeoButtonLink } from 'app/design/controls';
 import HomeCover from 'app/components/elements/covers/home-cover';
@@ -183,6 +182,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const { feedUnit } = useLayoutSettings();
 
     const headerHeight = useHeaderHeight();
+    // The fixed side columns start under the informer strip while it is in view (layout.web.js).
+    const columnsTop = headerHeight + useInformerStripVisibleHeight();
     const [sideBarWidth, setSideBarWidth] = useState(undefined);
     const [asideWidth, setAsideWidth] = useState(undefined);
 
@@ -325,8 +326,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const SideBarContent = (
         <View
             style={{
-                top: headerHeight,
-                height: `calc(100vh - ${headerHeight}px)`,
+                top: columnsTop,
+                height: `calc(100vh - ${columnsTop}px)`,
                 width: sideBarWidth,
             }}
             className="flex-auto p-4 gap-0.5 fixed overflow-scroll "
@@ -419,8 +420,8 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const AsidePanelContent = (
         <View
             style={{
-                top: headerHeight,
-                height: `calc(100vh - ${headerHeight}px)`,
+                top: columnsTop,
+                height: `calc(100vh - ${columnsTop}px)`,
                 width: asideWidth,
             }}
             className="fixed overflow-scroll p-4 gap-4"
@@ -487,7 +488,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                 direction="horizontal"
-                className={`${appSetting('layout', 'page_content_width_default')} ns--panel-group-- mx-auto flex-auto flex-row ne--`}
+                className={`${appSetting('layout', 'page_content_width_default')} mx-auto flex-auto flex-row`}
                 onLayout={onLayout}
             >
                 {isWeb && (
@@ -506,9 +507,6 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 )}
                 <Panel className="w-full min-w-0 native:w-full" {...centerPanelProps}>
                     <View className={`${appSetting('layout', 'feed_container')}`}>
-                        {/* The viewer's informers first, beside the fixed left column (layout.web.js leaves them out here):
-                            16px around them on phones, where the feed runs edge to edge; the column's own padding from tablet. */}
-                        <InformerList className="p-4 sm:p-0 sm:pb-4" />
                         {hasSideColumns ? BlocksCenter : null}
                         {FeedContent}
                     </View>

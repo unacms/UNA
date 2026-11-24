@@ -70,7 +70,7 @@ export const settingsElements = {
         show_nav_counters: true, // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' ns--sidebar-container-- h-full ne--  ',
+        sidebar_container: ' h-full  ',
         // The card keeps its side margin wherever the column shows: from lg on wiki pages, so
         // the panel doesn't clip its outline shadow (the conductor's column starts at xl).
         sidebar_inner_container: ' mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/60 shadow-card-outline dark:shadow-card-outline-deep rounded-card mt-4',
@@ -79,9 +79,9 @@ export const settingsElements = {
         sidebar_title_name: 'items-center mr-auto min-w-0 hidden lg:flex gap-2',
         sidebar_title_icon: 'h-8 w-8 items-center justify-center flex',
         sidebar_title_icon_class: 'text-card-foreground shrink-0',
-        sidebar_title_icon_size: 29,
+        sidebar_title_icon_size: 28,
         // The phone header title's size and weight (TextHeader), as the tablet tab-row title.
-        sidebar_title_text: 'text-2xl tracking-tight truncate font-bold leading-9 text-card-foreground',
+        sidebar_title_text: 'text-xl tracking-tight truncate font-bold leading-7 text-card-foreground',
         // Section nav under the title. The negative margin and the items' 8px inset put the
         // icons 4px inside sidebar_inner_container's padding, in line with the title icon.
         sidebar_nav: 'gap-0.5 -mx-1 -mb-1',

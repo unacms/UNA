@@ -12,9 +12,11 @@ type Option = { value: string | number; label?: string };
 
 const inputSettings = appSetting('theme', 'inputs');
 const inputSize: string = inputSettings.default_size || 'regular';
-// The time box takes the date input's height, fill, outline and radius; its segments sit 4px inside.
+// The time box takes the date input's height, fill, border, focus ring and radius; its segments sit 4px
+// inside (3px inside its 1px border).
 const timeBoxClass = cn(
-    'w-auto shrink-0 flex-none flex-row items-center gap-1 px-1 bg-card shadow-input-outline dark:shadow-input-outline-deep',
+    'w-auto shrink-0 flex-none flex-row items-center gap-1 px-0.75',
+    inputSettings.surface ?? 'bg-card border border-black/10 dark:border-white/5',
     inputSettings.rounded?.default ?? 'rounded-xl',
     inputSettings.surface_size?.[inputSize] ?? 'min-h-11',
 );
@@ -63,7 +65,7 @@ function TimeSpinField({ value, onChangeText, onBlur, onStep, label }: {
                 onChangeText={onChangeText}
                 onBlur={onBlur}
                 placeholder="00"
-                className="h-full w-9 shrink-0 px-1 text-center text-base tabular-nums leading-none text-card-foreground bg-transparent border-0 outline-none shadow-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 web:focus:shadow-none web:focus-visible:shadow-none"
+                className="h-full w-9 shrink-0 px-1 text-center text-base tabular-nums leading-none text-card-foreground bg-transparent border-0 outline-none shadow-none ring-0 focus:outline-none focus:ring-0 web:not-forced-colors:focus-visible:outline-none! focus-visible:ring-0 web:focus:shadow-none web:focus-visible:shadow-none"
                 maxLength={2}
                 placeholderTextColor="#6b7280"
                 value={value}

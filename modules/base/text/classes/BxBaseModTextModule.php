@@ -59,6 +59,21 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
         ));
     }
 
+    /**
+     * @see BxDolModule::serviceGetMacroServices
+     */
+    public function serviceGetMacroServices()
+    {
+        return array_merge(parent::serviceGetMacroServices(), [
+            'BrowsePublic' => '',
+            'BrowsePopular' => '',
+            'BrowseTop' => '',
+            'BrowseUpdated' => '',
+            'BrowseAuthor' => '',
+            'CategoriesMultiListContext' => '',
+        ]);
+    }
+
     public function serviceModuleSample ()
     {
         return parent::serviceModuleSample() ?: '_sys_sample_content';

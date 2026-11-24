@@ -51,11 +51,21 @@ class TwoFactorLoginTest extends BxDolIntegrationTestCase
         $this->bxBecomeGuest();
         BxTemplServiceLogin::reset2faLogin();
         $this->bxInstallSmsHandler();
+        $this->bxResetSmsLimits();
+    }
+
+    /**
+     * Forget the SMS sent so far (bx_sms_code_send_allowed): every case may send BX_ACCOUNT_SMS_SENDS_LIMIT of its own.
+     */
+    protected function bxResetSmsLimits(): void
+    {
+        BxDolDb::getInstance()->query("DELETE FROM `sys_keys` WHERE `salt` = 'named_counter'");
     }
 
     protected function tearDown(): void
     {
         BxTemplServiceLogin::reset2faLogin();
+        $this->bxResetSmsLimits();
 
         foreach ([$this->_aAccountBackup, $this->_aOtherAccountBackup] as $aBackup) {
             if (!$aBackup)

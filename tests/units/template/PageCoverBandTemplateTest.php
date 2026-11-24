@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * A page's cover is a band with nothing written on it, so no picture can hide the page's title: the title (with the
+ * section's icon on a section's page) follows the band on the page. The site and the apps draw the band the same: 176px
+ * high, on desktop only for a page with a title (NEO's PageCoverBand).
+ */
+class PageCoverBandTemplateTest extends BxDolTestCase
+{
+    private const SITE = 'modules/boonex/artificer/data/template/system/cover.html';
+    private const NEO = 'neo/packages/app/components/elements/covers/page-cover-band.tsx';
+
+    private static function read(string $sPath): string
+    {
+        return str_replace("\r\n", "\n", (string)file_get_contents(__DIR__ . '/../../../' . $sPath));
+    }
+
+    /** The band: from the cover's gap to the end of the cover's wrapper. */
+    private static function band(string $sHtml): string
+    {
+        $iStart = strpos($sHtml, 'bx-cover-gap');
+        $iEnd = strpos($sHtml, '<bx_if:title_section>');
+        self::assertNotFalse($iStart);
+        self::assertNotFalse($iEnd);
+
+        return substr($sHtml, $iStart, $iEnd - $iStart);
+    }
+
+    public function testNoWordsOnTheBand(): void
+    {
+        $sHtml = self::read(self::SITE);
+        $sBand = self::band($sHtml);
+
+        $this->assertStringNotContainsString('__title__', $sBand);
+        $this->assertStringNotContainsString('<h1', $sBand);
+        $this->assertStringNotContainsString('bx-cover-gradient', $sHtml, 'no scrim: nothing to keep readable on the picture');
+        $this->assertSame(3, substr_count($sHtml, '<h1'), 'one heading per title variant and one for screen readers where the title is off or hidden, all after the band');
+        $this->assertStringContainsString('<h1 class="sr-only __class__">__title__</h1>', $sHtml);
+    }
+
+    public function testTheBandIsAsHighAndShowsOnTheSameScreensOnTheSiteAndInTheApps(): void
+    {
+        $sBand = self::band(self::read(self::SITE));
+        $sNeo = self::read(self::NEO);
+
+        $this->assertStringContainsString(' h-44"', $sBand);
+        $this->assertStringContainsString(' h-44 ', $sNeo);
+
+        $sPhp = self::read('template/scripts/BxBaseCover.php');
+        $this->assertStringContainsString("if(\$bTitle)\n            \$aBandClasses[] = 'hidden lg:block';", $sPhp);
+        $this->assertStringContainsString('hidden lg:flex', $sNeo);
+    }
+
+    /**
+     * The base template's cover holds the title on its band: the band takes its "Cover hidden on" sizes, the title on it
+     * its "Title hidden on" sizes, and the title shows alone where the band is off or hidden.
+     */
+    public function testBaseTemplateHidesTheBandAndTheTitleApart(): void
+    {
+        $sHtml = self::read('template/cover.html');
+        $this->assertMatchesRegularExpression('/<bx_if:band>\s*<div class="bx-cover-gap [^"]*__band_hidden_class__">/', $sHtml);
+        $this->assertStringContainsString('bx-def-font-h1 __title_class__"', $sHtml);
+        $this->assertMatchesRegularExpression('/<bx_if:title_only>\s*<div class="bx-cover-title [^"]*__title_only_class__">/', $sHtml);
+    }
+
+    public function testTheSectionTitleIsTheAppsSectionTitle(): void
+    {
+        // NEO's section title (TopSidebar): a 28px icon in a 44px box, 8px before a 20px bold name on a 28px line.
+        $sNeo = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
+        $this->assertStringContainsString('text-xl leading-7 font-bold tracking-tight', $sNeo);
+        $this->assertStringContainsString('size={28}', self::read('neo/packages/app/ui/molecules/section-icon.tsx'));
+        $this->assertStringContainsString('size-11', self::read('neo/packages/app/ui/molecules/section-icon.tsx'));
+
+        $sHtml = self::read(self::SITE);
+        $this->assertStringContainsString('<span class="flex size-11 shrink-0 items-center justify-center', $sHtml);
+        $this->assertStringContainsString('text-xl leading-7 font-bold tracking-tight', $sHtml);
+        $this->assertStringContainsString("['class' => 'size-7', 'aria-hidden' => 'true']", self::read('template/scripts/BxBaseCover.php'));
+        $this->assertStringContainsString('flex items-center gap-2 py-2.5', $sHtml);
+    }
+}

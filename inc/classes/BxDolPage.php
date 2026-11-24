@@ -7,6 +7,10 @@
  * @{
  */
 
+define('BX_PAGE_OWNER_COVER_ALWAYS', 1); ///< the page shows its owner's cover, @see BxDolPage::getOwnerCoverMode
+define('BX_PAGE_OWNER_COVER_OTHERS', 2); ///< the page shows its owner's cover except on the owner's own list (owner=1)
+
+
 /**
  * Pages.
  *
@@ -125,6 +129,29 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     protected $_sForceRedirect = false;
 
     /**
+     * The settings a page may take from its section (Studio > Pages > page > Cover, Title: "Same as section", NULL in
+     * `sys_objects_page`), with the values a section without settings of its own has and a page outside any section
+     * gets: cover on for everyone, no picture of its own (the site's), hidden nowhere; the title as the cover (NULL).
+     */
+    const SECTION_DEFAULTS = [
+        'cover' => 1,
+        'cover_image' => 0,
+        'cover_hidden_on' => '',
+        'title_show' => null,
+        'title_hidden_on' => null,
+    ];
+
+    /**
+     * The page's own values of SECTION_DEFAULTS' fields, as stored (NULL: as its section); `_aObject` has them resolved.
+     */
+    protected $_aObjectOwn = [];
+
+    /**
+     * The page's section (its submenu object), '' for none.
+     */
+    protected $_sSection = '';
+
+    /**
      * Constructor
      * @param $aObject array of page options
      */
@@ -135,8 +162,189 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         $this->_bIsApi = bx_is_api();
 
         $this->_sObject = $aObject['object'];
-        $this->_aObject = $aObject;
+
+        // The page's section settings once, so the site, the API and the apps all get the same final values.
+        foreach(array_keys(self::SECTION_DEFAULTS) as $sField)
+            $this->_aObjectOwn[$sField] = array_key_exists($sField, $aObject) ? $aObject[$sField] : null;
+
+        $aSection = false;
+        if(!empty($aObject['uri']) && ($this->_sSection = BxDolPageQuery::getPageSection($aObject['uri'], isset($aObject['module']) ? $aObject['module'] : '')) !== '')
+            $aSection = BxDolPageQuery::getSection($this->_sSection);
+
+        $this->_aObject = self::resolveSectionSettings($aObject, $aSection);
         $this->_oQuery = new BxDolPageQuery($this->_aObject);
+    }
+
+    /**
+     * A page's section settings resolved: each field the page leaves to its section (NULL) takes the section's value,
+     * a field the section leaves (a section without a row, a page outside any section) takes SECTION_DEFAULTS'. The
+     * title's fields may stay NULL: the title then follows the page's cover (BxBasePage::getPageTitleMode,
+     * getPageTitleHiddenOn).
+     * @param array $aPage the page's row (sys_objects_page)
+     * @param array|false $aSection the section's row (sys_pages_sections), [] for a section with no settings of its
+     *        own, false for a page outside any section
+     * @return array the page's row with the fields resolved
+     */
+    public static function resolveSectionSettings($aPage, $aSection)
+    {
+        foreach(self::SECTION_DEFAULTS as $sField => $mixedDefault) {
+            // Only NULL is "as the section": a page's '' hidden-on is "hidden nowhere".
+            if(isset($aPage[$sField]))
+                continue;
+
+            $mixedValue = $mixedDefault;
+            if(is_array($aSection) && array_key_exists($sField, $aSection) && $aSection[$sField] !== null)
+                $mixedValue = $aSection[$sField];
+
+            $aPage[$sField] = $mixedValue;
+        }
+
+        return $aPage;
+    }
+
+    /**
+     * A section's settings made from its pages' (the migration that made sections), so that no page looks different:
+     * for the cover's fields the value most of its pages have (the home page's on a tie), for the title's the value all
+     * of them have, NULL (as the cover) where any page's follows its cover. getSectionPagesMatching then gives the pages
+     * that take it from the section.
+     * @param array $aPages page object => its own settings as stored (cover, cover_image, cover_hidden_on, title_show,
+     *        title_hidden_on), in the section's order
+     * @param string $sHome the object of the page the section's main menu item opens, '' for none
+     * @return array field => value, ints, NULL for a title's field as the cover
+     */
+    public static function getSectionSeed($aPages, $sHome = '')
+    {
+        $aSection = [];
+        foreach(array_keys(self::SECTION_DEFAULTS) as $sField) {
+            $bTitle = in_array($sField, ['title_show', 'title_hidden_on']);
+
+            $aCounts = [];
+            $bAnyNull = false;
+            foreach($aPages as $aPage) {
+                $mixedValue = self::_normSectionValue(isset($aPage[$sField]) ? $aPage[$sField] : null);
+                if($mixedValue === null) {
+                    $bAnyNull = true;
+                    continue;
+                }
+
+                $aCounts[$mixedValue] = (isset($aCounts[$mixedValue]) ? $aCounts[$mixedValue] : 0) + 1;
+            }
+
+            if(empty($aCounts) || ($bTitle && $bAnyNull)) {
+                $aSection[$sField] = self::_normSectionValue(self::SECTION_DEFAULTS[$sField]);
+                continue;
+            }
+
+            $iMax = max($aCounts);
+            $aTop = array_keys(array_filter($aCounts, function($i) use ($iMax) { return $i == $iMax; }));
+
+            $mixedHome = $sHome !== '' && isset($aPages[$sHome][$sField]) ? self::_normSectionValue($aPages[$sHome][$sField]) : null;
+            $aSection[$sField] = $mixedHome !== null && in_array($mixedHome, $aTop, true) ? $mixedHome : (int)reset($aTop);
+        }
+
+        return $aSection;
+    }
+
+    /**
+     * The fields of a section's pages that have the section's value, which they may then take from it (NULL).
+     * @param array $aPages page object => its own settings as stored
+     * @param array $aSection the section's settings (its row, or getSectionSeed's); a NULL there matches nothing
+     * @return array page object => fields
+     */
+    public static function getSectionPagesMatching($aPages, $aSection)
+    {
+        $aResult = [];
+        foreach($aPages as $sObject => $aPage) {
+            $aFields = [];
+            foreach(array_keys(self::SECTION_DEFAULTS) as $sField) {
+                $mixedSection = self::_normSectionValue(array_key_exists($sField, $aSection) ? $aSection[$sField] : null);
+                $mixedOwn = self::_normSectionValue(isset($aPage[$sField]) ? $aPage[$sField] : null);
+                if($mixedOwn !== null && $mixedSection !== null && $mixedOwn === $mixedSection)
+                    $aFields[] = $sField;
+            }
+
+            if($aFields)
+                $aResult[$sObject] = $aFields;
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * A section setting as compared: an int ('' hidden-on is 0), NULL as NULL.
+     */
+    protected static function _normSectionValue($mixed)
+    {
+        return $mixed === null ? null : (int)$mixed;
+    }
+
+    /**
+     * The page's section: the submenu object of the main menu item whose tabs open it (BxDolPageQuery::getPageSection).
+     * @return string '' for a page outside any section
+     */
+    public function getSection()
+    {
+        return $this->_sSection;
+    }
+
+    /**
+     * Whether the page's section has its Search (Studio > Pages > a page > Edit section settings > Search in this
+     * section). On by default, also for a page outside any section.
+     */
+    public function isSectionSearch()
+    {
+        if($this->_sSection === '')
+            return true;
+
+        $aSection = BxDolPageQuery::getSection($this->_sSection);
+        return !isset($aSection['search']) || (int)$aSection['search'] != 0;
+    }
+
+    /**
+     * The page's own value of a field it may take from its section, as stored.
+     * @param string $sField a field of SECTION_DEFAULTS
+     * @return mixed null where the page takes its section's
+     */
+    public function getOwnSetting($sField)
+    {
+        return isset($this->_aObjectOwn[$sField]) ? $this->_aObjectOwn[$sField] : null;
+    }
+
+    /**
+     * Whether the page shows its owner's cover (the person's, group's or event's whose page it is) rather than its own:
+     * a profile's or a context's pages, and the lists of a profile's items. Studio then offers only the cover's
+     * show/hide and hidden-on, and says the owner's name is the title.
+     * @return int 0 no, BX_PAGE_OWNER_COVER_ALWAYS always, BX_PAGE_OWNER_COVER_OTHERS except the owner's own list
+     *         (`owner=1`), which shows the page's own cover and title
+     */
+    public static function getOwnerCoverMode()
+    {
+        return 0;
+    }
+
+    /**
+     * getOwnerCoverMode of a page's class, without making the page (Studio edits pages with no request to show).
+     * @param array $aPage the page's row (override_class_name, override_class_file)
+     * @return int
+     */
+    public static function getOwnerCoverModeOf($aPage)
+    {
+        $sClass = !empty($aPage['override_class_name']) ? $aPage['override_class_name'] : '';
+        if($sClass === '')
+            return 0;
+
+        // A module's class from its file, as getObjectInstance makes the page; a system one (BxTempl*) is autoloaded.
+        if(!empty($aPage['override_class_file'])) {
+            if(!file_exists(BX_DIRECTORY_PATH_ROOT . $aPage['override_class_file']))
+                return 0;
+
+            require_once(BX_DIRECTORY_PATH_ROOT . $aPage['override_class_file']);
+        }
+
+        if(!is_subclass_of($sClass, 'BxDolPage'))
+            return 0;
+
+        return (int)$sClass::getOwnerCoverMode();
     }
 
     /**

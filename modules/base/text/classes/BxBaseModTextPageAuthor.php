@@ -67,6 +67,14 @@ class BxBaseModTextPageAuthor extends BxTemplPage
         $this->addMarkers(array('profile_link' => $this->_oProfile->getUrl())); // profile link
     }
     
+    /**
+     * A profile's items show the profile's cover, except the owner's own list (owner=1), which has the page's own.
+     */
+    public static function getOwnerCoverMode()
+    {
+        return BX_PAGE_OWNER_COVER_OTHERS;
+    }
+
     public function getCode()
     {
         if(!empty($this->_oProfile))

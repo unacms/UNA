@@ -11,6 +11,7 @@ import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 import { appSetting, storageClear, decodeText, isChatLayout } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { useThemeName, useThemeValue } from 'app/design/theme';
+import { useIsDesktop } from 'app/context/measure';
 import { useTranslation } from 'react-i18next'
 import PopupModal from 'app/ui/molecules/dialogs/popup-modal'
 import { PageHeader } from 'app/ui/molecules/header/page-header';
@@ -25,6 +26,9 @@ let __lastPageLayout = null;
 
 const MemoizedContent = React.memo(({ currentUser, layoutName, data, children, blocks }) => {
     const [isModal, setIsModal] = useState(false);
+    // The informer strip: on desktop under the header, first in <main>; below it, where the header carries the page's
+    // title, above the header, the first thing on the page.
+    const isDesktop = useIsDesktop();
     const { t } = useTranslation()
     useEffect(() => {
         if (currentUser === false && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'login','home',  'forgot-password', 'confirm-email'].includes(data.uri)) {
@@ -68,9 +72,10 @@ const MemoizedContent = React.memo(({ currentUser, layoutName, data, children, b
             <AsyncWorker />
             <PushPrompt />
             {hasSidebar && <AppSidebar pageData={data} />}
+            {!isDesktop && <Informer />}
             <HeaderOptionsProvider>
                 <PageHeader layoutName={layoutName} pageData={data} />
-                <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} />
+                <Content layoutName={layoutName} currentUser={currentUser} url={data?.url} stripInMain={isDesktop}>{children}</Content>
             </HeaderOptionsProvider>
             <Footer />
             <BottomSheet />
@@ -203,7 +208,7 @@ export default function Layout(props) {
     return <MemoizedContent blocks={blocks} currentUser={currentUser} layoutName={layoutName} data={data} uri={uri}>{children}</MemoizedContent>
 }
 
-const Content = React.memo(({ children, currentUser, layoutName, url }) => {
+const Content = React.memo(({ children, currentUser, layoutName, url, stripInMain }) => {
     const externalScripts = appSetting('layout', 'external_scripts') || [];
     const footer = useFooter();
 
@@ -212,16 +217,16 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     // The tab bar renders for logged-in users (or when show_tabbar_on_mobile_non_logged is set)
     // and only when the footer atom is truthy. Avoids phantom scroll on auth/guest pages.
     const showBottomTabBar = footer && (currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged'));
-    const mainClassName = `${(!isChatLayout(layoutName) &&layoutName != 'post' && layoutName != 'task' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} ns--main-content-- w-full mx-auto ne--`;
+    const mainClassName = `${(!isChatLayout(layoutName) &&layoutName != 'post' && layoutName != 'task' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
     const contentKey = (layoutName === 'layout_1_column_wiki' || layoutName === 'wiki')
         ? 'wiki'
         : url;
 
     return (
-        <View className="ns--main-wrapper-- w-full mx-auto items-stretch cnt-root ne--" key={contentKey}>
+        <View className="w-full mx-auto items-stretch cnt-root" key={contentKey}>
             <main id="main-content" tabIndex={-1} className={`${mainClassName} outline-none scroll-mt-24`}>
-                {/* Profiles and home put the informers in their main column themselves. */}
-                {layoutName !== 'profile' && layoutName !== 'profile-alt' && layoutName !== 'home' && <Informer />}
+                {/* The informer strip on desktop: right under the header, before the page's cover, tabs and blocks. */}
+                {stripInMain && <Informer />}
                 {children}
             </main>
             {externalScripts.map((script) => {

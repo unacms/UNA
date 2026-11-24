@@ -155,13 +155,13 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbo
 
 -- PAGE: search for entries
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
-('bx_groups_search', '_bx_groups_page_title_sys_entries_search', '_bx_groups_page_title_entries_search', 'bx_groups', 5, 2147483647, 1, 'groups-search', 'page.php?i=groups-search', '', '', '', 0, 1, 0, 'BxGroupsPageBrowse', 'modules/boonex/groups/classes/BxGroupsPageBrowse.php');
+('bx_groups_search', '_bx_groups_page_title_sys_entries_search', '_bx_groups_page_title_entries_search', 'bx_groups', 1, 2147483647, 1, 'groups-search', 'page.php?i=groups-search', '', '', '', 0, 1, 0, 'BxGroupsPageBrowse', 'modules/boonex/groups/classes/BxGroupsPageBrowse.php');
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_groups_search', 1, 'bx_groups', '_bx_groups_page_block_title_search_form', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:9:"bx_groups";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 1),
-('bx_groups_search', 1, 'bx_groups', '_bx_groups_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:9:"bx_groups";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
+('bx_groups_search', 2, 'bx_groups', '_bx_groups_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:9:"bx_groups";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
 ('bx_groups_search', 1, 'bx_groups', '_bx_groups_page_block_title_search_form_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:14:"bx_groups_cmts";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 3),
-('bx_groups_search', 1, 'bx_groups', '_bx_groups_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:14:"bx_groups_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
+('bx_groups_search', 2, 'bx_groups', '_bx_groups_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:14:"bx_groups_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
 
 -- PAGE: entries in context
 INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
@@ -366,7 +366,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_groups_my', 'bx_groups', '_bx_groups_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_groups_my', 'bx_groups', 'create-group-profile', '_bx_groups_menu_item_title_system_create_profile', '_bx_groups_menu_item_title_create_profile', 'page.php?i=create-group-profile', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_groups_my', 'bx_groups', 'create-group-profile', '_bx_groups_menu_item_title_system_create_profile', '_bx_groups_menu_item_title_create_profile', 'page.php?i=create-group-profile', '', '', 'user-round-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 
@@ -379,7 +379,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('bx_groups_submenu', 'bx_groups', 'groups-home', '_bx_groups_menu_item_title_system_entries_recent', '_bx_groups_menu_item_title_entries_recent', 'page.php?i=groups-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_groups_submenu', 'bx_groups', 'groups-top', '_bx_groups_menu_item_title_system_entries_top', '_bx_groups_menu_item_title_entries_top', 'page.php?i=groups-top', '', '', '', '', 2147483647, 1, 1, 2),
-('bx_groups_submenu', 'bx_groups', 'groups-search', '_bx_groups_menu_item_title_system_entries_search', '_bx_groups_menu_item_title_entries_search', 'page.php?i=groups-search', '', '', '', '', 2147483647, 1, 1, 3),
+('bx_groups_submenu', 'bx_groups', 'groups-search', '_bx_groups_menu_item_title_system_entries_search', '_bx_groups_menu_item_title_entries_search', 'page.php?i=groups-search', '', '', '', '', 2147483647, 0, 1, 3),
 ('bx_groups_submenu', 'bx_groups', 'groups-joined', '_bx_groups_menu_item_title_system_entries_joined', '_bx_groups_menu_item_title_entries_joined', 'page.php?i=groups-joined', '', '', '', '', 2147483646, 1, 1, 4),
 ('bx_groups_submenu', 'bx_groups', 'groups-followed', '_bx_groups_menu_item_title_system_entries_followed', '_bx_groups_menu_item_title_entries_followed', 'page.php?i=groups-followed', '', '', '', '', 2147483646, 1, 1, 5),
 ('bx_groups_submenu', 'bx_groups', 'groups-manage', '_bx_groups_menu_item_title_system_entries_manage', '_bx_groups_menu_item_title_entries_manage', 'page.php?i=groups-manage', '', '', '', '', 2147483646, 1, 1, 6);

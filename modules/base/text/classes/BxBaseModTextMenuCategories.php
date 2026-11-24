@@ -35,11 +35,10 @@ class BxBaseModTextMenuCategories extends BxTemplMenu
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        $oCategory = BxDolCategory::getObjectInstance($CNF['OBJECT_CATEGORY']);
-        if(!$oCategory)
+        $aCategories = $this->_getCategoriesList();
+        if($aCategories === false)
             return [];
 
-        $aCategories = $oCategory->getCategoriesList(false, true);
         if($this->_bIsApi && $aCategories && is_array($aCategories))
             return reset($aCategories)['data'];
 
@@ -51,7 +50,7 @@ class BxBaseModTextMenuCategories extends BxTemplMenu
             $iCount +=  $aCategories['bx_repeat:cats'][$sKey]['num'];
         }
 
-        $aItems = [[
+        $aItemAll = [
             'class_add' => 'bx-psmi-show-0' .  (bx_get('category') == '' ? ' bx-menu-item-active' : ''),
             'name' => 'show-0',
             'title' => _t($CNF['T']['txt_all_categories']),
@@ -88,8 +87,9 @@ class BxBaseModTextMenuCategories extends BxTemplMenu
                 'condition' => true,
                 'content' => ['addon' => $iCount]
             ]
-        ]];
+        ];
 
+        $aItems = [];
         foreach ($aCategories['bx_repeat:cats'] as $sKey => $aCategory) {
             $aCategoryData = $this->_getExtendedInfo($aCategory['value']);
             if(!empty($aCategoryData) && (empty($aCategoryData['visible_for_levels']) || !BxDolAcl::getInstance()->isMemberLevelInSet($aCategoryData['visible_for_levels'])))
@@ -142,8 +142,14 @@ class BxBaseModTextMenuCategories extends BxTemplMenu
             ];
         }
 
-        if(empty($aItems) || !is_array($aItems))
-            return $aItems;
+        /*
+         * Categories without items are not listed, so neither is "All categories" until one of them has some:
+         * a menu without items hides the block on the site and in the apps.
+         */
+        if(empty($aItems))
+            return [];
+
+        array_unshift($aItems, $aItemAll);
 
         return $this->_addMenuItemsMoreLess($aItems, (int)getParam($CNF['PARAM_VISIBLE_CATEGORIES']));
     }
@@ -158,6 +164,18 @@ class BxBaseModTextMenuCategories extends BxTemplMenu
             ]);
 
         return $mixedResult;
+    }
+
+    /**
+     * The categories that have items, as BxBaseCategory::getCategoriesList gives them as an array, false without a category object.
+     */
+    protected function _getCategoriesList()
+    {
+        $oCategory = BxDolCategory::getObjectInstance($this->_oModule->_oConfig->CNF['OBJECT_CATEGORY']);
+        if(!$oCategory)
+            return false;
+
+        return $oCategory->getCategoriesList(false, true);
     }
 
     protected function _getExtendedInfo($iId)

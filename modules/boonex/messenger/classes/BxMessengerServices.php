@@ -303,17 +303,12 @@ class BxMessengerServices extends BxDol
             $iFileId = (int)$aFile[$CNF['FIELD_ST_ID']];
             $bImage = $oStorage->isImageFile($aFile[$CNF['FIELD_ST_TYPE']]);
 
-            $aFiles[] = [
-                'id' => $iFileId,
-                'name' => $aFile[$CNF['FIELD_ST_NAME']],
-                'mime_type' => $aFile[$CNF['FIELD_ST_TYPE']],
-                'size' => isset($aFile['size']) ? (int)$aFile['size'] : 0,
+            $aFiles[] = array_merge($this->_getFileApi($aFile, $oStorageEngine), [
                 'added' => (int)$aFile[$CNF['FIELD_ST_ADDED']],
                 'jot_id' => (int)$aFile[$CNF['FIELD_ST_JOT']],
                 'author_data' => BxDolProfile::getData($aFile[$CNF['FIELD_ST_AUTHOR']]),
                 'image' => $bImage ? bx_api_get_image($sStorage, $iFileId) : null,
-                'url' => $oStorageEngine ? $oStorageEngine->getFileUrlById($iFileId) : '',
-            ];
+            ]);
         }
 
         return [
@@ -324,6 +319,25 @@ class BxMessengerServices extends BxDol
                 'per_page' => $iPerPage,
                 'total' => $this->_oModule->_oDb->getLotFilesCount($iLotId)
             ]
+        ];
+    }
+
+    /**
+     * A file of a message as the apps show it: its name, type, size and link.
+     * @param array $aFile row of the messenger storage table
+     * @param BxDolStorage|null $oStorageEngine the messenger storage object; null leaves the link empty
+     */
+    protected function _getFileApi($aFile, $oStorageEngine)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $iFileId = (int)$aFile[$CNF['FIELD_ST_ID']];
+        return [
+            'id' => $iFileId,
+            'name' => $aFile[$CNF['FIELD_ST_NAME']],
+            'mime_type' => $aFile[$CNF['FIELD_ST_TYPE']],
+            'size' => isset($aFile['size']) ? (int)$aFile['size'] : 0,
+            'url' => $oStorageEngine ? $oStorageEngine->getFileUrlById($iFileId) : '',
         ];
     }
 
@@ -465,6 +479,9 @@ class BxMessengerServices extends BxDol
 
         $iJot = isset($aOptions['jot']) ? (int)$aOptions['jot'] : 0;
         $iStart = isset($aOptions['start']) ? (int)$aOptions['start'] : 0;
+        // For a socket event, which anyone may listen to: attachments come without their links,
+        // which the apps then ask for as a participant.
+        $bBroadcast = !empty($aOptions['broadcast']);
 
         $iLotId = 0;
         if(isset($aOptions['lot']) && $aOptions['lot'])
@@ -562,6 +579,7 @@ class BxMessengerServices extends BxDol
 
             $sStorage = $CNF['OBJECT_STORAGE'];
             $oStorage = new BxMessengerStorage($sStorage);
+            $oStorageEngine = BxDolStorage::getObjectInstance($sStorage);
 
             // Messages of the page saved by the viewer, one query for the page.
             $aSavedJots = array_map('intval', $this->_oModule->_oDb->getSavedJotsByIds($this->_iProfileId, array_column($mixedContent, $CNF['FIELD_MESSAGE_ID'])));
@@ -571,11 +589,14 @@ class BxMessengerServices extends BxDol
 
                 $this->_oModule->_oDb->readMessage($iJotId, $this->_iProfileId);
 
-                $aFiles = [];
+                // Images go to 'files' (the carousel), every other file to 'attachments'.
+                $aFiles = $aAttachments = [];
                 if ($mixedFiles = $this->_oModule->_oDb->getJotFiles($iJotId))
                     foreach($mixedFiles as &$aFile) {
                         if ($oStorage->isImageFile($aFile[$CNF['FIELD_ST_TYPE']]))
                             $aFiles[] = bx_api_get_image($sStorage, (int)$aFile[$CNF['FIELD_ST_ID']]);
+                        else
+                            $aAttachments[] = $this->_getFileApi($aFile, $bBroadcast ? null : $oStorageEngine);
                     }
 
                 $aReactions = [];
@@ -600,6 +621,7 @@ class BxMessengerServices extends BxDol
                     'reactions' => $aReactions,
                     'menu' => $oMenu->getCodeAPI(),
                     'files' => $aFiles,
+                    'attachments' => $aAttachments,
                     'reply_message' => $sReplyMessage,
                     'saved' => in_array((int)$iJotId, $aSavedJots) ? 1 : 0
                 ]);
@@ -731,7 +753,8 @@ class BxMessengerServices extends BxDol
                     $this->_pusherData('convo_' . $sLotHash, ['convo' => $iLotId, 'action' => 'edited', 'data' => $this->serviceGetConvoMessages([
                         'load' => 'ids',
                         'lot' => $sLotHash, 
-                        'jot' => $iMessageId
+                        'jot' => $iMessageId,
+                        'broadcast' => true
                     ])]);
 
                     return ['code' => 0, 'jot_id' => $iMessageId];

@@ -59,21 +59,21 @@ BxShopifyShop.prototype.onGetUnit = function(oProduct) {
         return;
 
     //--- Fetch product description.
-    oUnit.find('.bx-spf-unit-title').html(oProduct.title);
+    oUnit.find('.bx-spf-unit-title').text(oProduct.title);
 
     //--- Fetch product description.
-    oUnit.find('.bx-spf-unit-summary').html(oProduct.descriptionHtml);
-    oUnit.find('.bx-base-text-unit-strecher').html(oProduct.description);
+    oUnit.find('.bx-spf-unit-summary').empty().append(this.sanitizeHtml(oProduct.descriptionHtml));
+    oUnit.find('.bx-base-text-unit-strecher').text(oProduct.description);
 
     //--- Fetch product images.
     if(oProduct.images.length > 0)
-        oUnit.find('.bx-spf-unit-thumb').css('background-image', 'url(' + oProduct.images[0].src + ')');
+        oUnit.find('.bx-spf-unit-thumb').css('background-image', 'url(' + JSON.stringify(String(oProduct.images[0].src)) + ')');
 
     //--- Fetch price.
     if(oProduct.variants.length > 0) {
         var oBuy = oUnit.find('.bx-shopify-buy');
         var sBuyContent = oBuy.html();
-        oBuy.html(sBuyContent.replace('{price}', oProduct.variants[0].price)).show();
+        oBuy.html(sBuyContent.replace('{price}', this.escapeHtml(this.getPrice(oProduct.variants[0])))).show();
     }
 
     bx_loading(oUnit.removeClass(this._sClassLoading).addClass(this._sClassLoaded), false);
@@ -104,10 +104,10 @@ BxShopifyShop.prototype.onGetEntry = function(oProduct) {
         return;
 
     //--- Fetch product title.
-    $('#' + this._aHtmlIds['entry_content']).find('.bx-spf-title').html(oProduct.title);
+    $('#' + this._aHtmlIds['entry_content']).find('.bx-spf-title').text(oProduct.title);
 
     //--- Fetch product description.
-    $('#' + this._aHtmlIds['entry_content']).find('.bx-spf-text').html(oProduct.descriptionHtml);
+    $('#' + this._aHtmlIds['entry_content']).find('.bx-spf-text').empty().append(this.sanitizeHtml(oProduct.descriptionHtml));
 
     //--- Fetch product images.
     var oSample = $('#' + this._aHtmlIds['entry_attachment_sample']);
@@ -116,15 +116,19 @@ BxShopifyShop.prototype.onGetEntry = function(oProduct) {
     oProduct.images.map(function(oImage) {
         var oAttachment = oSample.clone().removeAttr('id').removeClass('bx-spf-attachment-sample');
 
-        var oLink = oAttachment.find('.bx-spf-attachment-link');
-        var sLinkOnClick = oLink.attr('onclick');
-        oLink.attr('onclick', sLinkOnClick.replace('{id}', iImage).replace('{url}', oImage.src));
-        oLink.find('.bx-spf-attachment-img').attr('src', oImage.src);
+        var sImageSrc = String(oImage.src);
 
         var oPopup = oAttachment.find('.bx-popup-wrapper');
-        var sPopupId = oPopup.attr('id');
-        oPopup.attr('id', sPopupId.replace('{id}', iImage));
-        oPopup.find('.bx-spf-attachment-popup-img').attr('src', oImage.src);
+        var sPopupId = oPopup.attr('id').replace('{id}', iImage);
+        oPopup.attr('id', sPopupId);
+        oPopup.find('.bx-spf-attachment-popup-img').attr('src', sImageSrc);
+
+        // The image URL comes from the shop, so it is bound here instead of being written into an onclick attribute.
+        var oLink = oAttachment.find('.bx-spf-attachment-link');
+        oLink.removeAttr('onclick').on('click', function() {
+            $('#' + sPopupId).dolPopupImage(sImageSrc, $(this).parent());
+        });
+        oLink.find('.bx-spf-attachment-img').attr('src', sImageSrc);
 
         oContainer.append(oAttachment);
 
@@ -137,7 +141,7 @@ BxShopifyShop.prototype.onGetEntry = function(oProduct) {
         var oBuy = $('#' + this._aHtmlIds['entry_buy']);
 
         var sBuyContent = oBuy.html();
-        oBuy.html(sBuyContent.replace('{price}', oProduct.variants[0].price)).show();
+        oBuy.html(sBuyContent.replace('{price}', this.escapeHtml(this.getPrice(oProduct.variants[0])))).show();
 
         var oItem = oBuy.parents('.bx-menu-item:first');
         if(oItem.attr('bx-mma-width'))
@@ -145,6 +149,72 @@ BxShopifyShop.prototype.onGetEntry = function(oProduct) {
     }
 
     bx_loading($('.' + this._sClassCover), false);
+};
+
+BxShopifyShop.prototype.getPrice = function(oVariant) {
+    var mixedPrice = oVariant.price;
+    if(mixedPrice && typeof mixedPrice === 'object')
+        mixedPrice = mixedPrice.amount;
+
+    return mixedPrice == undefined ? '' : String(mixedPrice);
+};
+
+BxShopifyShop.prototype.escapeHtml = function(s) {
+    return $('<div />').text(s).html();
+};
+
+/**
+ * Product descriptions are written in the shop, outside this site, so only basic
+ * formatting is kept: no scripts, styles, event handlers or other attributes.
+ */
+BxShopifyShop.prototype.sanitizeHtml = function(sHtml) {
+    var aTags = ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'strike', 'sub', 'sup', 'small', 'span', 'div', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code', 'hr', 'a', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td'];
+    var aDrop = ['script', 'style', 'iframe', 'object', 'embed', 'frame', 'frameset', 'svg', 'math', 'template', 'noscript', 'textarea', 'select', 'button', 'input', 'form', 'link', 'meta', 'base', 'title', 'head'];
+
+    var oFragment = document.createDocumentFragment();
+    if(!sHtml)
+        return oFragment;
+
+    // DOMParser builds an inert document: nothing in it runs or loads while it is cleaned.
+    var oSource = new DOMParser().parseFromString('<!doctype html><body>' + String(sHtml), 'text/html').body;
+
+    var fClean = function(oFrom, oTo) {
+        for(var i = 0; i < oFrom.childNodes.length; i++) {
+            var oNode = oFrom.childNodes[i];
+            if(oNode.nodeType === 3) {
+                oTo.appendChild(document.createTextNode(oNode.nodeValue));
+                continue;
+            }
+
+            if(oNode.nodeType !== 1)
+                continue;
+
+            var sTag = oNode.nodeName.toLowerCase();
+            if(aDrop.indexOf(sTag) !== -1)
+                continue;
+
+            if(aTags.indexOf(sTag) === -1) {
+                fClean(oNode, oTo);
+                continue;
+            }
+
+            var oElement = document.createElement(sTag);
+            if(sTag === 'a') {
+                var sHref = (oNode.getAttribute('href') || '').trim();
+                if(/^(https?:|mailto:)/i.test(sHref)) {
+                    oElement.setAttribute('href', sHref);
+                    oElement.setAttribute('target', '_blank');
+                    oElement.setAttribute('rel', 'nofollow noopener noreferrer');
+                }
+            }
+
+            fClean(oNode, oElement);
+            oTo.appendChild(oElement);
+        }
+    };
+
+    fClean(oSource, oFragment);
+    return oFragment;
 };
 
 BxShopifyShop.prototype.buyProductByHandle = function(sProduct, oLink) {

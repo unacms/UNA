@@ -43,14 +43,14 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'ns--cover-base- w-full bg-card-surface ne--',
+        cover_base: 'w-full bg-card-surface',
         // The cover's bars (name and actions, tabs) and a section's bar: the page header's chrome on web, translucent
         // card over a blur, as content scrolls under them once they pin. Native keeps the opaque surface.
-        cover_bar: 'ns--cover-bar- w-full bg-card-surface web:bg-card/60 web:backdrop-blur-lg ne--',
+        cover_bar: 'w-full bg-card-surface web:bg-card/60 web:backdrop-blur-lg',
         // Their lower edge once they pin (compact cover, a section's bar): the page header's shadow, not a border.
         cover_bar_edge: 'border-b border-border/60 web:border-b-0 web:shadow-border-b web:dark:shadow-border-b-deep',
         cover_content:
-            'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
+            'items-center h-full w-full justify-between lg:p-4',
         cover_small: 'mx-auto flex-row items-center ',
 
         // Where the left column takes over the tab row and the section title (a breakpoint
@@ -186,14 +186,14 @@ export const settingsElements = {
         'u-card-footer': 'px-4 gap-1',
     },
     panels: {
-        'u-panel-base': ' ns--panel-base-- web:h-full min-w-0 flex-col ne-- ',
+        'u-panel-base': ' web:h-full min-w-0 flex-col ',
         // Invisible until hovered. Tailwind v4 applies variants left to right: `hover:before:` is
         // `:hover::before`, while `before:hover:` would be `::before:hover`, which never matches.
         // The line's `group-*` variants need the plain `group` marker PanelHandler puts on the handle.
         'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:hover:before:bg-accent web:active:before:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
             'absolute w-px web:h-full web:group-hover:bg-primary/50 web:group-active:bg-primary/50 rounded-full left-0 top-0 ',
-        'u-panel-group': ' ns--panel-group-- web:h-full flex ne-- ',
+        'u-panel-group': ' web:h-full flex ',
     },
     blocks: {
         'u-block-base':

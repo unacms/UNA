@@ -207,13 +207,13 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbo
 
 -- PAGE: search for entries
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
-('bx_organizations_search', '_bx_orgs_page_title_sys_entries_search', '_bx_orgs_page_title_entries_search', 'bx_organizations', 5, 2147483647, 1, 'organizations-search', 'page.php?i=organizations-search', '', '', '', 0, 1, 0, 'BxOrgsPageBrowse', 'modules/boonex/organizations/classes/BxOrgsPageBrowse.php');
+('bx_organizations_search', '_bx_orgs_page_title_sys_entries_search', '_bx_orgs_page_title_entries_search', 'bx_organizations', 1, 2147483647, 1, 'organizations-search', 'page.php?i=organizations-search', '', '', '', 0, 1, 0, 'BxOrgsPageBrowse', 'modules/boonex/organizations/classes/BxOrgsPageBrowse.php');
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_organizations_search', 1, 'bx_organizations', '_bx_orgs_page_block_title_search_form', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:16:"bx_organizations";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 1),
-('bx_organizations_search', 1, 'bx_organizations', '_bx_orgs_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:16:"bx_organizations";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
+('bx_organizations_search', 2, 'bx_organizations', '_bx_orgs_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:16:"bx_organizations";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
 ('bx_organizations_search', 1, 'bx_organizations', '_bx_orgs_page_block_title_search_form_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:21:"bx_organizations_cmts";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 3),
-('bx_organizations_search', 1, 'bx_organizations', '_bx_orgs_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:21:"bx_organizations_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
+('bx_organizations_search', 2, 'bx_organizations', '_bx_orgs_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:21:"bx_organizations_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
 
 -- PAGE: module manage own
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
@@ -394,7 +394,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_organizations_my', 'bx_organizations', '_bx_orgs_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_organizations_my', 'bx_organizations', 'create-organization-profile', '_bx_orgs_menu_item_title_system_new_profile', '_bx_orgs_menu_item_title_new_profile', 'page.php?i=create-organization-profile', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_organizations_my', 'bx_organizations', 'create-organization-profile', '_bx_orgs_menu_item_title_system_new_profile', '_bx_orgs_menu_item_title_new_profile', 'page.php?i=create-organization-profile', '', '', 'building-complex-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `title_public`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -407,7 +407,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_organizations_submenu', 'bx_organizations', 'organizations-home', '_bx_orgs_menu_item_title_system_entries_recent', '_bx_orgs_menu_item_title_entries_recent', 'page.php?i=organizations-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_organizations_submenu', 'bx_organizations', 'organizations-active', '_bx_orgs_menu_item_title_system_entries_active', '_bx_orgs_menu_item_title_entries_active', 'page.php?i=organizations-active', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_organizations_submenu', 'bx_organizations', 'organizations-online', '_bx_orgs_menu_item_title_system_entries_online', '_bx_orgs_menu_item_title_entries_online', 'page.php?i=organizations-online', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_organizations_submenu', 'bx_organizations', 'organizations-search', '_bx_orgs_menu_item_title_system_entries_search', '_bx_orgs_menu_item_title_entries_search', 'page.php?i=organizations-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_organizations_submenu', 'bx_organizations', 'organizations-search', '_bx_orgs_menu_item_title_system_entries_search', '_bx_orgs_menu_item_title_entries_search', 'page.php?i=organizations-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_organizations_submenu', 'bx_organizations', 'organizations-manage', '_bx_orgs_menu_item_title_system_entries_manage', '_bx_orgs_menu_item_title_entries_manage', 'page.php?i=organizations-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: view submenu

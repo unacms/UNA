@@ -310,6 +310,13 @@ class BxFaceBookConnectModule extends BxBaseModConnectModule
         return $this->sLastError;
     }
 
+    /**
+     * Facebook gives the app only a confirmed email address.
+     */
+    protected function _isRemoteEmailVerified($aProfileInfo)
+    {
+        return !empty($aProfileInfo['email']);
+    }
 }
 
 /** @} */

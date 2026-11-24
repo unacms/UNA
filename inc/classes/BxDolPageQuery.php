@@ -36,6 +36,153 @@ class BxDolPageQuery extends BxDolDb
         return false;
     }
 
+    /**
+     * The section a page belongs to (BxDolPage::getSectionSettings): the submenu of a main menu item (the items of
+     * `sys_site_submenu`'s set, which give a section its title and icon) whose items open the page. A page in more than
+     * one goes with its own module's.
+     * @param string $sUri the page's URI
+     * @param string $sModule the page's module
+     * @return string the section's submenu object, '' for none
+     */
+    static public function getPageSection($sUri, $sModule = '')
+    {
+        $oDb = BxDolDb::getInstance();
+        $sQuery = "SELECT `ms`.`object`
+            FROM `sys_menu_items` AS `i`
+            INNER JOIN `sys_objects_menu` AS `ms` ON (`ms`.`set_name` = `i`.`set_name`)
+            INNER JOIN `sys_menu_items` AS `im` ON (`im`.`submenu_object` = `ms`.`object`)
+            INNER JOIN `sys_objects_menu` AS `mm` ON (`mm`.`set_name` = `im`.`set_name` AND `mm`.`object` = 'sys_site_submenu')
+            WHERE `i`.`link` = :link
+            ORDER BY `ms`.`module` = :module DESC, `ms`.`object` ASC
+            LIMIT 1";
+
+        return (string)$oDb->fromMemory('sys_pages_section_' . $sUri . '_' . $sModule, 'getOne', $sQuery, ['link' => 'page.php?i=' . $sUri, 'module' => (string)$sModule]);
+    }
+
+    /**
+     * Every section with the pages in it, for Studio and the migration that made sections.
+     * @return array section's submenu object => ['module' => the submenu's module, 'title' => the main menu item's title
+     *         (a language key), 'home' => URI of the page the main
+     *         menu item opens, 'pages' => [page object => URI]]
+     */
+    static public function getSectionsWithPages()
+    {
+        $aRows = BxDolDb::getInstance()->getAll("SELECT `ms`.`object` AS `section`, `ms`.`module` AS `module`, `im`.`link` AS `home`, `im`.`title` AS `title`, `p`.`object` AS `page`, `p`.`uri` AS `uri`, `p`.`module` AS `page_module`
+            FROM `sys_menu_items` AS `im`
+            INNER JOIN `sys_objects_menu` AS `mm` ON (`mm`.`set_name` = `im`.`set_name` AND `mm`.`object` = 'sys_site_submenu')
+            INNER JOIN `sys_objects_menu` AS `ms` ON (`ms`.`object` = `im`.`submenu_object`)
+            INNER JOIN `sys_menu_items` AS `i` ON (`i`.`set_name` = `ms`.`set_name`)
+            INNER JOIN `sys_objects_page` AS `p` ON (`i`.`link` = CONCAT('page.php?i=', `p`.`uri`))
+            ORDER BY `ms`.`object`, `i`.`order`, `p`.`object`");
+
+        $aResult = [];
+        foreach($aRows as $aRow) {
+            // A page in more than one section goes with its own module's (getPageSection).
+            if(self::getPageSection($aRow['uri'], $aRow['page_module']) !== $aRow['section'])
+                continue;
+
+            if(!isset($aResult[$aRow['section']]))
+                $aResult[$aRow['section']] = [
+                    'module' => $aRow['module'],
+                    'title' => $aRow['title'],
+                    'home' => bx_mb_strpos($aRow['home'], 'page.php?i=') === 0 ? get_mb_substr($aRow['home'], get_mb_len('page.php?i='), get_mb_len($aRow['home'])) : '',
+                    'pages' => [],
+                ];
+
+            $aResult[$aRow['section']]['pages'][$aRow['page']] = $aRow['uri'];
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * Pages' own section settings as stored (NULL: as the section), uncached.
+     * @param array $aObjects page objects
+     * @return array page object => id, cover, cover_image, cover_hidden_on, title_show, title_hidden_on
+     */
+    static public function getPagesSectionSettings($aObjects)
+    {
+        if(empty($aObjects))
+            return [];
+
+        $oDb = BxDolDb::getInstance();
+        return $oDb->getAllWithKey("SELECT `object`, `id`, `cover`, `cover_image`, `cover_hidden_on`, `title_show`, `title_hidden_on` FROM `sys_objects_page` WHERE `object` IN (" . $oDb->implode_escape($aObjects) . ")", 'object');
+    }
+
+    /**
+     * A section's own settings (sys_pages_sections), as a page's: cover, cover_image, cover_hidden_on, title_show,
+     * title_hidden_on.
+     * @param string $sSection the section's submenu object
+     * @return array the row, [] where the section has none (it has the defaults then)
+     */
+    static public function getSection($sSection)
+    {
+        $oDb = BxDolDb::getInstance();
+        try {
+            $a = $oDb->fromMemory('sys_pages_sections', 'getAllWithKey', "SELECT * FROM `sys_pages_sections`", 'object');
+        }
+        catch(PDOException $oException) {
+            // Files updated before the migration that adds the table (2026112497_page_sections) ran: the defaults.
+            return [];
+        }
+
+        return isset($a[$sSection]) ? $a[$sSection] : [];
+    }
+
+    /**
+     * Store a section's settings, adding its row where it has none.
+     * @param string $sSection the section's submenu object
+     * @param string $sModule the section's module
+     * @param array $aValues field => value: cover, cover_image, cover_hidden_on, title_show, title_hidden_on (null for
+     *        the title's ones: as the cover), search (the section's Search, 1 or 0)
+     * @return bool
+     */
+    static public function setSection($sSection, $sModule, $aValues)
+    {
+        $oDb = BxDolDb::getInstance();
+
+        $aBind = ['object' => $sSection, 'module' => $sModule];
+        $aSet = [];
+        foreach(['cover', 'cover_image', 'cover_hidden_on', 'title_show', 'title_hidden_on', 'search'] as $sField) {
+            if(!array_key_exists($sField, $aValues))
+                continue;
+
+            $aSet[] = $aValues[$sField] === null ? "`" . $sField . "` = NULL" : "`" . $sField . "` = :" . $sField;
+            if($aValues[$sField] !== null)
+                $aBind[$sField] = $aValues[$sField];
+        }
+
+        $sSet = $aSet ? ', ' . implode(', ', $aSet) : '';
+        $bResult = $oDb->query("INSERT INTO `sys_pages_sections` SET `object` = :object, `module` = :module" . $sSet . " ON DUPLICATE KEY UPDATE `module` = :module" . $sSet, $aBind) !== false;
+
+        $oDb->cleanMemory('sys_pages_sections');
+        return $bResult;
+    }
+
+    /**
+     * Set a page's section settings back to its section's (NULL): the cover's (cover, cover_image, cover_hidden_on) or
+     * the title's (title_show, title_hidden_on).
+     * @param int $iPageId the page's id
+     * @param array $aFields fields of those
+     * @return bool
+     */
+    static public function setPageFieldsToSection($iPageId, $aFields)
+    {
+        $aFields = array_intersect($aFields, ['cover', 'cover_image', 'cover_hidden_on', 'title_show', 'title_hidden_on']);
+        if(empty($aFields))
+            return true;
+
+        $aSet = [];
+        foreach($aFields as $sField)
+            $aSet[] = "`" . $sField . "` = NULL";
+
+        $oDb = BxDolDb::getInstance();
+        $bResult = $oDb->query("UPDATE `sys_objects_page` SET " . implode(', ', $aSet) . " WHERE `id` = :id", ['id' => (int)$iPageId]) !== false;
+
+        $oDb->cleanCache('sys_pages_objects_data');
+        return $bResult;
+    }
+
     static public function getPageObjectNameByURI($sURI, $sModule = false, $bSearchRedirects = false)
     {
         $oDb = BxDolDb::getInstance();

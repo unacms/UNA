@@ -182,6 +182,11 @@ html.dark body {
 .bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-cnt > div {
     overflow-x: auto;
 }
+/* The tabs scroll in their own column, so they never run under the tools and the section's add action at the row's end.
+   Not with a More menu: it fits the tabs to the column, and its popup opens inside it. */
+.bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-tabs {
+    overflow-x: auto;
+}
 
 .bx-menu-main-bar-gap.bx-menu-main-bar-hidden,
 .bx-menu-main-bar-wrapper.bx-menu-main-bar-hidden,
@@ -223,7 +228,7 @@ html.dark body {
 #bx-content-main .bx-content-main > .bx-landing {
     min-height: 0;
 }
-/* No page margins around it (my-4 lg:my-6): the splash has its own padding, and the apps show it flush with the header
+/* No page margins around it (my-4): the splash has its own padding, and the apps show it flush with the header
    and the footer. */
 #bx-content-main .bx-content-main:has(> .bx-landing) {
     margin-top: 0;
@@ -651,7 +656,8 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
 /* A block's footer (designbox_footer.html, BxBaseFunctions::designBoxFooter): a quiet, centred notice under the block's
    content, ruled off from it edge to edge. Wrapped lines are balanced. The template's own bx-def-* classes give other
    templates the rule, the spacing and the small grey text; these set Artificer's. The rule reaches the block's edges
-   through the content's padding, whatever its size (--bx-db-padding, page_layouts.css). */
+   through the content's padding, whatever its size (--bx-db-padding, page_layouts.css). Its links are medium and
+   underlined, as NEO's (u-block-footer). */
 .bx-artificer .bx-db-footer {
     margin: 1rem calc(-1 * var(--bx-db-padding, 1rem)) 0;
     padding: 1rem var(--bx-db-padding, 1rem) 0;
@@ -664,6 +670,7 @@ html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-m
     text-wrap: balance;
 }
 .bx-artificer .bx-db-footer a {
+    font-weight: 500;
     text-decoration: underline;
     text-underline-offset: 2px;
 }

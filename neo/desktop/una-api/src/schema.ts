@@ -1866,6 +1866,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The site's search: every module the viewer may see, one module, or what is posted in a context
+         * @description The search window's query and results, as the site and the apps show them. Without `section` or `tab`: a few hits of every searched module (Studio > Search) with how many each has, counted up to 10 (`count_more`: more). With one `section` (the module scope) or a `tab`: that module's hits, a page at a time (`cursor`), counted up to 50 on the first page. `context` limits hits to what is posted in a group, an event or another context the viewer may see. Every hit is one the viewer may open, and counts only count those. `scope` has the chips the query can have: the module's own search fields among them.
+         */
+        get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/search/albums": {
         parameters: {
             query?: never;
@@ -4772,6 +4792,48 @@ export interface components {
          * @enum {string}
          */
         Screen: "phone" | "tablet" | "desktop" | "mobile-app";
+        SearchGroup: {
+            /** @description The module */
+            name: string;
+            title: string;
+            /** @description Lucide icon name */
+            icon: string;
+            count: number;
+            /** @description There are more than `count` */
+            count_more: boolean;
+            items: components["schemas"]["SearchHit"][];
+            next_cursor: string | null;
+        };
+        SearchHit: {
+            /** @enum {string} */
+            kind: "content" | "comment" | "profile" | "page";
+            module: string;
+            id: components["schemas"]["Id"];
+            title: string;
+            /** Format: uri */
+            url: string;
+            /** @description Unix time it was added or changed */
+            date: number;
+        };
+        SearchResults: {
+            /** @description The query as the results page's URL params */
+            query: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            scope: "global" | "module" | "context";
+            context: {
+                id?: components["schemas"]["Id"];
+                title?: string;
+            } | null;
+            /** @description name, type (scope, toggle, profile, date_range, options), caption, value; options and fields where they apply */
+            chips: {
+                [key: string]: unknown;
+            }[];
+            groups: components["schemas"]["SearchGroup"][];
+            total: number;
+            total_more: boolean;
+        };
         /** @description A space: a context like a group (Group's fields, kind `group`, module `bx_spaces`), which may be in another space and have subspaces. */
         Space: {
             id: components["schemas"]["Id"];
@@ -13330,6 +13392,75 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Realtime"];
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    "Retry-After": components["headers"]["retryAfter"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    search: {
+        parameters: {
+            query?: {
+                /** @description What to look for; may be left out when another filter is set */
+                q?: string;
+                /** @description Module names, comma separated; one is the module scope */
+                section?: string;
+                /** @description One module of the scope, its hits alone */
+                tab?: string;
+                /** @description A context profile: what is posted in it */
+                context?: components["schemas"]["Id"];
+                /** @description Created by this profile */
+                author?: components["schemas"]["Id"];
+                title_only?: boolean;
+                date_from?: string;
+                date_to?: string;
+                date_field?: "created" | "starts" | "ends";
+                timezone?: string;
+                /** @description JSON object of the module's search fields and their values (module scope only) */
+                filters?: string;
+                sort?: "best" | "new";
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResults"];
+                };
+            };
+            /** @description Invalid fields */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Too many requests */

@@ -356,9 +356,11 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
 
     public function testScreenSizeColumns(): void
     {
-        // Studio's per-screen-size switches, empty (shown everywhere) on a fresh install.
+        // Studio's per-screen-size switches, empty (shown everywhere) on a fresh install. A page's cover ones are NULL, "Same
+        // as section": a page outside any section is then shown everywhere too (BxDolPage::SECTION_DEFAULTS).
         $sSql = self::systemSql();
-        $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_objects_page` \\([^;]*`cover_hidden_on` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql);
+        $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_objects_page` \\([^;]*`cover_hidden_on` varchar\\(255\\) DEFAULT NULL/s", $sSql);
+        $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_sections` \\([^;]*`cover_hidden_on` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql);
         foreach (['title_hidden_on', 'bg_hidden_on', 'padding_hidden_on'] as $sColumn)
             $this->assertMatchesRegularExpression("/CREATE TABLE IF NOT EXISTS `sys_pages_blocks` \\([^;]*`" . $sColumn . "` varchar\\(255\\) NOT NULL DEFAULT ''/s", $sSql, $sColumn);
         // A block's title and padding sizes: regular ('') on a fresh install.

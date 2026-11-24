@@ -1,4 +1,4 @@
-import { forwardRef, useContext, type ReactNode } from 'react';
+import { forwardRef, useContext, useState, type ReactNode } from 'react';
 import { TextInput as TextInputDef, Platform, TextInputProps } from 'react-native'
 import type { TextInputInstance } from 'react-native';
 import { View, Row } from 'app/design/view'
@@ -70,6 +70,12 @@ export const Input = forwardRef<TextInputInstance, CustomInputProps>(
         const labelInside = useContext(InputLabelInsideContext) && isLabelInsideSize(size);
         // A read only field takes no focus either, and looks it.
         const locked = !!props.readOnly || props.editable === false;
+        const ariaInvalid = (props as { 'aria-invalid'?: boolean | 'true' | 'false' })['aria-invalid'];
+        const invalid = ariaInvalid === true || ariaInvalid === 'true';
+        // No `:focus` on native: the focused border colour follows the field's own focus events. The
+        // border is always 1px (`base`), so only its colour changes and the text stays put.
+        const [focused, setFocused] = useState(false);
+        const { onFocus, onBlur } = props;
         return (
             <TextInputDef
                 className={cn(
@@ -77,17 +83,27 @@ export const Input = forwardRef<TextInputInstance, CustomInputProps>(
                     inputSettings.size[size] ?? inputSettings.size.regular,
                     labelInside && inputSettings.adaptive_input_inside,
                     rounded === InputRounded.full && inputSettings.rounded.full,
+                    focused && !locked && inputSettings.focused,
+                    invalid && inputSettings.invalid,
                     locked && !pickerTrigger && inputSettings.locked,
                     className,
                 )}
                 {...getInputStyleProps(style, props.multiline)}
                 {...props}
+                onFocus={(e) => { setFocused(true); onFocus?.(e); }}
+                onBlur={(e) => { setFocused(false); onBlur?.(e); }}
                 {...(locked ? { editable: false } : null)}
                 ref={ref}
             />
         );
     }
 );
+
+/** Room for the start decorator: a 20px icon by name, or a node of its own (1px under the inset; the border makes it up). */
+function startDecoratorPad(decorator?: string | ReactNode): string {
+    if (!decorator) return '';
+    return typeof decorator === 'string' ? 'pl-11.75' : 'pl-9.75';
+}
 
 function renderInputDecorator(decorator?: string | ReactNode) {
     if (!decorator) return null;
@@ -107,7 +123,7 @@ export const InputWithIcons = forwardRef<TextInputInstance, InputWithIconsProps>
             ) : null}
             <Input
                 ref={ref}
-                className={`w-full ${className || ''} ${typeof startDecorator === 'string' ? 'pl-12' : startDecorator ? 'pl-10' : ''} ${endDecorator ? 'pr-11' : ''}`}
+                className={`w-full ${className || ''} ${startDecoratorPad(startDecorator)} ${endDecorator ? 'pr-10.75' : ''}`}
                 style={style}
                 rounded={rounded}
                 {...props}

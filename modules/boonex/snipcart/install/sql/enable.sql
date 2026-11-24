@@ -110,13 +110,13 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 
 -- PAGE: search for entries
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
-('bx_snipcart_search', '_bx_snipcart_page_title_sys_entries_search', '_bx_snipcart_page_title_entries_search', 'bx_snipcart', 5, 2147483647, 1, 'snipcart-search', 'page.php?i=snipcart-search', '', '', '', 0, 1, 0, 'BxSnipcartPageBrowse', 'modules/boonex/snipcart/classes/BxSnipcartPageBrowse.php');
+('bx_snipcart_search', '_bx_snipcart_page_title_sys_entries_search', '_bx_snipcart_page_title_entries_search', 'bx_snipcart', 1, 2147483647, 1, 'snipcart-search', 'page.php?i=snipcart-search', '', '', '', 0, 1, 0, 'BxSnipcartPageBrowse', 'modules/boonex/snipcart/classes/BxSnipcartPageBrowse.php');
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_snipcart_search', 1, 'bx_snipcart', '_bx_snipcart_page_block_title_search_form', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:11:"bx_snipcart";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 1),
-('bx_snipcart_search', 1, 'bx_snipcart', '_bx_snipcart_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:11:"bx_snipcart";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
+('bx_snipcart_search', 2, 'bx_snipcart', '_bx_snipcart_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:11:"bx_snipcart";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
 ('bx_snipcart_search', 1, 'bx_snipcart', '_bx_snipcart_page_block_title_search_form_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:16:"bx_snipcart_cmts";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 3),
-('bx_snipcart_search', 1, 'bx_snipcart', '_bx_snipcart_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:16:"bx_snipcart_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
+('bx_snipcart_search', 2, 'bx_snipcart', '_bx_snipcart_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:16:"bx_snipcart_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
 
 -- PAGE: module manage own
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
@@ -223,7 +223,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_snipcart_my', 'bx_snipcart', '_bx_snipcart_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_snipcart_my', 'bx_snipcart', 'create-snipcart-entry', '_bx_snipcart_menu_item_title_system_create_entry', '_bx_snipcart_menu_item_title_create_entry', 'page.php?i=create-snipcart-entry', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_snipcart_my', 'bx_snipcart', 'create-snipcart-entry', '_bx_snipcart_menu_item_title_system_create_entry', '_bx_snipcart_menu_item_title_create_entry', 'page.php?i=create-snipcart-entry', '', '', 'shopping-cart-plus', '', 2147483647, 1, 0, 0);
 
 -- MENU: module sub-menu
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -235,7 +235,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('bx_snipcart_submenu', 'bx_snipcart', 'snipcart-home', '_bx_snipcart_menu_item_title_system_entries_public', '_bx_snipcart_menu_item_title_entries_public', 'page.php?i=snipcart-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_snipcart_submenu', 'bx_snipcart', 'snipcart-popular', '_bx_snipcart_menu_item_title_system_entries_popular', '_bx_snipcart_menu_item_title_entries_popular', 'page.php?i=snipcart-popular', '', '', '', '', 2147483647, 1, 1, 2),
-('bx_snipcart_submenu', 'bx_snipcart', 'snipcart-search', '_bx_snipcart_menu_item_title_system_entries_search', '_bx_snipcart_menu_item_title_entries_search', 'page.php?i=snipcart-search', '', '', '', '', 2147483647, 1, 1, 3),
+('bx_snipcart_submenu', 'bx_snipcart', 'snipcart-search', '_bx_snipcart_menu_item_title_system_entries_search', '_bx_snipcart_menu_item_title_entries_search', 'page.php?i=snipcart-search', '', '', '', '', 2147483647, 0, 1, 3),
 ('bx_snipcart_submenu', 'bx_snipcart', 'snipcart-manage', '_bx_snipcart_menu_item_title_system_entries_manage', '_bx_snipcart_menu_item_title_entries_manage', 'page.php?i=snipcart-manage', '', '', '', '', 2147483646, 1, 1, 4),
 ('bx_snipcart_submenu', 'bx_snipcart', 'snipcart-settings', '_bx_snipcart_menu_item_title_system_settings', '_bx_snipcart_menu_item_title_settings', 'page.php?i=snipcart-settings', '', '', '', '', 2147483646, 1, 1, 5),
 ('bx_snipcart_submenu', 'bx_snipcart', 'snipcart-dashboard', '_bx_snipcart_menu_item_title_system_dashboard', '_bx_snipcart_menu_item_title_dashboard', 'https://app.snipcart.com', '', '_blank', '', '', 2147483646, 1, 1, 6);

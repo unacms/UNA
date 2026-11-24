@@ -154,13 +154,13 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 -- PAGE: search for entries
 
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
-('bx_posts_search', '_bx_posts_page_title_sys_entries_search', '_bx_posts_page_title_entries_search', 'bx_posts', 5, 2147483647, 1, 'posts-search', 'page.php?i=posts-search', '', '', '', 0, 1, 0, 'BxPostsPageBrowse', 'modules/boonex/posts/classes/BxPostsPageBrowse.php');
+('bx_posts_search', '_bx_posts_page_title_sys_entries_search', '_bx_posts_page_title_entries_search', 'bx_posts', 1, 2147483647, 1, 'posts-search', 'page.php?i=posts-search', '', '', '', 0, 1, 0, 'BxPostsPageBrowse', 'modules/boonex/posts/classes/BxPostsPageBrowse.php');
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_posts_search', 1, 'bx_posts', '_bx_posts_page_block_title_search_form', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:8:"bx_posts";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 1),
-('bx_posts_search', 1, 'bx_posts', '_bx_posts_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:8:"bx_posts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
+('bx_posts_search', 2, 'bx_posts', '_bx_posts_page_block_title_search_results', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:8:"bx_posts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 1, 2),
 ('bx_posts_search', 1, 'bx_posts', '_bx_posts_page_block_title_search_form_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:8:"get_form";s:6:"params";a:1:{i:0;a:1:{s:6:"object";s:13:"bx_posts_cmts";}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 3),
-('bx_posts_search', 1, 'bx_posts', '_bx_posts_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:13:"bx_posts_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
+('bx_posts_search', 2, 'bx_posts', '_bx_posts_page_block_title_search_results_cmts', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"get_results";s:6:"params";a:1:{i:0;a:2:{s:6:"object";s:13:"bx_posts_cmts";s:10:"show_empty";b:1;}}s:5:"class";s:27:"TemplSearchExtendedServices";}', 0, 1, 0, 4);
 
 
 -- PAGE: module manage own
@@ -304,7 +304,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 ('bx_posts_my', 'bx_posts', '_bx_posts_menu_set_title_entries_my', 0);
 
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('bx_posts_my', 'bx_posts', 'create-post', '_bx_posts_menu_item_title_system_create_entry', '_bx_posts_menu_item_title_create_entry', 'page.php?i=create-post', '', '', 'plus', '', 2147483647, 1, 0, 0);
+('bx_posts_my', 'bx_posts', 'create-post', '_bx_posts_menu_item_title_system_create_entry', '_bx_posts_menu_item_title_create_entry', 'page.php?i=create-post', '', '', 'file-pen', '', 2147483647, 1, 0, 0);
 
 
 -- MENU: module sub-menu
@@ -319,7 +319,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_posts_submenu', 'bx_posts', 'posts-home', '_bx_posts_menu_item_title_system_entries_public', '_bx_posts_menu_item_title_entries_public', 'page.php?i=posts-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_posts_submenu', 'bx_posts', 'posts-popular', '_bx_posts_menu_item_title_system_entries_popular', '_bx_posts_menu_item_title_entries_popular', 'page.php?i=posts-popular', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_posts_submenu', 'bx_posts', 'posts-top', '_bx_posts_menu_item_title_system_entries_top', '_bx_posts_menu_item_title_entries_top', 'page.php?i=posts-top', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_posts_submenu', 'bx_posts', 'posts-search', '_bx_posts_menu_item_title_system_entries_search', '_bx_posts_menu_item_title_entries_search', 'page.php?i=posts-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_posts_submenu', 'bx_posts', 'posts-search', '_bx_posts_menu_item_title_system_entries_search', '_bx_posts_menu_item_title_entries_search', 'page.php?i=posts-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_posts_submenu', 'bx_posts', 'posts-manage', '_bx_posts_menu_item_title_system_entries_manage', '_bx_posts_menu_item_title_entries_manage', 'page.php?i=posts-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: categories

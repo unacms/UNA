@@ -93,3 +93,23 @@ export function navbarTabBox(widths: number[], index: number, available: number,
     for (let i = 0; i < index; i++) x += (widths[i] ?? 0) + gap;
     return { x, width: widths[index] ?? 0 };
 }
+
+/**
+ * A tab's padding, by what it shows, so its chrome sits evenly around its content (the tab, components/menu-items/
+ * topmenu.tsx, and MenuTop's hidden copy that measures it both take it from here; UNA's site does the same with the
+ * same values, Artificer tailwind.css `#bx-toolbar .bx-menu-main`):
+ * - an icon and a label: 12px before the icon and 16px after the label (the 24px icon has ~3px of air, so its side
+ *   gets 4px less to look even);
+ * - a label alone (an item without an icon): 16px on both sides;
+ * - an icon alone (Studio's "Icon only", More): 10px around the 24px icon, a 44px square.
+ */
+export const NAVBAR_TAB_PADDING = {
+    iconLabel: 'ps-3 pe-4',
+    label: 'px-4',
+    icon: 'px-2.5',
+} as const;
+
+export function navbarTabPadding(hasIcon: boolean, hasLabel: boolean): string {
+    if (hasIcon && hasLabel) return NAVBAR_TAB_PADDING.iconLabel;
+    return hasLabel ? NAVBAR_TAB_PADDING.label : NAVBAR_TAB_PADDING.icon;
+}

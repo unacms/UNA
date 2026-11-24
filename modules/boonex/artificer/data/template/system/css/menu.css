@@ -162,16 +162,13 @@ li.bx-mi-hidden {
 }
 
 /*--- Page Submenu ---*/
-.bx-menu-main-submenu {
-    -webkit-justify-content: center;
-    justify-content: center;
-}
 .bx-menu-main-submenu .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item > a {
     width: 100%;
     padding: 0.5rem 1.0rem; 
     text-align: left;
 }
-.bx-menu-main-submenu .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item .bx-mi-underline {
+.bx-menu-main-submenu .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item .bx-mi-underline,
+.bx-menu-main-submenu .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item .bx-mi-pill {
     display: none;
 }
 
@@ -271,8 +268,10 @@ div.bx-popup-menu-main.sys-add-content ul {
 }
 
 /*--- Footer Menu ---*/
-#bx-menu-footer.bx-menu-hor > li.bx-menu-item-powered_by .sys-icon-svg {
+/* The UNA logo at its own width; its glyphs reach the edges of its viewBox, so it isn't clipped there. */
+#bx-menu-footer .bx-menu-hor > li.bx-menu-item-powered_by .sys-icon-svg {
     width: auto;
+    overflow: visible;
 }
 
 /*--- Profile Stats/Followings Menu ---*/

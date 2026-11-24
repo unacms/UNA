@@ -519,6 +519,7 @@ class BxFilesSearchResult extends BxBaseModTextSearchResult
         $sUniqueIdent = mt_rand();
         $aParams['unique_ident'] = $sUniqueIdent;
         $aParams['context'] = $this->sMode == 'context' ? $this->iFileManagerUploadTo : '';
+        $aParams['csrf_token'] = (string)BxDolForm::getCsrfToken();
 
         $sJsCode = $this->oModule->_oTemplate->getJsCode(['type' => 'toolbar_tools', 'uniq' => $sUniqueIdent], $aParams);
         $sJsObject = $this->oModule->_oConfig->getJsObject(['type' => 'toolbar_tools', 'uniq' => $sUniqueIdent]);

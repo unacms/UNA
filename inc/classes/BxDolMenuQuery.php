@@ -47,6 +47,20 @@ class BxDolMenuQuery extends BxDolDb
         return $oDb->getAll($sQuery);
     }
 
+    /**
+     * The icon of a set's item that opens a link: a module's create item in its "My" menu gives the module's add button
+     * its icon (BxBasePage::getAddEntryParams), so operators change it in Studio > Navigation.
+     * @param string $sSetName menu set
+     * @param string $sLink the item's link as stored (page.php?i=create-post)
+     * @return string the icon, or an empty string
+     */
+    static public function getMenuItemIconByLink($sSetName, $sLink)
+    {
+        $oDb = BxDolDb::getInstance();
+        $sQuery = $oDb->prepare("SELECT `icon` FROM `sys_menu_items` WHERE `set_name` = ? AND `link` = ? ORDER BY `id` ASC LIMIT 1", $sSetName, $sLink);
+        return (string)$oDb->getOne($sQuery);
+    }
+
     static public function addMenuItemToSet($aMenuItem)
     {
         $oDb = BxDolDb::getInstance();

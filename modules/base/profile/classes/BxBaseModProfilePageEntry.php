@@ -151,6 +151,14 @@ class BxBaseModProfilePageEntry extends BxBaseModGeneralPageEntry
         $this->_oModule->_oTemplate->setCover($this, $this->_aContentInfo);
     }
 
+    /**
+     * A profile's pages show the profile's cover, its name as the title.
+     */
+    public static function getOwnerCoverMode()
+    {
+        return BX_PAGE_OWNER_COVER_ALWAYS;
+    }
+
     public function getCode ()
     {
         $this->_oTemplate->addCss('main.css');

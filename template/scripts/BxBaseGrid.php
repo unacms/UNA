@@ -315,6 +315,12 @@ class BxBaseGrid extends BxDolGrid
         if($this->_aOptions['show_total_count'] == 0)
             $sClassHeader .= ' bx-gh-no-counter';
 
+        $sFilterControls = $this->_isFilter() ? $this->_getFilterControls() : '';
+
+        $sTitleRow = $this->_getHeaderTitleRow();
+        if($sTitleRow !== '')
+            $sClassHeader .= $this->_getHeaderTitleRowClass($sFilterControls);
+
         $aVars = array (
             'object' => $this->_sObject,
             'csrf_token' => BxDolForm::getCsrfToken(),
@@ -364,16 +370,17 @@ class BxBaseGrid extends BxDolGrid
                 'condition' => $isDisplayHeader,
                 'content' => array (
                     'class' => $sClassHeader,
+                    'title_row' => $sTitleRow,
                     'bx_if:actions_independent' => array (
-                        'condition' => !empty($this->_aOptions['actions_independent']),
+                        'condition' => !empty($this->_aOptions['actions_independent']) && $sTitleRow === '',
                         'content' => array(
-                            'actions_independent' => $this->_getActions ('independent'),
+                            'actions_independent' => $sTitleRow === '' ? $this->_getActions ('independent') : '',
                         ),
                     ),
                     'bx_if:filter' => array (
-                        'condition' => !empty($this->_aOptions['filter_fields']) || !empty($this->_aOptions['filter_fields_translatable']),
+                        'condition' => $this->_isFilter(),
                         'content' => array(
-                            'controls' => $this->_getFilterControls(),
+                            'controls' => $sFilterControls,
                         ),
                     ),
                     'bx_if:counter' => array (
@@ -1081,7 +1088,7 @@ class BxBaseGrid extends BxDolGrid
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
-            'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top', // add default classes
+            'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top' . $this->_getCellHugClass($sKey), // add default classes
             $this->_getCellWidthStyle($sKey, $aField) // add default styles
         );
 
@@ -1434,19 +1441,112 @@ class BxBaseGrid extends BxDolGrid
         return $oForm->genRow($aInputSearch);
     }
 
+    /**
+     * The header's title row (BxDolGrid::setHeaderTitleRow): the slot for the title of the block that holds the grid and,
+     * on the right, the grid's own buttons. '' when the grid keeps the header with the buttons beside the filters.
+     */
+    protected function _getHeaderTitleRow()
+    {
+        if($this->_bIsApi || !self::isHeaderTitleRow())
+            return '';
+
+        $bActions = !empty($this->_aOptions['actions_independent']);
+
+        return $this->_oTemplate->parseHtmlByName('grid_header_title.html', [
+            'title' => self::HEADER_TITLE_SLOT,
+            'bx_if:actions_independent' => [
+                'condition' => $bActions,
+                'content' => [
+                    'actions_independent' => $bActions ? $this->_getActions('independent') : '',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Header classes with a title row: bx-gh-title, and bx-gh-title-only when no filter (or a filter that draws nothing)
+     * or counter row follows it.
+     */
+    protected function _getHeaderTitleRowClass($sFilterControls)
+    {
+        $bFilter = trim($sFilterControls) !== '';
+        $bCounter = !empty($this->_aOptions['show_total_count']);
+
+        return ' bx-gh-title' . (!$bFilter && !$bCounter ? ' bx-gh-title-only' : '');
+    }
+
+    protected function _isFilter()
+    {
+        return !empty($this->_aOptions['filter_fields']) || !empty($this->_aOptions['filter_fields_translatable']);
+    }
+
     protected function _getCounter()
     {
         return _t('_sys_grid_total_count', $this->_iTotalCount);
     }
 
     /**
-     * A column of controls (the row's checkbox, drag handle, switch and action buttons) is as wide as what is in it:
-     * its width in `sys_grid_fields` is left out and its cells get this class (css/grid.css). Text columns share the
-     * room that is left by their widths.
+     * A column of controls: the row's checkbox, drag handle, switch and action buttons.
      */
     protected function _isControlsColumn ($sKey)
     {
         return in_array($sKey, ['checkbox', 'switcher', 'switcher_api', 'actions']) || (!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey);
+    }
+
+    /**
+     * What a column shows, which decides its width:
+     * - checkbox, order (drag handle), switcher, actions: the column of controls (_isControlsColumn);
+     * - count: a number in a capsule that opens what it counts (_getCellCount);
+     * - icon: an icon;
+     * - text: anything else.
+     * Every kind but text is as wide as what is in it (_isHugColumn). The kind comes from the column itself: its name
+     * (checkbox, switcher, switcher_api, actions, icon) or the grid's order field. A column that shows a count, or an
+     * icon under another name, says so in its `sys_grid_fields`.`params`: a serialized array with 'kind' => 'count'
+     * (or 'icon', 'text'), which wins over the name.
+     */
+    protected function _getColumnKind ($sKey)
+    {
+        $aField = isset($this->_aOptions['fields'][$sKey]) && is_array($this->_aOptions['fields'][$sKey]) ? $this->_aOptions['fields'][$sKey] : [];
+        if(!empty($aField['kind']) && in_array($aField['kind'], ['count', 'icon', 'text'])) {
+            return $aField['kind'];
+        }
+
+        $aByName = ['checkbox' => 'checkbox', 'switcher' => 'switcher', 'switcher_api' => 'switcher', 'actions' => 'actions'];
+        if(!empty($this->_aOptions['field_order'])) {
+            $aByName[$this->_aOptions['field_order']] = 'order';
+        }
+        if(isset($aByName[$sKey])) {
+            return $aByName[$sKey];
+        }
+
+        return strtolower($sKey) == 'icon' ? 'icon' : 'text';
+    }
+
+    /**
+     * A column that is as wide as what is in it (every kind but text, see _getColumnKind): its width in
+     * `sys_grid_fields` is left out and its cells get .bx-grid-cell-hug (css/grid.css). Text columns share the room
+     * that is left by their widths.
+     */
+    protected function _isHugColumn ($sKey)
+    {
+        return $this->_isControlsColumn($sKey) || $this->_getColumnKind($sKey) != 'text';
+    }
+
+    /**
+     * A count that opens what it counts (a menu's items, a level's actions, a form's fields): the number in a
+     * capsule button, named in full for assistive tech. The column says it shows a count (_getColumnKind).
+     * @param int $iCount the number
+     * @param string $sLink where it goes: a URL or a javascript: call
+     * @param string $sLabel the count in words, as "15 items"
+     * @param string $sTitle what it does, shown when pointed at, as "Manage items"
+     */
+    protected function _getCellCount ($iCount, $sLink, $sLabel, $sTitle = '')
+    {
+        // parseLinkByName names a javascript: action a button (role="button"), as parseLink did for these cells.
+        return $this->_oTemplate->parseLinkByName('grid_cell_count.html', htmlspecialchars($sLink, ENT_QUOTES), (int)$iCount, [
+            'title' => $sTitle !== '' ? $sTitle : $sLabel,
+            'aria-label' => $sLabel,
+        ]);
     }
 
     /**
@@ -1459,12 +1559,12 @@ class BxBaseGrid extends BxDolGrid
 
     protected function _getCellHugClass ($sKey)
     {
-        return $this->_isControlsColumn($sKey) ? ' bx-grid-cell-hug' : '';
+        return $this->_isHugColumn($sKey) ? ' bx-grid-cell-hug' : '';
     }
 
     protected function _getCellWidthStyle ($sKey, $aField)
     {
-        if(!isset($aField['width']) || $this->_isControlsColumn($sKey)) {
+        if(!isset($aField['width']) || $this->_isHugColumn($sKey)) {
             return false;
         }
 
@@ -1491,7 +1591,7 @@ class BxBaseGrid extends BxDolGrid
         $fSum = 0;
         $aFields = !empty($this->_aOptions['fields']) && is_array($this->_aOptions['fields']) ? $this->_aOptions['fields'] : [];
         foreach($aFields as $sKey => $aField) {
-            if($this->_isControlsColumn($sKey)) {
+            if($this->_isHugColumn($sKey)) {
                 continue;
             }
 
@@ -1846,6 +1946,7 @@ class BxBaseGrid extends BxDolGrid
                 'sortable' => in_array($sKey, $aOrderFields) ? 1 : 0,
                 'controls' => $this->_isControlsColumn($sKey) ? 1 : 0,
                 'kind' => $this->_agCellKind($sKey, $aField),
+                'hug' => $this->_isHugColumn($sKey) ? $this->_getColumnKind($sKey) : '',
             ];
         }
 
@@ -1926,6 +2027,9 @@ class BxBaseGrid extends BxDolGrid
 
         $aConfig = $this->_agConfig($this->_agColumns());
 
+        $sFilterControls = $this->_isFilter() ? $this->_getFilterControls() : '';
+        $sTitleRow = $this->_getHeaderTitleRow();
+
         $aVars = [
             'object' => $this->_sObject,
             'id_table' => 'bx-grid-table-' . $this->_sObject,
@@ -1936,17 +2040,18 @@ class BxBaseGrid extends BxDolGrid
             'bx_if:display_header' => [
                 'condition' => $isDisplayHeader,
                 'content' => [
-                    'class' => empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '',
+                    'class' => (empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '') . ($sTitleRow !== '' ? $this->_getHeaderTitleRowClass($sFilterControls) : ''),
+                    'title_row' => $sTitleRow,
                     'bx_if:actions_independent' => [
-                        'condition' => !empty($this->_aOptions['actions_independent']),
+                        'condition' => !empty($this->_aOptions['actions_independent']) && $sTitleRow === '',
                         'content' => [
-                            'actions_independent' => $this->_getActions('independent'),
+                            'actions_independent' => $sTitleRow === '' ? $this->_getActions('independent') : '',
                         ],
                     ],
                     'bx_if:filter' => [
-                        'condition' => !empty($this->_aOptions['filter_fields']) || !empty($this->_aOptions['filter_fields_translatable']),
+                        'condition' => $this->_isFilter(),
                         'content' => [
-                            'controls' => $this->_getFilterControls(),
+                            'controls' => $sFilterControls,
                         ],
                     ],
                     'bx_if:counter' => [

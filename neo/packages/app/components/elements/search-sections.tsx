@@ -6,6 +6,7 @@ import { NeoButtonLink } from 'app/design/controls';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon'
 import BrowseSimple, { BrowseSimpleView } from 'app/components/elements/browse-simple'
+import { normalizeSearchQuery, searchResultsHref } from 'app/lib/search-window'
 
 interface SearchSectionsProps {
     data: {
@@ -14,6 +15,7 @@ interface SearchSectionsProps {
         object_id?: string | number;
         view?: string;
         data: any[];
+        params?: { keyword?: string; [key: string]: unknown };
     };
     blockWrapperProps?: any;
 }
@@ -45,7 +47,7 @@ export default function ElementSearchSections({ blockWrapperProps, data }: Searc
                             <Row className='items-center justify-between p-2 mb-0.5'>
                                 <Text className=" text-base font-semibold tracking-tight text-muted-foreground  ">{t(item.section_name)}</Text>
                                 <NeoButtonLink
-                                    href={`/search-keyword?keyword=test&section=${item.section}`}
+                                    href={searchResultsHref(normalizeSearchQuery({ ...(data?.params ?? {}), section: item.section }))}
                                     style="borderless"
                                     controlSize="small"
                                     label={t('View all')}

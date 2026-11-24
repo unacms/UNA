@@ -26,6 +26,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
     protected $iUserId;
     protected $aData;
     protected $iTTL;
+    protected $bStored; ///< the row was read from the database: saves only update it, so a session ended meanwhile isn't recreated
 
     protected $bAutoLogout;	//--- Auto logout with broken session
 
@@ -41,6 +42,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         $this->iUserId = 0;
         $this->aData = array();
         $this->iTTL = 0;
+        $this->bStored = false;
 
         $this->bAutoLogout = false; // when changing to 'true', it maybe you will need to increase BX_DOL_SESSION_IDLE_TIMEOUT
         if (defined('BX_SESSION_AUTO_LOGOUT'))
@@ -82,17 +84,18 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if (!$bForceStart && $this->getSessionCookie() === null)
             return true;
         
-        if (getParam('sys_session_auth')) {
-            // A remembered session past its end is over, even before the cron job deletes it.
-            if ($this->exists($this->sId) && $this->iTTL && $this->iTTL < time())
-                $this->destroy(false);
+        // A session that is over (BxDolSessionQuery::exists: past its end, or idle for too long)
+        // isn't taken up again, even before the cron job deletes it: it's deleted, and a new one starts.
+        $bExists = $this->exists($this->sId);
+        $sCookieId = $bExists ? null : $this->getSessionCookie();
+        if ($sCookieId) {
+            $this->oDb->deleteById($sCookieId);
         }
-        else {
-            if ($this->exists($this->sId)) {
-                if ($this->iUserId == getLoggedId())
-                    return true;
-                $this->destroy(false);
-            }
+
+        if (!getParam('sys_session_auth') && $bExists) {
+            if ($this->iUserId == getLoggedId())
+                return true;
+            $this->destroy(false);
         }
 
 		/**
@@ -111,7 +114,8 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
 
         // if an old session has not been found then generate a new one
         if (!$this->sId) {
-            $this->sId = genRndPwd(32, true);
+            $this->sId = bin2hex(random_bytes(16));
+            $this->bStored = false;
         }
 
         $iLifetime = 60 * (int)getParam('sys_session_lifetime_in_min');
@@ -173,6 +177,7 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         $this->iUserId = 0;
         $this->iTTL = 0;
         $this->aData = array();
+        $this->bStored = false;
     }
 
     function exists($sId = '')
@@ -184,7 +189,9 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if($mixedSession === false) 
         	return false;
 
+
 		$this->sId = $mixedSession['id'];
+        $this->bStored = true;
 		$this->iUserId = (int)$mixedSession['user_id'];
         $this->iTTL = isset($mixedSession['ttl']) ? (int)$mixedSession['ttl'] : 0;
 		$this->aData = unserialize($mixedSession['data']);
@@ -216,6 +223,17 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if (0 == $iUserId && $this->iUserId) { // update last active field when user is logged out
             $this->oDb->updateLastActivityAccount($this->iUserId, time());
         }
+
+        // Signing in gets a new id with the same data: an id that existed before, which someone
+        // else could have planted in the browser (session fixation), never becomes signed in.
+        // The cookie with the new id goes out with this response.
+        if ($iUserId && $iUserId != $this->iUserId) {
+            $this->oDb->deleteById($this->sId);
+            $this->sId = bin2hex(random_bytes(16));
+            $this->bStored = false;
+            $this->sendCookie();
+        }
+
         $this->iUserId = $iUserId;
         $this->save();
     }
@@ -315,11 +333,14 @@ class BxDolSession extends BxDolFactory implements iBxDolSingleton
         if($this->iUserId == 0)
             $this->iUserId = getLoggedId();
 
+        // A session read at the start of this request is only updated: if its row was deleted meanwhile
+        // (the password changed, it was signed out elsewhere), this request doesn't bring it back.
         $this->oDb->save($this->sId, array(
             'user_id' => $this->iUserId,
             'ttl' => $this->iTTL,
             'data' => serialize($this->aData)
-        ));
+        ), !$this->bStored);
+        $this->bStored = true;
     }
 }
 
