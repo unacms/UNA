@@ -414,6 +414,11 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-head
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-header-controls-independent {
     column-gap: 1rem; /* 16px between toolbar fields and buttons */
 }
+/* One line between the filters and the rows: the header's hairline (or, for a grid without a header, the block caption's).
+   The column titles keep only the line under them; their top border (tailwind.css) would double it. */
+div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table thead th {
+    border-top-width: 0;
+}
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-table-wrapper2 {
     flex: none;
 }

@@ -172,6 +172,14 @@ class GridHeaderTitleRowTest extends BxDolTestCase
         $this->assertStringNotContainsString('Hidden', $s);
     }
 
+    public function testOneLineBetweenTheFiltersAndTheRows(): void
+    {
+        // The header (or the block caption above a grid without one) draws the line; the column titles drop their top border.
+        $sCss = str_replace("\r\n", "\n", file_get_contents(__DIR__ . '/../../../studio/template/css/page.css'));
+        $this->assertStringContainsString("div.bx-std-block-content > [id^=\"bx-grid-wrap-\"] .bx-grid-table thead th {\n    border-top-width: 0;\n}", $sCss);
+        $this->assertStringContainsString('box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 0.05);', $sCss);
+    }
+
     public function testStudioPagesTurnTheTitleRowOn(): void
     {
         $s = file_get_contents(__DIR__ . '/../../../studio/template/scripts/BxBaseStudioWidget.php');
