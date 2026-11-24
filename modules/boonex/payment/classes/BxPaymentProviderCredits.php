@@ -97,6 +97,15 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
         }
     }
 
+    public function getFinalizePendingId(&$aData)
+    {
+        if(empty($aData['c']))
+            return 0;
+
+        $aCustom = $this->_deconstructCustomData($aData['c']);
+        return isset($aCustom[1]) ? (int)$aCustom[1] : 0;
+    }
+
     public function finalizeCheckout(&$aData)
     {
         $aResult = $this->_finalizeCheckout($aData);

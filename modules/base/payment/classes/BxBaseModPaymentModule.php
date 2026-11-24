@@ -397,6 +397,21 @@ class BxBaseModPaymentModule extends BxBaseModGeneralModule
     	return BxDolService::call($mixedModule, 'get_cart_item', $aParams);
     }
 
+    /**
+     * The item of a subscription that already exists, for renewing it. A module
+     * whose items can stop being sold while subscriptions to them go on (a
+     * donation plan that is turned off) answers `get_subscription_item`; the
+     * others answer `get_cart_item` for both.
+     */
+    public function callGetSubscriptionItem($mixedModule, $aParams)
+    {
+        $mixedModuleInfo = is_numeric($mixedModule) ? BxDolModuleQuery::getInstance()->getModuleById((int)$mixedModule) : $mixedModule;
+        if(!empty($mixedModuleInfo) && BxDolRequest::serviceExists($mixedModuleInfo, 'get_subscription_item'))
+            return BxDolService::call($mixedModule, 'get_subscription_item', $aParams);
+
+        return $this->callGetCartItem($mixedModule, $aParams);
+    }
+
     public function callGetCartItems($mixedModule, $aParams)
     {
     	return BxDolService::call($mixedModule, 'get_cart_items', $aParams);
