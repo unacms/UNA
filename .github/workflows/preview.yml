@@ -16,12 +16,6 @@ on:
 permissions:
   contents: read
 
-# The teardown joins the PR's CI group, so it cancels a preview deploy still in progress instead
-# of racing it.
-concurrency:
-  group: ${{ (github.event.action == 'closed' || (github.event.action == 'unlabeled' && github.event.label.name == 'preview')) && format('ci-pr-{0}', github.event.pull_request.number) || format('preview-{0}', github.run_id) }}
-  cancel-in-progress: ${{ github.event.action == 'closed' || (github.event.action == 'unlabeled' && github.event.label.name == 'preview') }}
-
 jobs:
   start:
     # Same-repo PRs only: forks and Dependabot get no secrets.
@@ -49,6 +43,11 @@ jobs:
       && github.event.pull_request.head.repo.full_name == github.repository
       && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    # The teardown joins the PR's CI group, so it cancels a preview deploy still in progress
+    # instead of racing it. `recheck` below brings back the checks this cancels.
+    concurrency:
+      group: ci-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
@@ -91,4 +90,30 @@ jobs:
           echo "Deleted $RAILWAY_PR_ENVIRONMENT"
         else
           echo "No environment $RAILWAY_PR_ENVIRONMENT to delete"
+        fi
+
+  recheck:
+    # Removing the label cancels the PR's CI run with the deploy, required checks included. When it
+    # did, run the checks again for the same commit, without a deploy, so the PR isn't left with
+    # cancelled required checks. A closed PR needs none.
+    name: Run the cancelled checks again
+    needs: teardown
+    if: ${{ !cancelled() && github.event.action == 'unlabeled' && needs.teardown.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+    - name: Run UNA CI again if its run was cancelled
+      run: |
+        # The PR's newest run of ci.yml for its head commit, by any event.
+        run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$HEAD_SHA&per_page=1" \
+          --jq '.workflow_runs[0] | "\(.status) \(.conclusion)"')
+        echo "Newest UNA CI run for $HEAD_SHA: ${run:-none}"
+        if [ "$run" = "completed cancelled" ]; then
+          gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$HEAD_REF" -f pr="$PR_NUMBER" -f deploy=false
         fi

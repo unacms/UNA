@@ -24,7 +24,8 @@ Every push to master runs the whole PHPUnit suite, on PHP 8.3 and 8.5, whatever 
 
 - A PR gets a Railway preview only when it has the **`preview`** label. Adding the label starts a full CI run that tests the PR and deploys both UNA and NEO into the environment `pr-<number>`. The PR comment lists the URLs. A fresh UNA install takes about 10 minutes.
 - After that, each push redeploys only the half it changed.
-- Removing the label, or closing the PR, deletes the environment.
+- Removing the label, or closing the PR, deletes the environment. A CI run in progress is cancelled with it; when that happens, the checks run again for the same commit without a deploy.
+- `[no deploy]` in the title also keeps the label from deploying.
 - Forks and Dependabot PRs never get previews, because they have no access to secrets.
 
 ## Skipping deploys
@@ -38,7 +39,7 @@ Every push to master runs the whole PHPUnit suite, on PHP 8.3 and 8.5, whatever 
 - PHPUnit runs in four legs: two per PHP version, each with its own database. The leg named **Unit tests (PHP x)** runs Units and half of Integration. **Integration tests (PHP x)** runs the other half. Those four names are the required checks in the master ruleset.
 - `.github/scripts/phpunit-shard.php` splits Integration by the seconds each file took on the last master run, so the halves finish together. A new file counts as the median until master has timed it.
 - The **Tests** job fails when any leg failed, or when the legs together did not run every Integration file exactly once.
-- Dependencies (`plugins/`, `plugins_public/`, the messenger build) are cached under a key of `composer.lock`, `yarn.lock`, `package.json`, `bower.json`, the AG Grid build scripts and `modules/boonex/messenger/`. The cache refreshes every month. Only a run whose key changed installs them, once, in **Install dependencies**.
+- Dependencies and built assets (`plugins/`, `plugins_public/`, the messenger build) are cached. The key covers everything `composer install` and `yarn install` read: the lockfiles, `patches/`, `scripts/`, `src/`, the build configs, and every template and script Tailwind scans for class names (see `tailwind.config.js`). The cache also refreshes every month. A run whose key changed installs them once, in **Install dependencies**. When the yarn build starts reading a new place, add it to `inputs` in **What changed**.
 - NEO lint caches `node_modules` (keyed on the `package.json` files and `neo/patches/`) and the base branch's results (keyed on the base commit), so a PR lints only itself.
 - JUnit reports from every leg are kept for 7 days as artifacts named `junit-php<version>-shard<n>`.
 

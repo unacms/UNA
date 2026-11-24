@@ -22,6 +22,10 @@ on:
         description: PR number to build a preview for (empty on master deploys production)
         required: false
         default: ''
+      deploy:
+        description: Deploy the PR's preview (false only runs the checks)
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -54,17 +58,26 @@ jobs:
       deploy_una: ${{ steps.plan.outputs.deploy_una }}
       deploy_neo: ${{ steps.plan.outputs.deploy_neo }}
       deps_key: ${{ steps.plan.outputs.deps_key }}
+      timings_key: ${{ steps.timings.outputs.cache-matched-key }}
     steps:
-    # History without file contents: enough for `git diff --name-only`, about 3 s instead of 30.
+    # History without file contents: enough for `git diff --name-only` and `git ls-tree`, about
+    # 3 s instead of 30.
     - uses: actions/checkout@v6
       with:
         fetch-depth: 0
         filter: blob:none
-        sparse-checkout: |
-          .github
-          scripts
-          modules/boonex/messenger
-        sparse-checkout-cone-mode: true
+        sparse-checkout: .github
+
+    # One snapshot of master's timings for every leg, so the legs of one PHP version all split
+    # Integration the same way even when master saves new timings meanwhile.
+    - name: Pick master's test timings
+      id: timings
+      uses: actions/cache/restore@v6
+      with:
+        key: phpunit-timings-${{ github.run_id }}
+        restore-keys: phpunit-timings-
+        path: phpunit-timings.json
+        lookup-only: true
 
     - name: Decide what runs
       id: plan
@@ -81,7 +94,8 @@ jobs:
         PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
         REPO: ${{ github.repository }}
-        DEPS_HASH: ${{ hashFiles('composer.json', 'composer.lock', 'package.json', 'yarn.lock', 'bower.json', 'scripts/build-ag-grid.mjs', 'scripts/ag-grid-entry.js', 'modules/boonex/messenger/**') }}
+        GH_TOKEN: ${{ github.token }}
+        INPUT_DEPLOY: ${{ inputs.deploy }}
       run: |
         # No pipefail: `grep -q` may close the pipe before printf is done.
         set -eu
@@ -90,9 +104,17 @@ jobs:
         if [ -n "$PR_NUMBER" ]; then mode=pr; else mode=production; fi
         out mode "$mode"
         out pr "$PR_NUMBER"
-        # The dependency cache key changes with the lockfiles and whatever the yarn build reads;
-        # the month keeps the unpinned installs (messenger, bower) from staying frozen for long.
-        out deps_key "una-deps-v1-$(date -u +%Y-%m)-$DEPS_HASH"
+
+        # The dependency cache holds what `composer install` and `yarn install` produce, so its key
+        # covers everything they read: the lockfiles and patches, and the sources the yarn build
+        # compiles (src/, the AG Grid entry, the messenger module, and every template and script
+        # Tailwind scans for class names; see tailwind.config.js). It is a superset on purpose:
+        # an extra miss costs one install, a missing input ships stale assets. The ids come from
+        # git's trees, so no file is downloaded. The month keeps the unpinned installs (messenger,
+        # bower) from staying frozen for long.
+        inputs='^(composer\.(json|lock)|package\.json|yarn\.lock|bower\.json|tsconfig[^/]*\.json|rollup\.config\.js|tailwind\.config[^/]*\.js|patches/|scripts/|src/|inc/js/|template/|studio/template/|modules/base/|modules/[^/]+/[^/]+/(js|template|data/template)/|modules/boonex/messenger/)'
+        deps_hash=$(git ls-tree -r --full-tree HEAD | re="$inputs" awk -F '\t' '$2 ~ ENVIRON["re"]' | sha256sum | cut -c1-40)
+        out deps_key "una-deps-v2-$(date -u +%Y-%m)-$deps_hash"
 
         # Which files changed. Everything counts as changed when the range is unknown.
         all=false
@@ -114,8 +136,12 @@ jobs:
         has '^neo/' && neo=true
         has '^(neo/|scripts/railway/neo)' && neo_deploy=true
 
-        # The marker is matched without regard to case.
-        if [ "$mode" = pr ] && [ "$EVENT" = pull_request ]; then text=$PR_TITLE; else text=$COMMIT_MESSAGE; fi
+        # The marker is matched without regard to case. A preview started by preview.yml reads the
+        # title from the PR, so the marker holds there too.
+        if [ "$EVENT" = workflow_dispatch ] && [ "$mode" = pr ]; then
+          PR_TITLE=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq .title)
+        fi
+        if [ "$mode" = pr ]; then text=$PR_TITLE; else text=$COMMIT_MESSAGE; fi
         no_deploy=false
         printf '%s' "$text" | grep -qi '\[no deploy\]' && no_deploy=true
 
@@ -133,7 +159,10 @@ jobs:
           # Previews: same-repo PRs only (forks and Dependabot get no secrets), with the label.
           # The first build of an environment deploys both halves.
           preview=false
-          if [ "$EVENT" = workflow_dispatch ]; then preview=true; first=true
+          # preview.yml dispatches with deploy=false to bring back checks a teardown cancelled.
+          if [ "$EVENT" = workflow_dispatch ]; then
+            first=true
+            [ "$INPUT_DEPLOY" != false ] && preview=true
           else
             printf '%s' "$PR_LABELS" | grep -q '"preview"' && preview=true
             first=false; case "$ACTION" in opened|reopened) first=true;; esac
@@ -274,12 +303,12 @@ jobs:
         fail-on-cache-miss: true
 
     - name: Restore master's test timings
-      if: env.RUN_TESTS == 'true'
+      if: env.RUN_TESTS == 'true' && needs.changes.outputs.timings_key != ''
       uses: actions/cache/restore@v6
       with:
-        key: phpunit-timings-${{ github.run_id }}
-        restore-keys: phpunit-timings-
+        key: ${{ needs.changes.outputs.timings_key }}
         path: phpunit-timings.json
+        fail-on-cache-miss: true
 
     - name: Plan this shard
       if: env.RUN_TESTS == 'true'
