@@ -162,15 +162,21 @@ class BxDolSearchUnified extends BxDol
     }
 
     /**
-     * Search for the apps: only the modules Studio > API > Settings lists for them (sys_api_search_sections, with their
-     * comments), when it lists any; the site searches every global search section.
+     * Search for the apps: their global search (no module chosen) looks only in the modules Studio > API > Settings lists
+     * for them (sys_api_search_sections), when it lists any; a module's own Search looks in its module whatever the list
+     * says. The site's global search looks in every global search section.
      */
     public function setApiSections($b)
     {
-        if($this->_bApiSections != (bool)$b)
-            $this->_aGroups = null;
-
         $this->_bApiSections = (bool)$b;
+    }
+
+    /**
+     * The modules the apps' global search looks in, [] for every one.
+     */
+    protected function _getApiModules()
+    {
+        return $this->_bApiSections ? array_filter(array_map('trim', explode(',', (string)getParam('sys_api_search_sections')))) : [];
     }
 
     /**
@@ -222,13 +228,6 @@ class BxDolSearchUnified extends BxDol
             $this->_aGroups[$sModule]['sections'][$sSection] = $sKind;
         }
 
-        // the apps' modules
-        $aApi = $this->_bApiSections ? array_filter(array_map('trim', explode(',', (string)getParam('sys_api_search_sections')))) : [];
-        if($aApi)
-            foreach($this->_aGroups as $sModule => $aGroup)
-                if(!array_intersect(array_keys($aGroup['sections']), $aApi))
-                    unset($this->_aGroups[$sModule]);
-
         // a module only with comments in search (its own section is off) isn't a group
         foreach($this->_aGroups as $sModule => $aGroup)
             if(!in_array('main', $aGroup['sections']) && !in_array('pages', $aGroup['sections']))
@@ -249,10 +248,6 @@ class BxDolSearchUnified extends BxDol
 
         $aSections = BxDolSearch::getSections(true);
         if($sModule === '' || $sModule == 'system' || !isset($aSections[$sModule]) || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
-            return '';
-
-        $aApi = $this->_bApiSections ? array_filter(array_map('trim', explode(',', (string)getParam('sys_api_search_sections')))) : [];
-        if($aApi && !in_array($sModule, $aApi))
             return '';
 
         $aModule = BxDolModuleQuery::getInstance()->getModuleByName($sModule);
@@ -462,6 +457,12 @@ class BxDolSearchUnified extends BxDol
     {
         $aGroups = $this->getGroups();
         $aModules = $aQuery['section'] ? $aQuery['section'] : array_keys($aGroups);
+
+        // the apps' global search: the modules listed for it, with their comments
+        if(!$aQuery['section'] && ($aApi = $this->_getApiModules()))
+            $aModules = array_filter($aModules, function($sModule) use ($aGroups, $aApi) {
+                return (bool)array_intersect(array_keys($aGroups[$sModule]['sections']), $aApi);
+            });
 
         $aResult = [];
         foreach($aModules as $sModule) {

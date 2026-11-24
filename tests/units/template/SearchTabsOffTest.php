@@ -13,12 +13,18 @@ class SearchTabsOffTest extends TestCase
         $sRoot = dirname(__DIR__, 3) . '/';
         $iFound = 0;
         foreach (glob($sRoot . 'modules/boonex/*/install/sql/enable.sql') as $sFile) {
-            if (!preg_match_all("/^\('(bx_[a-z_]+_submenu)', '(bx_[a-z_]+)', '([a-z_-]+-search)'.*, (\d), \d, \d+\)[,;]?\r?$/m", file_get_contents($sFile), $aMatches, PREG_SET_ORDER))
+            $sSql = file_get_contents($sFile);
+            if (!preg_match_all("/^\('(bx_[a-z_]+_submenu)', ('bx_[a-z_]+'|@sName), '([a-z_-]+-search)'.*, (\d), \d, \d+\)[,;]?\r?$/m", $sSql, $aMatches, PREG_SET_ORDER))
                 continue;
 
             $sModuleDir = dirname($sFile, 3);
             foreach ($aMatches as $a) {
                 $iFound++;
+                // the module of a file that names itself `@sName`
+                if ($a[2] === '@sName' && preg_match("/SET @sName = '(bx_[a-z_]+)'/", $sSql, $aName))
+                    $a[2] = $aName[1];
+                else
+                    $a[2] = trim($a[2], "'");
                 $this->assertSame('0', $a[4], $sFile . ': ' . $a[3] . ' is off');
 
                 $sApp = @file_get_contents($sModuleDir . '/install/sql/enable-app.sql');
