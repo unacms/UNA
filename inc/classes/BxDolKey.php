@@ -177,6 +177,23 @@ class BxDolKey extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Count one use of a counter named by the caller (such as 'sms:account:12'), which allows $iMax uses
+     * in a window of $iWindow seconds from the first one. Unlike getNewCounterKey it needs no session
+     * to remember the key: everyone who names the same counter shares it.
+     * @param $sName - name of the counter
+     * @param $iMax - number of uses the counter allows in the window
+     * @param $iWindow - seconds the window lasts
+     * @return number of uses so far, this one included, or false if the counter is used up
+     */
+    public function useNamedCounter ($sName, $iMax, $iWindow)
+    {
+        $sKey = substr(hash_hmac('sha256', 'counter:' . $sName, BX_DOL_SECRET), 0, 32);
+        $this->_oQuery->openCounter($sKey, $iWindow);
+
+        return $this->useCounterKey($sKey, $iMax);
+    }
+
+    /**
      * Give back a use counted by useCounterKey, when it shouldn't count after all.
      * @param $sKey - key string
      * @return true if a use was given back

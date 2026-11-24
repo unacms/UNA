@@ -62,45 +62,75 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
     }
     
     /**
-     * Logged profile
+     * Sign in the account of a local profile, which the remote site has authenticated.
+     * The account has to be allowed to sign in (it isn't locked, see bx_check_login_allowed),
+     * and when two-factor sign-in is on, the member is sent to its next step instead of being signed in.
      *
      * @param $iProfileId integer
-     * @param $sPassword string
      * @param $sCallbackUrl
-     * @param $bRedirect boolean
-     * @return void
+     * @param $bRedirect boolean - redirect (or return a redirect block for API) after the sign-in, or return the result
+     * @param $bRememberMe boolean
+     * @return when $bRedirect is false: true when signed in, an error message string when refused,
+     *         or array ['redirect' => url] when the sign-in continues with two-factor sign-in
      */
     function setLogged($iProfileId, $sCallbackUrl = '', $bRedirect = true, $bRememberMe = false)
     {
         $oProfile = BxDolProfile::getInstance($iProfileId);
- 
-        bx_login($oProfile->getAccountId(), $bRememberMe);
+        $iAccountId = $oProfile ? (int)$oProfile->getAccountId() : 0;
 
-        if ($bRedirect) {
-            //set redirect from the session if it was added
-            $oSession = BxDolSession::getInstance();
-            $sSessionKey = $this->_oConfig->getName() . '_relocate';
-            if ($oSession->isValue($sSessionKey))
-                $sCallbackUrl = $sCallbackUrl ? $sCallbackUrl : $oSession->getValue($sSessionKey);
-
-            $sCallbackUrl = $sCallbackUrl ? $sCallbackUrl : $this -> _oConfig -> sDefaultRedirectUrl;
-            
-            if($this->_bIsApi)
-                return [bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sCallbackUrl)])];
-
-            header('Location: ' . $sCallbackUrl);
-
-            /*
-            // another way to redirect with "Please wait" message
-            BxDolTemplate::getInstance()->setPageNameIndex (BX_PAGE_TRANSITION);
-            BxDolTemplate::getInstance()->setPageHeader (_t('_Please Wait'));
-            BxDolTemplate::getInstance()->setPageContent ('page_main_code', BxDolTemplate::getInstance()->parseHtmlByName('transition_wait.html', ['text' => _t('_Please Wait')]));
-            BxDolTemplate::getInstance()->setPageContent ('url_relocate', bx_html_attribute($sCallbackUrl, BX_ESCAPE_STR_QUOTE));
-
-            BxDolTemplate::getInstance()->getPageCode();
-            */
-            exit;
+        $sError = $iAccountId ? bx_check_login_allowed($iAccountId) : _t('_sys_txt_login_error');
+        if ($sError) {
+            return $bRedirect ? $this->_showLoginError($sError) : $sError;
         }
+
+        // the page the member was going to waits through the SMS code steps
+        $sUrl2fa = BxTemplServiceLogin::start2faLogin($iAccountId, $bRememberMe, $this->_getRelocateUrl($sCallbackUrl));
+        if ($sUrl2fa) {
+            $sUrl2fa = BX_DOL_URL_ROOT . $sUrl2fa;
+        }
+        else {
+            bx_login($iAccountId, $bRememberMe);
+        }
+
+        if (!$bRedirect) {
+            return $sUrl2fa ? ['redirect' => $sUrl2fa] : true;
+        }
+
+        return $this->_redirectAfterLogin($sUrl2fa ? $sUrl2fa : $this->_getRelocateUrl($sCallbackUrl));
+    }
+
+    /**
+     * Where a member goes once signed in: the given URL, the one saved in the session, or the default.
+     */
+    protected function _getRelocateUrl($sCallbackUrl = '')
+    {
+        $oSession = BxDolSession::getInstance();
+        $sSessionKey = $this->_oConfig->getName() . '_relocate';
+        if (!$sCallbackUrl && $oSession->isValue($sSessionKey)) {
+            $sCallbackUrl = $oSession->getValue($sSessionKey);
+        }
+
+        return $sCallbackUrl ? $sCallbackUrl : $this->_oConfig->sDefaultRedirectUrl;
+    }
+
+    protected function _redirectAfterLogin($sUrl)
+    {
+        if ($this->_bIsApi) {
+            return [bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sUrl)])];
+        }
+
+        header('Location: ' . $sUrl);
+        exit;
+    }
+
+    protected function _showLoginError($sError)
+    {
+        if ($this->_bIsApi) {
+            return [bx_api_get_msg($sError)];
+        }
+
+        $this->_oTemplate->getPage(_t('_Error'), MsgBox($sError));
+        exit;
     }
 
     /**
@@ -153,7 +183,7 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
         if (is_array($mixed) && isset($mixed['profile_id'])) {
             $iProfileId = (int)$mixed['profile_id'];
 
-            $sRedirectUrl = $this->_getRedirectUrl($iProfileId, $mixed['existing_profile']);
+            $sRedirectUrl = !empty($mixed['redirect_url']) ? $mixed['redirect_url'] : $this->_getRedirectUrl($iProfileId, $mixed['existing_profile']);
             if($this->_bIsApi)
                 return [bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sRedirectUrl)])];
 
@@ -283,8 +313,6 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
                 return _t('_sys_txt_error_account_creation');
 
             $iProfileId = $oExistingProfile->id();
-
-            $this->setLogged($iProfileId);
         }
         else {
 
@@ -294,7 +322,7 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
                 return _t('_sys_txt_error_account_creation');
 
             $isSetPendingApproval = $this->_isSetPendingApprovalAccount($aProfileInfo, $aFieldsAccount, $aFieldsProfile);
-            $iAccountProfileId = $oFormHelperAccount->onAccountCreated ($iAccountId, $isSetPendingApproval, BX_PROFILE_ACTION_EXTERNAL);
+            $iAccountProfileId = $oFormHelperAccount->onAccountCreated ($iAccountId, $isSetPendingApproval, BX_PROFILE_ACTION_EXTERNAL, $isSetLoggedIn);
 
             // create profile
             if (isset($oFormProfile) && $oFormProfile) {
@@ -331,11 +359,21 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
         // remember remote profile id for created member
         $this ->_oDb->saveRemoteId($iProfileId, $aProfileInfo['id']);
 
+        // sign in to the existing account it was linked to (a new account is signed in when it is created)
+        $sRedirectUrl = '';
+        if ($oExistingAccount && $isSetLoggedIn) {
+            $mixedLogged = $this->setLogged($iProfileId, '', false);
+            if (is_string($mixedLogged)) {
+                return $mixedLogged;
+            }
+            $sRedirectUrl = is_array($mixedLogged) ? $mixedLogged['redirect'] : '';
+        }
+
         // auto-friend members if they are already friends on remote site
         if ($isAutoFriends && method_exists($this, '_makeFriends'))
             $this->_makeFriends($iProfileId);
 
-        return array('remote_profile_info' => $aProfileInfo, 'profile_id' => $iProfileId, 'existing_profile' => $oExistingAccount ? true : false);
+        return array('remote_profile_info' => $aProfileInfo, 'profile_id' => $iProfileId, 'existing_profile' => $oExistingAccount ? true : false, 'redirect_url' => $sRedirectUrl);
     }
 
     protected function _processImage($aFieldsProfile, $iAccountProfileId, $oFormHelperProfile)
@@ -441,14 +479,15 @@ class BxBaseModConnectModule extends BxBaseModGeneralModule
     /**
      * Check if the email address of the remote profile was verified by the remote site.
      * It is checked before the remote profile is linked to an existing local account by email.
-     * The default is permissive, modules whose remote site reports email verification should override it.
+     * The default is false: an existing account isn't given to whoever typed its email on the remote site.
+     * Modules whose remote site reports or guarantees email verification override it.
      *
      * @param $aProfileInfo - remote profile info
      * @return boolean
      */
     protected function _isRemoteEmailVerified($aProfileInfo)
     {
-        return true;
+        return false;
     }
 
     /**

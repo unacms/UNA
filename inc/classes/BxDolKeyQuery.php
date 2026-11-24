@@ -109,6 +109,22 @@ class BxDolKeyQuery extends BxDolDb
     }
 
     /**
+     * Make sure a counter key with a chosen name exists and works: create it at 0, or start it again at 0 if it has expired.
+     * Such keys have 'named_counter' as their salt.
+     */
+    public function openCounter ($sKey, $iExpire)
+    {
+        return $this->query("INSERT INTO `sys_keys` (`key`, `data`, `scope`, `expire`, `salt`) VALUES (:key, '0', 0, :expire_new, 'named_counter')
+            ON DUPLICATE KEY UPDATE `data` = IF(`expire` < :now1, '0', `data`), `expire` = IF(`expire` < :now2, :expire_upd, `expire`)", [
+            'key' => $sKey,
+            'expire_new' => time() + (int)$iExpire,
+            'expire_upd' => time() + (int)$iExpire,
+            'now1' => time(),
+            'now2' => time(),
+        ]);
+    }
+
+    /**
      * Take one back from the number kept in the data of a counter key.
      * @return true if the number was decreased
      */

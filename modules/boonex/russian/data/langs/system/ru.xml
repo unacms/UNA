@@ -3535,6 +3535,7 @@
 	<string name="_sys_form_confirm_phone_input_caption_system_do_sendsms"><![CDATA[Отправить SMS]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_empty"><![CDATA[Обязательное поле.]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Неправильный код проверки. Пожалуйста, повторите код или  <a href="{0}">измените телефонный номер и начните сначала</a>.]]></string>
+	<string name="_sys_form_confirm_phone_input_code_error_attempts"><![CDATA[Слишком много неверных кодов. <a href="{0}">Отправить новый код</a>.]]></string>
 	<string name="_sys_form_display_account_create"><![CDATA[Создать аккаунт]]></string>
 	<string name="_sys_form_display_account_settings_delete"><![CDATA[Удалить аккаунт]]></string>
 	<string name="_sys_form_display_account_settings_email"><![CDATA[Настройки email-а]]></string>
@@ -5068,6 +5069,7 @@
     <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Не удалось отправить SMS. Попробуйте ещё раз позже.]]></string>
     <string name="_sys_txt_confirm_phone_sms_text"><![CDATA[Ваш код проверки телефона - {0}.]]></string>
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Ваш телефон успешно подтверждён.]]></string>
+    <string name="_sys_txt_sms_send_limit"><![CDATA[Отправлено слишком много кодов. Попробуйте снова через час.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Пожалуйста, введите телефонный номер на который будет отправлено SMS с кодом подтверждения.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Пожалуйста, введите код проверки из SMS]]></string>
     <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. Все права защищены.]]></string>

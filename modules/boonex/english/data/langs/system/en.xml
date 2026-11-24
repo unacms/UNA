@@ -3563,6 +3563,7 @@
 	<string name="_sys_form_confirm_phone_input_caption_system_do_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_empty"><![CDATA[Cannot be empty.]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
+	<string name="_sys_form_confirm_phone_input_code_error_attempts"><![CDATA[Too many wrong codes. <a href="{0}">Send a new code</a>.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Phone is not valid]]></string>
 	<string name="_sys_form_display_account_create"><![CDATA[Create account]]></string>
 	<string name="_sys_form_display_account_settings_delete"><![CDATA[Delete Account]]></string>
@@ -5145,6 +5146,7 @@
     <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[The text message could not be sent. Please try again later.]]></string>
     <string name="_sys_txt_confirm_phone_sms_text"><![CDATA[Your phone's verification code is {0}.]]></string>
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Your phone number has been confirmed.]]></string>
+    <string name="_sys_txt_sms_send_limit"><![CDATA[Too many codes were sent. Try again in an hour.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Please enter a phone number for sending verification SMS.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Please enter verification code from the SMS.]]></string>
     <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. All rights reserved.]]></string>
