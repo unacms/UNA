@@ -288,6 +288,19 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     }
 
     /**
+     * Whether the page's section has its Search (Studio > Pages > a page > Edit section settings > Search in this
+     * section). On by default, also for a page outside any section.
+     */
+    public function isSectionSearch()
+    {
+        if($this->_sSection === '')
+            return true;
+
+        $aSection = BxDolPageQuery::getSection($this->_sSection);
+        return !isset($aSection['search']) || (int)$aSection['search'] != 0;
+    }
+
+    /**
      * The page's own value of a field it may take from its section, as stored.
      * @param string $sField a field of SECTION_DEFAULTS
      * @return mixed null where the page takes its section's

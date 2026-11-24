@@ -85,6 +85,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'SearchParse' => 'BxBaseServicesSearch',
             'GetBlockSearchAi' => 'BxBaseServicesSearch',
             'SearchAiResults' => 'BxBaseServicesSearch',
+            'SearchWindow' => 'BxBaseServicesSearch',
             'Cmts' => 'BxBaseServices',
             'GetFooter' => 'BxBaseServices',
             'SetBadges' => 'BxBaseServices',

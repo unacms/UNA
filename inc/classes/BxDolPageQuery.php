@@ -134,7 +134,7 @@ class BxDolPageQuery extends BxDolDb
      * @param string $sSection the section's submenu object
      * @param string $sModule the section's module
      * @param array $aValues field => value: cover, cover_image, cover_hidden_on, title_show, title_hidden_on (null for
-     *        the title's ones: as the cover)
+     *        the title's ones: as the cover), search (the section's Search, 1 or 0)
      * @return bool
      */
     static public function setSection($sSection, $sModule, $aValues)
@@ -143,7 +143,7 @@ class BxDolPageQuery extends BxDolDb
 
         $aBind = ['object' => $sSection, 'module' => $sModule];
         $aSet = [];
-        foreach(['cover', 'cover_image', 'cover_hidden_on', 'title_show', 'title_hidden_on'] as $sField) {
+        foreach(['cover', 'cover_image', 'cover_hidden_on', 'title_show', 'title_hidden_on', 'search'] as $sField) {
             if(!array_key_exists($sField, $aValues))
                 continue;
 

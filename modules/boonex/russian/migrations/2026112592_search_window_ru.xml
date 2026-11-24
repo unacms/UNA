@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- One search window: its field, filter chips, results and the Search of sections and contexts; Studio's "Search in this section". -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_search_action_context"><![CDATA[Поиск в «{0}»]]></string_add>
+    <string_add name="_sys_search_action_section"><![CDATA[Поиск: {0}]]></string_add>
+    <string_add name="_sys_search_chip_apply"><![CDATA[Применить]]></string_add>
+    <string_add name="_sys_search_chip_created_by"><![CDATA[Автор]]></string_add>
+    <string_add name="_sys_search_chip_created_by_me"><![CDATA[Я]]></string_add>
+    <string_add name="_sys_search_chip_created_by_placeholder"><![CDATA[Введите имя]]></string_add>
+    <string_add name="_sys_search_chip_created_by_value"><![CDATA[Автор: {0}]]></string_add>
+    <string_add name="_sys_search_chip_date"><![CDATA[Дата]]></string_add>
+    <string_add name="_sys_search_chip_date_created"><![CDATA[Создано]]></string_add>
+    <string_add name="_sys_search_chip_date_ends"><![CDATA[Окончание]]></string_add>
+    <string_add name="_sys_search_chip_date_field"><![CDATA[Дата]]></string_add>
+    <string_add name="_sys_search_chip_date_from"><![CDATA[С]]></string_add>
+    <string_add name="_sys_search_chip_date_starts"><![CDATA[Начало]]></string_add>
+    <string_add name="_sys_search_chip_date_to"><![CDATA[По]]></string_add>
+    <string_add name="_sys_search_chip_filter"><![CDATA[Фильтр]]></string_add>
+    <string_add name="_sys_search_chip_in"><![CDATA[В: {0}]]></string_add>
+    <string_add name="_sys_search_chip_remove"><![CDATA[Убрать «{0}»]]></string_add>
+    <string_add name="_sys_search_chip_title_only"><![CDATA[Только в названиях]]></string_add>
+    <string_add name="_sys_search_window_count"><![CDATA[Результаты поиска ({0})]]></string_add>
+    <string_add name="_sys_search_window_empty"><![CDATA[Попробуйте другие слова или уберите фильтр.]]></string_add>
+    <string_add name="_sys_search_window_empty_title"><![CDATA[Ничего не найдено]]></string_add>
+    <string_add name="_sys_search_window_error"><![CDATA[Поиск не сработал. Попробуйте ещё раз.]]></string_add>
+    <string_add name="_sys_search_window_filters"><![CDATA[Фильтры]]></string_add>
+    <string_add name="_sys_search_window_full"><![CDATA[Открыть все результаты]]></string_add>
+    <string_add name="_sys_search_window_hint"><![CDATA[Введите запрос, чтобы искать везде, где у вас есть доступ.]]></string_add>
+    <string_add name="_sys_search_window_hint_scope"><![CDATA[Введите запрос, чтобы искать здесь, или уберите фильтр, чтобы искать везде.]]></string_add>
+    <string_add name="_sys_search_window_keys"><![CDATA[↑ ↓ — выбрать, Enter — открыть, Esc — закрыть]]></string_add>
+    <string_add name="_sys_search_window_loading"><![CDATA[Ищем…]]></string_add>
+    <string_add name="_sys_search_window_more"><![CDATA[Показать ещё]]></string_add>
+    <string_add name="_sys_search_window_placeholder"><![CDATA[Поиск…]]></string_add>
+    <string_add name="_sys_search_window_placeholder_ai"><![CDATA[Найдите или задайте вопрос…]]></string_add>
+    <string_add name="_sys_search_window_show_all"><![CDATA[Показать все ({0}) в разделе «{1}»]]></string_add>
+    <string_add name="_sys_search_window_sort"><![CDATA[Сортировка]]></string_add>
+    <string_add name="_sys_search_window_sort_best"><![CDATA[Лучшие совпадения]]></string_add>
+    <string_add name="_sys_search_window_sort_new"><![CDATA[Сначала новые]]></string_add>
+    <string_add name="_sys_search_window_tab_all"><![CDATA[Все]]></string_add>
+    <string_add name="_sys_search_window_tabs"><![CDATA[Результаты по разделам]]></string_add>
+    <string_add name="_sys_search_window_title"><![CDATA[Поиск]]></string_add>
+    <string_add name="_adm_bp_txt_section_search"><![CDATA[Поиск в разделе]]></string_add>
+    <string_add name="_adm_bp_txt_section_search_info"><![CDATA[Кнопка «Поиск» в строке заголовка раздела (или в строке вкладок), которая ищет по содержимому раздела.]]></string_add>
+</resources>

@@ -603,6 +603,61 @@ class BxBasePage extends BxDolPage
     }
 
     /**
+     * The search this page opens: the search window with the page's scope, from the Search button of its title row (or
+     * tab row) on the site, and in the apps from the page's `search` (the section actions in the header on phones, the
+     * section's Search on wider screens). A section's pages search their module; a context's pages (a group, an event, a
+     * space: its own page or its tabs, `profile_id`) search what is posted in it, its module's tab that module only; a
+     * person's pages what they created. Nothing where the module isn't searched (Studio > Search), the section's Search
+     * is off, or the viewer may not see the context.
+     * @return array ['section' => module or '', 'context' => profile id or 0, 'author' => profile id or 0, 'title' => button label], or an empty array
+     */
+    public function getSearchAction()
+    {
+        if(!$this->isSectionSearch())
+            return [];
+
+        if($this->_isAvailablePage($this->_aObject) !== true || $this->_isVisiblePage($this->_aObject) !== true)
+            return [];
+
+        $oSearch = BxDolSearchUnified::getInstance();
+        $sModule = !empty($this->_aObject['module']) ? $this->_aObject['module'] : '';
+
+        // the profile the page is about: its `profile_id`, or the entry a context or profile module's page shows
+        $oProfile = false;
+        if(($iProfileId = (int)bx_get('profile_id')) > 0)
+            $oProfile = BxDolProfile::getInstance($iProfileId);
+        else if(($iContentId = (int)bx_get('id')) > 0 && $sModule && $sModule != 'system' && (bx_srv('system', 'is_module_context', [$sModule]) || bx_srv('system', 'is_module_profile', [$sModule])))
+            $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $sModule);
+
+        $aResult = ['section' => '', 'context' => 0, 'author' => 0, 'title' => ''];
+        if($oProfile && ($sProfileModule = $oProfile->getModule()) && $sProfileModule != 'system') {
+            if(bx_srv('system', 'is_module_context', [$sProfileModule])) {
+                if(!($aContext = $oSearch->getContextInfo($oProfile->id())))
+                    return [];
+                $aResult['context'] = $aContext['id'];
+                $aResult['title'] = _t('_sys_search_action_context', $aContext['title']);
+            }
+            else if(($aAuthor = $oSearch->getProfileInfo($oProfile->id())) && $oProfile->checkAllowedProfileView() === CHECK_ACTION_RESULT_ALLOWED) {
+                $aResult['author'] = $aAuthor['id'];
+                $aResult['title'] = _t('_sys_search_action_context', $aAuthor['title']);
+            }
+        }
+
+        // a module's page: the module, unless it is the context's own module (a group's page searches the group)
+        if($sModule && ($sModuleTitle = $oSearch->getModuleSearchTitle($sModule)) !== '' && (!$oProfile || $oProfile->getModule() != $sModule)) {
+            $aResult['section'] = $sModule;
+            if(!$aResult['title'])
+                $aResult['title'] = _t('_sys_search_action_section', mb_strtolower($sModuleTitle));
+        }
+
+        // a page that is neither a module's nor about a profile: the header's global search is there
+        if(!$aResult['section'] && !$aResult['context'] && !$aResult['author'])
+            return [];
+
+        return $aResult;
+    }
+
+    /**
      * A content or context module's create page and its add label, and whether the viewer may create that item type.
      * @param BxDolModule $oModule
      * @return array ['url' => page URI, 'title' => "Add organization", 'icon' => Lucide name, 'allowed' => bool], or an empty array when the module
@@ -915,6 +970,10 @@ class BxBasePage extends BxDolPage
                 $a['menu'] = array_merge($a['menu'], $aMenuAdd);
             }
         }
+
+        // The page's Search: the search window with the page's scope (getSearchAction), as the site's Search button.
+        if(($aSearch = $this->getSearchAction()))
+            $a['search'] = $aSearch;
 
         // The words of the apps' own landing pages (the home splash, Sign up), in the viewer's language, so Studio's
         // language strings reach them; a project's own text in the app wins.

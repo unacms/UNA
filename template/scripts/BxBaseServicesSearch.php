@@ -102,6 +102,12 @@ class BxBaseServicesSearch extends BxDol
      */
     public function serviceSearchKeywordForm ()
     {
+        // The search window's body (field, chips, results) for the page's query: this block has all of it then, and
+        // the results block has nothing. Hashtag, location and category links, Elasticsearch and a search_keyword hook
+        // keep the classic form and results.
+        if($this->_isSearchWindowPage())
+            return (new BxTemplSearchWindow())->getPage(BxDolSearchUnified::getInstance()->normalize($_GET));
+
         return $this->_getSearchObject()->getForm(BX_DB_PADDING_DEF, false, true);
     }
     
@@ -135,6 +141,10 @@ class BxBaseServicesSearch extends BxDol
                 'filter' => $this->_getSearchApiFilterFromRequest(),
                 'list' => bx_get('list') ? 1 : 0
             ]]);
+
+        // the search window in the form block has the results (serviceSearchKeywordForm)
+        if($this->_isSearchWindowPage())
+            return '';
 
         $sCode = '';
         if($bKeyword) {
@@ -311,6 +321,94 @@ class BxBaseServicesSearch extends BxDol
                 ])
             ];
         }
+    }
+
+    /**
+     * The search window's query and results for the apps (NEO's search window, Explore, the results page): one
+     * query format for every entry point (BxDolSearchUnified::normalize), the scope with its chips, and the results:
+     * "All" (a few rows of each module, with counts) or one module's page. Guest safe; every row is checked as its
+     * page checks it. With `ai` and an active judge model the keyword is read first (search_parse) and fills the
+     * module and date chips. With `scope_only` the results are left out.
+     *
+     * @code /api.php?r=system/search_window/TemplServicesSearch&params={"params":{"keyword":"garden","context":12}} @endcode
+     */
+    public function serviceSearchWindow ($aParams)
+    {
+        if(!bx_is_api())
+            return false;
+
+        if(is_string($aParams))
+            $aParams = bx_api_get_browse_params($aParams);
+        $aParams = !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : [];
+
+        $oSearch = BxDolSearchUnified::getInstance();
+        $aQuery = static::applySearchAi($oSearch->normalize($aParams), !empty($aParams['ai']));
+
+        $aResult = [
+            'query' => $oSearch->toUrlParams($aQuery),
+            'scope' => $oSearch->getScope($aQuery),
+        ];
+        $aResult['scope']['results_url'] = bx_api_get_relative_url($aResult['scope']['results_url']);
+
+        if(empty($aParams['scope_only'])) {
+            $aResult['has_query'] = $oSearch->hasQuery($aQuery) ? 1 : 0;
+            $aResult['results'] = $oSearch->search($aQuery, 'api');
+            $aResult['request_url'] = '/api.php?r=system/search_window/TemplServicesSearch&params=';
+        }
+
+        return [bx_api_get_block('search_window', $aResult)];
+    }
+
+    /**
+     * The site's search window parts for a query from the request (searchKeywordContent.php?window=1).
+     * @param array $aIn request params
+     * @return array ['query', 'chips', 'results', 'count', 'results_url']
+     */
+    public static function getSearchWindowParts ($aIn)
+    {
+        $oSearch = BxDolSearchUnified::getInstance();
+        $aQuery = static::applySearchAi($oSearch->normalize($aIn), !empty($aIn['ai']));
+
+        $aParts = (new BxTemplSearchWindow())->getParts($aQuery);
+        unset($aParts['ai']);
+
+        return $aParts;
+    }
+
+    /**
+     * The AI fill: with an active judge model, a keyword typed without a module or a date is read by the search parser
+     * (BxDolAiSearchParser, search_parse), which may find the module, the date and the words to look for. Without a
+     * model, or when the query already has a module or a date, the query is as typed.
+     */
+    public static function applySearchAi ($aQuery, $bAi)
+    {
+        if(!$bAi || $aQuery['keyword'] === '' || $aQuery['section'] || $aQuery['date_from'] || $aQuery['tab'] !== '')
+            return $aQuery;
+
+        $oParser = BxDolAiSearchParser::getInstance();
+        if(!$oParser->isAvailable())
+            return $aQuery;
+
+        $aSections = [];
+        foreach(BxDolSearchUnified::getInstance()->getGroups() as $sName => $aGroup)
+            if($sName != 'system')
+                $aSections[$sName] = $aGroup['title'];
+
+        $aParsed = $oParser->parse($aQuery['keyword'], ['sections' => $aSections, 'timezone' => $aQuery['timezone']]);
+        if(empty($aParsed['judge']))
+            return $aQuery;
+
+        if(!empty($aParsed['section']) && !$aQuery['context'])
+            $aQuery['section'] = [$aParsed['section']];
+        if(!empty($aParsed['date']['from'])) {
+            $aQuery['date_from'] = $aParsed['date']['from'];
+            $aQuery['date_to'] = $aParsed['date']['to'] ?? '';
+            $aQuery['date_field'] = in_array($aParsed['date']['field'] ?? '', ['starts', 'ends']) && $aQuery['section'] ? $aParsed['date']['field'] : 'created';
+        }
+        if(isset($aParsed['keyword']) && is_string($aParsed['keyword']))
+            $aQuery['keyword'] = trim($aParsed['keyword']);
+
+        return $aQuery;
     }
 
     /**
@@ -759,6 +857,18 @@ class BxBaseServicesSearch extends BxDol
             'api_filter_date_from' => ['value' => $iFrom, 'field' => $sField, 'operator' => '>=', 'table' => $sTable],
             'api_filter_date_to' => ['value' => $iTo, 'field' => $sField, 'operator' => '<=', 'table' => $sTable],
         ];
+    }
+
+    /**
+     * Whether the results page shows the search window: not for a hashtag, location or category link (`type`, `cat`),
+     * nor when Elasticsearch or a search_keyword hook gives the search its own class.
+     */
+    protected function _isSearchWindowPage()
+    {
+        if(bx_get('type') || bx_get('cat') || bx_get('live_search'))
+            return false;
+
+        return get_class($this->_getSearchObject()) === 'BxTemplSearch';
     }
 
     private function _getSearchObject()

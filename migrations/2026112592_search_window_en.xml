@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- One search window: its field, filter chips, results and the Search of sections and contexts; Studio's "Search in this section". -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_search_action_context"><![CDATA[Search in {0}]]></string_add>
+    <string_add name="_sys_search_action_section"><![CDATA[Search {0}]]></string_add>
+    <string_add name="_sys_search_chip_apply"><![CDATA[Apply]]></string_add>
+    <string_add name="_sys_search_chip_created_by"><![CDATA[Created by]]></string_add>
+    <string_add name="_sys_search_chip_created_by_me"><![CDATA[Me]]></string_add>
+    <string_add name="_sys_search_chip_created_by_placeholder"><![CDATA[Type a name]]></string_add>
+    <string_add name="_sys_search_chip_created_by_value"><![CDATA[Created by: {0}]]></string_add>
+    <string_add name="_sys_search_chip_date"><![CDATA[Date]]></string_add>
+    <string_add name="_sys_search_chip_date_created"><![CDATA[Created]]></string_add>
+    <string_add name="_sys_search_chip_date_ends"><![CDATA[Ends]]></string_add>
+    <string_add name="_sys_search_chip_date_field"><![CDATA[Date of]]></string_add>
+    <string_add name="_sys_search_chip_date_from"><![CDATA[From]]></string_add>
+    <string_add name="_sys_search_chip_date_starts"><![CDATA[Starts]]></string_add>
+    <string_add name="_sys_search_chip_date_to"><![CDATA[To]]></string_add>
+    <string_add name="_sys_search_chip_filter"><![CDATA[Filter]]></string_add>
+    <string_add name="_sys_search_chip_in"><![CDATA[In: {0}]]></string_add>
+    <string_add name="_sys_search_chip_remove"><![CDATA[Remove {0}]]></string_add>
+    <string_add name="_sys_search_chip_title_only"><![CDATA[Title only]]></string_add>
+    <string_add name="_sys_search_window_count"><![CDATA[Search results ({0})]]></string_add>
+    <string_add name="_sys_search_window_empty"><![CDATA[Try other words or remove a filter.]]></string_add>
+    <string_add name="_sys_search_window_empty_title"><![CDATA[Nothing found]]></string_add>
+    <string_add name="_sys_search_window_error"><![CDATA[Search didn’t work. Please try again.]]></string_add>
+    <string_add name="_sys_search_window_filters"><![CDATA[Filters]]></string_add>
+    <string_add name="_sys_search_window_full"><![CDATA[Open full results]]></string_add>
+    <string_add name="_sys_search_window_hint"><![CDATA[Type to search everything you can see.]]></string_add>
+    <string_add name="_sys_search_window_hint_scope"><![CDATA[Type to search here, or remove the filter to search everywhere.]]></string_add>
+    <string_add name="_sys_search_window_keys"><![CDATA[↑ ↓ to choose, Enter to open, Esc to close]]></string_add>
+    <string_add name="_sys_search_window_loading"><![CDATA[Searching…]]></string_add>
+    <string_add name="_sys_search_window_more"><![CDATA[Show more]]></string_add>
+    <string_add name="_sys_search_window_placeholder"><![CDATA[Search…]]></string_add>
+    <string_add name="_sys_search_window_placeholder_ai"><![CDATA[Search or ask a question…]]></string_add>
+    <string_add name="_sys_search_window_show_all"><![CDATA[Show all {0} in {1}]]></string_add>
+    <string_add name="_sys_search_window_sort"><![CDATA[Sort by]]></string_add>
+    <string_add name="_sys_search_window_sort_best"><![CDATA[Best matches]]></string_add>
+    <string_add name="_sys_search_window_sort_new"><![CDATA[Newest first]]></string_add>
+    <string_add name="_sys_search_window_tab_all"><![CDATA[All]]></string_add>
+    <string_add name="_sys_search_window_tabs"><![CDATA[Results by section]]></string_add>
+    <string_add name="_sys_search_window_title"><![CDATA[Search]]></string_add>
+    <string_add name="_adm_bp_txt_section_search"><![CDATA[Search in this section]]></string_add>
+    <string_add name="_adm_bp_txt_section_search_info"><![CDATA[A Search button in the section’s title row (or its tab row), which searches the section’s content.]]></string_add>
+</resources>
