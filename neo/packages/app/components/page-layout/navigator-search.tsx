@@ -7,10 +7,11 @@ import { PageCoverBand } from 'app/components/elements/covers/page-cover-band';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import SearchWindow from 'app/ui/molecules/search-window/search-window';
 import { normalizeSearchQuery, searchResultsHref, type SearchQuery } from 'app/lib/search-window';
+import type { ComponentProps } from 'react';
 
 type SearchPageLayoutProps = {
     /** UNA's page: its address (`url`, with the query) and its cover and title. */
-    data?: { url?: string; [key: string]: unknown } | null;
+    data?: (NonNullable<ComponentProps<typeof PageCoverBand>['data']> & NonNullable<ComponentProps<typeof PageTitle>['data']> & { url?: string }) | null;
     [key: string]: unknown;
 };
 
