@@ -1303,8 +1303,8 @@
         @apply text-gray-800 dark:text-gray-200;
         @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
         @apply transition-shadow duration-200;
-        @apply focus-within:outline focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-blue-600 dark:focus-within:outline-blue-500;
-        @apply focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600/80 dark:focus-within:ring-blue-500/80;
+        @apply focus-within:outline-none focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600 dark:focus-within:ring-blue-500;
+        @apply focus-within:shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:focus-within:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password,
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
@@ -1321,8 +1321,9 @@
     }
 
     /* Site inputs as NEO's Input (packages/app/settings/theme/inputs.js): a single-line field is 52px, a large button's height, with 16px sides,
-       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus has the ring every focused element has
-       in NEO: a 2px solid accent outline (blue-600, blue-500 in dark, 3:1 and more on the page and on a card) around a 1px accent edge. Textareas
+       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus is NEO's input
+       focus: the 1px edge turns the full accent (blue-600, blue-500 in dark, 3:1 and more on the field, the page and a card) with a soft
+       3px accent halo at 25% outside it, a box-shadow like the edge, so nothing moves. Textareas
        and lists keep their height. */
     .bx-artificer .bx-form-input-slider,
     .bx-artificer .bx-form-input-doublerange,
@@ -1354,8 +1355,8 @@
     .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html):focus-visible,
     .bx-artificer .bx-form-input-text:focus-visible,
     .bx-artificer .bx-form-input-price:focus-visible {
-        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
-        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+        @apply outline-none ring-1 ring-inset ring-blue-600 dark:ring-blue-500;
+        @apply shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     /* A plain textarea grows with its text (field-sizing; jquery.webForms.js where a browser has no field-sizing) from four lines to
        sixteen, then scrolls; its handle resizes it in height only. A limit's counter is under it (form_field_textarea.html). */
@@ -1367,7 +1368,7 @@
 
     /* A rich text editor looks like the text inputs: the card's fill, the inset hairline, 12px corners, and the accent focus ring
        around the whole editor while its text has the focus. Editor (bx_editor) is one box; Quill's toolbar and text are two, and
-       their wrapper draws the box around both, with a hairline between them. */
+       their wrapper draws the box around both, with a hairline between them. Its focus is the inputs' accent edge and halo. */
     .bx-artificer .bx-form-input-html-editor,
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) {
         @apply rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200;
@@ -1386,8 +1387,8 @@
     }
     .bx-artificer .bx-form-input-html-editor:focus-within,
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill):focus-within {
-        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
-        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+        @apply outline-none ring-1 ring-inset ring-blue-600 dark:ring-blue-500;
+        @apply shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-toolbar.ql-snow {
         @apply border-0 border-b border-solid border-black/10 dark:border-white/5 bg-transparent px-3 py-2;
