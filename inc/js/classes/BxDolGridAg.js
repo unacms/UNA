@@ -135,7 +135,7 @@ BxDolGridAg.prototype._syncView = function () {
 
 /**
  * Draws the grid again when the rows / cards choice or the width asks for another layout. The rows are asked for
- * again; the filter and the sort stay.
+ * again; the filter and the sort stay. The selection goes: the new rows show none, so no bulk action may act on it.
  */
 BxDolGridAg.prototype._relayout = function () {
     const bWasCards = this._bWide;
@@ -149,6 +149,9 @@ BxDolGridAg.prototype._relayout = function () {
     if (!eGrid)
         return;
 
+    this._oSortKeep = this._sortNow(bWasPhone);
+    this._oCardSort = null;
+    this._clearChecks();
     this._oApi?.destroy?.();
     this._oApi = null;
     eGrid.classList.remove('bx-grid-ag-cards', 'bx-grid-ag-phone');
@@ -156,6 +159,36 @@ BxDolGridAg.prototype._relayout = function () {
     eGrid.textContent = '';
     this._mount();
     this._cardSort();
+};
+
+/**
+ * The sort the grid shows, null for none: the select above the cards, else a column header's arrow.
+ */
+BxDolGridAg.prototype._sortNow = function (bCards) {
+    if (bCards)
+        return this._oCardSort ? { field: this._oCardSort.field, dir: this._oCardSort.dir } : null;
+
+    const oCol = (this._oApi?.getColumnState?.() || []).find((c) => c.sort);
+    return oCol ? { field: oCol.colId, dir: oCol.sort === 'desc' ? 'DESC' : 'ASC' } : null;
+};
+
+/**
+ * The sort a newly drawn grid starts with: the one it had before it was drawn again, else the grid's own.
+ */
+BxDolGridAg.prototype._sortStart = function () {
+    if (this._oSortKeep !== undefined)
+        return this._oSortKeep;
+
+    const sField = this._oCfg.sorting_field || '';
+    return sField ? { field: sField, dir: String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'DESC' : 'ASC' } : null;
+};
+
+BxDolGridAg.prototype._clearChecks = function () {
+    const e = document.getElementById('bx-grid-table-' + this._sObject);
+    if (e)
+        e.textContent = '';
+    document.getElementById(this._sWrap)?.classList.remove('bx-grid-ag-has-selection');
+    this._syncBulk(0);
 };
 
 BxDolGridAg.prototype._adoptBx = function () {
@@ -472,13 +505,10 @@ BxDolGridAg.prototype._cardSort = function () {
         eSel.appendChild(fOpt(oCol.name, 'DESC', oCol.title + ' ↓'));
     }
 
-    const sField = this._oCfg.sorting_field || '';
-    const sDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'DESC' : 'ASC';
-    if (this._oCardSort)
-        eSel.value = this._oCardSort.field + '|' + this._oCardSort.dir;
-    else if (sField && aCols.some((o) => o.name === sField)) {
-        this._oCardSort = { field: sField, dir: sDir };
-        eSel.value = sField + '|' + sDir;
+    const oStart = this._oCardSort || this._sortStart();
+    if (oStart && aCols.some((o) => o.name === oStart.field)) {
+        this._oCardSort = { field: oStart.field, dir: oStart.dir };
+        eSel.value = oStart.field + '|' + oStart.dir;
     }
 
     const eFilters = document.querySelector('#' + this._sWrap + ' .bx-grid-header-controls-filter');
@@ -624,8 +654,9 @@ BxDolGridAg.prototype._dragText = function (oData) {
 };
 
 BxDolGridAg.prototype._columnData = function (oCol) {
-    const sSortField = this._oCfg.sorting_field || '';
-    const sSortDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'desc' : 'asc';
+    const oSort = this._sortStart();
+    const sSortField = oSort?.field || '';
+    const sSortDir = oSort?.dir === 'DESC' ? 'desc' : 'asc';
 
     const oDef = {
         colId: oCol.name,
