@@ -467,10 +467,9 @@ class BxBaseServicesSearch extends BxDol
         if(!$oParser->isAvailable())
             return $aQuery;
 
-        $aSections = [];
-        foreach(BxDolSearchUnified::getInstance()->getGroups() as $sName => $aGroup)
-            if($sName != 'system')
-                $aSections[$sName] = $aGroup['title'];
+        // the modules global search looks in (the apps': those listed for them)
+        $aSections = BxDolSearchUnified::getInstance()->getGlobalModules();
+        unset($aSections['system']);
 
         $aParsed = $oParser->parse($aQuery['keyword'], ['sections' => $aSections, 'timezone' => $aQuery['timezone']]);
         if(empty($aParsed['judge']))

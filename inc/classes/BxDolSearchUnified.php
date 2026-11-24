@@ -172,6 +172,20 @@ class BxDolSearchUnified extends BxDol
     }
 
     /**
+     * The modules global search looks in (the apps': those listed for them), the choices a reader of the words has.
+     * @return array module name => title
+     */
+    public function getGlobalModules()
+    {
+        $aGroups = $this->getGroups();
+        $aResult = [];
+        foreach($this->_getQueryGroups($this->normalize([]), false) as $sModule)
+            $aResult[$sModule] = $aGroups[$sModule]['title'];
+
+        return $aResult;
+    }
+
+    /**
      * The modules the apps' global search looks in, [] for every one.
      */
     protected function _getApiModules()

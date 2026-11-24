@@ -282,6 +282,7 @@ class SearchWindowTest extends ApiV2TestCase
             $o->setApiSections(true);
             $aScope = $o->getScope($o->normalize([]));
             $this->assertNotContains('bx_posts', array_column($aScope['groups'], 'name'), 'global search: the listed modules');
+            $this->assertSame(['bx_persons'], array_keys($o->getGlobalModules()), 'and the AI reader\'s choices');
 
             // a section's Search searches its module even when the apps' global search leaves it out
             $aQuery = $o->normalize(['section' => 'bx_posts']);
