@@ -165,6 +165,7 @@ class SearchWindowTest extends ApiV2TestCase
             $aScope = $o->getScope($o->normalize(['keyword' => $sWord, 'author' => $aSecret[0]]));
             $aAuthor = array_values(array_filter($aScope['chips'], function ($a) { return $a['name'] == 'author'; }))[0];
             $this->assertSame([0, ''], [$aAuthor['value'], $aAuthor['value_title']]);
+            $this->assertSame(0, $o->normalize(['author' => $aSecret[0]])['author'], 'and no hidden filter either');
             list($aPosts, , $iCount) = $this->found(['keyword' => $sWord, 'context' => $aSecret[0]], $iOther);
             $this->assertSame([[], 0], [$aPosts, $iCount]);
         }

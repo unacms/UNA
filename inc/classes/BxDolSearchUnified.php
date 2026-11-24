@@ -108,7 +108,8 @@ class BxDolSearchUnified extends BxDol
             'keyword' => $sKeyword,
             'section' => $aSections,
             'context' => max(0, (int)($aIn['context'] ?? 0)),
-            'author' => max(0, (int)($aIn['author'] ?? 0)),
+            // a profile the viewer may not see is no filter at all: its chip couldn't show it, nor take it away
+            'author' => ($iAuthor = max(0, (int)($aIn['author'] ?? 0))) && $this->getProfileInfo($iAuthor) ? $iAuthor : 0,
             'title_only' => !empty($aIn['title_only']) ? 1 : 0,
             'date_from' => $sDateFrom,
             'date_to' => $sDateTo,
