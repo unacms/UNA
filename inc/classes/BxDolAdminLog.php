@@ -215,7 +215,8 @@ class BxDolAdminLog
 
         try {
             [$sParam, $sAction] = self::requestAction();
-            if ($sAction === '' || self::isReadAction($sAction) || self::isFailedResult($mixedResult))
+            // A Studio page answers a save with nothing when there is nothing to redraw (page settings with the same layout).
+            if ($sAction === '' || self::isReadAction($sAction) || ($mixedResult && self::isFailedResult($mixedResult)))
                 return $mixedResult;
 
             self::record([

@@ -165,6 +165,19 @@ class BxDolAdminLogQuery extends BxDolDb
     }
 
     /**
+     * Setting name => value in one settings mix, read before a save of that mix changes them.
+     */
+    public function getMixValues(int $iMixId): array
+    {
+        if ($iMixId <= 0)
+            return [];
+
+        $a = $this->getPairs("SELECT `option`, `value` FROM `sys_options_mixes2options` WHERE `mix_id` = :mix_id", 'option', 'value', ['mix_id' => $iMixId]);
+
+        return is_array($a) ? $a : [];
+    }
+
+    /**
      * Grid object => its table, for the grids named in a page of log rows.
      */
     public function getGridTables(array $aObjects): array

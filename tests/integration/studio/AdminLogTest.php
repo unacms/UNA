@@ -193,6 +193,13 @@ class AdminLogTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('"title":"New"', $aRow['after']);
         $this->assertStringNotContainsString('"password":"p"', $aRow['after']);
 
+        // Page settings saved with the same layout answer with nothing to redraw: still a change.
+        $_GET = ['bp_action' => 'page_edit', 'id' => '8'];
+        BxDolAdminLog::runStudioAction($oPage, fn() => []);
+        $aRow = $this->latest('studio:admin_log_test_page', '8', $iBefore);
+        $this->assertIsArray($aRow);
+        $this->assertSame('page_edit', $aRow['action']);
+
         // An action that wrote its own row is not written again.
         $iMid = $this->maxId();
         $_GET = ['bp_action' => 'activate', 'id' => '8'];
@@ -262,7 +269,7 @@ class AdminLogTest extends BxDolIntegrationTestCase
         $this->assertSame('no_such_action', $oGrid->getActionTitle('no_such_action'));
 
         // an object: the title of the changed row with its id, a module by its title
-        $sName = $oGrid->getObjectName([
+        $sName = $oGrid->getLoggedItemTitle([
             'object_type' => 'grid:sys_studio_nav_items',
             'object_id' => '5',
             'before' => '',

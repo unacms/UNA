@@ -125,7 +125,7 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
 
             case 'content':
             case 'cmts':
-                return _t('_adm_txt_admin_log_t_' . $sKind, $this->getModuleTitle($sName));
+                return _t('_adm_txt_admin_log_t_' . $sKind, $this->getLoggedModuleTitle($sName));
 
             case 'studio':
                 foreach (['_adm_wgt_cpt_' . $sName, '_adm_wgt_cpt_' . $sName . 's'] as $sKey)
@@ -151,7 +151,7 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
         return $sDefault;
     }
 
-    protected function getModuleTitle(string $sName): string
+    protected function getLoggedModuleTitle(string $sName): string
     {
         return $this->_aModuleTitles[$sName] ?? $sName;
     }
@@ -177,7 +177,7 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
      * The changed item as people know it: a setting's caption, a module's title, or the title of the row it changed,
      * with its id.
      */
-    public function getObjectName(array $aRow): string
+    public function getLoggedItemTitle(array $aRow): string
     {
         $sType = (string)$aRow['object_type'];
         $sId = (string)$aRow['object_id'];
@@ -186,7 +186,7 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
             return isset($this->_aOptionCaptions[$sId]) ? _t($this->_aOptionCaptions[$sId]) : $sId;
 
         if (in_array($sType, ['module', 'language', 'template'], true))
-            return $this->getModuleTitle($sId);
+            return $this->getLoggedModuleTitle($sId);
 
         if ($sId === '' || str_contains($sId, ','))
             return $sId;

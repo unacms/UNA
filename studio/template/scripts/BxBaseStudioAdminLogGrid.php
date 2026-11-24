@@ -133,7 +133,7 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
 
     protected function _getCellObjectId($mixedValue, $sKey, $aField, $aRow)
     {
-        return parent::_getCellDefault($this->esc($this->getObjectName($aRow)), $sKey, $aField, $aRow);
+        return parent::_getCellDefault($this->esc($this->getLoggedItemTitle($aRow)), $sKey, $aField, $aRow);
     }
 
     protected function _getCellAction($mixedValue, $sKey, $aField, $aRow)

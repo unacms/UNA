@@ -353,6 +353,8 @@ class BxDolStudioOptions extends BxDol
     	$iMixId = $oForm->getCleanValue('mix_id');
         $aCategories = explode(',', $oForm->getCleanValue('categories'));
         $bAdminLog = BxDolAdminLog::enabled();
+        // A settings mix keeps its own values: the log compares with the edited mix, not with the active one.
+        $aMixValues = $bAdminLog && (int)$iMixId > 0 ? BxDolAdminLogQuery::getInstance()->getMixValues((int)$iMixId) : [];
         $sEvalRenewToken = $this->getJsObject() . ".onSubmitted('" . $oForm->getId() . "', '" . $oForm->getCsrfToken() . "', oData);";
 
         foreach ($aCategories as $sCategory) {
@@ -408,15 +410,18 @@ class BxDolStudioOptions extends BxDol
 
                 $mixedValue = $this->oDb->getParam($aOption['name']);
                 if($this->oDb->setParam($aOption['name'], $aData[$aOption['name']], $iMixId)) {
-                    if($bAdminLog && (string)$mixedValue !== (string)$aData[$aOption['name']])
+                    $mixedLogBefore = (int)$iMixId > 0 ? ($aMixValues[$aOption['name']] ?? null) : $mixedValue;
+                    if($bAdminLog && (string)$mixedLogBefore !== (string)$aData[$aOption['name']]) {
+                        $aLogMix = (int)$iMixId > 0 ? ['mix_id' => (int)$iMixId] : [];
                         BxDolAdminLog::record([
                             'source' => 'studio',
                             'object_type' => 'option',
                             'object_id' => $aOption['name'],
                             'action' => 'save',
-                            'before' => ['type' => $aOption['type'], 'value' => $mixedValue],
-                            'after' => ['type' => $aOption['type'], 'value' => $aData[$aOption['name']]],
+                            'before' => array_merge(['type' => $aOption['type'], 'value' => $mixedLogBefore], $aLogMix),
+                            'after' => array_merge(['type' => $aOption['type'], 'value' => $aData[$aOption['name']]], $aLogMix),
                         ], true);
+                    }
 
                     $aCategoryInfo = [];
                     $this->oDb->getCategories(['type' => 'by_name', 'value' => $sCategory], $aCategoryInfo, false);
