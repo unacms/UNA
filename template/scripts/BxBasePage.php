@@ -570,8 +570,9 @@ class BxBasePage extends BxDolPage
 
     /**
      * The "add" action of this page: the + at the end of a section's title row on the site (cover.html) and the "Add"
-     * button the apps draw from `menu.add_url` (getPageAPI), so the two always agree. Only on pages of a content or a
-     * context module with a create page, and only for a viewer who may create that item type (the create page's check).
+     * button the apps draw from `menu.add_url` (getPageAPI), so the two always agree. Only on pages of a content, a
+     * context or a profile module with a create page ("Add person" on People: an account with no profile may create
+     * one), and only for a viewer who may create that item type (the create page's check).
      * @return array ['url' => absolute URL of the create page, 'title' => "Add organization", 'icon' => Lucide name], or an empty array
      */
     public function getAddEntryAction()
@@ -584,7 +585,7 @@ class BxBasePage extends BxDolPage
         if($this->_isAvailablePage($this->_aObject) !== true || $this->_isVisiblePage($this->_aObject) !== true)
             return [];
 
-        if(!bx_srv('system', 'is_module_content', [$sModule]) && !bx_srv('system', 'is_module_context', [$sModule]))
+        if(!bx_srv('system', 'is_module_content', [$sModule]) && !bx_srv('system', 'is_module_context', [$sModule]) && !bx_srv('system', 'is_module_profile', [$sModule]))
             return [];
 
         $oModule = BxDolModule::getInstance($sModule);
@@ -629,7 +630,10 @@ class BxBasePage extends BxDolPage
         if(!empty($CNF['T']['txt_sample_single']) && ($sSample = _t($CNF['T']['txt_sample_single'])) !== $CNF['T']['txt_sample_single'])
             $sTitle = _t('_sys_txt_add_entry', $sSample);
 
-        // Guests never get it; members as the create page checks them (ACL "create entry", a profile limit).
+        // Guests never get it; members exactly as the create page checks them (addDataForm: checkAllowedAdd, which is
+        // ACL "create entry" with its count and period limits and, for profiles, the account's profile limit), only
+        // checked here: the create page counts the action when the entry is saved. An account with no profile is checked
+        // at the Account level, which may create a profile.
         // A module without that ACL action (Channels: made from hashtags) has no button: checking it would stop the page.
         $bAllowed = isLogged() && method_exists($oModule, 'checkAllowedAdd')
             && BxDolAcl::getInstance()->getMembershipActionId('create entry', $oModule->getName())
@@ -895,10 +899,10 @@ class BxBasePage extends BxDolPage
                     'icon' => !empty($CNF['ICON']) ? $CNF['ICON'] : '',
                 ];
 
-                // "Add" button: content and context entries only, a profile isn't added from its list. `add_url` also gives the
+                // "Add" button: content and context entries and profiles ("Add person" on People). `add_url` also gives the
                 // section its Search in the apps, so it stays for a viewer who may not add: `add_allowed` hides the button then.
                 // The site draws the same button from the same data (getAddEntryAction, cover.html).
-                if($bModuleEntries && ($aAdd = self::getAddEntryParams($oModule))) {
+                if(($aAdd = self::getAddEntryParams($oModule))) {
                     $aMenuAdd['add_url'] = $aAdd['url'];
                     $aMenuAdd['add_title'] = $aAdd['title'];
                     $aMenuAdd['add_icon'] = $aAdd['icon'];
