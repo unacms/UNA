@@ -238,6 +238,15 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertStringNotContainsString('data-add="section"', $aParts['chips'], 'a module scope offers no other module');
     }
 
+    public function testAScopedSearchButtonReadsSearchAndIsNamedForItsScope(): void
+    {
+        $sButton = BxDolCover::getInstance(BxDolTemplate::getInstance())->getSearchButton(['section' => '', 'context' => 12, 'author' => 0, 'title' => 'Search in Garden club']);
+        $this->assertStringContainsString('aria-label="Search in Garden club"', $sButton, 'the accessible name keeps the scope');
+        $this->assertStringContainsString('title="Search in Garden club"', $sButton);
+        $this->assertStringContainsString('<span class="bx-btn-icon-mobile-label">' . _t('_Search') . '</span>', $sButton, 'the visible label is just "Search"');
+        $this->assertStringContainsString('data-search-context="12"', $sButton);
+    }
+
     public function testOneQueryFormat(): void
     {
         $o = BxDolSearchUnified::getInstance();

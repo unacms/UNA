@@ -52,8 +52,9 @@ export default function ElementSearch(oProps) {
         ) : (
             <NeoButtonRef
                 key="ddp-trigger"
-                // `labelled`: a pill with the scope's label ("Search posts"), as a section's Add beside it
-                label={oProps.labelled && oProps?.scope?.title ? oProps.scope.title : undefined}
+                // `labelled`: a pill reading "Search" (its place says where), as a section's Add beside it; the tooltip
+                // and the accessible name keep the scope ("Search in Marcus Bell")
+                label={oProps.labelled && oProps?.scope?.title ? t('Search') : undefined}
                 title={oProps.title === undefined ? '' : oProps.title}
                 image={
                     oParams?.trigger?.icon
@@ -61,7 +62,7 @@ export default function ElementSearch(oProps) {
                         : 'Search'
                 }
                 tooltip={
-                    oProps.tooltip === undefined ? t('Search') : oProps.tooltip
+                    oProps.tooltip === undefined ? (oProps?.scope?.title || t('Search')) : oProps.tooltip
                 }
                 // An icon-only button: screen readers read this, not the icon's name ("search").
                 accessibilityLabel={oProps?.scope?.title || t('Search')}
