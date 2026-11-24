@@ -10,6 +10,7 @@ function BxFilesBrowserTools(oOptions) {
     this._iContext = oOptions.context;
     this._iCurrentFolder = oOptions.current_folder;
     this._iCurrentPage = oOptions.current_page;
+    this._sCsrfToken = oOptions.csrf_token || '';
 
     this._oToolbarObject = $('#bx-files-browser-toolbar-' + this._sUniq).get(0);
 
@@ -91,12 +92,12 @@ BxFilesBrowserTools.prototype.onSelectAll = function(el) {
 };
 
 BxFilesBrowserTools.prototype.onBeforeUpload = function() {
-    $.get(this._sActionUrl + 'clear_ghosts/');
+    $.post(this._sActionUrl + 'clear_ghosts/', {csrf_token: this._sCsrfToken});
 }
 
 BxFilesBrowserTools.prototype.onAfterUpload = function() {
     var $this = this;
-    $.post(this._sActionUrl + 'upload_completed/', {context: this._iContext, folder: this._iCurrentFolder}, function(oData) {
+    $.post(this._sActionUrl + 'upload_completed/', {context: this._iContext, folder: this._iCurrentFolder, csrf_token: this._sCsrfToken}, function(oData) {
         processJsonData(oData);
         $this.reloadBlock();
     }, 'json');
@@ -107,7 +108,7 @@ BxFilesBrowserTools.prototype.addFolder = function(sMessage) {
     bx_prompt(sMessage, '', function(oPopup) {
         var name = oPopup.getValue();
 
-        $.post($this._sActionUrl + 'create_folder/', {context: $this._iContext, current_folder: $this._iCurrentFolder, name: name}, function (oData) {
+        $.post($this._sActionUrl + 'create_folder/', {context: $this._iContext, current_folder: $this._iCurrentFolder, name: name, csrf_token: $this._sCsrfToken}, function (oData) {
             processJsonData(oData);
             $this.reloadBlock();
         }, 'json');
@@ -123,7 +124,7 @@ BxFilesBrowserTools.prototype.bookmarkFiles = function() {
     if (!this.aSelectedFiles.length) return;
 
     var $this = this;
-    $.post(this._sActionUrl+'bookmark/0', {bulk: this.aSelectedFiles}, function(oData){
+    $.post(this._sActionUrl+'bookmark/0', {bulk: this.aSelectedFiles, csrf_token: this._sCsrfToken}, function(oData){
         processJsonData(oData);
         $this.reloadBlock();
     }, 'json');
@@ -135,7 +136,7 @@ BxFilesBrowserTools.prototype.deleteFiles = function() {
     var $this = this;
 
     bx_confirm(_t('_Are_you_sure'), function(){
-		$.post($this._sActionUrl+'entry_delete/0', {bulk: $this.aSelectedFiles}, function(oData){
+		$.post($this._sActionUrl+'entry_delete/0', {bulk: $this.aSelectedFiles, csrf_token: $this._sCsrfToken}, function(oData){
             processJsonData(oData);
             $this.reloadBlock();
         }, 'json');
@@ -145,7 +146,7 @@ BxFilesBrowserTools.prototype.deleteFiles = function() {
 BxFilesBrowserTools.prototype.moveFiles = function() {
     if (!this.aSelectedFiles.length) return;
 
-    $.post(this._sActionUrl + 'move_files/', {bulk: this.aSelectedFiles}, processJsonData, 'json');
+    $.post(this._sActionUrl + 'move_files/', {bulk: this.aSelectedFiles, csrf_token: this._sCsrfToken}, processJsonData, 'json');
 }
 
 BxFilesBrowserTools.prototype.downloadFiles = function() {

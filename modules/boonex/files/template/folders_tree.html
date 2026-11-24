@@ -27,7 +27,7 @@ __js_css__
         });
 
         $('#bx-files-btn-move').click(function(){
-            $.post('__actions_url__move_files', {bulk: __files__, move_to: $(this).data('move_to')}, function(oData) {
+            $.post('__actions_url__move_files', {bulk: __files__, move_to: $(this).data('move_to'), csrf_token: __csrf_token__}, function(oData) {
                 processJsonData(oData);
                 $('#bx-files-popup').dolPopupHide();
             }, 'json');
