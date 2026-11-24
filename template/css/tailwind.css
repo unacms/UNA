@@ -1129,7 +1129,7 @@
     /* The window keeps its height while it asks again: the last results stay, dimmed, until the new ones replace them, and the hint and
        an error have one fixed height, so only a real change in the results moves the window's bottom edge (its top never moves). */
     .bx-search-window-results {
-        @apply transition-opacity duration-150; /* 10rem tall at least (search_window.html) */
+        @apply transition-opacity duration-150; /* 10rem tall at least where the window has room (search_window.html), else it shrinks so the footer stays */
     }
     .bx-search-window-results[aria-busy="true"] {
         @apply opacity-50;
