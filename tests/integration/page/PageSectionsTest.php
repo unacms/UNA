@@ -148,7 +148,9 @@ class PageSectionsTest extends BxDolIntegrationTestCase
         $this->assertNotEmpty($aData['cover_block'], 'The owner\'s cover.');
         $this->assertArrayNotHasKey('cover_band', $aData);
 
-        // Their own list: the page's band, as the site draws it.
+        // Their own list: the page's band, as the site draws it. Signed in, as the owner opens it: the profile's manage
+        // menu has no cover to go into.
+        $this->bxLoginAsAdmin();
         $this->reset();
         $aData = $this->api('page/posts-author', ['profile_id' => $oProfile->id(), 'owner' => 1]);
         $this->assertEmpty($aData['cover_block']);

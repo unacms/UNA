@@ -969,7 +969,8 @@ class BxBasePage extends BxDolPage
                     call_user_func_array([$oMenuManage, 'setObjectManage'], $aObjectManage);
 
                     $aMenuManage = $oMenuManage->getCodeAPI();
-                    if(!empty($aMenuManage) && is_array($aMenuManage)) {
+                    // Into the profile's cover only: the owner's own list (owner=1) has none, the page's own band instead.
+                    if(!empty($aMenuManage) && is_array($aMenuManage) && is_array($a['cover_block'])) {
                         if(isset($a['cover_block'], $a['cover_block']['actions_menu']) && is_array($a['cover_block']['actions_menu']))
                             $a['cover_block']['actions_menu']['items'] = array_merge($a['cover_block']['actions_menu']['items'], $aMenuManage['items']);
                         else
