@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NeoButton } from 'app/design/controls';
+import { getHeaderToolbarNeoButtonDefaults } from 'app/lib/util';
 import Link from 'app/ui/atoms/link';
 import { useCurrentUser } from 'app/context/user';
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
@@ -39,6 +40,8 @@ export function SectionAddButton({ add, buttonProps }: { add: NonNullable<Sectio
                 borderShape="circle"
                 tooltip={t(add.title)}
                 accessibilityLabel={t(add.title)}
+                // the phone header's look (glass), as Search beside it, which applies the same defaults itself
+                {...getHeaderToolbarNeoButtonDefaults(false)}
                 {...(buttonProps || {})}
                 onPress={() => {
                     setPageData('loading');
@@ -54,7 +57,7 @@ export function ExploreSearchButton({ buttonProps }: { buttonProps?: Record<stri
     const { t } = useTranslation();
     return (
         <Link href="/explore?search=1" mode="plain" alt={t('Search')}>
-            <NeoButton image="Search" borderShape="circle" accessibilityLabel={t('Search')} {...(buttonProps || {})} interactive={false} />
+            <NeoButton image="Search" borderShape="circle" accessibilityLabel={t('Search')} {...getHeaderToolbarNeoButtonDefaults(false)} {...(buttonProps || {})} interactive={false} />
         </Link>
     );
 }
