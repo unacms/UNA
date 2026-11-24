@@ -12,7 +12,7 @@ import { appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor/editor-form'
 import { useEditorFormField } from 'app/lib/form/use-form-field'
 import emitter, { EVENTS } from 'app/context/emitter'
-import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml, EDITOR_LINK_RE } from './editor-mention-html'
+import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml, schemeBareLinks, EDITOR_LINK_RE } from './editor-mention-html'
 import { alignClassesToStyles } from 'app/lib/html-helpers'
 import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
@@ -257,8 +257,9 @@ export default function RftTextEnriched(props) {
         raw = raw.replace(/^<html>/i, '').replace(/<\/html>$/i, '')
         // Convert mentions to UNA links, then auto-link any plain URLs/emails the
         // editor didn't catch itself (web has the library's autolink disabled), so
-        // saved content has real <a> links on every platform.
-        const html = linkifyHtml(mentionsToUnaLinks(raw))
+        // saved content has real <a> links on every platform. Links the editor made
+        // from a bare domain get https://, or they would be relative paths.
+        const html = schemeBareLinks(linkifyHtml(mentionsToUnaLinks(raw)))
         if (onFocus && html) onFocus()
         const next = normalizeEditorHtml(html, { isLimitedHtml })
         commitEditorHtml({
@@ -430,7 +431,7 @@ export default function RftTextEnriched(props) {
         setSourceHtml(text)
         // Code blocks keep their lines and tables become table placeholders, as the
         // editor will hold them once the source view is left.
-        const next = normalizeEditorHtml(sourceToEditorHtml(text, tableImageHtml), { isLimitedHtml })
+        const next = normalizeEditorHtml(schemeBareLinks(sourceToEditorHtml(text, tableImageHtml)), { isLimitedHtml })
         field.onChange(next)
         lastSetValue.current = next
     }, [field, isLimitedHtml])
