@@ -110,10 +110,14 @@ jobs:
     steps:
     - name: Run UNA CI again if its run was cancelled
       run: |
-        # The PR's newest run of ci.yml for its head commit, by any event.
-        run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$HEAD_SHA&per_page=1" \
-          --jq '.workflow_runs[0] | "\(.status) \(.conclusion)"')
-        echo "Newest UNA CI run for $HEAD_SHA: ${run:-none}"
-        if [ "$run" = "completed cancelled" ]; then
+        # Only while nothing newer happened: the PR still points at the same commit, has no
+        # `preview` label again, and the branch's newest UNA CI run is the one that was cancelled.
+        # Otherwise a newer run already gives the checks, and dispatching would cancel it.
+        pr=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" \
+          --jq '"\(.head.sha) \([.labels[].name] | index("preview") != null)"')
+        run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$HEAD_REF&per_page=1" \
+          --jq '.workflow_runs[0] | "\(.head_sha) \(.status) \(.conclusion)"')
+        echo "PR: $pr. Newest UNA CI run on $HEAD_REF: ${run:-none}"
+        if [ "$pr" = "$HEAD_SHA false" ] && [ "$run" = "$HEAD_SHA completed cancelled" ]; then
           gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$HEAD_REF" -f pr="$PR_NUMBER" -f deploy=false
         fi
