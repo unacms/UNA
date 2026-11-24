@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Text } from 'app/design/typography';
 import { View, Row, ScrollView } from 'app/design/view';
-import { ModalHeaderBar, NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
+import { InputWithIcons, ModalHeaderBar, NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import EmptyState from 'app/ui/molecules/misc/empty-state';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -170,19 +170,41 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
         </>
     );
 
+    // in a block (Explore, the results page): the standard field, filled and round with the search icon inside, as tall
+    // as the feed's "Create new update" (44px); "+ Filter" sits at its side (SearchChips, `field`)
+    const blockField = (
+        <View className="min-w-0 flex-1">
+            <InputWithIcons
+                ref={inputRef}
+                size="regular"
+                startDecorator="Search"
+                role="searchbox"
+                accessibilityLabel={strings.title || 'Search'}
+                placeholder={strings.placeholder || ''}
+                value={keyword}
+                onChangeText={onChangeText}
+                onSubmitEditing={onSubmit}
+                onKeyPress={onKeyPress}
+                {...({ onKeyDown: onKeyPress } as Record<string, unknown>)}
+                returnKeyType="search"
+                autoCorrect={false}
+                autoCapitalize="none"
+            />
+        </View>
+    );
+
     return (
         <View className="w-full">
             <Redirect ref={redirectRef} />
-            {mode === 'modal' ? (
+            {mode === 'modal' && (
                 // the modal's own header bar, its Close where every modal has it
                 <ModalHeaderBar onClose={onClose}>{field}</ModalHeaderBar>
-            ) : (
-                <Row className={'items-center border-b border-border py-2 ' + INSET[mode]}>{field}</Row>
             )}
 
             {/* the chips, and the sort at the end of their row once there is something to sort */}
             {scope && (
                 <SearchChips
+                    field={mode === 'modal' ? undefined : blockField}
                     inset={INSET[mode]}
                     query={query}
                     scope={scope}

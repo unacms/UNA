@@ -7,6 +7,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
+import { useScreenTier } from 'app/context/measure';
 import {
     applyFilterChoice,
     fillString as fill,
@@ -29,6 +30,11 @@ type ChipsProps = {
     trailing?: ReactNode;
     /** The window's side padding (none inside a block). */
     inset?: string;
+    /**
+     * In a block (Explore, the results page): the search field, with "+ Filter" at its side on one row, as the feed's
+     * composer trigger; the chips and the sort go on a second row, only when there is one to show.
+     */
+    field?: ReactNode;
 };
 
 
@@ -57,7 +63,8 @@ function SetChip({ caption, icon, removeLabel, onRemove }: { caption: string; ic
  * module's scope its own search fields, and in global search the modules to look in. "Created by: Find someone…" puts
  * a small name field in the row, where its chip will be.
  */
-export default function SearchChips({ query, scope, strings, onChange, trailing, inset = 'px-3' }: ChipsProps) {
+export default function SearchChips({ query, scope, strings, onChange, trailing, inset = 'px-3', field }: ChipsProps) {
+    const isPhone = useScreenTier() === 'phone';
     const { currentUser } = useCurrentUser();
     const [findPerson, setFindPerson] = useState(false);
     const rowRef = useRef<any>(null);
@@ -133,30 +140,64 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
         else change(result.query);
     };
 
+    const setChips = scope.chips.filter((c) => isChipSet(c, query)).map(chip);
+    const picker = findPerson ? (
+        <PersonPicker
+            strings={strings}
+            onPick={(id) => { setFindPerson(false); change(withSearchValue(withSearchValue(query, 'author', id), 'tab', null)); focusFilter(); }}
+            onCancel={() => { setFindPerson(false); focusFilter(); }}
+        />
+    ) : null;
+    const filterMenu = (block: boolean) => menu.length > 0 && !findPerson ? (
+        <DropdownMenu items={menu} onSelect={(item) => onFilter(String(item.id))} triggerAccessibilityLabel={strings.filter}>
+            {block ? (
+                // beside the field, as the composer's side buttons: 44px, icon-only on phones
+                <NeoButton
+                    label={isPhone ? undefined : strings.filter}
+                    image="ListFilterPlus"
+                    borderShape={isPhone ? 'circle' : 'capsule'}
+                    accessibilityLabel={strings.filter}
+                    interactive
+                />
+            ) : (
+                <NeoButton label={strings.filter} image="ListFilterPlus" controlSize="small" interactive />
+            )}
+        </DropdownMenu>
+    ) : null;
+
+    if (field) {
+        const second = setChips.length > 0 || !!picker || !!trailing;
+        return (
+            // above the results: the name field's suggestions open over them
+            <View ref={rowRef} className={'relative z-10 gap-3 ' + inset}>
+                <Row className="items-center gap-2">
+                    {field}
+                    {filterMenu(true)}
+                </Row>
+                {second && (
+                    <Row className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
+                        {setChips}
+                        {picker}
+                        {!!trailing && <View className="ms-auto">{trailing}</View>}
+                    </Row>
+                )}
+            </View>
+        );
+    }
+
     return (
         // above the results: the name field's suggestions open over them
         <View className={'relative z-10 pt-3 ' + inset}>
             <Row ref={rowRef} className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
-                {scope.chips.filter((c) => isChipSet(c, query)).map(chip)}
-                {findPerson && (
-                    <PersonPicker
-                        strings={strings}
-                        onPick={(id) => { setFindPerson(false); change(withSearchValue(withSearchValue(query, 'author', id), 'tab', null)); focusFilter(); }}
-                        onCancel={() => { setFindPerson(false); focusFilter(); }}
-                    />
-                )}
-                {menu.length > 0 && !findPerson && (
-                    <DropdownMenu items={menu} onSelect={(item) => onFilter(String(item.id))} triggerAccessibilityLabel={strings.filter}>
-                        <NeoButton label={strings.filter} image="ListFilterPlus" controlSize="small" interactive />
-                    </DropdownMenu>
-                )}
+                {setChips}
+                {picker}
+                {filterMenu(false)}
                 {!!trailing && <View className="ms-auto">{trailing}</View>}
             </Row>
         </View>
     );
 }
 
-/** UNA's author suggestions: `id` and `display_name` in the apps' format (`api=1`), `value` and `label` on the site. */
 type Person = { id?: string | number; value?: string | number; display_name?: string; label?: string };
 
 const personId = (p: Person) => String(p.id ?? p.value ?? '');

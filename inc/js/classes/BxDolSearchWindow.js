@@ -31,6 +31,7 @@ function BxDolSearchWindow(oRoot)
     this._iMinLen = 2;
 
     this._bind();
+    this._placeFilter();
     this._toggleExplore();
 }
 
@@ -540,6 +541,7 @@ BxDolSearchWindow.prototype._run = function(bAi)
         }
 
         $this._oRoot.find('.bx-search-window-chips-wrap').html(oData.chips);
+        $this._placeFilter();
         if($this._bFocusFilter) {
             $this._bFocusFilter = false;
             $this._oRoot.find('.bx-search-window-chip-add').focus();
@@ -554,6 +556,25 @@ BxDolSearchWindow.prototype._run = function(bAi)
 
         $this._toggleExplore();
     });
+};
+
+/**
+ * In a block (Explore, the results page) "+ Filter" sits beside the field, as the feed's composer trigger's buttons: 44px,
+ * icon-only below lg (its label stays its name). The chips come anew with each answer, so it is moved there each time.
+ */
+BxDolSearchWindow.prototype._placeFilter = function()
+{
+    if(!this._bPage)
+        return;
+
+    var oSlot = this._oRoot.find('.bx-search-window-filter-slot').empty();
+    var oFilter = this._oRoot.find('.bx-search-window-chips .bx-search-window-chip-add');
+    if(!oFilter.length)
+        return;
+
+    oFilter.removeClass('bx-btn-small').addClass('bx-btn-icon-mobile').attr('aria-label', $.trim(oFilter.text()));
+    oFilter.children('span').addClass('bx-btn-icon-mobile-label');
+    oSlot.append(oFilter.parent('.bx-search-window-chip-wrap').length ? oFilter.parent() : oFilter);
 };
 
 /**
