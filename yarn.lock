@@ -656,10 +656,10 @@
     "@tanstack/ai-event-client" "^0.11.3"
     "@tanstack/ai-utils" "^0.4.0"
 
-"@tanstack/ai-client@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-1.2.0.tgz#a0c3ffb5bd30b60358a74846d809c90176985d23"
-  integrity sha512-fwDe6AijLgScdEDq6Cy15U6V1i2GPBtxSmUhNGytGxuW1IQIFvufYMqSmVtJ4pd/CrZXvm43BoBo6jLogl574w==
+"@tanstack/ai-client@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-1.2.1.tgz#91b63ece79e703327670a5a059e25f48b0a0f199"
+  integrity sha512-m6EjS6pRdbOxMrIIgWm6QtOfCGBbAh2QnV7PJ6b64xfeq908bTYk5U2dJKQboFN2PuAIHFa02Udbvu6nU5tp8g==
   dependencies:
     "@tanstack/ai" "^1.7.0"
     "@tanstack/ai-event-client" "^1.1.0"
