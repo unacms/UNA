@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import Link from 'app/ui/atoms/link';
@@ -10,8 +11,9 @@ type SearchHitProps = {
     data: SearchHitData;
     /** The group's icon, for a row without a picture. */
     icon?: string;
-    /** Chosen with the arrow keys. */
+    /** Chosen with the arrow keys: the highlight, and "Open ↵" at the row's end (web). */
     active?: boolean;
+    openLabel?: string;
     onOpen?: () => void;
 };
 
@@ -26,7 +28,7 @@ function hitImage(data: SearchHitData): string {
  * A search result: its picture (or the person's, or the module's icon), its title (a comment's text) and what it is
  * and who made it. The whole row opens it.
  */
-export default function SearchHit({ data, icon = 'Search', active = false, onOpen }: SearchHitProps) {
+export default function SearchHit({ data, icon = 'Search', active = false, openLabel, onOpen }: SearchHitProps) {
     const title = (data.title ? stripTags(String(data.title)) : stripTags(String(data.text ?? ''))).trim();
     const image = hitImage(data);
     const author = data.search_kind !== 'profile' ? data.author_data?.display_name : '';
@@ -35,7 +37,8 @@ export default function SearchHit({ data, icon = 'Search', active = false, onOpe
 
     return (
         <Link href={data.url} mode="plain" onPress={onOpen} className="block" aria-current={active ? 'true' : undefined}>
-            <Row className={'items-center gap-3 rounded-xl p-2 web:hover:bg-button ' + (active ? 'bg-button-hover' : '')}>
+            {/* the menu items' hover colour (theme.menu_item), 12px round */}
+            <Row className={'items-center gap-3 rounded-xl p-2 web:hover:bg-muted/80 web:transition-colors web:duration-150 ' + (active ? 'bg-muted/80' : '')}>
                 <View className={'size-10 shrink-0 items-center justify-center overflow-hidden bg-button ' + (data.search_kind === 'profile' ? 'rounded-full' : 'rounded-lg')}>
                     {image ? (
                         <Image src={image} alt="" view="cover" className="size-10" sizes="40px" />
@@ -49,6 +52,9 @@ export default function SearchHit({ data, icon = 'Search', active = false, onOpe
                     <Text className="text-sm font-medium text-foreground" numberOfLines={1}>{title}</Text>
                     {!!meta && <Text className="text-xs text-muted-foreground" numberOfLines={1}>{meta}</Text>}
                 </View>
+                {active && !!openLabel && Platform.OS === 'web' && (
+                    <Text className="shrink-0 text-xs font-medium text-muted-foreground" aria-hidden>{openLabel + ' ↵'}</Text>
+                )}
             </Row>
         </Link>
     );

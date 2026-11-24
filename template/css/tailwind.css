@@ -1156,8 +1156,39 @@
     body:not(.bx-std) .bx-btn.bx-search-window-tab[aria-selected="true"] {
         @apply bg-blue-200/60 hover:bg-blue-200/60 dark:bg-blue-900/60 dark:hover:bg-blue-900/60 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
     }
-    .bx-search-window-items > .bx-search-window-item-active {
-        @apply rounded-xl ring-2 ring-blue-600 dark:ring-blue-400;
+    /* Results as a command palette's list: the list sits 8px from the window's edge and each row pads 8px, so pictures line up
+       with the group labels and the search icon 16px in, while a row's highlight (the popup menus' hover colour, 12px round)
+       reaches 8px past them. Rows are flat (the modules' live search units without their card), a 40px picture, the title and
+       one muted line; the row chosen with the arrow keys takes the highlight and "Open ↵" at its end. */
+    .bx-search-window-items {
+        @apply gap-0;
+    }
+    .bx-search-window-items > .bx-def-unit-live-search {
+        @apply relative mb-0;
+    }
+    .bx-search-window-items > .bx-def-unit-live-search > a {
+        @apply rounded-xl bg-transparent p-2 shadow-none ring-0 hover:bg-gray-200/50 dark:bg-transparent dark:hover:bg-gray-700/50 transition-colors duration-150 ease-out;
+    }
+    .bx-search-window-items .bx-def-thumb,
+    .bx-search-window-items .bx-def-thumb-size {
+        @apply size-10 min-w-10;
+    }
+    .bx-search-window-items .bx-def-unit-info {
+        @apply min-w-0 flex-1 ps-3;
+    }
+    .bx-search-window-items .bx-def-ui-title {
+        @apply truncate text-sm font-medium text-gray-900 dark:text-gray-100;
+    }
+    .bx-search-window-items .bx-def-ui-type,
+    .bx-search-window-items .bx-def-font-meta {
+        @apply truncate text-xs text-gray-500 dark:text-gray-400;
+    }
+    .bx-search-window-items > .bx-search-window-item-active > a {
+        @apply bg-gray-200/50 dark:bg-gray-700/50;
+    }
+    .bx-search-window-items > .bx-search-window-item-active > a::after {
+        content: attr(data-open) " \21B5";
+        @apply ms-auto shrink-0 ps-3 text-xs font-medium text-gray-500 dark:text-gray-400;
     }
 
     /* Help tour (Shepherd): the vendored plugins_public/shepherd/css/shepherd.css paints the primary button #3288e6 with 75% white text (#cce1f9, 2.71:1) and is

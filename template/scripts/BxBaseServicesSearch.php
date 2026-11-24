@@ -382,6 +382,7 @@ class BxBaseServicesSearch extends BxDol
             'sort_best' => '_sys_search_window_sort_best',
             'sort_new' => '_sys_search_window_sort_new',
             'full' => '_sys_search_window_full',
+            'open' => '_sys_search_window_open',
             'filters' => '_sys_search_window_filters',
             'filter' => '_sys_search_chip_filter',
             'me' => '_sys_search_chip_created_by_me',

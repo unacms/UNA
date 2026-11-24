@@ -1,14 +1,14 @@
 <bx_if:tabs>
-    <div class="bx-search-window-tabs flex gap-1 overflow-x-auto pt-3" role="tablist" aria-label="__label__">
+    <div class="bx-search-window-tabs flex gap-1 overflow-x-auto px-2 pt-3" role="tablist" aria-label="__label__">
         <bx_repeat:tabs><button type="button" role="tab" class="bx-search-window-tab bx-btn bx-btn-small shrink-0" aria-selected="__selected__" data-tab="__value__">__title__<span class="ms-1.5 text-gray-500 dark:text-gray-400">__count__</span></button></bx_repeat:tabs>
     </div>
 </bx_if:tabs>
 <bx_repeat:groups>
-    <section class="bx-search-window-group pt-3" data-group="__name__">
-        <bx_if:head><h3 class="flex items-center gap-2 pb-1 text-sm font-semibold text-gray-800 dark:text-gray-200">__icon__<span>__title__</span><bx_if:count><span class="font-medium text-gray-500 dark:text-gray-400">__count__</span></bx_if:count></h3></bx_if:head>
+    <section class="bx-search-window-group pt-4" data-group="__name__">
+        <bx_if:head><h3 class="flex items-center gap-1.5 px-2 pb-1 text-xs font-medium text-gray-500 dark:text-gray-400"><span>__title__</span><bx_if:count><span>__count__</span></bx_if:count></h3></bx_if:head>
         <div class="bx-search-window-items flex flex-col">__items__</div>
-        <bx_if:all><button type="button" class="bx-search-window-tab bx-btn bx-btn-small mt-1" data-tab="__name__">__title__</button></bx_if:all>
-        <bx_if:more><button type="button" class="bx-search-window-more bx-btn bx-btn-small mt-2 self-start" data-cursor="__cursor__">__title__</button></bx_if:more>
+        <bx_if:all><button type="button" class="bx-search-window-tab bx-btn bx-btn-small mt-1 ms-2" data-tab="__name__">__title__</button></bx_if:all>
+        <bx_if:more><button type="button" class="bx-search-window-more bx-btn bx-btn-small mt-2 ms-2 self-start" data-cursor="__cursor__">__title__</button></bx_if:more>
     </section>
 </bx_repeat:groups>
 __empty__

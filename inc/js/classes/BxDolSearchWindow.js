@@ -502,6 +502,8 @@ BxDolSearchWindow.prototype._moveSelection = function(iStep)
 
     aItems.removeClass('bx-search-window-item-active').attr('aria-selected', null);
     var oItem = aItems.eq(iIndex).addClass('bx-search-window-item-active').attr('aria-selected', 'true');
+    // "Open ↵" at the chosen row's end (CSS reads it from the link)
+    oItem.children('a').attr('data-open', this._oRoot.find('.bx-search-window-results').attr('data-open') || '');
     if(oItem.get(0) && oItem.get(0).scrollIntoView)
         oItem.get(0).scrollIntoView({block: 'nearest'});
 };

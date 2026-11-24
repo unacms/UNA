@@ -402,7 +402,6 @@ class BxBaseSearchWindow extends BxDol
                     'condition' => !($bOneGroup && $aTabs),
                     'content' => [
                         'title' => bx_process_output($aGroup['title']),
-                        'icon' => $this->_getIcon($aGroup['icon'], 'size-4'),
                         'bx_if:count' => [
                             'condition' => !$aTabs,
                             'content' => ['count' => $sCount],

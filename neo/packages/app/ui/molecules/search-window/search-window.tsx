@@ -33,6 +33,13 @@ const STATE_BOX = 'min-h-40 items-center justify-center gap-2 py-6';
 /** Inside a block (Explore, the results page) the block's padding is the edge: the field and chips line up with its title. */
 const INSET = { modal: 'px-4', page: '', explore: '' } as const;
 
+/**
+ * The results as a command palette's list: rows sit 8px from the window's edge and pad 8px, so pictures line up with the
+ * group labels and the search icon (16px in) and a row's highlight reaches 8px past them. In a block (Explore, the results
+ * page) the list reaches 8px past the block's content for the same.
+ */
+const LIST = { modal: 'px-2', page: '-mx-2', explore: '-mx-2' } as const;
+
 export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFocus = true, onClose, onQueryChange }: SearchWindowProps) {
     const [query, setQuery] = useState<SearchQuery>(initialQuery);
     const [keyword, setKeyword] = useState<string>(initialQuery.keyword ?? '');
@@ -134,7 +141,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
     // results below and the text starts after it
     const field = (
         <>
-            <View className="size-9 shrink-0 items-center justify-center" aria-hidden>
+            <View className="h-9 w-7 shrink-0 justify-center" aria-hidden>
                 <Icon icon="Search" size={20} className="text-muted-foreground" />
             </View>
             {/* borderless, as UNA's window: the dialog's top row is the field */}
@@ -200,7 +207,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                 />
             )}
 
-            <View className={'pb-3 ' + INSET[mode]}>
+            <View className={'pb-2 ' + LIST[mode]}>
                     {/* the result count for screen readers (the tabs show it): one region, mounted before its text changes */}
                     <Text className="sr-only" role="status" aria-live="polite">{hasQuery && results ? fillString(strings.count, total) : ''}</Text>
                     {!hasQuery ? (mode === 'explore' ? null : (
@@ -215,7 +222,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             {/* a failed request for new words: the last results stay, dimmed, under the error */}
                             {error && <Text className="pt-3 text-sm text-destructive" role="alert">{strings.error || ''}</Text>}
                             {tabs && (
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-1 pt-3" accessibilityRole="tablist">
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-1 px-2 pt-3" accessibilityRole="tablist">
                                     <NeoButton
                                         label={strings.tab_all + ' ' + total}
                                         controlSize="small"
@@ -237,27 +244,24 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             )}
 
                             {groups.map((group) => (
-                                <View key={group.name} className={'pt-3 web:transition-opacity' + (error || loading ? ' opacity-50' : '')}>
+                                <View key={group.name} className={'pt-4 web:transition-opacity' + (error || loading ? ' opacity-50' : '')}>
                                     {/* a tab names the module it shows; without tabs the heading says how many */}
                                     {!(oneGroup && tabs) && (
-                                        <Row className="items-center gap-2 pb-1">
-                                            <Icon icon={group.icon} size={16} className="text-foreground" />
-                                            <Text className="text-sm font-semibold text-foreground" role="heading" aria-level={3}>
-                                                {group.title}
-                                                {!tabs && <Text className="font-medium text-muted-foreground">{' ' + countText(group.count, group.count_more)}</Text>}
-                                            </Text>
-                                        </Row>
+                                        <Text className="px-2 pb-1 text-xs font-medium text-muted-foreground" role="heading" aria-level={3}>
+                                            {group.title}
+                                            {!tabs && ' ' + countText(group.count, group.count_more)}
+                                        </Text>
                                     )}
                                     {group.items.map((item, index) => {
                                         const at = flat.findIndex((f) => f.item === item);
-                                        return <SearchHit key={String(item.id ?? index) + (item.search_kind ?? '')} data={item} icon={group.icon} active={at === active} onOpen={onClose} />;
+                                        return <SearchHit key={String(item.id ?? index) + (item.search_kind ?? '')} data={item} icon={group.icon} active={at === active} openLabel={strings.open} onOpen={onClose} />;
                                     })}
                                     {!oneGroup && (group.count > group.items.length || group.count_more) && (
                                         <NeoButton
                                             label={group.count ? fillString(strings.show_all, countText(group.count, group.count_more), group.title) : strings.more}
                                             style="borderless"
                                             controlSize="small"
-                                            classNames={{ root: 'self-start' }}
+                                            classNames={{ root: 'self-start ms-2' }}
                                             onPress={() => change(withSearchValue(query, 'tab', group.name))}
                                         />
                                     )}
@@ -269,7 +273,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                                     label={strings.more}
                                     controlSize="small"
                                     loading={extraLoading}
-                                    classNames={{ root: 'self-start mt-2' }}
+                                    classNames={{ root: 'self-start mt-2 ms-2' }}
                                     onPress={showMore}
                                 />
                             )}
