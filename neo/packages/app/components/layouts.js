@@ -23,6 +23,7 @@ import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 import { coerceVersion, isBelowRange, isAboveRange } from 'app/lib/server-version';
 import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
+import SearchWindowHost from 'app/ui/molecules/search-window/search-window-host';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/system/version-notice';
 import { applySoundConfig } from 'app/lib/sound';
@@ -104,6 +105,7 @@ export default function Layouts({ path, data }) {
             <WindowSizeSync />
             <UnsavedFormConfirmHost />
             <FormModalHost />
+            <SearchWindowHost />
             <ProfilePrompt path={path} />
             {isVersionInfo ? <VersionWarning serverVersion={data.version} /> : null}
         </Layout>

@@ -6973,6 +6973,10 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 ('sys_ntfs_context_invitations', 1, 'system', '', '_sys_page_block_title_ntfs_context_invitations', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:2:{i:0;s:19:"{logged_profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1);
 
+-- Explore, the apps' search page: the search window on top (BxBaseServicesSearch::serviceGetBlockSearchWindow); the page's other blocks show until a search is typed
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('sys_explore', 1, 'system', '_sys_page_block_title_system_search_window', '', 13, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:23:"get_block_search_window";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, 0);
+
 -- The sign-in and join blocks, on their pages and on the home page: a title icon and a line under the title
 UPDATE `sys_pages_blocks` SET `icon`='user-round-key', `description`='_sys_page_block_desc_login' WHERE `object` IN ('sys_login', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_login';
 UPDATE `sys_pages_blocks` SET `icon`='user-round-plus', `description`='_sys_page_block_desc_create_account' WHERE `object` IN ('sys_create_account', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_create_account';

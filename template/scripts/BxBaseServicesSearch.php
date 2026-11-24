@@ -412,6 +412,28 @@ class BxBaseServicesSearch extends BxDol
     }
 
     /**
+     * Page block "Search" (Explore's): the search window in the page. On Explore, the apps' search page, X's way: the
+     * page's other blocks (featured content) show until a search is typed, its results stand in their place then.
+     * The site does the same (BxDolSearchWindow.js, explore mode).
+     *
+     * @code {{~system:get_block_search_window:TemplServicesSearch~}} @endcode
+     */
+    public function serviceGetBlockSearchWindow ()
+    {
+        $oSearch = BxDolSearchUnified::getInstance();
+
+        if(bx_is_api()) {
+            $oSearch->setApiSections(true);
+            return [bx_api_get_block('search_window', [
+                'mode' => 'explore',
+                'query' => $oSearch->toUrlParams($oSearch->normalize($_GET)),
+            ])];
+        }
+
+        return (new BxTemplSearchWindow())->getPage($oSearch->normalize($_GET), 'explore');
+    }
+
+    /**
      * The site's search window parts for a query from the request (searchKeywordContent.php?window=1).
      * @param array $aIn request params
      * @return array ['query', 'chips', 'results', 'count', 'results_url']
@@ -421,7 +443,7 @@ class BxBaseServicesSearch extends BxDol
         $oSearch = BxDolSearchUnified::getInstance();
         $aQuery = static::applySearchAi($oSearch->normalize($aIn), !empty($aIn['ai']));
 
-        $aParts = (new BxTemplSearchWindow())->getParts($aQuery);
+        $aParts = (new BxTemplSearchWindow())->getParts($aQuery, false, isset($aIn['mode']) && in_array($aIn['mode'], ['page', 'explore'], true) ? $aIn['mode'] : '');
         unset($aParts['ai']);
 
         return $aParts;

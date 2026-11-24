@@ -291,6 +291,29 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertSame($aChosen, BxTemplServicesSearch::applySearchAi($aChosen, true));
     }
 
+    public function testExploreIsTheSearchPage(): void
+    {
+        $aBlock = BxDolDb::getInstance()->getRow("SELECT `active`, `active_api`, `order`, `content` FROM `sys_pages_blocks` WHERE `object` = 'sys_explore' AND `module` = 'system' AND `title_system` = '_sys_page_block_title_system_search_window'");
+        $this->assertNotEmpty($aBlock, 'Explore has the search block (install SQL, migration 2026112593)');
+        $this->assertSame(['1', '1', '0'], [(string)$aBlock['active'], (string)$aBlock['active_api'], (string)$aBlock['order']], 'on for the site and the apps, first');
+
+        // the apps get the window with the page's query; the site the window in Explore mode
+        $_GET['api'] = 1;
+        $_GET['keyword'] = 'garden';
+        try {
+            $aBlocks = (new BxTemplServicesSearch())->serviceGetBlockSearchWindow();
+        }
+        finally {
+            unset($_GET['api'], $_GET['keyword']);
+        }
+        $this->assertSame('search_window', $aBlocks[0]['type'] ?? '');
+        $this->assertSame(['mode' => 'explore', 'query' => ['keyword' => 'garden']], $aBlocks[0]['data']);
+
+        $sHtml = (new BxTemplServicesSearch())->serviceGetBlockSearchWindow();
+        $this->assertStringContainsString('data-mode="explore"', $sHtml);
+        $this->assertStringNotContainsString('bx-search-window-hint', $sHtml, 'Explore shows its featured blocks until a search, not a hint');
+    }
+
     public function testAPageSearchesItsSectionUnlessTheSectionTurnedItOff(): void
     {
         $oPage = BxDolPage::getObjectInstanceByURI('posts-home');

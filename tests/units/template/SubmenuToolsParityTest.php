@@ -35,8 +35,7 @@ class SubmenuToolsParityTest extends BxDolTestCase
     {
         $sUi = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
         $this->assertStringContainsString("const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, controlSize = 'small', labelled = false }) => {", $sUi);
-        $this->assertStringContainsString('toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}', $sUi, 'Search on the tab row: the tabs\' look.');
-        $this->assertStringContainsString('only="actions" actionStyle="glassProminent" labelled />}', $sUi, 'Add on the section\'s first line: glass prominent, small, as the site\'s (PageAddActionTemplateTest).');
+        $this->assertStringContainsString('actionButtons={<AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" labelled />}', $sUi, 'Search (glass, the tabs\' look) and Add (glass prominent) on the section\'s first line, small, as the site\'s (PageAddActionTemplateTest).');
 
         $sTab = self::read('neo/packages/app/components/menu-items/submenu.js');
         $this->assertStringContainsString("const controlSize = 'small';", $sTab);

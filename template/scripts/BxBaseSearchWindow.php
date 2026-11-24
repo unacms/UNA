@@ -17,6 +17,7 @@ class BxBaseSearchWindow extends BxDol
 
     protected $_oTemplate;
     protected $_oSearch;
+    protected $_sMode = 'popup';
 
     public function __construct($oTemplate = false)
     {
@@ -44,11 +45,14 @@ class BxBaseSearchWindow extends BxDol
     /**
      * The window on the results page (search-keyword): the same body, opened on the page's query.
      */
-    public function getPage($aQuery)
+    /**
+     * @param string $sMode 'page' (the results page) or 'explore' (Explore: the page's other blocks until a search)
+     */
+    public function getPage($aQuery, $sMode = 'page')
     {
         $this->addCssJs();
 
-        return $this->getBody($aQuery, true);
+        return $this->getBody($aQuery, true, $sMode);
     }
 
     public function addCssJs()
@@ -65,8 +69,10 @@ class BxBaseSearchWindow extends BxDol
      * @param array $aQuery normalized query
      * @param bool $bPage true on the results page, false in the popup
      */
-    public function getBody($aQuery, $bPage)
+    public function getBody($aQuery, $bPage, $sMode = '')
     {
+        $this->_sMode = $sMode ? $sMode : ($bPage ? 'page' : 'popup');
+
         // without a query (the popup before it opens): an empty field, the parts come with the first request
         $aParts = $aQuery !== null ? $this->getParts($aQuery, $bPage) : ['chips' => '', 'results' => '', 'results_url' => '', 'ai' => BxDolAiSearchParser::getInstance()->isAvailable()];
         if($aQuery === null)
@@ -77,7 +83,7 @@ class BxBaseSearchWindow extends BxDol
             'class' => $bPage ? 'bx-search-window-page' : 'bx-search-window-popup',
             'form_url' => BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('searchKeyword.php'),
             'content_url' => BX_DOL_URL_ROOT . 'searchKeywordContent.php',
-            'mode' => $bPage ? 'page' : 'popup',
+            'mode' => $this->_sMode,
             'query' => bx_html_attribute(json_encode(isset($aParts['query']) ? $aParts['query'] : new stdClass())),
             'keyword' => bx_html_attribute($aQuery['keyword']),
             'placeholder' => bx_html_attribute(_t($bAi ? '_sys_search_window_placeholder_ai' : '_sys_search_window_placeholder')),
@@ -95,8 +101,11 @@ class BxBaseSearchWindow extends BxDol
      * The parts that change with the query: chips, results (with their header and tabs) and the full results link.
      * @return array ['chips' => html, 'results' => html, 'count' => text, 'results_url' => url, 'ai' => bool, 'query' => url params]
      */
-    public function getParts($aQuery, $bPage = false)
+    public function getParts($aQuery, $bPage = false, $sMode = '')
     {
+        if($sMode !== '')
+            $this->_sMode = $sMode;
+
         $aScope = $this->_oSearch->getScope($aQuery);
         $bHasQuery = $this->_oSearch->hasQuery($aQuery);
         $aResults = $bHasQuery ? $this->_oSearch->search($aQuery, 'html') : ['groups' => [], 'total' => 0, 'total_more' => false];
@@ -316,6 +325,10 @@ class BxBaseSearchWindow extends BxDol
 
     protected function _getResults($aScope, $aQuery, $aResults, $aAll, $bHasQuery, $bPage)
     {
+        // Explore shows its featured blocks until a search
+        if(!$bHasQuery && $this->_sMode == 'explore')
+            return '';
+
         if(!$bHasQuery)
             return $this->_oTemplate->parseHtmlByName('search_window_hint.html', [
                 'text' => _t($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL ? '_sys_search_window_hint' : '_sys_search_window_hint_scope'),

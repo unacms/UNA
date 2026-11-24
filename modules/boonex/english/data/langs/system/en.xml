@@ -4638,6 +4638,7 @@
     <string name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string>
     <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string>
     <string name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Profile menu (apps)]]></string>
+    <string name="_sys_page_block_title_system_search_window"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
     <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - reports]]></string>
     <string name="_sys_page_block_title_system_cmts_view"><![CDATA[View Comment]]></string>

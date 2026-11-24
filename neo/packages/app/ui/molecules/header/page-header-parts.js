@@ -616,7 +616,7 @@ export const PageHeaderBody = memo(({
                 {isWeb && <MenuTop url={is404 ? null : pageData?.url} uri={is404 ? null : pageData?.uri} align={headerLayout.align} />}
                 <View className={`${appSetting('layout', 'header', 'content_right')} ${appSetting('layout', 'header', 'content_right_align')?.[headerLayout.align] ?? ''}`}>
                 
-                    {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} />}
+                    {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} pageData={pageData} />}
                 
                 </View>
         </>

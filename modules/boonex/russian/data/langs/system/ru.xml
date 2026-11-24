@@ -4591,6 +4591,7 @@
         <string name="_sys_page_block_title_system_onboarding"><![CDATA[Список «Начало работы»]]></string>
         <string name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Список «Начало работы» для операторов]]></string>
         <string name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Меню профиля (приложения)]]></string>
+        <string name="_sys_page_block_title_system_search_window"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
         <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Панель - жалобы]]></string>
         <string name="_sys_page_block_title_system_cmts_view"><![CDATA[Просмотр комментария]]></string>
