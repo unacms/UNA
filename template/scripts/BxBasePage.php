@@ -585,8 +585,9 @@ class BxBasePage extends BxDolPage
         if($this->_isAvailablePage($this->_aObject) !== true || $this->_isVisiblePage($this->_aObject) !== true)
             return [];
 
-        if(!bx_srv('system', 'is_module_content', [$sModule]) && !bx_srv('system', 'is_module_context', [$sModule]) && !bx_srv('system', 'is_module_profile', [$sModule]))
+        if(!bx_srv('system', 'is_module_content', [$sModule]) && !bx_srv('system', 'is_module_context', [$sModule]) && !bx_srv('system', 'is_module_profile', [$sModule])) {
             return [];
+        }
 
         $oModule = BxDolModule::getInstance($sModule);
         if(!$oModule || !($aAdd = self::getAddEntryParams($oModule)) || !$aAdd['allowed'])
@@ -902,7 +903,7 @@ class BxBasePage extends BxDolPage
                 // "Add" button: content and context entries and profiles ("Add person" on People). `add_url` also gives the
                 // section its Search in the apps, so it stays for a viewer who may not add: `add_allowed` hides the button then.
                 // The site draws the same button from the same data (getAddEntryAction, cover.html).
-                if(($aAdd = self::getAddEntryParams($oModule))) {
+                if($aAdd = self::getAddEntryParams($oModule)) {
                     $aMenuAdd['add_url'] = $aAdd['url'];
                     $aMenuAdd['add_title'] = $aAdd['title'];
                     $aMenuAdd['add_icon'] = $aAdd['icon'];
