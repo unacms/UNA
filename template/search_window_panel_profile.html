@@ -1,7 +1,6 @@
-<div id="__id__" class="bx-search-window-panel hidden mt-3 flex flex-col gap-2" data-suggest="__suggest_url__">
-    <div class="flex flex-wrap items-center gap-2">
-        <input type="text" class="bx-search-window-profile-input bx-form-input-text flex-1 min-w-40" placeholder="__placeholder__" aria-label="__label__" autocomplete="off" />
-        <bx_if:me><button type="button" class="bx-search-window-set bx-btn bx-btn-small" data-name="__name__" data-value="__me__">__title__</button></bx_if:me>
-    </div>
-    <div class="bx-search-window-profile-list flex flex-wrap gap-2"></div>
+<div id="__id__" class="bx-search-window-panel bx-search-window-dropdown hidden" data-suggest="__suggest_url__">
+    <input type="text" class="bx-search-window-profile-input bx-form-input-text bx-form-input-small w-full" placeholder="__placeholder__" aria-label="__label__" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="__id__-list" autocomplete="off" />
+    <ul id="__id__-list" class="bx-menu-ver bx-search-window-profile-list mt-1" role="listbox" aria-label="__label__">
+        <bx_if:me><li class="bx-menu-item" role="none"><a href="javascript:void(0);" role="option" class="bx-search-window-set flex items-center" data-name="__name__" data-value="__me__"><span class="bx-stl-mit">__title__</span></a></li></bx_if:me>
+    </ul>
 </div>

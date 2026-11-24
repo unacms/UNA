@@ -127,7 +127,8 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
         if (autoFocus) setTimeout(() => inputRef.current?.focus?.(), 50);
     }, [autoFocus]);
 
-    const tabs = scope && scope.scope !== 'module' && allGroups.length > 0 ? allGroups : null;
+    // a tab per module only where there is more than one: "All" counts them all, so no count row of its own
+    const tabs = scope && scope.scope !== 'module' && allGroups.length > 1 ? allGroups : null;
 
     // the field: the search icon in a 36px slot (a small icon button's), so the slot's edge lines up with the chips and
     // results below and the text starts after it
@@ -200,6 +201,8 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
             )}
 
             <View className={'pb-3 ' + INSET[mode]}>
+                    {/* the result count for screen readers (the tabs show it): one region, mounted before its text changes */}
+                    <Text className="sr-only" role="status" aria-live="polite">{hasQuery && results ? fillString(strings.count, total) : ''}</Text>
                     {!hasQuery ? (mode === 'explore' ? null : (
                         <View className={STATE_BOX}><Text className="text-center text-sm text-muted-foreground">{strings.hint || ''}</Text></View>
                     )) : error && !results ? (
@@ -211,17 +214,10 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                         <>
                             {/* a failed request for new words: the last results stay, dimmed, under the error */}
                             {error && <Text className="pt-3 text-sm text-destructive" role="alert">{strings.error || ''}</Text>}
-                            <Row className="items-center justify-between gap-3 pb-2 pt-3">
-                                <Text className="text-sm font-medium text-muted-foreground" role="status" aria-live="polite">
-                                    {fillString(strings.count, total)}
-                                </Text>
-
-                            </Row>
-
                             {tabs && (
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-1 pb-2" accessibilityRole="tablist">
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-1 pt-3" accessibilityRole="tablist">
                                     <NeoButton
-                                        label={strings.tab_all}
+                                        label={strings.tab_all + ' ' + total}
                                         controlSize="small"
                                         selected={!query.tab}
                                         accessibilityRole="tab"
@@ -241,11 +237,17 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             )}
 
                             {groups.map((group) => (
-                                <View key={group.name} className={'py-1 web:transition-opacity' + (error || loading ? ' opacity-50' : '')}>
-                                    <Row className="items-center gap-2 py-2">
-                                        <Icon icon={group.icon} size={16} className="text-foreground" />
-                                        <Text className="text-sm font-semibold text-foreground" role="heading" aria-level={3}>{group.title}</Text>
-                                    </Row>
+                                <View key={group.name} className={'pt-3 web:transition-opacity' + (error || loading ? ' opacity-50' : '')}>
+                                    {/* a tab names the module it shows; without tabs the heading says how many */}
+                                    {!(oneGroup && tabs) && (
+                                        <Row className="items-center gap-2 pb-1">
+                                            <Icon icon={group.icon} size={16} className="text-foreground" />
+                                            <Text className="text-sm font-semibold text-foreground" role="heading" aria-level={3}>
+                                                {group.title}
+                                                {!tabs && <Text className="font-medium text-muted-foreground">{' ' + countText(group.count, group.count_more)}</Text>}
+                                            </Text>
+                                        </Row>
+                                    )}
                                     {group.items.map((item, index) => {
                                         const at = flat.findIndex((f) => f.item === item);
                                         return <SearchHit key={String(item.id ?? index) + (item.search_kind ?? '')} data={item} icon={group.icon} active={at === active} onOpen={onClose} />;

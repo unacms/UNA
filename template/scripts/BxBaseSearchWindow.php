@@ -152,16 +152,23 @@ class BxBaseSearchWindow extends BxDol
                 'icon' => $aTypeIcons[$aField['type']] ?? 'list-filter',
             ];
 
-        if($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL)
-            foreach($aScope['groups'] as $aGroup)
-                $aAdd[] = ['name' => 'section', 'value' => $aGroup['name'], 'title' => _t('_sys_search_chip_in', $aGroup['title']), 'icon' => $aGroup['icon'] ?? 'search'];
+        if($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL && count($aScope['groups']) > 1)
+            foreach($aScope['groups'] as $i => $aGroup)
+                $aAdd[] = ['name' => 'section', 'value' => $aGroup['name'], 'title' => _t('_sys_search_chip_in', $aGroup['title']), 'icon' => $aGroup['icon'] ?? 'search', 'sep' => $i == 0 && $aUnset];
 
         if($aAdd) {
             $sPanelId = 'bx-search-window-panel-add';
             $aPanels[] = $this->_oTemplate->parseHtmlByName('search_window_panel_add.html', [
                 'id' => $sPanelId,
+                'label' => bx_html_attribute(_t('_sys_search_chip_filter')),
                 'bx_repeat:items' => array_map(function($a) {
-                    return ['name' => $a['name'], 'value' => bx_html_attribute($a['value']), 'title' => bx_process_output($a['title']), 'icon' => $this->_getIcon($a['icon'], 'size-4')];
+                    return [
+                        'name' => $a['name'],
+                        'value' => bx_html_attribute($a['value']),
+                        'title' => bx_process_output($a['title']),
+                        'icon' => $this->_getIcon($a['icon'], 'size-5'),
+                        'bx_if:sep' => ['condition' => !empty($a['sep']), 'content' => []],
+                    ];
                 }, $aAdd),
             ]);
             $aChips[] = $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
@@ -303,8 +310,25 @@ class BxBaseSearchWindow extends BxDol
 
             case 'date_range':
                 $aValue = is_array($aChip['value']) ? $aChip['value'] : ['from' => '', 'to' => '', 'field' => 'created'];
+                // presets first (the past week, month and year; the coming week and month for a module with start dates),
+                // then a range of one's own
+                $bStarts = false;
+                foreach($aChip['fields'] as $aField)
+                    if($aField['value'] == 'starts')
+                        $bStarts = true;
+                $aPresets = [
+                    ['title' => _t('_sys_search_chip_past_week'), 'days' => 7, 'ahead' => 0, 'field' => ''],
+                    ['title' => _t('_sys_search_chip_past_month'), 'days' => 30, 'ahead' => 0, 'field' => ''],
+                    ['title' => _t('_sys_search_chip_past_year'), 'days' => 365, 'ahead' => 0, 'field' => ''],
+                ];
+                if($bStarts) {
+                    $aPresets[] = ['title' => _t('_sys_search_chip_starts_week'), 'days' => 7, 'ahead' => 1, 'field' => 'starts'];
+                    $aPresets[] = ['title' => _t('_sys_search_chip_starts_month'), 'days' => 30, 'ahead' => 1, 'field' => 'starts'];
+                }
                 return $this->_oTemplate->parseHtmlByName('search_window_panel_date.html', [
                     'id' => $sId,
+                    'label' => bx_html_attribute($aChip['caption']),
+                    'bx_repeat:presets' => $aPresets,
                     'from' => bx_html_attribute($aValue['from']),
                     'to' => bx_html_attribute($aValue['to']),
                     'from_label' => _t('_sys_search_chip_date_from'),
@@ -359,9 +383,10 @@ class BxBaseSearchWindow extends BxDol
         // a page with no row the viewer may see can still have more after it (the rows checked per request are capped)
         $aGroups = $bOneGroup ? (!empty($aResults['group']['items']) || $aResults['group']['cursor'] !== '' ? [$aResults['group']] : []) : $aResults['groups'];
 
-        // tabs: "All" and a tab per module with results; a module scope has none
+        // tabs: "All" with the count and a tab per module with results, where there is more than one module; a module
+        // scope has none. The count has no row of its own: "All" shows it, and the status region announces it.
         $aTabs = [];
-        if($aScope['scope'] != BxDolSearchUnified::SCOPE_MODULE && !empty($aAll['groups'])) {
+        if($aScope['scope'] != BxDolSearchUnified::SCOPE_MODULE && !empty($aAll['groups']) && count($aAll['groups']) > 1) {
             $aTabs[] = ['value' => '', 'title' => _t('_sys_search_window_tab_all'), 'count' => $this->_getCountNumber($aAll), 'selected' => $aQuery['tab'] === '' ? 'true' : 'false'];
             foreach($aAll['groups'] as $aGroup)
                 $aTabs[] = ['value' => $aGroup['name'], 'title' => bx_process_output($aGroup['title']), 'count' => $aGroup['count'] . ($aGroup['count_more'] ? '+' : ''), 'selected' => $aQuery['tab'] === $aGroup['name'] ? 'true' : 'false'];
@@ -372,8 +397,18 @@ class BxBaseSearchWindow extends BxDol
             $sCount = $aGroup['count'] . ($aGroup['count_more'] ? '+' : '');
             $aGroupsOut[] = [
                 'name' => $aGroup['name'],
-                'title' => bx_process_output($aGroup['title']),
-                'icon' => $this->_getIcon($aGroup['icon'], 'size-4'),
+                // a tab names the module it shows; without tabs the heading says how many
+                'bx_if:head' => [
+                    'condition' => !($bOneGroup && $aTabs),
+                    'content' => [
+                        'title' => bx_process_output($aGroup['title']),
+                        'icon' => $this->_getIcon($aGroup['icon'], 'size-4'),
+                        'bx_if:count' => [
+                            'condition' => !$aTabs,
+                            'content' => ['count' => $sCount],
+                        ],
+                    ],
+                ],
                 'items' => implode('', $aGroup['items']),
                 'bx_if:all' => [
                     'condition' => !$bOneGroup && ($aGroup['count'] > count($aGroup['items']) || $aGroup['count_more']),
@@ -397,7 +432,6 @@ class BxBaseSearchWindow extends BxDol
             $sEmpty = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->emptyState(_t('_sys_search_window_empty'), [], 'search', _t('_sys_search_window_empty_title'));
 
         return $this->_oTemplate->parseHtmlByName('search_window_results.html', [
-            'count' => $this->_getCountText($aResults),
             'bx_if:tabs' => [
                 'condition' => count($aTabs) > 1,
                 'content' => [

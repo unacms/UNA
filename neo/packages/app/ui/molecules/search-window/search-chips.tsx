@@ -1,10 +1,23 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { View, Row } from 'app/design/view';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { Platform } from 'react-native';
+import { View, Row, Pressable } from 'app/design/view';
+import { Text } from 'app/design/typography';
 import { NeoButton, NeoButtonGroup, Input } from 'app/design/controls';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { fetcher } from 'app/lib/fetcher';
+import { cn } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
-import { searchFilters, withSearchFilter, withSearchValue, type SearchQuery } from 'app/lib/search-window';
+import {
+    applyFilterChoice,
+    fillString as fill,
+    filterMenuItems,
+    isChipSet,
+    optionValues,
+    withSearchFilter,
+    withSearchValue,
+    withoutChip,
+    type SearchQuery,
+} from 'app/lib/search-window';
 import type { SearchChip, SearchScopeData } from './search-window.types';
 
 type ChipsProps = {
@@ -18,20 +31,6 @@ type ChipsProps = {
     inset?: string;
 };
 
-function fill(text: string | undefined, ...values: Array<string | number>): string {
-    return String(text ?? '').replace(/\{(\d)\}/g, (_m, i) => String(values[Number(i)] ?? ''));
-}
-
-function ymd(date: Date): string {
-    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
-}
-
-/** [from, to] of a date preset: days before today, or days from today on. */
-function presetRange(days: number, ahead: boolean): [string, string] {
-    const today = new Date();
-    const other = new Date(today.getTime() + (ahead ? 1 : -1) * days * 86400000);
-    return ahead ? [ymd(today), ymd(other)] : [ymd(other), ymd(today)];
-}
 
 function timezone(): string {
     try {
@@ -51,87 +50,51 @@ function SetChip({ caption, icon, removeLabel, onRemove }: { caption: string; ic
     );
 }
 
-type DatePreset = { id: string; title: string; days: number; ahead: boolean; field: string };
-
-/** Date presets: the past week, month and year, and for a module with start dates the coming week and month. */
-function datePresets(c: SearchChip, strings: Record<string, string>): DatePreset[] {
-    const starts = (c.fields ?? []).some((f) => f.value === 'starts');
-    return [
-        { id: 'w', title: strings.past_week ?? '', days: 7, ahead: false, field: '' },
-        { id: 'm', title: strings.past_month ?? '', days: 30, ahead: false, field: '' },
-        { id: 'y', title: strings.past_year ?? '', days: 365, ahead: false, field: '' },
-        ...(starts ? [
-            { id: 'sw', title: strings.starts_week ?? '', days: 7, ahead: true, field: 'starts' },
-            { id: 'sm', title: strings.starts_month ?? '', days: 30, ahead: true, field: 'starts' },
-        ] : []),
-    ];
-}
-
-type FilterMenuItem = { id: string; title: string; icon?: string; type?: string };
-
 /**
  * The window's filter chips under its field, from UNA's scope descriptor. Only what is set shows as a chip, a button
  * group with its remove button: the scope ("In: …", chosen by where the window was opened), and the filters the member
- * picked. "+ Filter" holds the others: Title only, Created by, Date, in a module's scope its own search fields
- * (category, gender...), and in global search the modules to look in.
+ * picked. "+ Filter" holds the others (lib/search-window.ts `filterMenuItems`): Title only, Created by, Date, in a
+ * module's scope its own search fields, and in global search the modules to look in. "Created by: Find someone…" puts
+ * a small name field in the row, where its chip will be.
  */
 export default function SearchChips({ query, scope, strings, onChange, trailing, inset = 'px-3' }: ChipsProps) {
     const { currentUser } = useCurrentUser();
     const [findPerson, setFindPerson] = useState(false);
-    const filters = searchFilters(query);
+    const rowRef = useRef<any>(null);
 
-    const optionValues = (c: SearchChip) => ([] as string[]).concat((filters[c.name] as string | string[] | undefined) ?? []);
-    const isSet = (c: SearchChip) => {
-        if (c.type === 'scope') return true;
-        if (c.type === 'options') return optionValues(c).length > 0;
-        if (c.type === 'date_range') return !!(c.value as { from?: string } | null)?.from;
-        return !!c.value;
+    // after a chip is removed or the name field closes, the keyboard goes on from "+ Filter" (web)
+    const focusFilter = () => {
+        if (Platform.OS !== 'web') return;
+        setTimeout(() => {
+            const buttons = Array.from(rowRef.current?.querySelectorAll?.('[aria-haspopup]') ?? []) as HTMLElement[];
+            buttons.find((el) => (el.textContent ?? '').trim() === strings.filter)?.focus();
+        }, 50);
     };
 
-    const setDate = (preset: DatePreset) => {
-        const [from, to] = presetRange(preset.days, preset.ahead);
-        let next = withSearchValue(query, 'date_from', from);
-        next = withSearchValue(next, 'date_to', to);
-        next = withSearchValue(next, 'date_field', preset.field || null);
-        onChange(withSearchValue(next, 'timezone', timezone()));
+    const change = (next: SearchQuery) => onChange(next);
+    const remove = (c: SearchChip) => () => {
+        change(withoutChip(query, c));
+        focusFilter();
     };
 
     const chip = (c: SearchChip) => {
-        const remove = (key: keyof SearchQuery) => () => onChange(withSearchValue(query, key, null));
-
         switch (c.type) {
             case 'scope':
-                return (
-                    <SetChip
-                        key={c.name + String(c.value)}
-                        caption={c.caption}
-                        icon={c.name === 'context' ? 'UsersRound' : (c.icon || 'Search')}
-                        removeLabel={fill(strings.remove, c.caption)}
-                        onRemove={c.name === 'context' ? remove('context') : remove('section')}
-                    />
-                );
+                return <SetChip key={c.name + String(c.value)} caption={c.caption} icon={c.name === 'context' ? 'UsersRound' : (c.icon || 'Search')} removeLabel={fill(strings.remove, c.caption)} onRemove={remove(c)} />;
 
             case 'toggle':
-                return <SetChip key={c.name} caption={c.caption} icon="Type" removeLabel={fill(strings.remove, c.caption)} onRemove={remove(c.name as keyof SearchQuery)} />;
+                return <SetChip key={c.name} caption={c.caption} icon="Type" removeLabel={fill(strings.remove, c.caption)} onRemove={remove(c)} />;
 
             case 'profile':
-                return <SetChip key={c.name} caption={fill(strings.created_by_value, c.value_title ?? '')} icon="UserRound" removeLabel={fill(strings.remove, c.caption)} onRemove={remove('author')} />;
+                return <SetChip key={c.name} caption={fill(strings.created_by_value, c.value_title ?? '')} icon="UserRound" removeLabel={fill(strings.remove, c.caption)} onRemove={remove(c)} />;
 
             case 'date_range': {
-                const value = c.value as { from: string; to: string; field: string };
-                return (
-                    <SetChip
-                        key={c.name}
-                        caption={value.from + (value.to && value.to !== value.from ? ' – ' + value.to : '')}
-                        icon="Calendar"
-                        removeLabel={fill(strings.remove, c.caption)}
-                        onRemove={() => onChange(withSearchValue(withSearchValue(withSearchValue(query, 'date_from', null), 'date_to', null), 'date_field', null))}
-                    />
-                );
+                const value = c.value as { from: string; to: string };
+                return <SetChip key={c.name} caption={value.from + (value.to && value.to !== value.from ? ' – ' + value.to : '')} icon="Calendar" removeLabel={fill(strings.remove, c.caption)} onRemove={remove(c)} />;
             }
 
             case 'options': {
-                const values = optionValues(c);
+                const values = optionValues(c, query);
                 const titles = (c.options ?? []).filter((o) => values.includes(o.value)).map((o) => o.title);
                 return (
                     <NeoButtonGroup key={c.name} controlSize="small" accessibilityLabel={c.caption}>
@@ -140,13 +103,13 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
                             onSelect={(item) => {
                                 const id = String(item.id);
                                 const next = c.multiple ? (values.includes(id) ? values.filter((v) => v !== id) : [...values, id]) : (values.includes(id) ? [] : [id]);
-                                onChange(withSearchFilter(query, c.name, next));
+                                change(withSearchValue(withSearchFilter(query, c.name, next), 'tab', null));
                             }}
                             triggerAccessibilityLabel={c.caption}
                         >
                             <NeoButton label={c.caption + ': ' + titles.join(', ')} image="ListFilter" selected interactive />
                         </DropdownMenu>
-                        <NeoButton image="X" selected accessibilityLabel={fill(strings.remove, c.caption)} onPress={() => onChange(withSearchFilter(query, c.name, null))} />
+                        <NeoButton image="X" selected accessibilityLabel={fill(strings.remove, c.caption)} onPress={remove(c)} />
                     </NeoButtonGroup>
                 );
             }
@@ -154,75 +117,68 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
         return null;
     };
 
-    // "+ Filter": the filters not set, each under its name, then the modules to look in
-    const menu: FilterMenuItem[] = [];
-    // one list (no column of sections), each filter's rows after a separator and naming their filter
-    const separate = () => { if (menu.length) menu.push({ id: 'sep' + menu.length, title: '', type: 'separator' }); };
-    for (const c of scope.chips) {
-        if (isSet(c)) continue;
-        switch (c.type) {
-            case 'toggle':
-                menu.push({ id: 't:' + c.name, title: c.caption, icon: 'Type' });
-                break;
-            case 'profile':
-                separate();
-                if (currentUser) menu.push({ id: 'p:me', title: fill(strings.created_by_value, strings.me ?? ''), icon: 'UserRound' });
-                menu.push({ id: 'p:find', title: fill(strings.created_by_value, strings.find_person ?? ''), icon: 'UserRoundSearch' });
-                break;
-            case 'date_range':
-                separate();
-                for (const preset of datePresets(c, strings)) menu.push({ id: 'd:' + preset.id, title: preset.title, icon: 'Calendar' });
-                break;
-            case 'options':
-                separate();
-                for (const o of c.options ?? []) menu.push({ id: 'o:' + c.name + ':' + o.value, title: c.caption + ': ' + o.title, icon: 'ListFilter' });
-                break;
-        }
-    }
-    if (scope.scope === 'global' && scope.groups.length > 1) {
-        separate();
-        for (const g of scope.groups) menu.push({ id: 's:' + g.name, title: fill(strings.in, g.title), icon: g.icon });
-    }
+    const menu = filterMenuItems(scope.chips, query, strings, {
+        global: scope.scope === 'global',
+        groups: scope.groups,
+        signedIn: !!currentUser,
+    });
 
     const onFilter = (id: string) => {
-        const [kind, name = '', ...rest] = id.split(':');
-        const value = rest.join(':');
-        if (kind === 't') onChange(withSearchValue(query, name as keyof SearchQuery, '1'));
-        else if (kind === 'p' && name === 'me') onChange(withSearchValue(query, 'author', String(currentUser ? currentUser.id : '')));
-        else if (kind === 'p') setFindPerson(true);
-        else if (kind === 'd') {
-            const c = scope.chips.find((x) => x.type === 'date_range');
-            const preset = c ? datePresets(c, strings).find((p) => p.id === name) : undefined;
-            if (preset) setDate(preset);
-        }
-        else if (kind === 'o') onChange(withSearchFilter(query, name, [value]));
-        else if (kind === 's') onChange(withSearchValue(query, 'section', name));
+        const result = applyFilterChoice(query, id, scope.chips, {
+            viewerId: currentUser ? currentUser.id : null,
+            timezone: timezone(),
+            strings,
+        });
+        if (result.find) setFindPerson(true);
+        else change(result.query);
     };
 
     return (
-        <View className={'gap-2 pt-3 ' + inset}>
-            <Row className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
-                {scope.chips.filter(isSet).map(chip)}
-                {menu.length > 0 && (
-                    <DropdownMenu
-                        items={menu}
-                        onSelect={(item) => onFilter(String(item.id))}
-                        triggerAccessibilityLabel={strings.filter}
-                    >
+        // above the results: the name field's suggestions open over them
+        <View className={'relative z-10 pt-3 ' + inset}>
+            <Row ref={rowRef} className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
+                {scope.chips.filter((c) => isChipSet(c, query)).map(chip)}
+                {findPerson && (
+                    <PersonPicker
+                        strings={strings}
+                        onPick={(id) => { setFindPerson(false); change(withSearchValue(withSearchValue(query, 'author', id), 'tab', null)); focusFilter(); }}
+                        onCancel={() => { setFindPerson(false); focusFilter(); }}
+                    />
+                )}
+                {menu.length > 0 && !findPerson && (
+                    <DropdownMenu items={menu} onSelect={(item) => onFilter(String(item.id))} triggerAccessibilityLabel={strings.filter}>
                         <NeoButton label={strings.filter} image="ListFilterPlus" controlSize="small" interactive />
                     </DropdownMenu>
                 )}
                 {!!trailing && <View className="ms-auto">{trailing}</View>}
             </Row>
-            {findPerson && <PersonFinder strings={strings} onPick={(id) => { setFindPerson(false); onChange(withSearchValue(query, 'author', id)); }} />}
         </View>
     );
 }
 
-/** "Created by": people whose name starts as typed (UNA's author suggestions, as its search forms have). */
-function PersonFinder({ strings, onPick }: { strings: Record<string, string>; onPick: (id: string) => void }) {
+/** UNA's author suggestions: `id` and `display_name` in the apps' format (`api=1`), `value` and `label` on the site. */
+type Person = { id?: string | number; value?: string | number; display_name?: string; label?: string };
+
+const personId = (p: Person) => String(p.id ?? p.value ?? '');
+
+/**
+ * "Created by": a small name field (36px, as the chips) with people whose name starts as typed under it (UNA's author
+ * suggestions, as its search forms have). A combobox: the arrows move through the names, Enter takes one, Escape or
+ * leaving the field closes it without a filter.
+ */
+function PersonPicker({ strings, onPick, onCancel }: { strings: Record<string, string>; onPick: (id: string) => void; onCancel: () => void }) {
     const [term, setTerm] = useState('');
-    const [people, setPeople] = useState<Array<{ value: string | number; label: string }>>([]);
+    const [people, setPeople] = useState<Person[]>([]);
+    const [active, setActive] = useState(0);
+    const inputRef = useRef<any>(null);
+    const picking = useRef(false);
+    const listId = useId();
+
+    // the menu that opened it gives focus back to its trigger as it closes: take it after that
+    useEffect(() => {
+        const timer = setTimeout(() => inputRef.current?.focus?.(), 120);
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         if (term.trim().length < 2) return;
@@ -230,25 +186,94 @@ function PersonFinder({ strings, onPick }: { strings: Record<string, string>; on
         const timer = setTimeout(async () => {
             try {
                 const result = await fetcher('/searchExtended.php?api=1&action=get_authors&term=' + encodeURIComponent(term.trim()), false, { signal: controller.signal });
-                if (!controller.signal.aborted) setPeople(Array.isArray(result) ? result.slice(0, 8) : []);
+                if (controller.signal.aborted) return;
+                setPeople(Array.isArray(result) ? (result as Person[]).filter((p) => personId(p) !== '').slice(0, 8) : []);
+                setActive(0);
             } catch {
                 if (!controller.signal.aborted) setPeople([]);
             }
-        }, 300);
+        }, 250);
         return () => {
             clearTimeout(timer);
             controller.abort();
         };
     }, [term]);
 
+    const shown = term.trim().length >= 2 ? people : [];
+    const name = (p: Person) => String(p.display_name ?? p.label ?? '').replace(/<[^>]*>/g, '');
+    const pick = (p: Person | undefined) => { if (p && personId(p)) onPick(personId(p)); };
+
+    const onKey = (e: any) => {
+        const key = e?.nativeEvent?.key ?? e?.key;
+        if (key === 'ArrowDown' || key === 'ArrowUp') {
+            e.preventDefault?.();
+            if (shown.length) setActive((a) => (a + (key === 'ArrowDown' ? 1 : shown.length - 1)) % shown.length);
+        }
+        else if (key === 'Enter') {
+            e.preventDefault?.();
+            pick(shown[active]);
+        }
+        else if (key === 'Escape') {
+            // closes the field, not the window: the modal also closes on Escape's keyup (React Native Web), which
+            // comes after this field is gone, so that one keyup is stopped before it reaches the modal
+            e.preventDefault?.();
+            e.stopPropagation?.();
+            if (Platform.OS === 'web' && typeof document !== 'undefined') {
+                const swallow = (event: KeyboardEvent) => {
+                    if (event.key !== 'Escape') return;
+                    event.stopPropagation();
+                    document.removeEventListener('keyup', swallow, true);
+                };
+                document.addEventListener('keyup', swallow, true);
+            }
+            onCancel();
+        }
+    };
+
     return (
-        <View className="gap-2">
-            <Input value={term} onChangeText={setTerm} placeholder={strings.person_placeholder} accessibilityLabel={strings.find_person} autoFocus />
-            <Row className="flex-wrap gap-2">
-                {term.trim().length >= 2 && people.map((p) => (
-                    <NeoButton key={String(p.value)} label={String(p.label).replace(/<[^>]*>/g, '')} controlSize="small" onPress={() => onPick(String(p.value))} />
-                ))}
-            </Row>
+        <View className="relative z-10">
+            <Input
+                ref={inputRef}
+                size="small"
+                className="w-56"
+                value={term}
+                onChangeText={setTerm}
+                placeholder={strings.person_placeholder}
+                accessibilityLabel={strings.find_person}
+                role="combobox"
+                aria-expanded={shown.length > 0}
+                aria-controls={listId}
+                aria-autocomplete="list"
+                aria-activedescendant={shown.length ? listId + '-' + active : undefined}
+                onKeyPress={onKey}
+                {...({ onKeyDown: onKey } as Record<string, unknown>)}
+                // leaving the field closes it, unless a name is being pressed
+                onBlur={() => setTimeout(() => { if (!picking.current) onCancel(); }, 150)}
+                autoCorrect={false}
+                autoCapitalize="words"
+            />
+            {shown.length > 0 && (
+                <View
+                    nativeID={listId}
+                    role="listbox"
+                    aria-label={strings.find_person}
+                    className="absolute start-0 top-full mt-1 w-64 gap-0.5 rounded-2xl bg-popover p-1 shadow-popover dark:shadow-popover-deep"
+                >
+                    {shown.map((p, i) => (
+                        <Pressable
+                            key={personId(p)}
+                            nativeID={listId + '-' + i}
+                            role="option"
+                            aria-selected={i === active}
+                            onPressIn={() => { picking.current = true; }}
+                            onPress={() => pick(p)}
+                            className={cn('h-9 justify-center rounded-xl px-3 web:hover:bg-button-hover', i === active && 'bg-button-hover')}
+                        >
+                            <Text className="text-sm font-medium text-foreground" numberOfLines={1}>{name(p)}</Text>
+                        </Pressable>
+                    ))}
+                </View>
+            )}
         </View>
     );
 }

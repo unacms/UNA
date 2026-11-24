@@ -1,3 +1,5 @@
-<div id="__id__" class="bx-search-window-panel hidden mt-3 flex flex-wrap gap-2" role="group">
-    <bx_repeat:items><button type="button" class="bx-search-window-add bx-btn bx-btn-small gap-1.5" data-add="__name__" data-value="__value__">__icon__<span>__title__</span></button></bx_repeat:items>
+<div id="__id__" class="bx-search-window-panel bx-search-window-dropdown hidden">
+    <ul class="bx-menu-ver" role="menu" aria-label="__label__">
+        <bx_repeat:items><bx_if:sep><li class="bx-search-window-dropdown-sep" role="separator"></li></bx_if:sep><li class="bx-menu-item" role="none"><a href="javascript:void(0);" role="menuitem" class="bx-search-window-add flex items-center" data-add="__name__" data-value="__value__"><span class="bx-stl-mii">__icon__</span><span class="bx-stl-mit">__title__</span></a></li></bx_repeat:items>
+    </ul>
 </div>

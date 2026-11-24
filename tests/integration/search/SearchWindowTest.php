@@ -207,6 +207,37 @@ class SearchWindowTest extends ApiV2TestCase
         }
     }
 
+    public function testOnlyTheScopeAndSetFiltersShowAsChipsTheRestAreInFilter(): void
+    {
+        $iOwner = $this->seedPooledPerson();
+        $this->asViewer($iOwner);
+        $o = BxDolSearchUnified::getInstance();
+        $oWindow = new BxTemplSearchWindow();
+
+        // nothing set: no chip, only "+ Filter", which lists Title only, Created by and Date, then the modules
+        $aParts = $oWindow->getParts($o->normalize(['keyword' => 'garden']));
+        $this->assertStringNotContainsString('bx-search-window-chip-active', $aParts['chips']);
+        $this->assertStringContainsString('bx-search-window-chip-add', $aParts['chips']);
+        $this->assertStringContainsString('data-add="toggle" data-value="title_only"', $aParts['chips']);
+        $this->assertStringContainsString('data-add="field" data-value="author"', $aParts['chips']);
+        $this->assertStringContainsString('data-add="field" data-value="date"', $aParts['chips']);
+        $this->assertStringContainsString('data-add="section"', $aParts['chips']);
+        $this->assertStringContainsString('bx-search-window-date-preset', $aParts['chips'], 'Date opens on its presets');
+        $this->assertStringContainsString('bx-form-input-small', $aParts['chips'], 'the name field is the small field');
+
+        // a set filter is a chip with its remove button, and leaves "+ Filter"
+        $aParts = $oWindow->getParts($o->normalize(['keyword' => 'garden', 'title_only' => 1, 'author' => $iOwner]));
+        $this->assertStringContainsString('data-remove="title_only"', $aParts['chips']);
+        $this->assertStringContainsString('data-remove="author"', $aParts['chips']);
+        $this->assertStringContainsString('bx-btn-group', $aParts['chips']);
+        $this->assertStringNotContainsString('data-add="toggle" data-value="title_only"', $aParts['chips']);
+
+        // the scope chip shows where the window was opened
+        $aParts = $oWindow->getParts($o->normalize(['section' => 'bx_posts']));
+        $this->assertStringContainsString('bx-search-window-chip-scope', $aParts['chips']);
+        $this->assertStringNotContainsString('data-add="section"', $aParts['chips'], 'a module scope offers no other module');
+    }
+
     public function testOneQueryFormat(): void
     {
         $o = BxDolSearchUnified::getInstance();
