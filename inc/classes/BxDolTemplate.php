@@ -2323,15 +2323,18 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             case 'cover':
             	$oCover = BxDolCover::getInstance($this);
 
+                // The page's own cover: its band and its title, each by its own settings (Studio > Pages > page >
+                // Cover, Title).
+                if(!$oCover->isCover()) {
+                    $sRet = $oCover->displayPageCover(BxDolPage::getObjectInstanceByURI());
+                    break;
+                }
+
+                // A cover set in code (the home page's, an entry's, a profile's): where the page's cover is on.
+                $oPage = false;
             	$bCover = $oCover->isEnabled() && !$oCover->isPageCoverOff();
-            	if($bCover && ($oPage = BxDolPage::getObjectInstanceByURI()) !== false) {
+            	if($bCover && ($oPage = BxDolPage::getObjectInstanceByURI()) !== false)
                     $bCover = $oPage->isPageCover();
-                    if($bCover && !$oCover->isCover()) {
-                        $aCover = $oPage->getPageCoverImage();
-                        if(!empty($aCover))
-                            $oCover->setCoverImageUrl($aCover);
-                    }
-            	}
 
                 $iHiddenOn = $bCover && $oPage && method_exists($oPage, 'getPageCoverHiddenOn') ? $oPage->getPageCoverHiddenOn() : 0;
                 if(!$bCover)
@@ -2356,6 +2359,10 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                         'empty' => $oCover->displayEmpty(),
                     ]);
                 }
+                break;
+            case 'site_submenu_add':
+                // A section's add action at the end of its tab row, where its title row is off or hidden.
+                $sRet = BxDolCover::getInstance($this)->getSubmenuAddAction();
                 break;
             case 'site_submenu_class':
                 $oMenu = BxDolMenu::getObjectInstance('sys_site_submenu');

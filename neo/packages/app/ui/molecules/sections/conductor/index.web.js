@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
 import { PageCoverBand } from 'app/components/elements/covers/page-cover-band';
+import { isPageTitleOn } from 'app/lib/page-cover';
 import { View } from 'app/design/view'
 import {
     appSetting,
@@ -127,6 +128,9 @@ export function Conductor({
 
     const coverMode = appSetting('cover', 'view_by_module', data.cover_block?.profile?.module)
     const isCover = Boolean(data.cover_block) && coverMode != 'none'
+    // The section's title on desktop (its title row, or the left column's title): the page's title settings for this
+    // viewer (Studio → Pages → page → Title), with or without the cover. Phones and tablets show it in the page header.
+    const isTitleOn = isPageTitleOn(data, Boolean(currentUser), 'desktop', false)
 
     // ==================================================================
     // 1. Routes / tabs
@@ -405,6 +409,7 @@ export function Conductor({
                 isCover={isCover}
                 isCoverDisabled={isCoverDisabled}
                 isHideCover={isHideCover}
+                showTitle={isTitleOn}
                 headerSettings={headerSettings}
                 pageData={data}
                 menu={menu}
@@ -424,6 +429,7 @@ export function Conductor({
             isCover,
             isCoverDisabled,
             isHideCover,
+            isTitleOn,
             headerSettings,
             data?.uri,
             data?.ts,
@@ -453,6 +459,7 @@ export function Conductor({
     const leftColumn = hasLeftColumn ? (
         <LeftColumnContainer
             layoutName={layoutName}
+            showTitle={isTitleOn}
             index={index}
             setIndex={setIndex}
             menu={menu}

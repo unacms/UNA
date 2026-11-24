@@ -31,6 +31,22 @@ class PageAddActionTemplateTest extends BxDolTestCase
         $this->assertMatchesRegularExpression('/@media not all and \(min-width: 1024px\) \{.*\.bx-btn\.bx-btn-icon-mobile \.bx-btn-icon-mobile-label \{\s*position: absolute;.*\.bx-btn\.bx-btn-icon-mobile\.bx-btn-small \{\s*@apply w-9 min-w-9 px-0;/s', $sCss, 'Below lg: round, icon-only, the label still its name.');
     }
 
+    /**
+     * Where the page's title is off or hidden (Studio > Pages > page > Title), the add action moves to the end of the
+     * section's tab row, the same button on both sides.
+     */
+    public function testWithoutTheTitleRowTheAddButtonEndsTheTabRow(): void
+    {
+        $sAdd = self::read('template/cover_add.html');
+        $this->assertStringContainsString('<a class="bx-cover-add bx-btn bx-btn-primary bx-btn-glass bx-btn-small bx-btn-icon-mobile shrink-0 self-center ms-2 me-1 __class__" href="__url__" title="__title__" aria-label="__title__">__icon__<span class="bx-btn-icon-mobile-label">__label__</span></a>', $sAdd, 'The title row\'s button.');
+
+        foreach (['template/_page_submenu.html', 'modules/boonex/artificer/data/template/system/pt_application.html'] as $sFile)
+            $this->assertMatchesRegularExpression('/<bx_menu:sys_site_manage \/>\s*__site_submenu_add__\s*<\/div>/', self::read($sFile), $sFile . ': after the section\'s tools, at the row\'s end.');
+
+        $sUi = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
+        $this->assertStringContainsString("{toolButtons}\n                                {!showTitle && actionButtons}", $sUi, 'NEO: after Search, at the end of the tab row.');
+    }
+
     public function testNeoAddButtonIsGlassProminentSmall(): void
     {
         $sUi = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
