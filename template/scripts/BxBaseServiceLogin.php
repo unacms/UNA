@@ -270,15 +270,9 @@ class BxBaseServiceLogin extends BxDol
             $oForm->initChecker();
             if ($oForm->isSubmittedAndValid()) {
                 $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
-                $aAccountInfo = $oAccount->getInfo();
                 // Same SMS two-factor gate as member.php: a correct password does not sign in yet.
-                if((getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '')
-                    && (getParam('sys_account_activation_2fa_lifetime') == 0 || (time() - $aAccountInfo['logged'] > getParam('sys_account_activation_2fa_lifetime')))) {
-                    $oSession = BxDolSession::getInstance();
-                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
-                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $oForm->getRememberMe());
-                    $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
-                    $sUrl = BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
+                $sUrl = self::start2faLogin($oAccount->id(), $oForm->getRememberMe());
+                if($sUrl) {
                     return [
                         bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url($sUrl)]),
                     ];
@@ -403,6 +397,10 @@ class BxBaseServiceLogin extends BxDol
         if ($oForm->isSubmittedAndValid()) {
             $sNewPhoneNumber = $sPhoneNumber === '' ? trim($oForm->getCleanValue('phone')) : '';
             $sSendTo = $sPhoneNumber !== '' ? $sPhoneNumber : $sNewPhoneNumber;
+            if (!bx_sms_code_send_allowed($oAccount->id(), $sSendTo)) {
+                return MsgBox(_t('_sys_txt_sms_send_limit'));
+            }
+
             $sActivationCode = (string)random_int(100000, 999999);
             $sActivationText =_t('_sys_txt_login_2fa_sms_text', $sActivationCode);
 
@@ -465,6 +463,10 @@ class BxBaseServiceLogin extends BxDol
             $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
             $oAccount = BxDolAccount::getInstance($oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID));
             $bRememberMe = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER);
+            $sUrlRelocate = $oForm->getCleanValue('relocate');
+            if (!$sUrlRelocate) {
+                $sUrlRelocate = (string)$oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE);
+            }
             self::reset2faLogin();
 
             // The phone the code was sent to is the account's from now on, unless another account
@@ -473,8 +475,7 @@ class BxBaseServiceLogin extends BxDol
                 $oAccount->updatePhone($aCode['phone'], false, true);
 
             $aAccount = bx_login($oAccount->id(), $bRememberMe);
-           
-            $sUrlRelocate = $oForm->getCleanValue('relocate');
+
             if (!$sUrlRelocate || 0 !== strncmp($sUrlRelocate, BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)))
                 $sUrlRelocate = BX_DOL_ROLE_ADMIN == $oForm->getRole() ? BX_DOL_URL_STUDIO . 'launcher.php' : BX_DOL_URL_ROOT . 'member.php';
 
@@ -507,6 +508,35 @@ class BxBaseServiceLogin extends BxDol
     }
 
     /**
+     * The SMS two-factor gate every sign-in passes (the login form on the site, with AJAX and in the API,
+     * and Connect apps): when it applies to the account, the sign-in waits at login-step2 instead of
+     * being completed, and this returns that page's relative URL; '' when the account may sign in now.
+     * @param $iAccountId account which proved who it is (a password, a Connect app)
+     * @param $bRememberMe keep the session after the code was entered
+     * @param $sRelocate page to go to once the code was entered, when the code form doesn't say
+     */
+    public static function start2faLogin($iAccountId, $bRememberMe = false, $sRelocate = '')
+    {
+        $bOn = getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '';
+        $oAccount = $bOn ? BxDolAccount::getInstance((int)$iAccountId) : null;
+        $aAccountInfo = $oAccount ? $oAccount->getInfo() : false;
+
+        // the code isn't asked again within the lifetime of the last sign-in
+        $iLifetime = (int)getParam('sys_account_activation_2fa_lifetime');
+        if (empty($aAccountInfo) || ($iLifetime != 0 && time() - $aAccountInfo['logged'] <= $iLifetime)) {
+            return '';
+        }
+
+        $oSession = BxDolSession::getInstance();
+        $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
+        $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $bRememberMe);
+        $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE, (string)$sRelocate);
+        $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
+
+        return BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
+    }
+
+    /**
      * Forget the two-factor login in progress: the next try starts over from the password.
      */
     public static function reset2faLogin()
@@ -514,8 +544,9 @@ class BxBaseServiceLogin extends BxDol
         // The count of tries stays in sys_keys until it expires: a request that read the session before
         // this one still can't try a code more times than the count allows, and a right code sent twice signs in.
         $oSession = BxDolSession::getInstance();
-        foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER] as $sKey)
+        foreach ([BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_RELOCATE] as $sKey) {
             $oSession->unsetValue($sKey);
+        }
     }
 
     /**

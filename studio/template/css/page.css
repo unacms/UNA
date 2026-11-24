@@ -362,6 +362,47 @@ div.bx-std-block-caption + div.bx-std-block-content > [id^="bx-grid-wrap-"] > .b
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-header-cnt {
     padding: 0;
 }
+/* A grid header with the block's title row (BxDolGrid::setHeaderTitleRow), as the page builder's header: the title with the
+   grid's buttons on the right (a block caption, 16 / 16 / 8), the filters under it (8 / 16 / 16), then the header's one hairline.
+   The block draws no caption above it, so the scroll box owns the block's top corners. */
+div.bx-std-block-content:has(> [id^="bx-grid-wrap-"] > .bx-grid-header.bx-gh-title) {
+    border-top-left-radius: var(--bx-radius-3xl);
+    border-top-right-radius: var(--bx-radius-3xl);
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header.bx-gh-title {
+    padding: 0;
+    border-bottom: 0; /* the AG grid's own line under its header: the inset hairline is the one line */
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header.bx-gh-title > .bx-std-block-caption {
+    padding-bottom: 0.5rem;
+    box-shadow: none;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header.bx-gh-title-only > .bx-std-block-caption {
+    padding-bottom: 1rem;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header.bx-gh-title > .bx-grid-header-cnt {
+    padding: 0.5rem 1rem 1rem;
+}
+/* No filters under the title; and a grid without the block's title (one that is a part of a block's content, not all of it)
+   keeps only its buttons, on the right, as its header had them. */
+.bx-grid-header.bx-gh-title-only > .bx-grid-header-cnt,
+.bx-grid-header.bx-gh-title > .bx-std-block-caption > .bx-std-bcap-text:empty {
+    display: none;
+}
+.bx-grid-header.bx-gh-title > .bx-std-block-caption:has(> .bx-std-bcap-text:empty) {
+    padding: 0;
+    box-shadow: none;
+}
+.bx-grid-header.bx-gh-title > .bx-std-block-caption > .bx-std-bcap-controls {
+    flex: 1 1 auto;
+}
+/* AG grid: the block is the frame, so the grid draws no card of its own inside it, as the classic grid draws none. */
+div.bx-std-block-content > .bx-grid-ag-wrap {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-form-element-wrapper {
     margin: 0; /* the filter fields are spaced by the toolbar's gap alone */
 }
@@ -372,6 +413,11 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-cont
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-header-controls-filter,
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-header-controls-independent {
     column-gap: 1rem; /* 16px between toolbar fields and buttons */
+}
+/* One line between the filters and the rows: the header's hairline (or, for a grid without a header, the block caption's).
+   The column titles keep only the line under them; their top border (tailwind.css) would double it. */
+div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table thead th {
+    border-top-width: 0;
 }
 div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-table-wrapper2 {
     flex: none;

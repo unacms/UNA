@@ -24,6 +24,12 @@ class BxDolMModule extends BxBaseModGeneralModule
 	
 	public function actionPerformAction($sModule, $sAction = 'clean')
 	{
+		if (!isAdmin())
+		{
+			echo json_encode(array('code' => 2, 'message' => _t('_Access denied')));
+			exit;
+		}
+
 		if (!$sModule || !isset($this -> _oConfig -> _aMigrationModules[$sModule]))
 		{
 			echo json_encode(array('code' => 1, 'message' => _t('_bx_dolphin_migration_nothing_to_remove')));
@@ -38,6 +44,12 @@ class BxDolMModule extends BxBaseModGeneralModule
 	
 	public function actionStartTransfer($aModules)
 	{
+		if (!isAdmin())
+		{
+			echo json_encode(array('code' => 2, 'message' => _t('_Access denied')));
+			exit;
+		}
+
 		if (empty($aModules))
 		{
 			echo json_encode(array('code' => 1, 'message' => _t('_bx_dolphin_migration_successfully_finished')));

@@ -143,6 +143,12 @@
         @apply outline-offset-0;
     }
 
+    /* A section's tab (Artificer menu_main_submenu.html) draws this outline on its pill (.bx-mi-pill), around the label, not on
+       the row's full height. Tabs without a pill (other templates) keep it. */
+    body:not(.bx-std) .bx-menu-main-submenu > .bx-menu-item > a:has(> .bx-mi-pill):focus-visible {
+        @apply outline-none;
+    }
+
     /* Rich text reads the same on the site and in NEO (.u-vanilla-html in
        neo/packages/app/design/styles/utilities.css): NEO's zinc text colours,
        blue links, 1.5 line height, 16px between paragraphs, lists indented 1.5rem. */
@@ -242,6 +248,14 @@
     .bx-std .bx-def-color-bg-hl-even:nth-child(even),
     .bx-std .bx-def-color-bg-hl-hover:hover {
         @apply bg-black/[0.04] dark:bg-white/[0.04];
+    }
+    /* A grid's row under the pointer takes the menu items' hover fill (.bx-menu-highlight-list) in their 150ms ease-out, over the
+       alternate rows' tint; the AG engine's rows do the same (grid_ag.css). Not while a row is dragged. */
+    .bx-grid-table tbody.bx-grid-table-data > tr {
+        transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .bx-grid-table tbody.bx-grid-table-data:not(:has(.bx-grid-gragging-row)) > tr:not(.bx-grid-table-row-empty):hover {
+        @apply bg-gray-200/50 dark:bg-gray-700/50;
     }
 
     .bx-artificer .col-red1 {
@@ -755,34 +769,42 @@
     }
 
     /* Footer: quiet text links, as in NEO's footer (NeoButton style `text`): 14px, secondary text that turns
-       foreground on hover and focus, at least 28px tall. Each link's touch area reaches into the menu's gaps
-       (gap-x-4 gap-y-2, menu_footer.html) without overlapping a neighbour. The page you're on stays in the
+       foreground on hover and focus, at least 28px tall. Each link's touch area reaches into its group's 16px
+       gaps (gap-4, menu_footer.html) without overlapping a neighbour. The page you're on stays in the
        foreground colour (aria-current, BxBaseMenuFooter). */
-    #bx-menu-footer > li {
+    #bx-menu-footer > ul > li {
         @apply text-sm font-normal text-gray-600 dark:text-gray-400;
     }
-    #bx-menu-footer > li > a {
+    #bx-menu-footer > ul > li > a {
         @apply relative inline-flex items-center min-h-7 font-normal transition-colors hover:no-underline;
         @apply hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;
         @apply before:absolute before:-inset-x-2 before:-inset-y-1 before:content-[''];
     }
-    #bx-menu-footer > li > a[aria-current="page"] {
+    #bx-menu-footer > ul > li > a[aria-current="page"] {
         @apply text-gray-950 dark:text-gray-50;
+    }
+    /* The tools that open a menu (language, theme, sounds: aria-haspopup, BxBaseMenuFooter) are borderless icon buttons, as in
+       NEO's footer (NeoButton `borderless`, mini): 28px squares with the mini corner, no fill at rest, the button fill (the ink
+       at 8%, as .bx-btn) on hover and keyboard focus and 12% while pressed, in the menu items' 150ms ease-out. The icon is the
+       borderless button's (NEO card-foreground: gray-800, 200 in dark), foreground on hover and focus. Their 4px sides
+       overlap the group's gap, so the squares are 8px apart and their 36px hit areas meet without overlapping. */
+    #bx-menu-footer > ul > li > a[aria-haspopup] {
+        @apply justify-center size-7 -mx-1 rounded-md duration-150 ease-out;
+        @apply text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-gray-50 focus-visible:text-gray-950 dark:focus-visible:text-gray-50;
+        @apply hover:bg-gray-950/[0.08] dark:hover:bg-gray-50/[0.08] focus-visible:bg-gray-950/[0.08] dark:focus-visible:bg-gray-50/[0.08];
+        @apply active:bg-gray-950/[0.12] dark:active:bg-gray-50/[0.12];
+        @apply before:-inset-x-1 before:-inset-y-2;
     }
     /* Text items (the copyright notice) line up with the links but don't react to the pointer. */
     #bx-menu-footer .bx-menu-footer-text {
         @apply inline-flex items-center min-h-7;
-    }
-    /* From desktop width the tools (language, theme, sounds, Powered by) sit on the right, as in the apps. */
-    #bx-menu-footer > li.bx-menu-footer-tools-start {
-        @apply lg:ms-auto;
     }
     /* The language in use, by its code, as in the apps. */
     #bx-menu-footer .bx-menu-footer-lang {
         @apply text-xs font-semibold uppercase tracking-wide;
     }
     /* Icons at the text's size, as in the apps: 16px beside 14px text. */
-    #bx-menu-footer > li > a > .lucide {
+    #bx-menu-footer > ul > li > a > .lucide {
         @apply size-4;
     }
     /* The Powered by badge is the UNA logo; its name ("Powered by UNA", a language string) shows above it on hover and
@@ -793,11 +815,11 @@
         @apply opacity-0 transition-opacity duration-150;
     }
     @media (hover: hover) {
-        #bx-menu-footer > li > a:hover .bx-menu-footer-tooltip {
+        #bx-menu-footer > ul > li > a:hover .bx-menu-footer-tooltip {
             @apply opacity-100;
         }
     }
-    #bx-menu-footer > li > a:focus-visible .bx-menu-footer-tooltip {
+    #bx-menu-footer > ul > li > a:focus-visible .bx-menu-footer-tooltip {
         @apply opacity-100;
     }
 
@@ -1144,6 +1166,16 @@
     body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-large {
         @apply w-[3.25rem] min-w-[3.25rem];
     }
+    /* A capsule (.bx-btn-capsule): a short label such as a count, a grid's "15" items (BxBaseGrid::_getCellCount), in a round-ended button at least as wide as it is tall. After the sizes' corners, which it replaces. */
+    body:not(.bx-std) .bx-btn.bx-btn-capsule {
+        @apply min-w-11 rounded-full tabular-nums;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-capsule.bx-btn-small {
+        @apply min-w-9;
+    }
+    body:not(.bx-std) .bx-btn.bx-btn-capsule.bx-btn-mini {
+        @apply min-w-7;
+    }
     body:not(.bx-std) .bx-btn.bx-btn-icon.bx-btn-xlarge {
         @apply w-16 min-w-16;
     }
@@ -1289,8 +1321,8 @@
         @apply text-gray-800 dark:text-gray-200;
         @apply ring-1 ring-inset ring-black/10 dark:ring-white/5;
         @apply transition-shadow duration-200;
-        @apply focus-within:outline focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-blue-600 dark:focus-within:outline-blue-500;
-        @apply focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600/80 dark:focus-within:ring-blue-500/80;
+        @apply focus-within:outline-none focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-600 dark:focus-within:ring-blue-500;
+        @apply focus-within:shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:focus-within:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     .bx-std .bx-form-input-wrapper-password .bx-form-input-password,
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
@@ -1307,8 +1339,9 @@
     }
 
     /* Site inputs as NEO's Input (packages/app/settings/theme/inputs.js): a single-line field is 52px, a large button's height, with 16px sides,
-       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus has the ring every focused element has
-       in NEO: a 2px solid accent outline (blue-600, blue-500 in dark, 3:1 and more on the page and on a card) around a 1px accent edge. Textareas
+       16px regular text, 12px corners, the card's fill and a 1px inset hairline instead of a border. Focus is NEO's input
+       focus: the 1px edge turns the full accent (blue-600, blue-500 in dark, 3:1 and more on the field, the page and a card) with a soft
+       3px accent halo at 25% outside it, a box-shadow like the edge, so nothing moves. Textareas
        and lists keep their height. */
     .bx-artificer .bx-form-input-slider,
     .bx-artificer .bx-form-input-doublerange,
@@ -1340,8 +1373,8 @@
     .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html):focus-visible,
     .bx-artificer .bx-form-input-text:focus-visible,
     .bx-artificer .bx-form-input-price:focus-visible {
-        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
-        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+        @apply outline-none ring-1 ring-inset ring-blue-600 dark:ring-blue-500;
+        @apply shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     /* A plain textarea grows with its text (field-sizing; jquery.webForms.js where a browser has no field-sizing) from four lines to
        sixteen, then scrolls; its handle resizes it in height only. A limit's counter is under it (form_field_textarea.html). */
@@ -1353,7 +1386,7 @@
 
     /* A rich text editor looks like the text inputs: the card's fill, the inset hairline, 12px corners, and the accent focus ring
        around the whole editor while its text has the focus. Editor (bx_editor) is one box; Quill's toolbar and text are two, and
-       their wrapper draws the box around both, with a hairline between them. */
+       their wrapper draws the box around both, with a hairline between them. Its focus is the inputs' accent edge and halo. */
     .bx-artificer .bx-form-input-html-editor,
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) {
         @apply rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200;
@@ -1372,8 +1405,8 @@
     }
     .bx-artificer .bx-form-input-html-editor:focus-within,
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill):focus-within {
-        @apply outline outline-2 outline-offset-0 outline-blue-600 dark:outline-blue-500;
-        @apply ring-1 ring-inset ring-blue-600/80 dark:ring-blue-500/80;
+        @apply outline-none ring-1 ring-inset ring-blue-600 dark:ring-blue-500;
+        @apply shadow-[0_0_0_3px_rgb(var(--bx-accent-600)/0.25)] dark:shadow-[0_0_0_3px_rgb(var(--bx-accent-500)/0.25)];
     }
     .bx-artificer .bx-form-input-wrapper:has(> .bx-form-input-html-quill) .ql-toolbar.ql-snow {
         @apply border-0 border-b border-solid border-black/10 dark:border-white/5 bg-transparent px-3 py-2;
@@ -2986,6 +3019,9 @@
     }
     .bx-std .bx-btn.bx-btn-large {
         @apply h-[3.25rem] min-h-[3.25rem] px-6 rounded-xl text-base leading-6;
+    }
+    .bx-std .bx-btn.bx-btn-capsule {
+        @apply min-w-9 rounded-full tabular-nums;
     }
     /* The header's skip link is a .bx-btn.sr-only: keep it off-screen until focused (sr-only spelled out, Tailwind refuses to @apply it here), the button rules above would otherwise put it in the flow. */
     .bx-std .bx-btn.sr-only:not(:focus) {

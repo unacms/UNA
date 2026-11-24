@@ -22,6 +22,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     protected $sActionBlockEdit = 'block_edit';
 
     protected $aTmplVarsBlockPanelTop = null;
+    protected $aPageFieldsToSection = array(); // fields the page leaves to its section, stored as NULL on save (onSavePage)
     protected $bBlockCaptionControls = true; // false: a builder that keeps its actions in its own row under the caption
 
     protected $sStorage;
@@ -55,6 +56,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     protected $aPageSettings = array(
         array('name' => 'options', 'title' => '_adm_bp_mi_page_options', 'icon' => 'mi-bp-options.svg', 'active' => 1),
         array('name' => 'cover', 'title' => '_adm_bp_mi_page_cover', 'icon' => 'mi-bp-cover.svg', 'active' => 0),
+        array('name' => 'title', 'title' => '_adm_bp_mi_page_title', 'icon' => 'mi-bp-title.svg', 'active' => 0),
         array('name' => 'layout', 'title' => '_adm_bp_mi_page_layout', 'icon' => 'mi-bp-layout.svg', 'active' => 0),
         array('name' => 'visibility', 'title' => '_adm_bp_mi_page_visibility', 'icon' => 'mi-bp-visibility.svg', 'active' => 0),
         array('name' => 'cache', 'title' => '_adm_bp_mi_page_cache', 'icon' => 'mi-bp-cache.svg', 'active' => 0),
@@ -381,7 +383,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
             $this->onSavePage($oForm, $this->aPageRebuild);
 
-            if($oForm->update($this->aPageRebuild['id'])) {
+            // "Same as section" alone changes no other field: the update then counts no rows, and still saves.
+            $bToSection = !empty($this->aPageFieldsToSection);
+            $mixedUpdated = $oForm->update($this->aPageRebuild['id']);
+            if($mixedUpdated || ($bToSection && $mixedUpdated !== false)) {
                 $this->onPageChanged($oForm, $this->aPageRebuild);
                 $iLevelId = $oForm->getCleanValue('layout_id');
                 if(!empty($iLevelId) && $iLevelId != $this->aPageRebuild['layout_id']) {
@@ -1375,8 +1380,77 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     	return $this->getSettingsOptions($aPage, $bCreate, true);
     }
 
+    /**
+     * The page's cover: who sees it, the screen sizes it is hidden on and its picture. A page of a section (the tabs of
+     * a main menu item) may take them from its section ("Same as section", the first choice), which shows them and
+     * links to the section's settings; any other choice sets them for this page only. A page that shows its owner's
+     * cover (a profile's, a context's) keeps who sees it and where.
+     */
     protected function getSettingsCover($aPage = array(), $bCreate = true, $bInputsOnly = false)
     {
+        $aSection = $this->_getPageSectionInfo($aPage);
+        $aResolved = BxDolPage::resolveSectionSettings($aPage, $aSection ? $aSection['row'] : false);
+        $iOwner = $this->_getPageOwnerCoverMode($aPage);
+        $bSame = $aSection && (!isset($aPage['cover']) || $aPage['cover'] === '');
+
+        $sJsObject = $this->getPageJsObject();
+        $aValues = $this->_getAudienceValues();
+        if($aSection)
+            array_unshift($aValues, array('key' => 'section', 'value' => _t('_adm_bp_txt_page_same_as_section')));
+
+        $aInputs = array();
+        if($iOwner)
+            $aInputs['cover_owner'] = $this->_getSettingsNote('cover_owner', _t($iOwner == BX_PAGE_OWNER_COVER_OTHERS ? '_adm_bp_txt_page_cover_owner_others' : '_adm_bp_txt_page_cover_owner'));
+
+        $aInputs['cover'] = array(
+            'type' => 'select',
+            'name' => 'cover',
+            'caption' => _t('_adm_bp_txt_page_cover'),
+            'info' => '',
+            'value' => $bSame ? 'section' : (int)$aResolved['cover'],
+            'values' => $aValues,
+            'attrs' => $aSection ? array('onchange' => $sJsObject . '.onChangeSameAsSection(this)') : array(),
+            'db' => array (
+                'pass' => 'Int',
+            )
+        );
+
+        if($aSection)
+            $aInputs['cover_section'] = $this->_getSettingsSectionSummary('cover', $aSection, $this->_getSectionCoverSummary($aSection['resolved']), $bSame);
+
+        // Per screen size, as a block's "Hidden on": the cover stays off there. The title has its own (Title tab).
+        $aInputs['cover_hidden_on'] = array(
+            'type' => 'select_multiple',
+            'name' => 'cover_hidden_on',
+            'caption' => _t('_adm_bp_txt_page_cover_hidden_on'),
+            'info' => _t('_adm_bp_txt_page_cover_hidden_on_info'),
+            // This settings form has no db binding to unpack the bits, so the options come as a list.
+            'value' => BxDolFormCheckerHelper::displaySet((int)$aResolved['cover_hidden_on']),
+            'values' => $this->_getHiddenOnValues(),
+            'tr_attrs' => $this->_getSectionOwnTrAttrs('cover', $bSame),
+            'db' => array (
+                'pass' => 'Set',
+            )
+        );
+
+        // The owner's cover has the owner's picture: the page's would show nowhere.
+        if(!$iOwner)
+            $aInputs['cover_image'] = array(
+                'type' => 'files',
+                'name' => 'cover_image',
+                'storage_object' => $this->sStorage,
+                'images_transcoder' => $this->sTranscoderCover,
+                'uploaders' => $this->aUploadersCover,
+                'multiple' => false,
+                'content_id' => isset($aPage['id']) ? $aPage['id'] : 0,
+                'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate('cover_image'),
+                'caption' => _t('_adm_bp_txt_page_cover_image'),
+                'tr_attrs' => $this->_getSectionOwnTrAttrs('cover', $bSame),
+                'db' => array (
+                    'pass' => 'Int',
+                )
+            );
+
         $aForm = array(
             'form_attrs' => array(
                 'id' => 'adm-bp-settings-cover',
@@ -1387,67 +1461,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     'disable' => true
                 )
             ),
-            'inputs' => array (
-                'cover' => array(
-                    'type' => 'select',
-                    'name' => 'cover',
-                    'caption' => _t('_adm_bp_txt_page_cover'),
-                    'info' => '',
-                    'value' => isset($aPage['cover']) ? (int)$aPage['cover'] : '1',
-                    'values' => array(
-                        array('key' => 0, 'value' => _t('_adm_bp_txt_page_cover_0')),
-                        array('key' => 1, 'value' => _t('_adm_bp_txt_page_cover_1')),
-                        array('key' => 2, 'value' => _t('_adm_bp_txt_page_cover_2')),
-                        array('key' => 3, 'value' => _t('_adm_bp_txt_page_cover_3'))
-                    ),
-                    'db' => array (
-                        'pass' => 'Int',
-                    )
-                ),
-                // Per screen size, as a block's "Hidden on": the cover (and its title) stays off there; the apps
-                // show the title in their header instead where the cover is hidden on phones and tablets.
-                'cover_hidden_on' => array(
-                    'type' => 'select_multiple',
-                    'name' => 'cover_hidden_on',
-                    'caption' => _t('_adm_bp_txt_page_cover_hidden_on'),
-                    'info' => _t('_adm_bp_txt_page_cover_hidden_on_info'),
-                    // This settings form has no db binding to unpack the bits, so the options come as a list.
-                    'value' => BxDolFormCheckerHelper::displaySet(isset($aPage['cover_hidden_on']) ? $aPage['cover_hidden_on'] : 0),
-                    'values' => array(
-                        BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
-                        BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
-                        BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
-                        BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
-                    ),
-                    'db' => array (
-                        'pass' => 'Set',
-                    )
-                ),
-                'cover_image' => array(
-                    'type' => 'files',
-                    'name' => 'cover_image',
-                    'storage_object' => $this->sStorage,
-                    'images_transcoder' => $this->sTranscoderCover,
-                    'uploaders' => $this->aUploadersCover,
-                    'multiple' => false,
-                    'content_id' => isset($aPage['id']) ? $aPage['id'] : 0,
-                    'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate('cover_image'),
-                    'caption' => _t('_adm_bp_txt_page_cover_image'),
-                    'db' => array (
-                        'pass' => 'Int',
-                    )
-                ),
-                'cover_title' => array(
-                    'type' => 'text_translatable',
-                    'name' => 'cover_title',
-                    'caption' => _t('_adm_bp_txt_page_cover_title'),
-                    'info' => '',
-                    'value' => isset($aPage['cover_title']) ? $aPage['cover_title'] : '',
-                    'db' => array (
-                        'pass' => 'Xss',
-                    )
-                ),
-            )
+            'inputs' => $aInputs
         );
 
         if($bInputsOnly)
@@ -1460,6 +1474,480 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     protected function getSettingsCoverFields($aPage = array(), $bCreate = true)
     {
     	return $this->getSettingsCover($aPage, $bCreate, true);
+    }
+
+    /**
+     * The page's title, apart from its cover: who sees it, the screen sizes it is hidden on and its custom text. A page
+     * of a section may take who sees it and where from its section ("Same as section"); the custom text is always the
+     * page's own. A page whose title was never set shows its cover's values (BxBasePage::getPageTitleMode), which
+     * saving stores. On a page that shows its owner's cover the owner's name is the title: only the owner's own list of
+     * a profile's items (owner=1) has the page's title.
+     */
+    protected function getSettingsTitle($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $aSection = $this->_getPageSectionInfo($aPage);
+        $aResolved = BxDolPage::resolveSectionSettings($aPage, $aSection ? $aSection['row'] : false);
+        $iOwner = $this->_getPageOwnerCoverMode($aPage);
+        $bSame = $aSection && (!isset($aPage['title_show']) || $aPage['title_show'] === '');
+
+        $sJsObject = $this->getPageJsObject();
+        $aValues = $this->_getAudienceValues();
+        if($aSection)
+            array_unshift($aValues, array('key' => 'section', 'value' => _t('_adm_bp_txt_page_same_as_section')));
+
+        $aInputs = array();
+        if($iOwner)
+            $aInputs['title_owner'] = $this->_getSettingsNote('title_owner', _t($iOwner == BX_PAGE_OWNER_COVER_OTHERS ? '_adm_bp_txt_page_title_owner_others' : '_adm_bp_txt_page_title_owner'));
+
+        // Always the owner's name: nothing here would show.
+        if($iOwner != BX_PAGE_OWNER_COVER_ALWAYS) {
+            list($iTitleMode, $iTitleHiddenOn) = self::getTitleResolved($aResolved);
+
+            $aInputs['title_show'] = array(
+                'type' => 'select',
+                'name' => 'title_show',
+                'caption' => _t('_adm_bp_txt_page_title_show'),
+                'info' => _t('_adm_bp_txt_page_title_show_info'),
+                'value' => $bSame ? 'section' : $iTitleMode,
+                'values' => $aValues,
+                'attrs' => $aSection ? array('onchange' => $sJsObject . '.onChangeSameAsSection(this)') : array(),
+                'db' => array (
+                    'pass' => 'Int',
+                )
+            );
+
+            if($aSection)
+                $aInputs['title_section'] = $this->_getSettingsSectionSummary('title', $aSection, $this->_getAudienceSummary($iTitleMode, $iTitleHiddenOn), $bSame);
+
+            // Per screen size, as the cover's: the title row on the site, the header's title in the apps.
+            $aInputs['title_hidden_on'] = array(
+                'type' => 'select_multiple',
+                'name' => 'title_hidden_on',
+                'caption' => _t('_adm_bp_txt_page_title_hidden_on'),
+                'info' => _t('_adm_bp_txt_page_title_hidden_on_info'),
+                // This settings form has no db binding to unpack the bits, so the options come as a list.
+                'value' => BxDolFormCheckerHelper::displaySet($iTitleHiddenOn),
+                'values' => $this->_getHiddenOnValues(),
+                'tr_attrs' => $this->_getSectionOwnTrAttrs('title', $bSame),
+                'db' => array (
+                    'pass' => 'Set',
+                )
+            );
+
+            // Stored as before, in `cover_title`, so the custom titles set on the Cover tab carry over. Always the page's.
+            $aInputs['cover_title'] = array(
+                'type' => 'text_translatable',
+                'name' => 'cover_title',
+                'caption' => _t('_adm_bp_txt_page_cover_title'),
+                'info' => _t('_adm_bp_txt_page_cover_title_info'),
+                'value' => isset($aPage['cover_title']) ? $aPage['cover_title'] : '',
+                'db' => array (
+                    'pass' => 'Xss',
+                )
+            );
+        }
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-title',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => $aInputs
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsTitleFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsTitle($aPage, $bCreate, true);
+    }
+
+    /**
+     * Who sees a title and where it is hidden, from resolved section settings (BxDolPage::resolveSectionSettings): a
+     * title left to the cover (NULL) as the cover, and off where Studio > Designer > Cover turns covers off, as
+     * BxBasePage::getPageTitleMode and getPageTitleHiddenOn.
+     * @param array $aResolved cover, cover_hidden_on, title_show, title_hidden_on
+     * @return array [mode: 0 disabled, 1 all, 2 guests, 3 members; BX_DB_HIDDEN_* bits]
+     */
+    public static function getTitleResolved($aResolved)
+    {
+        $iMode = isset($aResolved['title_show']) && $aResolved['title_show'] !== '' ? (int)$aResolved['title_show'] : (BxDolCover::getInstance()->isEnabled() ? (int)$aResolved['cover'] : 0);
+        $iHiddenOn = isset($aResolved['title_hidden_on']) ? (int)$aResolved['title_hidden_on'] : (int)$aResolved['cover_hidden_on'];
+
+        return array($iMode, $iHiddenOn);
+    }
+
+    /**
+     * The section of a page being edited, as its Cover and Title tabs need it.
+     * @param array $aPage the page's row as stored
+     * @return array|false object (the section's submenu), module, row (its own settings, [] for none), resolved (its
+     *         settings with the defaults), pages (its pages' titles); false for a page outside any section
+     */
+    protected function _getPageSectionInfo($aPage)
+    {
+        if(empty($aPage['uri']))
+            return false;
+
+        $sSection = BxDolPageQuery::getPageSection($aPage['uri'], isset($aPage['module']) ? $aPage['module'] : '');
+        if($sSection === '')
+            return false;
+
+        $aRow = BxDolPageQuery::getSection($sSection);
+        return array(
+            'object' => $sSection,
+            'row' => $aRow,
+            'resolved' => BxDolPage::resolveSectionSettings(array_fill_keys(array_keys(BxDolPage::SECTION_DEFAULTS), null), $aRow),
+        );
+    }
+
+    /**
+     * Whether a page being edited shows its owner's cover (BxDolPage::getOwnerCoverMode of its class).
+     * @param array $aPage the page's row
+     * @return int 0, BX_PAGE_OWNER_COVER_ALWAYS or BX_PAGE_OWNER_COVER_OTHERS
+     */
+    protected function _getPageOwnerCoverMode($aPage)
+    {
+        return empty($aPage) ? 0 : BxDolPage::getOwnerCoverModeOf($aPage);
+    }
+
+    protected function _getAudienceValues()
+    {
+        return array(
+            array('key' => 0, 'value' => _t('_adm_bp_txt_page_cover_0')),
+            array('key' => 1, 'value' => _t('_adm_bp_txt_page_cover_1')),
+            array('key' => 2, 'value' => _t('_adm_bp_txt_page_cover_2')),
+            array('key' => 3, 'value' => _t('_adm_bp_txt_page_cover_3'))
+        );
+    }
+
+    protected function _getHiddenOnValues()
+    {
+        return array(
+            BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
+            BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
+            BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
+            BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
+        );
+    }
+
+    /**
+     * "Enabled for all", "Enabled for all, hidden on Phone, Tablet": who sees a cover or a title, and where it is hidden.
+     */
+    protected function _getAudienceSummary($iMode, $iHiddenOn)
+    {
+        $sResult = _t('_adm_bp_txt_page_cover_' . ((int)$iMode >= 0 && (int)$iMode <= 3 ? (int)$iMode : 0));
+        if(!(int)$iMode)
+            return $sResult;
+
+        $aSizes = array();
+        foreach($this->_getHiddenOnValues() as $iSize => $sSize)
+            if((int)$iHiddenOn & pow(2, $iSize - 1))
+                $aSizes[] = $sSize;
+
+        return $aSizes ? _t('_adm_bp_txt_page_section_hidden_on', $sResult, implode(', ', $aSizes)) : $sResult;
+    }
+
+    protected function _getSectionCoverSummary($aResolved)
+    {
+        $sResult = $this->_getAudienceSummary((int)$aResolved['cover'], (int)$aResolved['cover_hidden_on']);
+        if((int)$aResolved['cover'] && (int)$aResolved['cover_image'])
+            $sResult = _t('_adm_bp_txt_page_section_with_picture', $sResult);
+
+        return $sResult;
+    }
+
+    /**
+     * A tab's rows that set a value for this page only: hidden while it is "Same as section".
+     */
+    protected function _getSectionOwnTrAttrs($sGroup, $bSame)
+    {
+        $aAttrs = array('class' => 'adm-bp-section-own-' . $sGroup);
+        if($bSame)
+            $aAttrs['style'] = 'display:none';
+
+        return $aAttrs;
+    }
+
+    /**
+     * The row of a tab that shows what "Same as section" gives the page, with the section's settings a click away.
+     */
+    protected function _getSettingsSectionSummary($sGroup, $aSection, $sSummary, $bSame)
+    {
+        return array(
+            'type' => 'custom',
+            'name' => $sGroup . '_section',
+            'caption' => '',
+            'content' => BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_section_summary.html', array(
+                'js_object' => $this->getPageJsObject(),
+                'text' => bx_process_output(_t('_adm_bp_txt_page_section_summary', $sSummary)),
+            )),
+            'tr_attrs' => $bSame ? array('class' => 'adm-bp-section-same-' . $sGroup) : array('class' => 'adm-bp-section-same-' . $sGroup, 'style' => 'display:none'),
+        );
+    }
+
+    protected function _getSettingsNote($sName, $sText)
+    {
+        return array(
+            'type' => 'custom',
+            'name' => $sName,
+            'caption' => '',
+            'content' => BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_settings_note.html', array(
+                'text' => bx_process_output($sText),
+            )),
+        );
+    }
+
+    /**
+     * The settings tabs leave to the section what is "Same as section": the fields are stored as NULL after the page's
+     * other settings are (onPageChanged).
+     */
+    protected function onSavePage(&$oForm, &$aPage)
+    {
+        parent::onSavePage($oForm, $aPage);
+
+        $this->aPageFieldsToSection = array();
+        $sMethod = $oForm->aFormAttrs['method'];
+        $aGroups = array(
+            'cover' => array('cover', 'cover_image', 'cover_hidden_on'),
+            'title_show' => array('title_show', 'title_hidden_on'),
+        );
+        foreach($aGroups as $sSelect => $aFields) {
+            if(!isset($oForm->aInputs[$sSelect]) || BxDolForm::getSubmittedValue($sSelect, $sMethod) !== 'section')
+                continue;
+
+            foreach($aFields as $sField)
+                unset($oForm->aInputs[$sField]);
+
+            $this->aPageFieldsToSection = array_merge($this->aPageFieldsToSection, $aFields);
+        }
+    }
+
+    /**
+     * A section's settings (Studio > Pages > page > Cover or Title > "Edit section settings"): who sees the cover of
+     * the section's pages, where it is hidden and its picture, who sees their title and where. The pages that are
+     * "Same as section" take them.
+     */
+    protected function actionSectionEdit()
+    {
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $aSection = !empty($this->aPageRebuild) ? $this->_getPageSectionInfo($this->aPageRebuild) : false;
+        if(!$aSection)
+            return array('msg' => _t('_adm_bp_err_section_not_found'));
+
+        // The row a section's picture belongs to (the uploader's content), with the defaults where it has none yet.
+        if(empty($aSection['row'])) {
+            BxDolPageQuery::setSection($aSection['object'], $this->_getSectionModule($aSection['object']), array());
+            $aSection = $this->_getPageSectionInfo($this->aPageRebuild);
+        }
+
+        $aRow = $aSection['row'];
+
+        // The section's picture as an upload of the section's, so its files field lists it: the migration that made
+        // sections gave the section a page's picture, an upload of that page's.
+        $bPictureShown = false;
+        $oStorage = false;
+        $iSectionContentId = self::getSectionContentId((int)$aRow['id']);
+        if(($iPicture = (int)$aRow['cover_image']) && ($oStorage = BxDolStorage::getObjectInstance($this->sStorage)) !== false && ($aGhost = $oStorage->getGhost($iPicture))) {
+            if((int)$aGhost['content_id'] != $iSectionContentId)
+                $oStorage->updateGhostsContentId($iPicture, (int)$aGhost['profile_id'], $iSectionContentId, true);
+            $bPictureShown = true;
+        }
+
+        $bTitleAsCover = !isset($aRow['title_show']) || $aRow['title_show'] === '';
+
+        $aTitleValues = $this->_getAudienceValues();
+        array_unshift($aTitleValues, array('key' => 'cover', 'value' => _t('_adm_bp_txt_section_title_as_cover')));
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-section-edit',
+                'action' => sprintf($this->sPageUrl, $this->sType, $this->sPage) . '&bp_action=section_edit',
+                'method' => 'post'
+            ),
+            'params' => array (
+                'db' => array(
+                    'submit_name' => 'do_submit'
+                ),
+            ),
+            'inputs' => array (
+                'section_pages' => $this->_getSettingsNote('section_pages', _t('_adm_bp_txt_section_pages', implode(', ', $this->_getSectionPageTitles($aSection['object'])))),
+                'cover' => array(
+                    'type' => 'select',
+                    'name' => 'cover',
+                    'caption' => _t('_adm_bp_txt_page_cover'),
+                    'value' => (int)$aSection['resolved']['cover'],
+                    'values' => $this->_getAudienceValues(),
+                ),
+                'cover_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'cover_hidden_on',
+                    'caption' => _t('_adm_bp_txt_page_cover_hidden_on'),
+                    'value' => BxDolFormCheckerHelper::displaySet((int)$aSection['resolved']['cover_hidden_on']),
+                    'values' => $this->_getHiddenOnValues(),
+                ),
+                'cover_image' => array(
+                    'type' => 'files',
+                    'name' => 'cover_image',
+                    'storage_object' => $this->sStorage,
+                    'images_transcoder' => $this->sTranscoderCover,
+                    'uploaders' => $this->aUploadersCover,
+                    'multiple' => false,
+                    'content_id' => $iSectionContentId,
+                    'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate('cover_image'),
+                    'caption' => _t('_adm_bp_txt_page_cover_image'),
+                ),
+                'title_show' => array(
+                    'type' => 'select',
+                    'name' => 'title_show',
+                    'caption' => _t('_adm_bp_txt_page_title_show'),
+                    'info' => _t('_adm_bp_txt_section_title_show_info'),
+                    'value' => $bTitleAsCover ? 'cover' : (int)$aRow['title_show'],
+                    'values' => $aTitleValues,
+                    'attrs' => array('onchange' => $sJsObject . '.onChangeSectionTitle(this)'),
+                ),
+                'title_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'title_hidden_on',
+                    'caption' => _t('_adm_bp_txt_page_title_hidden_on'),
+                    'value' => BxDolFormCheckerHelper::displaySet(isset($aRow['title_hidden_on']) ? (int)$aRow['title_hidden_on'] : (int)$aSection['resolved']['cover_hidden_on']),
+                    'values' => $this->_getHiddenOnValues(),
+                    'tr_attrs' => $bTitleAsCover ? array('class' => 'adm-bp-section-title-own', 'style' => 'display:none') : array('class' => 'adm-bp-section-title-own'),
+                ),
+                'controls' => array(
+                    'name' => 'controls',
+                    'type' => 'input_set',
+                    array(
+                        'type' => 'submit',
+                        'name' => 'do_submit',
+                        'value' => _t('_adm_bp_btn_page_apply')
+                    ),
+                    array (
+                        'type' => 'reset',
+                        'name' => 'close',
+                        'value' => _t('_adm_bp_btn_block_cancel'),
+                        'attrs' => array(
+                            'onclick' => $sJsObject . '.onEditSectionCancel(this)',
+                            'class' => 'bx-def-margin-sec-left',
+                        ),
+                    )
+                )
+            )
+        );
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            $aValues = array(
+                'cover' => max(0, min(3, (int)$oForm->getCleanValue('cover'))),
+                'cover_hidden_on' => $this->_getSubmittedHiddenOn($oForm->getCleanValue('cover_hidden_on')),
+                'cover_image' => $this->_getSubmittedFileId($oForm->getCleanValue('cover_image')),
+            );
+
+            // A picture the form could not show (a stored file with no upload to list) stays. One removed in the form is
+            // deleted with its file by then, so it clears.
+            if(!$aValues['cover_image'] && !$bPictureShown && $iPicture && $oStorage && $oStorage->getFile($iPicture))
+                $aValues['cover_image'] = $iPicture;
+
+            $mixedTitle = $oForm->getCleanValue('title_show');
+            if($mixedTitle === 'cover' || $mixedTitle === false || $mixedTitle === null) {
+                $aValues['title_show'] = null;
+                $aValues['title_hidden_on'] = null;
+            }
+            else {
+                $aValues['title_show'] = max(0, min(3, (int)$mixedTitle));
+                $aValues['title_hidden_on'] = $this->_getSubmittedHiddenOn($oForm->getCleanValue('title_hidden_on'));
+            }
+
+            if(!BxDolPageQuery::setSection($aSection['object'], $this->_getSectionModule($aSection['object']), $aValues))
+                return array('msg' => _t('_adm_bp_err_section_save'));
+
+            $this->onPageChanged(null, $this->aPageRebuild);
+            return array('eval' => $sJsObject . '.onEditSection(oData)');
+        }
+
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox('adm-bp-section-edit-popup', _t('_adm_bp_txt_section_popup', $this->_getSectionTitle($aSection['object'])), $oTemplate->parseHtmlByName('bp_edit_section.html', array(
+            'js_object' => $sJsObject,
+            'form_id' => $aForm['form_attrs']['id'],
+            'form' => $oForm->getCode(true)
+        )));
+
+        return array('popup' => $sContent);
+    }
+
+    /**
+     * The uploader content of a section's picture, apart from the pages' (their ids): uploads are kept per content.
+     */
+    public static function getSectionContentId($iSectionId)
+    {
+        return 1000000000 + (int)$iSectionId;
+    }
+
+    /**
+     * A section's module: its submenu's.
+     */
+    protected function _getSectionModule($sSection)
+    {
+        $aMenu = BxDolMenuQuery::getMenuObject($sSection);
+        return !empty($aMenu['module']) ? $aMenu['module'] : '';
+    }
+
+    /**
+     * A section's name, as its pages' title shows it: the main menu item's, else its submenu's.
+     */
+    protected function _getSectionTitle($sSection)
+    {
+        $aSections = BxDolPageQuery::getSectionsWithPages();
+        if(!empty($aSections[$sSection]['title']))
+            return _t($aSections[$sSection]['title']);
+
+        $aMenu = BxDolMenuQuery::getMenuObject($sSection);
+        return !empty($aMenu['title']) ? _t($aMenu['title']) : $sSection;
+    }
+
+    protected function _getSectionPageTitles($sSection)
+    {
+        $aSections = BxDolPageQuery::getSectionsWithPages();
+        if(empty($aSections[$sSection]['pages']))
+            return array();
+
+        $aTitles = array();
+        foreach(array_keys($aSections[$sSection]['pages']) as $sObject)
+            $aTitles[] = $this->getPageTitleForStudio($sObject);
+
+        return $aTitles;
+    }
+
+    /**
+     * A submitted "Hidden on" as stored: its BX_DB_HIDDEN_* bits, '' for hidden nowhere.
+     */
+    protected function _getSubmittedHiddenOn($mixedValue)
+    {
+        $iBits = (int)BxDolFormCheckerHelper::passSet($mixedValue);
+        return $iBits ? (string)$iBits : '';
+    }
+
+    /**
+     * The file a single files input was submitted with, 0 for none.
+     */
+    protected function _getSubmittedFileId($mixedValue)
+    {
+        if(is_array($mixedValue))
+            $mixedValue = reset($mixedValue);
+
+        return (int)$mixedValue;
     }
 
     protected function getSettingsLayout($aPage = array(), $bCreate = true, $bInputsOnly = false)
@@ -2501,6 +2989,11 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
 
     protected function onPageChanged($oForm, $aPage)
     {
+        if(!empty($this->aPageFieldsToSection) && !empty($aPage['id'])) {
+            BxDolPageQuery::setPageFieldsToSection((int)$aPage['id'], $this->aPageFieldsToSection);
+            $this->aPageFieldsToSection = array();
+        }
+
         $this->oDb->cleanCache('sys_pages_objects_data');
         $this->oDb->cleanCache('sys_pages_uri_object_map');
         $this->oDb->cleanCache('sys_pages_urirewrite_object_map');

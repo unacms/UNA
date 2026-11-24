@@ -829,10 +829,6 @@ ul.bx-menu-btns-icon-hor li:last-child .bx-btn {
 
     overflow: hidden;
 }
-.bx-menu-main-submenu.bx-menu-more-auto {
-    -webkit-justify-content: center;
-    justify-content: center;
-}
 .bx-menu-main-submenu.bx-menu-more-auto .bx-menu-item,
 .bx-menu-custom.bx-menu-custom-hor.bx-menu-more-auto .bx-menu-item {
     position: relative;
@@ -1107,14 +1103,16 @@ ul.bx-menu-btns-icon-hor li:last-child .bx-btn {
 
 
 /* --------------- footer menu */
-#bx-menu-footer.bx-menu-hor li {
+#bx-menu-footer .bx-menu-hor li {
     text-align: left;
 }
-#bx-menu-footer.bx-menu-hor > li {
+#bx-menu-footer .bx-menu-hor > li {
     vertical-align: top;
 }
-#bx-menu-footer.bx-menu-hor > li.bx-menu-item-powered_by .sys-icon-svg {
+/* The UNA logo at its own width; its glyphs reach the edges of its viewBox, so it isn't clipped there. */
+#bx-menu-footer .bx-menu-hor > li.bx-menu-item-powered_by .sys-icon-svg {
     width: auto;
+    overflow: visible;
 }
 
 /* --------------- switch language menu (popup) */

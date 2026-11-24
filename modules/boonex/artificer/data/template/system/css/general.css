@@ -182,6 +182,11 @@ html.dark body {
 .bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-cnt > div {
     overflow-x: auto;
 }
+/* The tabs scroll in their own column, so they never run under the tools and the section's add action at the row's end.
+   Not with a More menu: it fits the tabs to the column, and its popup opens inside it. */
+.bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-tabs {
+    overflow-x: auto;
+}
 
 .bx-menu-main-bar-gap.bx-menu-main-bar-hidden,
 .bx-menu-main-bar-wrapper.bx-menu-main-bar-hidden,

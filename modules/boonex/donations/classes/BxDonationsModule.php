@@ -136,7 +136,25 @@ class BxDonationsModule extends BxBaseModGeneralModule
         ]);
     }
 
+    /**
+     * A plan that is turned off can't be bought, so it isn't returned here.
+     */
     public function serviceGetCartItem($mixedItemId)
+    {
+        return $this->_getCartItem($mixedItemId, true);
+    }
+
+    /**
+     * The plan of a subscription that already exists, read by the payments module
+     * when it renews one (BxPaymentSubscriptions::prolong). A plan that was turned
+     * off after the donor subscribed keeps renewing.
+     */
+    public function serviceGetSubscriptionItem($mixedItemId)
+    {
+        return $this->_getCartItem($mixedItemId, false);
+    }
+
+    protected function _getCartItem($mixedItemId, $bActiveOnly)
     {
     	$CNF = &$this->_oConfig->CNF;
 
@@ -148,7 +166,7 @@ class BxDonationsModule extends BxBaseModGeneralModule
             'value' => $mixedItemId
         ]);
 
-        if(empty($aItem) || !is_array($aItem) || (int)$aItem['active'] == 0)
+        if(empty($aItem) || !is_array($aItem) || ($bActiveOnly && (int)$aItem['active'] == 0))
             return [];
 
         return [
@@ -238,7 +256,9 @@ class BxDonationsModule extends BxBaseModGeneralModule
     {
         $CNF = &$this->_oConfig->CNF;
 
-    	$aItem = $this->serviceGetCartItem($iItemId);
+        //--- The plan may have been turned off since the buyer subscribed: a renewal
+        //--- the payment provider has already charged is still recorded.
+    	$aItem = $this->_getCartItem($iItemId, false);
         if(empty($aItem) || !is_array($aItem))
             return array();
 

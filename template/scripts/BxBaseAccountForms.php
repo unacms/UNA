@@ -397,6 +397,7 @@ class BxBaseAccountForms extends BxDolProfileForms
             bx_alert('account', 'edited', $aAccountInfo['id'], $aAccountInfo['id'], array('action' => 'change_password'));
             bx_logout();
             bx_login($aAccountInfo['id'], bx_is_remember_me());
+            bx_end_other_sessions($aAccountInfo['id']);
 
             $oAccount->sendPasswordChangedNotice();
         }

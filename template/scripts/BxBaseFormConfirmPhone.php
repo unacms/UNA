@@ -38,8 +38,33 @@ class BxFormConfirmPhoneCheckerHelper extends BxDolFormCheckerHelper
             return _t('_sys_form_confirm_phone_input_code_error_empty');
         }
         
+        $sUrlStep1 = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=confirm-phone')) . '?step=1';
+
         $oSession = BxDolSession::getInstance();
-        return $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE) != $s ? _t('_sys_form_confirm_phone_input_code_error_invalid', bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=confirm-phone')) . '?step=1') : true;
+        $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+        if (!is_array($aCode) || empty($aCode['code']) || (int)$aCode['expires'] < time()) {
+            return _t('_sys_form_login_input_code_error_expired', $sUrlStep1);
+        }
+
+        // the try is counted before the code is compared, and in the database, so parallel requests share the count
+        $oKey = BxDolKey::getInstance();
+        $iTry = !empty($aCode['attempts_key']) ? $oKey->useCounterKey($aCode['attempts_key'], BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS) : false;
+        if ($iTry === false) {
+            $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+            return _t('_sys_form_confirm_phone_input_code_error_attempts', $sUrlStep1);
+        }
+
+        if (hash_equals((string)$aCode['code'], $s)) {
+            $oKey->giveBackCounterKey($aCode['attempts_key']);
+            return true;
+        }
+
+        if ($iTry >= BX_ACCOUNT_2FA_LOGIN_CODE_ATTEMPTS) {
+            $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+            return _t('_sys_form_confirm_phone_input_code_error_attempts', $sUrlStep1);
+        }
+
+        return _t('_sys_form_confirm_phone_input_code_error_invalid', $sUrlStep1);
     }
 }
 

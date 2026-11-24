@@ -64,6 +64,23 @@ class BxDolCover extends BxDolFactory implements iBxDolSingleton
                 'condition' => isLogged(),
                 'content' => array(),
             ),
+            // The page's own cover sets these by the page's Cover and Title (BxBaseCover::displayPageCover); a cover
+            // set in code (an entry's) has its band.
+            'band_class' => '',
+            'band_hidden_class' => '',
+            'title_class' => '',
+            'bx_if:band' => array(
+                'condition' => true,
+                'content' => array(),
+            ),
+            'bx_if:title_only' => array(
+                'condition' => false,
+                'content' => array(),
+            ),
+            'bx_if:title_sr' => array(
+                'condition' => false,
+                'content' => array(),
+            ),
         );
     }
 

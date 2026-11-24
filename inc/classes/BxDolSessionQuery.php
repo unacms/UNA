@@ -24,15 +24,25 @@ class BxDolSessionQuery extends BxDolDb
     {
         return $this->sTable;
     }
+    /**
+     * The session with this id, unless it is over: a remembered one past its `ttl`, any other one
+     * idle for too long. An ended session stops working at once; the cron job deletes it later.
+     */
     function exists($sId)
     {
-        $aSession = $this->getRow("SELECT * FROM `" . $this->sTable . "` WHERE `id`=:id LIMIT 1", [
-            'id' => (string)$sId
+        $aSession = $this->getRow("SELECT * FROM `" . $this->sTable . "` WHERE `id`=:id AND IF(`ttl` != 0, `ttl` >= :now, `date` >= IF(`user_id` != 0, :idle_user, :idle_guest)) LIMIT 1", [
+            'id' => (string)$sId,
+            'now' => time(),
+            'idle_user' => time() - BX_DOL_SESSION_IDLE_TIMEOUT,
+            'idle_guest' => time() - BX_DOL_SESSION_IDLE_TIMEOUT_GUESTS,
         ]);
 
         return !empty($aSession) ? $aSession : false;
     }
-    function save($sId, $aSet)
+    /**
+     * Save a session: create it or update it, or with $bInsert false only update a row that still exists.
+     */
+    public function save($sId, $aSet, $bInsert = true)
     {
         $aSet['date'] = time();
         $aUpdate = $aSet;
@@ -45,7 +55,12 @@ class BxDolSessionQuery extends BxDolDb
 
         $this->updateLastActivity($sId);
 
-        return (int)$this->query("INSERT INTO `" . $this->sTable . "` SET " . $this->arrayToSQL($aSet) . " ON DUPLICATE KEY UPDATE " . $this->arrayToSQL($aUpdate)) > 0;
+        $sUpdate = $this->arrayToSQL($aUpdate);
+        if (!$bInsert) {
+            return (int)$this->query("UPDATE `{$this->sTable}` SET {$sUpdate} WHERE `id` = :id", ['id' => $sId]) > 0;
+        }
+
+        return (int)$this->query("INSERT INTO `{$this->sTable}` SET " . $this->arrayToSQL($aSet) . " ON DUPLICATE KEY UPDATE {$sUpdate}") > 0;
     }
 	function update($sId, $aSet = array())
     {
@@ -85,6 +100,27 @@ class BxDolSessionQuery extends BxDolDb
         return $iRet;
     }
     
+    /**
+     * Delete a session without moving the account's last activity: one that goes on under
+     * a new id (BxDolSession::setUserId), or one that is over already.
+     */
+    public function deleteById($sId)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->sTable . "` WHERE `id` = :id LIMIT 1", ['id' => $sId]) > 0;
+    }
+
+    public function deleteByAccountIdExcept($iAccountId, $sKeepId = '')
+    {
+        if(!(int)$iAccountId) {
+            return 0;
+        }
+
+        return (int)$this->query("DELETE FROM `" . $this->sTable . "` WHERE `user_id` = :id AND `id` != :keep", [
+            'id' => (int)$iAccountId,
+            'keep' => (string)$sKeepId
+        ]);
+    }
+
     function deleteByAccountId($iAccountId)
     {
         $iDate = $this->getOne("SELECT `date` FROM `" . $this->sTable . "` WHERE `user_id` = :id ORDER BY `date` DESC", ['id' => $iAccountId]);

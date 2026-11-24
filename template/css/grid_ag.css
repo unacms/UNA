@@ -59,14 +59,16 @@
 }
 
 .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: #fff;
+    --bx-grid-ag-bg: transparent; /* rows sit on the block's surface, as the classic grid's (see "Rows" below) */
     --bx-grid-ag-fg: #18181b;
     --bx-grid-ag-muted: #71717a;
-    --bx-grid-ag-header: #fff;
+    --bx-grid-ag-header: transparent;
     --bx-grid-ag-border: #f4f4f5;
     --bx-grid-ag-accent: rgb(var(--bx-accent-600));
     --bx-grid-ag-selected: rgb(var(--bx-accent-50));
-    --bx-grid-ag-hover: #fafafc;
+    --bx-grid-ag-hover: rgb(228 228 231 / 0.5); /* the menu items' hover fill, gray-200/50 */
+    --bx-grid-ag-odd: rgb(0 0 0 / 0.04); /* the classic grid's alternate rows, .bx-def-color-bg-hl */
+    --bx-grid-ag-open: #f4f4f5;
     --bx-grid-ag-radius: 0;
 
     --ag-active-color: var(--bx-grid-ag-accent);
@@ -76,7 +78,7 @@
     --ag-secondary-foreground-color: var(--bx-grid-ag-muted);
     --ag-border-color: var(--bx-grid-ag-border);
     --ag-header-background-color: var(--bx-grid-ag-header);
-    --ag-odd-row-background-color: transparent;
+    --ag-odd-row-background-color: var(--bx-grid-ag-odd);
     --ag-row-hover-color: var(--bx-grid-ag-hover);
     --ag-selected-row-background-color: var(--bx-grid-ag-selected);
     --ag-font-family: inherit;
@@ -86,7 +88,7 @@
     --ag-header-column-resize-handle-display: none;
     --ag-borders: none;
     --ag-row-border-style: solid;
-    --ag-row-border-width: 1px;
+    --ag-row-border-width: 0;
     --ag-row-border-color: #f4f4f5;
     --ag-checkbox-border-radius: 4px;
     --ag-border-radius: 0;
@@ -135,12 +137,12 @@
     color: #18181b;
 }
 
-.bx-grid-ag .bx-grid-ag-cell a {
+.bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn) {
     color: rgb(var(--bx-accent-600));
     text-decoration: none;
 }
 
-.bx-grid-ag .bx-grid-ag-cell a:hover {
+.bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn):hover {
     color: rgb(var(--bx-accent-700));
 }
 
@@ -148,6 +150,14 @@
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* A column as wide as what is in it (a switch, action buttons, a count, an icon; BxDolGridAg._columnHug): nothing in
+   it wraps or is cut, and a focused button keeps its whole ring. */
+.bx-grid-ag .ag-cell.bx-grid-ag-hug .bx-grid-ag-cell,
+.bx-grid-ag .ag-cell.bx-grid-ag-hug .bx-grid-ag-text {
+    overflow: visible;
     white-space: nowrap;
 }
 
@@ -391,14 +401,16 @@ html.dark .bx-grid-ag-wrap .bx-grid-footer-cnt,
 
 html.dark .bx-grid-ag.ag-theme-quartz,
 .dark .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: #27272a;
+    --bx-grid-ag-bg: transparent;
     --bx-grid-ag-fg: #e4e4e7;
     --bx-grid-ag-muted: #a1a1aa;
-    --bx-grid-ag-header: #27272a;
+    --bx-grid-ag-header: transparent;
     --bx-grid-ag-border: #3f3f46;
     --bx-grid-ag-accent: rgb(var(--bx-accent-400));
     --bx-grid-ag-selected: rgb(var(--bx-accent-900) / 0.5);
-    --bx-grid-ag-hover: rgb(255 255 255 / 0.04);
+    --bx-grid-ag-hover: rgb(63 63 70 / 0.5);
+    --bx-grid-ag-odd: rgb(255 255 255 / 0.04);
+    --bx-grid-ag-open: #27272a;
     color-scheme: dark;
 }
 
@@ -417,8 +429,8 @@ html.dark .bx-grid-ag .bx-grid-ag-cell,
     color: #e4e4e7;
 }
 
-html.dark .bx-grid-ag .bx-grid-ag-cell a,
-.dark .bx-grid-ag .bx-grid-ag-cell a {
+html.dark .bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn),
+.dark .bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn) {
     color: rgb(var(--bx-accent-400));
 }
 
@@ -430,76 +442,48 @@ html.dark .bx-grid-ag-item,
     border-color: #3f3f46;
 }
 
-/* Card rows (from tablets up, set by the script): every row is a card 4px inside its slot, so two
-   cards sit 8px apart. The card is the row's ::before, which the theme also uses for hover and
-   selection, so those states recolour the card. No column is pinned, so a card is one piece. */
+/* Rows: plain list rows on the block's surface, as the classic grid's (no card, no divider): every other row is tinted as
+   the classic grid tints it (.bx-def-color-bg-hl, black/white at 4%), and the row under the pointer takes the menu items'
+   hover fill (gray-200/50, gray-700/50 in dark; .bx-menu-highlight-list) in their 150ms ease-out. A selected row keeps
+   the accent tint. An opened row's items (Navigation > Menus) are part of the row: no surface of their own. From
+   tablets up the script adds bx-grid-ag-cards, which only gives the cells more room and pins no column. */
 .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
-    --bx-grid-ag-bg: #fafafc;
-    --bx-grid-ag-card: #fff;
-    --bx-grid-ag-card-border: #e4e4e7;
-    --bx-grid-ag-card-border-hover: #d4d4d8;
-    --bx-grid-ag-card-border-selected: rgb(var(--bx-accent-200));
-    --ag-row-border-width: 0;
     --ag-cell-horizontal-padding: 16px;
 }
 
-.bx-grid-ag.bx-grid-ag-cards .ag-row {
-    background-color: transparent;
-    border: 0;
-}
-
-.bx-grid-ag.bx-grid-ag-cards .ag-row::before,
-.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-hover:not(.ag-full-width-row)::before,
-.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-selected::before {
+/* The fill of the row under the pointer and of a selected row is the row's ::before, under its cells. Selection wins. */
+.bx-grid-ag .ag-row::before {
     content: '';
     position: absolute;
-    top: 4px;
-    right: 4px;
-    bottom: 4px;
-    left: 4px;
-    width: auto;
-    height: auto;
-    border: 1px solid var(--bx-grid-ag-card-border);
-    border-radius: var(--bx-radius-xl);
-    background-color: var(--bx-grid-ag-card);
-    background-image: none;
-    box-shadow: 0 1px 2px rgb(24 24 27 / 0.04);
+    inset: 0;
+    background-color: transparent;
     pointer-events: none;
-    z-index: 0;
+    transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-hover:not(.ag-full-width-row)::before {
+.bx-grid-ag .ag-row.ag-row-hover:not(.ag-full-width-row):not(.ag-row-selected)::before {
     background-color: var(--bx-grid-ag-hover);
-    border-color: var(--bx-grid-ag-card-border-hover);
 }
 
-.bx-grid-ag.bx-grid-ag-cards .ag-row.ag-row-selected::before {
+.bx-grid-ag .ag-row.ag-row-selected::before {
     background-color: var(--bx-grid-ag-selected);
-    border-color: var(--bx-grid-ag-card-border-selected);
 }
 
-.bx-grid-ag.bx-grid-ag-cards .ag-row .ag-cell {
-    z-index: 1;
+/* An opened row and its items share one solid fill, so they read as one row (the items cover the rows they are drawn
+   over until the rows below move down for them). */
+.bx-grid-ag .ag-row.bx-grid-ag-row-open,
+.bx-grid-ag .bx-grid-ag-items,
+html.dark .bx-grid-ag .bx-grid-ag-items,
+.dark .bx-grid-ag .bx-grid-ag-items {
+    background: var(--bx-grid-ag-open);
+    border-top: 0;
 }
 
-.bx-grid-ag.bx-grid-ag-cards .ag-row.bx-grid-ag-row-open .ag-cell {
-    top: 4px !important;
-}
-
-.bx-grid-ag.bx-grid-ag-cards .bx-grid-ag-items {
-    left: 4px;
-    right: 4px;
-    border-radius: 0 0 var(--bx-radius-xl) var(--bx-radius-xl);
-    overflow: hidden;
-}
-
-html.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz,
-.dark .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
-    --bx-grid-ag-bg: #18181b;
-    --bx-grid-ag-card: #27272a;
-    --bx-grid-ag-card-border: #3f3f46;
-    --bx-grid-ag-card-border-hover: #52525b;
-    --bx-grid-ag-card-border-selected: rgb(var(--bx-accent-700));
+.bx-grid-ag .bx-grid-ag-item,
+html.dark .bx-grid-ag .bx-grid-ag-item,
+.dark .bx-grid-ag .bx-grid-ag-item {
+    background: transparent;
+    border-bottom: 0;
 }
 
 /* Bulk bar: between the filters and the rows, only while rows are selected. The count, the bulk

@@ -103,7 +103,9 @@ class BxBaseSearchExtendedServices extends BxDol
         if(bx_is_api())
             return $sResults;
 
-        return !empty($sResults) ? $sResults : (isset($aParams['show_empty']) && (bool)$aParams['show_empty'] ? MsgBox(_t('_Empty')) : ''); 
+        // A search that found nothing has its own empty state (getResults). Empty here means nothing was searched for
+        // yet: no block then, whatever `show_empty` says, as in the apps (`hide_empty_msg`), not "Nothing here yet".
+        return $sResults;
     }
 
     public function prepareParams(&$aParams)

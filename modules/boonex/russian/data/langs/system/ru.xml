@@ -522,6 +522,7 @@
 	<string name="_adm_bp_btn_page_apply"><![CDATA[Применить]]></string>
 	<string name="_adm_bp_btn_page_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_bp_btn_page_create"><![CDATA[Создать]]></string>
+	<string name="_adm_bp_btn_section_edit"><![CDATA[Настройки раздела]]></string>
 	<string name="_adm_bp_btn_settings"><![CDATA[Настройки]]></string>
 	<string name="_adm_bp_btn_view_page"><![CDATA[Просмотреть страницу]]></string>
 	<string name="_adm_bp_cpt_type_custom"><![CDATA[Пользовательские страницы]]></string>
@@ -567,12 +568,15 @@
 	<string name="_adm_bp_err_page_uri"><![CDATA[Необходимо указать уникальный URL из как минимум 3 символов.]]></string>
 	<string name="_adm_bp_err_page_visible_for_levels"><![CDATA[Настройки видимости определяются индивидуальным кодом или не применимы в данном случае.]]></string>
 	<string name="_adm_bp_err_save"><![CDATA[Невозможно сохранить или ничего не изменилось.]]></string>
+	<string name="_adm_bp_err_section_not_found"><![CDATA[Эта страница не входит в раздел.]]></string>
+	<string name="_adm_bp_err_section_save"><![CDATA[Не удалось сохранить настройки раздела. Попробуйте ещё раз.]]></string>
 	<string name="_adm_bp_mi_page_cache"><![CDATA[Кэш]]></string>
 	<string name="_adm_bp_mi_page_cover"><![CDATA[Обложка]]></string>
         <string name="_adm_bp_mi_page_injections"><![CDATA[Вставки]]></string>
 	<string name="_adm_bp_mi_page_layout"><![CDATA[Отображение]]></string>
 	<string name="_adm_bp_mi_page_options"><![CDATA[Опции]]></string>
 	<string name="_adm_bp_mi_page_seo"><![CDATA[Оптимизация для поисковых машин]]></string>
+	<string name="_adm_bp_mi_page_title"><![CDATA[Заголовок]]></string>
 	<string name="_adm_bp_mi_page_visibility"><![CDATA[Видимость]]></string>
 	<string name="_adm_bp_scs_save"><![CDATA[Изменения успешно сохранены]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Показывать на сайте]]></string>
@@ -633,13 +637,16 @@
 	<string name="_adm_bp_txt_page_cache_lifetime"><![CDATA[Кэш]]></string>
 	<string name="_adm_bp_txt_page_cover"><![CDATA[Обложка]]></string>
 	<string name="_adm_bp_txt_page_cover_image"><![CDATA[Собственная обложка]]></string>
+        <string name="_adm_bp_txt_page_cover_owner"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит, с её картинкой. Выберите, кому и где её показывать.]]></string>
+        <string name="_adm_bp_txt_page_cover_owner_others"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит. Когда участник открывает свой собственный список, страница показывает свою обложку.]]></string>
         <string name="_adm_bp_txt_page_cover_title"><![CDATA[Собственный заголовок]]></string>
+        <string name="_adm_bp_txt_page_cover_title_info"><![CDATA[Заменяет название страницы или её раздела. Если пусто, показывается это название.]]></string>
         <string name="_adm_bp_txt_page_cover_0"><![CDATA[Отключен]]></string>
         <string name="_adm_bp_txt_page_cover_1"><![CDATA[Включен для всех]]></string>
         <string name="_adm_bp_txt_page_cover_2"><![CDATA[Включен только для гостей]]></string>
         <string name="_adm_bp_txt_page_cover_3"><![CDATA[Включен только для пользователей]]></string>
         <string name="_adm_bp_txt_page_cover_hidden_on"><![CDATA[Обложка скрыта на]]></string>
-        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[На выбранных размерах экрана страница показывается без обложки и без названия, на сайте и в приложениях.]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[На выбранных размерах экрана обложка не показывается, на сайте и в приложениях. У заголовка страницы свои настройки на вкладке «Заголовок».]]></string>
         <string name="_adm_bp_txt_page_inj_footer"><![CDATA[В основание]]></string>
         <string name="_adm_bp_txt_page_inj_head"><![CDATA[В заголовок]]></string>
 	<string name="_adm_bp_txt_page_layout"><![CDATA[Отображение]]></string>
@@ -648,9 +655,19 @@
 	<string name="_adm_bp_txt_page_meta_keywords"><![CDATA[Ключевые слова]]></string>
         <string name="_adm_bp_txt_page_meta_title"><![CDATA[Мета-заголовок страницы]]></string>
 	<string name="_adm_bp_txt_page_meta_robots"><![CDATA[Мета-роботы]]></string>
+        <string name="_adm_bp_txt_page_same_as_section"><![CDATA[Как в разделе]]></string>
+        <string name="_adm_bp_txt_page_section_hidden_on"><![CDATA[{0}, скрыто на: {1}]]></string>
+        <string name="_adm_bp_txt_page_section_summary"><![CDATA[Как в разделе: {0}]]></string>
+        <string name="_adm_bp_txt_page_section_with_picture"><![CDATA[{0}, со своей картинкой]]></string>
         <string name="_adm_bp_txt_page_submenu"><![CDATA[Подменю]]></string>
 	<string name="_adm_bp_dsc_page_submenu"><![CDATA[В данном поле можно выбрать подменю страницы]]></string>
 	<string name="_adm_bp_txt_page_title"><![CDATA[Отображаемое имя]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Заголовок скрыт на]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[На выбранных размерах экрана заголовок страницы не показывается, на сайте и в приложениях.]]></string>
+	<string name="_adm_bp_txt_page_title_owner"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит, поэтому здесь нечего настраивать.]]></string>
+	<string name="_adm_bp_txt_page_title_owner_others"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит. Эти настройки действуют, когда участник открывает свой собственный список.]]></string>
+	<string name="_adm_bp_txt_page_title_show"><![CDATA[Заголовок]]></string>
+	<string name="_adm_bp_txt_page_title_show_info"><![CDATA[Название страницы или её раздела над вкладками и блоками на сайте и в заголовке приложений.]]></string>
 	<string name="_adm_bp_txt_page_title_system"><![CDATA[Системное имя]]></string>
 	<string name="_adm_bp_txt_page_type_id"><![CDATA[Тип]]></string>
 	<string name="_adm_bp_dsc_page_type_id"><![CDATA[Способ отображения страницы. Значение по умолчанию может быть изменено в Студия -> Дизайнер -> Настройки.]]></string>
@@ -658,6 +675,10 @@
 	<string name="_adm_bp_txt_page_url"><![CDATA[Ссылка]]></string>
 	<string name="_adm_bp_txt_page_visible_for_levels"><![CDATA[Выбрать уровни]]></string>
         <string name="_adm_bp_txt_page_sticky_columns"><![CDATA[Включить 'липкие' блоки]]></string>
+	<string name="_adm_bp_txt_section_pages"><![CDATA[Эти настройки получают страницы раздела ({0}), у которых выбрано «Как в разделе».]]></string>
+	<string name="_adm_bp_txt_section_popup"><![CDATA[Настройки раздела: {0}]]></string>
+	<string name="_adm_bp_txt_section_title_as_cover"><![CDATA[Как у обложки]]></string>
+	<string name="_adm_bp_txt_section_title_show_info"><![CDATA[«Как у обложки» показывает заголовок там же и тем же людям, что и обложку.]]></string>
 	<string name="_adm_bp_txt_select_page"><![CDATA[Выбрать страницу...]]></string>
 	<string name="_adm_bp_txt_settings_popup"><![CDATA[Настройки]]></string>
 	<string name="_adm_bp_txt_visible_for"><![CDATA[Видимо для {0}]]></string>
@@ -3600,6 +3621,7 @@
 	<string name="_sys_form_confirm_phone_input_caption_system_do_sendsms"><![CDATA[Отправить SMS]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_empty"><![CDATA[Обязательное поле.]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Неправильный код проверки. Пожалуйста, повторите код или  <a href="{0}">измените телефонный номер и начните сначала</a>.]]></string>
+	<string name="_sys_form_confirm_phone_input_code_error_attempts"><![CDATA[Слишком много неверных кодов. <a href="{0}">Отправить новый код</a>.]]></string>
 	<string name="_sys_form_display_account_create"><![CDATA[Создать аккаунт]]></string>
 	<string name="_sys_form_display_account_settings_delete"><![CDATA[Удалить аккаунт]]></string>
 	<string name="_sys_form_display_account_settings_email"><![CDATA[Настройки email-а]]></string>
@@ -5133,6 +5155,7 @@
     <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Не удалось отправить SMS. Попробуйте ещё раз позже.]]></string>
     <string name="_sys_txt_confirm_phone_sms_text"><![CDATA[Ваш код проверки телефона - {0}.]]></string>
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Ваш телефон успешно подтверждён.]]></string>
+    <string name="_sys_txt_sms_send_limit"><![CDATA[Отправлено слишком много кодов. Попробуйте снова через час.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Пожалуйста, введите телефонный номер на который будет отправлено SMS с кодом подтверждения.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Пожалуйста, введите код проверки из SMS]]></string>
     <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. Все права защищены.]]></string>

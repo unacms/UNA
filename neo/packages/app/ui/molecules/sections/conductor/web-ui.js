@@ -1002,6 +1002,11 @@ function SidebarNavSections({ routes, index, setIndex }) {
  * only), the section nav (navigator only, tree or flat), then whatever the
  * caller passes as `children` — normally the page's own left-column blocks.
  *
+ * The title, the Add buttons and the panel around them belong to the section nav and to
+ * left-column menus. A column with neither (a Search tab's form) holds only its blocks, each a
+ * standard block, as on the site; the page's title row above already carries the section title
+ * and its Add button.
+ *
  * Profile layout uses it purely as a padded container for the blocks.
  *
  * @param {object}   props
@@ -1011,7 +1016,9 @@ function SidebarNavSections({ routes, index, setIndex }) {
  * @param {Function} props.setIndex
  * @param {node}     props.children   Left-column blocks.
  * @param {string}   props.layoutName
+ * @param {boolean}  [props.hasMenuBlocks]  The column holds menu blocks (`use_as_menu`).
  * @param {object}   props.stickyColumnStyle  From `stickySidebarStyle`.
+ * @param {boolean}  [props.showTitle=true] The page's title is on (Studio → Pages → page → Title): the section's name.
  */
 export const LeftColumnContainer = ({
     menu,
@@ -1020,17 +1027,25 @@ export const LeftColumnContainer = ({
     setIndex,
     children,
     layoutName,
+    hasMenuBlocks = false,
     stickyColumnStyle,
+    showTitle = true,
 }) => {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const addMenuItems = getAddMenuItems(menu, 'hideInSideBar', currentUser)
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" style="bordered" />
-    // Profile has its name in the cover already — no title row here.
-    const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
+    // A section whose menu asks for a sidebar keeps its panel (title and Add) even with one page: its tab row is
+    // hidden from lg, so the panel is where those are.
+    const isSectionSidebar = layoutName == 'navigator' && getMenuSectionNav(menu) === 'sidebar'
+    const hasSectionNav = isSectionSidebar && routes.length > 1
+    const isPlain = layoutName != 'profile' && !isSectionSidebar && !hasMenuBlocks
+    // Profile has its name in the cover already — no title row here. A page whose title is off (Studio → Pages → page →
+    // Title) keeps the Add buttons here, without the name.
+    const title = layoutName == 'profile' || !showTitle ? '' : t(menuSettings?.name)
     const sectionIcon = useSectionIcon(menu, undefined, routes)
-    const icon = layoutName == 'profile' ? '' : sectionIcon
+    const icon = layoutName == 'profile' || !showTitle ? '' : sectionIcon
     // The column takes back the center column's 16px inset (-me-4), so the blocks on both sides are 16px apart, as on
     // UNA's site (.bx-layout-row gap-4); its own padding keeps room inside the scroller for the blocks' outline shadows
     // (the bottom too: the profile's left-column blocks have no margin of their own).
@@ -1046,6 +1061,20 @@ export const LeftColumnContainer = ({
         if (href) window.history.pushState({}, '', href)
     }, [setIndex])
 
+    if (isPlain) {
+        // Blocks only, placed as the right column's (RightColumnContainer), mirrored.
+        return (
+            <View className="h-full">
+                <View
+                    className={`web:sticky web:overflow-y-auto mt-0.5 sm:mt-0 sm:-me-4 sm:p-4 ${appSetting('conductor', 'sidebar_container')}`}
+                    style={stickyColumnStyle}
+                >
+                    {children}
+                </View>
+            </View>
+        )
+    }
+
     return (
         <View className="h-full">
             <View
@@ -1056,8 +1085,12 @@ export const LeftColumnContainer = ({
                     {((!!title || addMenuItems.length > 0) && layoutName != 'profile') && (
                         <SidebarTitle title={title} icon={icon} actions={addButtons} />
                     )}
+                    {/* A section whose title is off keeps its heading here, for screen readers only. */}
+                    {isSectionSidebar && !showTitle && !!menuSettings?.name && (
+                        <Text {...headingProps(1)} className="sr-only">{t(menuSettings.name)}</Text>
+                    )}
                     <View className="flex-1 gap-4">
-                        {layoutName == 'navigator' && getMenuSectionNav(menu) === 'sidebar' && routes.length > 1 && (
+                        {hasSectionNav && (
                             <View className={appSetting('conductor', 'sidebar_nav')}>
                                 {hasConductorSubitems(routes) ? (
                                     <SidebarNav
@@ -1142,6 +1175,7 @@ export const RightColumnContainer = ({ route, stickyColumnStyle }) => {
  * @param {boolean}  props.isCover          Page has a cover and mode is not 'none'.
  * @param {boolean}  props.isHideCover      Own profile on desktop → collapse cover.
  * @param {boolean}  props.isCoverDisabled  Page asked for no cover image.
+ * @param {boolean}  [props.showTitle=true] The page's title is on on desktop (Studio → Pages → page → Title).
  * @param {string}   props.contentWidth     Tailwind max-width class.
  * @param {object}   props.menu
  * @param {array}    props.routes
@@ -1160,6 +1194,7 @@ export const HeaderContainer = ({
     isCover,
     isHideCover,
     isCoverDisabled,
+    showTitle = true,
     contentWidth,
     menu,
     routes,
@@ -1213,6 +1248,7 @@ export const HeaderContainer = ({
             showFilters={showFilters}
             onShowFilters={onShowFilters}
             contentWidth={contentWidth}
+            showTitle={showTitle}
         />
     )
 
@@ -1268,6 +1304,7 @@ export function TopSidebar({
     toolButtons,
     children,
     title,
+    srTitle = '',
     icon,
     layoutName,
     omitDefaultBackground = false,
@@ -1309,8 +1346,13 @@ export function TopSidebar({
                 className={`${!omitDefaultBackground ? conductorTheme.menu : ''} lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep`}
             >
                 <View className={`${widthClass} mx-auto w-full`}>
-                    {/* First line, from lg: below it the page header shows the title and the actions. */}
-                    {(showTitle || showAddButtons) && (
+                    {/* First line, from lg: below it the page header shows the title and the actions. A page whose title
+                        is off (Studio → Pages → page → Title) has none: its Add goes to the end of the tab row. */}
+                    {/* Without the title row the page keeps its heading, for screen readers only. */}
+                    {!showTitle && !!srTitle && (
+                        <Text {...headingProps(1)} className="sr-only">{srTitle}</Text>
+                    )}
+                    {showTitle && (
                         // 44px icon with 10px above and below: the 64px strip of a compact profile cover, the group centred in it.
                         <Row className={`${desktopFlex} w-full items-center gap-3 min-w-0 px-4 py-2.5`}>
                             <Row className="group flex-1 items-center gap-2 min-w-0">
@@ -1341,6 +1383,7 @@ export function TopSidebar({
                         {showAddButtons && (
                             <Row className={`${desktopFlex} shrink-0 items-center gap-2 pr-4`}>
                                 {toolButtons}
+                                {!showTitle && actionButtons}
                             </Row>
                         )}
                     </Row>
@@ -1417,6 +1460,7 @@ export const TabBar = ({
     showFilters = false,
     onShowFilters,
     contentWidth,
+    showTitle = true,
 }) => {
     const { t } = useTranslation()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
@@ -1463,7 +1507,10 @@ export const TabBar = ({
             // A pill with its label: this line shows from lg only.
             actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" labelled />}
             toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
-            title={t(menuSettings?.name)}
+            // No section name where the page's title is off on desktop: the Add button moves to the tab row's end.
+            title={showTitle ? t(menuSettings?.name) : ''}
+            // On desktop the page's heading stays for screen readers (below it the page header names the page).
+            srTitle={!showTitle && isDesktop ? t(menuSettings?.name) : ''}
             icon={sectionIcon}
             contentWidth={contentWidth}
         >

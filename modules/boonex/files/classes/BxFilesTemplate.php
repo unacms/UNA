@@ -207,7 +207,8 @@ class BxFilesTemplate extends BxBaseModTextTemplate
         return $this->parseHtmlByName('folders_tree.html', [
             'js_css' => $sJsCss,
             'list' => $this->foldersToList($aFolders, 0),
-            'files' => json_encode($aFilesToMove),
+            'files' => json_encode(array_map('intval', $aFilesToMove)),
+            'csrf_token' => json_encode((string)BxDolForm::getCsrfToken()),
             'actions_url' => BX_DOL_URL_ROOT.$this->getModule()->_oConfig->getBaseUri(),
         ]);
     }

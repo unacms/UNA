@@ -34,7 +34,8 @@ class PageCoverBandTemplateTest extends BxDolTestCase
         $this->assertStringNotContainsString('__title__', $sBand);
         $this->assertStringNotContainsString('<h1', $sBand);
         $this->assertStringNotContainsString('bx-cover-gradient', $sHtml, 'no scrim: nothing to keep readable on the picture');
-        $this->assertSame(2, substr_count($sHtml, '<h1'), 'one heading per title variant, both after the band');
+        $this->assertSame(3, substr_count($sHtml, '<h1'), 'one heading per title variant and one for screen readers where the title is off or hidden, all after the band');
+        $this->assertStringContainsString('<h1 class="sr-only __class__">__title__</h1>', $sHtml);
     }
 
     public function testTheBandIsAsHighAndShowsOnTheSameScreensOnTheSiteAndInTheApps(): void
@@ -46,8 +47,20 @@ class PageCoverBandTemplateTest extends BxDolTestCase
         $this->assertStringContainsString(' h-44 ', $sNeo);
 
         $sPhp = self::read('template/scripts/BxBaseCover.php');
-        $this->assertStringContainsString("'band_class' => \$bTitle ? 'hidden lg:block' : ''", $sPhp);
+        $this->assertStringContainsString("if(\$bTitle)\n            \$aBandClasses[] = 'hidden lg:block';", $sPhp);
         $this->assertStringContainsString('hidden lg:flex', $sNeo);
+    }
+
+    /**
+     * The base template's cover holds the title on its band: the band takes its "Cover hidden on" sizes, the title on it
+     * its "Title hidden on" sizes, and the title shows alone where the band is off or hidden.
+     */
+    public function testBaseTemplateHidesTheBandAndTheTitleApart(): void
+    {
+        $sHtml = self::read('template/cover.html');
+        $this->assertMatchesRegularExpression('/<bx_if:band>\s*<div class="bx-cover-gap [^"]*__band_hidden_class__">/', $sHtml);
+        $this->assertStringContainsString('bx-def-font-h1 __title_class__"', $sHtml);
+        $this->assertMatchesRegularExpression('/<bx_if:title_only>\s*<div class="bx-cover-title [^"]*__title_only_class__">/', $sHtml);
     }
 
     public function testTheSectionTitleIsTheAppsSectionTitle(): void

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Phone confirmation and two-factor sign-in: too many wrong codes, and too many SMS codes sent. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_form_confirm_phone_input_code_error_attempts"><![CDATA[Слишком много неверных кодов. <a href="{0}">Отправить новый код</a>.]]></string_add>
+    <string_add name="_sys_txt_sms_send_limit"><![CDATA[Отправлено слишком много кодов. Попробуйте снова через час.]]></string_add>
+</resources>

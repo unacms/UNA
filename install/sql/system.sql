@@ -5789,7 +5789,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_roles', 'switcher', '', '5%', 0, 0, '', 2),
 ('sys_studio_roles', 'title', '_adm_rl_txt_title', '24%', 1, 0, '', 3),
 ('sys_studio_roles', 'description', '_adm_rl_txt_description', '35%', 1, 32, '', 4),
-('sys_studio_roles', 'actions_list', '_adm_rl_txt_actions', '15%', 0, 0, '', 5),
+('sys_studio_roles', 'actions_list', '_adm_rl_txt_actions', '15%', 0, 0, 'a:1:{s:4:"kind";s:5:"count";}', 5),
 ('sys_studio_roles', 'actions', '', '20%', 0, 0, '', 6),
 
 ('sys_studio_roles_actions', 'switcher', '', '10%', 0, 0, '', 1),
@@ -5800,7 +5800,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_acl', 'switcher', '_adm_prm_txt_enable', '5%', 0, '', '', 8),
 ('sys_studio_acl', 'Icon', '_adm_prm_txt_icon', '5%', 0, '', '', 2),
 ('sys_studio_acl', 'Name', '_adm_prm_txt_title', '29%', 1, '15', '', 3),
-('sys_studio_acl', 'ActionsList', '_adm_prm_txt_actions', '10%', 0, '', '', 4),
+('sys_studio_acl', 'ActionsList', '_adm_prm_txt_actions', '10%', 0, '', 'a:1:{s:4:"kind";s:5:"count";}', 4),
 ('sys_studio_acl', 'QuotaSize', '_adm_prm_txt_storage', '10%', 0, '', '', 5),
 ('sys_studio_acl', 'QuotaMaxFileSize', '_adm_prm_txt_max_file_size', '10%', 0, '', '', 6),
 ('sys_studio_acl', 'QuotaNumber', '_adm_prm_txt_max_files', '10%', 0, '', '', 7),
@@ -5815,14 +5815,14 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_nav_menus', 'switcher', '', '10%', 0, '', '', 1),
 ('sys_studio_nav_menus', 'title', '_adm_nav_txt_menus_gl_title', '17%', 0, '15', '', 2),
 ('sys_studio_nav_menus', 'set_title', '_adm_nav_txt_menus_gl_set_title', '17%', 1, '15', '', 3),
-('sys_studio_nav_menus', 'items', '_adm_nav_txt_menus_gl_items', '10%', 0, '8', '', 4),
+('sys_studio_nav_menus', 'items', '_adm_nav_txt_menus_gl_items', '10%', 0, '8', 'a:1:{s:4:"kind";s:5:"count";}', 4),
 ('sys_studio_nav_menus', 'template_title', '_adm_nav_txt_menus_gl_template_title', '17%', 1, '15', '', 5),
 ('sys_studio_nav_menus', 'module', '_adm_nav_txt_menus_gl_module', '12%', 0, '10', '', 6),
 ('sys_studio_nav_menus', 'actions', '', '17%', 0, '', '', 7),
 
 ('sys_studio_nav_sets', 'title', '_adm_nav_txt_sets_gl_title', '50%', 1, '48', '', 1),
 ('sys_studio_nav_sets', 'module', '_adm_nav_txt_sets_gl_module', '15%', 0, '13', '', 2),
-('sys_studio_nav_sets', 'items', '_adm_nav_txt_sets_gl_items', '15%', 0, '13', '', 3),
+('sys_studio_nav_sets', 'items', '_adm_nav_txt_sets_gl_items', '15%', 0, '13', 'a:1:{s:4:"kind";s:5:"count";}', 3),
 ('sys_studio_nav_sets', 'actions', '', '20%', 0, '', '', 4),
 
 ('sys_studio_nav_items', 'order', '', '1%', 0, '', '', 1),
@@ -5850,7 +5850,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_forms_displays', 'display_title', '_adm_form_txt_displays_gl_title', '30%', 1, '48', '', 1),
 ('sys_studio_forms_displays', 'module', '_adm_form_txt_displays_gl_module', '13%', 0, '11', '', 2),
 ('sys_studio_forms_displays', 'form_title', '_adm_form_txt_displays_gl_form', '24%', 1, '22', '', 3),
-('sys_studio_forms_displays', 'fields', '_adm_form_txt_displays_gl_fields', '13%', 0, '11', '', 4),
+('sys_studio_forms_displays', 'fields', '_adm_form_txt_displays_gl_fields', '13%', 0, '11', 'a:1:{s:4:"kind";s:5:"count";}', 4),
 ('sys_studio_forms_displays', 'actions', '', '20%', 0, '', '', 5),
 
 ('sys_studio_forms_fields', 'order', '', '1%', 0, '', '', 1),
@@ -5874,8 +5874,8 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_search_forms', 'switcher', '', '10%', 0, '', '', 1),
 ('sys_studio_search_forms', 'title', '_adm_form_txt_search_forms_title', '35%', 1, '38', '', 2),
 ('sys_studio_search_forms', 'module', '_adm_form_txt_search_forms_module', '15%', 0, '13', '', 3),
-('sys_studio_search_forms', 'fields', '_adm_form_txt_search_forms_fields', '10%', 0, '13', '', 4),
-('sys_studio_search_forms', 'sortable_fields', '_adm_form_txt_search_forms_sortable_fields', '10%', 0, '13', '', 5),
+('sys_studio_search_forms', 'fields', '_adm_form_txt_search_forms_fields', '10%', 0, '13', 'a:1:{s:4:"kind";s:5:"count";}', 4),
+('sys_studio_search_forms', 'sortable_fields', '_adm_form_txt_search_forms_sortable_fields', '10%', 0, '13', 'a:1:{s:4:"kind";s:5:"count";}', 5),
 ('sys_studio_search_forms', 'actions', '', '20%', 0, '', '', 6),
 
 ('sys_studio_search_forms_fields', 'order', '', '1%', 0, '', '', 1),
@@ -5892,7 +5892,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 ('sys_studio_labels', 'order', '', '1%', 0, 0, '', 1),
 ('sys_studio_labels', 'value', '_adm_form_txt_labels_value', '70%', 0, 38, '', 2),
-('sys_studio_labels', 'items', '_adm_form_txt_labels_items', '10%', 0, 0, '', 3),
+('sys_studio_labels', 'items', '_adm_form_txt_labels_items', '10%', 0, 0, 'a:1:{s:4:"kind";s:5:"count";}', 3),
 ('sys_studio_labels', 'actions', '', '19%', 0, 0, '', 4),
 
 ('sys_studio_categories', 'checkbox', '_sys_select', '2%', 0, 0, '', 1),
@@ -5905,7 +5905,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 ('sys_studio_groups_roles', 'order', '', '2%', 0, 0, '', 1),
 ('sys_studio_groups_roles', 'LKey', '_adm_rl_txt_title', '40%', 1, 0, '', 2),
-('sys_studio_groups_roles', 'actions_list', '_adm_rl_txt_actions', '10%', 0, 35, '', 3),
+('sys_studio_groups_roles', 'actions_list', '_adm_rl_txt_actions', '10%', 0, 35, 'a:1:{s:4:"kind";s:5:"count";}', 3),
 ('sys_studio_groups_roles', 'actions', '', '48%', 0, 0, '', 4),
 
 ('sys_audit_administration', 'added', '_adm_form_txt_audit_added', '15%', 1, 25, '', 1),
@@ -6592,10 +6592,12 @@ CREATE TABLE IF NOT EXISTS `sys_objects_page` (
   `title_system` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `module` varchar(32) NOT NULL,
-  `cover` tinyint(4) NOT NULL DEFAULT '1',
-  `cover_image` int(11) NOT NULL DEFAULT '0',
+  `cover` tinyint(4) DEFAULT NULL,
+  `cover_image` int(11) DEFAULT NULL,
   `cover_title` varchar(255) NOT NULL DEFAULT '',
-  `cover_hidden_on` varchar(255) NOT NULL DEFAULT '',
+  `cover_hidden_on` varchar(255) DEFAULT NULL,
+  `title_show` tinyint(4) DEFAULT NULL,
+  `title_hidden_on` varchar(255) DEFAULT NULL,
   `type_id` int(11) NOT NULL DEFAULT '1',
   `layout_id` int(11) NOT NULL,
   `sticky_columns` tinyint(4) NOT NULL DEFAULT '0',
@@ -6619,6 +6621,22 @@ CREATE TABLE IF NOT EXISTS `sys_objects_page` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `object` (`object`),
   UNIQUE KEY `uri` (`uri`(191))
+);
+
+-- A section's cover and title (Studio > Pages > page > Cover, Title > "Edit section settings"), which the pages of the
+-- section take where they are NULL ("Same as section"). A section is the submenu of a main menu item, its tabs; a
+-- section without a row has the defaults (cover on for everyone, the title as the cover). @see BxDolPage::SECTION_DEFAULTS
+CREATE TABLE IF NOT EXISTS `sys_pages_sections` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `object` varchar(64) NOT NULL,
+  `module` varchar(32) NOT NULL DEFAULT '',
+  `cover` tinyint(4) NOT NULL DEFAULT '1',
+  `cover_image` int(11) NOT NULL DEFAULT '0',
+  `cover_hidden_on` varchar(255) NOT NULL DEFAULT '',
+  `title_show` tinyint(4) DEFAULT NULL,
+  `title_hidden_on` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `object` (`object`)
 );
 
 INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `module`, `cover`, `layout_id`, `submenu`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`, `sticky_columns`) VALUES

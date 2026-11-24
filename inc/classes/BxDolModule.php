@@ -225,6 +225,17 @@ class BxDolModule extends BxDol
     }
 
     /**
+     * Services a macro in content may call ({{~module:method[params]~}}, see BxDolService::callMacro).
+     * A macro runs as whoever views the content, so list only services which show something
+     * and change nothing. The format is that of serviceGetSafeServices: method name => class
+     * ('' for the main module class).
+     */
+    public function serviceGetMacroServices()
+    {
+        return array();
+    }
+
+    /**
      * Whether the API may let browsers and shared caches keep a guest's answer from this service
      * (see bx_api_cache_response). List only services whose answer depends on nothing but their
      * parameters and the language: never on the viewer, a cookie, a request header, the IP or the

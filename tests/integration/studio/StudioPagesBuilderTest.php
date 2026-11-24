@@ -81,7 +81,8 @@ class StudioPagesBuilderTest extends BxDolIntegrationTestCase
     public function testHomepageBlocksHaveDistinctNames(): void
     {
         $oBuilder = $this->builder('sys_home');
-        $aBlocks = BxDolDb::getInstance()->getAll("SELECT * FROM `sys_pages_blocks` WHERE `object` = 'sys_home'");
+        // Shopify and Snipcart are alternatives with the same wording, so they are not compared.
+        $aBlocks = BxDolDb::getInstance()->getAll("SELECT * FROM `sys_pages_blocks` WHERE `object` = 'sys_home' AND `module` NOT IN ('bx_shopify', 'bx_snipcart')");
 
         $aTitles = [];
         foreach ($aBlocks as $aBlock)

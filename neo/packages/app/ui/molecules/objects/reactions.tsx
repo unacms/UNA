@@ -1102,7 +1102,20 @@ export default function ElementReactions(props: ReactionsProps) {
         let icon: string;
         let label: string;
         let spokenLabel: string | undefined;
-        if (config.mode === 'solo' || (hasDefault && !shown)) {
+        const given = config.mode === 'solo' ? mine.includes(config.defaultName) : !!shown;
+        // Nothing given yet: an outline icon, never an emoji, which would read as already given (with
+        // `icon_type_*: 'emoji'`). The default reaction's svg, else the iconset's "not voted" one; both are Lucide
+        // names, drawn on both platforms.
+        const iconsOf = iconset?.[isWeb ? 'web' : 'native'];
+        const outline = iconsOf?.[config.defaultName]?.svg;
+        const placeholder = iconsOf?.default?.svg;
+        if ((config.mode === 'solo' || hasDefault) && !given && (outline || placeholder)) {
+            icon = outline || placeholder;
+            // The placeholder isn't the default reaction: name it as UNA does ("React").
+            label = outline
+                ? getTitle(config.defaultName)
+                : (action && !action.is_voted && action.title) || t('React');
+        } else if (config.mode === 'solo' || (hasDefault && !shown)) {
             icon = getIcon(config.defaultName);
             label = getTitle(config.defaultName);
         } else if (hasDefault) {

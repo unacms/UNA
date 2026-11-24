@@ -7,6 +7,7 @@ import {
     applySetCookies, hasStaleSessionMark, needsSessionTouch, sessionMarkAge, sessionMarkCookie,
 } from './lib/session-touch';
 import { dropTenantHeaders } from './lib/tenant';
+import { sendsUnaApiKey } from './lib/una-api-key';
 import { clearUnaPageCache, isUnaAuthRequest } from './lib/una-page-cache';
 
 export const config = {
@@ -125,7 +126,13 @@ function rewriteToUna(request, tenant, unaPath) {
     // UNA trusts the visitor's address and location headers on requests with the API key:
     // pass only those the edge set, not ones the browser added.
     const tmpHeaders = dropTenantHeaders(dropForeignClientHeaders(new Headers(request.headers), EDGE));
-    tmpHeaders.set('authorization', `Bearer ${unaApiKey}`);
+    // The key is the server's credential and UNA reads it on api.php only: no other PHP path
+    // a visitor asks for gets it. The browser's own Authorization never reaches UNA either.
+    if (sendsUnaApiKey(unaPath)) {
+        tmpHeaders.set('authorization', `Bearer ${unaApiKey}`);
+    } else {
+        tmpHeaders.delete('authorization');
+    }
     tmpHeaders.set('cookie', cookieHeaderFromRequest(request));
 
     const unaTarget = joinUnaUrl(unaPath, unaUrl) + new URL(request.url).search;

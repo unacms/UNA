@@ -21,11 +21,43 @@ export function isPageCoverShown(cover: unknown, isMember: boolean): boolean {
 }
 
 /**
- * Whether the page's cover, and the page title that follows it, is hidden on this screen size:
+ * Whether the page's cover is hidden on this screen size (its title has its own, isPageTitleHiddenOn):
  * `cover_hidden_on` (Studio → Pages → page → Cover hidden on: phone, tablet, desktop, mobile-app).
  * The native apps count as the mobile app as well as their screen size, as UNA's mobile app does.
  */
 export function isPageCoverHiddenOn(hiddenOn: unknown, tier: string, isApp: boolean): boolean {
     if (!Array.isArray(hiddenOn)) return false;
     return hiddenOn.includes(tier) || (isApp && hiddenOn.includes('mobile-app'));
+}
+
+/** The page fields the title settings come in (UNA's page JSON). */
+export type PageTitleSettings = {
+    cover?: unknown;
+    cover_hidden_on?: unknown;
+    title_show?: unknown;
+    title_hidden_on?: unknown;
+} | null | undefined;
+
+/**
+ * Whether a UNA page shows its title to this viewer, with or without its cover: `title_show`
+ * (Studio → Pages → page → Title), the same values as `cover`. An older UNA sends none: its
+ * title follows the cover.
+ */
+export function isPageTitleShown(page: PageTitleSettings, isMember: boolean): boolean {
+    const mode = page?.title_show ?? page?.cover;
+    return isPageCoverShown(mode, isMember);
+}
+
+/**
+ * Whether the page's title is hidden on this screen size: `title_hidden_on` (Studio → Pages → page →
+ * Title hidden on). An older UNA sends none: the title follows the cover's `cover_hidden_on`.
+ */
+export function isPageTitleHiddenOn(page: PageTitleSettings, tier: string, isApp: boolean): boolean {
+    const hiddenOn = page?.title_hidden_on ?? page?.cover_hidden_on;
+    return isPageCoverHiddenOn(hiddenOn, tier, isApp);
+}
+
+/** Both: the page's title shows to this viewer on this screen size (in the apps when `isApp`). */
+export function isPageTitleOn(page: PageTitleSettings, isMember: boolean, tier: string, isApp: boolean): boolean {
+    return isPageTitleShown(page, isMember) && !isPageTitleHiddenOn(page, tier, isApp);
 }

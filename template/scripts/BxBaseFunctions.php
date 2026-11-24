@@ -221,11 +221,13 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      * @param array $aButton optional action: ['title' => translated, 'link' => url] and/or 'onclick' => js; a button
      *  with only 'onclick' is a <button>
      * @param string $sIcon Lucide icon name
+     * @param string $sTitle optional translated title above the line, as the apps show it
      */
-    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox')
+    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox', $sTitle = '')
     {
         return $this->msgBoxState('bx-empty-' . bin2hex(random_bytes(4)), [
             'icon' => $sIcon,
+            'title' => $sTitle,
             'text' => $sText !== '' ? $sText : _t('_Empty'),
             'buttons' => !empty($aButton) ? [$aButton] : [],
         ]);

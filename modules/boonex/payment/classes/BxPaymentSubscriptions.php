@@ -439,11 +439,17 @@ class BxPaymentSubscriptions extends BxBaseModPaymentSubscriptions
         if(empty($aSubscription) || !is_array($aSubscription))
             return false;
 
-        $aInfo = $this->_oModule->getObjectCart()->getInfo(BX_PAYMENT_TYPE_RECURRING, $aPending['client_id'], $aPending['seller_id'], $aPending['items']);
-        if(empty($aInfo['items']) || !is_array($aInfo['items']))
+        //--- The item is read as a subscription item, not a cart item: it may no longer
+        //--- be for sale (a donation plan that was turned off) and still be renewed.
+        $aItems = $this->_oModule->_oConfig->descriptorsM2A($aPending['items']);
+        if(empty($aItems) || !is_array($aItems))
             return false;
 
-        $aItem = array_shift($aInfo['items']);
+        $aItemDsc = array_shift($aItems);
+        $aItem = $this->_oModule->callGetSubscriptionItem((int)$aItemDsc['module_id'], [$aItemDsc['item_id'], $aPending['client_id']]);
+        if(empty($aItem) || !is_array($aItem))
+            return false;
+
         $iItemPeriod = (int)$aItem['period_recurring'];
         $sItemPeriodUnit = $aItem['period_unit_recurring'];
 

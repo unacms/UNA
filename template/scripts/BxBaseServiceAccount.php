@@ -708,10 +708,14 @@ class BxBaseServiceAccount extends BxDol
             $iStep = 1;
             $a = $oAccount->getInfo();
             $sPhoneNumber = $a['phone'];
-            
-            $oSession = BxDolSession::getInstance();           
-            if ($sPhoneNumber != "" && $oSession->isValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE))
+
+            // a code was sent: the phone it went to waits in the session, the account's phone changes once the code is entered
+            $oSession = BxDolSession::getInstance();
+            $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+            if (is_array($aCode) && !empty($aCode['phone'])) {
                 $iStep = 2;
+                $sPhoneNumber = $aCode['phone'];
+            }
         
             if (bx_get('step'))
                 $iStep = (int)bx_get('step');
@@ -725,9 +729,11 @@ class BxBaseServiceAccount extends BxDol
                 $oForm->initChecker(['phone' => $sPhoneNumber]);
                 if ($oForm->isSubmittedAndValid()) {
                     $sPhoneNumber = trim($oForm->getCleanValue('phone'));
-                    $oAccount->updatePhone($sPhoneNumber);
+                    if (!bx_sms_code_send_allowed($oAccount->id(), $sPhoneNumber)) {
+                        return MsgBox(_t('_sys_txt_sms_send_limit'));
+                    }
 
-                    $sActivationCode = rand(1000, 9999);
+                    $sActivationCode = (string)random_int(100000, 999999);
                     $sActivationText =_t('_sys_txt_confirm_phone_sms_text', $sActivationCode);
                     $mixedResult = null;
                     /**
@@ -756,7 +762,12 @@ class BxBaseServiceAccount extends BxDol
                     if ($mixedResult === null && ($oSms = BxDolSms::getObjectInstance()) !== false && !$oSms->send($sPhoneNumber,  $sActivationText))
                         return MsgBox(_t("_sys_txt_confirm_phone_send_sms_error_occured"));
 
-                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE, $sActivationCode);
+                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE, [
+                        'code' => $sActivationCode,
+                        'phone' => $sPhoneNumber,
+                        'expires' => time() + BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME,
+                        'attempts_key' => (string)BxDolKey::getInstance()->getNewCounterKey(BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME),
+                    ]);
                     header('Location: ' . bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=confirm-phone')));
                 } 
                 return '<div class="bx-def-padding-sec-bottom">' . _t("_sys_txt_confirm_phone_set_phone_desc_set_phone") . '</div>' .$oForm->getCode();
@@ -770,8 +781,16 @@ class BxBaseServiceAccount extends BxDol
                 $oForm->initChecker();
             
                 if ($oForm->isSubmittedAndValid()) {
-                    $oAccount->updatePhoneConfirmed(true);
+                    // the code checker (BxFormConfirmPhoneCheckerHelper::checkCodeExist) has checked the code and the phone it went to
                     $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+                    if ($aCode['phone'] !== $a['phone']) {
+                        $iOwnerId = (int)BxDolAccountQuery::getInstance()->getIdByPhone($aCode['phone']);
+                        if (($iOwnerId && $iOwnerId != $oAccount->id()) || !$oAccount->updatePhone($aCode['phone'], false, $a['phone'] === '')) {
+                            return MsgBox(_t('_sys_form_confirm_phone_input_phone_error_not_unique'));
+                        }
+                    }
+
+                    $oAccount->updatePhoneConfirmed(true);
                     return MsgBox(_t("_sys_txt_confirm_phone_confirm_success"));
                 } 
                 return '<div class="bx-def-padding-sec-bottom">' . _t("_sys_txt_confirm_phone_set_phone_desc_phone_confirmation") . '</div>' .$oForm->getCode();
@@ -1197,7 +1216,9 @@ class BxBaseServiceAccount extends BxDol
         $sPasswordHash = encryptUserPwd($sPassword, $sSalt);
 
         $this->_oAccountQuery->logPassword($iAccountId);
-        $this->_oAccountQuery->updatePassword($sPasswordHash, $sSalt, $iAccountId);
+        if ((int)$this->_oAccountQuery->updatePassword($sPasswordHash, $sSalt, $iAccountId) > 0) {
+            bx_end_other_sessions($iAccountId, false);
+        }
 
         /**
          * @hooks

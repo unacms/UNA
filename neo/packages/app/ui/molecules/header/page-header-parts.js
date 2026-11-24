@@ -30,7 +30,7 @@ import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
 import { resolveHeaderLayout } from 'app/lib/header-layout';
 import { AppSidebarOpenButton } from 'app/ui/molecules/sidebar/app-sidebar';
-import { isPageCoverShown, isPageCoverHiddenOn } from 'app/lib/page-cover';
+import { isPageTitleOn } from 'app/lib/page-cover';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
     ' bg-card backdrop-blur-xl shadow-sm ';
@@ -282,17 +282,20 @@ export function usePageHeaderBase(pageData) {
     // tablets, so the logo is their way home there; members see it on Home and on desktop.
     const hasTabBar = !!currentUser && !(appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed);
     const isShowLogo = isDesktop || !hasTabBar || isHome;
-    // The page title follows the page's cover for this viewer (Studio → Pages → page → Cover); a
+    // The page title follows the page's title settings for this viewer (Studio → Pages → page → Title); a
     // page that passes `title` always shows it, one that draws its own heading sets
     // `showTitle={false}` (the splash, login and create-account pages are known from the page data,
     // before they mount). Desktop names the page in its top menu instead, and an error page
     // (403, 404) has no page to name.
     const isOwnHeading = useMemo(() => isOwnHeadingPage(pageData, !currentUser), [pageData, currentUser]);
-    // Cover hidden on this screen size (or in the apps, Studio's "Cover hidden on"): no title from it here.
-    const isCoverShown = isPageCoverShown(pageData?.cover, Boolean(currentUser))
-        && !isPageCoverHiddenOn(pageData?.cover_hidden_on, screenTier, !isWeb);
+    // Off for this viewer, or hidden on this screen size (in the apps, also "mobile app": Studio's "Title hidden on"),
+    // with or without the cover.
+    // A section's current tab (`options.page`, from the conductor) has its own title settings: a tab switch keeps
+    // the page it was opened on.
+    const titlePage = options.page ?? pageData;
+    const isTitleOn = isPageTitleOn(titlePage, Boolean(currentUser), screenTier, !isWeb);
     const isShowTitle = !isDesktop && !pageData?.page_status
-        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isCoverShown)));
+        && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isTitleOn)));
     const isBackButton = header.backButton;
     // A section's page (it has a section menu) shows the section's icon before its name, as the desktop section header.
     const sectionIcon = useSectionIcon(pageData?.menu?.object ? pageData.menu : null, pageData?.uri);
@@ -317,7 +320,7 @@ export function usePageHeaderBase(pageData) {
         // A section's pages share its name (the menu's App config `name`, else UNA's section title: "People" on
         // every People tab, as UNA's cover); other pages take the title UNA's cover shows (`cover_title`), else
         // their name (older UNA).
-        let nextTitle = menuSettings.name || pageData?.cover_title || pageData?.name;
+        let nextTitle = menuSettings.name || titlePage?.cover_title || titlePage?.name;
         // A section that opens on its own menu (Settings): below desktop that list replaces the tab row,
         // so each page is named by its item ("Email"); the section's own page, the list, keeps the section name.
         if (!isDesktop && isMenuSectionList(pageData?.menu) && pageData?.uri !== menuSettings.hub) {
@@ -328,7 +331,7 @@ export function usePageHeaderBase(pageData) {
         }
 
         return (nextTitle || '').replace('__notification__', '');
-    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, pageData?.cover_title, pageData?.menu, pageData?.name, pageData?.uri]);
+    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, titlePage?.cover_title, titlePage?.name, pageData?.menu, pageData?.uri]);
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;

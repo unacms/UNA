@@ -722,7 +722,13 @@ export function getContent(data, block) {
     const b = findElementBySource(data, blockName, (element) => !!element.content)
 
     return b?.content[0]?.type === 'browse' && !block.sidebar && !block.leftbar
-        ? { data: b.content[0].data, type: 'browse', designbox: b.config_api?.designbox, bg_hidden_on: b.bg_hidden_on }
+        ? {
+            data: b.content[0].data,
+            type: 'browse',
+            designbox: b.config_api?.designbox,
+            bg_hidden_on: b.bg_hidden_on,
+            list_block: isSearchResultsBlock(b) ? listBlockShell(b) : undefined,
+        }
         : { data: b, type: 'block', block: block }
 }
 
@@ -738,6 +744,8 @@ function processEndpoint(acc, b) {
         module: b.data.module,
         ...(b.designbox ? { designbox: b.designbox } : null),
         ...(b.bg_hidden_on ? { bg_hidden_on: b.bg_hidden_on } : null),
+        // A search's results block, drawn around the list (listBlockShell).
+        ...(b.list_block ? { block: b.list_block } : null),
         // UNA's words and buttons for the list when it comes back empty (BxDolEmptyState).
         ...(b.data.empty_state ? { empty_state: b.data.empty_state } : null),
     }
@@ -755,6 +763,7 @@ function endpointFromBrowsePayload(payload) {
         module: payload.module,
         ...(payload.designbox ? { designbox: payload.designbox } : null),
         ...(payload.bg_hidden_on ? { bg_hidden_on: payload.bg_hidden_on } : null),
+        ...(payload.block ? { block: payload.block } : null),
         // As processEndpoint: UNA's words and buttons for the list when it comes back empty.
         ...(payload.empty_state ? { empty_state: payload.empty_state } : null),
     }
@@ -807,11 +816,35 @@ function mapLayoutBlocks(items = [], { browseAsBlocks = false } = {}) {
     // without the screen sizes Studio's "Background hidden on" lists.
     const designbox = browseBlock?.config_api?.designbox
     const bgHiddenOn = browseBlock?.bg_hidden_on
-    if (!payload || (!designbox && !bgHiddenOn)) return { content, endpoint: payload }
+    // A search's results keep their block, as on the site: title, background and padding (listBlockShell).
+    const block = payload && isSearchResultsBlock(browseBlock) ? listBlockShell(browseBlock) : null
+    if (!payload || (!designbox && !bgHiddenOn && !block)) return { content, endpoint: payload }
     return {
         content,
-        endpoint: { ...payload, ...(designbox ? { designbox } : null), ...(bgHiddenOn ? { bg_hidden_on: bgHiddenOn } : null) },
+        endpoint: {
+            ...payload,
+            ...(designbox ? { designbox } : null),
+            ...(bgHiddenOn ? { bg_hidden_on: bgHiddenOn } : null),
+            ...(block ? { block } : null),
+        },
     }
+}
+
+/**
+ * A search page's results block (UNA's `get_results` service, the Search tab of a section). The site
+ * shows it as a titled block ("Search results"); other lists stay bare in the apps.
+ */
+export const isSearchResultsBlock = (block) => block?.source === 'system:get_results'
+
+/**
+ * What BlockWrapper needs to draw a list's block around it: the block without its content (the list
+ * renders that), with its App config. On the endpoint as `block`; ListBody wraps the list in it.
+ */
+export function listBlockShell(block) {
+    const shell = { ...block, config: block?.config_api || null }
+    delete shell.content
+    delete shell.content_empty
+    return shell
 }
 
 /**
@@ -839,8 +872,8 @@ function processParsedUrl(data) {
     const cellLeft = cell('cell_left')
     const browsePayload = cellCenter.endpoint ?? cellTop.endpoint ?? cellBottom.endpoint
     // A filter form (block App config `use_as_filter`, e.g. a Search tab's form) belongs with the
-    // left column whichever cell UNA puts it in: beside the list from lg, in the Filters sheet below.
-    const isFilter = (item) => !!item?.data?.config_api?.use_as_filter
+    // left column whichever cell UNA puts it in: beside the list from lg, above it below.
+    const isFilter = isLeftColumnFilterForm
     const centerContent = [...cellTop.content, ...cellCenter.content]
     return {
         content: [
@@ -1034,16 +1067,26 @@ export function getMobileLeftColumnItems(leftColumnContent = [], excludedIds = n
     })
 }
 
-/** Split left column into top-menu dropdowns vs filter-sheet blocks. */
+/**
+ * A filter form (block App config `use_as_filter`, a Search tab's form): beside the list while the
+ * left panel is on screen, above the list below it, full width, as UNA's site stacks its columns.
+ * It is the page's main control, so it is never tucked away in the Filters sheet.
+ */
+export const isLeftColumnFilterForm = (item) => !!item?.data?.config_api?.use_as_filter
+
+/**
+ * Split left column into top-menu dropdowns vs filter-sheet blocks. Filter forms are neither: they
+ * stay in the list (see isLeftColumnFilterForm).
+ */
 export function partitionLeftColumn(leftColumnContent = [], layoutName) {
     const menuBlocks = leftColumnContent.filter(
         (item) =>
-            !item?.data?.config_api?.use_as_filter &&
+            !isLeftColumnFilterForm(item) &&
             !!item?.data?.config_api?.use_as_menu &&
             getDropdownItemsFromLeftColumnBlock(item).length > 0
     )
     const filterBlocks = leftColumnContent.filter((item) => {
-        if (item?.data?.config_api?.use_as_filter) return true
+        if (isLeftColumnFilterForm(item)) return false
         if (layoutName !== 'navigator') return false
         if (!item?.data?.config_api?.use_as_menu) return true
         // Menu flag set but no extractable links → keep in Filters
@@ -1055,7 +1098,7 @@ export function partitionLeftColumn(leftColumnContent = [], layoutName) {
 /**
  * Ids that should not also render in the main list.
  * Left panel on screen (web, `isDesktop`): nothing excluded, the panel shows its blocks.
- * Navigator: all left-column ids. Else: menu + filter blocks only.
+ * Navigator: all left-column ids but filter forms. Else: menu + filter blocks only.
  */
 export function getLeftColumnExcludedFromMainIds({
     layoutName,
@@ -1067,7 +1110,10 @@ export function getLeftColumnExcludedFromMainIds({
     if (isDesktop) return new Set()
     if (layoutName === 'navigator') {
         return new Set(
-            leftColumnContent.map((item) => item?.id).filter((id) => id != null)
+            leftColumnContent
+                .filter((item) => !isLeftColumnFilterForm(item))
+                .map((item) => item?.id)
+                .filter((id) => id != null)
         )
     }
     return new Set(

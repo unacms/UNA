@@ -133,7 +133,7 @@ function bx_login($iId, $bRememberMe = false)
 
     if (!getParam('sys_session_auth')) {
         $iCookieTime = $bRememberMe ? time() + 60 * getParam('sys_session_lifetime_in_min') : 0;
-        bx_setcookie("memberID", $iId, $iCookieTime, 'auto');
+        bx_setcookie("memberID", $iId, $iCookieTime, 'auto', '', 'auto', true /* http only */);
         $_COOKIE['memberID'] = $iId;
         bx_setcookie("memberPassword", $sPassword, $iCookieTime, 'auto', '', 'auto', true /* http only */);
         $_COOKIE['memberPassword'] = $sPassword;
@@ -176,6 +176,40 @@ function bx_login($iId, $bRememberMe = false)
     ));
     
     return $oAccountQuery->getInfoById($iId);
+}
+
+/**
+ * End every session of the account but this browser's one (when it belongs to the account),
+ * after the account's password was changed or reset: a session someone else holds doesn't
+ * outlive the old password.
+ * @param $iAccountId account whose sessions end
+ * @param $bKeepCurrent keep this browser's session when it belongs to the account
+ * @return number of sessions ended
+ */
+function bx_end_other_sessions($iAccountId, $bKeepCurrent = true)
+{
+    $oSession = BxDolSession::getInstance();
+    $sKeep = $bKeepCurrent && (int)$oSession->getUserId() == (int)$iAccountId ? (string)$oSession->getId() : '';
+
+    return (new BxDolSessionQuery())->deleteByAccountIdExcept($iAccountId, $sKeep);
+}
+
+/**
+ * Count an SMS with a code (two-factor login, phone confirmation) that is about to be sent.
+ * One account, and one phone, get BX_ACCOUNT_SMS_SENDS_LIMIT of them per BX_ACCOUNT_SMS_SENDS_WINDOW,
+ * whatever sessions ask for them: nobody can run up the site's SMS bill or flood someone's phone.
+ * @param $iAccountId account the code is for
+ * @param $sPhone phone the code goes to
+ * @return true when the SMS may be sent
+ */
+function bx_sms_code_send_allowed($iAccountId, $sPhone)
+{
+    $oKey = BxDolKey::getInstance();
+    if (false === $oKey->useNamedCounter('sms:account:' . (int)$iAccountId, BX_ACCOUNT_SMS_SENDS_LIMIT, BX_ACCOUNT_SMS_SENDS_WINDOW)) {
+        return false;
+    }
+
+    return false !== $oKey->useNamedCounter('sms:phone:' . preg_replace('/\D/', '', (string)$sPhone), BX_ACCOUNT_SMS_SENDS_LIMIT, BX_ACCOUNT_SMS_SENDS_WINDOW);
 }
 
 /**
@@ -350,9 +384,33 @@ function bx_check_password($sLogin, $sPassword, $iRole = BX_DOL_ROLE_MEMBER)
         return $sErrorMsg;
     }
 
+    return bx_check_login_allowed($aAccountInfo['id']);
+}
+
+/**
+ * Check that an account may sign in now, once its credentials are verified: by a password,
+ * or by a remote site (Connect modules). A locked account can't, and the `check_login` hook may refuse others.
+ * @param $iAccountId account id
+ * @return empty string when the account may sign in, or an error message
+ */
+function bx_check_login_allowed($iAccountId)
+{
+    $oAccount = BxDolAccount::getInstance((int)$iAccountId);
+    if (!$oAccount) {
+        bx_import('BxDolLanguages');
+        return _t("_sys_txt_login_error");
+    }
+
+    if ($oAccount->isLocked()) {
+        bx_import('BxDolLanguages');
+        $sMsg = _t("_sys_txt_login_locked", bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password')));
+        return bx_is_api() ? strip_tags($sMsg) : $sMsg;
+    }
+
     // Admin can always login even if he is blocked/banned/suspended/etc
-    if (isAdmin($aAccountInfo['id']))
+    if (isAdmin($oAccount->id())) {
         return '';
+    }
 
     $sErrorMsg = '';
     /**
@@ -366,7 +424,7 @@ function bx_check_password($sLogin, $sPassword, $iRole = BX_DOL_ROLE_MEMBER)
      *      - `error_msg` - [string] by ref, contains string with error description, can be overridden in hook processing
      * @hook @ref hook-account-check_login
      */
-    bx_alert('account', 'check_login',  $aAccountInfo['id'], false, array('error_msg' => &$sErrorMsg));
+    bx_alert('account', 'check_login',  $oAccount->id(), false, array('error_msg' => &$sErrorMsg));
     
     return $sErrorMsg;
 }

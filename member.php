@@ -26,14 +26,9 @@ if (isset($_POST['ID'])) { // login form is submitted
     $sUrl2fa = '';
     if ($bLoginSuccess) {
         $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
-        $aAccountInfo = $oAccount->getInfo();
-        if((getParam('sys_account_activation_2fa_enable') == 'on' && getParam('sys_sms_default') != '') 
-            && (getParam('sys_account_activation_2fa_lifetime') == 0 || (time() - $aAccountInfo['logged'] > getParam('sys_account_activation_2fa_lifetime')))) {
-            $oSession = BxDolSession::getInstance();
-            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_ACCOUNT_ID, $oAccount->id());
-            $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_IS_REMEMBER, $oForm->getRememberMe());
-            $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_2FA_LOGIN_CODE);
-            $sUrl2fa = BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=login-step2');
+        $sUrl2fa = BxTemplServiceLogin::start2faLogin($oAccount->id(), $oForm->getRememberMe());
+        if ($sUrl2fa) {
+            $sUrl2fa = BX_DOL_URL_ROOT . $sUrl2fa;
         }
     }
 

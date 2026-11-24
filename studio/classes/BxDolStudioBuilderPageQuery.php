@@ -69,6 +69,8 @@ class BxDolStudioBuilderPageQuery extends BxDolStudioPageQuery
             `tp`.`cover_image` AS `cover_image`,
             `tp`.`cover_title` AS `cover_title`,
             `tp`.`cover_hidden_on` AS `cover_hidden_on`,
+            `tp`.`title_show` AS `title_show`,
+            `tp`.`title_hidden_on` AS `title_hidden_on`,
             `tp`.`type_id` AS `type_id`,
             `tp`.`layout_id` AS `layout_id`,
             `tp`.`submenu` AS `submenu`,

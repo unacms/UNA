@@ -79,6 +79,9 @@ function BlockHeaderMenu({ menu, pathname }) {
 // `clip` is opt-in: tile/card shadows paint outside the content box, so blocks
 // never hide overflow by default. Inner scrollers own their own overflow.
 //
+// `listShell`: draw the block's shell (title, background, padding) around a list the caller renders,
+// a search's results (ListBody).
+//
 // `overlayHeader`: for content that scrolls edge to edge under its own chrome (the AI
 // agent chat). The block drops its padding and clips to its own corners, and the
 // header is not laid out above the content: `children` is called as
@@ -88,6 +91,16 @@ function BlockHeaderMenu({ menu, pathname }) {
 // itself, and the colour it sits on — 'card' where the block has its background,
 // 'background' (the page) where it has none — for fades over the content to start
 // from. Its gutters are then the content's to keep, inside the scroller.
+/**
+ * A list's own block draws no shell (the list is the content), unless the list asks for it
+ * (`listShell`: a search's results, see listBlockShell).
+ */
+function isBareList(config, block, listShell) {
+    if (listShell) return false
+    const contentType = config?.content_type || block?.content?.[0]?.type
+    return contentType == 'browse' || contentType == 'browse_list'
+}
+
 /**
  * A page block, on the screen sizes Studio shows it on: its "Hidden on" (`hidden_on`: phone, tablet,
  * desktop, mobile-app) hides it with classes on the web and drops it in the apps on mobile-app.
@@ -103,7 +116,7 @@ export function BlockWrapper(props) {
     )
 }
 
-function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, children }) {
+function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, listShell = false, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
@@ -170,8 +183,7 @@ function BlockWrapperContent({ config, block, wrapperClassses, showTitle, showBg
     const cssClasses = extraProps?.cssClasses || "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
 
-    const content_type = config?.content_type || block?.content?.[0]?.type
-    if ((content_type == 'browse' || content_type == 'browse_list'))
+    if (isBareList(config, block, listShell))
         contentOnly = true;
 
     if (contentOnly) {

@@ -34,6 +34,16 @@ class BxArtificerModule extends BxBaseModTemplateModule
         ]);
     }
 
+    /**
+     * @see BxDolModule::serviceGetMacroServices
+     */
+    public function serviceGetMacroServices()
+    {
+        return array_merge(parent::serviceGetMacroServices(), [
+            'GetSplashMarker' => '',
+        ]);
+    }
+
     public function serviceIncludeCssJs($sType)
     {
         if(BxDolTemplate::getInstance()->getCode() != $this->_oConfig->getUri())

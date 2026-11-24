@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
 import { PageCoverBand } from 'app/components/elements/covers/page-cover-band';
+import { isPageTitleOn } from 'app/lib/page-cover';
 import { View } from 'app/design/view'
 import {
     appSetting,
@@ -277,6 +278,16 @@ export function Conductor({
      * re-expand. The center list always follows `activeRoute`.
      */
     const tabRoute = activeRoute?.inited ? activeRoute : prevRoute
+    /**
+     * The page whose cover band and title settings show: the current tab's own (Studio → Pages → that page → Cover,
+     * Title), as the site shows each tab as its own page. A tab switch only pushes the URL, so `data` stays the page
+     * the section was opened on; until the new tab's page arrives the previous tab's settings stay, so nothing
+     * flashes. A profile's cover (`cover_block`, `context`) stays the opened page's, mounted across its tabs.
+     */
+    const settingsPage = tabRoute?.pageData ?? data
+    // The section's title on desktop (its title row, or the left column's title): the page's title settings for this
+    // viewer (Studio → Pages → page → Title), with or without the cover. Phones and tablets show it in the page header.
+    const isTitleOn = isPageTitleOn(settingsPage, Boolean(currentUser), 'desktop', false)
     // Navigator keeps a left column for the section nav where the section's menu asks for a sidebar on large screens
     // (UNA's `section_nav`, getMenuSectionNav); otherwise the nav stays in the tab row, as on the site.
     const isSectionSidebar = layoutName === 'navigator' && getMenuSectionNav(menu) === 'sidebar'
@@ -295,7 +306,8 @@ export function Conductor({
     // UNA's left column carries two different things: dropdown menus and filter blocks. While
     // the left panel is on screen they stay in it; below its breakpoint (phones, tablets and
     // narrow desktops alike) the menus become dropdowns at the end of the tab row, the filters a
-    // "Filters" trigger beside them, and neither repeats in the list.
+    // "Filters" trigger beside them, and neither repeats in the list. A filter form (a Search tab's)
+    // goes above the list instead, as on the site (isLeftColumnFilterForm).
     const leftColumnContent = activeRoute?.leftbar?.content ?? EMPTY_CONTENT
 
     const {
@@ -322,8 +334,8 @@ export function Conductor({
         data?.cover_block?.profile?.id === data?.context?.current?.id &&
         isDesktop
 
-    // Filters sheet for use_as_filter (any layout) + navigator non-menu left column, while the
-    // left panel that otherwise holds those blocks is off screen.
+    // Filters sheet for the navigator's non-menu left column, while the left panel that otherwise
+    // holds those blocks is off screen.
     const showFiltersBtn = !isLeftColumnShown && leftColumnFilterBlocks.length > 0
     /** Profile chrome is rendered inline here instead of in the page header. */
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
@@ -404,6 +416,7 @@ export function Conductor({
                 isCover={isCover}
                 isCoverDisabled={isCoverDisabled}
                 isHideCover={isHideCover}
+                showTitle={isTitleOn}
                 headerSettings={headerSettings}
                 pageData={data}
                 menu={menu}
@@ -423,6 +436,7 @@ export function Conductor({
             isCover,
             isCoverDisabled,
             isHideCover,
+            isTitleOn,
             headerSettings,
             data?.uri,
             data?.ts,
@@ -452,10 +466,12 @@ export function Conductor({
     const leftColumn = hasLeftColumn ? (
         <LeftColumnContainer
             layoutName={layoutName}
+            showTitle={isTitleOn}
             index={index}
             setIndex={setIndex}
             menu={menu}
             routes={routes}
+            hasMenuBlocks={leftColumnMenuBlocks.length > 0}
             stickyColumnStyle={isTasksHome ? LOCKED_COLUMN_STYLE : stickyColumnStyle}
         >
             {/* Menu blocks' links line up with the panel's own (LeftColumnContainer pulls those
@@ -486,11 +502,13 @@ export function Conductor({
             {isUseCurrentHeader
                 ? <PageHeaderOptions hidden mobileOnly />
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
+            {/* The page header's title on phones and tablets follows the current tab's title settings too. */}
+            <PageHeaderOptions page={settingsPage} mobileOnly />
             {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
             {hideTabs && data?.uri !== menuHub ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
             {/* The page's cover band above the section's title and tabs, as on the site (desktop; not a profile,
                 whose cover is its own). */}
-            {showCoverBand && layoutName !== 'profile' && !data?.cover_block?.profile ? <PageCoverBand data={data} /> : null}
+            {showCoverBand && layoutName !== 'profile' && !data?.cover_block?.profile ? <PageCoverBand data={settingsPage} /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the

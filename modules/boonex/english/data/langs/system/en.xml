@@ -524,6 +524,7 @@
 	<string name="_adm_bp_btn_page_apply"><![CDATA[Apply]]></string>
 	<string name="_adm_bp_btn_page_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_bp_btn_page_create"><![CDATA[Create]]></string>
+	<string name="_adm_bp_btn_section_edit"><![CDATA[Edit section settings]]></string>
 	<string name="_adm_bp_btn_settings"><![CDATA[Settings]]></string>
 	<string name="_adm_bp_btn_view_page"><![CDATA[View Page]]></string>
 	<string name="_adm_bp_cpt_type_custom"><![CDATA[Custom Pages]]></string>
@@ -569,12 +570,15 @@
 	<string name="_adm_bp_err_page_uri"><![CDATA[A unique URL with at least 3 characters is required.]]></string>
 	<string name="_adm_bp_err_page_visible_for_levels"><![CDATA[Visibility setting are determined by custom code or not applicable here.]]></string>
 	<string name="_adm_bp_err_save"><![CDATA[Cannot save or nothing was changed.]]></string>
+	<string name="_adm_bp_err_section_not_found"><![CDATA[This page is not in a section.]]></string>
+	<string name="_adm_bp_err_section_save"><![CDATA[The section settings could not be saved. Please try again.]]></string>
 	<string name="_adm_bp_mi_page_cache"><![CDATA[Cache]]></string>
 	<string name="_adm_bp_mi_page_cover"><![CDATA[Cover]]></string>
         <string name="_adm_bp_mi_page_injections"><![CDATA[Injections]]></string>
 	<string name="_adm_bp_mi_page_layout"><![CDATA[Layout]]></string>
 	<string name="_adm_bp_mi_page_options"><![CDATA[Options]]></string>
 	<string name="_adm_bp_mi_page_seo"><![CDATA[SEO]]></string>
+	<string name="_adm_bp_mi_page_title"><![CDATA[Title]]></string>
 	<string name="_adm_bp_mi_page_visibility"><![CDATA[Visibility]]></string>
 	<string name="_adm_bp_scs_save"><![CDATA[Changes saved.]]></string>
 	<string name="_adm_bp_txt_block_active"><![CDATA[Show on the site]]></string>
@@ -634,14 +638,17 @@
 	<string name="_adm_bp_txt_new_block_popup"><![CDATA[Add New Block]]></string>
 	<string name="_adm_bp_txt_page_cache_lifetime"><![CDATA[Cache]]></string>
 	<string name="_adm_bp_txt_page_cover"><![CDATA[Cover]]></string>
-	<string name="_adm_bp_txt_page_cover_image"><![CDATA[Custom Cover]]></string>
-        <string name="_adm_bp_txt_page_cover_title"><![CDATA[Custom Title]]></string>
+	<string name="_adm_bp_txt_page_cover_image"><![CDATA[Custom cover]]></string>
+        <string name="_adm_bp_txt_page_cover_owner"><![CDATA[This page shows the cover of the person, group or event it belongs to, with its picture. Choose who sees it and where.]]></string>
+        <string name="_adm_bp_txt_page_cover_owner_others"><![CDATA[This page shows the cover of the person, group or event it belongs to. When members open their own list, the page shows its own cover instead.]]></string>
+        <string name="_adm_bp_txt_page_cover_title"><![CDATA[Custom title]]></string>
+        <string name="_adm_bp_txt_page_cover_title_info"><![CDATA[Replaces the page's or its section's name. Empty uses that name.]]></string>
         <string name="_adm_bp_txt_page_cover_0"><![CDATA[Disabled]]></string>
         <string name="_adm_bp_txt_page_cover_1"><![CDATA[Enabled for all]]></string>
         <string name="_adm_bp_txt_page_cover_2"><![CDATA[Enabled for visitors only]]></string>
         <string name="_adm_bp_txt_page_cover_3"><![CDATA[Enabled for members only]]></string>
         <string name="_adm_bp_txt_page_cover_hidden_on"><![CDATA[Cover hidden on]]></string>
-        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[On the screen sizes you pick, the page shows no cover and no page title, on the site and in the apps.]]></string>
+        <string name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[The cover stays off on the screen sizes you pick, on the site and in the apps. The page title has its own settings under Title.]]></string>
         <string name="_adm_bp_txt_page_inj_footer"><![CDATA[In Footer]]></string>
         <string name="_adm_bp_txt_page_inj_head"><![CDATA[In Head]]></string>
 	<string name="_adm_bp_txt_page_layout"><![CDATA[Layout]]></string>
@@ -650,9 +657,19 @@
 	<string name="_adm_bp_txt_page_meta_keywords"><![CDATA[Keywords]]></string>
         <string name="_adm_bp_txt_page_meta_title"><![CDATA[Page (Meta) Title]]></string>
 	<string name="_adm_bp_txt_page_meta_robots"><![CDATA[Meta Robots]]></string>
+        <string name="_adm_bp_txt_page_same_as_section"><![CDATA[Same as section]]></string>
+        <string name="_adm_bp_txt_page_section_hidden_on"><![CDATA[{0}, hidden on {1}]]></string>
+        <string name="_adm_bp_txt_page_section_summary"><![CDATA[Same as section: {0}]]></string>
+        <string name="_adm_bp_txt_page_section_with_picture"><![CDATA[{0}, with its own picture]]></string>
         <string name="_adm_bp_txt_page_submenu"><![CDATA[Submenu]]></string>
 	<string name="_adm_bp_dsc_page_submenu"><![CDATA[Page submenu can be selected here]]></string>
 	<string name="_adm_bp_txt_page_title"><![CDATA[Display Name]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Title hidden on]]></string>
+	<string name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[The page title stays off on the screen sizes you pick, on the site and in the apps.]]></string>
+	<string name="_adm_bp_txt_page_title_owner"><![CDATA[The name of the person, group or event this page belongs to is its title, so there is nothing to set here.]]></string>
+	<string name="_adm_bp_txt_page_title_owner_others"><![CDATA[The name of the person, group or event this page belongs to is its title. These settings apply when members open their own list.]]></string>
+	<string name="_adm_bp_txt_page_title_show"><![CDATA[Title]]></string>
+	<string name="_adm_bp_txt_page_title_show_info"><![CDATA[The page's name, or its section's, above its tabs and blocks on the site, and in the header of the apps.]]></string>
 	<string name="_adm_bp_txt_page_title_system"><![CDATA[System Name]]></string>
 	<string name="_adm_bp_txt_page_type_id"><![CDATA[Type]]></string>
 	<string name="_adm_bp_dsc_page_type_id"><![CDATA[Page display type. Default value can be changed in Studio -> Designer -> Settings.]]></string>
@@ -660,6 +677,10 @@
 	<string name="_adm_bp_txt_page_url"><![CDATA[Link]]></string>
 	<string name="_adm_bp_txt_page_visible_for_levels"><![CDATA[Select Levels]]></string>
         <string name="_adm_bp_txt_page_sticky_columns"><![CDATA[Enable sticky blocks]]></string>
+        <string name="_adm_bp_txt_section_pages"><![CDATA[The pages of this section ({0}) that are set to "Same as section" take these settings.]]></string>
+        <string name="_adm_bp_txt_section_popup"><![CDATA[Section settings: {0}]]></string>
+        <string name="_adm_bp_txt_section_title_as_cover"><![CDATA[Same as cover]]></string>
+        <string name="_adm_bp_txt_section_title_show_info"><![CDATA["Same as cover" shows the title where the cover shows, to the same people.]]></string>
         <string name="_adm_bp_txt_select_page"><![CDATA[Select Page...]]></string>
 	<string name="_adm_bp_txt_settings_popup"><![CDATA[Settings]]></string>
 	<string name="_adm_bp_txt_visible_for"><![CDATA[Visible for {0}]]></string>
@@ -3628,6 +3649,7 @@
 	<string name="_sys_form_confirm_phone_input_caption_system_do_sendsms"><![CDATA[Send SMS]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_empty"><![CDATA[Cannot be empty.]]></string>
 	<string name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string>
+	<string name="_sys_form_confirm_phone_input_code_error_attempts"><![CDATA[Too many wrong codes. <a href="{0}">Send a new code</a>.]]></string>
 	<string name="_sys_form_account_input_phone_error"><![CDATA[Phone is not valid]]></string>
 	<string name="_sys_form_display_account_create"><![CDATA[Create account]]></string>
 	<string name="_sys_form_display_account_settings_delete"><![CDATA[Delete Account]]></string>
@@ -5210,6 +5232,7 @@
     <string name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[The text message could not be sent. Please try again later.]]></string>
     <string name="_sys_txt_confirm_phone_sms_text"><![CDATA[Your phone's verification code is {0}.]]></string>
     <string name="_sys_txt_confirm_phone_confirm_success"><![CDATA[Your phone number has been confirmed.]]></string>
+    <string name="_sys_txt_sms_send_limit"><![CDATA[Too many codes were sent. Try again in an hour.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_set_phone"><![CDATA[Please enter a phone number for sending verification SMS.]]></string>
     <string name="_sys_txt_confirm_phone_set_phone_desc_phone_confirmation"><![CDATA[Please enter verification code from the SMS.]]></string>
     <string name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. All rights reserved.]]></string>
