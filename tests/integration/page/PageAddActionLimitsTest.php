@@ -21,7 +21,7 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
 {
     private $_aGetBackup;
     private $_sProfilesLimitBackup;
-    /** @var array of ['level', 'action', 'count', 'period'] to put back into sys_acl_matrix */
+    /** @var array of ['level', 'action', 'count', 'period'] to put back into sys_acl_matrix, or ['level', 'action'] of a row this test added */
     private array $_aMatrixBackups = [];
     /** @var array of ['action', 'profile', 'row' => original sys_acl_actions_track row or false] */
     private array $_aTrackBackups = [];
@@ -40,7 +40,10 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
     {
         $oDb = BxDolDb::getInstance();
         foreach (array_reverse($this->_aMatrixBackups) as $a)
-            $oDb->query("UPDATE `sys_acl_matrix` SET `AllowedCount` = :count, `AllowedPeriodLen` = :period WHERE `IDLevel` = :level AND `IDAction` = :action", $a);
+            if (array_key_exists('count', $a))
+                $oDb->query("UPDATE `sys_acl_matrix` SET `AllowedCount` = :count, `AllowedPeriodLen` = :period WHERE `IDLevel` = :level AND `IDAction` = :action", $a);
+            else
+                $oDb->query("DELETE FROM `sys_acl_matrix` WHERE `IDLevel` = :level AND `IDAction` = :action", $a);
         foreach (array_reverse($this->_aTrackBackups) as $a) {
             $oDb->query("DELETE FROM `sys_acl_actions_track` WHERE `IDAction` = :action AND `IDMember` = :profile", ['action' => $a['action'], 'profile' => $a['profile']]);
             if ($a['row'])
@@ -100,23 +103,42 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
         return $oModule;
     }
 
-    /** Lets the viewer's level do "create entry" in the module $iCount times (restored in tearDown). */
-    private function limitCreate(string $sModule, int $iCount): int
+    /**
+     * Lets the viewer's level do "create entry" in the module (adds the matrix row if the level has none; restored in
+     * tearDown) and returns the action id.
+     */
+    private function allowCreate(string $sModule): int
     {
         $oAcl = BxDolAcl::getInstance();
-        $iProfileId = (int)bx_get_logged_profile_id();
-        $aLevel = $oAcl->getMemberMembershipInfo($iProfileId);
+        $aLevel = $oAcl->getMemberMembershipInfo((int)bx_get_logged_profile_id());
         $iAction = (int)$oAcl->getMembershipActionId('create entry', $sModule);
+        $this->assertGreaterThan(0, $iAction, $sModule . ' has a "create entry" action.');
+
+        $oDb = BxDolDb::getInstance();
+        $aKey = ['level' => (int)$aLevel['id'], 'action' => $iAction];
+        if (!$oDb->getRow("SELECT `IDLevel` FROM `sys_acl_matrix` WHERE `IDLevel` = :level AND `IDAction` = :action", $aKey)) {
+            $oDb->query("INSERT INTO `sys_acl_matrix` SET `IDLevel` = :level, `IDAction` = :action", $aKey);
+            $this->_aMatrixBackups[] = $aKey;
+            $oDb->cleanMemoryAll();
+        }
+
+        return $iAction;
+    }
+
+    /** Lets the viewer's level do "create entry" in the module $iCount times, every $iPeriodHours hours if set (restored in tearDown). */
+    private function limitCreate(string $sModule, int $iCount, ?int $iPeriodHours = null): int
+    {
+        $iAction = $this->allowCreate($sModule);
+        $iProfileId = (int)bx_get_logged_profile_id();
+        $aLevel = BxDolAcl::getInstance()->getMemberMembershipInfo($iProfileId);
 
         $oDb = BxDolDb::getInstance();
         $aRow = $oDb->getRow("SELECT `AllowedCount`, `AllowedPeriodLen` FROM `sys_acl_matrix` WHERE `IDLevel` = :level AND `IDAction` = :action", ['level' => (int)$aLevel['id'], 'action' => $iAction]);
-        if (!$aRow)
-            return 0;
 
         $this->_aMatrixBackups[] = ['level' => (int)$aLevel['id'], 'action' => $iAction, 'count' => $aRow['AllowedCount'], 'period' => $aRow['AllowedPeriodLen']];
         $this->_aTrackBackups[] = ['action' => $iAction, 'profile' => $iProfileId, 'row' => $oDb->getRow("SELECT * FROM `sys_acl_actions_track` WHERE `IDAction` = :action AND `IDMember` = :profile", ['action' => $iAction, 'profile' => $iProfileId])];
 
-        $oDb->query("UPDATE `sys_acl_matrix` SET `AllowedCount` = :count, `AllowedPeriodLen` = NULL WHERE `IDLevel` = :level AND `IDAction` = :action", ['count' => $iCount, 'level' => (int)$aLevel['id'], 'action' => $iAction]);
+        $oDb->query("UPDATE `sys_acl_matrix` SET `AllowedCount` = :count, `AllowedPeriodLen` = :period WHERE `IDLevel` = :level AND `IDAction` = :action", ['count' => $iCount, 'period' => $iPeriodHours, 'level' => (int)$aLevel['id'], 'action' => $iAction]);
         $oDb->query("DELETE FROM `sys_acl_actions_track` WHERE `IDAction` = :action AND `IDMember` = :profile", ['action' => $iAction, 'profile' => $iProfileId]);
         $oDb->cleanMemoryAll();
 
@@ -162,9 +184,8 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
         $this->requireModule('bx_persons');
         $this->signInWithoutProfile();
 
-        $oPersons = $this->module('bx_persons');
-        if ($oPersons->checkAllowedAdd() !== CHECK_ACTION_RESULT_ALLOWED)
-            $this->markTestSkipped('The Account level may not create a person profile on this site.');
+        $this->allowCreate('bx_persons');
+        $this->assertSame(CHECK_ACTION_RESULT_ALLOWED, $this->module('bx_persons')->checkAllowedAdd(), 'The create page lets the account in.');
 
         [$aSite, $aMenu] = $this->addAction('persons-home');
         $sTitle = _t('_sys_txt_add_entry', _t('_bx_persons_txt_sample_single'));
@@ -188,9 +209,8 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
         if (!$iProfiles)
             $this->markTestSkipped('The user account has no profile.');
 
+        $this->allowCreate('bx_persons');
         $this->bxSetParamCache('sys_account_limit_profiles_number', (string)($iProfiles + 1));
-        if ($this->module('bx_persons')->checkAllowedAdd() !== CHECK_ACTION_RESULT_ALLOWED)
-            $this->markTestSkipped('The user\'s level may not create a person profile on this site.');
         [$aSite, $aMenu] = $this->addAction('persons-home');
         $this->assertNotSame([], $aSite, 'Below the limit the button is there.');
         $this->assertTrue($aMenu['add_allowed'] ?? null);
@@ -207,8 +227,7 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
     {
         $this->requireModule('bx_posts');
         $this->bxLoginAsUser();
-        if (!($iAction = $this->limitCreate('bx_posts', 1)))
-            $this->markTestSkipped('The user\'s level may not create posts on this site.');
+        $iAction = $this->limitCreate('bx_posts', 1);
 
         [$aSite, $aMenu] = $this->addAction('posts-home');
         $this->assertNotSame([], $aSite, 'One post left: the button is there.');
@@ -227,8 +246,7 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
     {
         $this->requireModule('bx_posts');
         $this->bxLoginAsUser();
-        if (!($iAction = $this->limitCreate('bx_posts', 1)))
-            $this->markTestSkipped('The user\'s level may not create posts on this site.');
+        $iAction = $this->limitCreate('bx_posts', 1);
 
         for ($i = 0; $i < 3; $i++) {
             [$aSite, $aMenu] = $this->addAction('posts-home');
@@ -238,6 +256,30 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
 
         $this->assertContains($this->actionsLeft($iAction), [null, 1], 'Only checked: the one post is still allowed.');
         $this->assertSame(CHECK_ACTION_RESULT_ALLOWED, $this->module('bx_posts')->checkAllowedAdd());
+    }
+
+    /** An allowance that renews: spent, the button is gone; once its period is over it is back, and drawing it spends nothing. */
+    public function testARenewedAllowanceBringsTheButtonBack(): void
+    {
+        $this->requireModule('bx_posts');
+        $this->bxLoginAsUser();
+        $iAction = $this->limitCreate('bx_posts', 1, 24);
+
+        $this->module('bx_posts')->checkAllowedAdd(true);
+        $this->assertSame(0, $this->actionsLeft($iAction));
+        [$aSite, $aMenu] = $this->addAction('posts-home');
+        $this->assertSame([], $aSite, 'Spent within the period.');
+        $this->assertFalse($aMenu['add_allowed'] ?? null);
+
+        // The period started 25 hours ago.
+        BxDolDb::getInstance()->query("UPDATE `sys_acl_actions_track` SET `ValidSince` = NOW() - INTERVAL 25 HOUR WHERE `IDAction` = :action AND `IDMember` = :profile", ['action' => $iAction, 'profile' => (int)bx_get_logged_profile_id()]);
+
+        for ($i = 0; $i < 2; $i++) {
+            [$aSite, $aMenu] = $this->addAction('posts-home');
+            $this->assertNotSame([], $aSite, 'A new period: the button is back.');
+            $this->assertTrue($aMenu['add_allowed'] ?? null);
+        }
+        $this->assertSame(1, $this->actionsLeft($iAction), 'Drawing it spent nothing of the new period.');
     }
 
     /** Every installed module with an add button hides it once the member's level allows no more entries. */
@@ -257,8 +299,7 @@ class PageAddActionLimitsTest extends BxDolAccountTestCase
             if (!($aAdd = BxBasePage::getAddEntryParams($oModule)) || !$aAdd['allowed'])
                 continue;
 
-            if (!($iAction = $this->limitCreate($sModule, 1)))
-                continue;
+            $iAction = $this->limitCreate($sModule, 1);
 
             $oModule = $this->module($sModule);
             $this->assertTrue(BxBasePage::getAddEntryParams($oModule)['allowed'], $sModule . ': one left.');
