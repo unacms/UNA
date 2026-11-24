@@ -1243,10 +1243,9 @@
     <string name="_adm_form_txt_confirm_delete"><![CDATA[Вы уверены, что хотите удалить это поле? Оно будет удалено со всех дисплеев! Вместо этого можно просто отключить его.]]></string>
     <string name="_adm_form_txt_admin_log_action"><![CDATA[Действие]]></string>
     <string name="_adm_form_txt_admin_log_added"><![CDATA[Дата]]></string>
-    <string name="_adm_form_txt_admin_log_agent"><![CDATA[Агент]]></string>
-    <string name="_adm_form_txt_admin_log_object"><![CDATA[Тип]]></string>
-    <string name="_adm_form_txt_admin_log_object_id"><![CDATA[Объект]]></string>
-    <string name="_adm_form_txt_admin_log_profile"><![CDATA[Оператор]]></string>
+    <string name="_adm_form_txt_admin_log_object"><![CDATA[Тип записи]]></string>
+    <string name="_adm_form_txt_admin_log_object_id"><![CDATA[Запись]]></string>
+    <string name="_adm_form_txt_admin_log_profile"><![CDATA[Исполнитель]]></string>
     <string name="_adm_form_txt_admin_log_source"><![CDATA[Источник]]></string>
     <string name="_adm_form_txt_audit_added"><![CDATA[Добавлено]]></string>
     <string name="_adm_form_txt_audit_profile"><![CDATA[Профиль]]></string>
@@ -2564,12 +2563,14 @@
         <string name="_adm_txt_admin_log_a_uninstall"><![CDATA[Удалено с сайта]]></string>
         <string name="_adm_txt_admin_log_a_update"><![CDATA[Обновлено]]></string>
         <string name="_adm_txt_admin_log_a_upload"><![CDATA[Загружено]]></string>
+        <string name="_adm_txt_admin_log_actor_via_agent"><![CDATA[{0} через агента {1}]]></string>
         <string name="_adm_txt_admin_log_after"><![CDATA[После]]></string>
-        <string name="_adm_txt_admin_log_agent_any"><![CDATA[Любой агент]]></string>
         <string name="_adm_txt_admin_log_before"><![CDATA[До]]></string>
         <string name="_adm_txt_admin_log_empty"><![CDATA[Изменения не записаны.]]></string>
+        <string name="_adm_txt_admin_log_field"><![CDATA[Поле]]></string>
         <string name="_adm_txt_admin_log_item"><![CDATA[{0} (#{1})]]></string>
-        <string name="_adm_txt_admin_log_object_any"><![CDATA[Любой тип]]></string>
+        <string name="_adm_txt_admin_log_no_field_changes"><![CDATA[Поля этой записи до и после совпадают. Изменение может храниться в другом месте, например в переводе.]]></string>
+        <string name="_adm_txt_admin_log_object_any"><![CDATA[Любой тип записи]]></string>
         <string name="_adm_txt_admin_log_period"><![CDATA[Период]]></string>
         <string name="_adm_txt_admin_log_period_1"><![CDATA[За сутки]]></string>
         <string name="_adm_txt_admin_log_period_30"><![CDATA[За 30 дней]]></string>
@@ -2577,7 +2578,7 @@
         <string name="_adm_txt_admin_log_period_7"><![CDATA[За 7 дней]]></string>
         <string name="_adm_txt_admin_log_period_any"><![CDATA[За всё время]]></string>
         <string name="_adm_txt_admin_log_popup"><![CDATA[Изменения]]></string>
-        <string name="_adm_txt_admin_log_profile_any"><![CDATA[Любой оператор]]></string>
+        <string name="_adm_txt_admin_log_profile_any"><![CDATA[Любой исполнитель]]></string>
         <string name="_adm_txt_admin_log_source_agent"><![CDATA[Агент]]></string>
         <string name="_adm_txt_admin_log_source_any"><![CDATA[Любой источник]]></string>
         <string name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string>
@@ -2619,6 +2620,7 @@
         <string name="_adm_txt_admin_log_t_sys_std_roles"><![CDATA[Роль Студии]]></string>
         <string name="_adm_txt_admin_log_t_sys_std_roles_members"><![CDATA[Роль оператора]]></string>
         <string name="_adm_txt_admin_log_t_template"><![CDATA[Шаблон]]></string>
+        <string name="_adm_txt_admin_log_unchanged"><![CDATA[Без изменений ({0})]]></string>
         <string name="_adm_txt_assistant_popup_title"><![CDATA[Как я могу помочь?]]></string>
 	<string name="_adm_txt_confirm_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_txt_confirm_ok"><![CDATA[OK]]></string>

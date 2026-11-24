@@ -29,7 +29,6 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
 
     protected $_sFilterSource = '';
     protected $_sFilterProfile = '';
-    protected $_sFilterAgent = '';
     protected $_sFilterObject = '';
     protected $_sFilterPeriod = '';
 
@@ -52,7 +51,6 @@ class BxDolStudioAdminLogGrid extends BxDolStudioGrid
         $this->_aFilterAreaLabels = [
             'source' => '_adm_form_txt_admin_log_source',
             'profile_id' => '_adm_form_txt_admin_log_profile',
-            'agent_id' => '_adm_form_txt_admin_log_agent',
             'object_type' => '_adm_form_txt_admin_log_object',
             'period' => '_adm_txt_admin_log_period',
         ];

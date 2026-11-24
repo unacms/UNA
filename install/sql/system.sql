@@ -5917,11 +5917,10 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_audit_administration', 'action_lang_key', '_adm_pgt_txt_audit_action', '15%', 1, 25, '', 7),
 
 ('sys_admin_log_administration', 'added', '_adm_form_txt_admin_log_added', '14%', 0, 0, '', 1),
-('sys_admin_log_administration', 'profile_id', '_adm_form_txt_admin_log_profile', '16%', 0, 24, '', 2),
-('sys_admin_log_administration', 'source', '_adm_form_txt_admin_log_source', '12%', 0, 16, '', 3),
-('sys_admin_log_administration', 'agent_id', '_adm_form_txt_admin_log_agent', '12%', 0, 20, '', 4),
-('sys_admin_log_administration', 'object_type', '_adm_form_txt_admin_log_object', '16%', 0, 24, '', 5),
-('sys_admin_log_administration', 'object_id', '_adm_form_txt_admin_log_object_id', '14%', 0, 24, '', 6),
+('sys_admin_log_administration', 'profile_id', '_adm_form_txt_admin_log_profile', '18%', 0, 24, '', 2),
+('sys_admin_log_administration', 'source', '_adm_form_txt_admin_log_source', '10%', 0, 16, '', 3),
+('sys_admin_log_administration', 'object_type', '_adm_form_txt_admin_log_object', '18%', 0, 24, '', 5),
+('sys_admin_log_administration', 'object_id', '_adm_form_txt_admin_log_object_id', '24%', 0, 24, '', 6),
 ('sys_admin_log_administration', 'action', '_adm_form_txt_admin_log_action', '10%', 0, 16, '', 7),
 ('sys_admin_log_administration', 'actions', '', '6%', 0, 0, '', 8),
 

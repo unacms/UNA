@@ -17,6 +17,7 @@ class AdminLogTest extends BxDolIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        require_once(BX_DIRECTORY_PATH_ROOT . 'studio/inc/utils.inc.php'); // bx_get_js_result, for the settings save's reply
         $this->_aGetBackup = $_GET;
     }
 

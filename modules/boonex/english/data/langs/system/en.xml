@@ -1253,10 +1253,9 @@
     <string name="_adm_form_txt_confirm_delete"><![CDATA[Are you sure you want to delete this field? It will be deleted from all Displays! You may just turn it off instead.]]></string>
     <string name="_adm_form_txt_admin_log_action"><![CDATA[Action]]></string>
     <string name="_adm_form_txt_admin_log_added"><![CDATA[Date]]></string>
-    <string name="_adm_form_txt_admin_log_agent"><![CDATA[Agent]]></string>
-    <string name="_adm_form_txt_admin_log_object"><![CDATA[Type]]></string>
-    <string name="_adm_form_txt_admin_log_object_id"><![CDATA[Object]]></string>
-    <string name="_adm_form_txt_admin_log_profile"><![CDATA[Operator]]></string>
+    <string name="_adm_form_txt_admin_log_object"><![CDATA[Entry type]]></string>
+    <string name="_adm_form_txt_admin_log_object_id"><![CDATA[Entry]]></string>
+    <string name="_adm_form_txt_admin_log_profile"><![CDATA[Actor]]></string>
     <string name="_adm_form_txt_admin_log_source"><![CDATA[Source]]></string>
     <string name="_adm_form_txt_audit_added"><![CDATA[Added]]></string>
     <string name="_adm_form_txt_audit_profile"><![CDATA[Profile]]></string>
@@ -2592,12 +2591,14 @@
         <string name="_adm_txt_admin_log_a_uninstall"><![CDATA[Uninstalled]]></string>
         <string name="_adm_txt_admin_log_a_update"><![CDATA[Updated]]></string>
         <string name="_adm_txt_admin_log_a_upload"><![CDATA[Uploaded]]></string>
+        <string name="_adm_txt_admin_log_actor_via_agent"><![CDATA[{0} via agent {1}]]></string>
         <string name="_adm_txt_admin_log_after"><![CDATA[After]]></string>
-        <string name="_adm_txt_admin_log_agent_any"><![CDATA[Any agent]]></string>
         <string name="_adm_txt_admin_log_before"><![CDATA[Before]]></string>
         <string name="_adm_txt_admin_log_empty"><![CDATA[No changes recorded.]]></string>
+        <string name="_adm_txt_admin_log_field"><![CDATA[Field]]></string>
         <string name="_adm_txt_admin_log_item"><![CDATA[{0} (#{1})]]></string>
-        <string name="_adm_txt_admin_log_object_any"><![CDATA[Any type]]></string>
+        <string name="_adm_txt_admin_log_no_field_changes"><![CDATA[The fields of this entry are the same before and after. The change may be stored elsewhere, such as in a translation.]]></string>
+        <string name="_adm_txt_admin_log_object_any"><![CDATA[Any entry type]]></string>
         <string name="_adm_txt_admin_log_period"><![CDATA[Period]]></string>
         <string name="_adm_txt_admin_log_period_1"><![CDATA[Last 24 hours]]></string>
         <string name="_adm_txt_admin_log_period_30"><![CDATA[Last 30 days]]></string>
@@ -2605,7 +2606,7 @@
         <string name="_adm_txt_admin_log_period_7"><![CDATA[Last 7 days]]></string>
         <string name="_adm_txt_admin_log_period_any"><![CDATA[Any time]]></string>
         <string name="_adm_txt_admin_log_popup"><![CDATA[Changes]]></string>
-        <string name="_adm_txt_admin_log_profile_any"><![CDATA[Any operator]]></string>
+        <string name="_adm_txt_admin_log_profile_any"><![CDATA[Any actor]]></string>
         <string name="_adm_txt_admin_log_source_agent"><![CDATA[Agent]]></string>
         <string name="_adm_txt_admin_log_source_any"><![CDATA[Any source]]></string>
         <string name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string>
@@ -2647,6 +2648,7 @@
         <string name="_adm_txt_admin_log_t_sys_std_roles"><![CDATA[Studio role]]></string>
         <string name="_adm_txt_admin_log_t_sys_std_roles_members"><![CDATA[Operator role]]></string>
         <string name="_adm_txt_admin_log_t_template"><![CDATA[Template]]></string>
+        <string name="_adm_txt_admin_log_unchanged"><![CDATA[Unchanged fields ({0})]]></string>
         <string name="_adm_txt_assistant_popup_title"><![CDATA[How can I help?]]></string>
 	<string name="_adm_txt_confirm_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_txt_confirm_ok"><![CDATA[OK]]></string>

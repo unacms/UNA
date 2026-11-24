@@ -16,7 +16,7 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
 
         // Every filter applies as soon as it is picked: the grid gets all of them joined, in the order applyFilter reads.
         $sObject = bx_js_string($this->_sObject);
-        $sJs = "function bx_admin_log_filter(){var o=glGrids['" . $sObject . "'];if(!o)return;var v=function(n){var e=jQuery('#bx-grid-'+n+'-" . $sObject . "');return e.length?e.val():'';};o.setFilter([v('source'),v('profile_id'),v('agent_id'),v('object_type'),v('period')].join('#-#'), true);}";
+        $sJs = "function bx_admin_log_filter(){var o=glGrids['" . $sObject . "'];if(!o)return;var v=function(n){var e=jQuery('#bx-grid-'+n+'-" . $sObject . "');return e.length?e.val():'';};o.setFilter([v('source'),v('profile_id'),v('object_type'),v('period')].join('#-#'), true);}";
 
         return BxDolTemplate::getInstance()->_wrapInTagJsCode($sJs) . parent::getCode($isDisplayHeader);
     }
@@ -36,11 +36,30 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
             return;
         }
 
-        $aRows = $this->diffRows((string)$aRow['before'], (string)$aRow['after']);
+        [$aChanged, $aSame] = $this->diffRows((string)$aRow['before'], (string)$aRow['after']);
         $sContent = $this->_oTemplate->parseHtmlByName('admin_log_diff.html', [
-            'before_title' => _t('_adm_txt_admin_log_before'),
-            'after_title' => _t('_adm_txt_admin_log_after'),
-            'bx_repeat:rows' => $aRows,
+            'bx_if:changed' => [
+                'condition' => !empty($aChanged),
+                'content' => [
+                    'field_title' => _t('_adm_txt_admin_log_field'),
+                    'before_title' => _t('_adm_txt_admin_log_before'),
+                    'after_title' => _t('_adm_txt_admin_log_after'),
+                    'bx_repeat:rows' => $aChanged,
+                ],
+            ],
+            'bx_if:nothing' => [
+                'condition' => empty($aChanged),
+                'content' => [
+                    'nothing' => _t(empty($aSame) ? '_adm_txt_admin_log_empty' : '_adm_txt_admin_log_no_field_changes'),
+                ],
+            ],
+            'bx_if:same' => [
+                'condition' => !empty($aSame),
+                'content' => [
+                    'same_title' => _t('_adm_txt_admin_log_unchanged', count($aSame)),
+                    'bx_repeat:same_rows' => $aSame,
+                ],
+            ],
         ]);
 
         $sPopup = BxTemplStudioFunctions::getInstance()->popupBox('bx-admin-log-diff', _t('_adm_txt_admin_log_popup'), $sContent);
@@ -88,7 +107,6 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
 
         return $this->_getFilterSelectOne('source', $this->_sFilterSource, $aSources, '_adm_txt_admin_log_source_any')
             . $this->_getFilterSelectOne('profile_id', $this->_sFilterProfile, $this->_aProfiles, '_adm_txt_admin_log_profile_any')
-            . $this->_getFilterSelectOne('agent_id', $this->_sFilterAgent, $this->_aAgents, '_adm_txt_admin_log_agent_any')
             . $this->_getFilterSelectOne('object_type', $this->_sFilterObject, $this->_aObjects, '_adm_txt_admin_log_object_any')
             . $this->_getFilterSelectOne('period', $this->_sFilterPeriod, $aPeriods, '_adm_txt_admin_log_period_any');
     }
@@ -107,6 +125,13 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
             $sName = $oProfile ? $oProfile->getDisplayName() : (string)$iId;
         }
 
+        // An agent's change names who it worked for, and the agent.
+        $iAgent = (int)($aRow['agent_id'] ?? 0);
+        if ($iAgent > 0) {
+            $sAgent = (string)($this->_aAgents[$iAgent] ?? $iAgent);
+            $sName = $sName !== '' ? _t('_adm_txt_admin_log_actor_via_agent', $sName, $sAgent) : $sAgent;
+        }
+
         return parent::_getCellDefault($this->esc($sName), $sKey, $aField, $aRow);
     }
 
@@ -116,14 +141,6 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
         $s = _t($sKeyLang);
 
         return parent::_getCellDefault($this->esc($s === $sKeyLang ? (string)$mixedValue : $s), $sKey, $aField, $aRow);
-    }
-
-    protected function _getCellAgentId($mixedValue, $sKey, $aField, $aRow)
-    {
-        $iId = (int)$mixedValue;
-        $sName = $iId > 0 ? (string)($this->_aAgents[$iId] ?? $iId) : '';
-
-        return parent::_getCellDefault($this->esc($sName), $sKey, $aField, $aRow);
     }
 
     protected function _getCellObjectType($mixedValue, $sKey, $aField, $aRow)
@@ -147,9 +164,8 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
             $aParts = explode('#-#', $sFilter);
             $this->_sFilterSource = (string)($aParts[0] ?? '');
             $this->_sFilterProfile = (string)($aParts[1] ?? '');
-            $this->_sFilterAgent = (string)($aParts[2] ?? '');
-            $this->_sFilterObject = (string)($aParts[3] ?? '');
-            $this->_sFilterPeriod = (string)($aParts[4] ?? '');
+            $this->_sFilterObject = (string)($aParts[2] ?? '');
+            $this->_sFilterPeriod = (string)($aParts[3] ?? '');
         }
 
         $iDays = (int)$this->_sFilterPeriod;
@@ -159,41 +175,58 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
         $this->_aOptions['source'] .= BxDolAdminLogQuery::getInstance()->filterClause([
             'source' => $this->_sFilterSource,
             'profile_id' => $this->_sFilterProfile,
-            'agent_id' => $this->_sFilterAgent,
             'object_type' => $this->_sFilterObject,
             'from' => $this->_sFilterPeriod !== '' ? time() - $iDays * 86400 : 0,
         ]);
     }
 
+    /**
+     * The fields that changed, then the ones that did not: [changed rows, unchanged rows].
+     */
     protected function diffRows(string $sBefore, string $sAfter): array
     {
-        $aBefore = $this->decode($sBefore);
-        $aAfter = $this->decode($sAfter);
+        [$aBefore, $aAfter] = $this->unwrap($this->decode($sBefore), $this->decode($sAfter));
         $aFlatBefore = $this->flatten($aBefore);
         $aFlatAfter = $this->flatten($aAfter);
         $aKeys = array_unique(array_merge(array_keys($aFlatBefore), array_keys($aFlatAfter)));
 
-        $aRows = [];
+        $aChanged = $aSame = [];
         foreach ($aKeys as $sKey) {
             $sB = $this->show($aFlatBefore[$sKey] ?? '');
             $sA = $this->show($aFlatAfter[$sKey] ?? '');
-            $aRows[] = [
+            if ($sB === $sA) {
+                if ($sA !== '')
+                    $aSame[] = ['key' => $this->esc((string)$sKey), 'value' => $this->esc($sA)];
+                continue;
+            }
+
+            $aChanged[] = [
                 'key' => $this->esc((string)$sKey),
                 'before' => $this->esc($sB),
                 'after' => $this->esc($sA),
-                'changed' => $sB === $sA ? '' : 'bx-admin-log-diff-changed',
             ];
         }
 
-        if (!$aRows)
-            $aRows[] = [
-                'key' => '',
-                'before' => $this->esc(_t('_adm_txt_admin_log_empty')),
-                'after' => '',
-                'changed' => '',
-            ];
+        return [$aChanged, $aSame];
+    }
 
-        return $aRows;
+    /**
+     * A grid snapshot keeps its row under the row's id, and a Studio page's under 'request': with one such row,
+     * its fields are shown without that prefix.
+     */
+    protected function unwrap(array $aBefore, array $aAfter): array
+    {
+        $aKeys = array_unique(array_merge(array_keys($aBefore), array_keys($aAfter)));
+        if (count($aKeys) !== 1)
+            return [$aBefore, $aAfter];
+
+        $sKey = reset($aKeys);
+        $mB = $aBefore[$sKey] ?? [];
+        $mA = $aAfter[$sKey] ?? [];
+        if (!is_array($mB) || !is_array($mA))
+            return [$aBefore, $aAfter];
+
+        return [$mB, $mA];
     }
 
     protected function decode(string $s): array
@@ -229,6 +262,10 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
         $s = (string)$mValue;
         if (get_mb_len($s) > 4000)
             $s = get_mb_substr($s, 0, 4000);
+
+        // a language key is shown with its text
+        if (preg_match('/^_[A-Za-z0-9_]+$/', $s) && ($sText = _t($s)) !== $s)
+            $s = $sText . "\n" . $s;
 
         return $s;
     }

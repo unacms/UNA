@@ -12,12 +12,34 @@
     align-items: start;
 }
 
+.bx-admin-log-diff-head {
+    font-weight: 600;
+}
+
 .bx-admin-log-diff pre {
     white-space: pre-wrap;
     word-break: break-word;
     margin: 0;
 }
 
-.bx-admin-log-diff-changed {
-    background: rgba(0, 0, 0, 0.04);
+.bx-admin-log-diff-before {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.bx-admin-log-diff-same {
+    margin-top: 0.5rem;
+}
+
+.bx-admin-log-diff-same summary {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.bx-admin-log-diff-same-row {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    opacity: 0.7;
 }
