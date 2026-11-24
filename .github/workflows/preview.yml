@@ -115,7 +115,8 @@ jobs:
         # Otherwise a newer run already gives the checks, and dispatching would cancel it.
         pr=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" \
           --jq '"\(.head.sha) \([.labels[].name] | index("preview") != null)"')
-        run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$HEAD_REF&per_page=1" \
+        run=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs" \
+          -f branch="$HEAD_REF" -f per_page=1 \
           --jq '.workflow_runs[0] | "\(.head_sha) \(.status) \(.conclusion)"')
         echo "PR: $pr. Newest UNA CI run on $HEAD_REF: ${run:-none}"
         if [ "$pr" = "$HEAD_SHA false" ] && [ "$run" = "$HEAD_SHA completed cancelled" ]; then
