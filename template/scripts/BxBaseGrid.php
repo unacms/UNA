@@ -1511,23 +1511,15 @@ class BxBaseGrid extends BxDolGrid
             return $aField['kind'];
         }
 
-        if($sKey == 'checkbox') {
-            return 'checkbox';
+        $aByName = ['checkbox' => 'checkbox', 'switcher' => 'switcher', 'switcher_api' => 'switcher', 'actions' => 'actions'];
+        if(!empty($this->_aOptions['field_order'])) {
+            $aByName[$this->_aOptions['field_order']] = 'order';
         }
-        if(!empty($this->_aOptions['field_order']) && $this->_aOptions['field_order'] == $sKey) {
-            return 'order';
-        }
-        if(in_array($sKey, ['switcher', 'switcher_api'])) {
-            return 'switcher';
-        }
-        if($sKey == 'actions') {
-            return 'actions';
-        }
-        if(strtolower($sKey) == 'icon') {
-            return 'icon';
+        if(isset($aByName[$sKey])) {
+            return $aByName[$sKey];
         }
 
-        return 'text';
+        return strtolower($sKey) == 'icon' ? 'icon' : 'text';
     }
 
     /**
@@ -1550,11 +1542,10 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _getCellCount ($iCount, $sLink, $sLabel, $sTitle = '')
     {
-        return $this->_oTemplate->parseHtmlByName('grid_cell_count.html', [
-            'href' => htmlspecialchars($sLink, ENT_QUOTES),
-            'label' => bx_html_attribute($sLabel),
-            'title' => bx_html_attribute($sTitle !== '' ? $sTitle : $sLabel),
-            'count' => (int)$iCount,
+        // parseLinkByName names a javascript: action a button (role="button"), as parseLink did for these cells.
+        return $this->_oTemplate->parseLinkByName('grid_cell_count.html', htmlspecialchars($sLink, ENT_QUOTES), (int)$iCount, [
+            'title' => $sTitle !== '' ? $sTitle : $sLabel,
+            'aria-label' => $sLabel,
         ]);
     }
 

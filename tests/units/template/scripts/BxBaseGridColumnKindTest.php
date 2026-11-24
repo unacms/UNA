@@ -110,7 +110,8 @@ class BxBaseGridColumnKindTest extends BxDolTestCase
         // A javascript: link (Forms > Groups roles) keeps its quotes inside the attribute
         $s = $this->bxCallProtected($oGrid, '_getCellCount', 3, "javascript: glGrids.g.action('edit', {id: 2});", '3 actions');
         $this->assertStringNotContainsString("href=\"javascript: glGrids.g.action('edit'", $s);
-        $this->assertStringContainsString('title="3 actions" aria-label="3 actions">3</a>', $s);
+        $this->assertStringContainsString(' title="3 actions" aria-label="3 actions" role="button">3</a>', $s, 'A javascript: action is a button, as parseLink names it.');
+        $this->assertStringNotContainsString('role=', $this->bxCallProtected($oGrid, '_getCellCount', 3, 'page.php', '3 items'));
 
         // Not a number: shown as one
         $s = $this->bxCallProtected($oGrid, '_getCellCount', '<b>x</b>', '#', 'x');

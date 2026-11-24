@@ -299,9 +299,9 @@ class BxBaseStudioPermissionsLevels extends BxDolStudioPermissionsLevels
         $iActions = $this->oDb->getActions(array('type' => 'by_level_id', 'value' => $aRow['ID']), $aActions);
 
         $sLink = BX_DOL_URL_STUDIO . 'builder_permissions.php?page=actions&level=' . $aRow['ID'];
-        $mixedValue = $this->_getCellCount($iActions, $sLink, _t('_adm_prm_txt_n_actions', $iActions), _t('_adm_prm_txt_manage_actions'));
+        $sCount = $this->_getCellCount($iActions, $sLink, _t('_adm_prm_txt_n_actions', $iActions), _t('_adm_prm_txt_manage_actions'));
 
-        return parent::_getCellDefault ($mixedValue, $sKey, $aField, $aRow);
+        return parent::_getCellDefault ($sCount, $sKey, $aField, $aRow);
     }
 
     protected function _getCellQuotaSize ($mixedValue, $sKey, $aField, $aRow)

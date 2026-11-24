@@ -59,14 +59,16 @@
 }
 
 .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: #fff;
+    --bx-grid-ag-bg: transparent; /* rows sit on the block's surface, as the classic grid's (see "Rows" below) */
     --bx-grid-ag-fg: #18181b;
     --bx-grid-ag-muted: #71717a;
-    --bx-grid-ag-header: #fff;
+    --bx-grid-ag-header: transparent;
     --bx-grid-ag-border: #f4f4f5;
     --bx-grid-ag-accent: rgb(var(--bx-accent-600));
     --bx-grid-ag-selected: rgb(var(--bx-accent-50));
-    --bx-grid-ag-hover: #fafafc;
+    --bx-grid-ag-hover: rgb(228 228 231 / 0.5); /* the menu items' hover fill, gray-200/50 */
+    --bx-grid-ag-odd: rgb(0 0 0 / 0.04); /* the classic grid's alternate rows, .bx-def-color-bg-hl */
+    --bx-grid-ag-open: #f4f4f5;
     --bx-grid-ag-radius: 0;
 
     --ag-active-color: var(--bx-grid-ag-accent);
@@ -76,7 +78,7 @@
     --ag-secondary-foreground-color: var(--bx-grid-ag-muted);
     --ag-border-color: var(--bx-grid-ag-border);
     --ag-header-background-color: var(--bx-grid-ag-header);
-    --ag-odd-row-background-color: transparent;
+    --ag-odd-row-background-color: var(--bx-grid-ag-odd);
     --ag-row-hover-color: var(--bx-grid-ag-hover);
     --ag-selected-row-background-color: var(--bx-grid-ag-selected);
     --ag-font-family: inherit;
@@ -86,7 +88,7 @@
     --ag-header-column-resize-handle-display: none;
     --ag-borders: none;
     --ag-row-border-style: solid;
-    --ag-row-border-width: 1px;
+    --ag-row-border-width: 0;
     --ag-row-border-color: #f4f4f5;
     --ag-checkbox-border-radius: 4px;
     --ag-border-radius: 0;
@@ -399,14 +401,16 @@ html.dark .bx-grid-ag-wrap .bx-grid-footer-cnt,
 
 html.dark .bx-grid-ag.ag-theme-quartz,
 .dark .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: #27272a;
+    --bx-grid-ag-bg: transparent;
     --bx-grid-ag-fg: #e4e4e7;
     --bx-grid-ag-muted: #a1a1aa;
-    --bx-grid-ag-header: #27272a;
+    --bx-grid-ag-header: transparent;
     --bx-grid-ag-border: #3f3f46;
     --bx-grid-ag-accent: rgb(var(--bx-accent-400));
     --bx-grid-ag-selected: rgb(var(--bx-accent-900) / 0.5);
-    --bx-grid-ag-hover: rgb(255 255 255 / 0.04);
+    --bx-grid-ag-hover: rgb(63 63 70 / 0.5);
+    --bx-grid-ag-odd: rgb(255 255 255 / 0.04);
+    --bx-grid-ag-open: #27272a;
     color-scheme: dark;
 }
 
@@ -443,46 +447,30 @@ html.dark .bx-grid-ag-item,
    hover fill (gray-200/50, gray-700/50 in dark; .bx-menu-highlight-list) in their 150ms ease-out. A selected row keeps
    the accent tint. An opened row's items (Navigation > Menus) are part of the row: no surface of their own. From
    tablets up the script adds bx-grid-ag-cards, which only gives the cells more room and pins no column. */
-.bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: transparent;
-    --bx-grid-ag-header: transparent;
-    --bx-grid-ag-hover: rgb(228 228 231 / 0.5);
-    --bx-grid-ag-odd: rgb(0 0 0 / 0.04);
-    --ag-odd-row-background-color: var(--bx-grid-ag-odd);
-    --ag-row-border-width: 0;
-}
-
-html.dark .bx-grid-ag.ag-theme-quartz,
-.dark .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-bg: transparent;
-    --bx-grid-ag-header: transparent;
-    --bx-grid-ag-hover: rgb(63 63 70 / 0.5);
-    --bx-grid-ag-odd: rgb(255 255 255 / 0.04);
-}
-
 .bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
     --ag-cell-horizontal-padding: 16px;
 }
 
-.bx-grid-ag .ag-row {
+/* The fill of the row under the pointer and of a selected row is the row's ::before, under its cells. Selection wins. */
+.bx-grid-ag .ag-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    pointer-events: none;
     transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.bx-grid-ag .ag-row::before {
-    transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+.bx-grid-ag .ag-row.ag-row-hover:not(.ag-full-width-row)::before {
+    background-color: var(--bx-grid-ag-hover);
+}
+
+.bx-grid-ag .ag-row.ag-row-selected::before {
+    background-color: var(--bx-grid-ag-selected);
 }
 
 /* An opened row and its items share one solid fill, so they read as one row (the items cover the rows they are drawn
    over until the rows below move down for them). */
-.bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-open: #f4f4f5;
-}
-
-html.dark .bx-grid-ag.ag-theme-quartz,
-.dark .bx-grid-ag.ag-theme-quartz {
-    --bx-grid-ag-open: #27272a;
-}
-
 .bx-grid-ag .ag-row.bx-grid-ag-row-open,
 .bx-grid-ag .bx-grid-ag-items,
 html.dark .bx-grid-ag .bx-grid-ag-items,
