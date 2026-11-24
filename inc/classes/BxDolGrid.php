@@ -271,6 +271,17 @@
 
 class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolReplaceable
 {
+    /**
+     * Where the title of the block that holds a grid goes in the grid's header (see setHeaderTitleRow).
+     */
+    const HEADER_TITLE_SLOT = '<!--bx-grid-header-title-->';
+
+    /**
+     * Set while a Studio page builds its blocks: each grid there is the content of a block, and its header is the
+     * block's header. See setHeaderTitleRow.
+     */
+    protected static $_bHeaderTitleRow = false;
+
     protected $_bIsApi;
 
     protected $_aMarkers = array ();
@@ -308,6 +319,22 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         	if(!empty($aBrowseParams) && is_array($aBrowseParams))
             	$this->setBrowseParams($aBrowseParams);
         }
+    }
+
+    /**
+     * A grid's header starts with a title row: HEADER_TITLE_SLOT, where the block that holds the grid puts its title
+     * (BxBaseStudioWidget::getBlockCode), and the grid's own buttons (actions_independent) on the right. The filters and
+     * the counter follow in the row under it. Studio pages turn it on, so every Studio grid has the page builder's header:
+     * the title and the screen's buttons, the filters, one line, then the rows.
+     */
+    public static function setHeaderTitleRow($bHeaderTitleRow)
+    {
+        self::$_bHeaderTitleRow = (bool)$bHeaderTitleRow;
+    }
+
+    public static function isHeaderTitleRow()
+    {
+        return self::$_bHeaderTitleRow;
     }
 
     /**

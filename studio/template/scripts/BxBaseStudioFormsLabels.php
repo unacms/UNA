@@ -149,7 +149,7 @@ class BxBaseStudioFormsLabels extends BxDolStudioFormsLabels
     protected function _addJsCss()
     {
         parent::_addJsCss();
-        $this->_oTemplate->addJs(array('jquery.form.min.js'));
+        $this->_oTemplate->addJs(array('jquery.form.min.js', 'forms_labels.js'));
 
         $oForm = new BxTemplStudioFormView(array());
         $oForm->addCssJs();

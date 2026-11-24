@@ -315,6 +315,12 @@ class BxBaseGrid extends BxDolGrid
         if($this->_aOptions['show_total_count'] == 0)
             $sClassHeader .= ' bx-gh-no-counter';
 
+        $sFilterControls = $this->_isFilter() ? $this->_getFilterControls() : '';
+
+        $sTitleRow = $this->_getHeaderTitleRow();
+        if($sTitleRow !== '')
+            $sClassHeader .= $this->_getHeaderTitleRowClass($sFilterControls);
+
         $aVars = array (
             'object' => $this->_sObject,
             'csrf_token' => BxDolForm::getCsrfToken(),
@@ -364,16 +370,17 @@ class BxBaseGrid extends BxDolGrid
                 'condition' => $isDisplayHeader,
                 'content' => array (
                     'class' => $sClassHeader,
+                    'title_row' => $sTitleRow,
                     'bx_if:actions_independent' => array (
-                        'condition' => !empty($this->_aOptions['actions_independent']),
+                        'condition' => !empty($this->_aOptions['actions_independent']) && $sTitleRow === '',
                         'content' => array(
-                            'actions_independent' => $this->_getActions ('independent'),
+                            'actions_independent' => $sTitleRow === '' ? $this->_getActions ('independent') : '',
                         ),
                     ),
                     'bx_if:filter' => array (
-                        'condition' => !empty($this->_aOptions['filter_fields']) || !empty($this->_aOptions['filter_fields_translatable']),
+                        'condition' => $this->_isFilter(),
                         'content' => array(
-                            'controls' => $this->_getFilterControls(),
+                            'controls' => $sFilterControls,
                         ),
                     ),
                     'bx_if:counter' => array (
@@ -1434,6 +1441,45 @@ class BxBaseGrid extends BxDolGrid
         return $oForm->genRow($aInputSearch);
     }
 
+    /**
+     * The header's title row (BxDolGrid::setHeaderTitleRow): the slot for the title of the block that holds the grid and,
+     * on the right, the grid's own buttons. '' when the grid keeps the header with the buttons beside the filters.
+     */
+    protected function _getHeaderTitleRow()
+    {
+        if($this->_bIsApi || !self::isHeaderTitleRow())
+            return '';
+
+        $bActions = !empty($this->_aOptions['actions_independent']);
+
+        return $this->_oTemplate->parseHtmlByName('grid_header_title.html', [
+            'title' => self::HEADER_TITLE_SLOT,
+            'bx_if:actions_independent' => [
+                'condition' => $bActions,
+                'content' => [
+                    'actions_independent' => $bActions ? $this->_getActions('independent') : '',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Header classes with a title row: bx-gh-title, and bx-gh-title-only when no filter (or a filter that draws nothing)
+     * or counter row follows it.
+     */
+    protected function _getHeaderTitleRowClass($sFilterControls)
+    {
+        $bFilter = trim($sFilterControls) !== '';
+        $bCounter = !empty($this->_aOptions['show_total_count']);
+
+        return ' bx-gh-title' . (!$bFilter && !$bCounter ? ' bx-gh-title-only' : '');
+    }
+
+    protected function _isFilter()
+    {
+        return !empty($this->_aOptions['filter_fields']) || !empty($this->_aOptions['filter_fields_translatable']);
+    }
+
     protected function _getCounter()
     {
         return _t('_sys_grid_total_count', $this->_iTotalCount);
@@ -1915,6 +1961,9 @@ class BxBaseGrid extends BxDolGrid
 
         $aConfig = $this->_agConfig($this->_agColumns());
 
+        $sFilterControls = $this->_isFilter() ? $this->_getFilterControls() : '';
+        $sTitleRow = $this->_getHeaderTitleRow();
+
         $aVars = [
             'object' => $this->_sObject,
             'id_table' => 'bx-grid-table-' . $this->_sObject,
@@ -1925,17 +1974,18 @@ class BxBaseGrid extends BxDolGrid
             'bx_if:display_header' => [
                 'condition' => $isDisplayHeader,
                 'content' => [
-                    'class' => empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '',
+                    'class' => (empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '') . ($sTitleRow !== '' ? $this->_getHeaderTitleRowClass($sFilterControls) : ''),
+                    'title_row' => $sTitleRow,
                     'bx_if:actions_independent' => [
-                        'condition' => !empty($this->_aOptions['actions_independent']),
+                        'condition' => !empty($this->_aOptions['actions_independent']) && $sTitleRow === '',
                         'content' => [
-                            'actions_independent' => $this->_getActions('independent'),
+                            'actions_independent' => $sTitleRow === '' ? $this->_getActions('independent') : '',
                         ],
                     ],
                     'bx_if:filter' => [
-                        'condition' => !empty($this->_aOptions['filter_fields']) || !empty($this->_aOptions['filter_fields_translatable']),
+                        'condition' => $this->_isFilter(),
                         'content' => [
-                            'controls' => $this->_getFilterControls(),
+                            'controls' => $sFilterControls,
                         ],
                     ],
                     'bx_if:counter' => [
