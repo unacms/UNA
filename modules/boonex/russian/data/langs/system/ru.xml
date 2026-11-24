@@ -522,6 +522,7 @@
 	<string name="_adm_bp_btn_page_apply"><![CDATA[Применить]]></string>
 	<string name="_adm_bp_btn_page_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_bp_btn_page_create"><![CDATA[Создать]]></string>
+	<string name="_adm_bp_btn_section_edit"><![CDATA[Настройки раздела]]></string>
 	<string name="_adm_bp_btn_settings"><![CDATA[Настройки]]></string>
 	<string name="_adm_bp_btn_view_page"><![CDATA[Просмотреть страницу]]></string>
 	<string name="_adm_bp_cpt_type_custom"><![CDATA[Пользовательские страницы]]></string>
@@ -567,6 +568,8 @@
 	<string name="_adm_bp_err_page_uri"><![CDATA[Необходимо указать уникальный URL из как минимум 3 символов.]]></string>
 	<string name="_adm_bp_err_page_visible_for_levels"><![CDATA[Настройки видимости определяются индивидуальным кодом или не применимы в данном случае.]]></string>
 	<string name="_adm_bp_err_save"><![CDATA[Невозможно сохранить или ничего не изменилось.]]></string>
+	<string name="_adm_bp_err_section_not_found"><![CDATA[Эта страница не входит в раздел.]]></string>
+	<string name="_adm_bp_err_section_save"><![CDATA[Не удалось сохранить настройки раздела. Попробуйте ещё раз.]]></string>
 	<string name="_adm_bp_mi_page_cache"><![CDATA[Кэш]]></string>
 	<string name="_adm_bp_mi_page_cover"><![CDATA[Обложка]]></string>
         <string name="_adm_bp_mi_page_injections"><![CDATA[Вставки]]></string>
@@ -634,6 +637,8 @@
 	<string name="_adm_bp_txt_page_cache_lifetime"><![CDATA[Кэш]]></string>
 	<string name="_adm_bp_txt_page_cover"><![CDATA[Обложка]]></string>
 	<string name="_adm_bp_txt_page_cover_image"><![CDATA[Собственная обложка]]></string>
+        <string name="_adm_bp_txt_page_cover_owner"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит, с её картинкой. Выберите, кому и где её показывать.]]></string>
+        <string name="_adm_bp_txt_page_cover_owner_others"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит. Когда участник открывает свой собственный список, страница показывает свою обложку.]]></string>
         <string name="_adm_bp_txt_page_cover_title"><![CDATA[Собственный заголовок]]></string>
         <string name="_adm_bp_txt_page_cover_title_info"><![CDATA[Заменяет название страницы или её раздела. Если пусто, показывается это название.]]></string>
         <string name="_adm_bp_txt_page_cover_0"><![CDATA[Отключен]]></string>
@@ -650,11 +655,17 @@
 	<string name="_adm_bp_txt_page_meta_keywords"><![CDATA[Ключевые слова]]></string>
         <string name="_adm_bp_txt_page_meta_title"><![CDATA[Мета-заголовок страницы]]></string>
 	<string name="_adm_bp_txt_page_meta_robots"><![CDATA[Мета-роботы]]></string>
+        <string name="_adm_bp_txt_page_same_as_section"><![CDATA[Как в разделе]]></string>
+        <string name="_adm_bp_txt_page_section_hidden_on"><![CDATA[{0}, скрыто на: {1}]]></string>
+        <string name="_adm_bp_txt_page_section_summary"><![CDATA[Как в разделе: {0}]]></string>
+        <string name="_adm_bp_txt_page_section_with_picture"><![CDATA[{0}, со своей картинкой]]></string>
         <string name="_adm_bp_txt_page_submenu"><![CDATA[Подменю]]></string>
 	<string name="_adm_bp_dsc_page_submenu"><![CDATA[В данном поле можно выбрать подменю страницы]]></string>
 	<string name="_adm_bp_txt_page_title"><![CDATA[Отображаемое имя]]></string>
 	<string name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Заголовок скрыт на]]></string>
 	<string name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[На выбранных размерах экрана заголовок страницы не показывается, на сайте и в приложениях.]]></string>
+	<string name="_adm_bp_txt_page_title_owner"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит, поэтому здесь нечего настраивать.]]></string>
+	<string name="_adm_bp_txt_page_title_owner_others"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит. Эти настройки действуют, когда участник открывает свой собственный список.]]></string>
 	<string name="_adm_bp_txt_page_title_show"><![CDATA[Заголовок]]></string>
 	<string name="_adm_bp_txt_page_title_show_info"><![CDATA[Название страницы или её раздела над вкладками и блоками на сайте и в заголовке приложений.]]></string>
 	<string name="_adm_bp_txt_page_title_system"><![CDATA[Системное имя]]></string>
@@ -664,6 +675,10 @@
 	<string name="_adm_bp_txt_page_url"><![CDATA[Ссылка]]></string>
 	<string name="_adm_bp_txt_page_visible_for_levels"><![CDATA[Выбрать уровни]]></string>
         <string name="_adm_bp_txt_page_sticky_columns"><![CDATA[Включить 'липкие' блоки]]></string>
+	<string name="_adm_bp_txt_section_pages"><![CDATA[Эти настройки получают страницы раздела ({0}), у которых выбрано «Как в разделе».]]></string>
+	<string name="_adm_bp_txt_section_popup"><![CDATA[Настройки раздела: {0}]]></string>
+	<string name="_adm_bp_txt_section_title_as_cover"><![CDATA[Как у обложки]]></string>
+	<string name="_adm_bp_txt_section_title_show_info"><![CDATA[«Как у обложки» показывает заголовок там же и тем же людям, что и обложку.]]></string>
 	<string name="_adm_bp_txt_select_page"><![CDATA[Выбрать страницу...]]></string>
 	<string name="_adm_bp_txt_settings_popup"><![CDATA[Настройки]]></string>
 	<string name="_adm_bp_txt_visible_for"><![CDATA[Видимо для {0}]]></string>

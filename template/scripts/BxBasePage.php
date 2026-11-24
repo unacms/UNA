@@ -550,7 +550,9 @@ class BxBasePage extends BxDolPage
         if(!$oCover->isEnabled() || !$this->isPageCover() || $oCover->isCover())
             return [];
 
-        if($this instanceof BxBasePageHome || isset($this->_aProfileInfo) || $this instanceof BxBaseModGeneralPageEntry)
+        // The owner's own list of a profile's items (owner=1) has the page's own band, as on the site: a page that shows
+        // its owner's cover has set it (isCover above).
+        if($this instanceof BxBasePageHome || $this instanceof BxBaseModGeneralPageEntry)
             return [];
 
         $sImage = '';

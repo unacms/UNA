@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Pages > page > Cover, Title: "Same as section", the section's settings, and the pages that show their owner's cover. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_bp_txt_page_same_as_section"><![CDATA[Как в разделе]]></string_add>
+    <string_add name="_adm_bp_txt_page_section_summary"><![CDATA[Как в разделе: {0}]]></string_add>
+    <string_add name="_adm_bp_txt_page_section_hidden_on"><![CDATA[{0}, скрыто на: {1}]]></string_add>
+    <string_add name="_adm_bp_txt_page_section_with_picture"><![CDATA[{0}, со своей картинкой]]></string_add>
+    <string_add name="_adm_bp_btn_section_edit"><![CDATA[Настройки раздела]]></string_add>
+    <string_add name="_adm_bp_txt_section_popup"><![CDATA[Настройки раздела: {0}]]></string_add>
+    <string_add name="_adm_bp_txt_section_pages"><![CDATA[Эти настройки получают страницы раздела ({0}), у которых выбрано «Как в разделе».]]></string_add>
+    <string_add name="_adm_bp_txt_section_title_as_cover"><![CDATA[Как у обложки]]></string_add>
+    <string_add name="_adm_bp_txt_section_title_show_info"><![CDATA[«Как у обложки» показывает заголовок там же и тем же людям, что и обложку.]]></string_add>
+    <string_add name="_adm_bp_err_section_not_found"><![CDATA[Эта страница не входит в раздел.]]></string_add>
+    <string_add name="_adm_bp_err_section_save"><![CDATA[Не удалось сохранить настройки раздела. Попробуйте ещё раз.]]></string_add>
+    <string_add name="_adm_bp_txt_page_cover_owner"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит, с её картинкой. Выберите, кому и где её показывать.]]></string_add>
+    <string_add name="_adm_bp_txt_page_cover_owner_others"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит. Когда участник открывает свой собственный список, страница показывает свою обложку.]]></string_add>
+    <string_add name="_adm_bp_txt_page_title_owner"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит, поэтому здесь нечего настраивать.]]></string_add>
+    <string_add name="_adm_bp_txt_page_title_owner_others"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит. Эти настройки действуют, когда участник открывает свой собственный список.]]></string_add>
+</resources>

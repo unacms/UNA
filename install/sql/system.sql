@@ -6556,10 +6556,10 @@ CREATE TABLE IF NOT EXISTS `sys_objects_page` (
   `title_system` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `module` varchar(32) NOT NULL,
-  `cover` tinyint(4) NOT NULL DEFAULT '1',
-  `cover_image` int(11) NOT NULL DEFAULT '0',
+  `cover` tinyint(4) DEFAULT NULL,
+  `cover_image` int(11) DEFAULT NULL,
   `cover_title` varchar(255) NOT NULL DEFAULT '',
-  `cover_hidden_on` varchar(255) NOT NULL DEFAULT '',
+  `cover_hidden_on` varchar(255) DEFAULT NULL,
   `title_show` tinyint(4) DEFAULT NULL,
   `title_hidden_on` varchar(255) DEFAULT NULL,
   `type_id` int(11) NOT NULL DEFAULT '1',
@@ -6585,6 +6585,22 @@ CREATE TABLE IF NOT EXISTS `sys_objects_page` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `object` (`object`),
   UNIQUE KEY `uri` (`uri`(191))
+);
+
+-- A section's cover and title (Studio > Pages > page > Cover, Title > "Edit section settings"), which the pages of the
+-- section take where they are NULL ("Same as section"). A section is the submenu of a main menu item, its tabs; a
+-- section without a row has the defaults (cover on for everyone, the title as the cover). @see BxDolPage::SECTION_DEFAULTS
+CREATE TABLE IF NOT EXISTS `sys_pages_sections` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `object` varchar(64) NOT NULL,
+  `module` varchar(32) NOT NULL DEFAULT '',
+  `cover` tinyint(4) NOT NULL DEFAULT '1',
+  `cover_image` int(11) NOT NULL DEFAULT '0',
+  `cover_hidden_on` varchar(255) NOT NULL DEFAULT '',
+  `title_show` tinyint(4) DEFAULT NULL,
+  `title_hidden_on` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `object` (`object`)
 );
 
 INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `module`, `cover`, `layout_id`, `submenu`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`, `sticky_columns`) VALUES
