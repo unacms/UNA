@@ -430,8 +430,16 @@ BxDolSearchWindow.prototype._run = function(bAi)
         if(iSeq !== $this._iSeq)
             return;
 
-        if(oData.query && typeof(oData.query) == 'object' && !Array.isArray(oData.query))
+        if(oData.query && typeof(oData.query) == 'object' && !Array.isArray(oData.query)) {
             $this._oQuery = oData.query;
+
+            // the AI may have read the words into chips: the field shows the words it searches for
+            if(bAi) {
+                var sKeyword = oData.query.keyword || '';
+                $this._oRoot.find('.bx-search-window-input').val(sKeyword);
+                $this._sAiKeyword = sKeyword;
+            }
+        }
 
         $this._oRoot.find('.bx-search-window-chips-wrap').html(oData.chips);
         $this._oRoot.find('.bx-search-window-results').html(oData.results);

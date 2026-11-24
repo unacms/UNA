@@ -397,6 +397,10 @@ class BxDolSearchUnified extends BxDol
         if(!$oProfile || $oProfile->getStatus() !== BX_PROFILE_STATUS_ACTIVE)
             return false;
 
+        // not even the name of a profile the viewer may not see
+        if($oProfile->checkAllowedProfileView() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         return ['id' => (int)$oProfile->id(), 'title' => $oProfile->getDisplayName()];
     }
 
@@ -645,14 +649,20 @@ class BxDolSearchUnified extends BxDol
         $sId = !empty($oResult->aCurrent['ident']) ? $oResult->aCurrent['ident'] : 'id';
         $sDate = $sKind == 'pages' ? 'updated_max' : (!empty($oResult->aCurrent['added']) ? $oResult->aCurrent['added'] : 'added');
 
+        // search data may come with the fields renamed to the class's pseudonyms (comments: cmt_id as id, cmt_time as added)
         $aRows = [];
-        foreach($aData as $aRow)
-            if(is_array($aRow) && (int)($aRow[$sId] ?? 0) > 0) {
-                $aOut = ['id' => (int)$aRow[$sId], 'date' => (int)($aRow[$sDate] ?? 0)];
+        foreach($aData as $aRow) {
+            if(!is_array($aRow))
+                continue;
+            $iId = (int)($aRow[$sId] ?? $aRow['id'] ?? 0);
+            $iDate = (int)($aRow[$sDate] ?? $aRow['added'] ?? $aRow['date'] ?? 0);
+            if($iId > 0) {
+                $aOut = ['id' => $iId, 'date' => $iDate];
                 if($sKind == 'pages')
                     $aOut['page'] = $aRow;
                 $aRows[] = $aOut;
             }
+        }
 
         return array_slice($aRows, 0, $iPerPage);
     }

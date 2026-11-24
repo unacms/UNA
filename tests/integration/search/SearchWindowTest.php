@@ -131,6 +131,11 @@ class SearchWindowTest extends ApiV2TestCase
         // comments come with their module in the "All" view and its tab; the module scope is its entries only
         list(, $aCmts) = $this->found(['keyword' => $sWord, 'tab' => 'bx_posts'], $iOther);
         $this->assertSame([$iCmtPublic], $aCmts);
+        // with their own date, so they take their place among the newest
+        $this->asViewer($iOther);
+        $aHits = BxDolSearchUnified::getInstance()->search(BxDolSearchUnified::getInstance()->normalize(['keyword' => $sWord, 'tab' => 'bx_posts', 'sort' => 'new']), 'hits')['group']['items'];
+        foreach ($aHits as $aHit)
+            $this->assertGreaterThan(0, $aHit['date'], $aHit['kind'] . ' ' . $aHit['id']);
         list(, $aCmts) = $this->found(['keyword' => $sWord, 'section' => 'bx_posts'], $iOther);
         $this->assertSame([], $aCmts);
 
@@ -156,6 +161,10 @@ class SearchWindowTest extends ApiV2TestCase
             $aScope = $o->getScope($o->normalize(['keyword' => $sWord, 'context' => $aSecret[0]]));
             $this->assertNull($aScope['context']);
             $this->assertNotContains('context', array_column($aScope['chips'], 'name'));
+            // nor as "Created by"
+            $aScope = $o->getScope($o->normalize(['keyword' => $sWord, 'author' => $aSecret[0]]));
+            $aAuthor = array_values(array_filter($aScope['chips'], function ($a) { return $a['name'] == 'author'; }))[0];
+            $this->assertSame([0, ''], [$aAuthor['value'], $aAuthor['value_title']]);
             list($aPosts, , $iCount) = $this->found(['keyword' => $sWord, 'context' => $aSecret[0]], $iOther);
             $this->assertSame([[], 0], [$aPosts, $iCount]);
         }
