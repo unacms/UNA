@@ -442,7 +442,7 @@ class BxBaseModGeneralTemplate extends BxDolModuleTemplate
             $aParams['list_id'] = $iListId;
             if ($oPrivacy->check($iListId) || $iListId == 0){
                 $aTmp = $this->getModule()->_serviceBrowse ('favorite', array_merge(array('user' => $oProfile->id()), $aParams), BX_DB_PADDING_DEF, $bEmptyMessage, false);
-                if ($aTmp && $aTmp['content']){
+                if ($aTmp && !empty($aTmp['content'])){
                     $aListsTmpl[] = array(
                         'title' => $sName, 
                         'content_url' => $this->getModule()->_getFavoriteListUrl($iListId, $oProfile->id()),

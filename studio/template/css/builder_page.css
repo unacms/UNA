@@ -312,8 +312,9 @@ div#adm-bp-edit-popup div.bx-popup-content,
     min-height: 0;
 }
 /* Sidebar | settings, the footer under both: a grid whose row is the sidebar's own height (seven 52px rows, six 2px gaps, 8px inset) at
-   most, so the box keeps one height across the tabs, the settings scroll past it, and the row gives way when the viewport is short. */
-:is(div#adm-bp-add-popup, div#adm-bp-edit-popup) div.bx-form-input-wrapper-custom {
+   most, so the box keeps one height across the tabs, the settings scroll past it, and the row gives way when the viewport is short.
+   Only the settings input's own wrapper: a custom row inside a tab (Cover's "Same as section") is a plain block. */
+:is(div#adm-bp-add-popup, div#adm-bp-edit-popup) #bx-form-element-settings > .bx-form-element > .bx-form-value > div.bx-form-input-wrapper-custom {
     display: grid;
     grid-template-columns: 14rem minmax(0, 1fr);
     grid-template-rows: minmax(0, 24.5rem) auto;

@@ -43,9 +43,7 @@ class PageTitleSettingsTest extends BxDolIntegrationTestCase
         $aSet = [];
         foreach (['cover', 'cover_hidden_on', 'cover_title', 'title_show', 'title_hidden_on'] as $sField)
             if (array_key_exists($sField, $aFields))
-                $aSet[] = $sField === 'title_show' || $sField === 'title_hidden_on'
-                    ? '`' . $sField . '` = ' . ($aFields[$sField] === null ? 'NULL' : $oDb->escape((string)$aFields[$sField]))
-                    : '`' . $sField . '` = ' . $oDb->escape((string)$aFields[$sField]);
+                $aSet[] = '`' . $sField . '` = ' . ($aFields[$sField] === null && $sField !== 'cover_title' ? 'NULL' : $oDb->escape((string)$aFields[$sField]));
 
         $oDb->query("UPDATE `sys_objects_page` SET " . implode(', ', $aSet) . " WHERE `id` = :id", ['id' => $this->_aPageBackup['id']]);
         $oDb->cleanCache('sys_pages_objects_data');

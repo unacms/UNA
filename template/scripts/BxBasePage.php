@@ -550,7 +550,9 @@ class BxBasePage extends BxDolPage
         if(!$oCover->isEnabled() || !$this->isPageCover() || $oCover->isCover())
             return [];
 
-        if($this instanceof BxBasePageHome || isset($this->_aProfileInfo) || $this instanceof BxBaseModGeneralPageEntry)
+        // The owner's own list of a profile's items (owner=1) has the page's own band, as on the site: a page that shows
+        // its owner's cover has set it (isCover above).
+        if($this instanceof BxBasePageHome || $this instanceof BxBaseModGeneralPageEntry)
             return [];
 
         $sImage = '';
@@ -972,7 +974,8 @@ class BxBasePage extends BxDolPage
                     call_user_func_array([$oMenuManage, 'setObjectManage'], $aObjectManage);
 
                     $aMenuManage = $oMenuManage->getCodeAPI();
-                    if(!empty($aMenuManage) && is_array($aMenuManage)) {
+                    // Into the profile's cover only: the owner's own list (owner=1) has none, the page's own band instead.
+                    if(!empty($aMenuManage) && is_array($aMenuManage) && is_array($a['cover_block'])) {
                         if(isset($a['cover_block'], $a['cover_block']['actions_menu']) && is_array($a['cover_block']['actions_menu']))
                             $a['cover_block']['actions_menu']['items'] = array_merge($a['cover_block']['actions_menu']['items'], $aMenuManage['items']);
                         else

@@ -355,6 +355,39 @@ BxDolStudioBuilderPage.prototype.onChangeSettingGroup = function(sName, oLink) {
     });
 };
 
+/**
+ * Cover and Title tabs: "Same as section" shows what the section gives, any other choice the page's own settings.
+ */
+BxDolStudioBuilderPage.prototype.onChangeSameAsSection = function(oSelect) {
+    var sGroup = $(oSelect).attr('name') == 'cover' ? 'cover' : 'title';
+    var bSame = $(oSelect).val() == 'section';
+
+    var oForm = $(oSelect).parents('form:first');
+    oForm.find('.adm-bp-section-same-' + sGroup).toggle(bSame);
+    oForm.find('.adm-bp-section-own-' + sGroup).toggle(!bSame);
+};
+
+BxDolStudioBuilderPage.prototype.editSection = function() {
+    this.performAction('section_edit');
+};
+
+BxDolStudioBuilderPage.prototype.onChangeSectionTitle = function(oSelect) {
+    $(oSelect).parents('form:first').find('.adm-bp-section-title-own').toggle($(oSelect).val() != 'cover');
+};
+
+BxDolStudioBuilderPage.prototype.onEditSection = function(oData) {
+    // The page's settings again, with what the section now gives.
+    this.performAction('page_edit');
+};
+
+BxDolStudioBuilderPage.prototype.onEditSectionCancel = function(oButton) {
+    $(oButton).parents('.bx-popup-applied:visible:first').dolPopupHide({
+        onHide: function(oPopup) {
+            $(oPopup).remove();
+        }
+    });
+};
+
 BxDolStudioBuilderPage.prototype.onChangeLayout = function(iId, oLink) {
     bx_sound('select');
 
