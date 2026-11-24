@@ -1,0 +1,10 @@
+<div id="__id__" class="bx-search-window-panel hidden mt-3 flex flex-wrap items-end gap-3">
+    <bx_if:fields>
+        <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__label__
+            <select class="bx-search-window-date-field bx-form-input-select"><bx_repeat:fields><option value="__value__" __selected__>__title__</option></bx_repeat:fields></select>
+        </label>
+    </bx_if:fields>
+    <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__from_label__<input type="date" class="bx-search-window-date-from bx-form-input-text" value="__from__" /></label>
+    <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__to_label__<input type="date" class="bx-search-window-date-to bx-form-input-text" value="__to__" /></label>
+    <button type="button" class="bx-search-window-date-apply bx-btn bx-btn-small bx-btn-primary">__apply__</button>
+</div>

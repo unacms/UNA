@@ -6599,6 +6599,7 @@ CREATE TABLE IF NOT EXISTS `sys_pages_sections` (
   `cover_hidden_on` varchar(255) NOT NULL DEFAULT '',
   `title_show` tinyint(4) DEFAULT NULL,
   `title_hidden_on` varchar(255) DEFAULT NULL,
+  `search` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `object` (`object`)
 );
