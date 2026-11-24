@@ -128,9 +128,6 @@ export function Conductor({
 
     const coverMode = appSetting('cover', 'view_by_module', data.cover_block?.profile?.module)
     const isCover = Boolean(data.cover_block) && coverMode != 'none'
-    // The section's title on desktop (its title row, or the left column's title): the page's title settings for this
-    // viewer (Studio → Pages → page → Title), with or without the cover. Phones and tablets show it in the page header.
-    const isTitleOn = isPageTitleOn(data, Boolean(currentUser), 'desktop', false)
 
     // ==================================================================
     // 1. Routes / tabs
@@ -281,6 +278,16 @@ export function Conductor({
      * re-expand. The center list always follows `activeRoute`.
      */
     const tabRoute = activeRoute?.inited ? activeRoute : prevRoute
+    /**
+     * The page whose cover band and title settings show: the current tab's own (Studio → Pages → that page → Cover,
+     * Title), as the site shows each tab as its own page. A tab switch only pushes the URL, so `data` stays the page
+     * the section was opened on; until the new tab's page arrives the previous tab's settings stay, so nothing
+     * flashes. A profile's cover (`cover_block`, `context`) stays the opened page's, mounted across its tabs.
+     */
+    const settingsPage = tabRoute?.pageData ?? data
+    // The section's title on desktop (its title row, or the left column's title): the page's title settings for this
+    // viewer (Studio → Pages → page → Title), with or without the cover. Phones and tablets show it in the page header.
+    const isTitleOn = isPageTitleOn(settingsPage, Boolean(currentUser), 'desktop', false)
     // Navigator keeps a left column for the section nav where the section's menu asks for a sidebar on large screens
     // (UNA's `section_nav`, getMenuSectionNav); otherwise the nav stays in the tab row, as on the site.
     const isSectionSidebar = layoutName === 'navigator' && getMenuSectionNav(menu) === 'sidebar'
@@ -495,11 +502,13 @@ export function Conductor({
             {isUseCurrentHeader
                 ? <PageHeaderOptions hidden mobileOnly />
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
+            {/* The page header's title on phones and tablets follows the current tab's title settings too. */}
+            <PageHeaderOptions page={settingsPage} mobileOnly />
             {/* Below desktop a hub section's page was opened from its list: Back returns there. */}
             {hideTabs && data?.uri !== menuHub ? <PageHeaderOptions backButton={backToHub} mobileOnly /> : null}
             {/* The page's cover band above the section's title and tabs, as on the site (desktop; not a profile,
                 whose cover is its own). */}
-            {showCoverBand && layoutName !== 'profile' && !data?.cover_block?.profile ? <PageCoverBand data={data} /> : null}
+            {showCoverBand && layoutName !== 'profile' && !data?.cover_block?.profile ? <PageCoverBand data={settingsPage} /> : null}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
