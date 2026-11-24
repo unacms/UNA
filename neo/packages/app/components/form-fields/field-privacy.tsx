@@ -104,7 +104,6 @@ export default function FieldPrivacy({ chooser }: FieldPrivacyProps) {
                 title={t('Choose audience')}
                 onVisible={isModal}
                 onClose={() => setIsModal(false)}
-                transparent
                 headerBorder
                 scrollable
             >
