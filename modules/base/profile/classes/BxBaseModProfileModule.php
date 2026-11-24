@@ -2644,10 +2644,15 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
      * The meta and actions menus must already have the entry, as BxBaseModProfileTemplate::prepareCoverApi gives it to them.
      */
     /**
-     * The template's own art the site shows on a profile without a cover picture, light and dark, for the apps.
+     * What the site shows on a profile without a cover picture, light and dark, for the apps: the site's cover, else the
+     * template's own art.
      */
     public function getCoverDefaultAPI()
     {
+        // The site's cover (Studio > Designer > Cover) where one is uploaded, as the site shows it (prepareCover).
+        if(($iSiteCover = (int)getParam('sys_site_cover_common')) != 0 && ($sSiteCover = BxDolCover::getCoverImageUrl(['id' => $iSiteCover, 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER])))
+            return ['light' => $sSiteCover, 'dark' => $sSiteCover];
+
         list($sArtLight, $sArtDark) = BxDolCover::getDefaultArt(BxDolModuleQuery::getInstance()->getModuleByUri(BxDolTemplate::getInstance()->getCode()));
 
         return ['light' => $sArtLight, 'dark' => $sArtDark ? $sArtDark : $sArtLight];

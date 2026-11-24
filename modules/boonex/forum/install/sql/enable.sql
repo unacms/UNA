@@ -121,7 +121,7 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 
 -- PAGE: module home
 INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module`, `cover`, `cover_image`, `type_id`, `layout_id`, `submenu`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `inj_head`, `inj_footer`, `sticky_columns`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
-('bx_forum_home', 'discussions-home', '_bx_forum_page_title_sys_home', '_bx_forum_page_title_home', @sName, 1, 0, 1, 6, '', 2147483647, 1, 'page.php?i=discussions-home', '', '', '', 0, 1, '', '', 0, 0, 'BxForumPageBrowse', 'modules/boonex/forum/classes/BxForumPageBrowse.php');
+('bx_forum_home', 'discussions-home', '_bx_forum_page_title_sys_home', '_bx_forum_page_title_home', @sName, NULL, NULL, 1, 6, '', 2147483647, 1, 'page.php?i=discussions-home', '', '', '', 0, 1, '', '', 0, 0, 'BxForumPageBrowse', 'modules/boonex/forum/classes/BxForumPageBrowse.php');
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `async`, `cache_lifetime`, `submenu`, `tabs`, `hidden_on`, `visible_for_levels`, `type`, `content`, `help`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_forum_home', 1, @sName, '_bx_forum_page_block_title_sys_featured_entries_view_showcase', '_bx_forum_page_block_title_featured_entries_view_showcase', 0, 0, NULL, '', 0, '', 2147483647, 'service', 'a:3:{s:6:\"module\";s:8:\"bx_forum\";s:6:\"method\";s:15:\"browse_featured\";s:6:\"params\";a:3:{s:9:\"unit_view\";s:8:\"showcase\";s:13:\"empty_message\";b:0;s:13:\"ajax_paginate\";b:0;}}', NULL, 0, 1, 1, 0),

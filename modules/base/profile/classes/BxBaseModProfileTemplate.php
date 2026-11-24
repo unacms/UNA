@@ -566,18 +566,12 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             $sCoverPopupId = $this->MODULE . '-popup-cover';
             $bIsAllowEditCover = $oModule->checkAllowedChangeCover($aData) === CHECK_ACTION_RESULT_ALLOWED;
 
-            $oPage = false;
-            if(isset($aParams['page']) && is_a($aParams['page'], 'BxDolPage'))
-                $oPage = $aParams['page'];
-
+            // A profile without a cover picture has the site's (Studio > Designer > Cover), else the template's art: not
+            // the picture of the page it is shown on, which would differ from tab to tab and from the apps.
             $bUrlCover = false;
             $sUrlCover = $this->urlCover($aData, false);
-            if(!$sUrlCover && $oPage !== false && $oPage->isPageCover()) {
-                $aCover = $oPage->getPageCoverImage();
-                
-                if(!empty($aCover))
-                    $sUrlCover = BxDolCover::getCoverImageUrl($aCover);
-            }
+            if(!$sUrlCover && ($iSiteCover = (int)getParam('sys_site_cover_common')) != 0)
+                $sUrlCover = BxDolCover::getCoverImageUrl(['id' => $iSiteCover, 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER]);
 
             if(!empty($sUrlCover))
                 $bUrlCover = true;
