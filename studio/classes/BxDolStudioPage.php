@@ -91,6 +91,47 @@ class BxDolStudioPage extends BxDol
         return false;
     }
 
+    /**
+     * Whether the operator's Studio role lets them use this page: the role needs "use <type>" for the type of the page's app.
+     * It holds for the page's actions too, not only for showing it.
+     */
+    public function isAccessAllowed()
+    {
+        if(!$this->bPage || $this->bPageMultiple || empty($this->aPage['wid_type']))
+            return true;
+
+        return (bool)BxDolStudioRolesUtils::getInstance()->isActionAllowed('use ' . $this->aPage['wid_type']);
+    }
+
+    /**
+     * Whether a request that changes something came the way the Studio sends it: a POST with the page's CSRF token. The token is
+     * kept, as grid actions keep theirs, so the page can make more changes without reloading.
+     */
+    public static function isWriteRequest()
+    {
+        if(!isset($_SERVER['REQUEST_METHOD']) || strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')
+            return false;
+
+        $sToken = isset($_POST['csrf_token']) && is_string($_POST['csrf_token']) ? bx_process_input($_POST['csrf_token']) : '';
+        return BxDolForm::isCsrfTokenValid($sToken, false);
+    }
+
+    /**
+     * The answer to a change that didn't come as a POST with a valid CSRF token.
+     */
+    public static function getWriteRequestError()
+    {
+        return ['code' => 3, 'message' => _t('_sys_txt_form_submission_error_csrf_expired')];
+    }
+
+    /**
+     * The answer to an action the operator's Studio role doesn't allow.
+     */
+    public static function getAccessDeniedError()
+    {
+        return ['code' => 1, 'message' => _t('_Access denied')];
+    }
+
     public function getDb()
     {
         return $this->oDb;

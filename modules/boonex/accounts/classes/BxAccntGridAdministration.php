@@ -585,6 +585,9 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
         if((int)$mixedId == (int)getLoggedId())
             return false; // not one's own account
 
+        if(!$this->_oModule->isAllowDeleteOrDisableAccount((int)$mixedId))
+            return false; // a moderator doesn't suspend staff, and only an operator suspends an operator
+
     	$oProfile = BxDolProfile::getInstanceAccountProfile($mixedId);
     	if(!$oProfile)
     	    return false;
@@ -698,7 +701,23 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     
     protected function _isCheckboxDisabled($aRow)
     {
-        return $this->_isOwnRow($aRow);
+        return $this->_isOwnRow($aRow) || !$this->_isRowManageable($aRow);
+    }
+
+    /**
+     * The switch is hidden on the accounts the viewer may not suspend: their own, and staff they may not act on.
+     */
+    protected function _getCellSwitcher($mixedValue, $sKey, $aField, $aRow)
+    {
+        if($this->_isOwnRow($aRow) || !$this->_isRowManageable($aRow))
+            return $this->_getCellDefault('', $sKey, $aField, $aRow);
+
+        return parent::_getCellSwitcher($mixedValue, $sKey, $aField, $aRow);
+    }
+
+    protected function _isRowManageable($aRow)
+    {
+        return !empty($aRow['id']) && $this->_oModule->isAllowDeleteOrDisableAccount((int)$aRow['id']);
     }
 
     /**
@@ -718,6 +737,9 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
     {
         if((int)$iId == (int)getLoggedId())
             return false; // not one's own account
+
+        if(!$this->_oModule->isAllowDeleteOrDisableAccount((int)$iId))
+            return false;
 
         return ($oAccount = BxDolAccount::getInstance($iId)) !== false && $oAccount->delete(isset($aParams['with_content']) && $aParams['with_content'] === true, true);
     }

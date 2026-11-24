@@ -82,6 +82,14 @@ class BxDolStudioBuilderPage extends BxTemplStudioWidget
 
         $sAction = bx_process_input($sAction);
 
+        // Moving, switching and deleting blocks and deleting a page are changes: a POST with the Studio's CSRF token. Creating and
+        // editing go through forms, which carry their own. The action is compared by the method it reaches (any spelling of
+        // block_switch, such as block__switch or BLOCK_SWITCH, reaches actionBlockSwitch), not by how the request spelled it.
+        $sActionMethod = $this->getClassName($sAction);
+        foreach(['Reorder', 'BlockSwitch', 'BlockDelete', 'PageDelete'] as $sWriteMethod)
+            if(strcasecmp($sActionMethod, $sWriteMethod) == 0 && !self::isWriteRequest())
+                return self::getWriteRequestError();
+
         $aResult = array('code' => 1, 'message' => _t('_adm_bp_err_cannot_process_action'));
         switch($sAction) {
             case 'reorder':

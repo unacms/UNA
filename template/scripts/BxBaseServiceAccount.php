@@ -1112,7 +1112,9 @@ class BxBaseServiceAccount extends BxDol
         $aCheck = checkActionModule($iViewerProfileId, 'switch to any profile', 'system', false);
         $bAllowSwitchToAnyProfile = $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED;
 
-        $bCanSwitch = ($iSwitchToAccountId == $iViewerAccountId || $bAllowSwitchToAnyProfile);
+        // "Switch to any profile" doesn't reach staff the viewer may not act on: an operator's profiles, or for a moderator a
+        // moderator's or administrator's.
+        $bCanSwitch = ($iSwitchToAccountId == $iViewerAccountId || ($bAllowSwitchToAnyProfile && bx_acl_can_manage_profile((int)$iViewerProfileId, (int)$iSwitchToProfileId)));
         /**
          * @hooks
          * @hookdef hook-account-check_switch_context 'account', 'check_switch_context' - hook on switch profile_id

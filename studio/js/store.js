@@ -20,10 +20,11 @@ BxDolStudioStore.prototype.addToCart = function(iVendor, iProduct, oButton) {
 	var $this = this;
 	bx_loading(this.sIdPageContent, true);
 
-	$.get(
+	$.post(
 		this.sActionsUrl,
 		{
 			str_action: 'add-to-cart',
+			csrf_token: sStudioCsrfToken,
 			str_vendor: iVendor,
 			str_item: iProduct,
 			_t:oDate.getTime()
@@ -52,10 +53,11 @@ BxDolStudioStore.prototype.deleteFromCart = function(iVendor, iProduct, oButton)
 	var $this = this;
 	bx_loading(this.sIdPageContent, true);
 
-	$.get(
+	$.post(
 		this.sActionsUrl,
 		{
 			str_action: 'delete-from-cart',
+			csrf_token: sStudioCsrfToken,
 			str_vendor: iVendor,
 			str_item: iProduct,
 			_t:oDate.getTime()
@@ -184,10 +186,11 @@ BxDolStudioStore.prototype._getFile = function(sAction, mixedId, onResult, oButt
 	bx_std_loading_btn(oButton, true);
 	$(oButton).addClass('bx-btn-disabled');
 
-	$.get(
+	$.post(
 		this.sActionsUrl,
 		{
 			str_action: sAction,
+			csrf_token: sStudioCsrfToken,
 			str_id: mixedId,
 			_t:oDate.getTime()
 		},
@@ -360,6 +363,7 @@ BxDolStudioStore.prototype.perform = function(sType, sValue, onSuccess, oInput) 
     	this.sActionsUrl,
     	{
     		str_action: sType,
+    		csrf_token: sStudioCsrfToken,
     		str_value: sValue,
     		_t:oDate.getTime()
     	},

@@ -117,6 +117,21 @@ class BxDolStudioModule extends BxTemplStudioWidget
 
         $sAction = bx_process_input($sAction);
 
+        // Turning an app on or off and uninstalling it are changes: a POST with the Studio's CSRF token.
+        if(in_array($sAction, ['activate', 'uninstall']) && !self::isWriteRequest())
+            return self::getWriteRequestError();
+
+        // An action names the app it acts on: the role needs that app's type too, not only the type of the page it came through.
+        if(in_array($sAction, ['settings', 'activate', 'uninstall', 'context'])) {
+            $sValue = bx_get($this->sParamPrefix . '_value');
+            if(is_string($sValue) && $sValue !== '' && !BxDolStudioRolesUtils::getInstance()->isPageAllowed(bx_process_input($sValue)))
+                return self::getAccessDeniedError();
+        }
+
+        // Uninstalling is for app managers, as its place in the context menu is.
+        if($sAction == 'uninstall' && !BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS))
+            return self::getAccessDeniedError();
+
         $aResult = array('code' => 2, 'message' => _t('_adm_mod_err_cannot_process_action'));
         switch($sAction) {
             case 'settings':

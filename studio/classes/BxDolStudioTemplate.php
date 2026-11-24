@@ -145,6 +145,10 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
             case 'dol_options':
                 $sRet = $this->_processJsOptions();
                 break;
+            case 'std_csrf_token':
+                // The token the Studio's own actions (launcher, apps, Store, Pages builder) send with a change.
+                $sRet = bx_js_string((string)BxDolForm::getCsrfToken(), BX_ESCAPE_STR_APOS);
+                break;
             case 'menu_top':
                 $sRet = BxTemplStudioMenuTop::getInstance()->getCode();
                 break;
@@ -240,6 +244,16 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
     
     function displayPage(&$oPage)
     {
+        // The Studio role decides the page's actions as well as whether the page is shown.
+        if(method_exists($oPage, 'isAccessAllowed') && !$oPage->isAccessAllowed()) {
+            if(bx_is_dynamic_request()) {
+                echoJson(BxDolStudioPage::getAccessDeniedError());
+                return;
+            }
+
+            $this->displayMsg([403, '_Access denied'], true);
+        }
+
         if(($mixedResult = $oPage->checkAction()) !== false)
             return echoJson($mixedResult);
 

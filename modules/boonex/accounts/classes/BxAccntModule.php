@@ -135,6 +135,9 @@ class BxAccntModule extends BxBaseModGeneralModule
     	if(isAdmin() && (int)$aDataEntry['id'] == getLoggedId())
     		return _t('_sys_txt_access_denied');
 
+        if(empty($aDataEntry['id']) || !$this->isAllowDeleteOrDisableAccount((int)$aDataEntry['id']))
+            return _t('_sys_txt_access_denied');
+
         // check ACL
         $aCheck = checkActionModule($this->_iProfileId, 'delete account', 'system', $isPerformAction);
         if($aCheck[CHECK_ACTION_RESULT] != CHECK_ACTION_RESULT_ALLOWED)
@@ -194,10 +197,31 @@ class BxAccntModule extends BxBaseModGeneralModule
 
     public function isAllowDeleteOrDisable($iActorProfileId, $iTargetProfileId)
     {
-        if(bx_acl_is_moderator($iActorProfileId) && bx_acl_is_advanced($iTargetProfileId))
+        return bx_acl_can_manage_profile((int)$iActorProfileId, (int)$iTargetProfileId);
+    }
+
+    /**
+     * Whether the logged in member of staff may delete or suspend the account, by the rules of bx_acl_can_manage_profile for
+     * each of its profiles: only an operator acts on an operator's account, and a moderator doesn't act on an account with a
+     * moderator's or administrator's profile.
+     */
+    public function isAllowDeleteOrDisableAccount($iAccountId)
+    {
+        $oAccount = BxDolAccount::getInstance((int)$iAccountId);
+        if(!$oAccount)
             return false;
 
-        return true;    
+        if(isAdmin((int)$iAccountId) && !isAdmin())
+            return false;
+
+        if(!bx_acl_is_moderator((int)bx_get_logged_profile_id()))
+            return true;
+
+        foreach($oAccount->getProfilesIds(false, false) as $iProfileId)
+            if(bx_acl_is_advanced((int)$iProfileId))
+                return false;
+
+        return true;
     }
 }
 

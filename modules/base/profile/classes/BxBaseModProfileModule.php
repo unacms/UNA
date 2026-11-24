@@ -2344,10 +2344,7 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
     
     public function isAllowDeleteOrDisable($iActorProfileId, $iTargetProfileId)
     {
-        if (bx_acl_is_moderator($iActorProfileId) && bx_acl_is_advanced($iTargetProfileId))
-            return false;
-
-        return true;    
+        return bx_acl_can_manage_profile((int)$iActorProfileId, (int)$iTargetProfileId);
     }
     
     public function getProfileObject($iContentId)

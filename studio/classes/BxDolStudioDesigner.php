@@ -168,6 +168,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 break;
 
             case 'delete_icon':
+                // Deletes a file: a POST with the form's CSRF token, as the logo's.
+                if(!self::isWriteRequest()) {
+                    $aResult = self::getWriteRequestError();
+                    break;
+                }
+
                 $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
 
                 $aResult = ['code' => 0, 'message' => ''];
@@ -176,6 +182,11 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 break;
 
             case 'delete_cover':
+                if(!self::isWriteRequest()) {
+                    $aResult = self::getWriteRequestError();
+                    break;
+                }
+
                 $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
 
                 $aResult = array('code' => 0, 'message' => '');

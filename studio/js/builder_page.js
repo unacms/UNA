@@ -166,6 +166,7 @@ BxDolStudioBuilderPage.prototype.reorder = function(oDraggable) {
         {
             bp_action: 'reorder',
             bp_page: $this.sPage,
+            csrf_token: sStudioCsrfToken,
             _t:oDate.getTime()
         },
         function(oData) {
@@ -311,6 +312,7 @@ BxDolStudioBuilderPage.prototype.switchBlock = function(oInput, iId, sField) {
             id: iId,
             field: sField,
             checked: oInput.checked ? 1 : 0,
+            csrf_token: sStudioCsrfToken,
             _t: oDate.getTime()
         },
         function(oData) {
@@ -421,6 +423,7 @@ BxDolStudioBuilderPage.prototype.performAction = function(sAction, aParams) {
     aParams.bp_action = sAction;
     aParams.bp_type = $this.sType;
     aParams.bp_page = $this.sPage;
+    aParams.csrf_token = sStudioCsrfToken;
     aParams._t = oDate.getTime();
 
     if($('.bx-loading-ajax:visible').length == 0)

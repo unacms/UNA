@@ -63,6 +63,14 @@ class BxDolStudioStore extends BxTemplStudioWidget
 
         $sAction = bx_process_input($sAction);
 
+        // Downloading, installing, updating and deleting apps, and the cart, are changes: a POST with the Studio's CSRF token.
+        if(in_array($sAction, ['get-file', 'get-update', 'get-update-and-install', 'install', 'update', 'delete', 'add-to-cart', 'delete-from-cart']) && !self::isWriteRequest())
+            return $this->getActionResult(self::getWriteRequestError());
+
+        // Downloading, installing, updating and deleting apps are for app managers, as uninstalling is.
+        if(in_array($sAction, ['get-file', 'get-update', 'get-update-and-install', 'install', 'update', 'delete']) && !BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS))
+            return $this->getActionResult(self::getAccessDeniedError());
+
         $aResult = array('code' => BX_DOL_STUDIO_IU_RC_FAILED, 'message' => _t('_adm_mod_err_cannot_process_action'));
         switch($sAction) {
             case 'get-file':
@@ -180,6 +188,14 @@ class BxDolStudioStore extends BxTemplStudioWidget
                 break;
         }
 
+        return $this->getActionResult($aResult);
+    }
+
+    /**
+     * The answer to a Store action, with its message in the popup the Store's scripts show.
+     */
+    protected function getActionResult($aResult)
+    {
         if(!empty($aResult['message'])) {
             $oTemplate = BxDolStudioTemplate::getInstance();
 

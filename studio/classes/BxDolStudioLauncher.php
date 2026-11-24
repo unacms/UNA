@@ -42,6 +42,15 @@ class BxDolStudioLauncher extends BxTemplStudioWidgets implements iBxDolSingleto
 
         $sAction = bx_process_input($sAction);
 
+        // Pins, order and an app's type are changes: a POST with the Studio's CSRF token. The apps browser and the cache refresh
+        // every page asks for change nothing.
+        if(!in_array($sAction, ['launcher-browser', 'launcher-update-cache']) && !self::isWriteRequest())
+            return self::getWriteRequestError();
+
+        // The shared pin and an app's type (which decides the roles that may use it) are for app managers.
+        if(in_array($sAction, ['page-featured', 'widget-rearrange']) && !BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS))
+            return self::getAccessDeniedError();
+
         $aResult = array('code' => 1, 'message' => _t('_adm_err_operation_failed'));
         switch($sAction) {
             case 'launcher-browser':

@@ -12,7 +12,7 @@ class StudioStorePolyglotTest extends BxDolIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->bxSetLoggedFlags(BX_DOL_ROLE_MEMBER | BX_DOL_ROLE_ADMIN); // Studio grids are for operators only; tearDown restores the flags
+        $this->bxLoginAsAdmin(); // Studio grids are for operators whose Studio role uses the app; tearDown signs out
     }
 
     protected function call(object $o, string $sMethod, array $aArgs = [])

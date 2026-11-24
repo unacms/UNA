@@ -167,6 +167,7 @@ BxDolStudioLauncher.prototype.reorder = function(oDraggable) {
         {
             action: 'launcher-reorder',
             page: this.sScrollCurrent,
+            csrf_token: sStudioCsrfToken,
             _t:oDate.getTime()
         },
         function(oData) {
@@ -186,10 +187,11 @@ BxDolStudioLauncher.prototype.featured = function(sPageName, oLink) {
     var $this = this;
     var oDate = new Date();
 
-    $.get(
+    $.post(
         this.sActionsUrl,
         {
             action: 'page-featured',
+            csrf_token: sStudioCsrfToken,
             page: sPageName,
             _t: oDate.getTime()
         },
@@ -224,10 +226,11 @@ BxDolStudioLauncher.prototype.featured = function(sPageName, oLink) {
 BxDolStudioLauncher.prototype.bookmark = function(sPageName, oLink) {
     var oDate = new Date();
 
-    $.get(
+    $.post(
         this.sActionsUrl,
         {
             action: 'page-bookmark',
+            csrf_token: sStudioCsrfToken,
             page: sPageName,
             _t: oDate.getTime()
         },
@@ -260,10 +263,11 @@ BxDolStudioLauncher.prototype.rearrange = function(iWidgetId, oSelect) {
 
     bx_loading(oPopup, true);
 
-    $.get(
+    $.post(
         this.sActionsUrl,
         {
             action: 'widget-rearrange',
+            csrf_token: sStudioCsrfToken,
             widget_id: iWidgetId,
             type: oSelect.val(),
             _t: oDate.getTime()
