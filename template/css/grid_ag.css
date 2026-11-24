@@ -461,7 +461,7 @@ html.dark .bx-grid-ag-item,
     transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.bx-grid-ag .ag-row.ag-row-hover:not(.ag-full-width-row)::before {
+.bx-grid-ag .ag-row.ag-row-hover:not(.ag-full-width-row):not(.ag-row-selected)::before {
     background-color: var(--bx-grid-ag-hover);
 }
 

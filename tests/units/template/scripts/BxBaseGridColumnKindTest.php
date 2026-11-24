@@ -135,6 +135,7 @@ class BxBaseGridColumnKindTest extends BxDolTestCase
         $this->assertDoesNotMatchRegularExpression('/\.ag-row[^{]*::before\s*\{[^}]*box-shadow/', $sCss);
         $this->assertStringContainsString('--bx-grid-ag-hover: rgb(228 228 231 / 0.5);', $sCss, 'The menu items\' hover fill, gray-200/50.');
         $this->assertStringContainsString('--ag-odd-row-background-color: var(--bx-grid-ag-odd);', $sCss, 'Every other row tinted as the classic grid\'s.');
+        $this->assertStringContainsString('.ag-row.ag-row-hover:not(.ag-full-width-row):not(.ag-row-selected)::before', $sCss, 'Hover never hides a selected row\'s fill.');
     }
 
     public function testStylesHaveTheCapsule(): void
