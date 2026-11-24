@@ -1757,6 +1757,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
         // The section's picture as an upload of the section's, so its files field lists it: the migration that made
         // sections gave the section a page's picture, an upload of that page's.
         $bPictureShown = false;
+        $oStorage = false;
         $iSectionContentId = self::getSectionContentId((int)$aRow['id']);
         if(($iPicture = (int)$aRow['cover_image']) && ($oStorage = BxDolStorage::getObjectInstance($this->sStorage)) !== false && ($aGhost = $oStorage->getGhost($iPicture))) {
             if((int)$aGhost['content_id'] != $iSectionContentId)
@@ -1855,9 +1856,10 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                 'cover_image' => $this->_getSubmittedFileId($oForm->getCleanValue('cover_image')),
             );
 
-            // A picture the form could not show (no upload of the section's to list) stays: only removing a shown one clears it.
-            if(!$aValues['cover_image'] && !$bPictureShown)
-                $aValues['cover_image'] = (int)$aRow['cover_image'];
+            // A picture the form could not show (a stored file with no upload to list) stays. One removed in the form is
+            // deleted with its file by then, so it clears.
+            if(!$aValues['cover_image'] && !$bPictureShown && $iPicture && $oStorage && $oStorage->getFile($iPicture))
+                $aValues['cover_image'] = $iPicture;
 
             $mixedTitle = $oForm->getCleanValue('title_show');
             if($mixedTitle === 'cover' || $mixedTitle === false || $mixedTitle === null) {
