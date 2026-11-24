@@ -209,7 +209,7 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
                         onSelect={(item) => onFilter(String(item.id))}
                         triggerAccessibilityLabel={strings.filter}
                     >
-                        <NeoButton label={strings.filter} image="Plus" controlSize="small" interactive />
+                        <NeoButton label={strings.filter} image="ListFilterPlus" controlSize="small" interactive />
                     </DropdownMenu>
                 )}
                 {!!trailing && <View className="ms-auto">{trailing}</View>}

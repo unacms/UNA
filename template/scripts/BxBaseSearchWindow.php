@@ -168,7 +168,7 @@ class BxBaseSearchWindow extends BxDol
                 'group' => '',
                 'class' => 'bx-search-window-chip-add',
                 'attrs' => 'aria-expanded="false" aria-controls="' . $sPanelId . '" data-panel="' . $sPanelId . '"',
-                'icon' => $this->_getIcon('plus', 'size-4'),
+                'icon' => $this->_getIcon('list-filter-plus', 'size-4'),
                 'caption' => _t('_sys_search_chip_filter'),
                 'bx_if:remove' => ['condition' => false, 'content' => []],
             ]);

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Text } from 'app/design/typography';
 import { View, Row, ScrollView } from 'app/design/view';
-import { NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
+import { ModalHeaderBar, NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { appStatic } from 'app/lib/app-static';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -31,7 +31,7 @@ function countText(count: number, more: boolean): string {
 const STATE_BOX = 'min-h-40 items-center justify-center gap-2 py-6';
 
 /** Inside a block (Explore, the results page) the block's padding is the edge: the field and chips line up with its title. */
-const INSET = { modal: 'px-3', page: '', explore: '' } as const;
+const INSET = { modal: 'px-4', page: '', explore: '' } as const;
 
 export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFocus = true, onClose, onQueryChange }: SearchWindowProps) {
     const [query, setQuery] = useState<SearchQuery>(initialQuery);
@@ -129,41 +129,45 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
 
     const tabs = scope && scope.scope !== 'module' && allGroups.length > 0 ? allGroups : null;
 
+    // the field: the search icon in a 36px slot (a small icon button's), so the slot's edge lines up with the chips and
+    // results below and the text starts after it
+    const field = (
+        <>
+            <View className="size-9 shrink-0 items-center justify-center" aria-hidden>
+                <Icon icon="Search" size={20} className="text-muted-foreground" />
+            </View>
+            {/* borderless, as UNA's window: the dialog's top row is the field */}
+            <TextInputClear
+                ref={inputRef}
+                className="min-w-0 flex-1 bg-transparent border-0 p-0 h-9 text-lg text-foreground placeholder:text-muted-foreground web:outline-none web:focus:outline-none web:focus-visible:outline-none"
+                role="searchbox"
+                accessibilityLabel={strings.title || 'Search'}
+                placeholder={strings.placeholder || ''}
+                value={keyword}
+                onChangeText={onChangeText}
+                onSubmitEditing={onSubmit}
+                onKeyPress={onKeyPress}
+                // the web's arrows come as keydown (a key press has none)
+                {...({ onKeyDown: onKeyPress } as Record<string, unknown>)}
+                returnKeyType="search"
+                autoCorrect={false}
+                autoCapitalize="none"
+                // the caret is the focus, as in UNA's window (no field box to ring)
+                style={{ outline: 'none', boxShadow: 'none' } as Record<string, string>}
+            />
+            {loading && <View className="ms-2 size-4 rounded-full border-2 border-border border-t-accent-foreground web:animate-spin" aria-hidden />}
+        </>
+    );
+
     return (
         <View className="w-full">
             <Redirect ref={redirectRef} />
-            <Row className={'items-center gap-2 border-b border-border py-2 ' + INSET[mode]}>
-                <Icon icon="Search" size={20} className="text-muted-foreground" />
-                {/* borderless, as UNA's window: the dialog's top row is the field */}
-                <TextInputClear
-                    ref={inputRef}
-                    className="min-w-0 flex-1 bg-transparent border-0 p-0 h-11 text-lg text-foreground placeholder:text-muted-foreground web:outline-none web:focus:outline-none web:focus-visible:outline-none"
-                    role="searchbox"
-                    accessibilityLabel={strings.title || 'Search'}
-                    placeholder={strings.placeholder || ''}
-                    value={keyword}
-                    onChangeText={onChangeText}
-                    onSubmitEditing={onSubmit}
-                    onKeyPress={onKeyPress}
-                    // the web's arrows come as keydown (a key press has none)
-                    {...({ onKeyDown: onKeyPress } as Record<string, unknown>)}
-                    returnKeyType="search"
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    // the caret is the focus, as in UNA's window (no field box to ring)
-                    style={{ outline: 'none', boxShadow: 'none' } as Record<string, string>}
-                />
-                {loading && <View className="size-4 rounded-full border-2 border-border border-t-accent-foreground web:animate-spin" aria-hidden />}
-                {mode === 'modal' && (
-                    <NeoButton
-                        image="X"
-                        controlSize="small"
-                        borderShape="circle"
-                        accessibilityLabel={strings.close || 'Close'}
-                        onPress={onClose}
-                    />
-                )}
-            </Row>
+            {mode === 'modal' ? (
+                // the modal's own header bar, its Close where every modal has it
+                <ModalHeaderBar onClose={onClose}>{field}</ModalHeaderBar>
+            ) : (
+                <Row className={'items-center border-b border-border py-2 ' + INSET[mode]}>{field}</Row>
+            )}
 
             {/* the chips, and the sort at the end of their row once there is something to sort */}
             {scope && (

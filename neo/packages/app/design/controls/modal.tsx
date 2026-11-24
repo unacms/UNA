@@ -36,7 +36,8 @@ const isIPadWeb =
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     );
 const modalSettings = appSetting('theme', 'modal');
-// Space between a web dialog and the viewport's edges, in px: the fog's `p-4`. Change them together.
+// Space between a web dialog and the viewport's edges, in px: `p-4` inside the box that clips the dialog (so its
+// shadow paints in that room instead of being cut off at the top and bottom). Change them together.
 const DIALOG_INSET = 16;
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
@@ -65,11 +66,30 @@ function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef }
                     <NeoButton style="bordered" controlSize="small" borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Back')} onPress={onBack} />
                 </View>
             )}
-            {(onClose && type === 'string') && (
-                <View ref={closeRef} className='absolute right-4 top-0 bottom-0 justify-center items-center'>
-                    <NeoButton style="bordered" role="close" controlSize="small" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
-                </View>
-            )}
+            {(onClose && type === 'string') && <ModalClose ref={closeRef} onClose={onClose} />}
+        </Row>
+    );
+}
+
+/** The modal's Close: the small (36px) bordered circle, 16px from the header's end, centred on its row. */
+function ModalClose({ onClose, ref }: { onClose: () => void; ref?: Ref<any> }) {
+    const { t } = useTranslation();
+    return (
+        <View ref={ref} className='absolute right-4 top-0 bottom-0 justify-center items-center'>
+            <NeoButton style="bordered" role="close" controlSize="small" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
+        </View>
+    );
+}
+
+/**
+ * A modal's header bar with content of its own in place of a title (the search window's field): the same bar as a
+ * titled modal's (16px padding, the line under it) and its Close in the same place.
+ */
+export function ModalHeaderBar({ children, onClose, headerBorder = true }: { children?: ReactNode; onClose?: () => void; headerBorder?: boolean }) {
+    return (
+        <Row className={`items-center ${headerBorder ? modalSettings.header : modalSettings.header_plain}`}>
+            <Row className={`flex-1 min-w-0 items-center ${onClose ? 'pe-11' : ''}`}>{children}</Row>
+            {onClose && <ModalClose onClose={onClose} />}
         </Row>
     );
 }
@@ -276,7 +296,7 @@ export function Modal({
     };
     const sClassPosition = positionClasses[position] || positionClasses.center;
     // Web: a `top` dialog keeps its top edge where it is (only its bottom moves as its content grows or shrinks), the others centre.
-    const webAlign = position === 'top' && !autoHeight ? 'justify-start sm:pt-12' : 'sm:justify-center';
+    const webAlign = position === 'top' && !autoHeight ? 'justify-start sm:pt-16' : 'sm:justify-center';
     const Cnt: ComponentType<any> = scrollable ? (isWeb ? ScrollView : ModalKbAwareScroll) : View
     const modalBottomOffset = 24 + (insets?.bottom ?? 0)
 
@@ -497,10 +517,10 @@ export function Modal({
                 <View
                     ref={fogRef}
                     style={undefined}
-                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${isDialog ? 'p-4' : ''} ${modalSettings.fog} `}/* justify-start for post form small web */
+                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onClick={handleWebOuterPress}
                 >
-                    <RemoveScroll className={`flex-1  flex flex-col w-full ${webAlign} ${autoHeight && 'justify-center'} overflow-hidden`} >
+                    <RemoveScroll className={`flex-1  flex flex-col w-full ${isDialog ? 'p-4' : ''} ${webAlign} ${autoHeight && 'justify-center'} overflow-hidden`} >
                         <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: dialogHeight }} className={`w-full left-0 right-0 z-50 mx-auto ${modalSettings.container} ${dialogClass}`}>
                        
                             {content}
