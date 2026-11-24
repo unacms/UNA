@@ -290,7 +290,10 @@ export function usePageHeaderBase(pageData) {
     const isOwnHeading = useMemo(() => isOwnHeadingPage(pageData, !currentUser), [pageData, currentUser]);
     // Off for this viewer, or hidden on this screen size (in the apps, also "mobile app": Studio's "Title hidden on"),
     // with or without the cover.
-    const isTitleOn = isPageTitleOn(pageData, Boolean(currentUser), screenTier, !isWeb);
+    // A section's current tab (`options.page`, from the conductor) has its own title settings: a tab switch keeps
+    // the page it was opened on.
+    const titlePage = options.page ?? pageData;
+    const isTitleOn = isPageTitleOn(titlePage, Boolean(currentUser), screenTier, !isWeb);
     const isShowTitle = !isDesktop && !pageData?.page_status
         && (options.showTitle ?? (!isOwnHeading && (Boolean(options.title) || isTitleOn)));
     const isBackButton = header.backButton;
@@ -317,7 +320,7 @@ export function usePageHeaderBase(pageData) {
         // A section's pages share its name (the menu's App config `name`, else UNA's section title: "People" on
         // every People tab, as UNA's cover); other pages take the title UNA's cover shows (`cover_title`), else
         // their name (older UNA).
-        let nextTitle = menuSettings.name || pageData?.cover_title || pageData?.name;
+        let nextTitle = menuSettings.name || titlePage?.cover_title || titlePage?.name;
         // A section that opens on its own menu (Settings): below desktop that list replaces the tab row,
         // so each page is named by its item ("Email"); the section's own page, the list, keeps the section name.
         if (!isDesktop && isMenuSectionList(pageData?.menu) && pageData?.uri !== menuSettings.hub) {
@@ -328,7 +331,7 @@ export function usePageHeaderBase(pageData) {
         }
 
         return (nextTitle || '').replace('__notification__', '');
-    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, pageData?.cover_title, pageData?.menu, pageData?.name, pageData?.uri]);
+    }, [header.title, isDesktop, menuSettings.hub, menuSettings.name, titlePage?.cover_title, titlePage?.name, pageData?.menu, pageData?.uri]);
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;
