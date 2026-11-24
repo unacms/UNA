@@ -1185,6 +1185,10 @@
        with the group labels and the search icon 16px in, while a row's highlight (the popup menus' hover colour, 12px round)
        reaches 8px past them. Rows are flat (the modules' live search units without their card), a 40px picture, the title and
        one muted line; the row chosen with the arrow keys takes the highlight and "Open ↵" at its end. */
+    /* an icon-only chip ("+ Filter" in the window) has no caption: its empty label takes no room */
+    .bx-search-window-chip > span:empty {
+        @apply hidden;
+    }
     .bx-search-window-items {
         @apply gap-0;
     }

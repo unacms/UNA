@@ -210,7 +210,8 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                     scope={scope}
                     strings={strings}
                     onChange={change}
-                    trailing={hasQuery ? (
+                    // the sort: always in the window; in a block once there is something to sort
+                    trailing={hasQuery || mode === 'modal' ? (
                                         <DropdownMenu
                                             items={[
                                                 { id: 'best', title: strings.sort_best, selected: query.sort !== 'new' },

@@ -46,6 +46,11 @@ function timezone(): string {
     }
 }
 
+/** The name a pill goes by in the added order (the query key it sets). */
+function chipKey(c: SearchChip): string {
+    return c.type === 'scope' ? (c.name === 'context' ? 'context' : 'section') : c.name;
+}
+
 /** A chip with a value: one button group in the accent look, its value and a remove button. */
 function SetChip({ caption, icon, removeLabel, onRemove }: { caption: string; icon?: string; removeLabel: string; onRemove: () => void }) {
     return (
@@ -68,18 +73,22 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
     const { currentUser } = useCurrentUser();
     const [findPerson, setFindPerson] = useState(false);
     const rowRef = useRef<any>(null);
+    // the pills' names in the order the member added them: the row shows them so (the scope it opened with first)
+    const [order, setOrder] = useState<string[]>([]);
+    const added = (name: string) => setOrder((o) => [...o.filter((n) => n !== name), name]);
 
     // after a chip is removed or the name field closes, the keyboard goes on from "+ Filter" (web)
     const focusFilter = () => {
         if (Platform.OS !== 'web') return;
         setTimeout(() => {
             const buttons = Array.from(rowRef.current?.querySelectorAll?.('[aria-haspopup]') ?? []) as HTMLElement[];
-            buttons.find((el) => (el.textContent ?? '').trim() === strings.filter)?.focus();
+            buttons.find((el) => el.getAttribute('aria-label') === strings.filter || (el.textContent ?? '').trim() === strings.filter)?.focus();
         }, 50);
     };
 
     const change = (next: SearchQuery) => onChange(next);
     const remove = (c: SearchChip) => () => {
+        setOrder((o) => o.filter((n) => n !== chipKey(c)));
         change(withoutChip(query, c));
         focusFilter();
     };
@@ -136,15 +145,27 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
             timezone: timezone(),
             strings,
         });
-        if (result.find) setFindPerson(true);
-        else change(result.query);
+        if (result.find) {
+            setFindPerson(true);
+            return;
+        }
+        const [kind, name = ''] = id.split(':');
+        const key = kind === 'p' ? 'author' : kind === 'd' ? (scope.chips.find((c) => c.type === 'date_range')?.name ?? 'date') : kind === 's' ? 'section' : name;
+        added(key);
+        change(result.query);
     };
 
-    const setChips = scope.chips.filter((c) => isChipSet(c, query)).map(chip);
+    // the scope it opened with first (in UNA's order), then the pills in the order they were added
+    const rank = (c: SearchChip) => order.indexOf(chipKey(c));
+    const setChips = scope.chips
+        .filter((c) => isChipSet(c, query))
+        .map((c, i) => ({ c, i }))
+        .sort((a, b) => rank(a.c) - rank(b.c) || a.i - b.i)
+        .map(({ c }) => chip(c));
     const picker = findPerson ? (
         <PersonPicker
             strings={strings}
-            onPick={(id) => { setFindPerson(false); change(withSearchValue(withSearchValue(query, 'author', id), 'tab', null)); focusFilter(); }}
+            onPick={(id) => { setFindPerson(false); added('author'); change(withSearchValue(withSearchValue(query, 'author', id), 'tab', null)); focusFilter(); }}
             onCancel={() => { setFindPerson(false); focusFilter(); }}
         />
     ) : null;
@@ -160,7 +181,8 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
                     interactive
                 />
             ) : (
-                <NeoButton label={strings.filter} image="ListFilterPlus" controlSize="small" interactive />
+                // in the window: icon-only, named and titled "Filter"
+                <NeoButton image="ListFilterPlus" controlSize="small" borderShape="circle" accessibilityLabel={strings.filter} tooltip={strings.filter} interactive />
             )}
         </DropdownMenu>
     ) : null;
@@ -175,10 +197,11 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
                     {filterMenu(true)}
                 </Row>
                 {second && (
+                    // the sort first, then the pills, as the window's row
                     <Row className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
+                        {trailing}
                         {setChips}
                         {picker}
-                        {!!trailing && <View className="ms-auto">{trailing}</View>}
                     </Row>
                 )}
             </View>
@@ -188,11 +211,12 @@ export default function SearchChips({ query, scope, strings, onChange, trailing,
     return (
         // above the results: the name field's suggestions open over them
         <View className={'relative z-10 pt-3 ' + inset}>
+            {/* one row, left to right: the sort, "+ Filter" (icon-only), then the pills in the order added; it wraps */}
             <Row ref={rowRef} className="flex-wrap items-center gap-2" role="group" aria-label={strings.filters}>
+                {trailing}
+                {filterMenu(false)}
                 {setChips}
                 {picker}
-                {filterMenu(false)}
-                {!!trailing && <View className="ms-auto">{trailing}</View>}
             </Row>
         </View>
     );

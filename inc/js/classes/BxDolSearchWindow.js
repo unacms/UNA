@@ -27,10 +27,13 @@ function BxDolSearchWindow(oRoot)
 
     this._iTimer = 0;
     this._iSeq = 0;
+    // the pills' names in the order the member added them (the row shows them so)
+    this._aOrder = [];
     this._oRequest = null;
     this._iMinLen = 2;
 
     this._bind();
+    this._orderPills();
     this._placeFilter();
     this._toggleExplore();
 }
@@ -232,6 +235,7 @@ BxDolSearchWindow.prototype._bind = function()
 
     oRoot.on('click', '.bx-search-window-chip-remove', function() {
         var sName = $(this).attr('data-remove');
+        $this._aOrder = $.grep($this._aOrder, function(s) { return s != sName; });
         if(sName == 'date') {
             delete $this._oQuery.date_from;
             delete $this._oQuery.date_to;
@@ -269,6 +273,7 @@ BxDolSearchWindow.prototype._bind = function()
                 $this._oQuery.section = sValue;
             else
                 $this._oQuery[sValue] = 1;
+            $this._added(sName == 'section' ? 'section' : sValue);
             delete $this._oQuery.tab;
             $this._closePanels(false);
             $this._bFocusFilter = true;
@@ -283,6 +288,7 @@ BxDolSearchWindow.prototype._bind = function()
 
     oRoot.on('click', '.bx-search-window-set', function() {
         $this._oQuery[$(this).attr('data-name')] = $(this).attr('data-value');
+        $this._added($(this).attr('data-name'));
         delete $this._oQuery.tab;
         $this._closePanels(false);
         $this._bFocusFilter = true;
@@ -304,6 +310,7 @@ BxDolSearchWindow.prototype._bind = function()
         try {
             $this._oQuery.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         } catch (e) {}
+        $this._added('date');
         delete $this._oQuery.tab;
         $this._closePanels(false);
         $this._bFocusFilter = true;
@@ -334,6 +341,7 @@ BxDolSearchWindow.prototype._bind = function()
             $this._oQuery.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         } catch (e) {}
 
+        $this._added('date');
         delete $this._oQuery.tab;
         $this._closePanels(false);
         $this._bFocusFilter = true;
@@ -349,6 +357,7 @@ BxDolSearchWindow.prototype._bind = function()
         else
             delete oFilters[sName];
         $this._setFilters(oFilters);
+        $this._added(sName);
         delete $this._oQuery.tab;
         $this._closePanels(false);
         $this._bFocusFilter = true;
@@ -541,6 +550,7 @@ BxDolSearchWindow.prototype._run = function(bAi)
         }
 
         $this._oRoot.find('.bx-search-window-chips-wrap').html(oData.chips);
+        $this._orderPills();
         $this._placeFilter();
         if($this._bFocusFilter) {
             $this._bFocusFilter = false;
@@ -559,6 +569,35 @@ BxDolSearchWindow.prototype._run = function(bAi)
 };
 
 /**
+ * A pill was added (`sName` as its remove button names it): it goes to the end of the row.
+ */
+BxDolSearchWindow.prototype._added = function(sName)
+{
+    this._aOrder = $.grep(this._aOrder, function(s) { return s != sName; });
+    this._aOrder.push(sName);
+};
+
+/**
+ * The pills after "+ Filter" in the order they were added; those the window opened with (its scope) come first, in UNA's order.
+ */
+BxDolSearchWindow.prototype._orderPills = function()
+{
+    var aOrder = this._aOrder, oRow = this._oRoot.find('.bx-search-window-chips');
+    var aPills = oRow.children('.bx-search-window-chip-wrap').filter(function() {
+        return $(this).find('.bx-search-window-chip-remove').length > 0;
+    }).get();
+    var fIndex = function(el) {
+        return aOrder.indexOf($(el).find('.bx-search-window-chip-remove').attr('data-remove'));
+    };
+    aPills.sort(function(a, b) {
+        return fIndex(a) - fIndex(b);
+    });
+    $.each(aPills, function(i, el) {
+        oRow.append(el);
+    });
+};
+
+/**
  * In a block (Explore, the results page) "+ Filter" sits beside the field, as the feed's composer trigger's buttons: 44px,
  * icon-only below lg (its label stays its name). The chips come anew with each answer, so it is moved there each time.
  */
@@ -572,8 +611,9 @@ BxDolSearchWindow.prototype._placeFilter = function()
     if(!oFilter.length)
         return;
 
-    oFilter.removeClass('bx-btn-small').addClass('bx-btn-icon-mobile').attr('aria-label', $.trim(oFilter.text()));
-    oFilter.children('span').addClass('bx-btn-icon-mobile-label');
+    // labelled from lg (its name in the label), icon-only below
+    oFilter.removeClass('bx-btn-small bx-btn-icon').addClass('bx-btn-icon-mobile').removeAttr('title');
+    oFilter.children('span').addClass('bx-btn-icon-mobile-label').text(oFilter.attr('aria-label') || '');
     oSlot.append(oFilter.parent('.bx-search-window-chip-wrap').length ? oFilter.parent() : oFilter);
 };
 

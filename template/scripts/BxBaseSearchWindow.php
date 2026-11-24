@@ -172,14 +172,18 @@ class BxBaseSearchWindow extends BxDol
                     ];
                 }, $aAdd),
             ]);
-            $aChips[] = $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
+            // icon-only, named and titled "Filter" (a block shows its label beside the field: BxDolSearchWindow._placeFilter)
+            $sFilter = bx_html_attribute(_t('_sys_search_chip_filter'));
+            $sFilterButton = $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
                 'group' => '',
-                'class' => 'bx-search-window-chip-add',
-                'attrs' => 'aria-expanded="false" aria-controls="' . $sPanelId . '" data-panel="' . $sPanelId . '"',
+                'class' => 'bx-search-window-chip-add bx-btn-icon',
+                'attrs' => 'aria-expanded="false" aria-controls="' . $sPanelId . '" data-panel="' . $sPanelId . '" aria-label="' . $sFilter . '" title="' . $sFilter . '"',
                 'icon' => $this->_getIcon('list-filter-plus', 'size-4'),
-                'caption' => _t('_sys_search_chip_filter'),
+                'caption' => '',
                 'bx_if:remove' => ['condition' => false, 'content' => []],
             ]);
+            // the row's order: the sort, "+ Filter", then the pills
+            array_unshift($aChips, $sFilterButton);
         }
 
         // hidden panels of the filters not picked, so "+ Filter" can open them
@@ -187,8 +191,10 @@ class BxBaseSearchWindow extends BxDol
             if($aField['type'] != 'toggle')
                 $aPanels[] = $this->_getPanel($aField);
 
-        // the sort, at the row's end, once there is something to sort
-        $bSort = $this->_oSearch->hasQuery($aQuery);
+        // the sort first: always in the window; in a block (its field and "+ Filter" are a row of their own) once there is
+        // something to sort or a pill to show
+        $bBlock = in_array($this->_sMode, ['page', 'explore']);
+        $bSort = !$bBlock || $this->_oSearch->hasQuery($aQuery);
 
         return $this->_oTemplate->parseHtmlByName('search_window_chips.html', [
             'label' => bx_html_attribute(_t('_sys_search_window_filters')),
