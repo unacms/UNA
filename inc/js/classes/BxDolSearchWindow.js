@@ -166,8 +166,13 @@ BxDolSearchWindow.prototype._bind = function()
     oRoot.on('input', '.bx-search-window-input', function() {
         // a reply to the words before these must not bring them back
         $this._iSeq++;
-        if($this._oRequest)
+        if($this._oRequest) {
             $this._oRequest.abort();
+            $this._oRequest = null;
+        }
+        // no request in flight until the next one starts
+        $this._oRoot.find('.bx-search-window-busy').addClass('hidden');
+        $this._oRoot.find('.bx-search-window-results').attr('aria-busy', null);
 
         var sValue = $.trim($(this).val());
         if(sValue)
