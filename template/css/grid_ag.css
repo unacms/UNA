@@ -87,7 +87,7 @@
     --bx-grid-ag-bg: transparent; /* rows sit on the block's surface, as the classic grid's (see "Rows" below) */
     --bx-grid-ag-fg: #18181b;
     --bx-grid-ag-muted: #71717a;
-    --bx-grid-ag-header: transparent;
+    --bx-grid-ag-header: #f4f4f5; /* the column titles on a fill of their own, gray-100; solid, so rows scroll under it */
     --bx-grid-ag-border: #f4f4f5;
     --bx-grid-ag-accent: rgb(var(--bx-accent-600));
     --bx-grid-ag-selected: rgb(var(--bx-accent-50));
@@ -127,13 +127,18 @@
 }
 
 .bx-grid-ag.ag-theme-quartz .ag-header {
-    border-bottom: 1px solid #e4e4e7;
+    border-bottom: 0;
+    box-shadow: inset 0 -1px 0 #e4e4e7; /* the line under the titles takes none of the header's height, so they sit in its middle */
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    line-height: 18px; /* room for the letters' tails: the text clips what overflows it */
 }
 
 .bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
     font-size: 13px;
-    font-weight: 500;
-    color: #71717a;
+    font-weight: 600;
+    color: #3f3f46;
 }
 
 .bx-grid-ag.ag-theme-quartz .ag-header-cell,
@@ -476,7 +481,7 @@ html.dark .bx-grid-ag.ag-theme-quartz,
     --bx-grid-ag-bg: transparent;
     --bx-grid-ag-fg: #e4e4e7;
     --bx-grid-ag-muted: #a1a1aa;
-    --bx-grid-ag-header: transparent;
+    --bx-grid-ag-header: #27272a; /* gray-800 */
     --bx-grid-ag-border: #3f3f46;
     --bx-grid-ag-accent: rgb(var(--bx-accent-400));
     --bx-grid-ag-selected: rgb(var(--bx-accent-900) / 0.5);
@@ -488,12 +493,12 @@ html.dark .bx-grid-ag.ag-theme-quartz,
 
 html.dark .bx-grid-ag.ag-theme-quartz .ag-header,
 .dark .bx-grid-ag.ag-theme-quartz .ag-header {
-    border-bottom-color: #3f3f46;
+    box-shadow: inset 0 -1px 0 #3f3f46;
 }
 
 html.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text,
 .dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
-    color: #a1a1aa;
+    color: #d4d4d8;
 }
 
 html.dark .bx-grid-ag .bx-grid-ag-cell,
@@ -558,6 +563,69 @@ html.dark .bx-grid-ag .bx-grid-ag-item,
     border-bottom: 0;
 }
 
+/* The list of a header select: at least 16rem wide, however narrow the select is, and an option stays on one line. */
+.select2-container.bx-grid-ag-filter-dropdown .select2-dropdown {
+    min-width: 16rem;
+}
+
+.select2-container.bx-grid-ag-filter-dropdown .select2-results__option {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Until the first rows are in and the columns have their widths: the grid keeps its place, nothing of it shows. */
+.bx-grid-ag.bx-grid-ag-pending {
+    visibility: hidden;
+}
+
+/* An opened row's item that opens onto items of its own (a form's display onto its fields): the arrow's column, and
+   those items under the item, set in a step. Its height is counted in BxDolGridAg::_rowHeight (36px for the captions,
+   44px a line): no padding or border here. */
+.bx-grid-ag .bx-grid-ag-item-cell.bx-grid-ag-item-chevron {
+    display: flex;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+}
+
+.bx-grid-ag .bx-grid-ag-items2 {
+    margin: 0;
+    padding: 0 0 0 32px;
+    border: 0;
+    background: rgb(0 0 0 / 0.03);
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-items2,
+.dark .bx-grid-ag .bx-grid-ag-items2 {
+    background: rgb(255 255 255 / 0.03);
+}
+
+/* Rows / Cards: two icon buttons side by side; the pressed one is the view shown. */
+.bx-grid-ag-wrap .bx-std-block-caption > .bx-grid-header-controls-independent {
+    /* on the title row, at its right end at any width */
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.bx-grid-ag-view {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag-view .bx-grid-ag-view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
 /* Bulk actions: the "Actions" button at the right end of the header, after the grid's own
    buttons. Its menu is the site's popup menu, built on the server. */
 /* The grid's own buttons and Actions keep together at the right end, and move to the next line
@@ -615,45 +683,19 @@ html.dark .bx-grid-ag .bx-grid-ag-item,
    and no column header. The header above stacks: the filters on one line, then the count, the
    grid's buttons (icons only) and Actions. */
 .bx-grid-ag.bx-grid-ag-phone.ag-theme-quartz {
-    --bx-grid-ag-bg: #fafafc;
     --ag-row-border-width: 0;
 }
 
-.bx-grid-ag.bx-grid-ag-phone .ag-full-width-row,
-.bx-grid-ag.bx-grid-ag-phone .ag-full-width-row.ag-row-selected {
-    background: transparent;
-}
-
-.bx-grid-ag.bx-grid-ag-phone .ag-full-width-row::before {
-    display: none;
-}
-
 .bx-grid-ag-card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     box-sizing: border-box;
-    height: calc(100% - 8px);
-    margin: 4px 8px;
-    padding: 10px 12px;
+    height: 100%;
+    padding: 10px 16px;
     overflow: hidden;
-    border: 1px solid #e4e4e7;
-    border-radius: var(--bx-radius-xl);
-    background: #fff;
-    color: #18181b;
     font-size: 14px;
-}
-
-.bx-grid-ag .ag-row-selected .bx-grid-ag-card {
-    border-color: rgb(var(--bx-accent-200));
-    background: rgb(var(--bx-accent-50));
-}
-
-.bx-grid-ag-card-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 36px;
 }
 
 .bx-grid-ag-card-check {
@@ -661,74 +703,95 @@ html.dark .bx-grid-ag .bx-grid-ag-item,
     margin: 0;
 }
 
-.bx-grid-ag-card-title {
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    font-weight: 500;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+/* The row's buttons: in the card's top right corner, outside the lines, which keep clear of them. */
+.bx-grid-ag-card-actions {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.bx-grid-ag-card-control,
-.bx-grid-ag-card-actions {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
+.bx-grid-ag-card-has-actions .bx-grid-ag-card-fields {
+    padding-right: 3rem;
 }
 
 .bx-grid-ag-card-actions .bx-btn {
     margin: 0;
 }
 
+/* A line for each column: its title, then its value, on one line as tall as a switch (28px). */
 .bx-grid-ag-card-fields {
     display: flex;
     flex-direction: column;
-    font-size: 13px;
-    line-height: 22px;
+    margin: 0;
 }
 
 .bx-grid-ag-card-field {
-    display: flex;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: minmax(6rem, 35%) minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    height: 28px;
     min-width: 0;
-    white-space: nowrap;
+}
+
+/* A count is a plain link, in rows and in cards: no capsule, no ring (the button's ring is its ::after). */
+.bx-grid-ag .bx-grid-count.bx-btn {
+    display: inline;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: rgb(var(--bx-accent-600));
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    vertical-align: baseline;
+}
+
+.bx-grid-ag .bx-grid-count.bx-btn::after,
+.bx-grid-ag .bx-grid-count.bx-btn::before {
+    display: none;
+}
+
+.bx-grid-ag .bx-grid-count.bx-btn:hover {
+    text-decoration: underline;
 }
 
 .bx-grid-ag-card-caption {
-    flex: 0 0 7.5rem;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
     color: #71717a;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-card-caption > span {
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .bx-grid-ag-card-value {
+    display: flex;
+    align-items: center;
     min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-card-value .bx-grid-ag-text,
+.bx-grid-ag-card-value > a {
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.bx-grid-ag-card-value .bx-grid-ag-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-html.dark .bx-grid-ag.bx-grid-ag-phone.ag-theme-quartz,
-.dark .bx-grid-ag.bx-grid-ag-phone.ag-theme-quartz {
-    --bx-grid-ag-bg: #18181b;
-}
-
-html.dark .bx-grid-ag-card,
-.dark .bx-grid-ag-card {
-    border-color: #3f3f46;
-    background: #27272a;
-    color: #fafafc;
-}
-
-html.dark .bx-grid-ag .ag-row-selected .bx-grid-ag-card,
-.dark .bx-grid-ag .ag-row-selected .bx-grid-ag-card {
-    border-color: rgb(var(--bx-accent-800));
-    background: rgb(var(--bx-accent-900) / 0.5);
 }
 
 html.dark .bx-grid-ag-card-caption,
@@ -737,8 +800,8 @@ html.dark .bx-grid-ag-card-caption,
 }
 
 @media (max-width: 767px) {
-    /* The search on a line of its own, the selects side by side under it, then the count on the
-       left and the grid's buttons on the right of one line. */
+    /* The filters (or breadcrumbs), then the search on a line of its own, as they come; then the count on the left
+       and the grid's buttons on the right of one line. */
     .bx-grid-ag-wrap .bx-grid-header-cnt {
         display: flex;
         flex-direction: row;
@@ -768,7 +831,6 @@ html.dark .bx-grid-ag-card-caption,
     .bx-grid-ag-wrap .bx-grid-header-controls-filter > :has(input[type="text"]),
     .bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-form-element-wrapper:has(input[type="text"]) {
         flex: 1 1 100%;
-        order: -1;
     }
 
     .bx-grid-ag-wrap .bx-grid-header-controls-filter select,
@@ -803,9 +865,13 @@ html.dark .bx-grid-ag-card-caption,
 }
 
 
-.bx-grid-ag-phone-sort {
-    display: block;
+/* The sort select of the cards view: among the header's filters, as wide as they are; above the cards when the grid has
+   no filters. */
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-grid-ag-phone-sort {
+    margin: 0;
+}
+
+.bx-grid-ag-wrap > .bx-grid-ag-phone-sort {
     box-sizing: border-box;
-    width: calc(100% - 24px);
     margin: 0 12px 8px;
 }

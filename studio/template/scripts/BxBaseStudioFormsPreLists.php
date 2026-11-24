@@ -10,6 +10,7 @@
 
 class BxBaseStudioFormsPreLists extends BxDolStudioFormsPreLists
 {
+    protected $_bFilterModuleInUrl = true;
     protected $_sFilter;
 
     protected $sUrlViewValues;
@@ -276,20 +277,73 @@ class BxBaseStudioFormsPreLists extends BxDolStudioFormsPreLists
         return 'oBxDolStudioFormsPreLists';
     }
 
+    protected $_sAgValuesObject = 'sys_studio_forms_pre_values'; ///< the grid whose rows an opened list row lists
+    protected $_bAgExpandsValues = null; ///< whether list rows open onto their items, once asked (_agExpandsValues)
+
     function getCode($isDisplayHeader = true)
     {
         return $this->_oTemplate->parseHtmlByName('forms_lists.html', array(
             'content' => parent::getCode($isDisplayHeader),
             'js_object' => $this->getJsObject(),
             'grid_object' => $this->_sObject,
-            'params_divider' => $this->sParamsDivider
+            'params_divider' => $this->sParamsDivider,
+            // The opened rows' actions run the script of the items' own page.
+            'bx_if:expand_values' => array(
+                'condition' => $this->_agExpandsValues(),
+                'content' => array(
+                    'values_grid_object' => $this->_sAgValuesObject,
+                    'params_divider' => $this->sParamsDivider,
+                ),
+            ),
         ));
+    }
+
+    /**
+     * A list row opens onto its items only while both grids are drawn by AG Grid: the opened rows are drawn with the
+     * columns of the items' grid.
+     */
+    protected function _agExpandsValues()
+    {
+        if($this->_bAgExpandsValues === null)
+            $this->_bAgExpandsValues = $this->_isAgEngine() && BxDolGridQuery::getGridEngine($this->_sAgValuesObject) === 'ag';
+
+        return $this->_bAgExpandsValues;
+    }
+
+    protected function _agRowMeta($aRow)
+    {
+        return [
+            'module' => isset($aRow['module']) ? (string)$aRow['module'] : '',
+            'list' => isset($aRow['key']) ? (string)$aRow['key'] : '',
+        ];
+    }
+
+    protected function _agExtraConfig()
+    {
+        if(!$this->_agExpandsValues())
+            return [];
+
+        // The items' own columns, but for their checkboxes: the bulk actions stay on the items' own page.
+        $oValues = BxDolGrid::getObjectInstance($this->_sAgValuesObject, $this->_oTemplate);
+        $aColumns = $oValues && method_exists($oValues, 'getAgColumns') ? $oValues->getAgColumns() : [];
+
+        return ['expand' => [
+            'object' => $this->_sAgValuesObject,
+            'field_id' => '_id', // _agRow
+            'params' => ['module' => 'module', 'list' => 'list'],
+            'require' => 'list',
+            'columns' => array_values(array_filter($aColumns, function($aColumn) {
+                return ($aColumn['kind'] ?? '') !== 'checkbox';
+            })),
+        ]];
     }
 
     protected function _addJsCss()
     {
         parent::_addJsCss();
         $this->_oTemplate->addJs(array('jquery.form.min.js', 'forms_lists.js'));
+        if($this->_agExpandsValues())
+            $this->_oTemplate->addJs('forms_values.js');
 
         $oForm = new BxTemplStudioFormView(array());
         $oForm->addCssJs();
@@ -332,30 +386,24 @@ class BxBaseStudioFormsPreLists extends BxDolStudioFormsPreLists
     {
         $sContent = parent::_getFilterControls();
 
-        $sJsObject = $this->getJsObject();
-        $oForm = new BxTemplStudioFormView(array());
+        $sModule = $this->_getFilterModule();
 
-        $aInputModules = array(
-            'type' => 'select',
-            'name' => 'module',
-            'attrs' => array(
-                'id' => 'bx-grid-module-' . $this->_sObject,
-                'aria-label' => _t('_adm_grid_lbl_module'),
-                'onChange' => 'javascript:$(this).off(\'keyup focusout\'); ' . $sJsObject . '.onChangeFilter()',
-        		'onBlur' => 'javascript:' . $sJsObject . '.onChangeFilter()',
-            ),
-            'value' => '',
-            'values' => $this->getModules()
-        );
+        // Data Lists > module > list: a list leads to its items.
+        $aNext = [];
+        if($sModule !== '') {
+            $aLists = $aCounter = [];
+            $this->oDb->getLists(['type' => 'by_module', 'value' => $sModule], $aLists, false);
+            $this->oDb->getValues(['type' => 'counter_by_lists'], $aCounter, false);
 
-        $aCounter = array();
-        $this->oDb->getLists(array('type' => 'counter_by_modules'), $aCounter, false);
-        foreach($aInputModules['values'] as $sKey => $sValue)
-                $aInputModules['values'][$sKey] = $aInputModules['values'][$sKey] . " (" . (isset($aCounter[$sKey]) ? $aCounter[$sKey] : "0") . ")";
+            $aValues = [];
+            foreach($aLists as $aList)
+                $aValues[$aList['key']] = _t($aList['title']) . ' (' . ($aCounter[$aList['key']] ?? 0) . ')';
+            asort($aValues);
 
-        $aInputModules['values'] = array_merge(array('' => _t('_adm_form_txt_all_modules')), $aInputModules['values']);
+            $aNext[] = ['label' => _t('_adm_form_txt_crumb_list'), 'control' => $this->_getCrumbGoSelect('list', '', array_merge(['' => _t('_adm_form_txt_select_list')], $aValues), BX_DOL_URL_STUDIO . 'builder_forms.php?page=pre_values&module=' . rawurlencode($sModule) . '&list=')];
+        }
 
-        return  $oForm->genRow($aInputModules) . $sContent;
+        return $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_forms.php?page=pre_lists', $sModule, $this->_getCrumbModules('getLists', '_adm_form_txt_all_modules'), $aNext) . $sContent;
     }
 
     protected function _canDelete($aList)

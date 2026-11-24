@@ -43,26 +43,120 @@ function BxDolGridAg(oCfg, oBx) {
     this._oExpand = this._oCfg.expand || null;
     this._oExpanded = {};
     this._oChildren = {};
-    this._oItemsBx = null;
-    this._iRowHeight = 52;
+    // A second level: an opened row's item that opens onto items of its own (a form's display onto its fields),
+    // keyed by the row's id and the item's id (_key2).
+    this._oExpanded2 = {};
+    this._oChildren2 = {};
+    this._oChildBx = {};
     this._iItemHeight = 44;
-    // From tablets up no column is pinned and the cells have more room (bx-grid-ag-cards). Rows are plain list
-    // rows at every width, with no gap between them.
-    this._bCards = !!globalThis.matchMedia?.('(min-width: 768px)').matches;
     this._iRowGap = 0;
-    // Phones: every row is a card that shows the row's columns as lines, with no column header.
-    // A grid whose rows open keeps the table there.
-    this._bPhone = !this._bCards && !this._oCfg.expand;
-    if (this._bPhone)
-        this._iRowHeight = this._cardHeight();
     this._bClient = !!this._oExpand;
+    // Rows or cards: the viewer's choice (_sView, kept in the browser, one for every grid), else rows from tablets up
+    // and cards on phones, as the window's width changes.
+    this._sViewKey = 'bx-grid-ag-view';
+    this._sView = this._readView();
+    this._oWide = globalThis.matchMedia?.('(min-width: 768px)') || null;
+    this._setLayout();
 
     this._adoptBx();
+    this._searchField();
     this._mount();
     this._select2Filters();
+    this._bindFilterLoading();
     this._bindBulk();
-    this._phoneSort();
+    this._cardSort();
+    this._bindView();
 }
+
+/**
+ * From tablets up no column is pinned and the cells have more room (_bWide, bx-grid-ag-cards). In the cards view
+ * (_bCardView, bx-grid-ag-phone) every row is a card that shows the row's columns as lines, with no column header. A card
+ * does not open onto other rows (Navigation > Menus): its name leads to them.
+ */
+BxDolGridAg.prototype._setLayout = function () {
+    this._bWide = !!this._oWide?.matches;
+    this._bCardView = this._sView ? this._sView === 'cards' : !this._bWide;
+    this._iRowHeight = this._bCardView ? this._cardHeight() : 52;
+};
+
+BxDolGridAg.prototype._readView = function () {
+    try {
+        const s = globalThis.localStorage?.getItem(this._sViewKey) || '';
+        return s === 'rows' || s === 'cards' ? s : '';
+    } catch (e) {
+        return '';
+    }
+};
+
+BxDolGridAg.prototype._saveView = function () {
+    try {
+        if (this._sView)
+            globalThis.localStorage?.setItem(this._sViewKey, this._sView);
+        else
+            globalThis.localStorage?.removeItem(this._sViewKey);
+    } catch (e) {
+        // A browser that keeps nothing keeps the choice until the page is left.
+    }
+};
+
+/**
+ * The Rows / Cards buttons in the header. A choice that is what this width shows anyway is no choice: the grid
+ * follows the width again. Otherwise it stays, at any width, until the other button is pressed.
+ */
+BxDolGridAg.prototype._bindView = function () {
+    const aBtns = Array.from(document.querySelectorAll('#' + this._sWrap + ' .bx-grid-ag-view-btn'));
+    for (const eBtn of aBtns) {
+        eBtn.addEventListener('click', () => {
+            const sWant = eBtn.getAttribute('data-bx-view');
+            this._sView = sWant === (this._oWide?.matches ? 'rows' : 'cards') ? '' : sWant;
+            this._saveView();
+            this._relayout();
+            // Every other grid on the page follows: the choice is one for all of them.
+            for (const oOther of Object.values(globalThis.glGridsAg || {})) {
+                if (oOther !== this && oOther?._readView) {
+                    oOther._sView = this._sView;
+                    oOther._relayout();
+                }
+            }
+        });
+    }
+
+    this._oWide?.addEventListener?.('change', () => this._relayout());
+    this._syncView();
+};
+
+BxDolGridAg.prototype._syncView = function () {
+    for (const eBtn of document.querySelectorAll('#' + this._sWrap + ' .bx-grid-ag-view-btn')) {
+        const bOn = eBtn.getAttribute('data-bx-view') === (this._bCardView ? 'cards' : 'rows');
+        eBtn.setAttribute('aria-pressed', bOn ? 'true' : 'false');
+        eBtn.classList.toggle('bx-btn-primary', bOn);
+    }
+};
+
+/**
+ * Draws the grid again when the rows / cards choice or the width asks for another layout. The rows are asked for
+ * again; the filter and the sort stay.
+ */
+BxDolGridAg.prototype._relayout = function () {
+    const bWasCards = this._bWide;
+    const bWasPhone = this._bCardView;
+    this._setLayout();
+    this._syncView();
+    if (bWasCards === this._bWide && bWasPhone === this._bCardView)
+        return;
+
+    const eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
+    if (!eGrid)
+        return;
+
+    this._oApi?.destroy?.();
+    this._oApi = null;
+    eGrid.classList.remove('bx-grid-ag-cards', 'bx-grid-ag-phone');
+    eGrid.style.height = '';
+    eGrid.textContent = '';
+    this._mount();
+    this._cardSort();
+};
 
 BxDolGridAg.prototype._adoptBx = function () {
     const oBx = this._oBx;
@@ -103,6 +197,24 @@ BxDolGridAg.prototype._adoptBx = function () {
 };
 
 /**
+ * The classic script puts the whole filter the grid opens with into the search field. A filter may carry more than
+ * the search phrase (a Studio grid's module): the field shows the phrase the server names ('search' of the config),
+ * or its "Search..." text when there is none, which the classic script puts back when the field is left empty.
+ */
+BxDolGridAg.prototype._searchField = function () {
+    const oBx = this._oBx;
+    if (!oBx || this._oCfg.search === undefined || this._oCfg.search === oBx._sFilter)
+        return;
+
+    const sText = this._oCfg.bx?.text_search_input || '';
+    oBx._sSearchInputText = sText;
+
+    const eSearch = document.getElementById('bx-grid-search-' + this._sObject);
+    if (eSearch)
+        eSearch.value = this._oCfg.search !== '' ? this._oCfg.search : sText;
+};
+
+/**
  * In Studio the header's filter selects are select2 fields, as Studio's other selects (the page
  * builder's page picker). select2 fires the select's own change, so the filter's onchange still
  * runs. On a site page they stay the form's own selects, as in the classic grid.
@@ -128,10 +240,8 @@ BxDolGridAg.prototype._mount = function () {
     if (!eGrid || typeof bxAgGrid === 'undefined' || typeof bxAgGrid.createGrid !== 'function')
         return;
 
-    if (this._bCards)
-        eGrid.classList.add('bx-grid-ag-cards');
-    if (this._bPhone)
-        eGrid.classList.add('bx-grid-ag-phone');
+    eGrid.classList.toggle('bx-grid-ag-cards', this._bWide);
+    eGrid.classList.toggle('bx-grid-ag-phone', this._bCardView);
 
     const oOptions = {
         theme: 'legacy',
@@ -179,7 +289,7 @@ BxDolGridAg.prototype._mount = function () {
     if (this._hasKind('order'))
         oOptions.onRowDragEnd = (e) => this._onRowDragEnd(e);
 
-    if (this._bPhone) {
+    if (this._bCardView) {
         oOptions.columnDefs = [{ colId: '_bx_card', headerName: '', flex: 1, sortable: false, resizable: false, suppressHeaderMenuButton: true }];
         oOptions.headerHeight = 0;
         oOptions.isFullWidthRow = () => true;
@@ -204,7 +314,7 @@ BxDolGridAg.prototype._mount = function () {
         oOptions.selectionColumnDef = {
             width: 52,
             maxWidth: 64,
-            pinned: this._bCards ? null : 'left',
+            pinned: this._bWide ? null : 'left',
             sortable: false,
             resizable: false,
             suppressHeaderMenuButton: true,
@@ -217,11 +327,38 @@ BxDolGridAg.prototype._mount = function () {
         };
     }
 
-    // Before the grid's own key handlers, which are on elements inside this one.
-    eGrid.addEventListener('keydown', (ev) => this._onTab(ev, eGrid), true);
+    // Before the grid's own key handlers, which are on elements inside this one. Once: the grid may be drawn again.
+    if (!this._bKeysBound) {
+        this._bKeysBound = true;
+        eGrid.addEventListener('keydown', (ev) => this._onTab(ev, eGrid), true);
+    }
+
+    // Nothing shows until the first rows are in and the columns have their widths (_reveal): no empty rows, then
+    // columns that move, then the rows. The loading indicator stands over the grid meanwhile.
+    eGrid.classList.add('bx-grid-ag-pending');
+    this._loading(true);
+    clearTimeout(this._iRevealLate);
+    this._iRevealLate = setTimeout(() => this._reveal(), 8000);
 
     this._oApi = bxAgGrid.createGrid(eGrid, oOptions);
     this._watchHug();
+};
+
+/**
+ * Shows the grid once its first rows are drawn and the columns that fit their content have their widths (_fitHug
+ * waits 30ms after the rows come).
+ */
+BxDolGridAg.prototype._reveal = function () {
+    const eGrid = document.getElementById('bx-grid-ag-' + this._sObject);
+    if (!eGrid?.classList.contains('bx-grid-ag-pending'))
+        return;
+
+    clearTimeout(this._iRevealSoon);
+    this._iRevealSoon = setTimeout(() => {
+        clearTimeout(this._iRevealLate);
+        eGrid.classList.remove('bx-grid-ag-pending');
+        this._loading(false);
+    }, 80);
 };
 
 /**
@@ -296,11 +433,18 @@ BxDolGridAg.prototype._tabStops = function (aIn) {
 };
 
 /**
- * Phones have no column header to sort by, so a select above the cards lists the sortable columns,
+ * Cards have no column header to sort by, so a select among the header's filters lists the sortable columns,
  * each way. It is left out when no column sorts.
  */
-BxDolGridAg.prototype._phoneSort = function () {
-    if (!this._bPhone)
+BxDolGridAg.prototype._cardSort = function () {
+    if (this._eSort) {
+        const $s = typeof jQuery !== 'undefined' ? jQuery(this._eSort).find('select') : null;
+        if ($s?.hasClass('select2-hidden-accessible'))
+            $s.select2('destroy');
+        this._eSort.remove();
+    }
+    this._eSort = null;
+    if (!this._bCardView)
         return;
 
     const aCols = (this._oCfg.columns || []).filter((o) => Number(o.sortable) === 1 && o.title);
@@ -308,9 +452,14 @@ BxDolGridAg.prototype._phoneSort = function () {
     if (!aCols.length || !eHost)
         return;
 
+    // A select of the grid's own filters' kind, among them in the header (above the cards when the grid has none).
+    const eWrap = document.createElement('div');
+    eWrap.className = 'bx-form-input-wrapper bx-form-input-wrapper-select bx-grid-ag-phone-sort';
     const eSel = document.createElement('select');
-    eSel.className = 'bx-grid-ag-phone-sort';
+    eSel.className = 'bx-def-font-inputs bx-form-input-select';
     eSel.setAttribute('aria-label', this._oCfg.text_sort || '');
+    eWrap.appendChild(eSel);
+
     const fOpt = (sField, sDir, sText) => {
         const e = document.createElement('option');
         e.value = sField + '|' + sDir;
@@ -325,47 +474,60 @@ BxDolGridAg.prototype._phoneSort = function () {
 
     const sField = this._oCfg.sorting_field || '';
     const sDir = String(this._oCfg.sorting_dir || '').toLowerCase() === 'desc' ? 'DESC' : 'ASC';
-    if (sField && aCols.some((o) => o.name === sField)) {
-        this._oPhoneSort = { field: sField, dir: sDir };
+    if (this._oCardSort)
+        eSel.value = this._oCardSort.field + '|' + this._oCardSort.dir;
+    else if (sField && aCols.some((o) => o.name === sField)) {
+        this._oCardSort = { field: sField, dir: sDir };
         eSel.value = sField + '|' + sDir;
     }
 
-    eSel.addEventListener('change', () => {
+    const eFilters = document.querySelector('#' + this._sWrap + ' .bx-grid-header-controls-filter');
+    if (eFilters)
+        eFilters.appendChild(eWrap);
+    else
+        eHost.parentNode.insertBefore(eWrap, eHost);
+    this._eSort = eWrap;
+
+    // select2 sends its change through jQuery, so the select is listened to through jQuery too.
+    const fChange = () => {
         const [sName, sWay] = eSel.value.split('|');
-        this._oPhoneSort = sName ? { field: sName, dir: sWay } : null;
+        this._oCardSort = sName ? { field: sName, dir: sWay } : null;
         this.refresh();
-    });
-    eHost.parentNode.insertBefore(eSel, eHost);
+    };
+    if (typeof jQuery !== 'undefined') {
+        jQuery(eSel).on('change', fChange);
+        if (eFilters && Number(this._oCfg.select2) && typeof jQuery.fn.select2 === 'function')
+            jQuery(eSel).select2({ width: 'resolve', minimumResultsForSearch: 10 });
+    } else {
+        eSel.addEventListener('change', fChange);
+    }
 };
 
 /**
- * The parts of a card, from the grid's columns: the first data column is the card's title, the
- * switches and the actions go on the title's line, every other column is a line of its own under
- * it (a narrow column that is no switch, a date for one, too).
+ * The parts of a card, from the grid's columns: every column is a line of its own, its title on the left and its value
+ * on the right (the name, the switches, a count, a date). The first line also holds the row's checkbox on the left; the row's buttons stand in the card's top right corner, outside the lines.
  */
 BxDolGridAg.prototype._cardParts = function () {
-    const o = { title: null, controls: [], actions: null, fields: [] };
+    const o = { lines: [], actions: null };
     for (const oCol of this._oCfg.columns || []) {
         if (oCol.kind === 'checkbox' || oCol.kind === 'order')
             continue;
         if (oCol.name === 'actions')
             o.actions = oCol;
-        else if (Number(oCol.controls) && /switcher/.test(oCol.name))
-            o.controls.push(oCol);
-        else if (o.title || Number(oCol.controls))
-            o.fields.push(oCol);
         else
-            o.title = oCol;
+            o.lines.push(oCol);
     }
     return o;
 };
 
 /**
- * A card's height: its title line, then a line for each of the other columns.
+ * A card's height: a line for each column (28px, as tall as a switch), and at least the row's buttons, which stand in
+ * the card's top right corner, outside the lines. The 20px are the card's padding.
  */
+BxDolGridAg.prototype._iCardLine = 28;
+
 BxDolGridAg.prototype._cardHeight = function () {
-    const iLines = this._cardParts().fields.length;
-    return 8 + 20 + 36 + (iLines ? 6 + iLines * 22 : 0);
+    return 20 + Math.max(36, Math.max(1, this._cardParts().lines.length) * this._iCardLine);
 };
 
 BxDolGridAg.prototype._hasKind = function (sKind) {
@@ -409,7 +571,7 @@ BxDolGridAg.prototype._columnFixed = function (sName, oMore) {
         field: sName,
         headerName: '',
         flex: 0,
-        pinned: this._bCards ? null : 'left',
+        pinned: this._bWide ? null : 'left',
         sortable: false,
         resizable: false,
         suppressHeaderMenuButton: true,
@@ -567,15 +729,61 @@ BxDolGridAg.prototype._fitHug = function (aIds) {
         else
             this._oHugWidths[sId] = iNow;
     }
-    if (aKeep.length)
-        oApi.setColumnWidths(aKeep);
+    if (!aKeep.length)
+        return;
+
+    oApi.setColumnWidths(aKeep);
+    // Setting a width back does not share out the room again: the text columns keep the room the narrowed ones left
+    // them, and the grid grows wider than its box. Their flex, set again, shares out what is left.
+    const aFlex = oApi.getColumns().filter((c) => c.getColDef().flex).map((c) => ({ colId: c.getColId(), flex: c.getColDef().flex }));
+    if (aFlex.length)
+        oApi.applyColumnState({ state: aFlex });
 };
 
 BxDolGridAg.prototype.refresh = function () {
+    clearTimeout(this._iLoadingSoon);
+    this._loading(true);
     if (this._bClient)
         this._loadClient();
     else
         this._oApi?.purgeInfiniteCache?.();
+};
+
+/**
+ * The site's loading indicator over the rows, as the classic grid shows it (BxDolGrid.loading), while the grid asks
+ * for its rows again: a changed filter, a reload after an action. Rows that load as the grid scrolls don't show it.
+ */
+BxDolGridAg.prototype._loading = function (bShow) {
+    if (!!this._bLoading === !!bShow || typeof bx_loading !== 'function')
+        return;
+
+    const eCont = document.getElementById('bx-grid-cont-' + this._sObject);
+    if (!eCont)
+        return;
+
+    this._bLoading = !!bShow;
+    bx_loading(jQuery(eCont), this._bLoading);
+};
+
+/**
+ * A select in the header answers at once: the page's script may wait before it asks for the rows (Studio's filters
+ * wait 500ms, for the search field's sake), and the grid would look deaf meanwhile. When no reload follows (the
+ * filter did not change), the indicator goes away by itself.
+ */
+BxDolGridAg.prototype._bindFilterLoading = function () {
+    if (typeof jQuery === 'undefined')
+        return;
+
+    jQuery('#' + this._sWrap).on('change.bxGridAgLoading', '.bx-grid-header-controls-filter select', () => {
+        this._loading(true);
+        clearTimeout(this._iLoadingSoon);
+        this._iLoadingSoon = setTimeout(() => this._loading(false), 1500);
+    });
+
+    // A select's list is as wide as the select by default; a narrow select (a breadcrumb) would wrap its options.
+    jQuery('#' + this._sWrap).on('select2:open.bxGridAg', '.bx-grid-header-controls-filter select', function () {
+        jQuery(this).data('select2')?.$dropdown?.addClass('bx-grid-ag-filter-dropdown');
+    });
 };
 
 /**
@@ -586,8 +794,11 @@ BxDolGridAg.prototype._loadClient = function () {
     if (!this._oApi)
         return;
 
+    // Cards have no column headers to sort by: the sort select above them (_cardSort) does it.
     const oCol = (this._oApi.getColumnState?.() || []).find((c) => c.sort);
-    const oSort = oCol ? { field: oCol.colId, dir: oCol.sort === 'desc' ? 'DESC' : 'ASC' } : { field: '', dir: 'ASC' };
+    let oSort = oCol ? { field: oCol.colId, dir: oCol.sort === 'desc' ? 'DESC' : 'ASC' } : { field: '', dir: 'ASC' };
+    if (this._bCardView)
+        oSort = this._oCardSort ? { field: this._oCardSort.field, dir: this._oCardSort.dir } : { field: '', dir: 'ASC' };
     const iPer = 500;
     const aAll = [];
     const iLoad = (this._iLoad || 0) + 1;
@@ -598,6 +809,8 @@ BxDolGridAg.prototype._loadClient = function () {
     const fFail = () => {
         if (iLoad !== this._iLoad)
             return;
+        this._loading(false);
+        this._reveal();
         this._oApi.setGridOption('rowData', []);
         const sError = typeof _t === 'function' ? _t('_sys_txt_error_occured') : '';
         if (sError && typeof bx_alert === 'function')
@@ -617,6 +830,8 @@ BxDolGridAg.prototype._loadClient = function () {
             this._oApi.setGridOption('rowData', aAll);
             this._oApi.resetRowHeights?.();
             this._reloadExpanded();
+            this._loading(false);
+            this._reveal();
         }, fFail);
     };
     fLoad(0);
@@ -629,16 +844,22 @@ BxDolGridAg.prototype._getRows = function (params) {
     if (params.sortModel?.length) {
         oSort.field = params.sortModel[0].colId;
         oSort.dir = params.sortModel[0].sort === 'desc' ? 'DESC' : 'ASC';
-    } else if (this._oPhoneSort) {
-        oSort.field = this._oPhoneSort.field;
-        oSort.dir = this._oPhoneSort.dir;
+    } else if (this._oCardSort) {
+        oSort.field = this._oCardSort.field;
+        oSort.dir = this._oCardSort.dir;
     }
 
     this._fetch(iStart, iPer, oSort, (o) => {
+        this._loading(false);
+        this._reveal();
         this._setTotal(o);
         // lastRow is stored as the row count, so this is the server total.
         params.successCallback(o.data || [], typeof o.total === 'number' ? o.total : 0);
-    }, () => params.failCallback());
+    }, () => {
+        this._loading(false);
+        this._reveal();
+        params.failCallback();
+    });
 };
 
 /**
@@ -704,13 +925,70 @@ BxDolGridAg.prototype._setTotal = function (o) {
 
 BxDolGridAg.prototype._rowHeight = function (oData) {
     const iRow = this._iRowHeight + this._iRowGap;
-    if (!this._oExpand || !oData)
+    if (!this._oExpand || !oData || this._bCardView)
         return iRow;
     const sId = String(oData[this._sFieldId]);
     if (!this._oExpanded[sId])
         return iRow;
-    const n = (this._oChildren[sId] || []).length || 1;
-    return iRow + this._itemsHeadHeight() + n * this._iItemHeight + 8;
+    const aItems = this._oChildren[sId] || [];
+    let iHeight = iRow + this._itemsHeadHeight() + Math.max(1, aItems.length) * this._iItemHeight + 8;
+
+    const oCfg2 = this._oExpand.expand;
+    if (oCfg2) {
+        const sField = this._oExpand.field_id || '_id';
+        for (const oItem of aItems) {
+            const sKey = this._key2(sId, oItem?.[sField]);
+            if (this._oExpanded2[sKey])
+                iHeight += (oCfg2.columns?.length ? 36 : 0) + Math.max(1, (this._oChildren2[sKey] || []).length) * this._iItemHeight;
+        }
+    }
+    return iHeight;
+};
+
+BxDolGridAg.prototype._key2 = function (sRowId, mixedItemId) {
+    return String(sRowId) + '\n' + String(mixedItemId);
+};
+
+/**
+ * The _meta key a row must have a value in to open ('require' of an expand config: a menu with no set has no items).
+ */
+BxDolGridAg.prototype._expandRequire = function (oCfg) {
+    return oCfg?.require || '';
+};
+
+/**
+ * What an expand config sends with its request for items ('params': request parameter => key in the opened row's
+ * _meta), with the values of this row.
+ */
+BxDolGridAg.prototype._expandQuery = function (oCfg, oMeta) {
+    const o = {};
+    for (const [sParam, sKey] of Object.entries(oCfg?.params || {}))
+        o[sParam] = oMeta?.[sKey] || '';
+    return o;
+};
+
+/**
+ * What an opened row's items act through: the BxDolGrid of their own grid (_itemsBx), with the opened row's
+ * parameters put in place before each action (a menu's set, a form's object). Links in an item's cells run that
+ * grid's own actions too: the parameters are put in place on the way down, before its click handler runs.
+ */
+BxDolGridAg.prototype._childBx = function (oCfg, oMeta) {
+    const oReal = this._itemsBx(oMeta, oCfg);
+    const oQuery = this._expandQuery(oCfg, oMeta);
+    const fAppend = () => {
+        oReal._oQueryAppend = { ...oQuery };
+    };
+
+    return {
+        actionWithId: (...aArgs) => {
+            fAppend();
+            return oReal.actionWithId(...aArgs);
+        },
+        _bindActionsSingle: (jEl) => {
+            jEl?.[0]?.addEventListener('click', fAppend, true);
+            oReal._bindActionsSingle?.(jEl);
+        }
+    };
 };
 
 /**
@@ -761,8 +1039,10 @@ BxDolGridAg.prototype._fitHeight = function () {
         return;
 
     let iMax = Number.parseFloat(globalThis.getComputedStyle(eGrid).maxHeight);
+    // No limit in the styles (a grid that fills its block, as in Studio): never taller than the window, so the grid
+    // keeps drawing only the rows in sight.
     if (Number.isNaN(iMax))
-        iMax = Infinity;
+        iMax = globalThis.innerHeight || 640;
 
     const iCount = this._oApi.getDisplayedRowCount();
     if (!iCount)
@@ -776,7 +1056,7 @@ BxDolGridAg.prototype._fitHeight = function () {
 };
 
 BxDolGridAg.prototype.toggleExpand = function (sId, node) {
-    if (!this._oExpand || !node?.data)
+    if (!this._oExpand || !node?.data || this._bCardView)
         return;
 
     if (this._oExpanded[sId]) {
@@ -786,7 +1066,8 @@ BxDolGridAg.prototype.toggleExpand = function (sId, node) {
     }
 
     const oMeta = node.data._meta || {};
-    if (!oMeta[this._oExpand.set])
+    const sRequire = this._expandRequire(this._oExpand);
+    if (sRequire && !oMeta[sRequire])
         return;
 
     if (this._oChildren[sId]) {
@@ -806,11 +1087,11 @@ BxDolGridAg.prototype.toggleExpand = function (sId, node) {
  * The items of an opened row, all of them: asked for 500 at a time (what one request may
  * return), until the total the server reports is here.
  */
-BxDolGridAg.prototype._fetchItems = function (oMeta, fDone) {
+BxDolGridAg.prototype._fetchItems = function (oMeta, fDone, oCfg) {
     const iPer = 500;
     const aAll = [];
     const fLoad = (iStart) => {
-        this._getJson(this._itemsQuery(oMeta, iStart, iPer))
+        this._getJson(this._itemsQuery(oMeta, iStart, iPer, oCfg))
             .done((o) => {
                 const a = o?.data || [];
                 aAll.push(...a);
@@ -824,11 +1105,9 @@ BxDolGridAg.prototype._fetchItems = function (oMeta, fDone) {
     fLoad(0);
 };
 
-BxDolGridAg.prototype._itemsQuery = function (oMeta, iStart, iPer) {
-    const oCfg = this._oExpand;
-    const o = { o: oCfg.object, a: 'data_ag' };
-    o.set = oMeta[oCfg.set] || '';
-    o.module = oMeta[oCfg.module] || '';
+BxDolGridAg.prototype._itemsQuery = function (oMeta, iStart, iPer, oCfg) {
+    oCfg = oCfg || this._oExpand;
+    const o = { o: oCfg.object, a: 'data_ag', ...this._expandQuery(oCfg, oMeta) };
     o.start = iStart;
     o.per_page = iPer;
     if (this._oBx?._sCsrfToken)
@@ -836,11 +1115,11 @@ BxDolGridAg.prototype._itemsQuery = function (oMeta, iStart, iPer) {
     return o;
 };
 
-BxDolGridAg.prototype._itemsBx = function (oMeta) {
-    const oCfg = this._oExpand;
-    if (!this._oItemsBx) {
+BxDolGridAg.prototype._itemsBx = function (oMeta, oCfg) {
+    oCfg = oCfg || this._oExpand;
+    if (!this._oChildBx[oCfg.object]) {
         const oBxOpts = this._oCfg.bx || {};
-        this._oItemsBx = new BxDolGrid(oCfg.object, {
+        this._oChildBx[oCfg.object] = new BxDolGrid(oCfg.object, {
             csrf_token: oBxOpts.csrf_token || '',
             sortable: 0,
             sorting: 0,
@@ -856,22 +1135,46 @@ BxDolGridAg.prototype._itemsBx = function (oMeta) {
             text_search_input: '',
             columns: 1
         });
-        this._oItemsBx.setOnReload(() => this._reloadExpanded());
+        this._oChildBx[oCfg.object].setOnReload(() => this._reloadExpanded());
 
         // The items' forms and popups answer to glGrids[<items grid>], as on the items' own page.
         // This page has no such grid, so the one made here stands in for it.
         if (globalThis.glGrids && globalThis.glGrids[oCfg.object] === undefined)
-            globalThis.glGrids[oCfg.object] = this._oItemsBx;
+            globalThis.glGrids[oCfg.object] = this._oChildBx[oCfg.object];
     }
-    this._oItemsBx._oQueryAppend = {
-        set: oMeta[oCfg.set] || '',
-        module: oMeta[oCfg.module] || ''
-    };
-    return this._oItemsBx;
+    this._oChildBx[oCfg.object]._oQueryAppend = this._expandQuery(oCfg, oMeta);
+    return this._oChildBx[oCfg.object];
+};
+
+/**
+ * Opens or closes an opened row's item onto its own items (the second level).
+ */
+BxDolGridAg.prototype.toggleExpand2 = function (sRowId, oItem, node) {
+    const oCfg2 = this._oExpand?.expand;
+    if (!oCfg2 || !oItem || !node || this._bCardView)
+        return;
+
+    const sKey = this._key2(sRowId, oItem[this._oExpand.field_id || '_id']);
+    if (this._oExpanded2[sKey]) {
+        delete this._oExpanded2[sKey];
+        this._layoutRow(node);
+        return;
+    }
+
+    const oMeta = oItem._meta || {};
+    const sRequire = this._expandRequire(oCfg2);
+    if (sRequire && !oMeta[sRequire])
+        return;
+
+    this._fetchItems(oMeta, (aRows) => {
+        this._oChildren2[sKey] = aRows || [];
+        this._oExpanded2[sKey] = true;
+        this._layoutRow(node);
+    }, oCfg2);
 };
 
 BxDolGridAg.prototype._reloadExpanded = function () {
-    if (!this._oApi)
+    if (!this._oApi || this._bCardView)
         return;
     this._oApi.forEachNode((n) => {
         if (!n.data)
@@ -882,8 +1185,27 @@ BxDolGridAg.prototype._reloadExpanded = function () {
         this._fetchItems(n.data._meta || {}, (aRows) => {
             this._oChildren[sId] = aRows || [];
             this._layoutRow(n);
+            this._reloadExpanded2(sId, n);
         });
     });
+};
+
+BxDolGridAg.prototype._reloadExpanded2 = function (sRowId, node) {
+    const oCfg2 = this._oExpand?.expand;
+    if (!oCfg2)
+        return;
+
+    const sField = this._oExpand.field_id || '_id';
+    for (const oItem of this._oChildren[sRowId] || []) {
+        const sKey = this._key2(sRowId, oItem?.[sField]);
+        if (!this._oExpanded2[sKey])
+            continue;
+
+        this._fetchItems(oItem._meta || {}, (aRows) => {
+            this._oChildren2[sKey] = aRows || [];
+            this._layoutRow(node);
+        }, oCfg2);
+    }
 };
 
 /**
@@ -1018,9 +1340,9 @@ BxDolGridAg.prototype._saveChildOrder = function (ePanel, oMeta, sMenuId) {
     const oCfg = this._oExpand;
     if (!oCfg)
         return;
-    const sField = oCfg.field_id || 'id';
+    const sField = oCfg.field_id || '_id';
     const aIds = [];
-    for (const eRow of ePanel.querySelectorAll('.bx-grid-ag-item')) {
+    for (const eRow of ePanel.querySelectorAll(':scope > .bx-grid-ag-item')) {
         if (eRow.dataset.id)
             aIds.push(eRow.dataset.id);
     }
@@ -1034,7 +1356,7 @@ BxDolGridAg.prototype._saveChildOrder = function (ePanel, oMeta, sMenuId) {
     }
     this._oChildren[sMenuId] = aIds.filter((sId) => oById[sId]).map((sId) => oById[sId]);
 
-    this._itemsBx(oMeta).action('reorder', {}, this._reorderQuery(oCfg.object, aIds), true);
+    this._itemsBx(oMeta, oCfg).action('reorder', {}, this._reorderQuery(oCfg.object, aIds), true);
 };
 
 /**
@@ -1084,8 +1406,8 @@ BxDolGridAgCell.prototype.refresh = function () {
 };
 
 /**
- * Phones: a row as a card. The checkbox, the drag handle, the title, the switches and the actions
- * on one line, the other columns under it as "Caption value". The cells are drawn as the grid's.
+ * The cards view: a row as a card. Every column is a line, its title then its value; the row's checkbox starts the
+ * first line and its buttons stand in the card's corner. The values are drawn as the grid's cells.
  */
 function BxDolGridAgCard() {}
 
@@ -1103,9 +1425,9 @@ BxDolGridAgCard.prototype.init = function (params) {
 
     const fParams = (oCol) => ({ data: oData, node: params.node, colDef: { field: oCol.name, headerName: oCol.title || '' } });
     const oParts = oAg._cardParts();
-    const eTop = document.createElement('div');
-    eTop.className = 'bx-grid-ag-card-top';
 
+    // The first line's start: the checkbox. Cards have no drag handle: the order is changed in the rows view.
+    const aLead = [];
     if (oAg._hasKind('checkbox')) {
         const eCheck = document.createElement('input');
         eCheck.type = 'checkbox';
@@ -1120,62 +1442,39 @@ BxDolGridAgCard.prototype.init = function (params) {
         };
         params.node?.addEventListener?.('rowSelected', this._fSelected);
         this._oNode = params.node;
-        eTop.appendChild(eCheck);
+        aLead.push(eCheck);
     }
 
-    if (oAg._hasKind('order')) {
-        const eHandle = document.createElement('div');
-        eHandle.className = 'bx-grid-drag-handle';
-        eHandle.title = oAg._oCfg.text_order || '';
-        const eGrip = document.createElement('i');
-        eGrip.className = 'sys-icon grip-vertical';
-        eGrip.setAttribute('aria-hidden', 'true');
-        eHandle.appendChild(eGrip);
-        params.registerRowDragger?.(eHandle);
-        eTop.appendChild(eHandle);
-    }
-
-    if (oParts.title) {
-        const eTitle = document.createElement('div');
-        eTitle.className = 'bx-grid-ag-card-title';
-        this._draw(eTitle, oData[oParts.title.name], fParams(oParts.title), oAg);
-        eTop.appendChild(eTitle);
-    }
-
-    for (const oCol of oParts.controls) {
-        const eCtl = document.createElement('div');
-        eCtl.className = 'bx-grid-ag-card-control';
-        this._draw(eCtl, oData[oCol.name], fParams(oCol), oAg);
-        eTop.appendChild(eCtl);
-    }
-
+    // The row's buttons: in the card's corner, the lines keep clear of them.
     if (oParts.actions) {
         const eActs = document.createElement('div');
         eActs.className = 'bx-grid-ag-card-actions';
         this._draw(eActs, oData[oParts.actions.name], fParams(oParts.actions), oAg);
-        eTop.appendChild(eActs);
+        this.eGui.appendChild(eActs);
+        this.eGui.classList.add('bx-grid-ag-card-has-actions');
     }
 
-    this.eGui.appendChild(eTop);
-
-    if (!oParts.fields.length)
-        return;
-
-    const eFields = document.createElement('div');
-    eFields.className = 'bx-grid-ag-card-fields';
-    for (const oCol of oParts.fields) {
-        const eField = document.createElement('div');
-        eField.className = 'bx-grid-ag-card-field';
-        const eCap = document.createElement('span');
+    const eLines = document.createElement('dl');
+    eLines.className = 'bx-grid-ag-card-fields';
+    const aLines = oParts.lines.length ? oParts.lines : [null];
+    aLines.forEach((oCol, i) => {
+        const eLine = document.createElement('div');
+        eLine.className = 'bx-grid-ag-card-field';
+        const eCap = document.createElement('dt');
         eCap.className = 'bx-grid-ag-card-caption';
-        eCap.textContent = oCol.title || '';
-        const eVal = document.createElement('span');
+        if (i === 0 && aLead.length)
+            eCap.append(...aLead);
+        const eCapText = document.createElement('span');
+        eCapText.textContent = oCol?.title || '';
+        eCap.appendChild(eCapText);
+        const eVal = document.createElement('dd');
         eVal.className = 'bx-grid-ag-card-value';
-        this._draw(eVal, oData[oCol.name], fParams(oCol), oAg);
-        eField.append(eCap, eVal);
-        eFields.appendChild(eField);
-    }
-    this.eGui.appendChild(eFields);
+        if (oCol)
+            this._draw(eVal, oData[oCol.name], fParams(oCol), oAg);
+        eLine.append(eCap, eVal);
+        eLines.appendChild(eLine);
+    });
+    this.eGui.appendChild(eLines);
 };
 
 BxDolGridAgCard.prototype.destroy = function () {
@@ -1224,22 +1523,18 @@ BxDolGridAgCell.prototype._childItems = function (params, oAg) {
     ePanel.style.top = (oAg._iRowGap / 2 + oAg._iRowHeight) + 'px';
 
     const aCols = oAg._oExpand?.columns || [];
-    if (aCols.length) {
-        const eHead = document.createElement('div');
-        eHead.className = 'bx-grid-ag-item is-columns bx-grid-ag-items-head';
-        for (const oCol of aCols) {
-            const eCell = document.createElement('span');
-            eCell.className = 'bx-grid-ag-item-cell';
-            eCell.style.flex = oAg._itemFlex(oCol);
-            eCell.textContent = oCol.kind === 'order' ? '' : (oCol.title || '');
-            eHead.appendChild(eCell);
-        }
-        ePanel.appendChild(eHead);
-    }
+    if (aCols.length)
+        ePanel.appendChild(this._itemsHead(aCols, oAg, !!oAg._oExpand.expand));
 
     if (aItems.length) {
-        for (const oItem of aItems)
-            ePanel.appendChild(this._childRow(oItem, oAg, oMeta));
+        const sField = oAg._oExpand.field_id || '_id';
+        for (const oItem of aItems) {
+            ePanel.appendChild(this._childRow(oItem, oAg, oMeta, sId, params.node));
+
+            const sKey = oAg._key2(sId, oItem?.[sField]);
+            if (oAg._oExpand.expand && oAg._oExpanded2[sKey])
+                ePanel.appendChild(this._childPanel2(oItem, oAg, oAg._oChildren2[sKey] || []));
+        }
     } else {
         const eEmpty = document.createElement('div');
         eEmpty.className = 'bx-grid-ag-item bx-grid-ag-item-empty';
@@ -1254,8 +1549,8 @@ BxDolGridAgCell.prototype._childItems = function (params, oAg) {
     this._bindChildDrag(ePanel, oAg, oMeta, sId);
 };
 
-BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
-    const sField = oAg._oExpand.field_id || 'id';
+BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta, sRowId, node) {
+    const sField = oAg._oExpand.field_id || '_id';
     const sId = oItem?.[sField] == null ? '' : String(oItem[sField]);
     const eRow = document.createElement('div');
     eRow.className = 'bx-grid-ag-item';
@@ -1270,34 +1565,16 @@ BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
     eHandle.appendChild(eGrip);
     eRow.appendChild(eHandle);
 
-    // The items belong to another grid object: their actions go through its own BxDolGrid, with the menu's set.
-    const oReal = oAg._itemsBx(oMeta);
-    const oQuery = {
-        set: oMeta[oAg._oExpand.set] || '',
-        module: oMeta[oAg._oExpand.module] || ''
-    };
-    const fAppend = () => {
-        oReal._oQueryAppend = { set: oQuery.set, module: oQuery.module };
-    };
-    const oBx = {
-        actionWithId: (...aArgs) => {
-            fAppend();
-            return oReal.actionWithId(...aArgs);
-        },
-        // Links in an item's cells (Visible For) run the items grid's own actions, with this menu's
-        // set: it is put in place on the way down, before the grid's click handler runs.
-        _bindActionsSingle: (jEl) => {
-            jEl?.[0]?.addEventListener('click', fAppend, true);
-            oReal._bindActionsSingle?.(jEl);
-        }
-    };
-    const oChild = { _oBx: oBx, _sFieldId: sField, _oCfg: oAg._oCfg };
+    // The items belong to another grid object: their actions go through it.
+    const oChild = { _oBx: oAg._childBx(oAg._oExpand, oMeta), _sFieldId: sField, _oCfg: oAg._oCfg };
 
     // Every column of the items grid, in its order, under the captions of the line above.
     const aCols = oAg._oExpand?.columns || [];
     if (aCols.length) {
         eRow.textContent = '';
         eRow.classList.add('is-columns');
+        if (oAg._oExpand.expand)
+            eRow.appendChild(this._chevron2(oItem, oAg, sRowId, node));
         for (const oCol of aCols) {
             if (oCol.kind === 'order') {
                 eHandle.style.flex = oAg._itemFlex(oCol);
@@ -1334,9 +1611,104 @@ BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta) {
     return eRow;
 };
 
+/**
+ * The captions over an opened row's items: the titles of their grid's columns, each as wide as its cells below; an
+ * empty cell first when the items have arrows of their own.
+ */
+BxDolGridAgCell.prototype._itemsHead = function (aCols, oAg, bChevron) {
+    const eHead = document.createElement('div');
+    eHead.className = 'bx-grid-ag-item is-columns bx-grid-ag-items-head';
+    if (bChevron) {
+        const eSpace = document.createElement('span');
+        eSpace.className = 'bx-grid-ag-item-cell bx-grid-ag-item-chevron';
+        eHead.appendChild(eSpace);
+    }
+    for (const oCol of aCols) {
+        const eCell = document.createElement('span');
+        eCell.className = 'bx-grid-ag-item-cell';
+        eCell.style.flex = oAg._itemFlex(oCol);
+        eCell.textContent = oCol.kind === 'order' ? '' : (oCol.title || '');
+        eHead.appendChild(eCell);
+    }
+    return eHead;
+};
+
+/**
+ * The arrow that opens an opened row's item onto its own items (the second level).
+ */
+BxDolGridAgCell.prototype._chevron2 = function (oItem, oAg, sRowId, node) {
+    const eCell = document.createElement('span');
+    eCell.className = 'bx-grid-ag-item-cell bx-grid-ag-item-chevron';
+
+    const sKey = oAg._key2(sRowId, oItem?.[oAg._oExpand.field_id || '_id']);
+    const sRequire = oAg._expandRequire(oAg._oExpand.expand);
+    if (sRequire && !oItem?._meta?.[sRequire])
+        return eCell;
+
+    const bOpen = !!oAg._oExpanded2[sKey];
+    const eBtn = document.createElement('button');
+    eBtn.type = 'button';
+    eBtn.className = 'bx-grid-ag-chevron' + (bOpen ? ' is-open' : '');
+    eBtn.setAttribute('aria-expanded', bOpen ? 'true' : 'false');
+    eBtn.setAttribute('aria-label', oAg._oCfg.text_expand || '');
+    eBtn.title = oAg._oCfg.text_expand || '';
+    eBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+    eBtn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        oAg.toggleExpand2(sRowId, oItem, node);
+    });
+    eCell.appendChild(eBtn);
+    return eCell;
+};
+
+/**
+ * An opened item's own items (the second level): their captions, then a line for each, with the columns of their
+ * grid; their actions go through that grid's own BxDolGrid, with the opened item's parameters.
+ */
+BxDolGridAgCell.prototype._childPanel2 = function (oParent, oAg, aRows) {
+    const oCfg2 = oAg._oExpand.expand;
+    const oMeta = oParent._meta || {};
+    const aCols = oCfg2.columns || [];
+
+    const ePanel = document.createElement('div');
+    ePanel.className = 'bx-grid-ag-items2';
+
+    if (aCols.length)
+        ePanel.appendChild(this._itemsHead(aCols, oAg, false));
+
+    if (!aRows.length) {
+        const eEmpty = document.createElement('div');
+        eEmpty.className = 'bx-grid-ag-item bx-grid-ag-item-empty';
+        eEmpty.textContent = oAg._oCfg.empty || '';
+        ePanel.appendChild(eEmpty);
+        return ePanel;
+    }
+
+    const sField = oCfg2.field_id || '_id';
+    const oChild = { _oBx: oAg._childBx(oCfg2, oMeta), _sFieldId: sField, _oCfg: oAg._oCfg };
+
+    for (const oItem of aRows) {
+        const eRow = document.createElement('div');
+        eRow.className = 'bx-grid-ag-item is-columns';
+        eRow.dataset.id = oItem?.[sField] == null ? '' : String(oItem[sField]);
+        for (const oCol of aCols) {
+            const eCell = document.createElement('span');
+            eCell.className = 'bx-grid-ag-item-cell' + (Number(oCol.controls) ? ' is-controls' : '');
+            eCell.style.flex = oAg._itemFlex(oCol);
+            // The order is changed on the items' own page: no drag handle here.
+            if (oCol.kind !== 'order')
+                this._draw(eCell, oItem[oCol.name], { data: oItem, colDef: { field: oCol.name, headerName: oCol.title || '' } }, oChild);
+            eRow.appendChild(eCell);
+        }
+        ePanel.appendChild(eRow);
+    }
+    return ePanel;
+};
+
 BxDolGridAgCell.prototype._bindChildDrag = function (ePanel, oAg, oMeta, sMenuId) {
     let eDrag = null;
-    for (const eRow of ePanel.querySelectorAll('.bx-grid-ag-item')) {
+    for (const eRow of ePanel.querySelectorAll(':scope > .bx-grid-ag-item')) {
         const eHandle = eRow.querySelector('.bx-grid-drag-handle');
         if (!eHandle)
             continue;
@@ -1524,7 +1896,9 @@ BxDolGridAgCell.prototype._switch = function (eGui, cell, params, oAg) {
     eBtn.appendChild(eKnob);
     eCont.appendChild(eBtn);
 
-    const sId = params.data ? params.data[oAg._sFieldId] : '';
+    // The id the switch acts on: its own when the grid builds one for its switches (a permission's level and
+    // action), else the row's.
+    const sId = cell.id != null ? cell.id : (params.data ? params.data[oAg._sFieldId] : '');
     const sAction = cell.action || 'enable';
     eBtn.addEventListener('click', (ev) => {
         ev.preventDefault();
@@ -1605,6 +1979,11 @@ BxDolGridAgCell.prototype._action = function (oAction, sId, oAg) {
     const oAttr = oAction.attr && typeof oAction.attr === 'object' ? oAction.attr : {};
     const eBtn = this._actionButton(oAction, oAttr, sId);
 
+    // An action the grid draws as a link (Help Tours' preview: its href) opens that link, as the classic grid's.
+    const sHref = oAttr.href ? BxDolGridAg.safeUrl(String(oAttr.href)) : '';
+    if (sHref)
+        return this._actionLink(eBtn, sHref, oAttr.target);
+
     // A settings button carries the classic onclick that opens its menu. Calling the action
     // instead would skip that menu. The attribute comes from the grid's own action definition.
     const sOnClick = oAttr.onclick ? String(oAttr.onclick) : '';
@@ -1630,6 +2009,29 @@ BxDolGridAgCell.prototype._action = function (oAction, sId, oAg) {
         eBtn.setAttribute('onclick', sOnClick);
 
     return eBtn;
+};
+
+/**
+ * A link action: the button's look, label and icon on a link.
+ */
+BxDolGridAgCell.prototype._actionLink = function (eBtn, sHref, sTarget) {
+    const eLink = document.createElement('a');
+    eLink.className = eBtn.className;
+    for (const sAttr of ['title', 'aria-label'])
+        if (eBtn.hasAttribute(sAttr))
+            eLink.setAttribute(sAttr, eBtn.getAttribute(sAttr));
+    eLink.append(...eBtn.childNodes);
+    eLink.setAttribute('href', sHref);
+    if (sTarget === '_blank') {
+        eLink.setAttribute('target', '_blank');
+        eLink.setAttribute('rel', 'noopener');
+    }
+    eLink.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        if (eLink.classList.contains('bx-btn-disabled'))
+            ev.preventDefault();
+    });
+    return eLink;
 };
 
 /**

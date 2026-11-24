@@ -525,7 +525,10 @@ class BxBaseStudioFormsPreValues extends BxDolStudioFormsPreValues
     {
         parent::_getFilterControls();
 
-        $sContent = $this->getModulesSelectOne('getValues') . $this->getListsSelector($this->sModule);
+        // Data Lists > module (goes to its lists) > list (switches in place among the module's lists).
+        $sContent = $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_forms.php?page=pre_lists', (string)$this->sModule, $this->_getCrumbModules('getLists', '_adm_form_txt_all_modules'), [
+            ['label' => _t('_adm_form_txt_crumb_list'), 'control' => $this->getListsSelector($this->sModule)],
+        ]);
 
         $oForm = new BxTemplStudioFormView(array());
 

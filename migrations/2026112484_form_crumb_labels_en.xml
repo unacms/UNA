@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Forms: what each breadcrumb is, before its value. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_form_txt_crumb_display"><![CDATA[Display]]></string_add>
+    <string_add name="_adm_form_txt_crumb_list"><![CDATA[Data list]]></string_add>
+    <string_add name="_adm_form_txt_crumb_search_form"><![CDATA[Search form]]></string_add>
+</resources>

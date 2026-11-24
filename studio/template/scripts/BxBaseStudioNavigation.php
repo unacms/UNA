@@ -59,7 +59,8 @@ class BxBaseStudioNavigation extends BxDolStudioNavigation
                 'icon_bg' => true,
                 'link' => $this->sSubpageUrl . $sMenuItem,
                 'title' => _t('_adm_lmi_cpt_' . $sMenuItem),
-                'selected' => $sMenuItem == $this->sPage
+                // the Items page is a part of Menus when Items has no menu item of its own
+                'selected' => $sMenuItem == $this->sPage || ($sMenuItem == BX_DOL_STUDIO_NAV_TYPE_MENUS && $this->sPage == BX_DOL_STUDIO_NAV_TYPE_ITEMS && !isset($aMenuItems[BX_DOL_STUDIO_NAV_TYPE_ITEMS]))
             ];
 
         return parent::getPageMenu($aMenu);

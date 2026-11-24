@@ -35,6 +35,7 @@ class BxBaseGrid extends BxDolGrid
     protected $_fTextColumnsScale = null; ///< what the text columns' percent widths are multiplied by, see _getTextColumnsScale
     protected $_sCellClampText = ''; ///< the full text of the cell being built, when it is longer than one line: _getCellDefault wraps it
     protected $_aAgActionNames = ['edit' => '_Edit', 'delete' => '_Delete']; ///< names of the icon-only row actions that have no title (engine 'ag')
+    protected $_bAgRows = false; ///< _getDataAg is building rows for AG Grid (its cells take the API shape, with a little more)
     protected $_bAgSelect2 = false; ///< the filter selects of an engine 'ag' grid are select2 fields: only where the page styles select2 (Studio)
     protected $_iAgPerPageMax = 500; ///< the most rows one data_ag request returns (engine 'ag'), unless the grid's own page is larger
     protected $_aFilterAreaLabels = []; // filter name => accessible name (lang key or plain text); filter controls are rendered without a visible caption
@@ -1006,8 +1007,16 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _getCellSwitcherFor ($sFieldActive, $sAction, $sLabel, $sKey, $aField, $aRow)
     {
-        if($this->_bIsApi)
-            return ['type' => 'switcher', 'data' => isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : 0, 'fld' => $sFieldActive, 'action' => $sAction];
+        if($this->_bIsApi) {
+            $aCell = ['type' => 'switcher', 'data' => isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : 0, 'fld' => $sFieldActive, 'action' => $sAction];
+
+            // AG Grid: the id the switch acts on, which a grid may build for its switches (a permission's level and
+            // action). The API's shape stays as it is.
+            if($this->_bAgRows && ($sFieldId = $this->_aOptions['field_id']) && isset($aRow[$sFieldId]))
+                $aCell['id'] = $aRow[$sFieldId];
+
+            return $aCell;
+        }
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
@@ -1742,6 +1751,7 @@ class BxBaseGrid extends BxDolGrid
         $bWasApi = $this->_bIsApi;
         $iShowTotal = isset($this->_aOptions['show_total_count']) ? $this->_aOptions['show_total_count'] : 0;
         $this->_bIsApi = true;
+        $this->_bAgRows = true;
         // The total is counted only when this option is on. Infinite row model needs it either way.
         $this->_aOptions['show_total_count'] = 1;
 
@@ -1768,6 +1778,7 @@ class BxBaseGrid extends BxDolGrid
             return $aResult;
         } finally {
             $this->_bIsApi = $bWasApi;
+            $this->_bAgRows = false;
             $this->_aOptions['show_total_count'] = $iShowTotal;
         }
     }
@@ -1777,8 +1788,10 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _agRow($aRow)
     {
+        // The row's id goes under a key no column has (_id, the 'field_id' of the config): a column may show the
+        // id's field as something else (the transfers' module title for a module name), and the actions need the id.
         $sKeyId = $this->_aOptions['field_id'];
-        $aOut = [$sKeyId => isset($aRow[$sKeyId]) ? $aRow[$sKeyId] : ''];
+        $aOut = ['_id' => isset($aRow[$sKeyId]) ? $aRow[$sKeyId] : ''];
 
         foreach ($this->_aOptions['fields'] as $sKey => $aField) {
             $mixedCell = $this->_agCell($sKey, $aField, $aRow);
@@ -1827,6 +1840,13 @@ class BxBaseGrid extends BxDolGrid
         }
 
         $mixedCell = $this->$sMethod($mixedValue, $sKey, $aField, $aRow);
+
+        // A grid's own cell that prints the classic grid's markup whatever the mode (the transfers' module and status):
+        // what is inside its <td>, as the classic grid shows it.
+        if (is_string($mixedCell) && preg_match('/^\s*<td\b[^>]*>(.*)<\/td>\s*$/is', $mixedCell, $aMatch)) {
+            return ['type' => 'text', 'value' => $aMatch[1], 'html' => 1];
+        }
+
         if (!is_array($mixedCell) || !isset($mixedCell['type'])) {
             return $mixedCell;
         }
@@ -1851,6 +1871,12 @@ class BxBaseGrid extends BxDolGrid
                 break;
 
             case 'switcher':
+                // The switch's own id is sent only when it is not the row's.
+                $sFieldId = $this->_aOptions['field_id'];
+                if (isset($aCell['id']) && isset($aRow[$sFieldId]) && (string)$aCell['id'] === (string)$aRow[$sFieldId]) {
+                    unset($aCell['id']);
+                }
+
                 $sFieldActive = isset($aCell['fld']) ? $aCell['fld'] : '';
                 $mixedActive = isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : false;
                 $aCell['on'] = (int)(bool)$this->_isSwitcherOn($mixedActive, $sKey, $aField, $aRow);
@@ -1972,7 +1998,7 @@ class BxBaseGrid extends BxDolGrid
 
         $aConfig = [
             'object' => $this->_sObject,
-            'field_id' => $this->_aOptions['field_id'],
+            'field_id' => '_id', // _agRow
             'sortable' => in_array('order', array_column($aColumns, 'kind')) ? 1 : 0,
             'sorting' => empty($this->_getOrderFields()) ? 0 : 1,
             'sorting_field' => $sOrderField,
@@ -1989,6 +2015,7 @@ class BxBaseGrid extends BxDolGrid
             'text_expand' => _t('_sys_grid_txt_show_items'),
             'text_reveal' => _t('_sys_grid_secret_reveal'),
             'select2' => $this->_bAgSelect2 ? 1 : 0,
+            'search' => $this->_agSearchPhrase($sFilter),
             'columns' => $aColumns,
             'bx' => [
                 'csrf_token' => (string)BxDolForm::getCsrfToken(),
@@ -2030,6 +2057,24 @@ class BxBaseGrid extends BxDolGrid
         $sFilterControls = $this->_isFilter() ? $this->_getFilterControls() : '';
         $sTitleRow = $this->_getHeaderTitleRow();
 
+        // Rows or cards. With a title row the switch goes there, beside the title, and the grid's own buttons go
+        // beside the filters.
+        $sView = $this->_oTemplate->parseHtmlByName('grid_ag_view.html', [
+            'txt_view' => bx_html_attribute(_t('_sys_grid_txt_view')),
+            'txt_view_rows' => bx_html_attribute(_t('_sys_grid_txt_view_rows')),
+            'txt_view_cards' => bx_html_attribute(_t('_sys_grid_txt_view_cards')),
+        ]);
+        if ($sTitleRow !== '')
+            $sTitleRow = $this->_oTemplate->parseHtmlByName('grid_header_title.html', [
+                'title' => self::HEADER_TITLE_SLOT,
+                'bx_if:actions_independent' => [
+                    'condition' => $sView !== '',
+                    'content' => [
+                        'actions_independent' => $sView,
+                    ],
+                ],
+            ]);
+
         $aVars = [
             'object' => $this->_sObject,
             'id_table' => 'bx-grid-table-' . $this->_sObject,
@@ -2042,10 +2087,11 @@ class BxBaseGrid extends BxDolGrid
                 'content' => [
                     'class' => (empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '') . ($sTitleRow !== '' ? $this->_getHeaderTitleRowClass($sFilterControls) : ''),
                     'title_row' => $sTitleRow,
+                    'view' => $sTitleRow === '' ? $sView : '',
                     'bx_if:actions_independent' => [
-                        'condition' => !empty($this->_aOptions['actions_independent']) && $sTitleRow === '',
+                        'condition' => !empty($this->_aOptions['actions_independent']),
                         'content' => [
-                            'actions_independent' => $sTitleRow === '' ? $this->_getActions('independent') : '',
+                            'actions_independent' => !empty($this->_aOptions['actions_independent']) ? $this->_getActions('independent') : '',
                         ],
                     ],
                     'bx_if:filter' => [
@@ -2180,6 +2226,15 @@ class BxBaseGrid extends BxDolGrid
     protected function _agExtraConfig()
     {
         return [];
+    }
+
+    /**
+     * What the search field shows for the filter the grid opens with: the filter itself, or the search phrase of a
+     * filter that carries more (a Studio grid's module and phrase).
+     */
+    protected function _agSearchPhrase($sFilter)
+    {
+        return (string)$sFilter;
     }
 
     /**

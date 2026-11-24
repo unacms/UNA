@@ -48,7 +48,7 @@ BxDolStudioFormsSearchFields.prototype.onChangeModule = function() {
 };
 
 BxDolStudioFormsSearchFields.prototype.onChangeForm = function() {
-    this.reloadGrid($('#bx-grid-module-' + this.sObjNameGrid).val(), $('#bx-grid-form-sys_studio_search_forms_fields').val());
+    this.reloadGrid($('#bx-grid-module-' + this.sObjNameGrid).val(), $('#bx-grid-form-' + this.sObjNameGrid).val());
 };
 
 BxDolStudioFormsSearchFields.prototype.reloadGrid = function(sModule, sObject) {

@@ -8,3 +8,14 @@ __content__
         sTextSearchInput: '<bx_text_js:_sys_grid_search />'
     });
 </script>
+<bx_if:expand_values>
+<script language="javascript">
+    var oBxDolStudioFormsValues = new BxDolStudioFormsPreValues({
+        sActionUrl: '<bx_url_root />grid.php',
+        sPageUrl: '<bx_url_studio />builder_forms.php?page=pre_values',
+        sObjNameGrid: '__values_grid_object__',
+        sParamsDivider: '__params_divider__',
+        sTextSearchInput: '<bx_text_js:_sys_grid_search />'
+    });
+</script>
+</bx_if:expand_values>

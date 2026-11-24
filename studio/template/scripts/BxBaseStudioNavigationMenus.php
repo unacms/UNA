@@ -12,6 +12,7 @@ bx_import('BxDolStudioUtils');
 
 class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
 {
+    protected $_bFilterModuleInUrl = true;
     private $sCreateNew = 'sys_create_new';
     protected $sUrlViewItems;
 
@@ -217,9 +218,9 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
         return array(
             'expand' => array(
                 'object' => $this->_sAgItemsObject,
-                'field_id' => 'id',
-                'set' => 'set_name',
-                'module' => 'module',
+                'field_id' => '_id', // _agRow
+                'params' => array('set' => 'set_name', 'module' => 'module'),
+                'require' => 'set_name',
                 'columns' => $oItems && method_exists($oItems, 'getAgColumns') ? $oItems->getAgColumns() : array(),
             ),
         );
@@ -280,7 +281,25 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
     {
         parent::_getFilterControls();
 
-        return  $this->getModulesSelectAll('getMenus') . $this->getSearchInput();
+        // The module the list is opened with (see _getFilterValue).
+        $sModule = $this->_getFilterModule();
+
+        // Menus > module > set: a set leads to its items.
+        $aNext = [];
+        if($sModule !== '') {
+            $aSets = $aCounter = [];
+            $this->oDb->getSets(['type' => 'by_module', 'value' => $sModule], $aSets, false);
+            $this->oDb->getItems(['type' => 'counter_by_sets'], $aCounter, false);
+
+            $aValues = [];
+            foreach($aSets as $aSet)
+                $aValues[$aSet['name']] = _t($aSet['title']) . ' (' . ($aCounter[$aSet['name']] ?? 0) . ')';
+            asort($aValues);
+
+            $aNext[] = ['label' => _t('_adm_nav_txt_menus_gl_set_title'), 'control' => $this->_getCrumbGoSelect('set', '', array_merge(['' => _t('_adm_nav_txt_select_set')], $aValues), BX_DOL_URL_STUDIO . 'builder_menu.php?page=items&module=' . rawurlencode($sModule) . '&set=')];
+        }
+
+        return $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_menu.php?page=menus', $sModule, $this->_getCrumbModules('getMenus', '_adm_nav_txt_all_modules'), $aNext) . $this->getSearchInput();
     }
 
     protected function _getFormObject($sAction, $aMenu = array())

@@ -2800,6 +2800,13 @@ BLAH;
             }
         }
 
+        // A list of more than a few checkboxes can select all of them and unselect them.
+        if ('checkbox_set' == $aInput['type'] && !$this->_bIsApi && isset($aInput['values']) && is_array($aInput['values']) && count($aInput['values']) > 3)
+            $sOptions = $this->oTemplate->parseHtmlByName('form_checkbox_set_toggle.html', [
+                'txt_all' => _t('_Select_all'),
+                'txt_none' => _t('_sys_form_txt_unselect_all'),
+            ]) . $sOptions;
+
         // generate element
         $sCode = <<<BLAH
             <div $sAttrs>
