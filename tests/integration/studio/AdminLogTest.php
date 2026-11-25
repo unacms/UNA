@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 class AdminLogTest extends BxDolIntegrationTestCase
 {
     private array $_aGetBackup = [];
-    private array $_aPostBackup = [];
     private string $_sOption = 'sys_audit_max_records';
     private $mixedOption = null;
     private $mixedEnable = null;
@@ -20,13 +19,11 @@ class AdminLogTest extends BxDolIntegrationTestCase
         parent::setUp();
         require_once(BX_DIRECTORY_PATH_ROOT . 'studio/inc/utils.inc.php'); // bx_get_js_result, for the settings save's reply
         $this->_aGetBackup = $_GET;
-        $this->_aPostBackup = $_POST;
     }
 
     protected function tearDown(): void
     {
         $_GET = $this->_aGetBackup;
-        $_POST = $this->_aPostBackup;
 
         if ($this->mixedOption !== null)
             setParam($this->_sOption, $this->mixedOption);
