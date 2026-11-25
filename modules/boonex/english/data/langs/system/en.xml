@@ -1256,7 +1256,7 @@
     <string name="_adm_form_txt_admin_log_object"><![CDATA[Entry type]]></string>
     <string name="_adm_form_txt_admin_log_object_id"><![CDATA[Entry]]></string>
     <string name="_adm_form_txt_admin_log_profile"><![CDATA[Actor]]></string>
-    <string name="_adm_form_txt_admin_log_source"><![CDATA[Source]]></string>
+    <string name="_adm_form_txt_admin_log_source"><![CDATA[Protocol]]></string>
     <string name="_adm_form_txt_crumb_display"><![CDATA[Display]]></string>
     <string name="_adm_form_txt_crumb_list"><![CDATA[Data list]]></string>
     <string name="_adm_form_txt_crumb_search_form"><![CDATA[Search form]]></string>
@@ -2611,9 +2611,10 @@
         <string name="_adm_txt_admin_log_popup"><![CDATA[Changes]]></string>
         <string name="_adm_txt_admin_log_profile_any"><![CDATA[Any actor]]></string>
         <string name="_adm_txt_admin_log_source_agent"><![CDATA[Agent]]></string>
-        <string name="_adm_txt_admin_log_source_any"><![CDATA[Any source]]></string>
+        <string name="_adm_txt_admin_log_source_any"><![CDATA[Any protocol]]></string>
         <string name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string>
         <string name="_adm_txt_admin_log_source_cli"><![CDATA[Command line]]></string>
+        <string name="_adm_txt_admin_log_source_mcp"><![CDATA[MCP]]></string>
         <string name="_adm_txt_admin_log_source_studio"><![CDATA[Studio]]></string>
         <string name="_adm_txt_admin_log_t_cmts"><![CDATA[Comments: {0}]]></string>
         <string name="_adm_txt_admin_log_t_content"><![CDATA[Content: {0}]]></string>

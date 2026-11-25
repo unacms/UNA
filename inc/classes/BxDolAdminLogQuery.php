@@ -128,7 +128,7 @@ class BxDolAdminLogQuery extends BxDolDb
     {
         $s = '';
         $sSource = (string)($a['source'] ?? '');
-        if (in_array($sSource, ['studio', 'agent', 'api', 'cli'], true))
+        if (in_array($sSource, ['studio', 'agent', 'mcp', 'api', 'cli'], true))
             $s .= $this->prepareAsString(' AND `source` = ?', $sSource);
 
         $iProfile = (int)($a['profile_id'] ?? 0);
@@ -209,7 +209,7 @@ class BxDolAdminLogQuery extends BxDolDb
     {
         $sSource = (string)$sSource;
 
-        return in_array($sSource, ['studio', 'agent', 'api', 'cli'], true) ? $sSource : 'studio';
+        return in_array($sSource, ['studio', 'agent', 'mcp', 'api', 'cli'], true) ? $sSource : 'studio';
     }
 
     protected function clip(string $s, int $iLen): string

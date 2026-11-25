@@ -222,6 +222,56 @@ class AdminLogTest extends BxDolIntegrationTestCase
         BxDolDb::getInstance()->query("DELETE FROM `sys_admin_log` WHERE `id` > :id", ['id' => $iBefore]);
     }
 
+    public function testAStudioPageActionKeepsTheRowBeforeAndAfter(): void
+    {
+        if (!$this->ready())
+            $this->markTestSkipped('sys_admin_log is not installed.');
+
+        $this->bxLoginAsAdmin();
+        $this->turnLogOn();
+
+        $oPage = new BxDolStudioAdminLogSnapshotTestPage();
+        $sType = 'studio:admin_log_snapshot_test_page';
+        $iBefore = $this->maxId();
+
+        // An edit keeps the old row and the new one.
+        $oPage->aRow = ['id' => 7, 'title' => 'Old'];
+        $_GET = ['bp_action' => 'block_edit', 'id' => '7'];
+        $_POST = ['title' => 'New'];
+        BxDolAdminLog::runStudioAction($oPage, function () use ($oPage) {
+            $oPage->aRow['title'] = 'New';
+            return ['eval' => 'x'];
+        });
+        $aRow = $this->latest($sType, '7', $iBefore);
+        $this->assertIsArray($aRow);
+        $this->assertStringContainsString('"title":"Old"', $aRow['before']);
+        $this->assertStringContainsString('"title":"New"', $aRow['after']);
+
+        // A delete keeps the row it removed and nothing after.
+        $iMid = $this->maxId();
+        $_GET = ['bp_action' => 'block_delete', 'id' => '7'];
+        $_POST = [];
+        BxDolAdminLog::runStudioAction($oPage, function () use ($oPage) {
+            $oPage->aRow = [];
+            return ['eval' => 'x'];
+        });
+        $aRow = $this->latest($sType, '7', $iMid);
+        $this->assertIsArray($aRow);
+        $this->assertSame('block_delete', $aRow['action']);
+        $this->assertStringContainsString('"title":"New"', $aRow['before']);
+        $this->assertSame('', (string)$aRow['after']);
+
+        // A posted form for a block that is not there is refused with nothing: not a change.
+        $iMid = $this->maxId();
+        $_GET = ['bp_action' => 'block_edit'];
+        $_POST = ['title' => 'New'];
+        BxDolAdminLog::runStudioAction($oPage, fn() => []);
+        $_POST = [];
+        $this->assertSame($iMid, $this->maxId());
+
+        BxDolDb::getInstance()->query("DELETE FROM `sys_admin_log` WHERE `id` > :id", ['id' => $iBefore]);
+    }
+
     private function runGridPhp(array $aGet): void
     {
         $_GET = $aGet;
@@ -252,6 +302,33 @@ class AdminLogTest extends BxDolIntegrationTestCase
                 return ['object' => 'sys_admin_log_test', 'source_type' => '', 'table' => '', 'field_id' => ''];
             }
         };
+    }
+
+    public function testAChangeMadeThroughMcpIsRecordedUnderTheMcpProtocol(): void
+    {
+        if (!$this->ready())
+            $this->markTestSkipped('sys_admin_log is not installed.');
+
+        $this->turnLogOn();
+        $iBefore = $this->maxId();
+
+        BxDolAdminLog::setProtocol('mcp');
+        try {
+            BxDolAdminLog::record(['source' => 'agent', 'object_type' => 'email', 'object_id' => 'mcp-test@example.com', 'action' => 'send']);
+        }
+        finally {
+            BxDolAdminLog::setProtocol('');
+        }
+        BxDolAdminLog::record(['source' => 'agent', 'object_type' => 'email', 'object_id' => 'agent-test@example.com', 'action' => 'send']);
+
+        $aMcp = $this->latest('email', 'mcp-test@example.com', $iBefore);
+        $aAgent = $this->latest('email', 'agent-test@example.com', $iBefore);
+        BxDolDb::getInstance()->query("DELETE FROM `sys_admin_log` WHERE `id` > :id", ['id' => $iBefore]);
+
+        $this->assertIsArray($aMcp);
+        $this->assertSame('mcp', $aMcp['source']);
+        $this->assertIsArray($aAgent);
+        $this->assertSame('agent', $aAgent['source']);
     }
 
     public function testTheGridShowsTypesActionsAndObjectsByTheirTitles(): void
@@ -370,4 +447,20 @@ class AdminLogTest extends BxDolIntegrationTestCase
  */
 class BxDolStudioAdminLogTestPage
 {
+}
+
+/**
+ * A Studio page that names the row its block actions change, like BxDolStudioBuilderPage.
+ */
+class BxDolStudioAdminLogSnapshotTestPage
+{
+    public array $aRow = [];
+
+    public function getLogSnapshot(string $sAction): ?array
+    {
+        if (!str_starts_with($sAction, 'block_'))
+            return null;
+
+        return (int)bx_get('id') ? $this->aRow : [];
+    }
 }

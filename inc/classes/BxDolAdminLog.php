@@ -18,9 +18,23 @@ class BxDolAdminLog
      */
     protected static $iRecorded = 0;
 
+    /**
+     * The protocol a request came in by, when it is not the one its rows name themselves: an agent tool called
+     * through MCP (BxDolMcpServer) is recorded as 'mcp', not as 'agent'.
+     */
+    protected static $sProtocol = '';
+
+    public static function setProtocol(string $sProtocol): void
+    {
+        self::$sProtocol = $sProtocol;
+    }
+
+    /**
+     * On unless an operator turned it off: a site whose setting is not there yet keeps the log too.
+     */
     public static function enabled(): bool
     {
-        return self::param('sys_admin_log_enable') === 'on';
+        return self::param('sys_admin_log_enable') !== '';
     }
 
     public static function daysBeforeExpire(): int
@@ -56,7 +70,7 @@ class BxDolAdminLog
 
             return BxDolAdminLogQuery::getInstance()->add([
                 'profile_id' => $iProfile,
-                'source' => (string)($a['source'] ?? 'studio'),
+                'source' => self::$sProtocol !== '' ? self::$sProtocol : (string)($a['source'] ?? 'studio'),
                 'agent_id' => (int)($a['agent_id'] ?? 0),
                 'thread_id' => (string)($a['thread_id'] ?? ''),
                 'object_type' => (string)($a['object_type'] ?? ''),
@@ -209,6 +223,7 @@ class BxDolAdminLog
     public static function runStudioAction($oPage, callable $fn)
     {
         $iRecorded = self::$iRecorded;
+        $aBefore = self::studioSnapshot($oPage);
         $mixedResult = $fn();
         if (!is_array($mixedResult) || self::$iRecorded > $iRecorded || !self::enabled())
             return $mixedResult;
@@ -216,18 +231,22 @@ class BxDolAdminLog
         try {
             [$sParam, $sAction] = self::requestAction();
             // A Studio page answers a saved form with nothing when there is nothing to redraw (page settings with the
-            // same layout), and a request it refuses (no id) with nothing too: only the posted form is a change.
-            $bFailed = $mixedResult ? self::isFailedResult($mixedResult) : !self::hasPostedForm();
+            // same layout), and a request it refuses (no id, no such block) with nothing too: only a posted form
+            // for a row that is there is a change.
+            $bFailed = $mixedResult ? self::isFailedResult($mixedResult) : (!self::hasPostedForm() || $aBefore === []);
             if ($sAction === '' || self::isReadAction($sAction) || $bFailed)
                 return $mixedResult;
+
+            // A deleted row leaves nothing after.
+            $aAfter = $aBefore !== null ? (self::studioSnapshot($oPage) ?: '') : ['request' => self::requestParams($sParam)];
 
             self::record([
                 'source' => 'studio',
                 'object_type' => 'studio:' . self::pageType($oPage),
                 'object_id' => self::requestObjectId(),
                 'action' => $sAction,
-                'before' => '',
-                'after' => ['request' => self::requestParams($sParam)],
+                'before' => $aBefore ?: '',
+                'after' => $aAfter,
             ]);
         }
         catch (Throwable $e) {
@@ -235,6 +254,27 @@ class BxDolAdminLog
         }
 
         return $mixedResult;
+    }
+
+    /**
+     * The saved row a Studio page action changes, when the page names one (see BxDolStudioBuilderPage::getLogSnapshot).
+     */
+    protected static function studioSnapshot($oPage): ?array
+    {
+        if (!is_object($oPage) || !method_exists($oPage, 'getLogSnapshot') || !self::enabled())
+            return null;
+
+        try {
+            [, $sAction] = self::requestAction();
+            if ($sAction === '' || self::isReadAction($sAction))
+                return null;
+
+            return $oPage->getLogSnapshot($sAction);
+        }
+        catch (Throwable $e) {
+            bx_log('sys_audit', $e->getMessage(), BX_LOG_ERR);
+            return null;
+        }
     }
 
     protected static function hasPostedForm(): bool

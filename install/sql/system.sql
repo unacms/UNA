@@ -2571,7 +2571,7 @@ CREATE TABLE `sys_admin_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `added` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL DEFAULT 0,
-  `source` enum('studio','agent','api','cli') NOT NULL DEFAULT 'studio',
+  `source` enum('studio','agent','mcp','api','cli') NOT NULL DEFAULT 'studio',
   `agent_id` int(11) NOT NULL DEFAULT 0,
   `thread_id` varchar(255) NOT NULL DEFAULT '',
   `object_type` varchar(128) NOT NULL DEFAULT '',

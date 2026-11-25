@@ -74,6 +74,33 @@ class BxDolStudioBuilderPage extends BxTemplStudioWidget
         return BX_DOL_STUDIO_BP_PAGE_DEFAULT;
     }
 
+    /**
+     * What the Studio log keeps before and after an action: the block or the page the action changes.
+     * Null for an action that does not change one saved row; an empty array when that row is not there.
+     */
+    public function getLogSnapshot(string $sAction): ?array
+    {
+        if(in_array($sAction, ['block_edit', 'block_delete', 'block_switch'], true)) {
+            $iId = (int)bx_get('id');
+            if(!$iId)
+                return [];
+
+            $aBlock = [];
+            $this->oDb->getBlocks(['type' => 'by_id', 'value' => $iId], $aBlock, false);
+            return is_array($aBlock) ? $aBlock : [];
+        }
+
+        if(in_array($sAction, ['page_edit', 'page_delete'], true)) {
+            if($this->sPage === '')
+                return [];
+
+            $aPage = $this->oDb->getPages(['type' => 'by_object_full', 'value' => $this->sPage]);
+            return is_array($aPage) ? $aPage : [];
+        }
+
+        return null;
+    }
+
     public function checkAction()
     {
         $sAction = bx_get('bp_action');

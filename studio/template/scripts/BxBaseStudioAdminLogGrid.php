@@ -100,6 +100,7 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
         $aSources = [
             'studio' => '_adm_txt_admin_log_source_studio',
             'agent' => '_adm_txt_admin_log_source_agent',
+            'mcp' => '_adm_txt_admin_log_source_mcp',
             'api' => '_adm_txt_admin_log_source_api',
             'cli' => '_adm_txt_admin_log_source_cli',
         ];

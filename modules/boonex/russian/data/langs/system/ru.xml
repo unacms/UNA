@@ -1246,7 +1246,7 @@
     <string name="_adm_form_txt_admin_log_object"><![CDATA[Тип записи]]></string>
     <string name="_adm_form_txt_admin_log_object_id"><![CDATA[Запись]]></string>
     <string name="_adm_form_txt_admin_log_profile"><![CDATA[Исполнитель]]></string>
-    <string name="_adm_form_txt_admin_log_source"><![CDATA[Источник]]></string>
+    <string name="_adm_form_txt_admin_log_source"><![CDATA[Протокол]]></string>
     <string name="_adm_form_txt_crumb_display"><![CDATA[Отображение]]></string>
     <string name="_adm_form_txt_crumb_list"><![CDATA[Список данных]]></string>
     <string name="_adm_form_txt_crumb_search_form"><![CDATA[Форма поиска]]></string>
@@ -2583,9 +2583,10 @@
         <string name="_adm_txt_admin_log_popup"><![CDATA[Изменения]]></string>
         <string name="_adm_txt_admin_log_profile_any"><![CDATA[Любой исполнитель]]></string>
         <string name="_adm_txt_admin_log_source_agent"><![CDATA[Агент]]></string>
-        <string name="_adm_txt_admin_log_source_any"><![CDATA[Любой источник]]></string>
+        <string name="_adm_txt_admin_log_source_any"><![CDATA[Любой протокол]]></string>
         <string name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string>
         <string name="_adm_txt_admin_log_source_cli"><![CDATA[Командная строка]]></string>
+        <string name="_adm_txt_admin_log_source_mcp"><![CDATA[MCP]]></string>
         <string name="_adm_txt_admin_log_source_studio"><![CDATA[Студия]]></string>
         <string name="_adm_txt_admin_log_t_cmts"><![CDATA[Комментарии: {0}]]></string>
         <string name="_adm_txt_admin_log_t_content"><![CDATA[Контент: {0}]]></string>
