@@ -197,7 +197,13 @@ def main():
     # files
     base = os.environ.get('UNA_CHECK_DIR') or os.path.join(HERE, '../../../packages/release/check')
     a, b = files(os.path.join(base, args.fresh, 'site')), files(os.path.join(base, args.upgraded, 'site'))
-    skip = lambda p: p in ('inc/header.inc.php',) or p.startswith('plugins/composer/')
+    # A module that is not installed gets no update pack; its files are whatever the package had.
+    installed = {'modules/' + r[0].strip('/') + '/' for r in rows(args.fresh, 'SELECT `path` FROM `sys_modules`') if r and r[0]}
+    installed.add('modules/system/')
+    def skip(p):
+        if p == 'inc/header.inc.php' or p.startswith('plugins/composer/') or p == 'logs/junit.xml':
+            return True
+        return p.startswith('modules/') and not any(p.startswith(m) for m in installed)
     lines = ['- only on fresh: %s' % p for p in sorted(set(a) - set(b)) if not skip(p)]
     lines += ['- only on upgraded: %s' % p for p in sorted(set(b) - set(a)) if not skip(p)]
     lines += ['- differs: %s' % p for p in sorted(set(a) & set(b)) if not skip(p) and not filecmp.cmp(a[p], b[p], shallow=False)]
