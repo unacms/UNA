@@ -544,7 +544,7 @@ def module_packs(args):
             # A first pack brings the whole module: the files sites have may be older than the tag.
             for path in git('ls-tree', '-r', '--name-only', to_ref, home + '/').splitlines():
                 rel = path[len(home) + 1:]
-                if not rel.startswith(('updates/', 'migrations/')) and rel not in listed:
+                if not rel.startswith(('updates/', 'migrations/')) and rel not in listed and not os.path.basename(rel).startswith('.git'):
                     write(os.path.join(pack, 'source', rel), git('show', '%s:%s' % (to_ref, path), binary=True))
 
         # Sites got earlier database changes from packs' SQL and have none of the module's migration files, so the
