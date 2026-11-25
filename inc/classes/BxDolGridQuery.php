@@ -53,8 +53,9 @@ class BxDolGridQuery extends BxDolDb
     public static function getFilterTranslatableCond ($aFields, $sFilter, $bLike = true)
     {
         $aKeys = [];
+        // a field may name its table: `tm`.`title` (stored as tm`.`title, the outer quotes are added here)
         foreach ((array)$aFields as $sField)
-            $aKeys[] = "`k`.`Key` = `" . str_replace('`', '', $sField) . "`";
+            $aKeys[] = "`k`.`Key` = `" . implode('`.`', explode('.', str_replace('`', '', $sField))) . "`";
         if (!$aKeys)
             return '';
 

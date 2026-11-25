@@ -14,6 +14,9 @@ class GridSearchSqlTest extends BxDolIntegrationTestCase
      */
     private const GRIDS = [
         'sys_studio_forms_pre_lists',
+        'sys_studio_nav_menus', // translatable fields that name their table: `tm`.`title`
+        'sys_studio_forms_displays',
+        'bx_notifications_settings_administration',
         'sys_audit_administration',
         'sys_cmts_administration',
         'bx_antispam_grid_dnsbl',
@@ -29,6 +32,12 @@ class GridSearchSqlTest extends BxDolIntegrationTestCase
     }
 
     private const PER_PAGE = 50;
+
+    /**
+     * Grids whose rows are not the rows of the counted query: Notifications' settings are grouped by type, with a
+     * title row before each group.
+     */
+    private const COUNT_APART = ['bx_notifications_settings_administration'];
 
     /**
      * The grid, counting its rows as AG Grid always has it do.
@@ -61,6 +70,8 @@ class GridSearchSqlTest extends BxDolIntegrationTestCase
     {
         $mixedTotal = $this->bxGetProtected($oGrid, '_iTotalCount', BxDolGrid::class);
         $this->assertTrue(is_numeric($mixedTotal), $sMessage . ': no total, the count query failed.');
+        if (in_array($this->bxGetProtected($oGrid, '_sObject', BxDolGrid::class), self::COUNT_APART, true))
+            return;
 
         if (count($aRows) < self::PER_PAGE)
             $this->assertSame(count($aRows), (int)$mixedTotal, $sMessage);
