@@ -90,21 +90,32 @@ prepare)
     echo "== System update pack"
     python3 $here/packs.py system --old-tree "$(previous_tree)" --new-tree "$out/tree-$version/UNA-v.$version" \
         --from "$from" --to "$version"
-    git add -A upgrade/files
-    git commit -q -m "Release $version: system update pack"
+    echo "== Build outputs of modules"
+    python3 $here/packs.py built --new-tree "$out/tree-$version/UNA-v.$version" --system-version "$version"
+    git add -A upgrade/files modules
+    git commit -q -m "Release $version: system update pack, build outputs in module packs"
 
     echo
     echo "Left to a person:"
     echo "  - SQL of the system pack: upgrade/files/$(dotted "$from")-$(dotted "$version")/{sql.sql,app.sql,script.php}"
     echo "  - SQL of module packs marked 'SQL NEEDED' in $out/modules.txt (install/sql/ in each pack),"
-    echo "    then run 'python3 $here/packs.py modules ... --rebuild' again so the packs' flags follow"
+    echo "    then: python3 $here/packs.py flags --system-version $version"
     echo "  - then: $here/release.sh package $version --from $from"
     ;;
 
 package)
     parse "$@"
     [ -z "$(git status --porcelain)" ] || die "the working tree has changes; commit them first"
-    $here/build.sh HEAD "UNA-v.$version" "$out"
+    # Packs are not part of the package, so the zip that prepare built stays valid while only packs changed.
+    # Building it again could differ (Messenger installs its npm dependencies without a lockfile), and the
+    # system update pack was made from that zip.
+    built=$(cat "$out/UNA-v.$version.commit" 2> /dev/null || true)
+    if [ -n "$built" ] && [ -f "$out/UNA-v.$version.zip" ] \
+        && git diff --quiet "$built" HEAD -- . ':!upgrade' ':!modules/*/*/updates' ':!scripts' ':!tests'; then
+        echo "== UNA-v.$version.zip from $built is current"
+    else
+        die "the code changed since the package was built ($built): run prepare again on a fresh release branch, the system update pack depends on it"
+    fi
 
     src=$(mktemp -d "${TMPDIR:-/tmp}/una-release-patch.XXXXXX")
     trap 'rm -rf "$src"' EXIT

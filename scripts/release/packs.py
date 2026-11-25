@@ -4,6 +4,8 @@ Builds the files part of UNA update packs. SQL is not generated here.
 
   packs.py system  --old-tree DIR --new-tree DIR --from 15.0.0-RC4 --to 15.0.0-RC5 [--out DIR]
   packs.py modules --since 15.0.0-RC4 --to-ref HEAD --system-version 15.0.0-RC5 [--out DIR] [--module NAME ...]
+  packs.py built   --new-tree DIR --system-version 15.0.0-RC5
+  packs.py flags   --system-version 15.0.0-RC5
   packs.py versions --mode release|dev [--write]
   packs.py verify  --generated DIR --ref 15.0.0-RC4
 
@@ -12,6 +14,8 @@ system:  compares two unpacked release packages (the previous release and the ne
          script.php are created as stubs only when they are missing.
 modules: for every module under modules/boonex that changed since its last update pack was made, writes modules/boonex/<module>/updates/<from>_<to>/ with install/config.php,
          install/installer.php, install/langs/ and source/. install/sql/ is left to a person.
+built:   adds a module's build outputs that are not in git to its pack of this release.
+flags:   sets execute_sql and clear_db_cache in this release's packs after a person wrote their SQL.
 versions: sets module versions for the release commit, or back to .DEV after it (see versions()).
 verify:  compares generated packs with the ones committed at a git ref and prints every difference.
 
@@ -234,7 +238,7 @@ def lang_update(old, new):
             lines.append('\t<string_upd name="%s">%s</string_upd>' % (key, value))
     for key in old_strings:
         if key not in new_strings:
-            lines.append('\t<string_del name="%s" />' % key)
+            lines.append('\t<string_del name="%s"><![CDATA[%s]]></string_del>' % (key, key))
     if not lines:
         return None
     text = new.decode('utf-8', errors='replace')
@@ -260,7 +264,7 @@ def module_config(module, config, previous, v_from, v_to, system_version, flags,
         'home_dir': '%s%s/' % (config_value(config, 'home_dir'), 'updates/update_' + pack_name),
         'home_uri': '%s_update_%s_%s' % (uri, v_from.replace('.', ''), v_to.replace('.', '')),
     }
-    delete_files = 'array(%s)' % ''.join("\n        '%s'," % p for p in deleted) + ('\n    ' if deleted else '')
+    delete_files = 'array(%s%s)' % (''.join("\n        '%s'," % p for p in deleted), '\n    ' if deleted else '')
 
     if previous:
         # The previous pack's config carries what is specific to the module (module_uri, restore_languages, ...).
@@ -371,6 +375,25 @@ def module_packs(args):
             rel = path[len(home) + 1:]
             if not rel.startswith(('updates/', 'migrations/')):
                 changes.append((state, rel))
+
+        # The commit that added the previous pack can hold later changes than the pack itself (it was cut
+        # earlier). Where that pack carries a file, its copy is what sites have.
+        previous_source = '%s/updates/%s_%s/source/' % (home, last[0], last[1])
+        listed = {rel for _, rel in changes}
+        eol = lambda data: data.replace(b'\r\n', b'\n')
+        for path in git('ls-tree', '-r', '--name-only', to_ref, previous_source).splitlines():
+            rel = path[len(previous_source):]
+            if rel == 'install/config.php' or rel.startswith('migrations/'):
+                continue
+            current = '%s/%s' % (home, rel)
+            if not git_has(to_ref, current):
+                continue
+            same = eol(git('show', '%s:%s' % (to_ref, path), binary=True)) == eol(git('show', '%s:%s' % (to_ref, current), binary=True))
+            if same and rel in listed:
+                changes = [c for c in changes if c[1] != rel]
+            elif not same and rel not in listed:
+                changes.append(('M', rel))
+        changes.sort(key=lambda c: c[1])
         if [rel for _, rel in changes] == ['install/config.php']:
             # A version line alone ("Back to DEV") is not a change to deliver.
             strip = lambda text: re.sub(r"'version'\s*=>\s*'[^']*'", '', text)
@@ -399,7 +422,11 @@ def module_packs(args):
 
             target = lang_target(rel)
             if target:
-                old = git('show', '%s:%s/%s' % (from_ref, home, rel), binary=True) if git_has(from_ref, '%s/%s' % (home, rel)) else None
+                old = None
+                for ref, path in ((to_ref, previous_source + rel), (from_ref, '%s/%s' % (home, rel))):
+                    if git_has(ref, path):
+                        old = git('show', '%s:%s' % (ref, path), binary=True)
+                        break
                 update = lang_update(old, data)
                 if update:
                     if is_language:
@@ -449,6 +476,69 @@ class %sUpdater extends BxDolStudioUpdater
     for module, reason in skipped:
         print('%-22s SKIPPED: %s' % (module, reason))
     print('%d packs, %d modules skipped' % (len(built), len(skipped)))
+
+
+# --------------------------------------------------------------------------------------------------
+# packs of this release: build outputs and flags
+
+
+def release_packs(system_version):
+    """Update packs on disk that were made for this system version: (module, pack folder)."""
+    found = []
+    for module in sorted(os.listdir(MODULES_DIR)):
+        folder = '%s/%s/updates' % (MODULES_DIR, module)
+        for name in sorted(os.listdir(folder)) if os.path.isdir(folder) else []:
+            config = os.path.join(folder, name, 'install/config.php')
+            if os.path.isfile(config):
+                with open(config, encoding='utf-8', errors='replace') as f:
+                    match = re.search(r"'compatible_with'\s*=>\s*array\(\s*'([^']*)'", f.read())
+                if match and match.group(1) == system_version:
+                    found.append((module, os.path.join(folder, name)))
+    return found
+
+
+def set_flags(pack):
+    sql_dir = os.path.join(pack, 'install/sql')
+    has_sql = int(os.path.isdir(sql_dir) and bool(os.listdir(sql_dir)))
+    path = os.path.join(pack, 'install/config.php')
+    with open(path, 'rb') as f:
+        raw = f.read()
+    new = raw
+    for key in (b'execute_sql', b'clear_db_cache'):
+        new = re.sub(rb"('" + key + rb"'\s*=>\s*)\d", lambda m: m.group(1) + str(has_sql).encode(), new, count=1)
+    if new != raw:
+        with open(path, 'wb') as f:
+            f.write(new)
+    return new != raw, has_sql
+
+
+def flags(args):
+    """After a person adds or removes SQL in this release's packs: execute_sql and clear_db_cache follow."""
+    for module, pack in release_packs(args.system_version):
+        changed, has_sql = set_flags(pack)
+        if changed:
+            print('%-22s execute_sql and clear_db_cache set to %d' % (module, has_sql))
+
+
+def built(args):
+    """
+    Files a module gets from the build and that are not in git (Messenger's compiled CSS and emoji) go
+    into its pack of this release from the built package, all of them: there is no built copy of the
+    previous release to compare with.
+    """
+    root = args.new_tree.rstrip('/')
+    for module, pack in release_packs(args.system_version):
+        home = '%s/%s' % (MODULES_DIR, module)
+        tracked = set(git('ls-files', home).splitlines())
+        added = 0
+        for path in sorted(tree_files(os.path.join(root, home))) if os.path.isdir(os.path.join(root, home)) else []:
+            if '%s/%s' % (home, path) not in tracked:
+                target = os.path.join(pack, 'source', path)
+                os.makedirs(os.path.dirname(target), exist_ok=True)
+                shutil.copyfile(os.path.join(root, home, path), target)
+                added += 1
+        if added:
+            print('%-22s %d built files added to %s/source' % (module, added, pack))
 
 
 # --------------------------------------------------------------------------------------------------
@@ -565,6 +655,15 @@ def main():
     p.add_argument('--rebuild', action='store_true', help="make a pack again when the module's version already has one")
     p.add_argument('--out', default='.', help='where the repository tree is written (default: here)')
     p.set_defaults(run=module_packs)
+
+    p = commands.add_parser('flags')
+    p.add_argument('--system-version', required=True)
+    p.set_defaults(run=flags)
+
+    p = commands.add_parser('built')
+    p.add_argument('--new-tree', required=True, help='unpacked package of the new release')
+    p.add_argument('--system-version', required=True)
+    p.set_defaults(run=built)
 
     p = commands.add_parser('versions')
     p.add_argument('--mode', required=True, choices=('release', 'dev'))
