@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_dolphin_migration',
     'title' => 'Dolphin Migration',
     'note' => 'Dolphin migration, import from Dolphin',
-    'version' => '9.0.6.DEV',
+    'version' => '9.0.7.DEV',
     'vendor' => 'UNA INC',
     'help_url' => '',
 
