@@ -60,7 +60,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_my' AND
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_submenu' AND `module`='bx_glossary' AND `name`='glossary-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_submenu' AND `module`='bx_glossary' AND `name`='glossary-popular';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_submenu' AND `module`='bx_glossary' AND `name`='glossary-top';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_submenu' AND `module`='bx_glossary' AND `name`='glossary-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_submenu' AND `module`='bx_glossary' AND `name`='glossary-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_snippet_meta' AND `module`='bx_glossary' AND `name`='date';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_glossary_snippet_meta' AND `module`='bx_glossary' AND `name`='author';

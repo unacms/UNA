@@ -656,10 +656,10 @@
     "@tanstack/ai-event-client" "^0.11.3"
     "@tanstack/ai-utils" "^0.4.0"
 
-"@tanstack/ai-client@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-1.2.0.tgz#a0c3ffb5bd30b60358a74846d809c90176985d23"
-  integrity sha512-fwDe6AijLgScdEDq6Cy15U6V1i2GPBtxSmUhNGytGxuW1IQIFvufYMqSmVtJ4pd/CrZXvm43BoBo6jLogl574w==
+"@tanstack/ai-client@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-1.2.1.tgz#91b63ece79e703327670a5a059e25f48b0a0f199"
+  integrity sha512-m6EjS6pRdbOxMrIIgWm6QtOfCGBbAh2QnV7PJ6b64xfeq908bTYk5U2dJKQboFN2PuAIHFa02Udbvu6nU5tp8g==
   dependencies:
     "@tanstack/ai" "^1.7.0"
     "@tanstack/ai-event-client" "^1.1.0"
@@ -2238,10 +2238,10 @@ html-void-elements@^3.0.0:
   resolved "https://registry.yarnpkg.com/html-void-elements/-/html-void-elements-3.0.0.tgz#fc9dbd84af9e747249034d4d62602def6517f1d7"
   integrity sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==
 
-htmx.org@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-4.0.1.tgz#db4f8322b8d61d5ae21b46011a0be835aaefb6f7"
-  integrity sha512-oF7JgXhDW9UXCy/k1ZYFUQgzu/rm19ORWPSPNL91vPluB2PB9+MV55tyQdH/w7o2EAbTYUG5SDW1R60mdkdqGg==
+htmx.org@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-4.0.2.tgz#ee51297b9b701ad929d8ce602c4b91f8f54bcfa0"
+  integrity sha512-rt+yUQwgQXLhpMZQZmT97vP9wiThqfTyxsPy60WntlQHKyS0o4uBCbcdNWOTh6n5LCCPuI8WYSQedP1K7xaQlQ==
 
 http-cache-semantics@^4.1.1:
   version "4.3.0"
@@ -2664,10 +2664,10 @@ jquery.easing@^1.4.1:
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-4.0.0.tgz#95c33ac29005ff72ec444c5ba1cf457e61404fbb"
   integrity sha512-TXCHVR3Lb6TZdtw1l3RTLf8RBWVGexdxL6AC8/e0xZKEpBflBsjh9/8LXw+dkNFuOyW9B7iB3O1sP7hS0Kiacg==
 
-jquery@^3.5.0, jquery@^3.7.1:
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
-  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
+jquery@^3.5.0, jquery@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.8.0.tgz#3bf83324052cc9e7148718e9d6ea3cde1b2b9f5a"
+  integrity sha512-AOYt0viqPysMUTq45O8gF9DuOnBT3Il/8WtM/TT8z/2QeGsZ70ImwSJtNFxznn2R71v8yIgaEunOGo82OY/f0g==
 
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
@@ -2889,10 +2889,10 @@ lucide-static@^1.73.0:
   resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.73.0.tgz#76a095f7cffc01db82e977591d850659a2cf1b48"
   integrity sha512-/FfzdRThAPnDVMk643pzENqYUnxudEON/fyOdh31ZiPiw/seE9VoYeIJPRDTCLDNtnF+5pK6CNwf6IkQMfrJ5w==
 
-lucide@^1.76.0:
-  version "1.76.0"
-  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.76.0.tgz#30124914a77e5e6b78bee34b5d8ddd1814726984"
-  integrity sha512-70XF2WJ156zj40BnibNXNnE9yq5Cf8tegPRgiryAXQHOZXBZV66jqqFluT+Td1weQNrhkURr/cQum2ReAJsydg==
+lucide@^1.77.0:
+  version "1.77.0"
+  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.77.0.tgz#d1b80a4775d77fa4c3aecfd06eae92110df9e678"
+  integrity sha512-DqoScWUEDcTC0KXPKKlZIIdOE++crPcGAQ60KfBNiT+Aq0sgQtxY/1sBCKBzLLo2yLLhYUperyUGHV5PwlBaIQ==
 
 magic-string@^0.30.3:
   version "0.30.21"

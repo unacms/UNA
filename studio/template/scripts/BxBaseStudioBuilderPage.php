@@ -1825,6 +1825,14 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                     'values' => $this->_getHiddenOnValues(),
                     'tr_attrs' => $bTitleAsCover ? array('class' => 'adm-bp-section-title-own', 'style' => 'display:none') : array('class' => 'adm-bp-section-title-own'),
                 ),
+                'search' => array(
+                    'type' => 'switcher',
+                    'name' => 'search',
+                    'caption' => _t('_adm_bp_txt_section_search'),
+                    'info' => _t('_adm_bp_txt_section_search_info'),
+                    'value' => 1,
+                    'checked' => !isset($aRow['search']) || (int)$aRow['search'] != 0,
+                ),
                 'controls' => array(
                     'name' => 'controls',
                     'type' => 'input_set',
@@ -1854,6 +1862,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
                 'cover' => max(0, min(3, (int)$oForm->getCleanValue('cover'))),
                 'cover_hidden_on' => $this->_getSubmittedHiddenOn($oForm->getCleanValue('cover_hidden_on')),
                 'cover_image' => $this->_getSubmittedFileId($oForm->getCleanValue('cover_image')),
+                'search' => $oForm->getCleanValue('search') ? 1 : 0,
             );
 
             // A picture the form could not show (a stored file with no upload to list) stays. One removed in the form is

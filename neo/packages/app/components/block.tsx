@@ -1,3 +1,4 @@
+import { useExploreSearchActive } from 'app/context/explore-search';
 import type { ComponentType, ReactNode } from 'react';
 import { memo, useMemo } from 'react';
 import { BlockDataByName, findElementBySource, hasNonEmptyContent } from 'app/lib/util';
@@ -173,6 +174,10 @@ export function DataByName(data: PageData | null | undefined, name: BlockName | 
 
 export default function Block(props: BlockProps) {
     const block = props.block;
+    // Explore with a search typed: its search block's results stand in place of the page's other blocks
+    const exploreSearchActive = useExploreSearchActive();
+    if (exploreSearchActive && !blockContentItems(block?.content).some((item) => item?.data?.element === 'search_window'))
+        return null;
 
     const { name: extraPropsName, key, ...extraPropsRest } = props?.extraProps ?? {};
     const staticBlock = staticBlockFor(extraPropsName, { ...extraPropsRest, wrapperClassses: props.wrapperClassses });

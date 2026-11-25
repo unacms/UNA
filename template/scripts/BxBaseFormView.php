@@ -611,6 +611,10 @@ class BxBaseFormView extends BxDolForm
                     ]);
             }
 
+            // the form to fill says who sees each field with privacy and what its author can pick, as the chooser on the site does
+            if(!$this->isViewMode() && !empty($aInput['privacy']) && ($aInputPgc = $this->getPrivacyGroupChooserAPI($aInput)))
+                $aInput['privacy_chooser'] = $aInputPgc;
+
             $aInputs[$sKey] = $aInput;
         }
 
@@ -2800,6 +2804,13 @@ BLAH;
             }
         }
 
+        // A list of more than a few checkboxes can select all of them and unselect them.
+        if ('checkbox_set' == $aInput['type'] && !$this->_bIsApi && isset($aInput['values']) && is_array($aInput['values']) && count($aInput['values']) > 3)
+            $sOptions = $this->oTemplate->parseHtmlByName('form_checkbox_set_toggle.html', [
+                'txt_all' => _t('_Select_all'),
+                'txt_none' => _t('_sys_form_txt_unselect_all'),
+            ]) . $sOptions;
+
         // generate element
         $sCode = <<<BLAH
             <div $sAttrs>
@@ -2948,6 +2959,45 @@ BLAH;
             'title' => bx_html_attribute($this->_getPrivacyTitle($mixedPrivacyGroup)),
             'label' => bx_html_attribute(_t('_sys_form_input_privacy_label', $this->_getPrivacyTitle($mixedPrivacyGroup))),
         ));
+    }
+
+    /**
+     * The chooser of a field's privacy for the apps, what genPrivacyGroupChooser draws on the site: who sees the
+     * field now and the groups to pick from. The apps save the choice with the set_form_input_privacy service.
+     *
+     * @return array empty when the field has no privacy or the signed-in profile can't set it
+     */
+    public function getPrivacyGroupChooserAPI($aInput, $sPrivacyObject = '')
+    {
+        if(empty($aInput['privacy']) || empty($aInput['id']))
+            return [];
+
+        $iAuthorId = (int)bx_get_logged_profile_id();
+        if(!$iAuthorId)
+            return [];
+
+        $mixedResult = checkActionModule($iAuthorId, 'set form fields privacy', 'system');
+        if($mixedResult[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
+            return [];
+
+        if(empty($sPrivacyObject))
+            $sPrivacyObject = $this->_sPrivacyObjectView;
+
+        $aGroups = BxDolForm::getInputPrivacyGroupsAPI($sPrivacyObject, $iAuthorId);
+        if(empty($aGroups))
+            return [];
+
+        $iInputId = (int)$aInput['id'];
+        $mixedPrivacyGroup = $this->_getPrivacyGroup($sPrivacyObject, $iInputId, $iAuthorId, $aInput);
+        $sTitle = $this->_getPrivacyTitle($mixedPrivacyGroup);
+
+        return [
+            'input_id' => $iInputId,
+            'value' => (string)$mixedPrivacyGroup,
+            'values' => $aGroups,
+            'title' => $sTitle,
+            'label' => _t('_sys_form_input_privacy_label', $sTitle),
+        ];
     }
 
     function genFiledItemInfoWrapper($sInput, $sInfoValue)

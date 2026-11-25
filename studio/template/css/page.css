@@ -396,6 +396,112 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header.bx-gh-title >
 .bx-grid-header.bx-gh-title > .bx-std-block-caption > .bx-std-bcap-controls {
     flex: 1 1 auto;
 }
+/* Navigation: where we are as breadcrumbs, module > set. They are the grid's own selects, as Studio draws them anywhere,
+   with a chevron between them. */
+.bx-nav-crumbs,
+.bx-grid-ag-wrap .bx-grid-header-controls-filter > .bx-nav-crumbs {
+    flex: 0 1 auto;
+    display: flex;
+    flex-wrap: wrap; /* a crumb that does not fit goes to the next line: crumbs never squeeze into each other */
+    align-items: center;
+    min-width: 0;
+    gap: 0.25rem 0.5rem;
+}
+.bx-nav-crumbs .bx-nav-crumb-text {
+    flex: none;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 2.25rem;
+}
+/* One crumb: what it is (a small muted label), then its value: a select or this page's name. */
+.bx-nav-crumbs .bx-nav-crumb {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 0;
+    max-width: 100%;
+}
+.bx-nav-crumbs .bx-nav-crumb-label {
+    flex: none;
+    color: #71717a;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 2.25rem; /* as the links and the selects' text: the letters of a crumb on one baseline */
+    white-space: nowrap;
+}
+/* The label, the links and the selects in one size. */
+.bx-nav-crumbs .bx-nav-crumb .select2-selection__rendered,
+.bx-nav-crumbs .bx-nav-crumb select {
+    font-size: 14px;
+}
+.dark .bx-nav-crumbs .bx-nav-crumb-label {
+    color: #a1a1aa;
+}
+/* Phones: each level on a line of its own, no chevrons between them: its label in a column as wide for every level,
+   then its select over the rest of the line, so the selects line up. */
+@media (max-width: 767px) {
+    .bx-nav-crumbs .bx-nav-crumb-sep {
+        display: none;
+    }
+    .bx-nav-crumbs,
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter > .bx-nav-crumbs {
+        flex: 1 1 100%;
+    }
+    .bx-nav-crumbs .bx-nav-crumb {
+        display: flex;
+        flex: 1 1 100%;
+        max-width: none;
+    }
+    .bx-nav-crumbs .bx-nav-crumb .bx-nav-crumb-label {
+        flex: 0 0 6.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-nav-crumbs .bx-nav-crumb .bx-form-element-wrapper {
+        flex: 1 1 0;
+        width: auto !important;
+        min-width: 0;
+    }
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-nav-crumbs .bx-nav-crumb .bx-form-input-wrapper,
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-nav-crumbs .bx-nav-crumb .select2-container {
+        width: 100% !important;
+        max-width: none;
+    }
+}
+.bx-nav-crumbs .bx-nav-crumb-sep {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: #a1a1aa;
+}
+/* A select is as wide as its value (select2 sets a fixed width, the AG header 12rem), up to 20rem. */
+.bx-nav-crumbs .bx-form-element-wrapper,
+.bx-nav-crumbs .bx-form-input-wrapper {
+    width: auto !important;
+    min-width: 0;
+    margin: 0;
+}
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-nav-crumbs .select2-container {
+    width: auto !important;
+    min-width: 0;
+    max-width: 20rem;
+}
+.dark .bx-nav-crumbs .bx-nav-crumb-sep {
+    color: #71717a;
+}
+/* AG grid: the rows take the block's height left under the header, so no empty band is left under a long list (the grid's
+   own height, as tall as its rows, is where it starts from). */
+div.bx-std-block-content > .bx-grid-ag-wrap > .bx-grid-ag-host {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+div.bx-std-block-content > .bx-grid-ag-wrap > .bx-grid-ag-host > .bx-grid-ag {
+    flex: 1 1 auto;
+    max-height: none;
+}
 /* AG grid: the block is the frame, so the grid draws no card of its own inside it, as the classic grid draws none. */
 div.bx-std-block-content > .bx-grid-ag-wrap {
     border: 0;

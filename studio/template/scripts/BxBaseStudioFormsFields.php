@@ -298,6 +298,12 @@ class BxBaseStudioFormsFields extends BxDolStudioFormsFields
         else
             $aInputDisplays['attrs']['disabled'] = 'disabled';
 
+        // With a form in the breadcrumbs, only its displays: the form changes a step up.
+        if(!empty($aDisplays) && $this->sObject !== '')
+            $aDisplays = array_filter($aDisplays, function($aDisplay) {
+                return ($aDisplay['object'] ?? '') === $this->sObject;
+            });
+
         if(!empty($aDisplays)) {
             $aDisplaysGrouped = $aCounter = array();
             $this->oDb->getInputs(array('type' => 'counter_by_displays'), $aCounter, false);
@@ -440,7 +446,14 @@ class BxBaseStudioFormsFields extends BxDolStudioFormsFields
     {
         parent::_getFilterControls();
 
-        $sContent = $this->getModulesSelectOne('getInputs') . $this->getDisplaysSelector($this->sModule);
+        // Forms > module (goes to its forms) > form (goes to its displays) > display (switches in place among the
+        // form's displays).
+        $aNext = [];
+        if($this->sObject !== '')
+            $aNext[] = ['label' => _t('_adm_form_txt_displays_gl_form'), 'control' => $this->_getCrumbGoSelect('form', $this->sObject, $this->_getCrumbForms($this->sModule), BX_DOL_URL_STUDIO . 'builder_forms.php?page=displays&module=' . rawurlencode($this->sModule) . '&object=')];
+        $aNext[] = ['label' => _t('_adm_form_txt_crumb_display'), 'control' => $this->getDisplaysSelector($this->sModule)];
+
+        $sContent = $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_forms.php?page=forms', $this->sModule, $this->_getCrumbModules('getForms', '_adm_form_txt_all_modules', false), $aNext);
 
         $oForm = new BxTemplStudioFormView(array());
 

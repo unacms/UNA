@@ -356,7 +356,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_ads_submenu', 'bx_ads', 'ads-home', '_bx_ads_menu_item_title_system_entries_public', '_bx_ads_menu_item_title_entries_public', 'page.php?i=ads-home', '', '', '', '', 2147483647, '', 1, 1, 1),
 ('bx_ads_submenu', 'bx_ads', 'ads-popular', '_bx_ads_menu_item_title_system_entries_popular', '_bx_ads_menu_item_title_entries_popular', 'page.php?i=ads-popular', '', '', '', '', 2147483647, '', 1, 1, 2),
 ('bx_ads_submenu', 'bx_ads', 'ads-categories', '_bx_ads_menu_item_title_system_entries_categories', '_bx_ads_menu_item_title_entries_categories', 'page.php?i=ads-categories', '', '', '', '', 2147483647, '', 1, 1, 3),
-('bx_ads_submenu', 'bx_ads', 'ads-search', '_bx_ads_menu_item_title_system_entries_search', '_bx_ads_menu_item_title_entries_search', 'page.php?i=ads-search', '', '', '', '', 2147483647, '', 1, 1, 4),
+('bx_ads_submenu', 'bx_ads', 'ads-search', '_bx_ads_menu_item_title_system_entries_search', '_bx_ads_menu_item_title_entries_search', 'page.php?i=ads-search', '', '', '', '', 2147483647, '', 0, 1, 4),
 ('bx_ads_submenu', 'bx_ads', 'ads-manage', '_bx_ads_menu_item_title_system_entries_manage', '_bx_ads_menu_item_title_entries_manage', 'page.php?i=ads-manage', '', '', '', '', 2147483646, '', 1, 1, 5),
 ('bx_ads_submenu', 'bx_ads', 'ads-sources', '_bx_ads_menu_item_title_system_sources', '_bx_ads_menu_item_title_sources', 'page.php?i=ads-sources', '', '', '', '', 2147483646, 'a:2:{s:6:"module";s:6:"bx_ads";s:6:"method";s:20:"is_sources_avaliable";}', 1, 1, 6);
 

@@ -207,6 +207,18 @@ class BxBaseStudioFormsDisplays extends BxDolStudioFormsDisplays
         $oForm->addCssJs();
     }
 
+    /**
+     * What an opened display (on the Forms page) asks its fields by.
+     */
+    protected function _agRowMeta($aRow)
+    {
+        return [
+            'module' => isset($aRow['module']) ? (string)$aRow['module'] : '',
+            'object' => isset($aRow['object']) ? (string)$aRow['object'] : '',
+            'display_name' => isset($aRow['display_name']) ? (string)$aRow['display_name'] : '',
+        ];
+    }
+
     protected function _getCellModule($mixedValue, $sKey, $aField, $aRow)
     {
         $mixedValue = $this->_limitMaxLength($this->getModuleTitle($aRow['module']), $sKey, $aField, $aRow, $this->_isDisplayPopupOnTextOverflow);
@@ -228,7 +240,10 @@ class BxBaseStudioFormsDisplays extends BxDolStudioFormsDisplays
     {
         parent::_getFilterControls();
 
-        $sContent = $this->getModulesSelectOne('getDisplays', false) . $this->getFormsSelector($this->sModule);
+        // Forms > module (goes to its forms) > form (switches in place among the module's forms).
+        $sContent = $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_forms.php?page=forms', $this->sModule, $this->_getCrumbModules('getForms', '_adm_form_txt_all_modules', false), [
+            ['label' => _t('_adm_form_txt_displays_gl_form'), 'control' => $this->getFormsSelector($this->sModule)],
+        ]);
 
         $oForm = new BxTemplStudioFormView(array());
 

@@ -68,7 +68,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_view_meta
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_my' AND `module`='bx_groups' AND `name`='create-group-profile';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_submenu' AND `module`='bx_groups' AND `name`='groups-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_submenu' AND `module`='bx_groups' AND `name`='groups-top';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_submenu' AND `module`='bx_groups' AND `name`='groups-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_submenu' AND `module`='bx_groups' AND `name`='groups-joined';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_submenu' AND `module`='bx_groups' AND `name`='groups-manage';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_groups_view_submenu' AND `module`='bx_groups' AND `name`='view-group-profile';

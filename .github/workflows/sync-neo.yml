@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - master
-#    paths:
-#      - 'neo/**'
+    # A push that changes nothing under neo/ has nothing to sync.
+    paths:
+      - 'neo/**'
+      - '.github/workflows/sync-neo.yml'
 
 permissions:
   contents: read

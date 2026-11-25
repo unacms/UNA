@@ -85,9 +85,11 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'SearchParse' => 'BxBaseServicesSearch',
             'GetBlockSearchAi' => 'BxBaseServicesSearch',
             'SearchAiResults' => 'BxBaseServicesSearch',
+            'SearchWindow' => 'BxBaseServicesSearch',
             'Cmts' => 'BxBaseServices',
             'GetFooter' => 'BxBaseServices',
             'SetBadges' => 'BxBaseServices',
+            'SetFormInputPrivacy' => 'BxBaseServices',
 
             'GetPageContentByRequest' => 'BxBaseServicePages',
             'GetPageBlockData' => 'BxBaseServicePages',
@@ -1825,6 +1827,53 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return true;
     }
     
+    /**
+     * Who sees a form field of the signed-in profile: what the chooser next to a field with privacy sets on the
+     * site, for the apps (@see BxBaseFormView::getPrivacyGroupChooserAPI).
+     *
+     * @param int $iInputId the field, an id of sys_form_inputs
+     * @param int $iGroupId the privacy group, one of those the chooser offers
+     * @return array|false the group now with its title and label, false when it can't be set
+     */
+    public function serviceSetFormInputPrivacy($iInputId, $iGroupId)
+    {
+        $sPrivacyObject = 'sys_form_inputs_allow_view_to';
+
+        $iInputId = (int)$iInputId;
+        $iGroupId = (int)$iGroupId;
+        $iAuthorId = (int)bx_get_logged_profile_id();
+        if(!$iAuthorId || $iInputId <= 0 || $iGroupId <= 0)
+            return false;
+
+        $aCheck = checkActionModule($iAuthorId, 'set form fields privacy', 'system');
+        if($aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        // only a field with privacy on (Studio > Forms > a field) has it
+        if(!BxDolFormQuery::isInputPrivacyEnabled($iInputId))
+            return false;
+
+        $sTitle = false;
+        foreach(BxDolForm::getInputPrivacyGroupsAPI($sPrivacyObject, $iAuthorId) as $aGroup)
+            if((int)$aGroup['key'] == $iGroupId) {
+                $sTitle = $aGroup['value'];
+                break;
+            }
+        if($sTitle === false)
+            return false;
+
+        $sPrivacyField = BxDolPrivacy::getFieldName($sPrivacyObject);
+        if(empty($sPrivacyField) || !BxDolFormQuery::setInputPrivacy($iInputId, $iAuthorId, $sPrivacyField, (string)$iGroupId))
+            return false;
+
+        return [
+            'input_id' => $iInputId,
+            'value' => (string)$iGroupId,
+            'title' => $sTitle,
+            'label' => _t('_sys_form_input_privacy_label', $sTitle),
+        ];
+    }
+
     public function serviceGetBadge($aBadge, $bIsCompact = false)
     {
         $sClass = '';

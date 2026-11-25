@@ -319,7 +319,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_posts_submenu', 'bx_posts', 'posts-home', '_bx_posts_menu_item_title_system_entries_public', '_bx_posts_menu_item_title_entries_public', 'page.php?i=posts-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_posts_submenu', 'bx_posts', 'posts-popular', '_bx_posts_menu_item_title_system_entries_popular', '_bx_posts_menu_item_title_entries_popular', 'page.php?i=posts-popular', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_posts_submenu', 'bx_posts', 'posts-top', '_bx_posts_menu_item_title_system_entries_top', '_bx_posts_menu_item_title_entries_top', 'page.php?i=posts-top', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_posts_submenu', 'bx_posts', 'posts-search', '_bx_posts_menu_item_title_system_entries_search', '_bx_posts_menu_item_title_entries_search', 'page.php?i=posts-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_posts_submenu', 'bx_posts', 'posts-search', '_bx_posts_menu_item_title_system_entries_search', '_bx_posts_menu_item_title_entries_search', 'page.php?i=posts-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_posts_submenu', 'bx_posts', 'posts-manage', '_bx_posts_menu_item_title_system_entries_manage', '_bx_posts_menu_item_title_entries_manage', 'page.php?i=posts-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: categories

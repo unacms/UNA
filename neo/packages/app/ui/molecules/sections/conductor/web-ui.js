@@ -563,12 +563,17 @@ function getAddMenuItems(menu, filter, currentUser) {
                 link: menu.add_url,
             })
         }
-        if (menu.name && menu.add_url) {
+        // The page's Search (UNA's `search`: the section's module, or a context): the search window with that scope.
+        // An older UNA sends none: its section's Search came with its add page.
+        const search = menu.search !== undefined ? menu.search : (menu.name && menu.add_url ? { section: menu.name } : null)
+        if (search) {
             items.push({
                 icon: 'Search',
                 name: 'Search',
                 link: '',
-                section: menu.name,
+                tooltip: search.title || 'Search',
+                section: search.section || 'scope',
+                scope: search,
             })
         }
     }
@@ -592,7 +597,8 @@ const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, con
     // `only`: 'search' keeps the Search trigger, 'actions' everything else (a section's two-line header splits them).
     const addButtonsSet = getAddMenuItems(menu, filter, currentUser).filter((button) => (
         !only || (only === 'search') === !!button.section
-    ))
+    // Search before Add, as on the site
+    )).sort((a, b) => (b.section ? 1 : 0) - (a.section ? 1 : 0))
     if (only && !addButtonsSet.length) return null
 
     return (
@@ -602,7 +608,8 @@ const AddMenu = ({ menu, filter, only, style = 'glass', actionStyle = style, con
                 if (button.section) {
                     btn = (
                         <Search
-                            section={button.section}
+                            scope={button.scope}
+                            labelled={labelled}
                             params={{
                                 trigger: {
                                     style,
@@ -1299,7 +1306,6 @@ export function TopSidebar({
     styles,
     addButtons,
     tabletAddButtons = addButtons,
-    phoneAddButtons,
     actionButtons,
     toolButtons,
     children,
@@ -1327,12 +1333,7 @@ export function TopSidebar({
     // name, as on phones), drawn as the tabs (`tabletAddButtons`: Add round and icon-only).
     const tabletButtons = showAddButtons && (
         <>
-            {/* Phones: Add alone, round and icon-only (the header's toolbar has Search and the site's Add menu). */}
-            {!!phoneAddButtons && (
-                <Row className="flex sm:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
-                    {phoneAddButtons}
-                </Row>
-            )}
+            {/* Phones: the header's end has the section's Search and Add (header-element.js, section-actions.tsx). */}
             <Row className="hidden sm:flex lg:hidden shrink-0 items-center gap-2 pr-4 cond-buttons-add">
                 {tabletAddButtons}
             </Row>
@@ -1382,7 +1383,7 @@ export function TopSidebar({
                         {tabletButtons}
                         {showAddButtons && (
                             <Row className={`${desktopFlex} shrink-0 items-center gap-2 pr-4`}>
-                                {toolButtons}
+                                {/* Without the title row its actions (Search, Add) end the tab row. */}
                                 {!showTitle && actionButtons}
                             </Row>
                         )}
@@ -1477,10 +1478,9 @@ export const TabBar = ({
     // round (MenuItemSubmenu, components/menu-items/submenu.js), glass; Add is glass prominent (the accent), as on the
     // title row and UNA's site (cover.html, `.bx-cover-add`). Change them together.
     // Add: a pill with its label from lg (`addButtons`, `actionButtons`), round and icon-only at the end of the tab row
-    // on tablets (`tabletAddButtons`, with Search) and phones (`phoneAddButtons`), as the site's `.bx-btn-icon-mobile`.
+    // on tablets (`tabletAddButtons`, with Search); on phones the header has them (section-actions.tsx), as the site's `.bx-btn-icon-mobile`.
     const addButtons = <AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" labelled />
     const tabletAddButtons = <AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" />
-    const phoneAddButtons = <AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" />
     // Profile actions ("Follow", "…") normally sit on the cover. With no cover
     // (`none`) — or when config asks for it — they move into the tab row.
     const profileModule =
@@ -1502,11 +1502,10 @@ export const TabBar = ({
             omitDefaultBackground={omitDefaultBackground}
             addButtons={addButtons}
             tabletAddButtons={tabletAddButtons}
-            phoneAddButtons={phoneAddButtons}
             // Small glass prominent, as the tabs and Search below it are small glass, and as UNA's site draws it.
             // A pill with its label: this line shows from lg only.
-            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" labelled />}
-            toolButtons={<AddMenu menu={menu} filter="hideInTopBar" only="search" />}
+            // Search, then Add: the section's Search ("Search posts", glass) beside its Add, as the site's title row has them.
+            actionButtons={<AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" labelled />}
             // No section name where the page's title is off on desktop: the Add button moves to the tab row's end.
             title={showTitle ? t(menuSettings?.name) : ''}
             // On desktop the page's heading stays for screen readers (below it the page header names the page).
@@ -1542,6 +1541,13 @@ export const TabBar = ({
                                 style="glass"
                                 image="SlidersHorizontal"
                             />
+                        </Row>
+                    )}
+                    {/* A context's or a person's Search ("Search in Garden club"), before the profile's actions; phones
+                        have it at the header's end. */}
+                    {!!(menu?.search?.context || menu?.search?.author) && (
+                        <Row className="hidden sm:flex items-center shrink-0 pl-1 pr-2">
+                            <AddMenu menu={menu} filter="hideInTopBar" only="search" labelled={isDesktop} />
                         </Row>
                     )}
                     {!!pageData.cover_block?.actions_menu && showActionsInTabBar ? (

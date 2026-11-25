@@ -245,7 +245,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_channels_submenu', 'bx_channels', 'channels-home', '_bx_channels_menu_item_title_system_entries_recent', '_bx_channels_menu_item_title_entries_recent', 'page.php?i=channels-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_channels_submenu', 'bx_channels', 'channels-top', '_bx_channels_menu_item_title_system_entries_top', '_bx_channels_menu_item_title_entries_top', 'page.php?i=channels-top', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_channels_submenu', 'bx_channels', 'channels-toplevel', '_bx_channels_menu_item_title_system_entries_toplevel', '_bx_channels_menu_item_title_entries_toplevel', 'page.php?i=channels-toplevel', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_channels_submenu', 'bx_channels', 'channels-search', '_bx_channels_menu_item_title_system_entries_search', '_bx_channels_menu_item_title_entries_search', 'page.php?i=channels-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_channels_submenu', 'bx_channels', 'channels-search', '_bx_channels_menu_item_title_system_entries_search', '_bx_channels_menu_item_title_entries_search', 'page.php?i=channels-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_channels_submenu', 'bx_channels', 'channels-administration', '_bx_channels_menu_item_title_system_entries_manage', '_bx_channels_menu_item_title_entries_manage', 'page.php?i=channels-administration', '', '', '', '', 192, 1, 1, 5);
 
 -- MENU: custom menu for snippet meta info

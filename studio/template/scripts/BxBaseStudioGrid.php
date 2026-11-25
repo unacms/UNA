@@ -10,6 +10,8 @@
 
 class BxBaseStudioGrid extends BxDolStudioGrid
 {
+    protected $_bFilterModuleInUrl = false; ///< the page opens on the module in its address (_getFilterValue)
+
     function __construct($aOptions, $oTemplate = false)
     {
         parent::__construct($aOptions, $oTemplate);
@@ -115,6 +117,164 @@ class BxBaseStudioGrid extends BxDolStudioGrid
         $aInputModules['values'] = array_merge(array('' => _t('_adm_txt_select_module')), $aInputModules['values']);
         $oForm = new BxTemplStudioFormView(array());
         return $oForm->genRow($aInputModules);
+    }
+
+    /**
+     * Where we are, as breadcrumbs among the grid's filters: each crumb is one of the grid's selects
+     * (['control' => ...]), which switches its level, or the name of this page (['text' => ...]). A crumb says what it
+     * is before its value (['label' => 'Module', ...]).
+     */
+    public function getCrumbs($aCrumbs)
+    {
+        $aTmplCrumbs = [];
+        foreach(array_values($aCrumbs) as $i => $aCrumb) {
+            $bText = isset($aCrumb['text']);
+            $aTmplCrumbs[] = [
+                'bx_if:sep' => [
+                    'condition' => $i > 0,
+                    'content' => [],
+                ],
+                'bx_if:label' => [
+                    'condition' => !empty($aCrumb['label']),
+                    'content' => [
+                        'label' => $aCrumb['label'] ?? '',
+                    ],
+                ],
+                'bx_if:control' => [
+                    'condition' => !$bText,
+                    'content' => [
+                        'control' => !$bText ? $aCrumb['control'] : '',
+                    ],
+                ],
+                'bx_if:text' => [
+                    'condition' => $bText,
+                    'content' => [
+                        'text' => $bText ? $aCrumb['text'] : '',
+                    ],
+                ],
+            ];
+        }
+
+        return $this->_oTemplate->parseHtmlByName('nav_crumbs.html', [
+            'txt_label' => bx_html_attribute(_t('_adm_grid_lbl_module')),
+            'bx_repeat:crumbs' => $aTmplCrumbs,
+        ]);
+    }
+
+    /**
+     * Breadcrumbs of a list that modules divide (menus, forms, data lists, search forms) and of the pages under it:
+     * a select for every level, each one switches its level. Choosing a module is a step down, as choosing a row of
+     * the list is: the module's select goes to the list on that module (its first value, to the whole list), and
+     * after it come $aNext, the crumbs of the levels under the module.
+     * @param $sUrl the list's address
+     * @param $aModules module name => title, '' for every module (_getCrumbModules)
+     * @param $aNext crumbs after the module, as getCrumbs takes them; left out while no module is chosen
+     */
+    public function getCrumbsOfList($sUrl, $sModule, $aModules, $aNext = [])
+    {
+        $aCrumbs = [
+            ['label' => _t('_adm_grid_lbl_module'), 'control' => $this->_getCrumbGoSelect('module', $sModule, $aModules, $sUrl . '&module=', $sUrl)],
+        ];
+
+        return $this->getCrumbs($sModule !== '' ? array_merge($aCrumbs, $aNext) : $aCrumbs);
+    }
+
+    /**
+     * A module's forms for the breadcrumbs' select, each with how many displays it has (Studio > Forms).
+     */
+    protected function _getCrumbForms($sModule)
+    {
+        $aForms = $aCounter = [];
+        $this->oDb->getForms(['type' => 'by_module', 'value' => $sModule], $aForms, false);
+        $this->oDb->getDisplays(['type' => 'counter_by_forms'], $aCounter, false);
+
+        $aValues = [];
+        foreach($aForms as $aForm)
+            $aValues[$aForm['object']] = _t($aForm['title']) . ' (' . ($aCounter[$aForm['object']] ?? 0) . ')';
+        asort($aValues);
+
+        return array_merge(['' => _t('_adm_form_txt_select_form')], $aValues);
+    }
+
+    /**
+     * The modules for the breadcrumbs' select, each with how many rows of the list it has.
+     * @param $sCounterMethod the query method that counts the list's rows by modules
+     * @param $bOnlyUsed leave out the modules with no rows
+     */
+    protected function _getCrumbModules($sCounterMethod, $sAllModulesKey, $bShowCustom = true, $bOnlyUsed = false)
+    {
+        $aCounter = [];
+        $this->oDb->$sCounterMethod(['type' => 'counter_by_modules'], $aCounter, false);
+
+        $aModules = ['' => _t($sAllModulesKey)];
+        foreach($this->getModules($bShowCustom) as $sKey => $sValue) {
+            if($bOnlyUsed && empty($aCounter[$sKey]))
+                continue;
+
+            $aModules[$sKey] = $sValue . ' (' . ($aCounter[$sKey] ?? 0) . ')';
+        }
+
+        return $aModules;
+    }
+
+    /**
+     * A select in the breadcrumbs that goes to another page: $sUrl with the chosen value at its end, or $sUrlEmpty for
+     * the empty value when it is given.
+     */
+    protected function _getCrumbGoSelect($sName, $sValue, $aValues, $sUrl, $sUrlEmpty = '')
+    {
+        $sGo = "var s = this.value; if(s !== '') window.location.href = '" . bx_js_string($sUrl, BX_ESCAPE_STR_APOS) . "' + encodeURIComponent(s);";
+        if($sUrlEmpty !== '')
+            $sGo .= " else window.location.href = '" . bx_js_string($sUrlEmpty, BX_ESCAPE_STR_APOS) . "';";
+
+        $aInput = [
+            'type' => 'select',
+            'name' => $sName,
+            'attrs' => [
+                'id' => 'bx-grid-' . $sName . '-' . $this->_sObject,
+                'aria-label' => (string)reset($aValues),
+                'onChange' => 'javascript:' . $sGo,
+            ],
+            'value' => $sValue,
+            'values' => $aValues,
+        ];
+
+        $oForm = new BxTemplStudioFormView([]);
+        return $oForm->genRow($aInput);
+    }
+
+    /**
+     * A list whose page opens on the module in its address (...&module=...), where the module's select of the
+     * breadcrumbs puts it ($_bFilterModuleInUrl): the page's first filter is that module. A request for rows carries
+     * the filter itself.
+     */
+    protected function _getFilterValue()
+    {
+        $sFilter = parent::_getFilterValue();
+        if(!$this->_bFilterModuleInUrl || $sFilter !== '' || ($sModule = bx_get('module')) === false)
+            return $sFilter;
+
+        $sModule = bx_process_input($sModule);
+        return $sModule !== '' ? $sModule . $this->sParamsDivider : $sFilter;
+    }
+
+    /**
+     * The module the list is filtered by (the part of the grid's filter before the divider).
+     */
+    protected function _getFilterModule()
+    {
+        $aFilter = explode($this->sParamsDivider, $this->_getFilterValue(), 2);
+        return count($aFilter) == 2 ? $aFilter[0] : '';
+    }
+
+    /**
+     * A Studio grid's filter is a module and a search phrase (module, divider, phrase): the search field shows the
+     * phrase alone.
+     */
+    protected function _agSearchPhrase($sFilter)
+    {
+        $aFilter = explode($this->sParamsDivider, (string)$sFilter, 2);
+        return count($aFilter) == 2 ? $aFilter[1] : (string)$sFilter;
     }
 
     public function getSearchInput()

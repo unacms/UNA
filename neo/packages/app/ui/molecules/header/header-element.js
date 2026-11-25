@@ -12,6 +12,9 @@ import { Platform } from 'react-native'
 import { useMenuData } from 'app/context/menu-data'
 import { hasAppDrawer } from 'app/context/app-sidebar'
 import ToolbarLink, { tierButtonProps } from './toolbar-link'
+import { useSectionActions, SectionAddButton, ExploreSearchButton } from './section-actions'
+import { useScreenTier } from 'app/context/measure'
+import { useTabList } from 'app/lib/navigation/tab-bar-menu'
 
 // A toolbar slot: its button, a placeholder while its data loads, or no slot at all.
 const SLOT = { shown: 'shown', loading: 'loading', hidden: 'hidden' }
@@ -42,8 +45,15 @@ function isForPlatform(item, isWeb) {
     return (isWeb ? item.web : item.native) ?? true
 }
 
-export default function HeaderElement({ url, uri }) {
+export default function HeaderElement({ url, uri, pageData = null }) {
     const { currentUser } = useCurrentUser();
+    // Phones: the header's end is the page's section actions, Search with the section's or context's scope and the
+    // section's Add ("Add post"); elsewhere global search, which is Explore's field, and the site's Add menu.
+    const isPhone = useScreenTier() === 'phone'
+    const sectionActions = useSectionActions(pageData)
+    const { tabList } = useTabList(currentUser)
+    const hasExploreTab = (Platform.OS == 'web' ? (!!currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged')) : true)
+        && tabList.some((tab) => /(^|\/)explore(\?|$)/.test(String(tab?.url ?? '')))
     const bSearch = appSetting('layout', 'search') == true;
     const bNotifs = appSetting('notifications', 'url') ? true : false;
     const isWeb = Platform.OS == 'web'
@@ -91,10 +101,14 @@ export default function HeaderElement({ url, uri }) {
         switch (item.component) {
             case "search":
                 if (!bSearch) return SLOT.hidden
+                // Phones: global search is the Explore tab where the tab bar has it; the header keeps Search for a
+                // section's or context's scope, and where no Explore tab shows (a guest without the tab bar)
+                if (isPhone && !sectionActions.search && hasExploreTab) return SLOT.hidden
                 return currentUser ? shownIf(inUnaToolbar('search')) : guestSlot('search')
             case "launcher":
                 return menuSlot(launcherMenu)
             case "add":
+                if (isPhone && sectionActions.add) return SLOT.shown
                 return menuSlot(addMenu)
             case "notifications":
                 return shownIf(bNotifs && inUnaToolbar('notifications-preview'))
@@ -118,10 +132,16 @@ export default function HeaderElement({ url, uri }) {
     const renderTool = (item) => {
         switch (item.component) {
             case "search":
+                if (isPhone && sectionActions.search)
+                    return <Search scope={sectionActions.search} params={{ trigger: tierButtonProps(item) || {} }} />
+                if (isPhone && appSetting('layout', 'search_explore') !== false)
+                    return <ExploreSearchButton buttonProps={tierButtonProps(item)} />
                 return <Search />
             case "launcher":
                 return <MenuLauncher buttonProps={tierButtonProps(item)} />
             case "add":
+                if (isPhone && sectionActions.add)
+                    return <SectionAddButton add={sectionActions.add} buttonProps={tierButtonProps(item)} />
                 return <MenuAdd buttonProps={tierButtonProps(item)} />
             case "notifications":
                 return <NotificationButton uri={uri} buttonProps={tierButtonProps(item)} />

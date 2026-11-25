@@ -329,7 +329,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_persons_submenu', 'bx_persons', 'persons-home', '_bx_persons_menu_item_title_system_entries_recent', '_bx_persons_menu_item_title_entries_recent', 'page.php?i=persons-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_persons_submenu', 'bx_persons', 'persons-active', '_bx_persons_menu_item_title_system_entries_active', '_bx_persons_menu_item_title_entries_active', 'page.php?i=persons-active', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_persons_submenu', 'bx_persons', 'persons-online', '_bx_persons_menu_item_title_system_entries_online', '_bx_persons_menu_item_title_entries_online', 'page.php?i=persons-online', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_persons_submenu', 'bx_persons', 'persons-search', '_bx_persons_menu_item_title_system_entries_search', '_bx_persons_menu_item_title_entries_search', 'page.php?i=persons-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_persons_submenu', 'bx_persons', 'persons-search', '_bx_persons_menu_item_title_system_entries_search', '_bx_persons_menu_item_title_entries_search', 'page.php?i=persons-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_persons_submenu', 'bx_persons', 'persons-manage', '_bx_persons_menu_item_title_system_entries_manage', '_bx_persons_menu_item_title_entries_manage', 'page.php?i=persons-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: view submenu

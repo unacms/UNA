@@ -102,6 +102,12 @@ class BxBaseServicesSearch extends BxDol
      */
     public function serviceSearchKeywordForm ()
     {
+        // The search window's body (field, chips, results) for the page's query: this block has all of it then, and
+        // the results block has nothing. Hashtag, location and category links, Elasticsearch and a search_keyword hook
+        // keep the classic form and results.
+        if($this->_isSearchWindowPage())
+            return $this->_getSearchWindowPage();
+
         return $this->_getSearchObject()->getForm(BX_DB_PADDING_DEF, false, true);
     }
     
@@ -135,6 +141,10 @@ class BxBaseServicesSearch extends BxDol
                 'filter' => $this->_getSearchApiFilterFromRequest(),
                 'list' => bx_get('list') ? 1 : 0
             ]]);
+
+        // the search window has the results, in whichever of the page's two blocks comes first
+        if($this->_isSearchWindowPage())
+            return $this->_getSearchWindowPage();
 
         $sCode = '';
         if($bKeyword) {
@@ -311,6 +321,171 @@ class BxBaseServicesSearch extends BxDol
                 ])
             ];
         }
+    }
+
+    /**
+     * The search window's query and results for the apps (NEO's search window, Explore, the results page): one
+     * query format for every entry point (BxDolSearchUnified::normalize), the scope with its chips, and the results:
+     * "All" (a few rows of each module, with counts) or one module's page. Guest safe; every row is checked as its
+     * page checks it. With `ai` and an active judge model the keyword is read first (search_parse) and fills the
+     * module and date chips. With `scope_only` the results are left out.
+     *
+     * @code /api.php?r=system/search_window/TemplServicesSearch&params={"params":{"keyword":"garden","context":12}} @endcode
+     */
+    public function serviceSearchWindow ($aParams)
+    {
+        if(!bx_is_api())
+            return false;
+
+        if(is_string($aParams))
+            $aParams = bx_api_get_browse_params($aParams);
+        $aParams = !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : [];
+
+        // the apps search the modules Studio > API > Settings lists for them (sys_api_search_sections)
+        $oSearch = BxDolSearchUnified::getInstance();
+        $oSearch->setApiSections(true);
+        $aQuery = static::applySearchAi($oSearch->normalize($aParams), !empty($aParams['ai']));
+
+        $aResult = [
+            'query' => $oSearch->toUrlParams($aQuery),
+            'scope' => $oSearch->getScope($aQuery),
+        ];
+        $aResult['scope']['results_url'] = bx_api_get_relative_url($aResult['scope']['results_url']);
+        $aResult['strings'] = static::getSearchWindowStrings(!empty($aResult['scope']['ai']), $aResult['scope']['scope']);
+
+        if(empty($aParams['scope_only'])) {
+            $aResult['has_query'] = $oSearch->hasQuery($aQuery) ? 1 : 0;
+            $aResult['results'] = $oSearch->search($aQuery, 'api');
+            $aResult['request_url'] = '/api.php?r=system/search_window/TemplServicesSearch&params=';
+        }
+
+        return [bx_api_get_block('search_window', $aResult)];
+    }
+
+    /**
+     * The words of the search window for the apps, in the viewer's language, so the apps and the site say the same:
+     * `{0}` and `{1}` stand for a number and a name where they have them.
+     */
+    public static function getSearchWindowStrings ($bAi, $sScope)
+    {
+        $aKeys = [
+            'title' => '_sys_search_window_title',
+            'placeholder' => $bAi ? '_sys_search_window_placeholder_ai' : '_sys_search_window_placeholder',
+            'error' => '_sys_search_window_error',
+            'hint' => $sScope == BxDolSearchUnified::SCOPE_GLOBAL ? '_sys_search_window_hint' : '_sys_search_window_hint_scope',
+            'tab_all' => '_sys_search_window_tab_all',
+            'tabs' => '_sys_search_window_tabs',
+            'more' => '_sys_search_window_more',
+            'empty' => '_sys_search_window_empty',
+            'empty_title' => '_sys_search_window_empty_title',
+            'sort' => '_sys_search_window_sort',
+            'sort_best' => '_sys_search_window_sort_best',
+            'sort_new' => '_sys_search_window_sort_new',
+            'full' => '_sys_search_window_full',
+            'filters' => '_sys_search_window_filters',
+            'filter' => '_sys_search_chip_filter',
+            'me' => '_sys_search_chip_created_by_me',
+            'anyone' => '_sys_search_chip_anyone',
+            'find_person' => '_sys_search_chip_find_person',
+            'person_placeholder' => '_sys_search_chip_created_by_placeholder',
+            'any_time' => '_sys_search_chip_any_time',
+            'past_week' => '_sys_search_chip_past_week',
+            'past_month' => '_sys_search_chip_past_month',
+            'past_year' => '_sys_search_chip_past_year',
+            'starts_week' => '_sys_search_chip_starts_week',
+            'starts_month' => '_sys_search_chip_starts_month',
+            'all' => '_sys_search_chip_all',
+            'close' => '_sys_close',
+        ];
+
+        $aResult = [];
+        foreach($aKeys as $sName => $sKey)
+            $aResult[$sName] = _t($sKey);
+
+        $aResult['count'] = _t('_sys_search_window_count', '{0}');
+        $aResult['show_all'] = _t('_sys_search_window_show_all', '{0}', '{1}');
+        $aResult['remove'] = _t('_sys_search_chip_remove', '{0}');
+        $aResult['created_by_value'] = _t('_sys_search_chip_created_by_value', '{0}');
+        $aResult['in'] = _t('_sys_search_chip_in', '{0}');
+
+        return $aResult;
+    }
+
+    /**
+     * Page block "Search" (Explore's): the search window in the page. On Explore, the apps' search page, X's way: the
+     * page's other blocks (featured content) show until a search is typed, its results stand in their place then.
+     * The site does the same (BxDolSearchWindow.js, explore mode).
+     *
+     * @code {{~system:get_block_search_window:TemplServicesSearch~}} @endcode
+     */
+    public function serviceGetBlockSearchWindow ()
+    {
+        $oSearch = BxDolSearchUnified::getInstance();
+
+        if(bx_is_api()) {
+            $oSearch->setApiSections(true);
+            // a `static` item with its element's name: an app built before it draws nothing there, not an error
+            return [bx_api_get_block('static', [
+                'element' => 'search_window',
+                'mode' => 'explore',
+                'query' => (object)$oSearch->toUrlParams($oSearch->normalize($_GET)),
+                // the phone header's Search opens Explore with the field focused
+                'focus' => bx_get('search') ? 1 : 0,
+            ])];
+        }
+
+        return (new BxTemplSearchWindow())->getPage($oSearch->normalize($_GET), 'explore');
+    }
+
+    /**
+     * The site's search window parts for a query from the request (searchKeywordContent.php?window=1).
+     * @param array $aIn request params
+     * @return array ['query', 'chips', 'results', 'count', 'results_url']
+     */
+    public static function getSearchWindowParts ($aIn)
+    {
+        $oSearch = BxDolSearchUnified::getInstance();
+        $aQuery = static::applySearchAi($oSearch->normalize($aIn), !empty($aIn['ai']));
+
+        $aParts = (new BxTemplSearchWindow())->getParts($aQuery, false, isset($aIn['mode']) && in_array($aIn['mode'], ['page', 'explore'], true) ? $aIn['mode'] : '');
+        unset($aParts['ai']);
+
+        return $aParts;
+    }
+
+    /**
+     * The AI fill: with an active judge model, a keyword typed without a module or a date is read by the search parser
+     * (BxDolAiSearchParser, search_parse), which may find the module, the date and the words to look for. Without a
+     * model, or when the query already has a module or a date, the query is as typed.
+     */
+    public static function applySearchAi ($aQuery, $bAi)
+    {
+        if(!$bAi || $aQuery['keyword'] === '' || $aQuery['section'] || $aQuery['date_from'] || $aQuery['tab'] !== '')
+            return $aQuery;
+
+        $oParser = BxDolAiSearchParser::getInstance();
+        if(!$oParser->isAvailable())
+            return $aQuery;
+
+        // the modules global search looks in (the apps': those listed for them)
+        $aSections = BxDolSearchUnified::getInstance()->getGlobalModules();
+        unset($aSections['system']);
+
+        $aParsed = $oParser->parse($aQuery['keyword'], ['sections' => $aSections, 'timezone' => $aQuery['timezone']]);
+        if(empty($aParsed['judge']))
+            return $aQuery;
+
+        if(!empty($aParsed['section']) && !$aQuery['context'])
+            $aQuery['section'] = [$aParsed['section']];
+        if(!empty($aParsed['date']['from'])) {
+            $aQuery['date_from'] = $aParsed['date']['from'];
+            $aQuery['date_to'] = $aParsed['date']['to'] ?? '';
+            $aQuery['date_field'] = in_array($aParsed['date']['field'] ?? '', ['starts', 'ends']) && $aQuery['section'] ? $aParsed['date']['field'] : 'created';
+        }
+        if(isset($aParsed['keyword']) && is_string($aParsed['keyword']))
+            $aQuery['keyword'] = trim($aParsed['keyword']);
+
+        return $aQuery;
     }
 
     /**
@@ -759,6 +934,32 @@ class BxBaseServicesSearch extends BxDol
             'api_filter_date_from' => ['value' => $iFrom, 'field' => $sField, 'operator' => '>=', 'table' => $sTable],
             'api_filter_date_to' => ['value' => $iTo, 'field' => $sField, 'operator' => '<=', 'table' => $sTable],
         ];
+    }
+
+    /**
+     * The results page's search window, once: the first of the page's blocks to ask (the form, or the results when
+     * the form block is off) draws it, the other nothing.
+     */
+    protected function _getSearchWindowPage()
+    {
+        static $bDrawn = false;
+        if($bDrawn)
+            return '';
+
+        $bDrawn = true;
+        return (new BxTemplSearchWindow())->getPage(BxDolSearchUnified::getInstance()->normalize($_GET));
+    }
+
+    /**
+     * Whether the results page shows the search window: not for a hashtag, location or category link (`type`, `cat`),
+     * nor when Elasticsearch or a search_keyword hook gives the search its own class.
+     */
+    protected function _isSearchWindowPage()
+    {
+        if(bx_get('type') || bx_get('cat') || bx_get('live_search'))
+            return false;
+
+        return get_class($this->_getSearchObject()) === 'BxTemplSearch';
     }
 
     private function _getSearchObject()

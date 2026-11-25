@@ -5486,7 +5486,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 -- app tab bar menu (NEO bottom bar and native tabs; guests see level 1 items, members the rest)
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_tabbar', 'system', 'home', '_sys_menu_item_title_system_home', '_sys_menu_item_title_home', 'page.php?i=home', '', '', 'house', '', 2147483647, 1, 1, 1),
-('sys_tabbar', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass', '', 1, 1, 1, 2),
+('sys_tabbar', 'system', 'explore', '_sys_menu_item_title_system_explore', '_sys_menu_item_title_explore', 'page.php?i=explore', '', '', 'compass', '', 2147483647, 1, 1, 2),
 ('sys_tabbar', 'system', 'friends', '_sys_mobile_friends', '_sys_mobile_friends', 'page.php?i=friends', '', '', 'users-round', '', 2147483646, 1, 1, 2),
 ('sys_tabbar', 'system', 'about', '_sys_menu_item_title_system_about', '_sys_menu_item_title_about', 'page.php?i=about', '', '', 'info', '', 1, 1, 1, 3),
 ('sys_tabbar', 'system', 'terms', '_sys_menu_item_title_system_terms', '_sys_menu_item_title_terms', 'page.php?i=terms', '', '', 'handshake', '', 1, 1, 1, 4),
@@ -5701,7 +5701,7 @@ CREATE TABLE IF NOT EXISTS `sys_objects_grid` (
   `visible_for_levels` int(11) NOT NULL DEFAULT '2147483647',
   `responsive` tinyint(4) NOT NULL DEFAULT '1',
   `show_total_count` tinyint(4) NOT NULL DEFAULT '0',
-  `engine` varchar(16) NOT NULL DEFAULT '',
+  `engine` varchar(16) NOT NULL DEFAULT 'ag',
   `override_class_name` varchar(255) NOT NULL,
   `override_class_file` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -5752,7 +5752,6 @@ INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `fie
 ('sys_studio_nav_items', 'Sql', 'SELECT * FROM `sys_menu_items` WHERE 1 ', 'sys_menu_items', 'id', 'order', 'active', 'active_api', '', 100, NULL, 'start_it', '', 'link', 'title_system', 'like', '', '', 'ag', 'BxTemplStudioNavigationItems', '');
 
 -- GRIDS: studio navigation menus
-UPDATE `sys_objects_grid` SET `engine` = 'ag' WHERE `object` = 'sys_studio_nav_menus' AND `engine` = '';
 
 CREATE TABLE IF NOT EXISTS `sys_grid_fields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -6634,6 +6633,7 @@ CREATE TABLE IF NOT EXISTS `sys_pages_sections` (
   `cover_hidden_on` varchar(255) NOT NULL DEFAULT '',
   `title_show` tinyint(4) DEFAULT NULL,
   `title_hidden_on` varchar(255) DEFAULT NULL,
+  `search` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `object` (`object`)
 );
@@ -7006,6 +7006,10 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_recom_subscriptions', 1, 'system', '', '_sys_page_block_title_recom_subscriptions', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:2:{i:0;s:12:"{profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 1),
 
 ('sys_ntfs_context_invitations', 1, 'system', '', '_sys_page_block_title_ntfs_context_invitations', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:2:{i:0;s:19:"{logged_profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1);
+
+-- Explore, the apps' search page: the search window on top (BxBaseServicesSearch::serviceGetBlockSearchWindow); the page's other blocks show until a search is typed
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('sys_explore', 1, 'system', '_sys_page_block_title_system_search_window', '', 13, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:23:"get_block_search_window";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, 0);
 
 -- The sign-in and join blocks, on their pages and on the home page: a title icon and a line under the title
 UPDATE `sys_pages_blocks` SET `icon`='user-round-key', `description`='_sys_page_block_desc_login' WHERE `object` IN ('sys_login', 'sys_home') AND `module`='system' AND `title`='_sys_page_block_title_login';
@@ -8337,3 +8341,4 @@ CREATE TABLE `sys_logger` (
     INDEX `idx_channel`    (`channel`),
     INDEX `idx_created_at` (`created_at`)
 );
+

@@ -363,7 +363,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_albums_submenu', 'bx_albums', 'albums-top', '_bx_albums_menu_item_title_system_entries_top', '_bx_albums_menu_item_title_entries_top', 'page.php?i=albums-top', '', '', '', '', 2147483647, 1, 1, 3),
 ('bx_albums_submenu', 'bx_albums', 'albums-popular-media', '_bx_albums_menu_item_title_system_entries_popular_media', '_bx_albums_menu_item_title_entries_popular_media', 'page.php?i=albums-popular-media', '', '', '', '', 2147483647, 1, 1, 4),
 ('bx_albums_submenu', 'bx_albums', 'albums-top-media', '_bx_albums_menu_item_title_system_entries_top_media', '_bx_albums_menu_item_title_entries_top_media', 'page.php?i=albums-top-media', '', '', '', '', 2147483647, 1, 1, 5),
-('bx_albums_submenu', 'bx_albums', 'albums-search', '_bx_albums_menu_item_title_system_entries_search', '_bx_albums_menu_item_title_entries_search', 'page.php?i=albums-search', '', '', '', '', 2147483647, 1, 1, 6),
+('bx_albums_submenu', 'bx_albums', 'albums-search', '_bx_albums_menu_item_title_system_entries_search', '_bx_albums_menu_item_title_entries_search', 'page.php?i=albums-search', '', '', '', '', 2147483647, 0, 1, 6),
 ('bx_albums_submenu', 'bx_albums', 'albums-manage', '_bx_albums_menu_item_title_system_entries_manage', '_bx_albums_menu_item_title_entries_manage', 'page.php?i=albums-manage', '', '', '', '', 2147483646, 1, 1, 7);
 
 -- MENU: sub-menu for view entry

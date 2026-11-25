@@ -25,9 +25,10 @@ BxDolStudioPolyglotEtemplates.prototype.onChangeFilter = function() {
 	if(sValueSearch == this.sTextSearchInput)
 		sValueSearch = '';
 
+	// A select is applied at once; typing in the search field is applied once it pauses.
 	clearTimeout($this._iSearchTimeoutId);
     $this._iSearchTimeoutId = setTimeout(function () {
     	glGrids[$this.sObjNameGrid].setFilter(sValueModule + '#-#' + sValueSearch, true);
-    }, 500);
+    }, document.activeElement && document.activeElement.id == 'bx-grid-search-' + $this.sObjNameGrid ? 300 : 0);
 };
 /** @} */

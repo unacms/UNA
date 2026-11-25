@@ -376,7 +376,7 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
 ('bx_courses_submenu', 'bx_courses', 'courses-home', '_bx_courses_menu_item_title_system_entries_recent', '_bx_courses_menu_item_title_entries_recent', 'page.php?i=courses-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_courses_submenu', 'bx_courses', 'courses-top', '_bx_courses_menu_item_title_system_entries_top', '_bx_courses_menu_item_title_entries_top', 'page.php?i=courses-top', '', '', '', '', 2147483647, 1, 1, 2),
-('bx_courses_submenu', 'bx_courses', 'courses-search', '_bx_courses_menu_item_title_system_entries_search', '_bx_courses_menu_item_title_entries_search', 'page.php?i=courses-search', '', '', '', '', 2147483647, 1, 1, 3),
+('bx_courses_submenu', 'bx_courses', 'courses-search', '_bx_courses_menu_item_title_system_entries_search', '_bx_courses_menu_item_title_entries_search', 'page.php?i=courses-search', '', '', '', '', 2147483647, 0, 1, 3),
 ('bx_courses_submenu', 'bx_courses', 'courses-joined', '_bx_courses_menu_item_title_system_entries_joined', '_bx_courses_menu_item_title_entries_joined', 'page.php?i=courses-joined', '', '', '', '', 2147483647, 1, 1, 4),
 ('bx_courses_submenu', 'bx_courses', 'courses-manage', '_bx_courses_menu_item_title_system_entries_manage', '_bx_courses_menu_item_title_entries_manage', 'page.php?i=courses-manage', '', '', '', '', 2147483646, 1, 1, 5);
 

@@ -53,6 +53,8 @@ export const settingsLayout = {
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl p-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
+        // Phones: the header's global Search opens Explore, the apps' search page (its field and chips, featured content until a search)
+        search_explore: true,
         /**
          * The site footer (PageFooter). Its width, as UNA's Designer sets it per page layout and audience (Designer >
          * Settings > Page, header and footer) and sends it with each page (`footer`; lib/header-layout.ts). null

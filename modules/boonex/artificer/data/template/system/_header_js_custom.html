@@ -124,35 +124,14 @@
     }
 
     /**
-     * The 'search' item of the member toolbar opens the search popup (#bx-site-search-popup), as the apps do: the field,
-     * the live results under it, all results on Enter or with the link above them. The popup closes on Escape, its close
-     * button or a click outside, and gives the focus back to the item.
+     * The 'search' item of the member toolbar opens the search window (BxDolSearchWindow, #bx-search-window): global
+     * search, the same as Cmd/Ctrl+K. The window gives the focus back to the item when it closes.
      */
     function bx_site_search_show(oLink) {
-        var oPopup = $('#bx-site-search-popup');
-        if(!oPopup.length)
-            return;
+        if(typeof(BxDolSearchWindow) != 'undefined')
+            return BxDolSearchWindow.open({}, oLink);
 
-        var oInput = oPopup.find('input[name=keyword]');
-        oInput.off('input.bx-site-search').on('input.bx-site-search', function () {
-            if(bx_site_search_too_short(oPopup))
-                bx_site_search_results(oPopup, false);
-        });
-
-        oPopup.dolPopup({
-            onShow: function () {
-                $(oLink).attr('aria-expanded', 'true');
-                oInput.focus();
-            },
-            onHide: function () {
-                var oTrigger = $('a[aria-controls="bx-site-search-popup"]').attr('aria-expanded', 'false');
-
-                // After the close button too: dolPopup focuses the element clicked last, which is that button.
-                setTimeout(function () {
-                    oTrigger.filter(':visible').first().focus();
-                }, 0);
-            }
-        });
+        return false;
     }
 
     function bx_site_search_too_short(oPopup) {

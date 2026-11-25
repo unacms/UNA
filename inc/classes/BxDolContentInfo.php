@@ -297,6 +297,23 @@ class BxDolContentInfo extends BxDolFactory implements iBxDolFactoryObject
         return $this->_call('get_info_api', $iContentId, $bExtendedUnits);
     }    
 
+    /**
+     * Whether the viewer may open the content, as its own page decides: the module's view check
+     * (ACL, privacy, status) on the content's row. False when the content is gone or the module
+     * has no such check, so a search never lists what it cannot vouch for.
+     */
+    public function isViewAllowed ($iContentId)
+    {
+        if(!BxDolRequest::serviceExists($this->_sSystem, 'check_allowed_view_for_profile'))
+            return false;
+
+        $aContentInfo = $this->getContentInfo($iContentId, false);
+        if(empty($aContentInfo) || !is_array($aContentInfo))
+            return false;
+
+        return $this->_call('check_allowed_view_for_profile', $aContentInfo) === CHECK_ACTION_RESULT_ALLOWED;
+    }
+
     public function getContentSearchResultUnit ($iContentId, $sUnitTemplate = '')
     {
         return $this->_call('get_search_result_unit', $iContentId, $sUnitTemplate);

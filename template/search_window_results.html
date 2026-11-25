@@ -1,0 +1,23 @@
+<div class="bx-search-window-head flex items-center justify-between gap-3 pt-4 pb-2">
+    <h2 class="bx-search-window-count text-sm font-medium text-gray-600 dark:text-gray-400">__count__</h2>
+    <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"><span class="sr-only">__sort_label__</span>
+        <select class="bx-search-window-sort bx-form-input-select h-9 py-1 text-sm w-auto">
+            <option value="best" __sort_best_selected__>__sort_best__</option>
+            <option value="new" __sort_new_selected__>__sort_new__</option>
+        </select>
+    </label>
+</div>
+<bx_if:tabs>
+    <div class="bx-search-window-tabs flex gap-1 overflow-x-auto pb-2" role="tablist" aria-label="__label__">
+        <bx_repeat:tabs><button type="button" role="tab" class="bx-search-window-tab bx-btn bx-btn-small shrink-0" aria-selected="__selected__" data-tab="__value__">__title__<span class="ms-1.5 text-gray-500 dark:text-gray-400">__count__</span></button></bx_repeat:tabs>
+    </div>
+</bx_if:tabs>
+<bx_repeat:groups>
+    <section class="bx-search-window-group py-2" data-group="__name__">
+        <h3 class="flex items-center gap-2 py-2 text-sm font-semibold text-gray-800 dark:text-gray-200">__icon__<span>__title__</span></h3>
+        <div class="bx-search-window-items flex flex-col">__items__</div>
+        <bx_if:all><button type="button" class="bx-search-window-tab bx-btn bx-btn-small mt-1" data-tab="__name__">__title__</button></bx_if:all>
+        <bx_if:more><button type="button" class="bx-search-window-more bx-btn bx-btn-small mt-2 self-start" data-cursor="__cursor__">__title__</button></bx_if:more>
+    </section>
+</bx_repeat:groups>
+__empty__

@@ -1399,6 +1399,38 @@ class BxDolForm extends BxDol implements iBxDolReplaceable
     {
         return !empty($aInput['privacy_default']) ? $aInput['privacy_default'] : $this->_sPrivacyGroupDefault;
     }
+
+    /**
+     * The privacy groups an author picks from for a field in the apps: the groups of the privacy object without
+     * those that need a list of their own (selected friends, relations or memberships) and without contexts.
+     *
+     * @return array of ['key' => group id, 'value' => group title]
+     */
+    public static function getInputPrivacyGroupsAPI($sPrivacyObject, $iAuthorId = 0)
+    {
+        static $aCache = [];
+
+        $iAuthorId = $iAuthorId ? (int)$iAuthorId : (int)bx_get_logged_profile_id();
+        $sCacheKey = $sPrivacyObject . '_' . $iAuthorId;
+        if(isset($aCache[$sCacheKey]))
+            return $aCache[$sCacheKey];
+
+        $aResult = [];
+
+        $aChooser = BxDolPrivacy::getGroupChooser($sPrivacyObject, $iAuthorId);
+        if(!empty($aChooser['values']) && is_array($aChooser['values']))
+            foreach($aChooser['values'] as $aValue) {
+                if(!is_array($aValue) || !isset($aValue['key'], $aValue['value']) || !is_numeric($aValue['key']) || (int)$aValue['key'] <= 0)
+                    continue;
+
+                if(in_array((string)$aValue['key'], [BX_DOL_PG_FRIENDS_SELECTED, BX_DOL_PG_RELATIONS_SELECTED, BX_DOL_PG_MEMBERSHIPS_SELECTED]))
+                    continue;
+
+                $aResult[] = ['key' => (string)$aValue['key'], 'value' => $aValue['value']];
+            }
+
+        return ($aCache[$sCacheKey] = $aResult);
+    }
 }
 
 class BxDolFormChecker

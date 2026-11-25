@@ -268,7 +268,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_photos_submenu', 'bx_photos', 'photos-home', '_bx_photos_menu_item_title_system_entries_public', '_bx_photos_menu_item_title_entries_public', 'page.php?i=photos-home', '', '', '', '', 2147483647, 1, 1, 1),
 ('bx_photos_submenu', 'bx_photos', 'photos-popular', '_bx_photos_menu_item_title_system_entries_popular', '_bx_photos_menu_item_title_entries_popular', 'page.php?i=photos-popular', '', '', '', '', 2147483647, 1, 1, 2),
 ('bx_photos_submenu', 'bx_photos', 'photos-top', '_bx_photos_menu_item_title_system_entries_top', '_bx_photos_menu_item_title_entries_top', 'page.php?i=photos-top', '', '', '', '', 2147483647, 1, 1, 3),
-('bx_photos_submenu', 'bx_photos', 'photos-search', '_bx_photos_menu_item_title_system_entries_search', '_bx_photos_menu_item_title_entries_search', 'page.php?i=photos-search', '', '', '', '', 2147483647, 1, 1, 4),
+('bx_photos_submenu', 'bx_photos', 'photos-search', '_bx_photos_menu_item_title_system_entries_search', '_bx_photos_menu_item_title_entries_search', 'page.php?i=photos-search', '', '', '', '', 2147483647, 0, 1, 4),
 ('bx_photos_submenu', 'bx_photos', 'photos-manage', '_bx_photos_menu_item_title_system_entries_manage', '_bx_photos_menu_item_title_entries_manage', 'page.php?i=photos-manage', '', '', '', '', 2147483646, 1, 1, 5);
 
 -- MENU: sub-menu for view entry

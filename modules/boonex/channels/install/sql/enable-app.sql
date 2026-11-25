@@ -40,7 +40,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_view_ac
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_submenu' AND `module`='bx_channels' AND `name`='channels-home';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_submenu' AND `module`='bx_channels' AND `name`='channels-top';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_submenu' AND `module`='bx_channels' AND `name`='channels-toplevel';
-UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_submenu' AND `module`='bx_channels' AND `name`='channels-search';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_submenu' AND `module`='bx_channels' AND `name`='channels-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_snippet_meta' AND `module`='bx_channels' AND `name`='members';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_channels_snippet_meta' AND `module`='bx_channels' AND `name`='subscribers';

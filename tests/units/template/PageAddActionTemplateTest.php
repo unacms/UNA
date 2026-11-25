@@ -44,17 +44,18 @@ class PageAddActionTemplateTest extends BxDolTestCase
             $this->assertMatchesRegularExpression('/<bx_menu:sys_site_manage \/>\s*__site_submenu_add__\s*<\/div>/', self::read($sFile), $sFile . ': after the section\'s tools, at the row\'s end.');
 
         $sUi = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
-        $this->assertStringContainsString("{toolButtons}\n                                {!showTitle && actionButtons}", $sUi, 'NEO: after Search, at the end of the tab row.');
+        $this->assertStringContainsString("{!showTitle && actionButtons}", $sUi, 'NEO: Search and Add at the end of the tab row.');
     }
 
     public function testNeoAddButtonIsGlassProminentSmall(): void
     {
         $sUi = self::read('neo/packages/app/ui/molecules/sections/conductor/web-ui.js');
 
-        $this->assertStringContainsString('actionButtons={<AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" labelled />}', $sUi, 'The title row (lg): a pill with its label.');
+        $this->assertStringContainsString('actionButtons={<AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" labelled />}', $sUi, 'The title row (lg): Search and Add, pills with their labels.');
         $this->assertStringContainsString('const tabletAddButtons = <AddMenu menu={menu} filter="hideInTopBar" actionStyle="glassProminent" />', $sUi, 'The tab row on tablets: round, icon-only.');
         $this->assertStringContainsString("borderShape={labelled ? 'capsule' : 'circle'}", $sUi);
-        $this->assertStringContainsString('const phoneAddButtons = <AddMenu menu={menu} filter="hideInTopBar" only="actions" actionStyle="glassProminent" />', $sUi, 'Phones: round, icon-only, as the site\'s.');
+        $sHeader = self::read('neo/packages/app/ui/molecules/header/header-element.js');
+        $this->assertStringContainsString('return <SectionAddButton add={sectionActions.add} buttonProps={tierButtonProps(item)} />', $sHeader, 'Phones: the section\'s Add at the header\'s end, round, icon-only, as the site\'s.');
         $this->assertStringContainsString("icon: menu.add_icon || 'Plus',", $sUi, 'The module\'s own add icon, as the site\'s.');
         $this->assertStringContainsString("if (menu.add_url && currentUser && menu.add_allowed !== false) {", $sUi, 'Only where UNA says the viewer may add.');
         $this->assertStringContainsString("tooltip: menu.add_title || 'Add',", $sUi, 'The item type\'s add label, as the site\'s.');

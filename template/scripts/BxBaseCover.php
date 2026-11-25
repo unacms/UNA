@@ -235,13 +235,37 @@ class BxBaseCover extends BxDolCover
             return '';
 
         $aAdd = $oPage->getAddEntryAction();
-        if(empty($aAdd))
+        $aSearch = $oPage->getSearchAction();
+        if(empty($aAdd) && empty($aSearch))
             return '';
 
         // Shown where the title row isn't: everywhere for a page without a title, else on its "Title hidden on" sizes.
         $sClass = $aParts['title'] ? self::getHiddenOnClasses($aParts['title_hidden_on'], true) : '';
 
-        return $this->_oTemplate->parseHtmlByName('cover_add.html', $this->_getAddTmplVars($aAdd, $sClass));
+        return (!empty($aSearch) ? $this->getSearchButton($aSearch, 'self-center ms-2 ' . $sClass) : '')
+            . (!empty($aAdd) ? $this->_oTemplate->parseHtmlByName('cover_add.html', $this->_getAddTmplVars($aAdd, $sClass)) : '');
+    }
+
+    /**
+     * The Search button of a page with a search scope (BxBasePage::getSearchAction): it opens the search window there.
+     * @param array $aSearch section, context, author, title
+     * @param string $sClass more classes of the button
+     * @return string
+     */
+    public function getSearchButton($aSearch, $sClass = '')
+    {
+        $sData = '';
+        foreach(['section', 'context', 'author'] as $sKey)
+            if(!empty($aSearch[$sKey]))
+                $sData .= ' data-search-' . $sKey . '="' . bx_html_attribute($aSearch[$sKey]) . '"';
+
+        return $this->_oTemplate->parseHtmlByName('cover_search.html', [
+            'class' => $sClass,
+            'data' => $sData,
+            'title' => bx_html_attribute($aSearch['title']),
+            'label' => bx_process_output($aSearch['title']),
+            'icon' => BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml('search', ['aria-hidden' => 'true']),
+        ]);
     }
 
     /**
@@ -317,6 +341,8 @@ class BxBaseCover extends BxDolCover
         // A section's "add" action (the + the apps draw there too): at the end of its title row, for a viewer who may add.
         // Where the title row is off or hidden, the tab row has it (getSubmenuAddAction).
         $aAdd = $bSection && $bTitleRow ? $oPage->getAddEntryAction() : [];
+        // Its Search, before Add, where the title row is (getSubmenuAddAction has it in the tab row otherwise).
+        $aSearch = $bSection && $bTitleRow ? $oPage->getSearchAction() : [];
 
         // The band shows from desktop width where the page has a title: below it the title and tabs start the page.
         $aBandClasses = [];
@@ -353,6 +379,10 @@ class BxBaseCover extends BxDolCover
                         'content' => ['icon' => $sIcon],
                     ],
                     'actions' => $sActions,
+                    'bx_if:search' => [
+                        'condition' => !empty($aSearch),
+                        'content' => ['search' => !empty($aSearch) ? $this->getSearchButton($aSearch) : ''],
+                    ],
                     'bx_if:add' => [
                         'condition' => !empty($aAdd),
                         'content' => !empty($aAdd) ? $this->_getAddTmplVars($aAdd) : [],
