@@ -10,8 +10,10 @@ $oDb = BxDolDb::getInstance();
 
 $bWithContext = (int)$oDb->getOne("SELECT COUNT(*) FROM `information_schema`.`STATISTICS` WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = 'bx_tasks_pre_values' AND `INDEX_NAME` = 'list_value' AND `COLUMN_NAME` = 'context_id'") > 0;
 if (!$bWithContext) {
+    // One statement, so a failed rebuild cannot leave the table without the key.
     if ($oDb->isIndexExists('bx_tasks_pre_values', 'list_value')) {
-        $oDb->query("ALTER TABLE `bx_tasks_pre_values` DROP INDEX `list_value`");
+        $oDb->query("ALTER TABLE `bx_tasks_pre_values` DROP INDEX `list_value`, ADD UNIQUE KEY `list_value` (`context_id`, `list`, `value`(191))");
+    } else {
+        $oDb->query("ALTER TABLE `bx_tasks_pre_values` ADD UNIQUE KEY `list_value` (`context_id`, `list`, `value`(191))");
     }
-    $oDb->query("ALTER TABLE `bx_tasks_pre_values` ADD UNIQUE KEY `list_value` (`context_id`, `list`, `value`(191))");
 }
