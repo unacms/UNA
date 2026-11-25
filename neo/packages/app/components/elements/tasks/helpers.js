@@ -16,6 +16,8 @@ import {
 
 export const TASKS_LIST_EVENT = EVENTS.tasksList;
 export const TASKS_HOME_PATH = '/tasks-home';
+/** sessionStorage hand-off: a task opened by direct URL → the /tasks-home shell. */
+export const OPEN_TASK_STORAGE_KEY = 'neo_tasks_open_task';
 
 const isWeb = Platform.OS === 'web';
 const hasWindow = () => isWeb && typeof window !== 'undefined';
