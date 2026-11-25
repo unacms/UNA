@@ -128,8 +128,8 @@ BxDolGridAg.prototype._bindView = function () {
 BxDolGridAg.prototype._syncView = function () {
     for (const eBtn of document.querySelectorAll('#' + this._sWrap + ' .bx-grid-ag-view-btn')) {
         const bOn = eBtn.getAttribute('data-bx-view') === (this._bCardView ? 'cards' : 'rows');
-        eBtn.setAttribute('aria-pressed', bOn ? 'true' : 'false');
-        eBtn.classList.toggle('bx-btn-primary', bOn);
+        // A segmented switch, as Studio's: the selected tab is raised (Studio's page.js slides its plate there).
+        eBtn.setAttribute('aria-selected', bOn ? 'true' : 'false');
     }
 };
 
@@ -889,7 +889,15 @@ BxDolGridAg.prototype._getRows = function (params) {
     }, () => {
         this._loading(false);
         this._reveal();
-        params.failCallback();
+        // A failed first page leaves no rows rather than the previous ones, which would pass for the answer to the
+        // new filter or sort, and says so, as the client row model does.
+        if (iStart === 0)
+            params.successCallback([], 0);
+        else
+            params.failCallback();
+        const sError = typeof _t === 'function' ? _t('_sys_txt_error_occured') : '';
+        if (sError && typeof bx_alert === 'function')
+            bx_alert(sError);
     });
 };
 
@@ -1036,8 +1044,13 @@ BxDolGridAg.prototype._itemsHeadHeight = function () {
 BxDolGridAg.prototype._itemFlex = function (oCol) {
     if (oCol.kind === 'order')
         return '0 0 52px';
+    if (oCol.name === 'actions') {
+        // As wide as the grid's own Actions column, so the items' buttons stand under the row's.
+        const iWidth = this._oApi?.getColumn?.('actions')?.getActualWidth?.();
+        return '0 0 ' + (iWidth > 0 ? iWidth : 168) + 'px';
+    }
     if (Number(oCol.controls))
-        return oCol.name === 'actions' ? '0 0 168px' : '0 0 88px';
+        return '0 0 88px';
 
     const s = String(oCol.width || '').trim();
     let m = /^(\d+(?:\.\d+)?)%$/.exec(s);
@@ -1613,7 +1626,7 @@ BxDolGridAgCell.prototype._childRow = function (oItem, oAg, oMeta, sRowId, node)
                 continue;
             }
             const eCell = document.createElement('span');
-            eCell.className = 'bx-grid-ag-item-cell' + (Number(oCol.controls) ? ' is-controls' : '');
+            eCell.className = 'bx-grid-ag-item-cell' + (Number(oCol.controls) ? ' is-controls' : '') + (oCol.name === 'actions' ? ' is-actions' : '');
             eCell.style.flex = oAg._itemFlex(oCol);
             this._draw(eCell, oItem[oCol.name], { data: oItem, colDef: { field: oCol.name, headerName: oCol.title || '' } }, oChild);
             eRow.appendChild(eCell);
@@ -1656,7 +1669,7 @@ BxDolGridAgCell.prototype._itemsHead = function (aCols, oAg, bChevron) {
     }
     for (const oCol of aCols) {
         const eCell = document.createElement('span');
-        eCell.className = 'bx-grid-ag-item-cell';
+        eCell.className = 'bx-grid-ag-item-cell' + (oCol.name === 'actions' ? ' is-actions' : '');
         eCell.style.flex = oAg._itemFlex(oCol);
         eCell.textContent = oCol.kind === 'order' ? '' : (oCol.title || '');
         eHead.appendChild(eCell);
@@ -1725,7 +1738,7 @@ BxDolGridAgCell.prototype._childPanel2 = function (oParent, oAg, aRows) {
         eRow.dataset.id = oItem?.[sField] == null ? '' : String(oItem[sField]);
         for (const oCol of aCols) {
             const eCell = document.createElement('span');
-            eCell.className = 'bx-grid-ag-item-cell' + (Number(oCol.controls) ? ' is-controls' : '');
+            eCell.className = 'bx-grid-ag-item-cell' + (Number(oCol.controls) ? ' is-controls' : '') + (oCol.name === 'actions' ? ' is-actions' : '');
             eCell.style.flex = oAg._itemFlex(oCol);
             // The order is changed on the items' own page: no drag handle here.
             if (oCol.kind !== 'order')

@@ -5740,7 +5740,7 @@ INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `fie
 ('sys_studio_categories', 'Sql', 'SELECT * FROM `sys_categories` WHERE 1 ', 'sys_categories', 'id', 'added', 'status', '', 20, NULL, 'start', '', 'value', '', 'like', '', '', 'BxTemplStudioFormsCategories', ''),
 ('sys_studio_groups_roles', 'Sql', 'SELECT * FROM `sys_form_pre_values` WHERE 1 ', 'sys_form_pre_values', 'id', 'Order', '', '', 20, NULL, 'start', '', '', 'LKey', 'like', '', '', 'BxTemplStudioFormsGroupsRoles', ''),
 
-('sys_audit_administration', 'Sql', 'SELECT * FROM `sys_audit` WHERE 1 ', 'sys_audit', 'id', 'added', '', '', 20, NULL, 'start', '', 'value', '', 'like', 'content_module,profile_id,content_id,author_id,context_profile_id,added', 'action_lang_key', 'BxTemplAuditGrid', ''),
+('sys_audit_administration', 'Sql', 'SELECT * FROM `sys_audit` WHERE 1 ', 'sys_audit', 'id', 'added', '', '', 20, NULL, 'start', '', 'profile_title,content_title,context_profile_title,content_module', '', 'like', 'content_module,profile_id,content_id,context_profile_id,added', 'action_lang_key', 'BxTemplAuditGrid', ''),
 ('sys_admin_log_administration', 'Sql', 'SELECT * FROM `sys_admin_log` WHERE 1 ', 'sys_admin_log', 'id', 'added', '', '', 20, NULL, 'start', '', 'object_type', '', 'like', 'added', '', 'BxTemplStudioAdminLogGrid', ''),
 
 ('sys_badges_administration', 'Sql', 'SELECT * FROM `sys_badges` WHERE 1 ', 'sys_badges', 'id', 'added', '', '', 20, NULL, 'start', '', 'text', '', 'like', '', '', 'BxTemplStudioBadgesGrid', ''),

@@ -537,8 +537,10 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $oDb = BxDolDb::getInstance();
 
-        // the first FROM outside of parentheses: a column may be a subquery with a FROM of its own
-        $sQuery = preg_replace('/^SELECT\b(?:[^()]|(\((?:[^()]++|(?1))*\)))*?\bFROM\b/mi', 'SELECT COUNT(*) FROM', $sQuery, 1);
+        // the first FROM outside of parentheses, names in backticks and strings: a column may be a subquery with a FROM
+        // of its own, or be named `From` (Antispam's IP table)
+        $sQuoted = '`[^`]*`|\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"';
+        $sQuery = preg_replace('/^SELECT\b(?:' . $sQuoted . '|[^()`\'"]|(\((?:' . $sQuoted . '|[^()`\'"]++|(?1))*\)))*?\bFROM\b/mi', 'SELECT COUNT(*) FROM', $sQuery, 1);
         if(strpos($sQuery, 'GROUP BY') === false)
             return $oDb->getOne($sQuery);
         else
@@ -566,18 +568,8 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                     $sCond .= $oDb->prepareAsString("`{$sField}` LIKE ? OR ", '%' . $sFilter . '%');
 
             // condition for translatable fields
-            if (!empty($this->_aOptions['filter_fields_translatable'])) {
-                $sCondFields = '';
-                foreach ($this->_aOptions['filter_fields_translatable'] as $sField)
-                    $sCondFields .= "`k`.`Key` = `{$sField}` OR ";
-
-                $sCondFields = rtrim($sCondFields, ' OR ');
-
-                if ($sCondFields) {
-                    $sJoin .= " INNER JOIN `sys_localization_keys` AS `k` ON " . $sCondFields . " INNER JOIN `sys_localization_strings` AS `s` ON `k`.`ID` = `s`.`IDKey` ";
-                    $sCond .= $oDb->prepareAsString("`s`.`string` LIKE ? ", '%' . $sFilter . '%');
-                }
-            }
+            if (!empty($this->_aOptions['filter_fields_translatable']))
+                $sCond .= BxDolGridQuery::getFilterTranslatableCond($this->_aOptions['filter_fields_translatable'], $sFilter, true) . ' OR ';
 
             $sCond = rtrim($sCond, ' OR ');
 
@@ -601,19 +593,8 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             }
 
             // condition for translatable fields
-            if (!empty($this->_aOptions['filter_fields_translatable'])) {
-
-                $sCondFields = '';
-                foreach ($this->_aOptions['filter_fields_translatable'] as $sField)
-                    $sCondFields .= "`k`.`Key` = `{$sField}` OR ";
-
-                $sCondFields = rtrim($sCondFields, ',');
-
-                if ($sCondFields) {
-                    $sJoin .= " INNER JOIN `sys_localization_strings` AS `s` INNER JOIN `sys_localization_keys` AS `k` ON (`k`.`ID` = `s`.`IDKey`) ";
-                    $sCond .= $oDb->prepareAsString(" (MATCH (`s`.`string`) AGAINST (?) AND ($sCondFields)) OR ", $sFilter);
-                }
-            }
+            if (!empty($this->_aOptions['filter_fields_translatable']))
+                $sCond .= BxDolGridQuery::getFilterTranslatableCond($this->_aOptions['filter_fields_translatable'], $sFilter, false) . ' OR ';
 
             $sCond = rtrim($sCond, ' OR ');
         }
@@ -653,9 +634,8 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         // add WHERE for searching in translatable fields
         $sQuery .= $sCond ? ' AND (' . $sCond . ')' : $sCond;
 
-        if (!empty($this->_aOptions['filter_fields_translatable'])) {
-
-            // add JOIN for searching in translatable fields
+        // a join a hook added (translatable fields are searched in a subquery of their own, without one)
+        if (trim($sJoin) !== '') {
             $sQuery = str_replace('WHERE', "$sJoin WHERE", $sQuery);
 
             // change SELECT * to include table name

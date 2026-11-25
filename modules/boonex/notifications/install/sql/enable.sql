@@ -191,7 +191,7 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `conf
 ('bx_notifications_settings_administration', 'bulk', 'deactivate', '_bx_ntfs_grid_action_title_deactivate', '', 1, 2);
 
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
-('bx_notifications_etemplates', 'Sql', 'SELECT * FROM `bx_notifications_etemplates` WHERE 1 ', 'bx_notifications_etemplates', 'id', '', 'active', '', 100, NULL, 'start', '', '', 'type,action,subject,content', 'auto', '', 2147483647, 'BxNtfsGridEtemplates', 'modules/boonex/notifications/classes/BxNtfsGridEtemplates.php');
+('bx_notifications_etemplates', 'Sql', 'SELECT * FROM `bx_notifications_etemplates` WHERE 1 ', 'bx_notifications_etemplates', 'id', '', 'active', '', 100, NULL, 'start', '', 'type,action,subject,body', '', 'like', '', 2147483647, 'BxNtfsGridEtemplates', 'modules/boonex/notifications/classes/BxNtfsGridEtemplates.php');
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
 ('bx_notifications_etemplates', 'switcher', '_bx_ntfs_grid_column_title_ett_active', '10%', 0, '', '', 10),

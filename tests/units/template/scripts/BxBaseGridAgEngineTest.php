@@ -353,6 +353,21 @@ WHERE 1";
     }
 
     /**
+     * A column named From (Antispam's IP table) or a string with FROM in it is not the query's FROM.
+     */
+    public function testTotalCountSkipsFromInNamesAndStrings(): void
+    {
+        $oGrid = $this->grid();
+        $iExpected = (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `sys_localization_categories`");
+
+        $sNamed = "SELECT `ID`, `Name` AS `From`, `Name` AS `from_name` FROM `sys_localization_categories` WHERE 1";
+        $this->assertSame($iExpected, (int)$this->bxCallProtected($oGrid, '_getDataSqlCounter', $sNamed, ''));
+
+        $sString = "SELECT `ID`, 'a FROM b' AS `s`, \"it's from\" AS `t`, CONCAT(`Name`, ') FROM (') AS `c` FROM `sys_localization_categories` WHERE 1";
+        $this->assertSame($iExpected, (int)$this->bxCallProtected($oGrid, '_getDataSqlCounter', $sString, ''));
+    }
+
+    /**
      * The transfers of the migration modules: the row's id is a module name, and a column of the same name shows its
      * title, in the classic grid's markup. The id stays apart (_id), the column shows what is inside its <td>.
      */
