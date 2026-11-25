@@ -143,7 +143,7 @@ class %sUpdater extends BxDolStudioUpdater
     /**
      * The module's database changes are its migrations (the module's migrations/ folder, which 'update_files'
      * copied before this action). They run whatever the site's update channel, each once, and are recorded
-     * in sys_migrations.
+     * in sys_migrations. For a disabled module they wait until it is enabled.
      */
     public function actionExecuteSql($sOperation)
     {
@@ -280,9 +280,8 @@ def lang_update(old, new):
             lines.append('\t<string_add name="%s">%s</string_add>' % (key, value))
         elif old_strings[key] != value:
             lines.append('\t<string_upd name="%s">%s</string_upd>' % (key, value))
-    for key in old_strings:
-        if key not in new_strings:
-            lines.append('\t<string_del name="%s"><![CDATA[%s]]></string_del>' % (key, key))
+    # A string that left the file is not deleted from sites: the updater deletes a key for every language,
+    # and another language's file may still have it.
     if not lines:
         return None
     text = new.decode('utf-8', errors='replace')

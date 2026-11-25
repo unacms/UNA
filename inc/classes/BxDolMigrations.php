@@ -204,8 +204,9 @@ class BxDolMigrations
      * The migrations an update pack applies, as an instance that runs them whatever the site's
      * update channel: the pack is the release a beta or stable site was given, and its files are
      * on the site by then. With no module: the common folder and the system module, for the
-     * system update pack. With a module's name: that module's folder, for its update pack,
-     * whether the module is enabled or not, as a pack's SQL always ran.
+     * system update pack. With a module's name: that module's folder, for its update pack.
+     * A disabled module has no source, as in any run: its migrations hold rows that enable.sql
+     * inserts, so they wait until the module is enabled.
      *
      * @param string $sModule module name (`sys_modules`.`name`), '' for common and system
      */
@@ -215,13 +216,6 @@ class BxDolMigrations
         foreach ($this->getSources() as $aSource)
             if ($sModule === '' ? $aSource['scope'] !== self::SCOPE_MODULE : $aSource['module'] === $sModule)
                 $aSources[] = $aSource;
-
-        // A disabled module is not among the sources.
-        if ($sModule !== '' && !$aSources && $this->_aSources === null) {
-            $aModule = $this->_oQuery->getModuleByName($sModule);
-            if ($aModule !== null && ($aSource = $this->_getModuleSource($aModule)) !== null)
-                $aSources[] = $aSource;
-        }
 
         return new self($this->_oQuery, $aSources, $fLog ?? $this->_fLog, $this->_sSystemVersion, self::CHANNEL_DEV);
     }

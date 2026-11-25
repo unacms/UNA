@@ -82,6 +82,18 @@ def language_strings(name):
     return {(r[0], r[1]): (r[2] if len(r) > 2 else '') for r in rows(name, query) if not re.search(r'_\d{9,}$', r[0])}
 
 
+# Tables that refer to rows of other tables by id: compared through the names those ids stand for.
+JOINED = {
+    'permissions (sys_acl_matrix)':
+        "SELECT l.`Name`, a.`Module`, a.`Name`, COALESCE(m.`AllowedCount`, 'NULL'), COALESCE(m.`AllowedPeriodLen`, 'NULL') FROM `sys_acl_matrix` m "
+        "JOIN `sys_acl_levels` l ON l.`ID` = m.`IDLevel` JOIN `sys_acl_actions` a ON a.`ID` = m.`IDAction`",
+    'alerts and their handlers (sys_alerts)':
+        "SELECT a.`unit`, a.`action`, h.`name` FROM `sys_alerts` a JOIN `sys_alerts_handlers` h ON h.`id` = a.`handler_id`",
+    'options and their categories (sys_options)':
+        "SELECT o.`name`, COALESCE(c.`name`, 'NULL') FROM `sys_options` o LEFT JOIN `sys_options_categories` c ON c.`id` = o.`category_id`",
+}
+
+
 def files(root):
     found = {}
     for folder, dirs, names in os.walk(root):
@@ -183,6 +195,13 @@ def main():
                 lines.append('    - %s: %s' % (label, '; '.join(cells)[:420]))
         show('fresh', only_fresh)
         show('upgraded', only_upgraded)
+    for title, query in JOINED.items():
+        a = collections.Counter(tuple(r) for r in rows(args.fresh, query))
+        b = collections.Counter(tuple(r) for r in rows(args.upgraded, query))
+        if a != b:
+            lines.append('- %s: %d only on fresh, %d only on upgraded (of %d)' % (title, sum((a - b).values()), sum((b - a).values()), sum(a.values())))
+            lines.extend('    - fresh: %s' % ' / '.join(r) for r in list(a - b)[:args.samples])
+            lines.extend('    - upgraded: %s' % ' / '.join(r) for r in list(b - a)[:args.samples])
     section('Data', lines)
     out.append('\nNot compared, by design:')
     out.extend('- %s (%d columns)' % (reason, len(where)) for reason, where in known.items())
