@@ -4443,10 +4443,10 @@ scheduler@^0.28.0:
   version "0.0.0"
   resolved "https://github.com/clivezhg/select2-to-tree#7514110fd3d8bc055450ec1609f4c7b5490c55e2"
 
-select2@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/select2/-/select2-4.1.0.tgz#8b037e02a3c025beda07fed7f9ecc7d298036e1a"
-  integrity sha512-i9KalWOP4/LRRGc8+rj2krNm0ZqP14cV+j1TRCEBSsOhCPkKH8rYZ2MCRXcgvqIqN+llqGci0hj9aVkCMvL0+g==
+select2@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/select2/-/select2-4.1.1.tgz#bd66bbab8a057b17ea117196a073aa333acf315e"
+  integrity sha512-kufep72db0ibLV8V/BI7uLT4vb1LPn29tYFtH2Y0TIqgimYwbj9NBw5nzTa9j1spBoABio6MlVcupxfWvoGMPA==
 
 select@^1.1.2:
   version "1.1.2"
