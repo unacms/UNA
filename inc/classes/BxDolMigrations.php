@@ -213,9 +213,11 @@ class BxDolMigrations
     public function forUpdate(string $sModule = '', ?callable $fLog = null): self
     {
         $aSources = [];
-        foreach ($this->getSources() as $aSource)
-            if ($sModule === '' ? $aSource['scope'] !== self::SCOPE_MODULE : $aSource['module'] === $sModule)
+        foreach ($this->getSources() as $aSource) {
+            if ($sModule === '' ? $aSource['scope'] !== self::SCOPE_MODULE : $aSource['module'] === $sModule) {
                 $aSources[] = $aSource;
+            }
+        }
 
         return new self($this->_oQuery, $aSources, $fLog ?? $this->_fLog, $this->_sSystemVersion, self::CHANNEL_DEV);
     }
