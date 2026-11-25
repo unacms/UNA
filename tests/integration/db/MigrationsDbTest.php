@@ -227,6 +227,36 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame([], $aResult['waiting']);
     }
 
+    /**
+     * An update pack runs its own migrations on a beta or stable site: the system pack the common
+     * folder, a module's pack that module's folder, and nothing else.
+     */
+    public function testUpdatePackRunsItsMigrationsOnAnyChannel(): void
+    {
+        $sData = $this->_table('data');
+        $this->_oPdo->exec("CREATE TABLE `$sData` (`v` varchar(32) NOT NULL)");
+        $this->_write('2026110100_one.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('one');");
+        $this->_write('2026110200_two.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('two');", 'module');
+        $this->_write('2026110300_three.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('three');", 'module2');
+        $aSources = [$this->_source('common'), $this->_source('module'), $this->_source('module2')];
+        $fRefresh = function () { return ''; };
+
+        $oMigrations = $this->_migrations($aLog, '99.0.0', 'ledger', 'stable', $aSources);
+
+        $aResult = $oMigrations->forUpdate()->run($fRefresh);
+        $this->assertSame(['common: 2026110100_one.sql'], $aResult['applied']);
+        $this->assertSame([], $aResult['waiting']);
+
+        $aResult = $oMigrations->forUpdate('bx_test')->run($fRefresh);
+        $this->assertSame(['bx_test: 2026110200_two.sql'], $aResult['applied']);
+        $this->assertSame(['one' => '', 'two' => ''], $this->_rows($sData));
+
+        // The site itself still waits for what no pack brought, and a second pack run does nothing.
+        $this->assertSame(['bx_other: 2026110300_three.sql'], $oMigrations->run($fRefresh)['waiting']);
+        $this->assertSame([], $oMigrations->forUpdate('bx_test')->run($fRefresh)['applied']);
+        $this->assertSame([], $oMigrations->forUpdate('bx_missing')->run($fRefresh)['applied']);
+    }
+
     public function testLanguageStrings(): void
     {
         $sAdd = $this->_key('add');

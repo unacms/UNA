@@ -147,6 +147,20 @@ class BxDolMigrationsQuery extends BxDolDb
     }
 
     /**
+     * An installed module, enabled or not.
+     *
+     * @return array{name: string, uri: string, path: string, lang_category: string, dependencies: string}|null
+     */
+    public function getModuleByName(string $sName): ?array
+    {
+        $oStatement = $this->_pdo()->prepare("SELECT `name`, `uri`, `path`, `lang_category`, `dependencies` FROM `sys_modules` WHERE `name` = ? LIMIT 1");
+        $oStatement->execute([$sName]);
+        $aResult = $oStatement->fetch(PDO::FETCH_ASSOC);
+        $oStatement->closeCursor();
+        return $aResult ?: null;
+    }
+
+    /**
      * @return array{name: string, path: string, version: string, note: string}|null
      */
     public function getModuleByUri(string $sUri): ?array

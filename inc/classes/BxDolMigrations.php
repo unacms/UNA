@@ -201,6 +201,32 @@ class BxDolMigrations
     }
 
     /**
+     * The migrations an update pack applies, as an instance that runs them whatever the site's
+     * update channel: the pack is the release a beta or stable site was given, and its files are
+     * on the site by then. With no module: the common folder and the system module, for the
+     * system update pack. With a module's name: that module's folder, for its update pack,
+     * whether the module is enabled or not, as a pack's SQL always ran.
+     *
+     * @param string $sModule module name (`sys_modules`.`name`), '' for common and system
+     */
+    public function forUpdate(string $sModule = '', ?callable $fLog = null): self
+    {
+        $aSources = [];
+        foreach ($this->getSources() as $aSource)
+            if ($sModule === '' ? $aSource['scope'] !== self::SCOPE_MODULE : $aSource['module'] === $sModule)
+                $aSources[] = $aSource;
+
+        // A disabled module is not among the sources.
+        if ($sModule !== '' && !$aSources && $this->_aSources === null) {
+            $aModule = $this->_oQuery->getModuleByName($sModule);
+            if ($aModule !== null && ($aSource = $this->_getModuleSource($aModule)) !== null)
+                $aSources[] = $aSource;
+        }
+
+        return new self($this->_oQuery, $aSources, $fLog ?? $this->_fLog, $this->_sSystemVersion, self::CHANNEL_DEV);
+    }
+
+    /**
      * Every migration of the sources, in the order they run.
      *
      * @return list<array> source fields plus readFile() fields and `label`

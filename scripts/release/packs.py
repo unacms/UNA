@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 """
-Builds the files part of UNA update packs. SQL is not generated here.
+Builds UNA update packs. A pack carries no SQL of its own: it brings the migrations (migrations/ folders) and
+runs them, so a database change is written once, as a migration, and reaches every kind of site.
 
   packs.py system  --old-tree DIR --new-tree DIR --from 15.0.0-RC4 --to 15.0.0-RC5 [--out DIR]
   packs.py modules --since 15.0.0-RC4 --to-ref HEAD --system-version 15.0.0-RC5 [--out DIR] [--module NAME ...]
   packs.py built   --new-tree DIR --system-version 15.0.0-RC5
-  packs.py flags   --system-version 15.0.0-RC5
+  packs.py system-finish --from 15.0.0-RC4 --to 15.0.0-RC5 --date 20261126
   packs.py versions --mode release|dev [--write]
   packs.py verify  --generated DIR --ref 15.0.0-RC4
 
 system:  compares two unpacked release packages (the previous release and the new build) and writes
-         upgrade/files/<from>-<to>/ with files/, files_delete.php and check.php. sql.sql, app.sql and
-         script.php are created as stubs only when they are missing.
+         upgrade/files/<from>-<to>/ with files/, files_delete.php, check.php, sql.sql (the version) and
+         script.php (runs the migrations); the last two are written only when they are missing.
 modules: for every module under modules/boonex that changed since its last update pack was made, writes modules/boonex/<module>/updates/<from>_<to>/ with install/config.php,
-         install/installer.php, install/langs/ and source/. install/sql/ is left to a person.
+         install/installer.php, install/langs/ and source/, with the module's migrations in source/migrations/.
 built:   adds a module's build outputs that are not in git to its pack of this release.
-flags:   sets execute_sql and clear_db_cache in this release's packs after a person wrote their SQL.
+system-finish: writes the migration that sets the system version on sites that follow the repository.
 versions: sets module versions for the release commit, or back to .DEV after it (see versions()).
 verify:  compares generated packs with the ones committed at a git ref and prints every difference.
 
@@ -110,6 +111,66 @@ def removed_dirs(old_root, new_root, deleted):
     return sorted(dirs)
 
 
+SYSTEM_SCRIPT = """<?php
+
+    // The database changes of this release are its migrations: migrations/ and modules/system/migrations/,
+    // which the files of this update brought. They run here whatever the site's update channel, each once,
+    // and are recorded in sys_migrations. Modules' migrations run with the modules' own update packs.
+
+    if (!method_exists('BxDolMigrations', 'forUpdate'))
+        return 'This update was started by a process that had the previous version of BxDolMigrations loaded. Run the update again.';
+
+    $aResult = BxDolMigrations::getInstance()->forUpdate()->run();
+
+    if ($aResult['problems'])
+        return 'Migrations did not run: ' . implode('; ', $aResult['problems']);
+    if ($aResult['failed'] !== '')
+        return 'Migration ' . $aResult['failed'] . ' failed: ' . $aResult['error'];
+    if ($aResult['refresh_error'] !== '')
+        return 'Migrations ran, but ' . $aResult['refresh_error'] . ' failed';
+
+    return true;
+"""
+
+MODULE_INSTALLER = HEADER + """
+class %sUpdater extends BxDolStudioUpdater
+{
+    function __construct($aConfig)
+    {
+        parent::__construct($aConfig);
+    }
+
+    /**
+     * The module's database changes are its migrations (the module's migrations/ folder, which 'update_files'
+     * copied before this action). They run whatever the site's update channel, each once, and are recorded
+     * in sys_migrations.
+     */
+    public function actionExecuteSql($sOperation)
+    {
+        if($sOperation == 'install') {
+            $aModule = $this->oDb->getModuleByUri($this->_aConfig['module_uri']);
+            if(empty($aModule))
+                return BX_DOL_STUDIO_INSTALLER_FAILED;
+
+            $aResult = BxDolMigrations::getInstance()->forUpdate($aModule['name'])->run();
+
+            $sError = '';
+            if($aResult['problems'])
+                $sError = implode('; ', $aResult['problems']);
+            else if($aResult['failed'] !== '')
+                $sError = $aResult['failed'] . ': ' . $aResult['error'];
+            else if($aResult['refresh_error'] !== '')
+                $sError = $aResult['refresh_error'];
+            if($sError !== '')
+                return array('code' => BX_DOL_STUDIO_INSTALLER_FAILED, 'content' => array(array('query' => 'migrations', 'error' => $sError)));
+        }
+
+        return parent::actionExecuteSql($sOperation);
+    }
+}
+"""
+
+
 def system_pack(args):
     old_root, new_root = args.old_tree.rstrip('/'), args.new_tree.rstrip('/')
     for root in (old_root, new_root):
@@ -152,28 +213,11 @@ return $mixCheckResult;
 
     where = ' OR '.join("`version` = '%s'" % v for v in spellings)
     stubs = {
-        'sql.sql': "\n-- Last step is to update current version\n"
+        'sql.sql': "-- Database changes of this release are its migrations (migrations/, modules/system/migrations/),\n"
+                   "-- which script.php runs after this file.\n"
+                   "\n-- Last step is to update current version\n"
                    "UPDATE `sys_modules` SET `version` = '%s' WHERE (%s) AND `name` = 'system';\n" % (args.v_to, where),
-        'app.sql': "",
-        'script.php': """<?php
-
-    // Schema changes that need a check (MySQL 5.7 has no ADD COLUMN IF NOT EXISTS) go here.
-
-    // app related changes
-    $aPathInfo = pathinfo(__FILE__);
-    $mixedResult = $this->oDb->executeSQL($aPathInfo['dirname'] . '/app.sql');
-    if (true !== $mixedResult) {
-        if (!is_array($mixedResult))
-            return $mixedResult;
-
-        $s = '';
-        foreach ($mixedResult as $a)
-            $s .= "<b>{$a['query']}</b>: {$a['error']} <br />";
-        return $s;
-    }
-
-    return true;
-""",
+        'script.php': SYSTEM_SCRIPT,
     }
     for name, content in stubs.items():
         if not os.path.exists(os.path.join(pack, name)):
@@ -255,6 +299,14 @@ def lang_target(path):
     return match.group(1) if match else None
 
 
+# Files first: 'execute_sql' runs the migrations that 'update_files' brings.
+INSTALL_ORDER = ('update_files', 'execute_sql', 'update_languages', 'restore_languages', 'clear_db_cache')
+
+
+def install_array(flags):
+    return 'array(%s\n    )' % ''.join("\n        '%s' => %d," % (key, flags[key]) for key in INSTALL_ORDER if key in flags)
+
+
 def module_config(module, config, previous, v_from, v_to, system_version, flags, deleted, categories):
     pack_name = '%s_%s' % (v_from, v_to)
     uri = config_value(config, 'home_uri')
@@ -272,8 +324,10 @@ def module_config(module, config, previous, v_from, v_to, system_version, flags,
         for key, value in values.items():
             text = re.sub(r"('%s'\s*=>\s*)'[^']*'" % key, lambda m: m.group(1) + "'%s'" % value, text, count=1)
         text = re.sub(r"('compatible_with'\s*=>\s*array\()[^)]*\)", lambda m: m.group(1) + "\n        '%s'\n    )" % system_version, text, count=1)
-        for key, value in flags.items():
-            text = re.sub(r"('%s'\s*=>\s*)\d" % key, lambda m: m.group(1) + str(value), text, count=1)
+        restore = re.search(r"'restore_languages'\s*=>\s*(\d)", text)
+        if restore:
+            flags = dict(flags, restore_languages=int(restore.group(1)))
+        text = re.sub(r"('install'\s*=>\s*)array\([^)]*\)", lambda m: m.group(1) + install_array(flags), text, count=1)
         text = re.sub(r"('delete_files'\s*=>\s*)array\([^)]*\)", lambda m: m.group(1) + delete_files, text, count=1)
         if categories:
             # A language module: the categories whose strings this pack changes.
@@ -313,12 +367,7 @@ $aConfig = array(
     /**
      * Installation/Uninstallation Section.
      */
-    'install' => array(
-        'execute_sql' => %(execute_sql)d,
-        'update_files' => %(update_files)d,
-        'update_languages' => %(update_languages)d,
-        'clear_db_cache' => %(clear_db_cache)d,
-    ),
+    'install' => %(install)s,
 
     /**
      * Category for language keys.
@@ -334,7 +383,41 @@ $aConfig = array(
            title=config_value(config, 'title'), vendor=config_value(config, 'vendor'),
            module_dir=config_value(config, 'home_dir'), module_uri=uri,
            db_prefix=config_value(config, 'db_prefix'), class_prefix=config_value(config, 'class_prefix'),
-           language_category=config_value(config, 'language_category'), **flags)
+           language_category=config_value(config, 'language_category'), install=install_array(flags))
+
+
+VERSION_MIGRATION = """<?php defined('BX_DOL') or die('hack attempt');
+/*
+ * UNA-Migration-Min-System-Version: %s
+ *
+ * The version of the module, as its update pack (%s to %s) leaves it. Database only: only a module that has
+ * the old version gets the new one, and files come with git or with the pack.
+ */
+
+BxDolMigrationsHelper::moduleUpdated('%s', '%s', '%s');
+"""
+
+
+def release_slug(version):
+    """15.0.0-RC5 -> rc5, 15.0.0 -> v15_0_0: the release's name in migration file names."""
+    suffix = version.split('-', 1)[1] if '-' in version else 'v' + version
+    return re.sub(r'[^a-z0-9]+', '_', suffix.lower())
+
+
+def system_finish(args):
+    """The system version, for sites that follow the repository; a site with the update pack has it already."""
+    path = 'migrations/%s91_%s_system_finish.php' % (args.date, release_slug(args.v_to))
+    write(os.path.join(args.out, path), """<?php defined('BX_DOL') or die('hack attempt');
+/*
+ * UNA-Migration-Min-System-Version: %s
+ *
+ * The version of the system module, as the update pack (%s to %s) leaves it. Only a site that has the old
+ * version gets the new one. Files are not touched, they come with git or with the pack.
+ */
+
+BxDolMigrationsHelper::moduleUpdated('system', '%s', '%s');
+""" % (args.v_from, args.v_from, args.v_to, args.v_from, args.v_to))
+    print(path)
 
 
 def release_config(config, version, system_version):
@@ -443,35 +526,36 @@ def module_packs(args):
         for target, update in pending_langs:
             write(os.path.join(pack, 'install/langs', target), update)
 
+        # Sites got earlier database changes from packs' SQL and have none of the module's migration files, so the
+        # whole folder goes, not what changed. Each file is safe to run on a database that has its change.
+        migrations = git('ls-tree', '-r', '--name-only', to_ref, home + '/migrations/').splitlines()
+        for path in migrations:
+            write(os.path.join(pack, 'source', path[len(home) + 1:]), git('show', '%s:%s' % (to_ref, path), binary=True))
+
+        # For sites that follow the repository and get no packs: the module's version, as this pack leaves it.
+        uri = config_value(config, 'home_uri')
+        version_file = 'migrations/%s90_%s_%s_version.php' % (args.date, release_slug(args.system_version), re.sub(r'[^a-z0-9]+', '_', module.lower()))
+        version_migration = VERSION_MIGRATION % (args.min_system_version, v_from, v_to, uri, v_from, v_to)
+        write(os.path.join(pack, 'source', version_file), version_migration)
+        write(os.path.join(args.out, home, version_file), version_migration)
+
         if not os.path.isfile(os.path.join(pack, 'source/install/config.php')):
             write(os.path.join(pack, 'source/install/config.php'), release_config(config, v_to, args.system_version))
 
-        sql_dir = os.path.join(pack, 'install/sql')
-        has_sql = os.path.isdir(sql_dir) and bool(os.listdir(sql_dir))
-        flags = {'execute_sql': int(has_sql), 'update_files': 1, 'update_languages': int(has_langs), 'clear_db_cache': int(has_sql)}
+        flags = {'execute_sql': 1, 'update_files': 1, 'update_languages': int(has_langs), 'clear_db_cache': 1}
 
         previous_path = '%s/updates/%s_%s/install/config.php' % (home, last[0], last[1])
         previous = git('show', '%s:%s' % (to_ref, previous_path)) if git_has(to_ref, previous_path) else None
         write(os.path.join(pack, 'install/config.php'),
               module_config(module, config, previous, v_from, v_to, args.system_version, flags, deleted, categories))
 
-        installer = os.path.join(pack, 'install/installer.php')
-        if not os.path.exists(installer):
-            write(installer, HEADER + """
-class %sUpdater extends BxDolStudioUpdater
-{
-    function __construct($aConfig)
-    {
-        parent::__construct($aConfig);
-    }
-}
-""" % config_value(config, 'class_prefix'))
+        write(os.path.join(pack, 'install/installer.php'), MODULE_INSTALLER % config_value(config, 'class_prefix'))
 
         sql_changed = [rel for state, rel in changes if re.fullmatch(r'install/sql/(install|enable|enable-app)\.sql', rel)]
         built.append((module, v_from, v_to, len(changes) - len(deleted), len(deleted), sql_changed))
 
     for module, v_from, v_to, files, deleted, sql_changed in built:
-        note = ('  SQL NEEDED: ' + ', '.join(os.path.basename(p) for p in sql_changed)) if sql_changed else ''
+        note = ('  install SQL changed: ' + ', '.join(os.path.basename(p) for p in sql_changed)) if sql_changed else ''
         print('%-22s %s -> %s  %d files, %d deleted%s' % (module, v_from, v_to, files, deleted, note))
     for module, reason in skipped:
         print('%-22s SKIPPED: %s' % (module, reason))
@@ -495,29 +579,6 @@ def release_packs(system_version):
                 if match and match.group(1) == system_version:
                     found.append((module, os.path.join(folder, name)))
     return found
-
-
-def set_flags(pack):
-    sql_dir = os.path.join(pack, 'install/sql')
-    has_sql = int(os.path.isdir(sql_dir) and bool(os.listdir(sql_dir)))
-    path = os.path.join(pack, 'install/config.php')
-    with open(path, 'rb') as f:
-        raw = f.read()
-    new = raw
-    for key in (b'execute_sql', b'clear_db_cache'):
-        new = re.sub(rb"('" + key + rb"'\s*=>\s*)\d", lambda m: m.group(1) + str(has_sql).encode(), new, count=1)
-    if new != raw:
-        with open(path, 'wb') as f:
-            f.write(new)
-    return new != raw, has_sql
-
-
-def flags(args):
-    """After a person adds or removes SQL in this release's packs: execute_sql and clear_db_cache follow."""
-    for module, pack in release_packs(args.system_version):
-        changed, has_sql = set_flags(pack)
-        if changed:
-            print('%-22s execute_sql and clear_db_cache set to %d' % (module, has_sql))
 
 
 def built(args):
@@ -652,13 +713,18 @@ def main():
     p.add_argument('--to-ref', required=True, help='git ref of the new release')
     p.add_argument('--system-version', required=True, help='new system version, for compatible_with')
     p.add_argument('--module', action='append', help='only this module folder (repeatable)')
+    p.add_argument('--date', required=True, help='YYYYMMDD, the day of the release, for migration file names')
+    p.add_argument('--min-system-version', required=True, help='previous system version, for the version migrations')
     p.add_argument('--rebuild', action='store_true', help="make a pack again when the module's version already has one")
     p.add_argument('--out', default='.', help='where the repository tree is written (default: here)')
     p.set_defaults(run=module_packs)
 
-    p = commands.add_parser('flags')
-    p.add_argument('--system-version', required=True)
-    p.set_defaults(run=flags)
+    p = commands.add_parser('system-finish')
+    p.add_argument('--from', dest='v_from', required=True)
+    p.add_argument('--to', dest='v_to', required=True)
+    p.add_argument('--date', required=True, help='YYYYMMDD, the day of the release, for the migration file name')
+    p.add_argument('--out', default='.')
+    p.set_defaults(run=system_finish)
 
     p = commands.add_parser('built')
     p.add_argument('--new-tree', required=True, help='unpacked package of the new release')

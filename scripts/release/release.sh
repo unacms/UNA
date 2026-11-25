@@ -3,14 +3,13 @@
 #
 #   scripts/release/release.sh prepare 15.0.0-RC5 --from 15.0.0-RC4
 #       1. sets BX_DOL_VERSION (inc/version.inc.php, install/index.php)
-#       2. writes module update packs (files, languages, config; SQL is left to a person)
+#       2. writes module update packs (files, languages, migrations) and the version migrations
 #       3. sets module versions for the release (no .DEV)
 #       4. commits, builds the package from that commit in a container
 #       5. writes the system update pack from the previous release's zip and the new package, commits
 #
 #   scripts/release/release.sh package 15.0.0-RC5 --from 15.0.0-RC4
-#       builds packages/release/UNA-v.<version>.zip and UNA-Patch-v.<from>-to-v.<version>.zip from HEAD.
-#       Run it after the SQL of the packs is written and committed.
+#       builds UNA-Patch-v.<from>-to-v.<version>.zip from HEAD, next to the package that prepare built.
 #
 #   scripts/release/release.sh back-to-dev <commit before the release commit>
 #       module versions back to .DEV, as one commit. Run it on a branch made after the release is tagged.
@@ -37,9 +36,11 @@ need_clean_branch() {
 parse() {
     version=${1:-}; shift || true
     from=
+    date=$(date +%Y%m%d)
     while [ $# -gt 0 ]; do
         case $1 in
             --from) from=$2; shift 2 ;;
+            --date) date=$2; shift 2 ;;
             *) die "unknown option $1" ;;
         esac
     done
@@ -74,11 +75,14 @@ prepare)
 
         mkdir -p "$out"
         echo "== Module update packs"
-        python3 $here/packs.py modules --since "$from" --to-ref HEAD --system-version "$version" | tee "$out/modules.txt"
+        python3 $here/packs.py modules --since "$from" --to-ref HEAD --system-version "$version" \
+            --date "$date" --min-system-version "$from" | tee "$out/modules.txt"
         echo "== Module versions"
         python3 $here/packs.py versions --mode release --write | tail -n 1
 
-        git add -A inc/version.inc.php install/index.php modules
+        python3 $here/packs.py system-finish --from "$from" --to "$version" --date "$date"
+
+        git add -A inc/version.inc.php install/index.php modules migrations
         git commit -q -m "Release $version: version, module versions, module update packs"
     fi
 
@@ -96,10 +100,8 @@ prepare)
     git commit -q -m "Release $version: system update pack, build outputs in module packs"
 
     echo
-    echo "Left to a person:"
-    echo "  - SQL of the system pack: upgrade/files/$(dotted "$from")-$(dotted "$version")/{sql.sql,app.sql,script.php}"
-    echo "  - SQL of module packs marked 'SQL NEEDED' in $out/modules.txt (install/sql/ in each pack),"
-    echo "    then: python3 $here/packs.py flags --system-version $version"
+    echo "Packs carry no SQL: they run the migrations they bring. Next:"
+    echo "  - check the release: scripts/release/check/ (fresh site, upgraded site, comparison)"
     echo "  - then: $here/release.sh package $version --from $from"
     ;;
 
