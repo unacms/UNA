@@ -215,8 +215,10 @@ class BxDolAdminLog
 
         try {
             [$sParam, $sAction] = self::requestAction();
-            // A Studio page answers a save with nothing when there is nothing to redraw (page settings with the same layout).
-            if ($sAction === '' || self::isReadAction($sAction) || ($mixedResult && self::isFailedResult($mixedResult)))
+            // A Studio page answers a saved form with nothing when there is nothing to redraw (page settings with the
+            // same layout), and a request it refuses (no id) with nothing too: only the posted form is a change.
+            $bFailed = $mixedResult ? self::isFailedResult($mixedResult) : !self::hasPostedForm();
+            if ($sAction === '' || self::isReadAction($sAction) || $bFailed)
                 return $mixedResult;
 
             self::record([
@@ -233,6 +235,15 @@ class BxDolAdminLog
         }
 
         return $mixedResult;
+    }
+
+    protected static function hasPostedForm(): bool
+    {
+        foreach (array_keys($_POST) as $sKey)
+            if (!in_array($sKey, ['csrf_token', '_', BX_DOL_STUDIO_TEMPLATE_CODE_KEY], true) && !preg_match('/^[a-z0-9]+_action$/', (string)$sKey))
+                return true;
+
+        return false;
     }
 
     /**

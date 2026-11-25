@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Group;
 class AdminLogTest extends BxDolIntegrationTestCase
 {
     private array $_aGetBackup = [];
+    private array $_aPostBackup = [];
     private string $_sOption = 'sys_audit_max_records';
     private $mixedOption = null;
     private $mixedEnable = null;
@@ -19,11 +20,13 @@ class AdminLogTest extends BxDolIntegrationTestCase
         parent::setUp();
         require_once(BX_DIRECTORY_PATH_ROOT . 'studio/inc/utils.inc.php'); // bx_get_js_result, for the settings save's reply
         $this->_aGetBackup = $_GET;
+        $this->_aPostBackup = $_POST;
     }
 
     protected function tearDown(): void
     {
         $_GET = $this->_aGetBackup;
+        $_POST = $this->_aPostBackup;
 
         if ($this->mixedOption !== null)
             setParam($this->_sOption, $this->mixedOption);
@@ -194,9 +197,18 @@ class AdminLogTest extends BxDolIntegrationTestCase
         $this->assertStringContainsString('"title":"New"', $aRow['after']);
         $this->assertStringNotContainsString('"password":"p"', $aRow['after']);
 
-        // Page settings saved with the same layout answer with nothing to redraw: still a change.
-        $_GET = ['bp_action' => 'page_edit', 'id' => '8'];
+        // A request the page refuses (no id) is answered with nothing too: not a change.
+        $_GET = ['bp_action' => 'block_edit'];
+        $_POST = [];
+        $iMid = $this->maxId();
         BxDolAdminLog::runStudioAction($oPage, fn() => []);
+        $this->assertSame($iMid, $this->maxId());
+
+        // Page settings saved with the same layout answer with nothing to redraw: a posted form, so a change.
+        $_GET = ['bp_action' => 'page_edit', 'id' => '8'];
+        $_POST = ['title' => 'Page'];
+        BxDolAdminLog::runStudioAction($oPage, fn() => []);
+        $_POST = [];
         $aRow = $this->latest('studio:admin_log_test_page', '8', $iBefore);
         $this->assertIsArray($aRow);
         $this->assertSame('page_edit', $aRow['action']);
@@ -277,6 +289,16 @@ class AdminLogTest extends BxDolIntegrationTestCase
             'after' => json_encode(['5' => ['id' => 5, 'title_system' => 'Home']]),
         ]);
         $this->assertSame(_t('_adm_txt_admin_log_item', 'Home', '5'), $sName);
+
+        // a long value that changes past what the window shows is still a change, shown around the difference
+        $sLong = str_repeat('a', 5000);
+        $oDiff = new ReflectionMethod($oGrid, 'diffRows');
+        [$aChanged, $aSame] = $oDiff->invoke($oGrid, json_encode(['5' => ['text' => $sLong . 'b']]), json_encode(['5' => ['text' => $sLong . 'c']]));
+        $this->assertCount(1, $aChanged);
+        $this->assertSame([], $aSame);
+        $this->assertStringStartsWith('...', $aChanged[0]['before']);
+        $this->assertStringEndsWith('ab', $aChanged[0]['before']);
+        $this->assertStringEndsWith('ac', $aChanged[0]['after']);
     }
 
     private function ready(): bool

@@ -10,6 +10,9 @@
 
 class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
 {
+    const SHOW_MAX = 4000; ///< characters of one value the changes window shows
+    const SHOW_CONTEXT = 200; ///< characters shown before the first difference of a long value
+
     public function getCode($isDisplayHeader = true)
     {
         $this->_oTemplate->addCss(['admin_log.css', 'forms.css']);
@@ -192,18 +195,21 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
 
         $aChanged = $aSame = [];
         foreach ($aKeys as $sKey) {
-            $sB = $this->show($aFlatBefore[$sKey] ?? '');
-            $sA = $this->show($aFlatAfter[$sKey] ?? '');
+            // compared in full: a long value may change only past what the window shows
+            $sB = $this->raw($aFlatBefore[$sKey] ?? '');
+            $sA = $this->raw($aFlatAfter[$sKey] ?? '');
             if ($sB === $sA) {
                 if ($sA !== '')
-                    $aSame[] = ['key' => $this->esc((string)$sKey), 'value' => $this->esc($sA)];
+                    $aSame[] = ['key' => $this->esc((string)$sKey), 'value' => $this->esc($this->show($sA))];
                 continue;
             }
 
+            // a long value is shown from a little before its first difference
+            $iFrom = $this->firstDifference($sB, $sA);
             $aChanged[] = [
                 'key' => $this->esc((string)$sKey),
-                'before' => $this->esc($sB),
-                'after' => $this->esc($sA),
+                'before' => $this->esc($this->show($sB, $iFrom)),
+                'after' => $this->esc($this->show($sA, $iFrom)),
             ];
         }
 
@@ -253,17 +259,49 @@ class BxBaseStudioAdminLogGrid extends BxDolStudioAdminLogGrid
         return $aOut;
     }
 
-    protected function show($mValue): string
+    protected function raw($mValue): string
     {
         if ($mValue === null)
             return '';
         if (is_bool($mValue))
             return $mValue ? '1' : '0';
-        $s = (string)$mValue;
-        if (get_mb_len($s) > 4000)
-            $s = get_mb_substr($s, 0, 4000);
 
-        // a language key is shown with its text
+        return (string)$mValue;
+    }
+
+    /**
+     * Where a long value starts to show: a little before the first character the two values differ in.
+     */
+    protected function firstDifference(string $sBefore, string $sAfter): int
+    {
+        if (get_mb_len($sBefore) <= self::SHOW_MAX && get_mb_len($sAfter) <= self::SHOW_MAX)
+            return 0;
+
+        // the longest common start, found by halves
+        $iLow = 0;
+        $iHigh = min(get_mb_len($sBefore), get_mb_len($sAfter));
+        while ($iLow < $iHigh) {
+            $iMid = intdiv($iLow + $iHigh + 1, 2);
+            if (get_mb_substr($sBefore, 0, $iMid) === get_mb_substr($sAfter, 0, $iMid))
+                $iLow = $iMid;
+            else
+                $iHigh = $iMid - 1;
+        }
+
+        return max(0, $iLow - self::SHOW_CONTEXT);
+    }
+
+    /**
+     * At most SHOW_MAX characters from $iFrom, marked with "..." where cut; a language key with its text.
+     */
+    protected function show(string $s, int $iFrom = 0): string
+    {
+        $iLen = get_mb_len($s);
+        if ($iFrom > 0 || $iLen > self::SHOW_MAX) {
+            $sPart = get_mb_substr($s, $iFrom, self::SHOW_MAX);
+            return ($iFrom > 0 ? '...' : '') . $sPart . ($iFrom + self::SHOW_MAX < $iLen ? '...' : '');
+        }
+
         if (preg_match('/^_[A-Za-z0-9_]+$/', $s) && ($sText = _t($s)) !== $s)
             $s = $sText . "\n" . $s;
 
