@@ -6,7 +6,8 @@ FROM composer:2 AS composer
 FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git unzip zip patch curl ca-certificates \
+        git unzip zip patch curl ca-certificates libicu-dev libzip-dev \
+    && docker-php-ext-install -j"$(nproc)" intl zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer

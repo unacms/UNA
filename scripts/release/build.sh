@@ -30,8 +30,18 @@ docker run --rm \
     -v "$out":/out \
     -v una-release-cache:/cache \
     "$image" bash -euc '
-        composer install --no-dev --no-interaction --no-progress --prefer-dist --ignore-platform-req="ext-*"
+        # highlight.js stamps its bundle with `git rev-parse HEAD`. The sources here are an archive, so give it
+        # a repository whose one commit always has the same hash: the bundle then changes only with highlight.js.
+        export GIT_AUTHOR_DATE="2000-01-01T00:00:00Z" GIT_COMMITTER_DATE="2000-01-01T00:00:00Z"
+        git init -q . && git -c user.name=release -c user.email=release@localhost commit -q --allow-empty -m release
+        composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader --ignore-platform-req="ext-*"
         yarn install --frozen-lockfile --non-interactive
+        rm -rf .git
+        # The yarn build chains its steps with ";", so a failed step does not stop it. A missing bundle would
+        # end up in the next patch as a file to delete.
+        for built in plugins_public/highlight/highlight.min.js plugins_public/bundle.js plugins/autoload.php; do
+            test -s "$built" || { echo "build.sh: $built was not built" >&2; exit 1; }
+        done
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
         phing -Dpackage_name="'"$name"'" -Dpackage_file="'"$name"'.zip" package
         cp "packages/'"$name"'.zip" /out/
