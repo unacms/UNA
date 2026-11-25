@@ -107,8 +107,10 @@ export default function FormMessenger(props) {
                 {!isWeb ? (
                     <FileButton field_name='files' style="borderless" size='sm' icon="Camera" source='camera' />
                 ) : null}
-                {hasContent ? (
-                    <View className="">
+                {/* Always mounted, hidden while empty: the button is a code-split form field, and
+                    loading it at the first character suspended the composer, which took the
+                    editor's focus. */}
+                <View className={hasContent ? '' : 'hidden'}>
                         {getFormFieldByData(
                             submitInput,
                             handleSubmitWithSanitization,
@@ -129,8 +131,7 @@ export default function FormMessenger(props) {
                                 tooltip: t('Send'),
                             }
                         )}
-                    </View>
-                ) : null}
+                </View>
             </>}
             footer={<>
                 <ScrollView horizontal={true}>
