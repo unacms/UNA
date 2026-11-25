@@ -26,10 +26,14 @@ git -C "$root" archive "$commit" | tar -x -C "$src"
 
 docker build -q -t "$image" "$root/scripts/release" > /dev/null
 docker run --rm \
-    -v "$src":/src \
+    -v "$src":/in:ro \
+    -w /build \
     -v "$out":/out \
     -v una-release-cache:/cache \
     "$image" bash -euc '
+        # Build on the container file system, not on the mounted folder: the parallel yarn build steps fail
+        # at random on a shared mount ("file was replaced while being copied").
+        cp -a /in/. /build/
         # highlight.js stamps its bundle with `git rev-parse HEAD`. The sources here are an archive, so give it
         # a repository whose one commit always has the same hash: the bundle then changes only with highlight.js.
         export GIT_AUTHOR_DATE="2000-01-01T00:00:00Z" GIT_COMMITTER_DATE="2000-01-01T00:00:00Z"
