@@ -24,11 +24,9 @@ function useOpenInTasksHome(embedded, data) {
     useEffect(() => {
         if (embedded || Platform.OS !== 'web' || !currentUser) return;
         if (!isTaskViewPath(window.location.pathname)) return;
-        // Already inside the shell (list-open): history state carries the task.
-        if (window.history.state?.tasksListTask) return;
         try {
             window.sessionStorage.setItem(OPEN_TASK_STORAGE_KEY, JSON.stringify({
-                url: window.location.pathname + window.location.search,
+                url: window.location.pathname + window.location.search + window.location.hash,
                 title: data?.title || data?.page_title || '',
             }));
         } catch {

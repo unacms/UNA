@@ -36,7 +36,7 @@ export function focusInputOnMouseDown(e: { target: unknown; currentTarget: unkno
     const target = e.target as HTMLElement | null;
     const surface = e.currentTarget as HTMLElement | null;
     if (!target?.closest || !surface?.querySelector) return;
-    if (target.closest('[contenteditable="true"], textarea, input, a, button, [role="button"]')) return;
+    if (target.closest('[contenteditable="true"], textarea, input, a, button, [role="button"], [role="radio"]')) return;
     const input = surface.querySelector<HTMLElement>('[contenteditable="true"], textarea');
     if (!input) return;
     e.preventDefault();
