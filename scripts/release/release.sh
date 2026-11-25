@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Prepares a UNA release on a release branch. Nothing is pushed, tagged or published here.
 #
-#   scripts/release/release.sh prepare 15.0.0-RC5 --from 15.0.0-RC4
+#   scripts/release/release.sh prepare 15.0.0-RC5 --from 15.0.0-RC4 [--first-packs] [--no-pack-for <module>]...
 #       1. sets BX_DOL_VERSION (inc/version.inc.php, install/index.php)
 #       2. writes module update packs (files, languages, migrations) and the version migrations
 #       3. sets module versions for the release (no .DEV)
 #       4. commits, builds the package from that commit in a container
 #       5. writes the system update pack from the previous release's zip and the new package, commits
+#       --first-packs also makes a first update pack (X to X.Y.Z+1, the whole module) for every changed module
+#       that never had one; --no-pack-for leaves a module out of that.
 #
 #   scripts/release/release.sh package 15.0.0-RC5 --from 15.0.0-RC4
 #       builds UNA-Patch-v.<from>-to-v.<version>.zip from HEAD, next to the package that prepare built.
@@ -37,10 +39,13 @@ parse() {
     version=${1:-}; shift || true
     from=
     date=$(date +%Y%m%d)
+    first=()
     while [ $# -gt 0 ]; do
         case $1 in
             --from) from=$2; shift 2 ;;
             --date) date=$2; shift 2 ;;
+            --first-packs) first+=(--first-packs); shift ;;
+            --no-pack-for) first+=(--exclude "$2"); shift 2 ;;
             *) die "unknown option $1" ;;
         esac
     done
@@ -76,7 +81,7 @@ prepare)
         mkdir -p "$out"
         echo "== Module update packs"
         python3 $here/packs.py modules --since "$from" --to-ref HEAD --system-version "$version" \
-            --date "$date" --min-system-version "$from" | tee "$out/modules.txt"
+            --date "$date" --min-system-version "$from" ${first[@]+"${first[@]}"} | tee "$out/modules.txt"
         echo "== Module versions"
         python3 $here/packs.py versions --mode release --write | tail -n 1
 
@@ -137,7 +142,7 @@ back-to-dev)
     ;;
 
 *)
-    sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
     exit 1
     ;;
 esac

@@ -337,6 +337,13 @@ def module_config(module, config, previous, v_from, v_to, system_version, flags,
             text = re.sub(r"('language_category'\s*=>\s*)(?:'[^']*'|array\(.*?\n    \))", lambda m: m.group(1) + value, text, count=1, flags=re.S)
         return text
 
+    fields = dict(title=config_value(config, 'title'), vendor=config_value(config, 'vendor'),
+                  module_dir=config_value(config, 'home_dir'), module_uri=uri,
+                  db_prefix=config_value(config, 'db_prefix'), class_prefix=config_value(config, 'class_prefix'),
+                  language_category=config_value(config, 'language_category'))
+    missing = sorted(key for key, value in fields.items() if value is None)
+    if missing:
+        fail('%s: install/config.php has no %s, the pack config cannot be written' % (module, ', '.join(missing)))
     return HEADER + """
 $aConfig = array(
     /**
@@ -378,11 +385,7 @@ $aConfig = array(
      */
     'delete_files' => %(delete_files)s,
 );
-""" % dict(values, system=system_version, delete_files=delete_files,
-           title=config_value(config, 'title'), vendor=config_value(config, 'vendor'),
-           module_dir=config_value(config, 'home_dir'), module_uri=uri,
-           db_prefix=config_value(config, 'db_prefix'), class_prefix=config_value(config, 'class_prefix'),
-           language_category=config_value(config, 'language_category'), install=install_array(flags))
+""" % dict(values, **fields, system=system_version, delete_files=delete_files, install=install_array(flags))
 
 
 VERSION_MIGRATION = """<?php defined('BX_DOL') or die('hack attempt');
@@ -445,10 +448,22 @@ def module_packs(args):
             if git('diff', '--name-only', pack_commit(to_ref, module, os.path.basename(released[0]).split('_')), to_ref, '--', home, ':!%s/updates' % home, ':!%s/migrations' % home).strip():
                 skipped.append((module, 'changed after its %s pack was made: raise the version in install/config.php, or pass --rebuild to make that pack again' % v_to))
             continue
+        first = False
         if not from_ref:
-            if git('diff', '--name-only', args.since, to_ref, '--', home, ':!%s/updates' % home, ':!%s/migrations' % home).strip():
-                skipped.append((module, 'changed since %s and has no update pack to start from: not delivered by packs' % args.since))
-            continue
+            if not git('diff', '--name-only', args.since, to_ref, '--', home, ':!%s/updates' % home, ':!%s/migrations' % home).strip():
+                continue
+            has_packs = bool(git('ls-tree', '-d', '--name-only', to_ref, home + '/updates/').split())
+            if not args.first_packs or has_packs or module in (args.exclude or []) or not git_has(args.since, home + '/install/config.php'):
+                skipped.append((module, 'changed since %s and has no update pack to start from: not delivered by packs%s'
+                                % (args.since, '' if has_packs or args.first_packs else ' (pass --first-packs to make its first one)')))
+                continue
+            # The module's first pack. Sites have the version without .DEV; what their files are is not known
+            # exactly (module packages are built outside the repository), so the previous release's tag is taken.
+            first, from_ref = True, args.since
+            parts = v_to.split('.')
+            if not parts[-1].isdigit():
+                fail('%s: cannot make the next version from %s' % (module, v_to))
+            v_first, v_to = v_to, '.'.join(parts[:-1] + [str(int(parts[-1]) + 1)])
 
         status = git('diff', '--no-renames', '--name-status', from_ref, to_ref, '--', home)
         changes = []
@@ -460,10 +475,10 @@ def module_packs(args):
 
         # The commit that added the previous pack can hold later changes than the pack itself (it was cut
         # earlier). Where that pack carries a file, its copy is what sites have.
-        previous_source = '%s/updates/%s_%s/source/' % (home, last[0], last[1])
+        previous_source = '%s/updates/%s_%s/source/' % (home, last[0], last[1]) if last else None
         listed = {rel for _, rel in changes}
         eol = lambda data: data.replace(b'\r\n', b'\n')
-        for path in git('ls-tree', '-r', '--name-only', to_ref, previous_source).splitlines():
+        for path in git('ls-tree', '-r', '--name-only', to_ref, previous_source).splitlines() if last else []:
             rel = path[len(previous_source):]
             if rel == 'install/config.php' or rel.startswith('migrations/'):
                 continue
@@ -483,7 +498,7 @@ def module_packs(args):
                 changes = []
         if not changes:
             continue
-        v_from = last[1]
+        v_from = v_first if first else last[1]
 
         pack = os.path.join(args.out, home, 'updates', '%s_%s' % (v_from, v_to))
         if os.path.isdir(os.path.join(pack, 'source')):
@@ -505,8 +520,8 @@ def module_packs(args):
             target = lang_target(rel)
             if target:
                 old = None
-                for ref, path in ((to_ref, previous_source + rel), (from_ref, '%s/%s' % (home, rel))):
-                    if git_has(ref, path):
+                for ref, path in ((to_ref, previous_source and previous_source + rel), (from_ref, '%s/%s' % (home, rel))):
+                    if path and git_has(ref, path):
                         old = git('show', '%s:%s' % (ref, path), binary=True)
                         break
                 update = lang_update(old, data)
@@ -524,6 +539,13 @@ def module_packs(args):
             pending_langs = [(target.split('/', 1)[1], update) for target, update in pending_langs]
         for target, update in pending_langs:
             write(os.path.join(pack, 'install/langs', target), update)
+
+        if first:
+            # A first pack brings the whole module: the files sites have may be older than the tag.
+            for path in git('ls-tree', '-r', '--name-only', to_ref, home + '/').splitlines():
+                rel = path[len(home) + 1:]
+                if not rel.startswith(('updates/', 'migrations/')) and rel not in listed:
+                    write(os.path.join(pack, 'source', rel), git('show', '%s:%s' % (to_ref, path), binary=True))
 
         # Sites got earlier database changes from packs' SQL and have none of the module's migration files, so the
         # whole folder goes, not what changed. Each file is safe to run on a database that has its change.
@@ -543,8 +565,8 @@ def module_packs(args):
 
         flags = {'execute_sql': 1, 'update_files': 1, 'update_languages': int(has_langs), 'clear_db_cache': 1}
 
-        previous_path = '%s/updates/%s_%s/install/config.php' % (home, last[0], last[1])
-        previous = git('show', '%s:%s' % (to_ref, previous_path)) if git_has(to_ref, previous_path) else None
+        previous_path = '%s/updates/%s_%s/install/config.php' % (home, last[0], last[1]) if last else None
+        previous = git('show', '%s:%s' % (to_ref, previous_path)) if last and git_has(to_ref, previous_path) else None
         write(os.path.join(pack, 'install/config.php'),
               module_config(module, config, previous, v_from, v_to, args.system_version, flags, deleted, categories))
 
@@ -715,6 +737,8 @@ def main():
     p.add_argument('--date', required=True, help='YYYYMMDD, the day of the release, for migration file names')
     p.add_argument('--min-system-version', required=True, help='previous system version, for the version migrations')
     p.add_argument('--rebuild', action='store_true', help="make a pack again when the module's version already has one")
+    p.add_argument('--first-packs', action='store_true', help='make a first update pack for a changed module that never had one')
+    p.add_argument('--exclude', action='append', help='with --first-packs: no first pack for this module folder (repeatable)')
     p.add_argument('--out', default='.', help='where the repository tree is written (default: here)')
     p.set_defaults(run=module_packs)
 
