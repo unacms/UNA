@@ -28,18 +28,44 @@ class GridSearchSqlTest extends BxDolIntegrationTestCase
         $this->bxLoginAsAdmin();
     }
 
+    private const PER_PAGE = 50;
+
+    /**
+     * The grid, counting its rows as AG Grid always has it do.
+     */
     private function grid(string $sObject)
     {
         unset($GLOBALS['bxDolClasses']['BxDolGrid!' . $sObject]);
 
-        return BxDolGrid::getObjectInstance($sObject);
+        $oGrid = BxDolGrid::getObjectInstance($sObject);
+        if ($oGrid) {
+            $aOptions = $this->bxGetProtected($oGrid, '_aOptions', BxDolGrid::class);
+            $aOptions['show_total_count'] = 1;
+            $this->bxSetProtected($oGrid, '_aOptions', $aOptions, BxDolGrid::class);
+        }
+
+        return $oGrid;
     }
 
     private function data($oGrid, string $sFilter, string $sOrder = ''): array
     {
         $oMethod = new ReflectionMethod(BxDolGrid::class, '_getData');
 
-        return (array)$oMethod->invoke($oGrid, $sFilter, $sOrder, 'ASC', 0, 50);
+        return (array)$oMethod->invoke($oGrid, $sFilter, $sOrder, 'ASC', 0, self::PER_PAGE);
+    }
+
+    /**
+     * The total the count query gave is the number of rows: all of them when they fit on the page, more otherwise.
+     */
+    private function assertTotal($oGrid, array $aRows, string $sMessage): void
+    {
+        $mixedTotal = $this->bxGetProtected($oGrid, '_iTotalCount', BxDolGrid::class);
+        $this->assertTrue(is_numeric($mixedTotal), $sMessage . ': no total, the count query failed.');
+
+        if (count($aRows) < self::PER_PAGE)
+            $this->assertSame(count($aRows), (int)$mixedTotal, $sMessage);
+        else
+            $this->assertGreaterThanOrEqual(count($aRows), (int)$mixedTotal, $sMessage);
     }
 
     public function testSearchAndEverySortMakeValidSql(): void
@@ -50,11 +76,16 @@ class GridSearchSqlTest extends BxDolIntegrationTestCase
             if (empty($aGrid) || !($oGrid = $this->grid($sObject)))
                 continue; // the module is not installed
 
-            $this->data($oGrid, 'GridSearchSqlTest');
-            foreach ((array)$aGrid['sorting_fields'] as $sField)
-                $this->data($this->grid($sObject), '', $sField);
+            $this->assertTotal($oGrid, $this->data($oGrid, ''), $sObject);
 
-            $this->assertIsInt((int)$this->bxGetProtected($oGrid, '_iTotalCount', BxDolGrid::class), $sObject);
+            $oGrid = $this->grid($sObject);
+            $this->assertTotal($oGrid, $this->data($oGrid, 'GridSearchSqlTest'), $sObject . ', a search');
+
+            foreach ((array)$aGrid['sorting_fields'] as $sField) {
+                $oGrid = $this->grid($sObject);
+                $this->assertTotal($oGrid, $this->data($oGrid, '', $sField), $sObject . ', sorted by ' . $sField);
+            }
+
             $iChecked++;
         }
 

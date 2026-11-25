@@ -82,7 +82,7 @@ class BxDolCmtsGridAdministration extends BxTemplGrid
                 return '';
 
             // a table of its own, so the search and the order apply to the rows of every module, not to the last one
-            $this->_aOptions['source'] = 'SELECT * FROM ((' . implode(') UNION (', $aCmtsQueries) . ')) AS `cmts_all` WHERE 1';
+            $this->_aOptions['source'] = BxDolGridQuery::getUnionSource($aCmtsQueries, 'cmts_all');
             $this->_bShowModule = true;
         }
         else

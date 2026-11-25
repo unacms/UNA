@@ -568,8 +568,8 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                     $sCond .= $oDb->prepareAsString("`{$sField}` LIKE ? OR ", '%' . $sFilter . '%');
 
             // condition for translatable fields
-            if (($sCondFields = $this->_getFilterKeysCond()) !== '')
-                $sCond .= $oDb->prepareAsString($this->_getFilterTranslatableCond($sCondFields, "`s`.`String` LIKE ?"), '%' . $sFilter . '%');
+            if (!empty($this->_aOptions['filter_fields_translatable']))
+                $sCond .= BxDolGridQuery::getFilterTranslatableCond($this->_aOptions['filter_fields_translatable'], $sFilter, true) . ' OR ';
 
             $sCond = rtrim($sCond, ' OR ');
 
@@ -593,8 +593,8 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             }
 
             // condition for translatable fields
-            if (($sCondFields = $this->_getFilterKeysCond()) !== '')
-                $sCond .= $oDb->prepareAsString($this->_getFilterTranslatableCond($sCondFields, "MATCH (`s`.`String`) AGAINST (?)"), $sFilter);
+            if (!empty($this->_aOptions['filter_fields_translatable']))
+                $sCond .= BxDolGridQuery::getFilterTranslatableCond($this->_aOptions['filter_fields_translatable'], $sFilter, false) . ' OR ';
 
             $sCond = rtrim($sCond, ' OR ');
         }
@@ -651,30 +651,6 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         }
 
         return $sQuery;
-    }
-
-    /**
-     * The translatable filter fields as a condition on the language key (`k`.`Key` = `title` OR ...), empty without them.
-     */
-    protected function _getFilterKeysCond()
-    {
-        if (empty($this->_aOptions['filter_fields_translatable']))
-            return '';
-
-        $aCond = [];
-        foreach ($this->_aOptions['filter_fields_translatable'] as $sField)
-            $aCond[] = "`k`.`Key` = `{$sField}`";
-
-        return implode(' OR ', $aCond);
-    }
-
-    /**
-     * A row whose translatable field has a translation that matches. It is a subquery, not a join: the grid's own
-     * columns (`id`, `key`) stay its own and a row comes once, whatever number of languages matches.
-     */
-    protected function _getFilterTranslatableCond($sKeysCond, $sMatch)
-    {
-        return "EXISTS (SELECT 1 FROM `sys_localization_keys` AS `k` INNER JOIN `sys_localization_strings` AS `s` ON `k`.`ID` = `s`.`IDKey` WHERE ($sKeysCond) AND $sMatch) OR ";
     }
 
     protected function _getDataSqlWhereClause($sFilter, &$sOrderByFilter)
