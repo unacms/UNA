@@ -168,14 +168,15 @@ BxDolSearchAi.prototype._submit = function () {
 
 /**
  * The fields the query was read into, less the removed ones, as the search form sends them; the words alone when
- * nothing was read from them.
+ * nothing was read from them. When the member removed every chip, the search goes without filters, not by the words.
  */
 BxDolSearchAi.prototype._filters = function () {
     var oFilters = {};
     var sQuery = this._query();
     var o = this._oParsed;
+    var bRead = !!(o && o.filters && typeof o.filters == 'object' && !$.isEmptyObject(o.filters));
 
-    if (o && o.filters && typeof o.filters == 'object') {
+    if (bRead) {
         var oSkip = {};
         $.each(o.chips || {}, $.proxy(function (sField, oChip) {
             if (this._oRemoved[sField] && oChip && oChip.filter_keys)
@@ -190,7 +191,7 @@ BxDolSearchAi.prototype._filters = function () {
         });
     }
 
-    if ($.isEmptyObject(oFilters) && sQuery && this._oOptions.keyword_field)
+    if (!bRead && sQuery && this._oOptions.keyword_field)
         oFilters[this._oOptions.keyword_field] = sQuery;
 
     return oFilters;
