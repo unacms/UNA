@@ -124,12 +124,15 @@ package)
         die "the code changed since the package was built ($built): run prepare again on a fresh release branch, the system update pack depends on it"
     fi
 
-    src=$(mktemp -d "${TMPDIR:-/tmp}/una-release-patch.XXXXXX")
-    trap 'rm -rf "$src"' EXIT
-    git archive HEAD build.xml upgrade | tar -x -C "$src"
-    docker run --rm -v "$src":/src -v "$root/$out":/out "$image" bash -euc '
+    # No mounted folders, as in build.sh: the tree goes in as a tar stream, the zip comes out with `docker cp`.
+    container=una-release-patch-$$
+    trap 'docker rm -f "$container" > /dev/null 2>&1 || true' EXIT
+    patch="UNA-Patch-v.$(dotted "$from")-to-v.$(dotted "$version").zip"
+    git archive HEAD build.xml upgrade | docker run -i --name "$container" -w /build "$image" bash -euc '
+        tar -x -C /build
         phing -Dversion_from="'"$(dotted "$from")"'" -Dversion_to="'"$(dotted "$version")"'" package_upgrade
-        cp packages/UNA-Patch-*.zip /out/'
+        test -f "packages/'"$patch"'"'
+    docker cp -q "$container:/build/packages/$patch" "$out/$patch"
     ls -la "$out"/*.zip
     ;;
 

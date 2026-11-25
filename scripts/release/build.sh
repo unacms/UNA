@@ -18,22 +18,20 @@ image=una-release-build
 commit=$(git -C "$root" rev-parse --verify "$ref^{commit}")
 mkdir -p "$out"
 out=$(cd "$out" && pwd)
-src=$(mktemp -d "${TMPDIR:-/tmp}/una-release-src.XXXXXX")
-trap 'rm -rf "$src"' EXIT
+container=una-release-build-$$
+trap 'docker rm -f "$container" > /dev/null 2>&1 || true' EXIT
 
 echo "Building $name from $commit"
-git -C "$root" archive "$commit" | tar -x -C "$src"
 
 docker build -q -t "$image" "$root/scripts/release" > /dev/null
-docker run --rm \
-    -v "$src":/in:ro \
+# The sources go in as a tar stream and the zip comes out with `docker cp`: no folder of the host is mounted.
+# On a shared mount the parallel yarn build steps, and even a plain copy, fail at random ("file was replaced
+# while being copied").
+git -C "$root" archive "$commit" | docker run -i --name "$container" \
     -w /build \
-    -v "$out":/out \
     -v una-release-cache:/cache \
     "$image" bash -euc '
-        # Build on the container file system, not on the mounted folder: the parallel yarn build steps fail
-        # at random on a shared mount ("file was replaced while being copied").
-        cp -a /in/. /build/
+        tar -x -C /build
         # highlight.js stamps its bundle with `git rev-parse HEAD`. The sources here are an archive, so give it
         # a repository whose one commit always has the same hash: the bundle then changes only with highlight.js.
         export GIT_AUTHOR_DATE="2000-01-01T00:00:00Z" GIT_COMMITTER_DATE="2000-01-01T00:00:00Z"
@@ -48,8 +46,8 @@ docker run --rm \
         done
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
         phing -Dpackage_name="'"$name"'" -Dpackage_file="'"$name"'.zip" package
-        cp "packages/'"$name"'.zip" /out/
     '
+docker cp -q "$container:/build/packages/$name.zip" "$out/$name.zip"
 
 echo "$commit" > "$out/$name.commit"
 echo "$out/$name.zip"
