@@ -277,6 +277,16 @@ class BxDolPageQuery extends BxDolDb
         return $oDb->getColumn("SELECT `content` FROM `sys_pages_blocks` WHERE `type` = 'service' AND `content` LIKE " . $oDb->escape('%' . $sMethod . '%'));
     }
 
+    /**
+     * The active service blocks of a method with the URI of their page.
+     * @return array of ['uri' => page URI, 'content' => serialized service call]
+     */
+    static public function getServiceBlocksWithPage($sMethod)
+    {
+        $oDb = BxDolDb::getInstance();
+        return $oDb->getAll("SELECT `tp`.`uri`, `tb`.`content` FROM `sys_pages_blocks` AS `tb` INNER JOIN `sys_objects_page` AS `tp` ON `tp`.`object` = `tb`.`object` WHERE `tb`.`type` = 'service' AND `tb`.`active` = 1 AND `tb`.`content` LIKE " . $oDb->escape('%' . $sMethod . '%') . " ORDER BY `tb`.`id`");
+    }
+
     public function getPageLayoutColumns($iLayoutId, $sKey = 'index')
     {
         return $this->getAllWithKey('SELECT * FROM `sys_pages_layout_columns` WHERE `layout_id`=:layout_id', $sKey, [

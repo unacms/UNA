@@ -1,0 +1,24 @@
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ */
+
+/* The AI search block on the site (search_ai.html): the field, Search beside it, the chips the query was read into
+   under them. The field and the chips are the site's own (form inputs, the search window's chips). */
+.bx-search-ai .bx-search-ai-chips:not(:empty) {
+    margin-top: 0.75rem;
+}
+
+/* A text area as tall as two lines at first, growing with its text (BxDolSearchAi::_grow) up to eight. */
+.bx-search-ai .bx-form-input-wrapper textarea.bx-form-input-textarea.bx-search-ai-input {
+    min-height: 0;
+    max-height: 12rem;
+    overflow-y: auto;
+    resize: none;
+}
+
+/* While the query is read, the chips that belong to the old one fade. */
+.bx-search-ai.bx-search-ai-busy .bx-search-ai-chips {
+    opacity: 0.5;
+    transition: opacity 150ms;
+}

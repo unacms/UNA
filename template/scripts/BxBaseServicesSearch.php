@@ -509,22 +509,12 @@ class BxBaseServicesSearch extends BxDol
 
         // extended search object (sys_objects_search_extended): fields of that object -> search_params
         $sObject = isset($aParams['object']) ? bx_process_input((string)$aParams['object'], BX_DATA_TEXT) : '';
-        if($sObject !== '' && $this->_getSearchExtendedObject($sObject)) {
-            // the block's hint, stored by get_block_search_ai; the client only knows its id
-            $aHint = !empty($aParams['hint_id']) ? $this->_getSearchAiHint((string)$aParams['hint_id']) : [];
-
-            $oParser = BxDolAiSearchExtParser::getInstance();
-            $aResult = $oParser->parseObject($sObject, $sQuery, [
+        if($sObject !== '' && $this->_getSearchExtendedObject($sObject))
+            return [bx_api_get_block('search_parse', $this->parseAiExtended($sObject, $sQuery, [
                 'timezone' => $sTimezone,
                 'debug' => $bDebug,
-                'hint' => $aHint['hint'] ?? '',
-                'hints' => $aHint['hints'] ?? [],
-            ]);
-            $aResult['available'] = $oParser->isAvailable();
-            $aResult['mode'] = 'extended';
-
-            return [bx_api_get_block('search_parse', $aResult)];
-        }
+                'hint_id' => !empty($aParams['hint_id']) ? (string)$aParams['hint_id'] : '',
+            ]))];
 
         $aSections = $this->_getSearchApiSections();
 
@@ -554,7 +544,9 @@ class BxBaseServicesSearch extends BxDol
 
     /**
      * Page block "AI search" (NEO element `search_ai`): one input, the query is parsed by `search_parse`
-     * into section / keyword / date chips, results come from `get_data_search_api`. API only.
+     * into section / keyword / date chips, results come from `get_data_search_api`.
+     * On the site the block is drawn for an extended search object only, always as with `use_page_results`: its
+     * results are the object's get_results block, of this page or of the object's search page (_getBlockSearchAiSite).
      *
      * @param $mixedParams optional; a search section (e.g. bx_events) or an extended search object
      *        (e.g. bx_market) to lock the block to, or an array:
@@ -567,7 +559,7 @@ class BxBaseServicesSearch extends BxDol
     public function serviceGetBlockSearchAi ($mixedParams = '')
     {
         if(!bx_is_api())
-            return '';
+            return $this->_getBlockSearchAiSite($mixedParams);
 
         $bUsePageResults = false;
         $bRerank = false;
@@ -807,6 +799,160 @@ class BxBaseServicesSearch extends BxDol
     protected function _getSearchAiHintId($aHint)
     {
         return hash('sha256', json_encode($aHint));
+    }
+
+    /**
+     * A query in words -> the search fields of an extended search object (BxDolAiSearchExtParser::parseObject), for
+     * search_parse (NEO) and the site's block (searchExtended.php, action parse_ai).
+     * @param $aOptions timezone, debug, hint_id (the block's hint, stored by get_block_search_ai; clients know its id)
+     */
+    public function parseAiExtended($sObject, $sQuery, $aOptions = [])
+    {
+        if(!$this->_getSearchExtendedObject($sObject))
+            return ['available' => false, 'mode' => 'extended', 'object' => $sObject, 'query' => $sQuery, 'search_params' => [], 'filters' => [], 'keyword_field' => '', 'chips' => []];
+
+        $aHint = !empty($aOptions['hint_id']) ? $this->_getSearchAiHint((string)$aOptions['hint_id']) : [];
+
+        $oParser = BxDolAiSearchExtParser::getInstance();
+        $aResult = $oParser->parseObject($sObject, $sQuery, [
+            'timezone' => $aOptions['timezone'] ?? '',
+            'debug' => !empty($aOptions['debug']),
+            'hint' => $aHint['hint'] ?? '',
+            'hints' => $aHint['hints'] ?? [],
+        ]);
+        $aResult['available'] = $oParser->isAvailable();
+        $aResult['mode'] = 'extended';
+
+        return $aResult;
+    }
+
+    /**
+     * The block on the site, for an extended search object, as NEO's with use_page_results: the query in words is
+     * turned into the object's search fields, shown as chips, and the results are the object's own results block
+     * (get_results), which takes them as `filters`, as from the search form. That is the block on this page when
+     * the page has one, else the object's search page. A block for the sections search draws nothing on the site.
+     */
+    protected function _getBlockSearchAiSite($mixedParams)
+    {
+        $aParams = is_array($mixedParams) ? $mixedParams : ['object' => (string)$mixedParams];
+        $sObject = isset($aParams['object']) ? (string)$aParams['object'] : (isset($aParams['section']) ? (string)$aParams['section'] : '');
+        if($sObject === '' || !$this->_getSearchExtendedObject($sObject))
+            return '';
+
+        $sResultsUri = $this->_getSearchAiResultsUri($sObject);
+        if($sResultsUri === '')
+            return '';
+
+        $sHintId = '';
+        if(($aHint = $this->_getSearchAiHintFromParams($aParams))) {
+            $sHintId = $this->_getSearchAiHintId($aHint);
+            BxDolDb::getInstance()->setCache('sys_ai_search_hint_' . $sHintId, $aHint);
+        }
+
+        // where words alone go, when there is no model to ask
+        $sKeywordField = '';
+        $oParser = BxDolAiSearchExtParser::getInstance();
+        foreach($oParser->getFields($sObject) as $sName => $aField)
+            if($aField['kind'] == 'text') {
+                $sKeywordField = $sName;
+                break;
+            }
+
+        $sPlaceholder = isset($aParams['placeholder']) && is_string($aParams['placeholder']) && trim($aParams['placeholder']) !== '' ? _t(trim($aParams['placeholder'])) : _t('_sys_search_ai_txt_placeholder');
+        $sQuery = bx_process_input((string)bx_get('ai_query'));
+        $bMultiline = !empty($aParams['multiline']);
+
+        $oTemplate = BxDolTemplate::getInstance();
+        $oTemplate->addJs(['BxDolSearchAi.js']);
+        $oTemplate->addCss(['search_ai.css']);
+
+        $sId = 'bx-search-ai-' . md5($sObject . $sHintId);
+        $aInput = ['id' => $sId, 'placeholder' => bx_html_attribute($sPlaceholder), 'query' => bx_html_attribute($sQuery)];
+        return $oTemplate->parseHtmlByName('search_ai.html', [
+            'id' => $sId,
+            'bx_if:multiline' => [
+                'condition' => $bMultiline,
+                'content' => $aInput,
+            ],
+            'bx_if:line' => [
+                'condition' => !$bMultiline,
+                'content' => $aInput,
+            ],
+            'txt_search' => _t('_Search'),
+            'config' => json_encode([
+                'id' => $sId,
+                'object' => $sObject,
+                'hint_id' => $sHintId,
+                'keyword_field' => $sKeywordField,
+                'available' => $oParser->isAvailable() ? 1 : 0,
+                'parse_url' => BX_DOL_URL_ROOT . 'searchExtended.php',
+                'results_url' => BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=' . $sResultsUri),
+            ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE),
+        ]);
+    }
+
+    /**
+     * The chips of a parsed query for the site's block: the search window's chips (search_window_chip.html), "Caption:
+     * value" with a button that removes the field.
+     */
+    public function getSearchAiChips($aParsed)
+    {
+        if(empty($aParsed['chips']) || !is_array($aParsed['chips']))
+            return '';
+
+        $oTemplate = BxDolTemplate::getInstance();
+        $oFunctions = BxTemplFunctions::getInstance();
+
+        $sChips = '';
+        foreach($aParsed['chips'] as $sField => $aChip) {
+            $sCaption = trim((string)($aChip['caption'] ?? ''));
+            $sLabel = trim((string)($aChip['label'] ?? ''));
+            $sText = $sCaption !== '' && $sLabel !== '' ? $sCaption . ': ' . $sLabel : $sCaption . $sLabel;
+            if($sText === '')
+                continue;
+
+            $sChips .= $oTemplate->parseHtmlByName('search_window_chip.html', [
+                'class' => 'bx-search-window-chip-active',
+                'attrs' => 'disabled="disabled"',
+                'icon' => '',
+                'caption' => bx_process_output($sText),
+                'bx_if:remove' => [
+                    'condition' => true,
+                    'content' => [
+                        'name' => bx_html_attribute($sField),
+                        'value' => '',
+                        'title' => htmlspecialchars(_t('_sys_search_chip_remove', $sText), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                        'icon' => $oFunctions->getIconAsHtml('x', ['class' => 'size-3.5', 'aria-hidden' => 'true']),
+                    ],
+                ],
+            ]);
+        }
+
+        return $sChips;
+    }
+
+    /**
+     * The page that shows an extended search object's results (its get_results block): this page when it has one,
+     * else the first page that has, usually the object's search page. '' when none has.
+     */
+    protected function _getSearchAiResultsUri($sObject)
+    {
+        $aUris = [];
+        foreach(BxDolPageQuery::getServiceBlocksWithPage('get_results') as $aBlock) {
+            $aService = unserialize($aBlock['content'], ['allowed_classes' => false]);
+            if(!is_array($aService) || ($aService['method'] ?? '') != 'get_results')
+                continue;
+
+            $aCall = isset($aService['params'][0]) && is_array($aService['params'][0]) ? $aService['params'][0] : [];
+            if(($aCall['object'] ?? '') === $sObject)
+                $aUris[] = $aBlock['uri'];
+        }
+
+        if(!$aUris)
+            return '';
+
+        $sCurrent = (string)bx_get('i');
+        return in_array($sCurrent, $aUris, true) ? $sCurrent : reset($aUris);
     }
 
     /**
