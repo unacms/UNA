@@ -34,7 +34,7 @@ for config in "$repo"/modules/*/*/updates/*/install/config.php; do
     module=$(dirname "$(dirname "$pack")")
     rel=${module#"$repo"/}
     [ -d "$site/$rel" ] || continue
-    module_name=$(sed -n "s/^ *'name' => '\([^']*\)'.*/\1/p" "$site/$rel/install/config.php" | head -n 1)
+    module_name=$(sed -n "s/^[[:space:]]*'name' => '\([^']*\)'.*/\1/p" "$site/$rel/install/config.php" | head -n 1)
     echo "$installed" | grep -qx "$module_name" || continue
     mkdir -p "$site/$rel/updates"
     rm -rf "$site/$rel/updates/update_$(basename "$pack")"

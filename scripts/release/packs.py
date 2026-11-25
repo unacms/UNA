@@ -264,7 +264,7 @@ def language_categories(ref):
     return categories
 
 
-STRING_RE = re.compile(r'<string name="([^"]+)">(.*?)</string>', re.S)
+STRING_RE = re.compile(r'<string\s+name="([^"]+)"\s*>(.*?)</string>', re.S)
 
 
 def lang_strings(data):
