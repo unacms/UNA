@@ -2056,9 +2056,9 @@ class BxBaseGrid extends BxDolGrid
 
         $sFilterControls = $this->_isFilter() ? $this->_getFilterControls() : '';
         $sTitleRow = $this->_getHeaderTitleRow();
+        $bActions = !empty($this->_aOptions['actions_independent']);
 
-        // Rows or cards. With a title row the switch goes there, beside the title, and the grid's own buttons go
-        // beside the filters.
+        // Rows or cards. With a title row the switch and the grid's own buttons before it go there, beside the title.
         $sView = $this->_oTemplate->parseHtmlByName('grid_ag_view.html', [
             'txt_view' => bx_html_attribute(_t('_sys_grid_txt_view')),
             'txt_view_rows' => bx_html_attribute(_t('_sys_grid_txt_view_rows')),
@@ -2068,9 +2068,17 @@ class BxBaseGrid extends BxDolGrid
             $sTitleRow = $this->_oTemplate->parseHtmlByName('grid_header_title.html', [
                 'title' => self::HEADER_TITLE_SLOT,
                 'bx_if:actions_independent' => [
-                    'condition' => $sView !== '',
+                    'condition' => true,
                     'content' => [
-                        'actions_independent' => $sView,
+                        'actions_independent' => $this->_oTemplate->parseHtmlByName('grid_ag_title_controls.html', [
+                            'bx_if:actions' => [
+                                'condition' => $bActions,
+                                'content' => [
+                                    'actions' => $bActions ? $this->_getActions('independent') : '',
+                                ],
+                            ],
+                            'view' => $sView,
+                        ]),
                     ],
                 ],
             ]);
@@ -2089,9 +2097,9 @@ class BxBaseGrid extends BxDolGrid
                     'title_row' => $sTitleRow,
                     'view' => $sTitleRow === '' ? $sView : '',
                     'bx_if:actions_independent' => [
-                        'condition' => !empty($this->_aOptions['actions_independent']),
+                        'condition' => $bActions && $sTitleRow === '',
                         'content' => [
-                            'actions_independent' => !empty($this->_aOptions['actions_independent']) ? $this->_getActions('independent') : '',
+                            'actions_independent' => $bActions && $sTitleRow === '' ? $this->_getActions('independent') : '',
                         ],
                     ],
                     'bx_if:filter' => [

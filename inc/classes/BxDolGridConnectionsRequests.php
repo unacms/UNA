@@ -16,9 +16,9 @@ class BxDolGridConnectionsRequests extends BxDolGridConnections
         
     }
 
-    public function init()
+    public function init($bForceInit = false)
     {
-        $bResult = parent::init();
+        $bResult = parent::init($bForceInit);
         if(!$bResult)
             return $bResult;
 

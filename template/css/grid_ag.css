@@ -373,6 +373,11 @@ html.dark .bx-grid-ag-chevron:hover,
     justify-content: flex-end;
 }
 
+/* The items' Actions: their caption over their buttons, at the right, as the grid's own Actions column has them. */
+.bx-grid-ag-item .bx-grid-ag-item-cell.is-actions {
+    justify-content: flex-end;
+}
+
 .bx-grid-ag-items-head {
     height: 36px !important;
     font-size: 13px;
@@ -610,20 +615,72 @@ html.dark .bx-grid-ag .bx-grid-ag-items2,
     margin-left: auto;
 }
 
-.bx-grid-ag-view {
+/* Rows / cards: Studio's segmented switch (.bx-std-segmented, tailwind.css), drawn the same on the site, where Studio's
+   styles are not: a 36px gray track with the selected tab raised on white. In Studio its plate slides (page.js). */
+.bx-grid-ag-view.bx-std-segmented {
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     flex: 0 0 auto;
-    align-items: center;
-    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: var(--bx-radius-lg, 0.5rem);
+    background-color: rgb(0 0 0 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.05);
 }
 
-.bx-grid-ag-wrap .bx-grid-ag-view .bx-grid-ag-view-btn {
-    display: inline-flex;
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment {
+    display: flex;
     align-items: center;
     justify-content: center;
+    height: 1.75rem;
     margin: 0;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: calc(var(--bx-radius-lg, 0.5rem) - 0.1875rem);
+    background: transparent;
+    color: rgb(75 85 99);
+    cursor: pointer;
+    transition: color 150ms;
+}
+
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment:hover,
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    color: rgb(17 24 39);
+}
+
+.bx-grid-ag-view:not([data-bx-seg]) .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    background-color: rgb(255 255 255);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment:focus-visible {
+    outline: 2px solid rgb(59 130 246);
+    outline-offset: 0;
+}
+
+.dark .bx-grid-ag-view.bx-std-segmented {
+    background-color: rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+}
+
+.dark .bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment {
+    color: rgb(209 213 219);
+}
+
+.dark .bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment:hover,
+.dark .bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    color: rgb(255 255 255);
+}
+
+.dark .bx-grid-ag-view:not([data-bx-seg]) .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    background-color: rgb(255 255 255 / 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* The grid's own buttons and the switch, on the title row's right: the buttons first. */
+.bx-grid-ag-wrap .bx-std-block-caption > .bx-grid-header-controls-independent {
+    align-items: center;
+    gap: 0.5rem;
 }
 
 /* Bulk actions: the "Actions" button at the right end of the header, after the grid's own

@@ -108,11 +108,10 @@ class GridHeaderTitleRowTest extends BxDolTestCase
         $this->assertStringContainsString('<div class="bx-std-bcap-controls bx-grid-header-controls-independent">', $s);
 
         if ($sEngine === 'ag') {
-            // AG Grid: the rows / cards switch is in the title row, and the buttons go beside the filters, after them.
+            // AG Grid: the grid's buttons and then the rows / cards switch, a segmented one, are in the title row.
             $iView = strpos($s, 'bx-grid-ag-view-btn');
-            $this->assertSame(1, substr_count($s, 'class="bx-grid-ag-view"'));
-            $this->assertTrue($iTitle < $iView && $iView < $iFilter);
-            $this->assertTrue($iFilter < $iButton);
+            $this->assertSame(1, substr_count($s, 'class="bx-grid-ag-view bx-std-segmented"'));
+            $this->assertTrue($iTitle < $iButton && $iButton < $iView && $iView < $iFilter);
         }
         else {
             // The buttons are in the title row, once, and come before the filters, as they show.
