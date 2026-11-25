@@ -1,5 +1,6 @@
 # Build image for release packages: PHP 8.3 (the minimum UNA supports), Composer, Node 24, yarn and Phing,
-# the same tools the CI job "package" uses. See scripts/release/build.sh.
+# the same tools the CI job "package" uses, and a compiler for Messenger's native npm dependencies.
+# See scripts/release/build.sh.
 FROM node:24-slim AS node
 FROM composer:2 AS composer
 
@@ -7,6 +8,7 @@ FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git unzip zip patch curl ca-certificates libicu-dev libzip-dev \
+        python3 make g++ \
     && docker-php-ext-install -j"$(nproc)" intl zip \
     && rm -rf /var/lib/apt/lists/*
 

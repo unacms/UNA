@@ -64,19 +64,23 @@ prepare)
 
     current=$(sed -n "s/^define('BX_DOL_VERSION', '\([^']*\)').*/\1/p" inc/version.inc.php)
     [ -n "$current" ] || die "BX_DOL_VERSION was not found in inc/version.inc.php"
-    perl -pi -e "s/(define\('BX_DOL_VERSION', ')[^']*'/\${1}$version'/" inc/version.inc.php
-    perl -pi -e "s/(define \('BX_DOL_VER', ')[^']*'/\${1}$version'/" install/index.php
-    grep -q "'BX_DOL_VERSION', '$version'" inc/version.inc.php || die "inc/version.inc.php was not changed"
-    grep -q "'BX_DOL_VER', '$version'" install/index.php || die "install/index.php was not changed"
+    if [ "$current" = "$version" ]; then
+        echo "== The version is $version already: continuing with the package and the system update pack"
+    else
+        perl -pi -e "s/(define\('BX_DOL_VERSION', ')[^']*'/\${1}$version'/" inc/version.inc.php
+        perl -pi -e "s/(define \('BX_DOL_VER', ')[^']*'/\${1}$version'/" install/index.php
+        grep -q "'BX_DOL_VERSION', '$version'" inc/version.inc.php || die "inc/version.inc.php was not changed"
+        grep -q "'BX_DOL_VER', '$version'" install/index.php || die "install/index.php was not changed"
 
-    mkdir -p "$out"
-    echo "== Module update packs"
-    python3 $here/packs.py modules --since "$from" --to-ref HEAD --system-version "$version" | tee "$out/modules.txt"
-    echo "== Module versions"
-    python3 $here/packs.py versions --mode release --write | tail -n 1
+        mkdir -p "$out"
+        echo "== Module update packs"
+        python3 $here/packs.py modules --since "$from" --to-ref HEAD --system-version "$version" | tee "$out/modules.txt"
+        echo "== Module versions"
+        python3 $here/packs.py versions --mode release --write | tail -n 1
 
-    git add -A inc/version.inc.php install/index.php modules
-    git commit -q -m "Release $version: version, module versions, module update packs"
+        git add -A inc/version.inc.php install/index.php modules
+        git commit -q -m "Release $version: version, module versions, module update packs"
+    fi
 
     echo "== Package"
     $here/build.sh HEAD "UNA-v.$version" "$out"
