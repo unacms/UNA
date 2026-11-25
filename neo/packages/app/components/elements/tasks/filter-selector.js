@@ -296,12 +296,19 @@ export default function TasksFilterSelector({
         && savedFilterId !== ''
         && String(savedFilterId) !== '0';
 
+    // Applying chips makes UNA store them as the user's temporary filter and select it,
+    // so the next `savedFilterId` comes from our own submit and must keep the chips.
+    const [awaitingOwnApply, setAwaitingOwnApply] = useState(false);
+
     // Choosing a saved filter (dropdown or the save form) replaces ad-hoc chips.
     const [seen, setSeen] = useState({ savedFilterId, nonce: filterSelectionNonce });
     if (seen.savedFilterId !== savedFilterId || seen.nonce !== filterSelectionNonce) {
-        const shouldClear = seen.nonce !== filterSelectionNonce
-            || (seen.savedFilterId !== savedFilterId && isSavedFilterSelected);
+        const nonceChanged = seen.nonce !== filterSelectionNonce;
+        const idChanged = seen.savedFilterId !== savedFilterId;
+        const shouldClear = nonceChanged
+            || (idChanged && isSavedFilterSelected && !awaitingOwnApply);
         setSeen({ savedFilterId, nonce: filterSelectionNonce });
+        if (idChanged || nonceChanged) setAwaitingOwnApply(false);
         if (shouldClear) {
             setActiveFilters([]);
             setOpen(false);
@@ -364,6 +371,7 @@ export default function TasksFilterSelector({
             const formData = buildFilterFormData(meta.form.inputs, nextFilters);
             const response = await fetcher([meta.submitUrl, '', formData]);
             if (isFilterSubmitRejected(response)) return;
+            setAwaitingOwnApply(true);
         }
         await onApplied?.();
     };
@@ -506,9 +514,9 @@ export default function TasksFilterSelector({
                 />
             ))}
 
-            {activeFilters.length > 0 && !isSavedFilterSelected ? (
+            {activeFilters.length > 0 ? (
                 <Row className="items-center gap-1">
-                    <NeoButton style="borderless" controlSize="small" label={t('Clear')} onPress={clearFilters} />
+                    <NeoButton style="borderless" controlSize="small" label={t('Clear filter')} onPress={clearFilters} />
                     {requestUrlSave ? (
                         <NeoButton style="borderless" controlSize="small" label={t('Save')} onPress={onSave} />
                     ) : null}
