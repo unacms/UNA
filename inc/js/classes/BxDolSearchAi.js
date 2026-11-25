@@ -26,6 +26,7 @@ function BxDolSearchAi(oOptions)
     this._oRequest = null;
     this._iTimer = 0;
     this._bGo = false;          // Search was pressed while the query was being read
+    this._fDone = null;         // what Search does once the query is read, kept when a newer request replaces this one
 
     this._bind();
     this._grow();
@@ -86,21 +87,24 @@ BxDolSearchAi.prototype._parse = function (fDone) {
     var $this = this;
     var sQuery = this._query();
 
+    // a pending Search stays with the instance, so the request that replaces an aborted one still runs it
+    if (fDone)
+        this._fDone = fDone;
+
     if (this._oRequest) {
         this._oRequest.abort();
         this._oRequest = null;
+        this._oRoot.removeClass('bx-search-ai-busy');
     }
 
     if (!parseInt(this._oOptions.available) || sQuery.length < this.PARSE_MIN_LENGTH) {
         this._setParsed(null, sQuery);
-        if (fDone)
-            fDone();
+        this._done();
         return;
     }
 
     if (sQuery === this._sParsed && this._oParsed) {
-        if (fDone)
-            fDone();
+        this._done();
         return;
     }
 
@@ -131,9 +135,15 @@ BxDolSearchAi.prototype._parse = function (fDone) {
             return;
         $this._oRequest = null;
         $this._oRoot.removeClass('bx-search-ai-busy');
-        if (fDone)
-            fDone();
+        $this._done();
     });
+};
+
+BxDolSearchAi.prototype._done = function () {
+    var fDone = this._fDone;
+    this._fDone = null;
+    if (fDone)
+        fDone();
 };
 
 BxDolSearchAi.prototype._setParsed = function (oData, sQuery) {

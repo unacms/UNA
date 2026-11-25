@@ -866,8 +866,13 @@ class BxBaseServicesSearch extends BxDol
         $oTemplate->addJs(['BxDolSearchAi.js']);
         $oTemplate->addCss(['search_ai.css']);
 
-        $sId = 'bx-search-ai-' . md5($sObject . $sHintId);
-        $aInput = ['id' => $sId, 'placeholder' => bx_html_attribute($sPlaceholder), 'query' => bx_html_attribute($sQuery)];
+        // each block on the page gets its own id, two blocks of the same object and hint included
+        $sId = 'bx-search-ai-' . bin2hex(random_bytes(8));
+        // the query goes into a text area's body too, where only escaped < and > keep it inside the field
+        $aInput = [
+            'placeholder' => htmlspecialchars($sPlaceholder, ENT_QUOTES, 'UTF-8'),
+            'query' => htmlspecialchars($sQuery, ENT_QUOTES, 'UTF-8'),
+        ];
         return $oTemplate->parseHtmlByName('search_ai.html', [
             'id' => $sId,
             'bx_if:multiline' => [

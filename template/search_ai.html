@@ -3,12 +3,12 @@
     <form class="bx-search-ai-form flex items-start gap-2" role="search" method="get" action="">
         <bx_if:multiline>
             <div class="bx-form-input-wrapper bx-form-input-wrapper-textarea flex-1 min-w-0">
-                <textarea id="__id__-input" name="ai_query" rows="2" class="bx-def-font-inputs bx-form-input-textarea bx-search-ai-input" placeholder="__placeholder__" aria-label="__placeholder__" autocomplete="off">__query__</textarea>
+                <textarea name="ai_query" rows="2" class="bx-def-font-inputs bx-form-input-textarea bx-search-ai-input" placeholder="__placeholder__" aria-label="__placeholder__" autocomplete="off">__query__</textarea>
             </div>
         </bx_if:multiline>
         <bx_if:line>
             <div class="bx-form-input-wrapper bx-form-input-wrapper-text flex-1 min-w-0">
-                <input id="__id__-input" type="search" name="ai_query" value="__query__" class="bx-def-font-inputs bx-form-input-text bx-search-ai-input" placeholder="__placeholder__" aria-label="__placeholder__" autocomplete="off" />
+                <input type="search" name="ai_query" value="__query__" class="bx-def-font-inputs bx-form-input-text bx-search-ai-input" placeholder="__placeholder__" aria-label="__placeholder__" autocomplete="off" />
             </div>
         </bx_if:line>
         <button type="submit" class="bx-btn bx-btn-primary bx-search-ai-submit shrink-0">__txt_search__</button>
@@ -20,6 +20,6 @@
 $(document).ready(function () {
     var eCfg = document.getElementById('__id__-cfg');
     if (eCfg && typeof BxDolSearchAi === 'function')
-        new BxDolSearchAi(JSON.parse(eCfg.textContent));
+        $('#__id__').data('bx-search-ai', new BxDolSearchAi(JSON.parse(eCfg.textContent)));
 });
 </script>
