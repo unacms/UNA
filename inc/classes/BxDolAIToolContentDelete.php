@@ -50,7 +50,11 @@ class BxDolAIToolContentDelete extends BxDolAITool
         if (($aError = $this->memberContentError($module, $content_id, 'delete')))
             return $aError;
 
+        $aBefore = bx_srv('system', 'get_info', [$module, $content_id, true], 'TemplServiceContent');
         $a = bx_srv('system', 'delete', [$module, $content_id], 'TemplServiceContent');
+        if ($this->adminLogOk($a))
+            $this->adminLog('content:' . $module, (string)$content_id, 'delete', $aBefore, null);
+
         return $a;
     }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Audit > Studio log: the changes window shows the changed fields first and folds the others. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_txt_admin_log_field"><![CDATA[Field]]></string_add>
+    <string_add name="_adm_txt_admin_log_no_field_changes"><![CDATA[The fields of this entry are the same before and after. The change may be stored elsewhere, such as in a translation.]]></string_add>
+    <string_add name="_adm_txt_admin_log_unchanged"><![CDATA[Unchanged fields ({0})]]></string_add>
+</resources>

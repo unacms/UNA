@@ -54,9 +54,12 @@ class BxDolAIToolCmtsDelete extends BxDolAITool
         $a = [];
         $o = BxDolCmts::getObjectInstance($module, $content_id);
         if ($o) {
+            $aBefore = $o->getCommentRow($comment_id);
             $a = $o->remove($comment_id);
             unset($a['count']);
             unset($a['countf']);
+            if ($this->adminLogOk($a))
+                $this->adminLog('cmts:' . $module, (string)$comment_id, 'delete', $aBefore, null);
         }
         else {
             $a = ['msg' => '_sys_txt_not_found', 'code' => 404];

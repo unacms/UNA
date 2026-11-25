@@ -33,7 +33,11 @@ if(method_exists($oGrid, 'init'))
 $sAction = 'performAction' . bx_gen_method_name(bx_process_input(bx_get('a')));
 if (method_exists($oGrid, $sAction)) {
     if ($oGrid->isActionCsrfCheckingDisabled() || BxDolForm::isCsrfTokenValid(bx_get('csrf_token'), false)) {
-        $oGrid->$sAction();
+        $sActionName = (string)bx_process_input(bx_get('a'));
+        $bStudio = bx_get(BX_DOL_STUDIO_TEMPLATE_CODE_KEY) !== false || $oGrid instanceof BxDolStudioGrid;
+        BxDolAdminLog::runGrid($oGrid, $sActionName, $bStudio, function () use ($oGrid, $sAction) {
+            $oGrid->$sAction();
+        });
     }
     else {
         echoJson(['msg' => _t('_sys_txt_form_submission_error_csrf_expired'), 'grid' => $oGrid->getCode(false)]);

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Audit > Studio log: the Source column is the Protocol, and MCP is one of them. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_upd name="_adm_form_txt_admin_log_source"><![CDATA[Протокол]]></string_upd>
+    <string_upd name="_adm_txt_admin_log_source_any"><![CDATA[Любой протокол]]></string_upd>
+    <string_add name="_adm_txt_admin_log_source_mcp"><![CDATA[MCP]]></string_add>
+</resources>

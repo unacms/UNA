@@ -404,6 +404,8 @@ class BxDolMcpServer
      */
     public function callTool(array $aTool, array $aArgs)
     {
+        // what the tool changes is written to the Studio log under the MCP protocol
+        BxDolAdminLog::setProtocol('mcp');
         try {
             return $aTool['kind'] === 'api' ? $this->_callApiTool($aTool, $aArgs) : $this->_callAgentTool($aTool, $aArgs);
         }
@@ -414,6 +416,9 @@ class BxDolMcpServer
         catch (Throwable $e) {
             bx_log('sys_agents', 'MCP tool ' . $aTool['tool']['name'] . ' failed: ' . get_class($e) . ': ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine(), BX_LOG_ERR);
             return self::toolError($aTool['kind'] === 'api' ? 'Something went wrong on the server' : $e->getMessage());
+        }
+        finally {
+            BxDolAdminLog::setProtocol('');
         }
     }
 
@@ -654,7 +659,9 @@ class BxDolMcpServer
         foreach ($aTool['scoped'] ?? [] as $sArg)
             $aArgs[$sArg] = $this->_oAuth->getProfileId();
 
-        BxDolAITool::setMemberScope($bOperator ? 0 : $this->_oAuth->getProfileId());
+        $iCaller = (int)$this->_oAuth->getProfileId();
+        BxDolAITool::setCallerProfile($iCaller);
+        BxDolAITool::setMemberScope($bOperator ? 0 : $iCaller);
         try {
             $oTool = clone BxDolAIToolFactory::getToolInstance($aTool['id']);
             $oTool->setInputs($aArgs);
@@ -663,6 +670,7 @@ class BxDolMcpServer
         }
         finally {
             BxDolAITool::setMemberScope(0);
+            BxDolAITool::setCallerProfile(0);
         }
 
         if ($mResult instanceof NeuronAI\Tools\ToolOutput)

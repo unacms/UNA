@@ -46,6 +46,14 @@ class BxDolAIToolEmailSend extends BxDolAITool
 
     public function __invoke(string $email, string $subject, string $body): bool
     {
-        return sendMail($email, $subject, $body);
+        $bSent = sendMail($email, $subject, $body);
+        if ($bSent)
+            $this->adminLog('email', $email, 'send', null, [
+                'email' => $email,
+                'subject' => $subject,
+                'body' => BxDolAdminLog::maskText($body),
+            ]);
+
+        return $bSent;
     }
 }

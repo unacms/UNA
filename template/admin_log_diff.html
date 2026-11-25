@@ -1,0 +1,30 @@
+<div class="bx-admin-log-diff">
+    <bx_if:changed>
+        <div class="bx-admin-log-diff-head">
+            <span class="bx-admin-log-diff-key">__field_title__</span>
+            <span>__before_title__</span>
+            <span>__after_title__</span>
+        </div>
+        <bx_repeat:rows>
+            <div class="bx-admin-log-diff-row">
+                <div class="bx-admin-log-diff-key">__key__</div>
+                <pre class="bx-admin-log-diff-before">__before__</pre>
+                <pre class="bx-admin-log-diff-after">__after__</pre>
+            </div>
+        </bx_repeat:rows>
+    </bx_if:changed>
+    <bx_if:nothing>
+        <div class="bx-admin-log-diff-note">__nothing__</div>
+    </bx_if:nothing>
+    <bx_if:same>
+        <details class="bx-admin-log-diff-same">
+            <summary>__same_title__</summary>
+            <bx_repeat:same_rows>
+                <div class="bx-admin-log-diff-same-row">
+                    <div class="bx-admin-log-diff-key">__key__</div>
+                    <pre>__value__</pre>
+                </div>
+            </bx_repeat:same_rows>
+        </details>
+    </bx_if:same>
+</div>

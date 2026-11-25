@@ -372,6 +372,19 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     }
 
     /**
+     * What an admin-log snapshot can read: the grid object, and the table behind a SQL source.
+     */
+    public function getSourceOptions(): array
+    {
+        return [
+            'object' => (string)$this->_sObject,
+            'source_type' => (string)($this->_aOptions['source_type'] ?? ''),
+            'table' => (string)($this->_aOptions['table'] ?? ''),
+            'field_id' => (string)($this->_aOptions['field_id'] ?? ''),
+        ];
+    }
+
+    /**
      * Add replace markers. Curently markers are replaced in 'source' field
      * @param $a array of markers as key => value
      * @return true on success or false on error
