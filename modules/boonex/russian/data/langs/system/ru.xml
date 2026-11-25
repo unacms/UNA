@@ -5065,6 +5065,7 @@
     <string name="_sys_score_err_duplicate_vote"><![CDATA[Повторный голос]]></string>
     <string name="_sys_search_action_context"><![CDATA[Поиск в «{0}»]]></string>
     <string name="_sys_search_action_section"><![CDATA[Поиск: {0}]]></string>
+    <string name="_sys_search_ai_txt_placeholder"><![CDATA[Опишите, что вы ищете…]]></string>
     <string name="_sys_search_chip_all"><![CDATA[Все]]></string>
     <string name="_sys_search_chip_any_time"><![CDATA[В любое время]]></string>
     <string name="_sys_search_chip_anyone"><![CDATA[Любой]]></string>

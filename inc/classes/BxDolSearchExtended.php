@@ -110,6 +110,26 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
         return ($GLOBALS['bxDolClasses']['BxDolSearchExtended!' . $sObject] = $o);
     }
 
+    /**
+     * The site's AI search block (get_block_search_ai): a description in words -> this object's search fields, as
+     * JSON. The block sends the result to the object's results block as `filters`.
+     */
+    public function actionParseAi()
+    {
+        $sQuery = trim((string)bx_get('query'));
+        if(get_mb_len($sQuery) > 500)
+            $sQuery = get_mb_substr($sQuery, 0, 500);
+
+        $oServices = new BxTemplServicesSearch();
+        $aResult = $oServices->parseAiExtended($this->_sObject, bx_process_input($sQuery), [
+            'timezone' => bx_process_input((string)bx_get('timezone')),
+            'hint_id' => (string)bx_get('hint_id'),
+        ]);
+        $aResult['chips_html'] = $oServices->getSearchAiChips($aResult);
+
+        echoJson($aResult);
+    }
+
     static public function actionGetAuthors()
     {
         self::getMention("@");

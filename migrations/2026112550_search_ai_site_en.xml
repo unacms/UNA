@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The AI search block on the site: the hint in its field. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_search_ai_txt_placeholder"><![CDATA[Describe what you are looking for…]]></string_add>
+</resources>

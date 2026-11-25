@@ -5140,6 +5140,7 @@
     <string name="_sys_score_err_duplicate_vote"><![CDATA[Duplicate vote]]></string>
     <string name="_sys_search_action_context"><![CDATA[Search in {0}]]></string>
     <string name="_sys_search_action_section"><![CDATA[Search {0}]]></string>
+    <string name="_sys_search_ai_txt_placeholder"><![CDATA[Describe what you are looking for…]]></string>
     <string name="_sys_search_chip_all"><![CDATA[All]]></string>
     <string name="_sys_search_chip_any_time"><![CDATA[Any time]]></string>
     <string name="_sys_search_chip_anyone"><![CDATA[Anyone]]></string>
