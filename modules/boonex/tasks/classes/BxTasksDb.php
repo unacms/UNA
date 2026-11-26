@@ -1267,18 +1267,26 @@ class BxTasksDb extends BxBaseModTextDb
      */
     public function lockPrefix($iContextId)
     {
-        return (int)$this->getOne("SELECT GET_LOCK(:name, 10)", ['name' => $this->_getPrefixLockName($iContextId)]) === 1;
+        return (int)$this->getOne("SELECT GET_LOCK(" . $this->_getPrefixLockName() . ", 10)", ['name' => $this->_getPrefixLockSuffix($iContextId)]) === 1;
     }
 
     public function unlockPrefix($iContextId)
     {
-        $this->getOne("SELECT RELEASE_LOCK(:name)", ['name' => $this->_getPrefixLockName($iContextId)]);
+        $this->getOne("SELECT RELEASE_LOCK(" . $this->_getPrefixLockName() . ")", ['name' => $this->_getPrefixLockSuffix($iContextId)]);
     }
 
-    protected function _getPrefixLockName($iContextId)
+    /**
+     * Locks are per server: the connection's database keeps sites on one server apart (DATABASE(),
+     * since BX_DATABASE_NAME is a list with several database servers), in 64 characters at most.
+     */
+    protected function _getPrefixLockName()
     {
-        // locks are per server: the database's name keeps sites on one server apart (64 characters at most)
-        return substr(md5(BX_DATABASE_NAME), 0, 12) . '_' . $this->_oConfig->getName() . '_prefix_' . (int)$iContextId;
+        return "CONCAT(LEFT(MD5(IFNULL(DATABASE(), '')), 12), '_', :name)";
+    }
+
+    protected function _getPrefixLockSuffix($iContextId)
+    {
+        return $this->_oConfig->getName() . '_prefix_' . (int)$iContextId;
     }
 
     /**

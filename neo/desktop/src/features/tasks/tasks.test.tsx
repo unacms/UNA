@@ -43,6 +43,7 @@ function task(id: string, title: string, over: Partial<Task> = {}): Task {
     return {
         id,
         module: 'bx_tasks',
+        identifier: `MG-${id}`,
         title,
         summary: '',
         body_html: null,

@@ -151,6 +151,7 @@ const poll = {
 const task = {
     id: '91',
     module: 'bx_tasks',
+    identifier: 'MG-7',
     title: 'Print Lily’s posters',
     summary: '',
     body_html: null,
