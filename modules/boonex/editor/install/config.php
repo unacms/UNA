@@ -13,7 +13,6 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'deprecated' => 1,
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_editor',
     'title' => 'Editor',

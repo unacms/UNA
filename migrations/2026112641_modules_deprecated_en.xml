@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio: notices for a deprecated module (sys_modules.deprecated), and the error when one is installed. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_msg_module_deprecated"><![CDATA[{0} is deprecated and gets no new versions. It will be removed in the next major version of UNA.]]></string_add>
+    <string_add name="_adm_msg_module_deprecated_core"><![CDATA[{0} is deprecated: what it does is now part of UNA. It will be removed in the next major version of UNA.]]></string_add>
+    <string_add name="_adm_msg_module_deprecated_replaced"><![CDATA[{0} is deprecated and replaced by {1}. It will be removed in the next major version of UNA.]]></string_add>
+    <string_add name="_adm_err_modules_deprecated"><![CDATA[{0} is deprecated and cannot be installed.]]></string_add>
+</resources>

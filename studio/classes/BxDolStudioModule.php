@@ -70,6 +70,28 @@ class BxDolStudioModule extends BxTemplStudioWidget
         return $oObject;
     }
 
+    /**
+     * What Studio says about a deprecated module, or '' when it is not deprecated.
+     * @param array $aModule `sys_modules` row
+     */
+    public static function getDeprecationMessage($aModule)
+    {
+        if(empty($aModule['deprecated']))
+            return '';
+
+        $sTitle = _t($aModule['title']);
+        $sReplacedBy = isset($aModule['replaced_by']) ? $aModule['replaced_by'] : '';
+        if($sReplacedBy == BX_DOL_STUDIO_MODULE_SYSTEM)
+            return _t('_adm_msg_module_deprecated_core', $sTitle);
+
+        if($sReplacedBy != '') {
+            $aReplacement = BxDolModuleQuery::getInstance()->getModuleByName($sReplacedBy);
+            return _t('_adm_msg_module_deprecated_replaced', $sTitle, !empty($aReplacement['title']) ? _t($aReplacement['title']) : $sReplacedBy);
+        }
+
+        return _t('_adm_msg_module_deprecated', $sTitle);
+    }
+
     public function init()
     {
         $this->aModule = BxDolModuleQuery::getInstance()->getModuleByName($this->sModule);

@@ -114,6 +114,16 @@ Install SQL and language files reach only new installs. A PR that changes what a
 - The `Database migrations` check fails a PR that changes install SQL or language files without adding a new migration, unless the description says "No database migration." with the reason.
 - Until 15.0.0 is released, update packs are still needed for released versions; migrations run on sites that follow master, such as api.unacms.app.
 
+## Deprecating a module
+
+A module is retired in three steps, never by deleting it from a release.
+
+1. **Mark it.** In its `install/config.php` add `'deprecated' => true`, or `'deprecated' => array('replaced_by' => 'bx_polls')` (`'system'` when the core now does what it did). Install and update copy this to `sys_modules.deprecated` and `replaced_by`. Studio then shows a notice on the launcher and on the module's page, the installer and Studio's downloaded list stop offering it, and it cannot be installed on a site that doesn't have it. Sites that have it keep it working.
+2. **Final update pack.** Its migration moves the module's data and settings to the core or to the replacement, and turns that feature on. It does not uninstall the module, so no data is lost.
+3. **Removal in the next major version.** The module leaves the package; uninstalling it on old sites is up to the admin.
+
+`$aHiddenModules` in `install/classes/BxDolInstallSiteConfig.php` is separate: it only hides a module from the install wizard, with no notice, for modules that new sites shouldn't get but that aren't deprecated.
+
 ## NEO (`neo/`)
 
 `neo/` is NEO, the Next.js and Expo client for UNA, kept here as a git subtree. Before changing anything under `neo/`, read [`neo/AGENTS.md`](neo/AGENTS.md). Claude Code loads it through `neo/CLAUDE.md` when it opens a file there.

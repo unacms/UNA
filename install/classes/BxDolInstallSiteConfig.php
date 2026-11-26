@@ -665,7 +665,9 @@ EOF;
         if (!empty($a[BX_INSTALL_FIELD_MODULES])) {
             $aModules = $oModulesTools->getInstallOrder($oModulesTools->getModules(BX_DOL_MODULE_TYPE_MODULE), $a[BX_INSTALL_FIELD_MODULES], BX_INSTALL_FIRST_MODULE);
             foreach ($aModules as $aConfig)
-                $aRet[] = array('type' => BX_DOL_MODULE_TYPE_MODULE, 'name' => $aConfig['name'], 'title' => $aConfig['title']);
+                // A deprecated module is not installed on a new site, even when the list names it (a script, an old preset).
+                if (empty($aConfig['deprecated']))
+                    $aRet[] = array('type' => BX_DOL_MODULE_TYPE_MODULE, 'name' => $aConfig['name'], 'title' => $aConfig['title']);
         }
 
         return $aRet;
@@ -1273,9 +1275,17 @@ EOF;
         $oModulesTools = new BxDolInstallModulesTools();
         $aModules = $oModulesTools->getModules($sType);
         foreach ($aModules as $sName => $aConfig)
-            if (!in_array($aConfig['home_uri'], self::$aHiddenModules))
+            if (!self::isHiddenModule($aConfig))
                 $a[$aConfig['home_uri']] = $aConfig['title'];
         return $a;
+    }
+
+    /**
+     * Whether the installer leaves a module or template out: it is discontinued, or its config says it is deprecated.
+     */
+    public static function isHiddenModule ($aConfig)
+    {
+        return in_array($aConfig['home_uri'], self::$aHiddenModules) || !empty($aConfig['deprecated']);
     }
 
     protected function proto()

@@ -93,7 +93,11 @@ class BxBaseStudioModule extends BxDolStudioModule
         if((int)$this->aModule['enabled'] == 0)
             return '';
 
-        return parent::getPageCode($sPage, $bWrap);
+        $sResult = parent::getPageCode($sPage, $bWrap);
+        if(($sMessage = self::getDeprecationMessage($this->aModule)) != '')
+            $sResult = MsgBox($sMessage) . $sResult;
+
+        return $sResult;
     }
 
     protected function getSettings()

@@ -1102,6 +1102,7 @@
 	<string name="_adm_err_modules_cannot_delete_from_cart"><![CDATA[Невозможно удалить товар(ы) из корзины.]]></string>
 	<string name="_adm_err_modules_cannot_remove_package"><![CDATA[Невозможно удалить пакет.]]></string>
 	<string name="_adm_err_modules_cannot_subscribe"><![CDATA[Невозможно инициировать подписку.]]></string>
+	<string name="_adm_err_modules_deprecated"><![CDATA[Приложение {0} устарело, установить его нельзя.]]></string>
 	<string name="_adm_err_modules_missing_php_packages"><![CDATA[Этому модулю нужны PHP-библиотеки, которые не установлены: {0}. Выполните "composer install" в папке UNA или установите UNA из релизного пакета, в котором они есть.]]></string>
 	<string name="_adm_err_modules_module_not_found"><![CDATA[Модуль не найден]]></string>
 	<string name="_adm_err_modules_module_not_match"><![CDATA[Обновление не применимо к данному модулю.]]></string>
@@ -1562,6 +1563,9 @@
         <string name="_adm_mod_err_only_admin_can_perform_operations_with_modules"><![CDATA[Только админ может выполнять операции над модулями]]></string>
 	<string name="_adm_mod_err_process_operation_failed"><![CDATA[Невозможно {0} модуль из "{1}" директории]]></string>
 	<string name="_adm_mod_msg_process_operation_scheduled"><![CDATA[Операция добавлена в очередь и будет выполнена через несколько минут. Пожалуйста, подождите.]]></string>
+	<string name="_adm_msg_module_deprecated"><![CDATA[Приложение {0} устарело и больше не получает новых версий. Оно будет удалено в следующей основной версии UNA.]]></string>
+	<string name="_adm_msg_module_deprecated_core"><![CDATA[Приложение {0} устарело: его возможности теперь есть в UNA. Оно будет удалено в следующей основной версии UNA.]]></string>
+	<string name="_adm_msg_module_deprecated_replaced"><![CDATA[Приложение {0} устарело, его заменяет {1}. Оно будет удалено в следующей основной версии UNA.]]></string>
 	<string name="_adm_msg_modules_success_added_to_cart"><![CDATA[Товар был успешно добавлен в корзину.]]></string>
 	<string name="_adm_msg_modules_success_checkouted"><![CDATA[Оплата успешно принята и будет автоматически обработана через несколько минут. Затем приобретённые товары будут доступны в меню Приложения -> Покупки. Если по какой-то причине этого не произошло, пожалуйста свяжитесь с продавцом товара, предоставив ему детали транзакции.]]></string>
 	<string name="_adm_msg_modules_success_delete"><![CDATA[Пакет удачно удалён]]></string>
