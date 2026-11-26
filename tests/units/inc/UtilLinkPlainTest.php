@@ -6,6 +6,28 @@
  */
 class UtilLinkPlainTest extends \PHPUnit\Framework\TestCase
 {
+    /** @var callable|null the exception handler before the test: the embed object's first load sets its own */
+    protected $handler;
+
+    protected function setUp(): void
+    {
+        $this->handler = set_exception_handler(static function () {
+        });
+        restore_exception_handler();
+    }
+
+    protected function tearDown(): void
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $current = set_exception_handler(static function () {
+            });
+            restore_exception_handler();
+            if ($current === $this->handler)
+                return;
+            restore_exception_handler();
+        }
+    }
+
     public function testPlainMarksExternalLinksOnly()
     {
         $sLocal = BX_DOL_URL_ROOT . 'page/x';
