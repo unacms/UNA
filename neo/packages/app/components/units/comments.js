@@ -136,6 +136,20 @@ function UnitCommentsDefault(props) {
         setPostData(formData)
     }, [])
 
+    // The author takes the link's card off and keeps the link: UNA marks the comment's links plain.
+    const [embedOff, setEmbedOff] = useState(false)
+    const handleRemoveEmbed = useCallback(async () => {
+        setEmbedOff(true)
+        const result = await fetcher(
+            '/api.php?r=' +
+            appSetting('urls', 'cmts') +
+            '/&params[]=' +
+            encodeURIComponent(JSON.stringify({ module, object_id: objectId, action: 'embed_off', id: commentId }))
+        )
+        if (!result?.data?.browse)
+            setEmbedOff(false)
+    }, [module, objectId, commentId])
+
     if (hasData && dynamicData?.data?.browse?.data?.data[0]['i' + commentId]) {
         data =
             dynamicData?.data?.browse?.data?.data[0]['i' + commentId]
@@ -319,9 +333,9 @@ function UnitCommentsDefault(props) {
                                 showLess={true}
                                 customClassName="u-vanilla-html-small"
                             />
-                            {!!data.embed && (
-                                <View>
-                                    <Embed data={data.embed} size="small" />
+                            {!!data.embed && !embedOff && (
+                                <View className="mt-2">
+                                    <Embed data={data.embed} size="small" onRemove={data.embed_removable ? handleRemoveEmbed : undefined} />
                                 </View>
                             )}
                         </View>

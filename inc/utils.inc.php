@@ -2972,8 +2972,53 @@ function bx_linkify($text, $sAttrs = '', $bHtmlSpecialChars = false)
     return $text;
 }
 
+/**
+ * Class of a link its author keeps as a link: no preview card is made for it (BX_LINK_PLAIN_CLASS).
+ */
+define('BX_LINK_PLAIN_CLASS', 'bx-link-plain');
+
+/**
+ * The text with each link marked BX_LINK_PLAIN_CLASS taken out, so no card is made for it.
+ */
+function bx_linkify_embeded_strip_plain($sText)
+{
+    if(!is_string($sText) || !preg_match('#' . preg_quote(BX_LINK_PLAIN_CLASS, '#') . '#i', $sText))
+        return $sText;
+
+    return preg_replace('#<a\b[^>]*\bclass\s*=\s*(["\'])[^"\']*\b' . preg_quote(BX_LINK_PLAIN_CLASS, '#') . '\b[^"\']*\1[^>]*>.*?</a>#is', '', $sText);
+}
+
+/**
+ * The text with BX_LINK_PLAIN_CLASS added to each link to another site, so it stays a link without a card.
+ */
+function bx_linkify_plain($sText)
+{
+    if(!is_string($sText) || $sText === '')
+        return $sText;
+
+    $sUrlRoot = BX_DOL_URL_ROOT;
+    return preg_replace_callback('#<a\b([^>]*)>#i', function ($a) use ($sUrlRoot) {
+        $sAttrs = $a[1];
+        if(!preg_match('#\bhref\s*=\s*(["\'])(https?://[^"\']+)\1#i', $sAttrs, $aHref) || strncmp($aHref[2], $sUrlRoot, get_mb_len($sUrlRoot)) === 0)
+            return $a[0];
+
+        if(preg_match('#\bclass\s*=\s*(["\'])([^"\']*)\1#i', $sAttrs, $aClass)) {
+            if(preg_match('#\b' . preg_quote(BX_LINK_PLAIN_CLASS, '#') . '\b#', $aClass[2]))
+                return $a[0];
+
+            $sAttrs = str_replace($aClass[0], 'class=' . $aClass[1] . trim($aClass[2] . ' ' . BX_LINK_PLAIN_CLASS) . $aClass[1], $sAttrs);
+        }
+        else
+            $sAttrs .= ' class="' . BX_LINK_PLAIN_CLASS . '"';
+
+        return '<a' . $sAttrs . '>';
+    }, $sText);
+}
+
 function bx_linkify_embeded($sText)
 {
+    $sText = bx_linkify_embeded_strip_plain($sText);
+
     $sRegex = '/\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*\'().&=+$%-]+:)?[0-9a-zA-Z_!~*\'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*\'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*\'().;?:@&=+$,%#-]*)*))/';
     $aMatches = [];
     preg_match_all($sRegex, $sText, $aMatches, PREG_SET_ORDER);
