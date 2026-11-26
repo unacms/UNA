@@ -182,6 +182,19 @@ class BxDolMigrationsQuery extends BxDolDb
         $oStatement->execute([$sNote, $sUri, $sNote]);
     }
 
+    /**
+     * Copies a module config's deprecation to `sys_modules`, when the config says and the columns are there.
+     */
+    public function setModuleDeprecation(string $sUri, array $aConfig): void
+    {
+        $aSet = BxDolModuleQuery::getConfigDeprecation($aConfig);
+        if ($aSet === null || !$this->isColumn('sys_modules', 'deprecated') || !$this->isColumn('sys_modules', 'replaced_by'))
+            return;
+
+        $oStatement = $this->_pdo()->prepare("UPDATE `sys_modules` SET `deprecated` = ?, `replaced_by` = ? WHERE `uri` = ?");
+        $oStatement->execute([$aSet['deprecated'], $aSet['replaced_by'], $sUri]);
+    }
+
     public function isColumn(string $sTable, string $sColumn): bool
     {
         self::_checkName($sTable);

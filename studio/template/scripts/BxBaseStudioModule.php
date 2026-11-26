@@ -94,6 +94,9 @@ class BxBaseStudioModule extends BxDolStudioModule
             return '';
 
         $sResult = parent::getPageCode($sPage, $bWrap);
+        if($sResult === false)
+            return false;
+
         if(($sMessage = self::getDeprecationMessage($this->aModule)) != '')
             $sResult = MsgBox($sMessage) . $sResult;
 

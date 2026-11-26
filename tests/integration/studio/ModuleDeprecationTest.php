@@ -82,13 +82,29 @@ class ModuleDeprecationTest extends BxDolIntegrationTestCase
         $this->assertFalse($this->_oDb->setModuleDeprecation($iId, $this->config()));
         $this->assertSame(['deprecated' => 0, 'replaced_by' => ''], $this->row());
 
+        // The module list of this request is read before the change, and must not stay stale after it.
+        $this->assertNotContains(self::URI, array_column($this->_oDb->getDeprecatedModules(), 'uri'));
         $this->assertTrue($this->_oDb->setModuleDeprecation($iId, $this->config(['deprecated' => ['replaced_by' => 'bx_polls']])));
-        $this->assertSame(['deprecated' => 1, 'replaced_by' => 'bx_polls'], $this->row());
         $this->assertContains(self::URI, array_column($this->_oDb->getDeprecatedModules(), 'uri'));
+        $this->assertSame(['deprecated' => 1, 'replaced_by' => 'bx_polls'], $this->row());
 
         $this->assertTrue($this->_oDb->setModuleDeprecation($iId, $this->config(['deprecated' => false])));
-        $this->assertSame(['deprecated' => 0, 'replaced_by' => ''], $this->row());
         $this->assertNotContains(self::URI, array_column($this->_oDb->getDeprecatedModules(), 'uri'));
+        $this->assertSame(['deprecated' => 0, 'replaced_by' => ''], $this->row());
+    }
+
+    public function testMigrationUpdatesCopyItToo(): void
+    {
+        $aConfig = $this->config();
+        $this->assertGreaterThan(0, $this->_oDb->insertModule($aConfig));
+
+        // BxDolMigrationsHelper::moduleUpdated() writes through this query on sites that follow master.
+        $oQuery = new BxDolMigrationsQuery();
+        $oQuery->setModuleDeprecation(self::URI, $this->config());
+        $this->assertSame(['deprecated' => 0, 'replaced_by' => ''], $this->row());
+
+        $oQuery->setModuleDeprecation(self::URI, $this->config(['deprecated' => ['replaced_by' => 'system']]));
+        $this->assertSame(['deprecated' => 1, 'replaced_by' => 'system'], $this->row());
     }
 
     public function testStudioMessages(): void
