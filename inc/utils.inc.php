@@ -3000,7 +3000,8 @@ function bx_linkify_plain($sText)
 
     $sText = bx_linkify_html($sText);
 
-    $sId = 'bx-linkify-plain-' . md5(microtime());
+    // the element that holds the text in a document of its own: any id no text can carry
+    $sId = 'bx-linkify-plain-root';
     $oDom = new DOMDocument();
     if(!@$oDom->loadHTML('<?xml encoding="UTF-8"><div id="' . $sId . '">' . $sText . '</div>', LIBXML_HTML_NODEFDTD))
         return $sText;
