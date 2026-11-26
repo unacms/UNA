@@ -73,131 +73,164 @@ class BxWorkspacesModule extends BxBaseModProfileModule
         return pow(2, BX_DOL_MODULE_SUBTYPE_PROFILE);
     }
 
+    /**
+     * The context module members join to get a workspace (Studio option), when it is
+     * installed, enabled and has a connection object for its members.
+     */
+    public function getContextModule()
+    {
+        $sModule = getParam('bx_workspaces_context_module');
+        if(!$sModule || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule))
+            return '';
+
+        $oModule = BxDolModule::getInstance($sModule);
+        if(!$oModule || empty($oModule->_oConfig->CNF['OBJECT_CONNECTIONS']))
+            return '';
+
+        return $sModule;
+    }
+
+    /**
+     * Connection object of the context module's members, '' when there is no context module.
+     */
+    public function getContextConnection()
+    {
+        $sModule = $this->getContextModule();
+        return $sModule ? BxDolModule::getInstance($sModule)->_oConfig->CNF['OBJECT_CONNECTIONS'] : '';
+    }
+
+    /**
+     * A workspace shows the name of the profile it was made from (its author). When that
+     * profile is gone, another profile of the same account; then the name of a deleted profile.
+     */
     public function getProfileName ($aContentInfo)
     {
-        return bx_process_output('User' . $aContentInfo[$this->_oConfig->CNF['FIELD_ID']]);
+        $CNF = &$this->_oConfig->CNF;
+
+        $oBase = $this->getBaseProfile((int)$aContentInfo[$CNF['FIELD_AUTHOR']], (int)$aContentInfo[$CNF['FIELD_ID']]);
+        return $oBase ? $oBase->getDisplayName() : BxDolProfileUndefined::getInstance()->getDisplayName();
     }
 
-    // autoswitch currently active user profiule to the ws profile if user already has ws profile in given group context
-    public function autoSwitchProfile($oProfileGroup)
+    /**
+     * The profile a workspace stands for: its author, or another profile of its account
+     * that isn't a workspace.
+     * @return BxDolProfile|null
+     */
+    public function getBaseProfile($iAuthorProfileId, $iContentId = 0)
     {
-        $oAccount = BxDolAccount::getInstance();
-        $aProfiles = $oAccount->getProfilesIds();
-        $aFans = bx_srv($oProfileGroup->getModule(), 'fans', [$oProfileGroup->getContentId(), true]);
-        $a = array_intersect($aProfiles, $aFans);
-        if ($a) {
-            foreach ($a as $iProfileId) {
-                $oProfile = BxDolProfile::getInstance($iProfileId);
-                if ($oProfile->getModule() == $this->getName()) {
-                    $oAccount->updateProfileContext($iProfileId);
-                    return true;
-                }
-            }
+        $oAuthor = $iAuthorProfileId ? BxDolProfile::getInstance($iAuthorProfileId) : null;
+        if($oAuthor && $oAuthor->getModule() != $this->getName())
+            return $oAuthor;
+
+        $oProfile = $iContentId ? BxDolProfile::getInstanceByContentAndType($iContentId, $this->getName()) : null;
+        if(!$oProfile || !($oAccount = $oProfile->getAccountObject()))
+            return null;
+
+        foreach($oAccount->getProfilesIds(false) as $iProfileId) {
+            $o = BxDolProfile::getInstance($iProfileId);
+            if($o && !in_array($o->getModule(), [$this->getName(), 'system']))
+                return $o;
         }
-        return false;
+
+        return null;
     }
 
-    public function addConnection($sContextModule, $oAlert)
+    /**
+     * Workspace profile of an account in a context; made when it has none.
+     * @return int profile id, 0 when it can't be made
+     */
+    public function getOrCreateWorkspace($iAccountId, $iBaseProfileId, $iContextProfileId)
     {
-        $iProfileIdSubstituteInAlert = 0;
-        $iProfileIdCreated = 0;
+        if(($iProfileId = $this->_oDb->getWorkspaceProfileId($iAccountId, $iContextProfileId)))
+            return $iProfileId;
 
-        // identify group profile and workspace profile
-        [$oProfileGroup, $oProfileWs] = $this->_identifyGroupAndWorkspaceProfiles($sContextModule, $oAlert);
+        $iContentId = $this->_oDb->insertWorkspace($iBaseProfileId, $iContextProfileId);
+        if(!$iContentId)
+            return 0;
 
-        // check for existing connection switch to ws profile if exising connection is found
-        // TODO: call this method on any group view page, also update global context is needed
-        if ($this->autoSwitchProfile($oProfileGroup)) {
+        $iProfileId = (int)BxDolProfile::add(BX_PROFILE_ACTION_AUTO, $iAccountId, $iContentId, BX_PROFILE_STATUS_ACTIVE, $this->getName());
+        if(!$iProfileId) {
+            $this->_oDb->deleteWorkspace($iContentId);
+            return 0;
+        }
+
+        $iAclLevel = (int)getParam($this->_oConfig->CNF['PARAM_DEFAULT_ACL_LEVEL']) ?: MEMBERSHIP_ID_STANDARD;
+        BxDolAcl::getInstance()->setMembership($iProfileId, $iAclLevel, 0, true, '', false);
+
+        return $iProfileId;
+    }
+
+    /**
+     * `connection_before_add` of the context's members connection: the member joins as their
+     * workspace profile for that context, made on the first join.
+     */
+    public function onContextConnectionBeforeAdd($oAlert)
+    {
+        [$oContext, $oMember, $sMemberKey] = $this->_identifyContextAndMember($oAlert);
+        if(!$oContext || !$oMember || $oMember->getModule() == $this->getName())
+            return;
+
+        $iAccountId = (int)$oMember->getAccountId();
+        if(!$iAccountId)
+            return;
+
+        $iWorkspace = $this->getOrCreateWorkspace($iAccountId, $oMember->id(), $oContext->id());
+        if(!$iWorkspace)
+            return; // the member joins as themselves rather than not at all
+
+        $oAlert->aExtras[$sMemberKey] = $iWorkspace;
+
+        // The workspace is already connected that way: nothing to add.
+        $oConnection = $oAlert->aExtras['object'] ?? null;
+        if($oConnection instanceof BxDolConnection && $oConnection->isConnected($oAlert->aExtras['initiator'], $oAlert->aExtras['content']))
             $oAlert->aExtras['override_result'] = true;
-            return;
-        }
 
-        // check for old connection with this group id, if old ws profile which was associated with this group is found then switch to this old ws profile id
-        if (null === $oProfileWs) {
-            $a = BxDolAccount::getInstance()->getProfiles();
-            foreach ($a as $iProfileId => $aProfile) {
-                if ($aProfile['type'] == $this->getName()) {
-                    $iAllowViewTo = bx_srv($aProfile['type'], 'get_privacy_view', [$aProfile['content_id']]);
-                    if (abs($iAllowViewTo) == $oProfileGroup->id()) {
-                        $iProfileIdSubstituteInAlert = $iProfileId;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // create new workspace profile if needed, context is automatically siwtched to newly created profile
-        if (!$iProfileIdSubstituteInAlert && null === $oProfileWs) {
-            $aInfo = [
-                'allow_view_to' => -$oProfileGroup->id(),
-                'allow_post_to' => 5,
-                'allow_contact_to' => -$oProfileGroup->id(),
-            ];
-            $a = bx_srv('system', 'add', ['bx_workspaces', $aInfo], 'TemplServiceContent');
-            if (0 === $a['code']) {
-                $iProfileIdSubstituteInAlert = $a['content']['profile_id'];
-                $iProfileIdCreated = $a['content']['profile_id'];
-            }
-        }
-
-        // substitute profile id with ws profile id in alert
-        if (null === $oProfileWs) {
-            $oAlert->aExtras['initiator'] = $iProfileIdSubstituteInAlert;
-        }
-
-        // switch context to the profile in context (context is already automatically switched when new profile is created)
-        if (!$iProfileIdCreated && $iProfileIdSubstituteInAlert) {
-            BxDolAccount::getInstance()->updateProfileContext($iProfileIdSubstituteInAlert);
-        }
+        // Whoever joined from their own account now acts as their workspace there.
+        if($iAccountId == getLoggedId() && (int)bx_get_logged_profile_id() == $oMember->id())
+            BxDolAccount::getInstance($iAccountId)->updateProfileContext($iWorkspace);
     }
 
-    public function removeConnection($sContextModule, $oAlert)
+    /**
+     * `connection_removed` of the context's members connection: whoever left from their own
+     * account acts as their own profile again.
+     */
+    public function onContextConnectionRemoved($oAlert)
     {
-        $oAccount = BxDolAccount::getInstance();
-
-        // identify group profile and workspace profile
-        [$oProfileGroup, $oProfileWs] = $this->_identifyGroupAndWorkspaceProfiles($sContextModule, $oAlert);    
-        if (!$oProfileWs) // no need to switch context if no workspace profile was used 
+        [$oContext, $oMember] = $this->_identifyContextAndMember($oAlert);
+        if(!$oContext || !$oMember || $oMember->getModule() != $this->getName())
             return;
 
+        $iAccountId = (int)$oMember->getAccountId();
+        if($iAccountId != getLoggedId() || (int)bx_get_logged_profile_id() != $oMember->id())
+            return;
 
-        // switch profile id from ws profile id to real profile id, if previous profile was ws profile and if colled in proper context module
-        $iProfileIdReal = null;
-        $a = $oAccount->getProfilesIds();
-        foreach ($a as $iProfileId) {
-            $oProfile = BxDolProfile::getInstance($iProfileId);
-            if ($oProfile->getModule() != $this->getName()) {
-                $iProfileIdReal = $oProfile->id();
-            }
-        }
-        
-        // TODO: if no profile was found - use account profile id
-        if (!$iProfileIdReal) {
-
-        }
-
-        // switch current context
-        if ($iProfileIdReal)
-            $oAccount->updateProfileContext($iProfileIdReal);
+        $aData = $this->_oDb->getContentInfoById($oMember->getContentId());
+        $oBase = $this->getBaseProfile((int)($aData[$this->_oConfig->CNF['FIELD_AUTHOR']] ?? 0), $oMember->getContentId());
+        if($oBase && $oBase->getAccountId() == $iAccountId)
+            BxDolAccount::getInstance($iAccountId)->updateProfileContext($oBase->id());
     }
 
-    // identify group profile and workspace profile
-    protected function _identifyGroupAndWorkspaceProfiles($sContextModule, $oAlert)
-    {        
-        $oProfileGroup = null;
-        $oProfileWs = null;
+    /**
+     * The context and the member side of a connection alert.
+     * @return array [context profile or null, member profile or null, 'initiator'|'content' of the member]
+     */
+    protected function _identifyContextAndMember($oAlert)
+    {
+        $sContextModule = $this->getContextModule();
+        if(!$sContextModule)
+            return [null, null, ''];
 
-        $oProfileInitiator = BxDolProfile::getInstance($oAlert->aExtras['initiator']);
-        $oProfileContent = BxDolProfile::getInstance($oAlert->aExtras['content']);
+        $oInitiator = BxDolProfile::getInstance((int)($oAlert->aExtras['initiator'] ?? 0));
+        $oContent = BxDolProfile::getInstance((int)($oAlert->aExtras['content'] ?? 0));
+        if(!$oInitiator || !$oContent)
+            return [null, null, ''];
 
-        $a = [$oProfileInitiator, $oProfileContent];
-        foreach ($a as $o) {
-            if ($sContextModule == $o->getModule()) // detect group based profile
-                $oProfileGroup = $o;
-            elseif ($this->getName() == $o->getModule()) // detect workspace profile
-                $oProfileWs = $o;
-        }
-        return [$oProfileGroup, $oProfileWs];
+        if($oContent->getModule() == $sContextModule && $oInitiator->getModule() != $sContextModule)
+            return [$oContent, $oInitiator, 'initiator'];
+        if($oInitiator->getModule() == $sContextModule && $oContent->getModule() != $sContextModule)
+            return [$oInitiator, $oContent, 'content'];
+
+        return [null, null, ''];
     }
 }
 
