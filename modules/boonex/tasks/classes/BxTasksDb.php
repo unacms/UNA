@@ -1243,15 +1243,42 @@ class BxTasksDb extends BxBaseModTextDb
 
     /**
      * Keeps the SEO links of the tasks which have no number yet (made from their titles), before
-     * their numbers become their links, so the former links still lead to them.
+     * their numbers become their links, so the former links still lead to them. Then moves those
+     * links out of the way (~12, which no title makes): a title link `una-1` of one task would
+     * otherwise stop another from getting `una-1` as its number's link.
      */
     public function saveFormerSeoLinks()
     {
         $CNF = &$this->_oConfig->CNF;
 
-        return $this->query("INSERT IGNORE INTO `" . $CNF['TABLE_FORMER_LINKS'] . "` (`page_uri`, `uri`, `content_id`) SELECT `sl`.`page_uri`, `sl`.`uri`, `te`.`" . $CNF['FIELD_ID'] . "` FROM `sys_seo_links` AS `sl` INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `sl`.`param_value` = CAST(`te`.`" . $CNF['FIELD_ID'] . "` AS CHAR) WHERE `sl`.`module` = :module AND `sl`.`param_name` = 'id' AND `te`.`" . $CNF['FIELD_NUMBER'] . "` = 0", [
-            'module' => $this->_oConfig->getName()
-        ]) !== false;
+        $sJoin = "`sys_seo_links` AS `sl` INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `sl`.`param_value` = CAST(`te`.`" . $CNF['FIELD_ID'] . "` AS CHAR)";
+        $sWhere = "`sl`.`module` = :module AND `sl`.`param_name` = 'id' AND `te`.`" . $CNF['FIELD_NUMBER'] . "` = 0";
+        $aBindings = ['module' => $this->_oConfig->getName()];
+
+        if($this->query("INSERT IGNORE INTO `" . $CNF['TABLE_FORMER_LINKS'] . "` (`page_uri`, `uri`, `content_id`) SELECT `sl`.`page_uri`, `sl`.`uri`, `te`.`" . $CNF['FIELD_ID'] . "` FROM " . $sJoin . " WHERE " . $sWhere . " AND `sl`.`uri` NOT LIKE '~%'", $aBindings) === false)
+            return false;
+
+        return $this->query("UPDATE " . $sJoin . " SET `sl`.`uri` = CONCAT('~', `sl`.`param_value`) WHERE " . $sWhere, $aBindings) !== false;
+    }
+
+    /**
+     * A lock of a community's prefix and counter for this connection, while its prefix changes or
+     * a task gets its number, so the links of its tasks always take the prefix it has.
+     */
+    public function lockPrefix($iContextId)
+    {
+        return (int)$this->getOne("SELECT GET_LOCK(:name, 10)", ['name' => $this->_getPrefixLockName($iContextId)]) === 1;
+    }
+
+    public function unlockPrefix($iContextId)
+    {
+        $this->getOne("SELECT RELEASE_LOCK(:name)", ['name' => $this->_getPrefixLockName($iContextId)]);
+    }
+
+    protected function _getPrefixLockName($iContextId)
+    {
+        // locks are per server: the database's name keeps sites on one server apart (64 characters at most)
+        return substr(md5(BX_DATABASE_NAME), 0, 12) . '_' . $this->_oConfig->getName() . '_prefix_' . (int)$iContextId;
     }
 
     /**

@@ -1728,24 +1728,30 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     /**
      * A community's prefix (0: the tasks in no community), made the first time it is needed.
      */
-    public function getContextPrefix($iContextId)
+    public function getContextPrefix($iContextId, $bFresh = false)
     {
         $CNF = &$this->_oConfig->CNF;
 
         $iContextId = (int)$iContextId;
-        if(!empty($this->_aPrefixes[$iContextId]))
+        if(!$bFresh && !empty($this->_aPrefixes[$iContextId]))
             return $this->_aPrefixes[$iContextId];
 
         $this->_oDb->addContextRow($iContextId);
 
         $sPrefix = $this->_oDb->getContextPrefix($iContextId);
         if($sPrefix === '') {
+            $aCandidates = [];
             if($iContextId)
-                $sName = ($oContext = BxDolProfile::getInstance($iContextId)) !== false ? $oContext->getDisplayName() : '';
-            else
-                $sName = getParam($CNF['PARAM_PERSONAL_PREFIX']);
+                $aCandidates = $this->getPrefixCandidates(($oContext = BxDolProfile::getInstance($iContextId)) !== false ? $oContext->getDisplayName() : '', $iContextId);
+            else {
+                // the option's prefix as it is (TASK), made from it only when another community has it
+                $sOption = trim((string)getParam($CNF['PARAM_PERSONAL_PREFIX']));
+                if($this->isPrefixValid($sOption))
+                    $aCandidates[] = strtoupper($sOption);
+                $aCandidates = array_merge($aCandidates, $this->getPrefixCandidates($sOption !== '' ? $sOption : 'TASK', 0));
+            }
 
-            foreach($this->getPrefixCandidates($sName, $iContextId) as $sCandidate) {
+            foreach(array_unique($aCandidates) as $sCandidate) {
                 if(!$this->_oDb->reservePrefix($sCandidate, $iContextId))
                     continue;
 
@@ -1769,17 +1775,20 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             return false;
 
         $sPrefix = strtoupper($sPrefix);
-        $sCurrent = $this->getContextPrefix($iContextId);
-        if($sPrefix === $sCurrent)
-            return true;
-
-        if(!$this->_oDb->reservePrefix($sPrefix, $iContextId) || !$this->_oDb->updateContextPrefix($iContextId, $sPrefix, $sCurrent))
+        if(!$this->_oDb->lockPrefix($iContextId))
             return false;
 
-        $this->_aPrefixes[$iContextId] = $sPrefix;
-        $this->_oDb->updateSeoLinksByNumberContext($iContextId, $sPrefix);
+        // read under the lock: a change finished by another request is the one this one changes
+        $sCurrent = $this->getContextPrefix($iContextId, true);
+        $bResult = $sPrefix === $sCurrent;
+        if(!$bResult && $this->_oDb->reservePrefix($sPrefix, $iContextId) && $this->_oDb->updateContextPrefix($iContextId, $sPrefix, $sCurrent)) {
+            $this->_aPrefixes[$iContextId] = $sPrefix;
+            $bResult = $this->_oDb->updateSeoLinksByNumberContext($iContextId, $sPrefix);
+        }
 
-        return true;
+        $this->_oDb->unlockPrefix($iContextId);
+
+        return $bResult;
     }
 
     /**
@@ -1827,16 +1836,20 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             return 0;
 
         $iContextId = $this->getNumberContextId($aContentInfo);
-        if(($sPrefix = $this->getContextPrefix($iContextId)) === '' || !($iNumber = $this->_oDb->getNextNumber($iContextId)))
+        if(!$this->_oDb->lockPrefix($iContextId))
             return 0;
 
-        if(!$this->_oDb->setTaskNumber($iContentId, $iContextId, $iNumber))
-            return 0;
+        // the prefix is read under the lock, so a prefix change can't come between it and the link
+        $iResult = 0;
+        if(($sPrefix = $this->getContextPrefix($iContextId, true)) !== '' && ($iNumber = $this->_oDb->getNextNumber($iContextId)) && $this->_oDb->setTaskNumber($iContentId, $iContextId, $iNumber)) {
+            // a link the task got before its number takes it too
+            $this->_oDb->updateSeoLinksByTask($iContentId, mb_strtolower($sPrefix . '-' . $iNumber));
+            $iResult = $iNumber;
+        }
 
-        // a link the task got before its number takes it too
-        $this->_oDb->updateSeoLinksByTask($iContentId, mb_strtolower($sPrefix . '-' . $iNumber));
+        $this->_oDb->unlockPrefix($iContextId);
 
-        return $iNumber;
+        return $iResult;
     }
 
     /**

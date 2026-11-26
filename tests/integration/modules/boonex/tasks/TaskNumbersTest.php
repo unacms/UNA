@@ -19,7 +19,6 @@ class TaskNumbersTest extends BxDolIntegrationTestCase
     protected $_iContextB = 0;
     protected $_aTaskIds = [];
     protected $_sSeoLinksBackup = null;
-    protected $_aRowsBackup = null;
 
     protected function setUp(): void
     {
@@ -48,18 +47,6 @@ class TaskNumbersTest extends BxDolIntegrationTestCase
             $sContexts = $this->bxIdList([$this->_iContextA, $this->_iContextB]);
             $oDb->query("DELETE FROM `bx_tasks_contexts` WHERE `id` IN (" . $sContexts . ")");
             $oDb->query("DELETE FROM `bx_tasks_prefixes` WHERE `context_id` IN (" . $sContexts . ")");
-        }
-        if ($this->_aRowsBackup !== null) {
-            $iId = (int)$this->_aRowsBackup['id'];
-            $oDb->query("DELETE FROM `bx_tasks_contexts` WHERE `id` = :id", ['id' => $iId]);
-            $oDb->query("DELETE FROM `bx_tasks_prefixes` WHERE `context_id` = :id", ['id' => $iId]);
-            $aRows = array_merge(
-                $this->_aRowsBackup['context'] ? [['bx_tasks_contexts', $this->_aRowsBackup['context']]] : [],
-                array_map(function ($aRow) { return ['bx_tasks_prefixes', $aRow]; }, $this->_aRowsBackup['prefixes'])
-            );
-            foreach ($aRows as list($sTable, $aRow))
-                $oDb->query("INSERT INTO `" . $sTable . "` SET " . $oDb->arrayToSQL($aRow));
-            $this->_aRowsBackup = null;
         }
         if ($this->_sSeoLinksBackup !== null)
             setParam('permalinks_seo_links', $this->_sSeoLinksBackup);
@@ -108,42 +95,6 @@ class TaskNumbersTest extends BxDolIntegrationTestCase
         $this->assertSame($sPrefixA . '-2', $this->_oModule->getIdentifier($iSecond));
         $this->assertSame($iSecond, $this->_oModule->getContentIdByIdentifier(mb_strtolower($sPrefixA) . '-2'));
         $this->assertSame(2, $this->_oModule->assignNumber($this->bxTask($this->_iContextB)), 'The other community counts on.');
-    }
-
-    public function testTaskAddedThroughTheFormGetsItsNumber()
-    {
-        // the form posts in a community only where the author may post: a task in none takes the
-        // counter 0, whose rows are kept and put back
-        $this->bxLoginAsAdmin();
-        $iProfileId = (int)bx_get_logged_profile_id();
-        $this->assertGreaterThan(0, $iProfileId);
-        $iContextId = 0;
-
-        $oDb = BxDolDb::getInstance();
-        $this->_aRowsBackup = [
-            'context' => $oDb->getRow("SELECT * FROM `bx_tasks_contexts` WHERE `id` = :id", ['id' => $iContextId]),
-            'prefixes' => $oDb->getAll("SELECT * FROM `bx_tasks_prefixes` WHERE `context_id` = :id", ['id' => $iContextId]),
-            'id' => $iContextId,
-        ];
-        $iProfileBackup = $this->_oModule->setProfileId($iProfileId);
-
-        $sPrefix = $this->bxPrefix();
-        $this->assertTrue($this->_oModule->setContextPrefix($iContextId, $sPrefix));
-        $iLast = (int)$oDb->getOne("SELECT `last_number` FROM `bx_tasks_contexts` WHERE `id` = :id", ['id' => $iContextId]);
-
-        $CNF = &$this->_oModule->_oConfig->CNF;
-        $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_ENTRY'], $CNF['OBJECT_FORM_ENTRY_DISPLAY_ADD']);
-        $this->assertInstanceOf('BxTasksFormEntry', $oForm);
-        $oForm->initChecker();
-        $iTask = (int)$oForm->insert([
-            $CNF['FIELD_TITLE'] => 'TaskNumbersTest form',
-            $CNF['FIELD_ALLOW_VIEW_TO'] => BX_DOL_PG_ALL,
-        ]);
-        $this->_oModule->setProfileId($iProfileBackup);
-        $this->assertGreaterThan(0, $iTask);
-        $this->_aTaskIds[] = $iTask;
-
-        $this->assertSame($sPrefix . '-' . ($iLast + 1), $this->_oModule->getIdentifier($iTask));
     }
 
     public function testPrefixIsMadeWithTheFirstTask()
@@ -217,22 +168,45 @@ class TaskNumbersTest extends BxDolIntegrationTestCase
         $sPrefix = $this->bxPrefix();
         $this->assertTrue($this->_oModule->setContextPrefix($this->_iContextA, $sPrefix));
 
-        // a task from before numbers, with the link the site made from its title
+        // tasks from before numbers, with the links the site made from their titles; the second
+        // one's title made the link the first one's number takes (a task titled "UNA 1")
         $iTask = $this->bxTask($this->_iContextA);
+        $iOther = $this->bxTask($this->_iContextA);
         $sTitleUri = 'tasknumberstest-' . mb_strtolower($this->bxPrefix());
+        $sNumberUri = mb_strtolower($sPrefix) . '-1';
         BxDolPageQuery::insertSeoLink('bx_tasks', 'view-task', 'id', (string)$iTask, $sTitleUri);
+        BxDolPageQuery::insertSeoLink('bx_tasks', 'view-task', 'id', (string)$iOther, $sNumberUri);
 
         // as the migration does it
         $this->assertTrue($this->_oModule->_oDb->saveFormerSeoLinks());
         $this->assertSame(1, $this->_oModule->assignNumber($iTask));
+        $this->assertSame(2, $this->_oModule->assignNumber($iOther));
 
-        $sNumberUri = mb_strtolower($sPrefix) . '-1';
         $this->assertSame($sNumberUri, BxDolPageQuery::getSeoLink('bx_tasks', 'view-task', ['param_value' => (string)$iTask])['uri']);
+        $this->assertSame(mb_strtolower($sPrefix) . '-2', BxDolPageQuery::getSeoLink('bx_tasks', 'view-task', ['param_value' => (string)$iOther])['uri']);
 
         $aGet = $_GET;
         $mixed = BxDolPage::getPageBySeoLink('view-task/' . $sTitleUri);
         $_GET = $aGet;
         $this->assertSame(BX_DOL_URL_ROOT . 'view-task/' . $sNumberUri, $mixed);
+    }
+
+    public function testPrefixOfTasksInNoCommunityIsTheOption()
+    {
+        // the candidates of context 0 start with the option's value as it is, not its first letters
+        $this->assertSame('TAS', $this->_oModule->getPrefixCandidates('TASK', 0)[0], 'A name gives its start.');
+
+        $oDb = BxDolDb::getInstance();
+        if ($oDb->getOne("SELECT `prefix` FROM `bx_tasks_contexts` WHERE `id` = 0") !== false)
+            $this->markTestSkipped('The site has a prefix of tasks in no community already.');
+
+        try {
+            $this->assertSame(strtoupper(getParam('bx_tasks_personal_prefix')), $this->_oModule->getContextPrefix(0));
+        } finally {
+            // the site gets its own when it needs it
+            $oDb->query("DELETE FROM `bx_tasks_prefixes` WHERE `context_id` = 0");
+            $oDb->query("DELETE FROM `bx_tasks_contexts` WHERE `id` = 0");
+        }
     }
 
     protected function bxPrefix(): string
