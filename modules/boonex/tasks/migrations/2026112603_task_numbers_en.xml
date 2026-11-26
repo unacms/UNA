@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Tasks: the prefix of task numbers (UNA-12) of a community and of tasks in no community. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_tasks_option_personal_prefix"><![CDATA[Task number prefix for tasks outside communities]]></string_add>
+    <string_add name="_bx_tasks_option_personal_prefix_err"><![CDATA[Use 2 to 10 Latin letters and digits, starting with a letter.]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_sys_prefix"><![CDATA[Prefix]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix"><![CDATA[Task number prefix]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix_err"><![CDATA[Use 2 to 10 Latin letters and digits, starting with a letter.]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix_err_taken"><![CDATA[Another community uses or used this prefix. Please choose another one.]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix_info"><![CDATA[Task numbers start with it, as in UNA-12. Links with a previous prefix keep working.]]></string_add>
+</resources>

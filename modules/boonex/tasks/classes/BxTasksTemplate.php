@@ -908,6 +908,9 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             if((!$aTasks || !is_array($aTasks)) && (($bContext && !$aList['id']) || !$bTasksAllowManage))
                 continue;
 
+            if($aTasks && is_array($aTasks))
+                $oModule->primeIdentifiers($aTasks);
+
             $aTmplVarsTasks = [];
             foreach($aTasks as $aTask) {
                 $iTaskId = (int)$aTask[$CNF['FIELD_ID']];
@@ -948,6 +951,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
 
                 $aTmplVarsTasks[] = array_merge([
                     'id' => $iTaskId,
+                    'identifier' => $oModule->getIdentifier($aTask),
                     'title' => bx_process_output($aTask[$CNF['FIELD_TITLE']]),
                     'created' => $aTask[$CNF['FIELD_ADDED']],
                     'class' => $bCompleted ? 'completed' : 'uncompleted',

@@ -22,6 +22,9 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_tasks_auto_activation_for_categories', 'on', @iCategId, '_bx_tasks_option_auto_activation_for_categories', 'checkbox', '', '', '', 35),
 ('bx_tasks_timer_running_limit', '8', @iCategId, '_bx_tasks_option_timer_running_limit', 'digit', '', '', '', 40);
 
+INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_params`, `check_error`, `extra`, `order`) VALUES
+('bx_tasks_personal_prefix', 'TASK', @iCategId, '_bx_tasks_option_personal_prefix', 'value', 'Preg', 'a:1:{s:4:"preg";s:28:"/^[A-Za-z][A-Za-z0-9]{1,9}$/";}', '_bx_tasks_option_personal_prefix_err', '', 45);
+
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order`)
 VALUES (@iTypeId, 'bx_tasks_export', '_bx_tasks_options_category_export', 2);
 SET @iCategId = LAST_INSERT_ID();
@@ -619,6 +622,8 @@ SET @iHandler := LAST_INSERT_ID();
 
 INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
 ('system', 'save_setting', @iHandler),
+('system', 'uri_generate', @iHandler),
+('system', 'seo_link_not_found', @iHandler),
 ('profile', 'delete', @iHandler),
 ('profile', 'search_by_term', @iHandler),
 

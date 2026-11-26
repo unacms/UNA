@@ -17,6 +17,10 @@ class BxTasksPageEntry extends BxBaseModTextPageEntry
     {
         $this->MODULE = 'bx_tasks';
         parent::__construct($aObject, $oTemplate);
+
+        // the task's number before its title (UNA-12 Fix the sign in), where the viewer sees the title
+        if(!empty($this->_aMarkers['title']) && $this->_aContentInfo && ($sIdentifier = $this->_oModule->getIdentifier($this->_aContentInfo)) !== '')
+            $this->addMarkers(['title' => $sIdentifier . ' ' . $this->_aMarkers['title']]);
     }
 
     protected function _setSubmenu($aParams)

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Tasks: the prefix of task numbers (UNA-12) of a community and of tasks in no community. -->
+<resources name="ru" flag="ru" title="Russian" category="Tasks">
+    <string_add name="_bx_tasks_option_personal_prefix"><![CDATA[Префикс номеров задач вне сообществ]]></string_add>
+    <string_add name="_bx_tasks_option_personal_prefix_err"><![CDATA[Используйте от 2 до 10 латинских букв и цифр, первой должна быть буква.]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_sys_prefix"><![CDATA[Префикс]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix"><![CDATA[Префикс номеров задач]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix_err"><![CDATA[Используйте от 2 до 10 латинских букв и цифр, первой должна быть буква.]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix_err_taken"><![CDATA[Этот префикс используется или использовался другим сообществом. Выберите другой.]]></string_add>
+    <string_add name="_bx_tasks_form_context_input_prefix_info"><![CDATA[С него начинаются номера задач, например UNA-12. Ссылки с прежним префиксом продолжают работать.]]></string_add>
+</resources>
