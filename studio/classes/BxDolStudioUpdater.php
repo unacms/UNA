@@ -162,6 +162,14 @@ class BxDolStudioUpdater extends BxDolStudioInstaller
     	if(empty($aModule))
     		return BX_DOL_STUDIO_INSTALLER_FAILED;
 
+        /*
+         * The module's database changes are its migrations (its migrations/ folder, which 'update_files'
+         * copied before this action). They run whatever the site's update channel, each once, and are
+         * recorded in sys_migrations. A disabled module's wait until it is enabled.
+         */
+        if($sOperation == 'install' && ($sError = BxDolMigrations::getInstance()->runForModule($aModule['name'])) !== '')
+            return ['code' => BX_DOL_STUDIO_INSTALLER_FAILED, 'content' => [['query' => 'migrations', 'error' => $sError]]];
+
     	$sPathInstall = $this->_sHomePath . 'install/sql/install.sql';
     	$sPathEnable = $this->_sHomePath . 'install/sql/enable.sql';
         $sPathEnableApp = $this->_sHomePath . 'install/sql/enable-app.sql';

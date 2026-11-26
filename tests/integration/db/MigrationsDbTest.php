@@ -257,6 +257,24 @@ class MigrationsDbTest extends BxDolIntegrationTestCase
         $this->assertSame([], $oMigrations->forUpdate('bx_missing')->run($fRefresh)['applied']);
     }
 
+    public function testRunForModuleReportsWhatFailed(): void
+    {
+        $sData = $this->_table('data');
+        $this->_oPdo->exec("CREATE TABLE `$sData` (`v` varchar(32) NOT NULL)");
+        $this->_write('2026110200_two.sql', self::SQL_META . "INSERT INTO `$sData` VALUES ('two');", 'module');
+        $this->_write('2026110300_bad.sql', self::SQL_META . "INSERT INTO `no_such_table_{$this->_sSuffix}` VALUES (1);", 'module');
+
+        $oMigrations = $this->_migrations($aLog, '99.0.0', 'ledger', 'stable', [$this->_source('module')]);
+
+        // Pack and enable both go through it: the good one is applied, the bad one is named.
+        $sError = $oMigrations->runForModule('bx_test');
+        $this->assertStringContainsString('2026110300_bad', $sError);
+        $this->assertSame(['two' => ''], $this->_rows($sData));
+
+        // A module that is not among the enabled ones runs nothing and reports nothing.
+        $this->assertSame('', $oMigrations->runForModule('bx_missing'));
+    }
+
     public function testLanguageStrings(): void
     {
         $sAdd = $this->_key('add');

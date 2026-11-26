@@ -225,11 +225,11 @@ runs them with `BxDolMigrations::forUpdate()`, whatever the site's update channe
 
 - the system pack (`upgrade/files/<from>-<to>/script.php`) runs the common folder and the system
   module's folder, after the pack's files are copied;
-- a module's pack (`updates/<from>_<to>/install/installer.php`) runs that module's folder, after
+- a module's pack runs that module's folder in its `execute_sql` step
+  (`BxDolStudioUpdater::actionExecuteSql`, through `BxDolMigrations::runForModule()`), after
   `update_files` copied it from the pack's `source/migrations/`. For a disabled module nothing
-  runs: its files and version are updated and its migrations wait until it is enabled, as on
-  any site. On the beta and stable channels they then wait for release manifests, so update a
-  module while it is enabled.
+  runs: its files and version are updated, and its migrations run when it is enabled
+  (`BxDolStudioInstaller::enable`), whatever the channel.
 
 Each migration runs once and is recorded in the ledger, so the site has nothing pending
 afterwards. A pack carries the module's whole `migrations/` folder: a site that got earlier

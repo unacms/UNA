@@ -133,39 +133,14 @@ SYSTEM_SCRIPT = """<?php
 """
 
 MODULE_INSTALLER = HEADER + """
+/**
+ * The module's database changes are its migrations, which BxDolStudioUpdater::actionExecuteSql runs.
+ */
 class %sUpdater extends BxDolStudioUpdater
 {
     function __construct($aConfig)
     {
         parent::__construct($aConfig);
-    }
-
-    /**
-     * The module's database changes are its migrations (the module's migrations/ folder, which 'update_files'
-     * copied before this action). They run whatever the site's update channel, each once, and are recorded
-     * in sys_migrations. For a disabled module they wait until it is enabled.
-     */
-    public function actionExecuteSql($sOperation)
-    {
-        if($sOperation == 'install') {
-            $aModule = $this->oDb->getModuleByUri($this->_aConfig['module_uri']);
-            if(empty($aModule))
-                return BX_DOL_STUDIO_INSTALLER_FAILED;
-
-            $aResult = BxDolMigrations::getInstance()->forUpdate($aModule['name'])->run();
-
-            $sError = '';
-            if($aResult['problems'])
-                $sError = implode('; ', $aResult['problems']);
-            else if($aResult['failed'] !== '')
-                $sError = $aResult['failed'] . ': ' . $aResult['error'];
-            else if($aResult['refresh_error'] !== '')
-                $sError = $aResult['refresh_error'];
-            if($sError !== '')
-                return array('code' => BX_DOL_STUDIO_INSTALLER_FAILED, 'content' => array(array('query' => 'migrations', 'error' => $sError)));
-        }
-
-        return parent::actionExecuteSql($sOperation);
     }
 }
 """

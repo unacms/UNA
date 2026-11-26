@@ -223,6 +223,26 @@ class BxDolMigrations
     }
 
     /**
+     * Run a module's pending migrations, whatever the site's update channel: after its update pack
+     * copied them (BxDolStudioUpdater), and when it is enabled (BxDolStudioInstaller), which catches
+     * up a module whose pack came while it was disabled. A disabled module's run does nothing.
+     *
+     * @param string $sModule module name (`sys_modules`.`name`)
+     * @return string '' when nothing failed, otherwise what did
+     */
+    public function runForModule(string $sModule): string
+    {
+        $aResult = $this->forUpdate($sModule)->run();
+
+        if ($aResult['problems'])
+            return implode('; ', $aResult['problems']);
+        if ($aResult['failed'] !== '')
+            return $aResult['failed'] . ': ' . $aResult['error'];
+
+        return $aResult['refresh_error'];
+    }
+
+    /**
      * Every migration of the sources, in the order they run.
      *
      * @return list<array> source fields plus readFile() fields and `label`
