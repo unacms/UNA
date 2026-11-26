@@ -157,6 +157,10 @@ class BxWorkspacesModule extends BxBaseModProfileModule
         $iAclLevel = (int)getParam($this->_oConfig->CNF['PARAM_DEFAULT_ACL_LEVEL']) ?: MEMBERSHIP_ID_STANDARD;
         BxDolAcl::getInstance()->setMembership($iProfileId, $iAclLevel, 0, true, '', false);
 
+        // The account's profile switcher lists the new workspace, without switching to it.
+        bx_content_cache_del('profile_switcher_' . (int)$iAccountId . '_0');
+        bx_content_cache_del('profile_switcher_' . (int)$iAccountId . '_1');
+
         return $iProfileId;
     }
 
@@ -167,14 +171,26 @@ class BxWorkspacesModule extends BxBaseModProfileModule
     public function onContextConnectionBeforeAdd($oAlert)
     {
         [$oContext, $oMember, $sMemberKey] = $this->_identifyContextAndMember($oAlert);
-        if(!$oContext || !$oMember || $oMember->getModule() == $this->getName())
+        if(!$oContext || !$oMember)
             return;
 
         $iAccountId = (int)$oMember->getAccountId();
         if(!$iAccountId)
             return;
 
-        $iWorkspace = $this->getOrCreateWorkspace($iAccountId, $oMember->id(), $oContext->id());
+        // A member acting as their workspace of another context joins as the profile it was made from.
+        $oBase = $oMember;
+        if($oMember->getModule() == $this->getName()) {
+            $aData = $this->_oDb->getContentInfoById($oMember->getContentId());
+            if(($aData[$this->_oConfig->CNF['FIELD_ALLOW_VIEW_TO']] ?? '') === (string)(-$oContext->id()))
+                return; // already this context's workspace
+
+            $oBase = $this->getBaseProfile((int)($aData[$this->_oConfig->CNF['FIELD_AUTHOR']] ?? 0), $oMember->getContentId());
+            if(!$oBase || (int)$oBase->getAccountId() != $iAccountId)
+                return;
+        }
+
+        $iWorkspace = $this->getOrCreateWorkspace($iAccountId, $oBase->id(), $oContext->id());
         if(!$iWorkspace)
             return; // the member joins as themselves rather than not at all
 

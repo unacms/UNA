@@ -167,11 +167,22 @@ class WorkspacesJoinTest extends BxDolIntegrationTestCase
 
         $this->actAs($iAccount, $iPerson);
         $this->join($iPerson, $iGroupA);
-        BxDolAccount::getInstance($iAccount, true)->updateProfileContext($iPerson);
-        $this->actAs($iAccount, $iPerson);
-        $this->join($iPerson, $iGroupB);
+        [$iWsA] = $this->workspaces($iAccount);
+        $this->assertSame($iWsA, $this->activeProfile($iAccount));
 
-        $this->assertCount(2, $this->workspaces($iAccount));
+        // Still acting as group A's workspace, the member joins group B.
+        $this->actAs($iAccount, $iWsA);
+        $this->join($iWsA, $iGroupB);
+
+        $aWs = $this->workspaces($iAccount);
+        $this->assertCount(2, $aWs, 'Group B gets a workspace of its own.');
+        $iWsB = $aWs[1];
+        $oFans = BxDolConnection::getObjectInstance('bx_groups_fans');
+        $this->assertTrue((bool)$oFans->isConnected($iWsB, $iGroupB, true));
+        $this->assertFalse((bool)$oFans->isConnected($iWsA, $iGroupB), "Group A's workspace doesn't join group B.");
+        $aDataB = BxDolModule::getInstance('bx_workspaces')->_oDb->getContentInfoById(BxDolProfile::getInstance($iWsB)->getContentId());
+        $this->assertSame($iPerson, (int)$aDataB['author'], 'Made from the person, not from the other workspace.');
+        $this->assertSame($iWsB, $this->activeProfile($iAccount));
     }
 
     public function testAddedBySomeoneElseMakesTheWorkspaceForTheMember(): void
