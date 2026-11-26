@@ -426,11 +426,13 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
             // Migrations an update pack brought while the module was disabled. enable.sql has just added
             // its rows, and migrations may run again over them; table changes come only from here.
             try {
-                if(($sError = BxDolMigrations::getInstance()->runForModule($aModule['name'])) !== '')
-                    bx_log('sys_debug', 'Migrations of ' . $aModule['name'] . ' failed on enable: ' . $sError, BX_LOG_ERR);
+                $sError = BxDolMigrations::getInstance()->runForModule($aModule['name']);
             }
             catch (Throwable $e) {
-                bx_log('sys_debug', 'Migrations of ' . $aModule['name'] . ' failed on enable: ' . $e->getMessage(), BX_LOG_ERR);
+                $sError = $e->getMessage();
+            }
+            if($sError !== '') {
+                bx_log('sys_debug', 'Migrations of ' . $aModule['name'] . ' failed on enable: ' . $sError, BX_LOG_ERR);
             }
 
             $this->cleanupMemoryAfterAction($aModule['name'], $aModule['uri'], $aModule['id']);

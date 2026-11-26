@@ -234,10 +234,12 @@ class BxDolMigrations
     {
         $aResult = $this->forUpdate($sModule)->run();
 
-        if ($aResult['problems'])
+        if ($aResult['problems']) {
             return implode('; ', $aResult['problems']);
-        if ($aResult['failed'] !== '')
+        }
+        if ($aResult['failed'] !== '') {
             return $aResult['failed'] . ': ' . $aResult['error'];
+        }
 
         return $aResult['refresh_error'];
     }
