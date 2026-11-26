@@ -92,6 +92,9 @@ class BxTasksFormsEntryHelper extends BxBaseModTextFormsEntryHelper
         $CNF = &$this->_oModule->_oConfig->CNF;
         $oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION']);
         $oConnection->onDeleteContent($iContentId);
+
+        // its former links go with its current ones
+        $this->_oModule->_oDb->deleteFormerSeoLinks($iContentId);
         return '';
     }
 }

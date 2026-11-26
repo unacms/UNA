@@ -24015,6 +24015,7 @@
         "required": [
           "id",
           "module",
+          "identifier",
           "title",
           "summary",
           "body_html",
@@ -24049,6 +24050,14 @@
           "module": {
             "type": "string",
             "example": "bx_tasks"
+          },
+          "identifier": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "UNA-12",
+            "description": "Its number with its community's prefix, as Linear has them; it keeps the number when it moves to another community. Its `url` ends with it in lowercase. Null for none"
           },
           "title": {
             "type": "string"
