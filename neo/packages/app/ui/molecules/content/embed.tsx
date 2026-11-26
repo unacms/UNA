@@ -100,7 +100,7 @@ const Embed = memo(function Embed({ data, size, onRemove }: EmbedProps) {
 
         // a player is a preview too: its author can take it off as any other card
         return (
-            <View className="relative self-start">
+            <View className={size === 'small' ? 'relative w-full max-w-xs' : 'relative w-full'}>
                 <Youtube videoId={videoId} size={size} />
                 <RemovePreviewButton onRemove={onRemove} className="absolute top-1 end-1 rounded-full bg-card/80" />
             </View>
