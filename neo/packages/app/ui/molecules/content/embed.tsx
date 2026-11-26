@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { memo, useEffect, useState } from 'react'
+import { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getYouTubeVideoId } from 'app/lib/util'
 import Youtube from 'app/ui/molecules/content/youtube'
@@ -28,18 +28,15 @@ type EmbedProps = {
 
 /** A picture of the card, or nothing while it has none or fails to load: no empty box in its place. */
 function EmbedImage({ src, className = '', imageClassName = '' }: { src?: string; className?: string; imageClassName?: string }) {
-    const [hasError, setHasError] = useState(false)
+    // The address that failed: another one is tried again.
+    const [failedSrc, setFailedSrc] = useState<string | undefined>(undefined)
 
-    useEffect(() => {
-        setHasError(false)
-    }, [src])
-
-    if (!src || hasError)
+    if (!src || failedSrc === src)
         return null
 
     return (
         <View className={`overflow-hidden bg-muted/50 ${className}`}>
-            <Image view="cover" className={imageClassName} src={src} onError={() => setHasError(true)} />
+            <Image view="cover" className={imageClassName} src={src} alt="" onError={() => setFailedSrc(src)} />
         </View>
     )
 }
@@ -93,7 +90,7 @@ function EmbedCompact({ data, onRemove }: { data: EmbedData; onRemove?: () => vo
 const Embed = memo(function Embed({ data, size, onRemove }: EmbedProps) {
     const videoId = getYouTubeVideoId(data.url)
     if (videoId)
-        return <Youtube videoId={videoId} url={data.url} size={size} />
+        return <Youtube videoId={videoId} size={size} />
 
     if (size === 'small')
         return <EmbedCompact data={data} onRemove={onRemove} />
