@@ -33,7 +33,7 @@ export const settingsFeed = {
             button_size: 'sm',
             button_variant: 'text',
             menu_width: '',
-            button_rounded: true, // capsules: a borderless button's hover reads as a pill around the label
+            button_rounded: false,
             justify_items: 'start',
             menu_gap: 'gap-1',
             no_gap_between_buttons: false, // is false no gap between buttons + right margin, is true  gap between buttons + no margin

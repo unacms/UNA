@@ -586,7 +586,9 @@ class BxBaseCmtsServices extends BxDol
             if (!$oCmts || !$oCmts->isEnabled())
                 return false;
 
-            $oCmts->removeEmbed((int)$aParams['id']);
+            // nothing saved (no right to edit it, or no link left to mark): the app puts the card back
+            if (!$oCmts->removeEmbed((int)$aParams['id']))
+                return false;
 
             $aParams['comment_id'] = (int)$aParams['id'];
             return ['browse' => $this->serviceGetCommentsApi($oCmts, $aParams)];

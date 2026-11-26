@@ -2989,30 +2989,50 @@ function bx_linkify_embeded_strip_plain($sText)
 }
 
 /**
- * The text with BX_LINK_PLAIN_CLASS added to each link to another site, so it stays a link without a card.
+ * The text with BX_LINK_PLAIN_CLASS on each link to another site, so it stays a link without a card.
+ * A bare address (text that is shown as a link) becomes a link first, so it can carry the class too.
+ * The text is changed through the DOM, as bx_linkify_html does, not by writing markup.
  */
 function bx_linkify_plain($sText)
 {
     if(!is_string($sText) || $sText === '')
         return $sText;
 
+    $sText = bx_linkify_html($sText);
+
+    $sId = 'bx-linkify-plain-' . md5(microtime());
+    $oDom = new DOMDocument();
+    if(!@$oDom->loadHTML('<?xml encoding="UTF-8"><div id="' . $sId . '">' . $sText . '</div>', LIBXML_HTML_NODEFDTD))
+        return $sText;
+
+    $oRoot = $oDom->getElementById($sId);
+    if(!$oRoot)
+        return $sText;
+
     $sUrlRoot = BX_DOL_URL_ROOT;
-    return preg_replace_callback('#<a\b([^>]*)>#i', function ($a) use ($sUrlRoot) {
-        $sAttrs = $a[1];
-        if(!preg_match('#\bhref\s*=\s*(["\'])(https?://[^"\']+)\1#i', $sAttrs, $aHref) || strncmp($aHref[2], $sUrlRoot, get_mb_len($sUrlRoot)) === 0)
-            return $a[0];
+    $bChanged = false;
+    foreach((new DOMXPath($oDom))->query('.//a[@href]', $oRoot) as $oLink) {
+        $sHref = $oLink->getAttribute('href');
+        if(!preg_match('#^https?://#i', $sHref) || strncmp($sHref, $sUrlRoot, get_mb_len($sUrlRoot)) === 0)
+            continue;
 
-        if(preg_match('#\bclass\s*=\s*(["\'])([^"\']*)\1#i', $sAttrs, $aClass)) {
-            if(preg_match('#\b' . preg_quote(BX_LINK_PLAIN_CLASS, '#') . '\b#', $aClass[2]))
-                return $a[0];
+        $aClasses = preg_split('/\s+/', trim($oLink->getAttribute('class')), -1, PREG_SPLIT_NO_EMPTY);
+        if(in_array(BX_LINK_PLAIN_CLASS, $aClasses))
+            continue;
 
-            $sAttrs = str_replace($aClass[0], 'class=' . $aClass[1] . trim($aClass[2] . ' ' . BX_LINK_PLAIN_CLASS) . $aClass[1], $sAttrs);
-        }
-        else
-            $sAttrs .= ' class="' . BX_LINK_PLAIN_CLASS . '"';
+        $aClasses[] = BX_LINK_PLAIN_CLASS;
+        $oLink->setAttribute('class', implode(' ', $aClasses));
+        $bChanged = true;
+    }
 
-        return '<a' . $sAttrs . '>';
-    }, $sText);
+    if(!$bChanged)
+        return $sText;
+
+    $s = '';
+    foreach($oRoot->childNodes as $oNode)
+        $s .= $oDom->saveHTML($oNode);
+
+    return $s;
 }
 
 function bx_linkify_embeded($sText)

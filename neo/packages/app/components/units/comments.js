@@ -140,14 +140,19 @@ function UnitCommentsDefault(props) {
     const [embedOff, setEmbedOff] = useState(false)
     const handleRemoveEmbed = useCallback(async () => {
         setEmbedOff(true)
-        const result = await fetcher(
-            '/api.php?r=' +
-            appSetting('urls', 'cmts') +
-            '/&params[]=' +
-            encodeURIComponent(JSON.stringify({ module, object_id: objectId, action: 'embed_off', id: commentId }))
-        )
-        if (!result?.data?.browse)
+        try {
+            const result = await fetcher(
+                '/api.php?r=' +
+                appSetting('urls', 'cmts') +
+                '/&params[]=' +
+                encodeURIComponent(JSON.stringify({ module, object_id: objectId, action: 'embed_off', id: commentId }))
+            )
+            // UNA answers with the comment only when it saved the change
+            if (!result?.data?.browse)
+                setEmbedOff(false)
+        } catch {
             setEmbedOff(false)
+        }
     }, [module, objectId, commentId])
 
     if (hasData && dynamicData?.data?.browse?.data?.data[0]['i' + commentId]) {

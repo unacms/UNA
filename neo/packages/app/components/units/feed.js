@@ -181,9 +181,9 @@ function DefaultFeedUnit({ data, compact = false }) {
                     </View>
                 </>}
 
-                {/* Borderless buttons show their 12px padding only on hover: 8px from the card's
-                    edges puts their icons next to the card's text instead of indented from it. */}
-                <Row className="gap-2 items-center flex-auto justify-between px-2 pb-2 pt-1">
+                {/* Borderless buttons show their padding only on hover: 12px from the card's edges
+                    keeps their icons close to the card's text instead of indented from it. */}
+                <Row className="gap-2 items-center flex-auto justify-between p-3">
                     <ActionMenu
                         data={menuActions}
                     />

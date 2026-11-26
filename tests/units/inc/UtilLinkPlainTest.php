@@ -48,6 +48,15 @@ class UtilLinkPlainTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($sOnce, bx_linkify_plain($sOnce));
     }
 
+    public function testPlainMarksABareAddressToo()
+    {
+        $sOut = bx_linkify_plain('<p>see https://example.com/a here</p>');
+
+        $this->assertStringContainsString('class="' . BX_LINK_PLAIN_CLASS . '"', $sOut);
+        $this->assertStringContainsString('href="https://example.com/a"', $sOut);
+        $this->assertSame('', bx_linkify_embeded($sOut));
+    }
+
     public function testPlainLeavesTextWithoutLinks()
     {
         $this->assertSame('', bx_linkify_plain(''));

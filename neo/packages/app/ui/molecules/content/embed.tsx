@@ -50,10 +50,27 @@ function EmbedDomain({ data, compact }: { data: EmbedData; compact: boolean }) {
     )
 }
 
-/** Compact card: the domain, the title and two lines of text beside a small picture, with an accent rule on the left. */
-function EmbedCompact({ data, onRemove }: { data: EmbedData; onRemove?: () => void }) {
+/** The comment author's button that takes a preview off: a small × over the preview's top end corner. */
+function RemovePreviewButton({ onRemove, className = 'absolute top-0 end-0' }: { onRemove: () => void; className?: string }) {
     const { t } = useTranslation()
 
+    return (
+        <View className={className}>
+            <NeoButton
+                image="X"
+                style="borderless"
+                controlSize="mini"
+                borderShape="circle"
+                accessibilityLabel={t('Remove preview')}
+                tooltip={t('Remove preview')}
+                onPress={onRemove}
+            />
+        </View>
+    )
+}
+
+/** Compact card: the domain, the title and two lines of text beside a small picture, with an accent rule on the left. */
+function EmbedCompact({ data, onRemove }: { data: EmbedData; onRemove?: () => void }) {
     return (
         <View className="relative max-w-md">
             <Link target="_blank" href={data.url} asExternal>
@@ -70,27 +87,25 @@ function EmbedCompact({ data, onRemove }: { data: EmbedData; onRemove?: () => vo
                     <EmbedImage className="h-16 w-16 rounded-md flex-none self-center" imageClassName="rounded-md" src={data.image} />
                 </Row>
             </Link>
-            {!!onRemove && (
-                <View className="absolute top-0 end-0">
-                    <NeoButton
-                        image="X"
-                        style="borderless"
-                        controlSize="mini"
-                        borderShape="circle"
-                        accessibilityLabel={t('Remove preview')}
-                        tooltip={t('Remove preview')}
-                        onPress={onRemove}
-                    />
-                </View>
-            )}
+            {!!onRemove && <RemovePreviewButton onRemove={onRemove} />}
         </View>
     )
 }
 
 const Embed = memo(function Embed({ data, size, onRemove }: EmbedProps) {
     const videoId = getYouTubeVideoId(data.url)
-    if (videoId)
-        return <Youtube videoId={videoId} size={size} />
+    if (videoId) {
+        if (!onRemove)
+            return <Youtube videoId={videoId} size={size} />
+
+        // a player is a preview too: its author can take it off as any other card
+        return (
+            <View className="relative self-start">
+                <Youtube videoId={videoId} size={size} />
+                <RemovePreviewButton onRemove={onRemove} className="absolute top-1 end-1 rounded-full bg-card/80" />
+            </View>
+        )
+    }
 
     if (size === 'small')
         return <EmbedCompact data={data} onRemove={onRemove} />
