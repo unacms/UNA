@@ -3,7 +3,7 @@ import Menu from 'app/components/menu';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { appSetting } from 'app/lib/util'
 import { hasCounterToShow, isDrawnCounter } from 'app/lib/counter-items'
-import { countersModeParams, isStatShown, menuCountersMode } from 'app/lib/counters-mode'
+import { countersModeParams, isCountStat, isStatShown, menuCountersMode } from 'app/lib/counters-mode'
 
 /**
  * A content page's actions and, at the end of their line, its stats: the same menu's counts, as UNA's site
@@ -23,7 +23,7 @@ export default function ElementEntityActions({ data, blockWrapperProps }) {
     const menuData = { ...data, items }
 
     const stats = mode === 'group' ? [] : items.filter(
-        (item) => item.display_type === 'element' && isDrawnCounter(item) && hasCounterToShow(item) && isStatShown(item, mode)
+        (item) => item.display_type === 'element' && isCountStat(item) && isDrawnCounter(item) && hasCounterToShow(item) && isStatShown(item, mode)
     )
     const counters = appSetting('feed', 'counters_menu') || {}
 
