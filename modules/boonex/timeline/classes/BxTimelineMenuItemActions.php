@@ -172,6 +172,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
                 $this->_bShowCounters = true;
                 $this->_bShowCountersEmpty = false;
                 $this->_bShowCountersActive = false;
+                $this->_bShowCountersIcons = false; // the action's own icon is already there
                 break;
 
             case BxDolMenu::COUNTERS_GROUP:
@@ -326,7 +327,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
             'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters,
             'show_counter_empty' => $this->_bShowCountersEmpty,
-            'show_counter_style' => 'compound',
+            'show_counter_style' => $this->_bShowCountersIcons ? 'compound' : 'simple', // a count beside the action's own icon is the number alone
             'show_counter_label_icon' => $this->_bShowCountersIcons,
             'dynamic_mode' => $this->_bDynamicMode
         );
