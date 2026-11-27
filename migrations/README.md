@@ -224,7 +224,9 @@ An update pack built with `scripts/release/` has no SQL of its own. It brings th
 runs them with `BxDolMigrations::forUpdate()`, whatever the site's update channel:
 
 - the system pack (`upgrade/files/<from>-<to>/script.php`) runs the common folder and the system
-  module's folder, after the pack's files are copied;
+  module's folder, after the pack's files are copied, and only then sets the new system version: a
+  failed migration leaves the site on the previous version, so the update can be run again and the
+  module packs, which need the new version, wait;
 - a module's pack runs that module's folder in its `execute_sql` step
   (`BxDolStudioUpdater::actionExecuteSql`, through `BxDolMigrations::runForModule()`), after
   `update_files` copied it from the pack's `source/migrations/`. For a disabled module nothing

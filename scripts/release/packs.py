@@ -129,6 +129,10 @@ SYSTEM_SCRIPT = """<?php
     if ($aResult['refresh_error'] !== '')
         return 'Migrations ran, but ' . $aResult['refresh_error'] . ' failed';
 
+    // The version moves only now: a site whose migrations failed stays on the previous version, so the update
+    // can be run again and module update packs (which need the new version) wait until it has gone through.
+    BxDolDb::getInstance()->query("UPDATE `sys_modules` SET `version` = '__VERSION_TO__' WHERE (__VERSION_WHERE__) AND `name` = 'system'");
+
     return true;
 """
 
@@ -189,10 +193,8 @@ return $mixCheckResult;
     where = ' OR '.join("`version` = '%s'" % v for v in spellings)
     stubs = {
         'sql.sql': "-- Database changes of this release are its migrations (migrations/, modules/system/migrations/),\n"
-                   "-- which script.php runs after this file.\n"
-                   "\n-- Last step is to update current version\n"
-                   "UPDATE `sys_modules` SET `version` = '%s' WHERE (%s) AND `name` = 'system';\n" % (args.v_to, where),
-        'script.php': SYSTEM_SCRIPT,
+                   "-- which script.php runs after this file. script.php also sets the new version, once they all went through.\n",
+        'script.php': SYSTEM_SCRIPT.replace('__VERSION_TO__', args.v_to).replace('__VERSION_WHERE__', where),
     }
     for name, content in stubs.items():
         if not os.path.exists(os.path.join(pack, name)):
