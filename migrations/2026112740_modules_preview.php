@@ -9,16 +9,20 @@
 
 $oDb = BxDolDb::getInstance();
 
-if(!$oDb->isFieldExists('sys_modules', 'preview') && $oDb->query("ALTER TABLE `sys_modules` ADD `preview` tinyint(1) NOT NULL default '0' AFTER `replaced_by`") === false)
+if(!$oDb->isFieldExists('sys_modules', 'preview') && $oDb->query("ALTER TABLE `sys_modules` ADD `preview` tinyint(1) NOT NULL default '0' AFTER `replaced_by`") === false) {
     return false;
+}
 
 // Module rows are cached whole: without this the new column is missing from them until the cache expires.
 $oModules = BxDolModuleQuery::getInstance();
 $oModules->cleanModulesListCache();
 
-foreach($oModules->getModules() as $aModule)
-    if(($aConfig = BxDolInstallerUtils::getModuleConfig($aModule)))
+foreach($oModules->getModules() as $aModule) {
+    $aConfig = BxDolInstallerUtils::getModuleConfig($aModule);
+    if($aConfig) {
         $oModules->setModulePreview($aModule['id'], $aConfig);
+    }
+}
 
 $oModules->cleanModulesListCache();
 

@@ -380,13 +380,14 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
 
     /**
      * Whether a module's install/config.php marks it as a preview: unfinished work that is installed and updated
-     * like any module, labelled so admins know it may change. The config says `'preview' => true`.
+     * like any module, labelled so admins know it may change. The config says `'preview' => true`; a config
+     * without the key is a finished module, so dropping the key clears the mark on the next update.
      * @param array $aConfig module config
-     * @return array|null `preview`, or null when the config doesn't say
+     * @return array|null `preview`, or null when there is no config to read
      */
     public static function getConfigPreview($aConfig)
     {
-        if(!is_array($aConfig) || !array_key_exists('preview', $aConfig))
+        if(!is_array($aConfig) || empty($aConfig['name']))
             return null;
 
         return ['preview' => !empty($aConfig['preview']) ? 1 : 0];

@@ -21,8 +21,7 @@ class ModuleDeprecationTest extends BxDolIntegrationTestCase
         // The installer's result codes are defined with the installer utilities.
         class_exists('BxDolStudioInstallerUtils');
         $this->_oDb = bx_instance('BxDolStudioInstallerQuery');
-        if (!$this->_oDb->isFieldExists('sys_modules', 'deprecated'))
-            $this->markTestSkipped('sys_modules has no deprecated column: run periodic/migration.php first.');
+        $this->assertTrue($this->_oDb->isFieldExists('sys_modules', 'deprecated'), 'sys_modules has no deprecated column: run periodic/migration.php.');
 
         $this->cleanup();
     }

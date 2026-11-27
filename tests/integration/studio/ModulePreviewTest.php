@@ -20,8 +20,7 @@ class ModulePreviewTest extends BxDolIntegrationTestCase
 
         class_exists('BxDolStudioInstallerUtils');
         $this->_oDb = bx_instance('BxDolStudioInstallerQuery');
-        if (!$this->_oDb->isFieldExists('sys_modules', 'preview'))
-            $this->markTestSkipped('sys_modules has no preview column: run periodic/migration.php first.');
+        $this->assertTrue($this->_oDb->isFieldExists('sys_modules', 'preview'), 'sys_modules has no preview column: run periodic/migration.php.');
 
         $this->cleanup();
     }
@@ -63,7 +62,9 @@ class ModulePreviewTest extends BxDolIntegrationTestCase
 
     public function testConfigForms(): void
     {
-        $this->assertNull(BxDolModuleQuery::getConfigPreview($this->config()));
+        $this->assertSame(['preview' => 0], BxDolModuleQuery::getConfigPreview($this->config()), 'A config without the key is a finished module.');
+        $this->assertNull(BxDolModuleQuery::getConfigPreview([]));
+        $this->assertNull(BxDolModuleQuery::getConfigPreview(null));
         $this->assertSame(['preview' => 1], BxDolModuleQuery::getConfigPreview($this->config(['preview' => true])));
         $this->assertSame(['preview' => 0], BxDolModuleQuery::getConfigPreview($this->config(['preview' => false])));
     }
@@ -74,15 +75,16 @@ class ModulePreviewTest extends BxDolIntegrationTestCase
         $iId = $this->_oDb->insertModule($aConfig);
         $this->assertGreaterThan(0, $iId);
 
-        $this->assertFalse($this->_oDb->setModulePreview($iId, $this->config()), 'A config that does not say leaves the row as it is.');
-        $this->assertSame(0, $this->preview());
-
         $this->assertTrue($this->_oDb->setModulePreview($iId, $this->config(['preview' => true])));
         $this->assertSame(1, $this->preview());
 
-        // A finished module's next version drops the mark.
-        $this->assertTrue($this->_oDb->setModulePreview($iId, $this->config(['preview' => false])));
+        // A finished module's next version drops the key, and the mark goes with it.
+        $this->assertTrue($this->_oDb->setModulePreview($iId, $this->config()));
         $this->assertSame(0, $this->preview());
+
+        $this->assertTrue($this->_oDb->setModulePreview($iId, $this->config(['preview' => true])));
+        (new BxDolMigrationsQuery())->setModulePreview(self::URI, $this->config());
+        $this->assertSame(0, $this->preview(), 'Sites that follow master lose the mark the same way.');
     }
 
     public function testMigrationUpdatesCopyItToo(): void
