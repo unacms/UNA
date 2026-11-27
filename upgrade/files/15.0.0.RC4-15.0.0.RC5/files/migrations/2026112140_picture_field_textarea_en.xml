@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Picture fields show the picture with Change picture and Remove; a textarea with a limit counts its characters. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_uploader_crop_choose_picture"><![CDATA[Upload a picture]]></string_add>
+    <string_add name="_sys_uploader_crop_choose_cover"><![CDATA[Upload a cover picture]]></string_add>
+    <string_add name="_sys_uploader_crop_edit_picture"><![CDATA[Edit picture]]></string_add>
+    <string_add name="_sys_uploader_crop_edit_cover"><![CDATA[Edit cover picture]]></string_add>
+    <string_add name="_sys_uploader_crop_change_picture"><![CDATA[Change picture]]></string_add>
+    <string_add name="_sys_uploader_crop_remove_picture"><![CDATA[Remove]]></string_add>
+    <string_add name="_sys_form_input_counter_limit"><![CDATA[You have reached the limit of {0} characters.]]></string_add>
+</resources>

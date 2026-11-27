@@ -1,0 +1,120 @@
+<?php
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    UnaCore UNA Core
+ * @{
+ */
+
+if (!file_exists("./inc/header.inc.php")) {
+    // this is dynamic page - send headers to not cache this page
+    $now = gmdate('D, d M Y H:i:s') . ' GMT';
+    header("Expires: $now");
+    header("Last-Modified: $now");
+    header("Cache-Control: no-cache, must-revalidate");
+    header("Pragma: no-cache");
+
+    // not installed yet: straight to the installer
+    if (file_exists("install/index.php")) {
+        header('Location: install/index.php', true, 302);
+        exit;
+    }
+
+    $sTitle = 'Installation files are missing';
+    header('Content-Type: text/html; charset=utf-8');
+    ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><?php echo htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8'); ?></title>
+    <!-- The site's default favicon; a dark browser/OS colour scheme gets the white one (template/meta_icons.html). -->
+    <link rel="icon" href="template/images/icons/favicon.svg" type="image/svg+xml" data-bx-icon-light="template/images/icons/favicon.svg" data-bx-icon-dark="template/images/icons/favicon-dark.svg" />
+    <script>
+        (function () {
+            var oMedia = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+            if (!oMedia)
+                return;
+            var fUpdate = function () {
+                document.querySelectorAll('link[data-bx-icon-dark]').forEach(function (oLink) {
+                    oLink.href = oLink.getAttribute(oMedia.matches ? 'data-bx-icon-dark' : 'data-bx-icon-light');
+                });
+            };
+            fUpdate();
+            if (oMedia.addEventListener)
+                oMedia.addEventListener('change', fUpdate);
+        })();
+    </script>
+    <style>
+        :root {
+            --bx-flash-bg: #f4f5f7;
+            --bx-flash-text: #111827;
+            --bx-flash-muted: #6b7280;
+            --bx-flash-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bx-flash-bg);
+            font-family: var(--bx-flash-font);
+            color: var(--bx-flash-text);
+            -webkit-font-smoothing: antialiased;
+        }
+        .bx-install-flash {
+            text-align: center;
+            padding: 24px;
+        }
+        .bx-install-flash img {
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border-radius: 16px;
+        }
+        .bx-install-flash p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 550;
+            letter-spacing: -0.01em;
+            color: var(--bx-flash-muted);
+        }
+        .bx-install-flash-pulse {
+            animation: bx-install-flash-pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes bx-install-flash-pulse {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bx-install-flash">
+        <img src="studio/template/images/dbd_version.svg" alt="UNA" />
+        <p class="bx-install-flash-pulse"><?php echo htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8'); ?></p>
+    </div>
+</body>
+</html>
+    <?php
+    exit;
+}
+
+require_once('./inc/header.inc.php');
+require_once(BX_DIRECTORY_PATH_INC . "profiles.inc.php");
+
+if (!isLogged() && getParam('sys_site_splash_enabled') && false === strpos($_SERVER['HTTP_USER_AGENT'], 'UNAMobileApp')) {
+    require_once("./splash.php");
+    exit;
+}
+
+$_GET['i'] = 'home';
+require_once("./page.php");
+
+/** @} */

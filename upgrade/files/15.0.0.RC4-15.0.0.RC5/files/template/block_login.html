@@ -1,0 +1,33 @@
+<div class="sys-lf">
+    __custom_html_before__
+    <bx_if:show_form>__content__</bx_if:show_form>
+    <bx_if:show_auth>__content__</bx_if:show_auth>
+    __custom_html_after__
+    <bx_if:show_join>
+        <div class="sys-lf-join bx-def-margin-sec-top bx-def-font-align-center bx-def-font-grayed">
+            <bx_text:_sys_txt_login_description /> <a href="__url__"><bx_text:_sys_txt_login_description_action /></a>
+        </div>
+    </bx_if:show_join>
+    __footer__
+    <bx_if:show_js_code>
+        <script>
+            (bx_login_init_ajax_form = function () {
+                $('#sys-form-login').ajaxForm({
+                    dataType: 'json',
+                    success: function (oData) {
+                        if ('undefined' !== typeof(oData['redirect'])) {
+                            location.href = oData['redirect'];
+                        }
+                        else if ('undefined' !== typeof(oData['res']) && 'OK' == oData['res']) {
+                            location.reload();
+                        }
+                        else if ('undefined' !== typeof(oData['form'])) {
+                            $('#sys-form-login').replaceWith(oData['form']);
+                            bx_login_init_ajax_form();
+                        }
+                    }
+                });
+            })();
+        </script>
+    </bx_if:show_js_code>
+</div>

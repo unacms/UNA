@@ -1,0 +1,16 @@
+<div id="__preview_id__" class="bx-uploader-crop-preview bx-uploader-crop-preview-__shape__ m-2" data-shape="__shape__">
+    <label for="__preview_id__-file" class="hidden">__title_choose__</label>
+    <input type="file" id="__preview_id__-file" class="hidden" accept="image/jpeg,image/png,image/gif,image/webp" tabindex="-1" aria-hidden="true" onchange="__uploader_instance_name__.onPictureChosen(this)" />
+    <div class="relative __frame_class__">
+        <button type="button" class="bx-uploader-crop-choose group relative block w-full h-full overflow-hidden __frame_class__ bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors duration-200 ring-1 ring-inset ring-black/10 dark:ring-white/5 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-default" title="__title_choose__" aria-label="__title_choose__" onclick="__uploader_instance_name__.choosePicture();" __disabled__>
+            <bx_if:placeholder_image><img src="__src__" alt="" class="w-full h-full object-cover" /></bx_if:placeholder_image>
+            <bx_if:placeholder_icon><span class="flex items-center justify-center w-full h-full text-gray-600 dark:text-gray-300"><i class="sys-icon camera w-8 h-8"></i></span></bx_if:placeholder_icon>
+        </button>
+        <bx_if:placeholder_badge><span class="bx-uploader-crop-badge bx-btn bx-btn-small bx-btn-icon bx-btn-glass absolute __edit_class__ pointer-events-none" aria-hidden="true"><i class="sys-icon camera"></i></span></bx_if:placeholder_badge>
+        <div class="bx-uploader-crop-picture hidden w-full h-full overflow-hidden __frame_class__ bg-gray-100 dark:bg-gray-800">
+            <img alt="" class="w-full h-full object-cover" />
+        </div>
+        <button type="button" class="bx-uploader-crop-edit hidden bx-btn bx-btn-small bx-btn-icon bx-btn-glass absolute __edit_class__" title="__title_edit__" aria-label="__title_edit__" aria-haspopup="menu" aria-expanded="false" onclick="bx_menu_popup_inline('#__menu_id__', this);" __disabled__><i class="sys-icon pencil-line"></i></button>
+    </div>
+    __menu__
+</div>

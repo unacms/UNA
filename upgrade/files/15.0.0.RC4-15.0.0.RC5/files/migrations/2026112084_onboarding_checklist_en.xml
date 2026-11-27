@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The "Get started" onboarding checklist replaces the setup checklist: its menu, steps, block and states. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_menu_item_info_onboarding_cover"><![CDATA[It shows at the top of the homepage, which guests see first.]]></string_add>
+    <string_add name="_sys_menu_item_info_onboarding_join"><![CDATA[Anyone can join this site.]]></string_add>
+    <string_add name="_sys_menu_item_info_onboarding_logo"><![CDATA[It shows in the site header, in emails and in the apps.]]></string_add>
+    <string_add name="_sys_menu_item_info_onboarding_profile"><![CDATA[You post and reply on the site as this profile.]]></string_add>
+    <string_add name="_sys_menu_template_title_list_desc"><![CDATA[List with descriptions]]></string_add>
+    <string_add name="_sys_menu_title_onboarding_operator"><![CDATA[Get started: operators]]></string_add>
+    <string_add name="_sys_menu_set_title_onboarding_operator"><![CDATA[Get started: operators]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding"><![CDATA[Get started]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_cover"><![CDATA[Add a cover picture]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_join"><![CDATA[Choose who can join]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_logo"><![CDATA[Add your logo]]></string_add>
+    <string_add name="_sys_menu_item_title_system_onboarding_profile"><![CDATA[Create your profile]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding"><![CDATA[Get started]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_cover"><![CDATA[Add a cover picture]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_join"><![CDATA[Choose who can join]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_logo"><![CDATA[Add your logo]]></string_add>
+    <string_add name="_sys_menu_item_title_onboarding_profile"><![CDATA[Create your profile]]></string_add>
+    <string_add name="_sys_page_block_title_onboarding"><![CDATA[Get started]]></string_add>
+    <string_add name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string_add>
+    <string_add name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string_add>
+    <string_add name="_sys_onboarding_hide"><![CDATA[Hide]]></string_add>
+    <string_add name="_sys_onboarding_join_closed"><![CDATA[Nobody can join: the sign-up form is off.]]></string_add>
+    <string_add name="_sys_onboarding_join_invite"><![CDATA[Only people you invite can join this site.]]></string_add>
+    <string_add name="_sys_onboarding_join_open"><![CDATA[Anyone can join this site.]]></string_add>
+    <string_add name="_sys_onboarding_progress"><![CDATA[{0} of {1} done]]></string_add>
+    <string_add name="_sys_onboarding_state_done"><![CDATA[Done]]></string_add>
+    <string_add name="_sys_onboarding_state_locked"><![CDATA[Needs an earlier step]]></string_add>
+    <string_add name="_sys_onboarding_state_todo"><![CDATA[To do]]></string_add>
+    <string_upd name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Get started checklist for operators]]></string_upd>
+    <string_upd name="_adm_stg_inf_option_site_tour_home"><![CDATA[Shows operators the "Get started" block on the homepage until every step is done or they hide it. Edit its steps in Studio > Navigation > "Get started: operators".]]></string_upd>
+    <string_del name="_sys_menu_item_title_setup"></string_del>
+    <string_del name="_sys_menu_item_title_system_setup"></string_del>
+    <string_del name="_sys_page_block_title_setup"></string_del>
+    <string_del name="_sys_page_block_title_system_setup"></string_del>
+    <string_del name="_sys_setup_dismiss"></string_del>
+    <string_del name="_sys_setup_join_action"></string_del>
+    <string_del name="_sys_setup_join_action_label"></string_del>
+    <string_del name="_sys_setup_join_closed"></string_del>
+    <string_del name="_sys_setup_join_invite"></string_del>
+    <string_del name="_sys_setup_join_open"></string_del>
+    <string_del name="_sys_setup_progress"></string_del>
+    <string_del name="_sys_setup_state_done"></string_del>
+    <string_del name="_sys_setup_state_todo"></string_del>
+    <string_del name="_sys_setup_step_cover"></string_del>
+    <string_del name="_sys_setup_step_cover_action"></string_del>
+    <string_del name="_sys_setup_step_cover_txt"></string_del>
+    <string_del name="_sys_setup_step_logo"></string_del>
+    <string_del name="_sys_setup_step_logo_action"></string_del>
+    <string_del name="_sys_setup_step_logo_txt"></string_del>
+    <string_del name="_sys_setup_step_post"></string_del>
+    <string_del name="_sys_setup_step_post_action"></string_del>
+    <string_del name="_sys_setup_step_post_locked_txt"></string_del>
+    <string_del name="_sys_setup_step_post_txt"></string_del>
+    <string_del name="_sys_setup_step_profile"></string_del>
+    <string_del name="_sys_setup_step_profile_action"></string_del>
+    <string_del name="_sys_setup_step_profile_txt"></string_del>
+    <string_del name="_sys_setup_title"></string_del>
+</resources>

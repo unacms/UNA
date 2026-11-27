@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Empty states for API clients (BxDolEmptyState). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_txt_empty_list_text_add"><![CDATA[Be the first to add something here.]]></string_add>
+    <string_add name="_sys_txt_empty_list_add"><![CDATA[Add new]]></string_add>
+</resources>

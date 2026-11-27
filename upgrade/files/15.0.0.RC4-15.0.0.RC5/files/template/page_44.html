@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="__lang__" class="__class_name__">
+<head>
+    <bx_injection:injection_head_begin />
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=__page_charset__" />
+    <meta name="viewport" content="__page_viewport__" />
+    <title>__page_header__</title>
+    __meta_icons__
+    <base__base__ />
+
+    <bx_include_css_system />
+    <bx_include_css />
+
+    __dol_images__
+    __dol_lang__
+    __dol_options__
+
+    <bx_include_js_system />
+    <bx_include_js />
+    <script language="javascript">
+        var site_url = '<bx_url_root />';
+    </script>
+    __extra_js__
+
+    __system_injection_head__
+    <bx_injection:injection_head />
+</head>
+<body class="bx-def-font bx-def-color-bg-page" dir="__lang_direction__" <bx_injection:injection_body /> >
+	__system_injection_header__
+	<bx_injection:injection_header />
+
+	<div class="p-2">
+	    __page_main_code__
+	</div>
+</body>
+</html>

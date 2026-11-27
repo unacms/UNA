@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Designer > Logo > Email logo: a light and a dark mode logo for the email header. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_dsg_btn_logo_remove_logo_email"><![CDATA[Remove the light mode email logo]]></string_add>
+    <string_add name="_adm_dsg_btn_logo_remove_logo_email_dark"><![CDATA[Remove the dark mode email logo]]></string_add>
+    <string_add name="_adm_dsg_inf_email_section"><![CDATA[Shown in the header of emails. Upload a PNG, JPEG or GIF: email clients block SVG. Without it, emails use the site logo when it is one of these.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_dark_src_none"><![CDATA[None. Emails show the light mode logo in dark mode too.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_dark_src_site"><![CDATA[Not set. Emails use the site's dark mode logo.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_section"><![CDATA[Email logo]]></string_add>
+    <string_add name="_adm_dsg_txt_email_src_none"><![CDATA[None. Emails show the site name as text.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_src_site"><![CDATA[Not set. Emails use the site logo.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_src_unusable"><![CDATA[Not a PNG, JPEG or GIF, so emails don't show it.]]></string_add>
+</resources>

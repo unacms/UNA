@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Guest first impression: page titles name the site, entry descriptions, the review note on Terms and Privacy, the password rule and "Your name" on Sign up. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_page_title_with_site"><![CDATA[{0} · {1}]]></string_add>
+    <string_add name="_sys_page_meta_description_entry"><![CDATA[{0} on {1}.]]></string_add>
+    <string_add name="_sys_txt_page_lang_block_review"><![CDATA[Only you see this note. This page still has the text UNA comes with. Review it, change what doesn't fit your site and save it in Studio to hide this note.]]></string_add>
+    <string_add name="_sys_txt_page_lang_block_review_action"><![CDATA[Review in Studio]]></string_add>
+    <string_add name="_sys_form_account_input_password_info"><![CDATA[At least 8 characters, with an uppercase letter, a lowercase letter and a digit.]]></string_add>
+    <string_upd name="_sys_form_account_input_name"><![CDATA[Your name]]></string_upd>
+    <string_upd name="_sys_form_account_input_name_error"><![CDATA[Enter your name. It can't start with @.]]></string_upd>
+</resources>

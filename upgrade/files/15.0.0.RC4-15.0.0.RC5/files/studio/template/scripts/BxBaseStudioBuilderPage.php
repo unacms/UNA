@@ -1,0 +1,3012 @@
+<?php defined('BX_DOL') or die('hack attempt');
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    UnaView UNA Studio Representation classes
+ * @ingroup     UnaStudio
+ * @{
+ */
+
+define('BX_DOL_STUDIO_BUILDER_PAGE', 1);
+
+class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
+{
+    protected $sParamsDivider = '#';
+    protected $sSelectKeyPrefix = 'id-';
+
+    protected $sActionPageCreate = 'page_create';
+    protected $sActionPageDelete = 'page_delete';
+    protected $sActionPageEdit = 'page_edit';
+    protected $sActionBlockCreate = 'block_create';
+    protected $sActionBlockEdit = 'block_edit';
+
+    protected $aTmplVarsBlockPanelTop = null;
+    protected $aPageFieldsToSection = array(); // fields the page leaves to its section, stored as NULL on save (onSavePage)
+    protected $bBlockCaptionControls = true; // false: a builder that keeps its actions in its own row under the caption
+
+    protected $sStorage;
+    protected $sTranscoder;
+    protected $aUploaders; 
+    
+    protected $sTranscoderCover;
+    protected $aUploadersCover;
+
+    protected $sBaseUrl;
+    protected $sTypeUrl;
+    protected $sPageUrl;
+
+    protected $aHtmlIds = array(
+        'add_popup_id' => 'adm-bp-add-popup',
+        'edit_popup_id' => 'adm-bp-edit-popup',
+        'uri_field_id' => 'adm-bp-field-uri',
+    	'url_field_id' => 'adm-bp-field-url',
+        'settings_group_id' => 'adm-bp-settings-group-',
+        'settings_groups_id' => 'adm-bp-settings-groups',
+        'create_block_popup_id' => 'adm-bp-create-block-popup',
+        'edit_block_popup_id' => 'adm-bp-edit-block-popup',
+    	'edit_block_editor_id' => 'adm-bp-edit-block-editor',
+        'edit_block_builder_id' => 'adm-bp-edit-block-builder',
+        'block_id' => 'adm-bpb-',
+        'block_list_id' => 'adm-bpl-',
+        'block_lists_id' => 'adm-bp-block-lists',
+        'layout_id' => 'adm-bpl-',
+    );
+
+    protected $aPageSettings = array(
+        array('name' => 'options', 'title' => '_adm_bp_mi_page_options', 'icon' => 'mi-bp-options.svg', 'active' => 1),
+        array('name' => 'cover', 'title' => '_adm_bp_mi_page_cover', 'icon' => 'mi-bp-cover.svg', 'active' => 0),
+        array('name' => 'title', 'title' => '_adm_bp_mi_page_title', 'icon' => 'mi-bp-title.svg', 'active' => 0),
+        array('name' => 'layout', 'title' => '_adm_bp_mi_page_layout', 'icon' => 'mi-bp-layout.svg', 'active' => 0),
+        array('name' => 'visibility', 'title' => '_adm_bp_mi_page_visibility', 'icon' => 'mi-bp-visibility.svg', 'active' => 0),
+        array('name' => 'cache', 'title' => '_adm_bp_mi_page_cache', 'icon' => 'mi-bp-cache.svg', 'active' => 0),
+        array('name' => 'seo', 'title' => '_adm_bp_mi_page_seo', 'icon' => 'mi-bp-seo.svg', 'active' => 0),
+        array('name' => 'injections', 'title' => '_adm_bp_mi_page_injections', 'icon' => 'mi-bp-injections.svg', 'active' => 0)
+    );
+
+    /**
+     * Fields of a block which its switches in the layout turn on and off (actionBlockSwitch).
+     */
+    protected $aBlockSwitchFields = array('active', 'active_api');
+
+    /**
+     * Fields of the block form shown under "Advanced" (getBlockInputsWithAdvanced).
+     */
+    protected $aBlockInputsAdvanced = array('service_method', 'async', 'class', 'cache_lifetime');
+
+    function __construct($sType = '', $sPage = '')
+    {
+        parent::__construct($sType, $sPage);
+
+        $this->sStorage = BX_DOL_STORAGE_OBJ_IMAGES;
+        $this->sTranscoder = 'sys_builder_page_preview';
+        $this->aUploaders = array('sys_builder_page_html5');
+
+        $this->sTranscoderCover = 'sys_cover_preview';
+        $this->aUploadersCover = array('sys_std_crop_cover');
+
+        $this->sBaseUrl = BX_DOL_URL_STUDIO . 'builder_page.php';
+        $this->sTypeUrl = $this->sBaseUrl . '?type=%s';
+        $this->sPageUrl = $this->sTypeUrl . '&page=%s';
+    }
+
+    function getPageCss()
+    {
+    	$oTemplate = BxDolStudioTemplate::getInstance();
+    	$aUploaders = array_merge($this->aUploaders, $this->aUploadersCover);
+        foreach($aUploaders as $sUploader) {
+            $oUploader = BxDolUploader::getObjectInstance($sUploader, $this->sStorage, '', $oTemplate);
+            if($oUploader)
+                $oUploader->addCssJs();
+        }
+
+        return array_merge(parent::getPageCss(), [
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'codemirror/|codemirror.css',
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'grapesjs/|grapes.min.css',
+            BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'select2/css/|select2.min.css',
+            'page_layouts.css', 
+            'builder_page.css'
+        ]);
+    }
+
+    function getPageJs()
+    {
+        return array_merge(parent::getPageJs(), [
+            'codemirror/codemirror.min.js',
+            'grapesjs/grapes.min.js',
+            'grapesjs/grapesjs-blocks-basic.js',
+            'grapesjs/grapesjs-style-bg.js',
+            'grapesjs/grapesjs-preset-webpage.min.js',
+            'select2/js/select2.min.js',
+            'jquery-ui/jquery-ui.min.js',
+            'jquery.ui.touch-punch.min.js',
+            'jquery.easing.js',
+            'jquery.form.min.js',
+            'forms.js',
+            'functions.js',
+            'builder_page.js'
+        ]);
+    }
+
+    function getPageJsObject()
+    {
+        return 'oBxDolStudioBuilderPage';
+    }
+
+    function getPageMenu($aMenu = [], $aMarkers = [])
+    {
+        $aMenuItems = [
+            BX_DOL_STUDIO_BP_TYPE_SYSTEM => ['icon' => 'mi-bp-system.svg'],
+            BX_DOL_STUDIO_BP_TYPE_CUSTOM => ['icon' => 'mi-bp-custom.svg'],
+            BX_DOL_STUDIO_BP_TYPE_MODULES => ['icon' => 'mi-bp-modules.svg']
+        ];
+
+        $aMenu = [];
+        foreach($aMenuItems as $sMenuItem => $aItem)
+            $aMenu[] = [
+                'name' => $sMenuItem,
+                'icon' => $aItem['icon'],
+                'icon_bg' => true,
+                'link' => sprintf($this->sTypeUrl, $sMenuItem),
+                'title' => _t('_adm_bp_cpt_type_' . $sMenuItem),
+                'selected' => $sMenuItem == $this->sType || ($sMenuItem == BX_DOL_STUDIO_BP_TYPE_MODULES && !isset($aMenuItems[$this->sType]))
+            ];
+
+        return parent::getPageMenu($aMenu);
+    }
+
+    function getPageCode($sPage = '', $bWrap = true)
+    {
+        $sResult = parent::getPageCode($sPage, $bWrap);
+        if($sResult === false)
+            return false;
+
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $sJsObject = $this->getPageJsObject();
+        $sContent = $this->getPageLayout();
+
+        $aLanguages = BxDolStudioLanguagesUtils::getInstance()->getLanguages();
+
+        $aTmplVars = array(
+            'js_object' => $sJsObject,
+            'action_url' => $this->sBaseUrl,
+            'page_url' => sprintf($this->sPageUrl, '{0}', '{1}'),
+            'type' => $this->sType,
+            'page' => $this->sPage,
+            'html_ids' => json_encode($this->aHtmlIds),
+            'languages' => json_encode($aLanguages),
+            'content' => $this->getBlockCode(array(
+                'items' => $sContent
+            ))
+        );
+
+        $oTemplate->addJsTranslation([
+            '_sys_not_available',
+            '_adm_bp_wrn_page_delete',
+            '_adm_bp_wrn_page_block_delete'
+        ]);
+        return $sResult . $oTemplate->parseHtmlByName('builder_page.html', $aTmplVars);
+    }
+
+    /**
+     * The page's layout with its blocks in their cells, as the builder shows it. Also sent after blocks are added or
+     * edited, so the layout shows them at once.
+     */
+    public function getPageLayout()
+    {
+        $oPage = BxTemplPage::getObjectInstance($this->sPage);
+
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $sJsObject = $this->getPageJsObject();
+        $sTxtEmpty = _t('_sys_txt_empty');
+
+        $sContent = "";
+        if($this->sPage != '' && !empty($this->aPageRebuild)) {
+            /**
+             * Reset (move to hidden sell) blocks which cannot be seen, 
+             * because of unsuitable cell number to currently selected layout.
+             */
+            $this->oDb->resetBlocksByPage($this->aPageRebuild['object'], $this->aPageRebuild['layout_cells_number']);
+
+            $aTmplVars = array(
+                'page_id' => 'bx-page-' . $this->aPageRebuild['uri'],
+                'bx_if:show_layout_row_dump' => array(
+                    'condition' => true,
+                    'content' => array()
+                )
+            );
+            for($i = 0; $i <= $this->aPageRebuild['layout_cells_number']; $i++) {
+                $aBlocks = array();
+                $this->oDb->getBlocks(array('type' => 'by_object_cell', 'object' => $this->aPageRebuild['object'], 'cell' => $i), $aBlocks, false);
+
+                $aTmplVarsCell = array('id' => $i, 'bx_repeat:blocks' => array());
+                foreach($aBlocks as $aBlock) {
+                    $sTitle = $this->getBlockTitleForStudio($aBlock, $oPage);
+                    list($sIcon, $sIconUrl) = $this->getBlockIcon($aBlock);
+
+                    $aTmplVarsCell['bx_repeat:blocks'][] = array(
+                        'html_id' => $this->aHtmlIds['block_id'] . $aBlock['id'],
+                        'bx_if:is_inactive' => array(
+                            'condition' => $this->isBlockInactive($aBlock),
+                            'content' => array()
+                        ),
+                        'bx_if:show_link' => array(
+                            'condition' => true,
+                            'content' => array(
+                                'onclick' => $sJsObject . ".performAction('block_edit', {id: " . $aBlock['id'] . "})",
+                                'title' => !empty($sTitle) ? $sTitle : $sTxtEmpty,
+                            )
+                        ),
+                        'bx_if:show_text' => array(
+                            'condition' => false,
+                            'content' => array()
+                        ),
+                        'bx_if:show_switchers' => [
+                            'condition' => true,
+                            'content' => [
+                                'content' => $this->getBlockSwitchers($aBlock, $sTitle)
+                            ]
+                        ],
+                        'bx_if:image' => array (
+                            'condition' => (bool)$sIconUrl,
+                            'content' => array('icon_url' => $sIconUrl),
+                        ),
+                        'bx_if:icon' => array (
+                            'condition' => (bool)$sIcon,
+                            'content' => array('icon' => $sIcon),
+                        ),
+                        'module' => $this->getModuleTitle($aBlock['module']),
+                        'visible_for' => _t('_adm_bp_txt_visible_for', BxDolStudioUtils::getVisibilityTitle($aBlock['visible_for_levels'])),
+                        'bx_if:show_checkbox' => array(
+                            'condition' => false,
+                            'content' => array()
+                        ),
+                        'bx_if:show_drag_handle' => array(
+                            'condition' => true,
+                            'content' => array()
+                        )
+                    );
+                }
+
+                $sCell = $oTemplate->parseHtmlByName('bp_cell.html', $aTmplVarsCell);
+                if($i == 0)
+                    $aTmplVars['bx_if:show_layout_row_dump']['content']['cell_' . $i] = $sCell;
+                else
+                    $aTmplVars['cell_' . $i] = $sCell;
+            }
+
+            $sContent = $oTemplate->parseHtmlByName($this->aPageRebuild['layout_template'], $aTmplVars);
+        }
+
+        return $sContent;
+    }
+
+    /**
+     * The row under the caption picks the page (and, for apps' pages, the app).
+     */
+    function getBlockPanelTop($aBlock)
+    {
+        return parent::getBlockPanelTop(
+            array('panel_top' => BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_block_panel_top.html', $this->_getTmplVarsBlockPanelTop()))
+        );
+    }
+
+    /**
+     * The page's actions (new page, add blocks, view, settings, delete) sit in the caption, beside the title.
+     */
+    public function getBlockCaptionControls($aBlock)
+    {
+        if(!$this->bBlockCaptionControls) {
+            return '';
+        }
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_block_caption_controls.html', $this->_getTmplVarsBlockPanelTop());
+    }
+
+    protected function actionPageCreate()
+    {
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $sModule = BX_DOL_STUDIO_MODULE_CUSTOM;        
+
+        $oForm = $this->_getPageCreateForm();
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            unset($oForm->aInputs['settings']);
+            foreach($this->aPageSettings as $aSetting)
+                $oForm->aInputs = array_merge($oForm->aInputs, $this->{'getSettings' . $this->getClassName($aSetting['name']) . 'Fields'}());
+
+            $sLanguage = BxDolStudioLanguagesUtils::getInstance()->getCurrentLangName(false);
+
+            $sObject = BxDolForm::getSubmittedValue('title-' . $sLanguage, $oForm->aFormAttrs['method']);
+            $sObject = uriGenerate($sObject, 'sys_objects_page', 'object', ['empty' => 'object']);
+
+            $sUri = $oForm->getCleanValue('uri');
+            
+            $aPage = $this->oDb->getPages(['type' => 'by_uri', 'value' => $sUri]);
+            if(!empty($aPage) && is_array($aPage)) 
+            	return ['msg' => _t('_adm_bp_err_page_uri')];
+
+            $iVisibleFor = BxDolStudioUtils::getVisibilityValue($oForm->getCleanValue('visible_for'), $oForm->getCleanValue('visible_for_levels'));
+            BxDolForm::setSubmittedValue('visible_for_levels', $iVisibleFor, $oForm->aFormAttrs['method']);
+            unset($oForm->aInputs['visible_for']);
+
+            $aValsToAdd = [
+                'author' => bx_get_logged_profile_id(), 
+                'object' => $sObject, 
+                'url' => $this->sPageBaseUrl . $sUri, 
+                'added' => time()
+            ];
+
+            $this->onSavePage($oForm, $aValsToAdd);
+
+            $iId = (int)$oForm->insert($aValsToAdd);
+            if($iId != 0) {
+                $this->onPageChanged($oForm, $aValsToAdd);
+                return ['eval' => $sJsObject . '.onCreatePage(\'' . $sModule . '\', \'' . $sObject . '\')'];
+            } else {
+                return ['msg' => _t('_adm_bp_err_page_create')];
+            }
+        }
+
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($this->aHtmlIds['add_popup_id'], _t('_adm_bp_txt_create_popup'), $oTemplate->parseHtmlByName('bp_add_page.html', array(
+            'js_object' => $sJsObject,
+            'form_id' => $oForm->getId(),
+            'form' => $oForm->getCode(true)
+        )));
+
+        return array('popup' => $sContent);
+    }
+
+    protected function actionPageEdit()
+    {
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $oForm = $this->_getPageEditForm();
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            unset($oForm->aInputs['settings']);
+            foreach($this->aPageSettings as $aSetting)
+                $oForm->aInputs = array_merge($oForm->aInputs, $this->{'getSettings' . $this->getClassName($aSetting['name']) . 'Fields'}($this->aPageRebuild, false));
+
+            $mixedVisibleFor = $oForm->getCleanValue('visible_for');
+            $mixedVisibleForLevels = $oForm->getCleanValue('visible_for_levels');
+            if($mixedVisibleFor !== false && $mixedVisibleForLevels !== false) {
+                $iVisibleFor = BxDolStudioUtils::getVisibilityValue($mixedVisibleFor, $mixedVisibleForLevels);
+                BxDolForm::setSubmittedValue('visible_for_levels', $iVisibleFor, $oForm->aFormAttrs['method']);
+                unset($oForm->aInputs['visible_for']);
+            }
+
+            $this->onSavePage($oForm, $this->aPageRebuild);
+
+            // "Same as section" alone changes no other field: the update then counts no rows, and still saves.
+            $bToSection = !empty($this->aPageFieldsToSection);
+            $mixedUpdated = $oForm->update($this->aPageRebuild['id']);
+            if($mixedUpdated || ($bToSection && $mixedUpdated !== false)) {
+                $this->onPageChanged($oForm, $this->aPageRebuild);
+                $iLevelId = $oForm->getCleanValue('layout_id');
+                if(!empty($iLevelId) && $iLevelId != $this->aPageRebuild['layout_id']) {
+                    $aLayoutOld = array();
+                    $this->oDb->getLayouts(array('type' => 'by_id', 'value' => $this->aPageRebuild['layout_id']), $aLayoutOld, false);
+
+                    $aLayoutNew = array();
+                    $this->oDb->getLayouts(array('type' => 'by_id', 'value' => $iLevelId), $aLayoutNew, false);
+
+                    if($aLayoutOld['cells_number'] > $aLayoutNew['cells_number'] && $this->oDb->resetBlocksByPage($this->sPage, $aLayoutNew['cells_number']) === false)
+                        return array('msg' => _t('_adm_bp_err_save'));
+
+                    return array('eval' => $sJsObject . '.onSaveSettingsLayout()');
+                }
+
+                return array();
+            } 
+            else
+                return array('msg' => _t('_adm_bp_err_save'));
+        }
+
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($this->aHtmlIds['edit_popup_id'], _t('_adm_bp_txt_settings_popup'), $oTemplate->parseHtmlByName('bp_edit_page.html', array(
+            'js_object' => $sJsObject,
+            'form_id' => $oForm->getId(),
+            'form' => $oForm->getCode(true)
+        )));
+
+        return array('popup' => $sContent);
+    }
+
+    protected function actionPageDelete()
+    {
+        if(empty($this->sPage) || empty($this->aPageRebuild) || !is_array($this->aPageRebuild))
+            return array('msg' => _t('_adm_bp_err_page_delete'));
+
+        if((int)$this->aPageRebuild['deletable'] == 0)
+            return array('msg' => _t('_adm_bp_err_page_not_deletable'));
+
+        $oLangauge = BxDolStudioLanguagesUtils::getInstance();
+
+        $aBlocks = array();
+        $this->oDb->getBlocks(array('type' => 'by_object', 'value' => $this->sPage), $aBlocks, false);
+        if(is_array($aBlocks) && !empty($aBlocks)) {
+            foreach($aBlocks as $aBlock)
+                $this->onBlockDelete($aBlock);
+
+            $this->oDb->deleteBlocks(array('type' => 'by_object', 'value' => $this->sPage));
+        }
+
+        if($this->oDb->deletePages(array('type' => 'by_object', 'value' => $this->sPage))) {
+            $oLangauge->deleteLanguageString($this->aPageRebuild['title_system']);
+            $oLangauge->deleteLanguageString($this->aPageRebuild['title']);
+            $this->onPageChanged(null, $this->aPageRebuild);
+            return array('eval' => 'window.parent.location.href = "' . sprintf($this->sTypeUrl, $this->sType) . '";');
+        }
+
+        return array('msg' => _t('_adm_bp_err_page_delete'));
+    }
+
+    protected function actionBlockList()
+    {
+        $sModule = BX_DOL_STUDIO_BP_TYPE_DEFAULT;
+        if(bx_get('bp_module') !== false)
+            $sModule = bx_process_input(bx_get('bp_module'));
+
+        return array(
+            'content' => $this->getBlockList($sModule)
+        );
+    }
+
+    protected function actionBlockCreate()
+    {
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        // The popup opens on the system blocks, the ones a site owner adds most; the empty skeletons come after them.
+        $sSelected = BX_DOL_STUDIO_MODULE_SYSTEM;
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-block-create',
+                'action' => sprintf($this->sPageUrl, $this->sType, $this->sPage) .  '&bp_action=' . $this->sActionBlockCreate,
+                'method' => 'post'
+            ),
+            'params' => array (
+                'db' => array(
+                    'table' => 'sys_pages_blocks',
+                    'key' => 'id',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'do_submit'
+                ),
+            ),
+            'inputs' => array (
+                'blocks' => array(
+                    'type' => 'custom',
+                    'name' => 'blocks',
+                    'content' => '',
+                    'db' => array (
+                        'pass' => 'Int',
+                    ),
+                ),
+            )
+        );
+
+        $aMenu = [
+            BX_DOL_STUDIO_MODULE_SYSTEM => [
+                'name' => BX_DOL_STUDIO_MODULE_SYSTEM,
+                'icon' => 'mi-cog.svg',
+                'icon_bg' => true,
+                'title' => '_sys_block_types_system',
+                'selected' => $sSelected == BX_DOL_STUDIO_MODULE_SYSTEM,
+            ],
+            BX_DOL_STUDIO_BP_SKELETONS => [
+                'name' => BX_DOL_STUDIO_BP_SKELETONS,
+                'icon' => 'mi-qrcode.svg',
+                'icon_bg' => true,
+                'title' => '_sys_block_types_skeletons',
+                'selected' => $sSelected == BX_DOL_STUDIO_BP_SKELETONS,
+            ],
+            BX_DOL_STUDIO_MODULE_CUSTOM => [
+                'name' => BX_DOL_STUDIO_MODULE_CUSTOM,
+                'icon' => 'mi-wrench.svg',
+                'icon_bg' => true,
+                'title' => '_sys_block_types_custom',
+                'selected' => $sSelected == BX_DOL_STUDIO_MODULE_CUSTOM,
+            ]
+        ];
+
+        $aModules = BxDolModuleQuery::getInstance()->getModulesBy(['type' => 'type', 'value' => [BX_DOL_MODULE_TYPE_MODULE, BX_DOL_MODULE_TYPE_TEMPLATE]]);
+        $aModulesWithBlocks = $this->oDb->getModulesWithCopyableBlocks();
+        foreach($aModules as $aModule) {
+            $sName = $aModule['name'];
+            if(!in_array($sName, $aModulesWithBlocks))
+                continue;
+
+            if(!empty($aMenu[$sName]))
+                $aMenu[$sName] = array_merge($aMenu[$sName], $aModule);
+            else
+                $aMenu[$sName] = $aModule;
+
+            if(empty($aMenu[$sName]['icon']))
+                $aMenu[$sName]['icon'] = BxDolStudioUtils::getModuleIcon($aModule, 'menu', false); 
+        }
+
+        foreach($aMenu as $sKey => $aItem)
+            $aMenu[$sKey]['onclick'] =  $sJsObject . '.onChangeModule(\'' . $aItem['name'] . '\', this);';
+
+        $oMenu = new BxTemplStudioMenu(['template' => 'menu_side.html', 'menu_items' => $aMenu]);
+
+        $aForm['inputs']['blocks']['content'] = $oTemplate->parseHtmlByName('bp_add_block_form.html', [
+            'menu' => $oMenu->getCode(),
+            'html_block_lists_id' => $this->aHtmlIds['block_lists_id'],
+            'blocks' => $this->getBlockList($sSelected)
+        ]);
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            $aIds = $oForm->getCleanValue('blocks');
+
+            $aBlocks = array();
+            $this->oDb->getBlocks(array('type' => 'by_ids', 'value' => $aIds), $aBlocks, false);
+
+            $oLanguage = BxDolStudioLanguagesUtils::getInstance();
+            $oStorege = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
+
+            $bResult = true;
+            foreach($aBlocks as $aBlock) {
+            	$sModule = $aBlock['module'];
+                $sTitleKey = $this->getSystemName($aBlock['title'] . '_' . time());
+                $aTitleValues = $oLanguage->getLanguageString($aBlock['title']);
+
+                unset($aBlock['id']);
+                $aBlock['object'] = $this->sPage;
+                $aBlock['cell_id'] = 1;
+                $aBlock['module'] = $this->getBlockModule($aBlock);
+                $aBlock['title'] = $sTitleKey;
+                $aBlock['copyable'] = $sModule == BX_DOL_STUDIO_BP_SKELETONS ? 1 : 0;
+                $aBlock['deletable'] = 1;
+
+                //--- Process Lang copy
+                $sContentKey = $sContentValue = "";
+                if($aBlock['type'] == BX_DOL_STUDIO_BP_BLOCK_LANG && $aBlock['content'] != '') {
+                    $sContentKey = $this->getSystemName($aBlock['content'] . '_' . time());
+                    $sContentValue = _t($aBlock['content']);
+
+                    $aBlock['content'] = $sContentKey;
+                    $oLanguage->addLanguageString($sContentKey, $sContentValue, 0, 0, false);
+                }
+
+                //--- Process Image copy
+                $iImageId = $sImageAlign = "";
+                if($aBlock['type'] == BX_DOL_STUDIO_BP_BLOCK_IMAGE && $aBlock['content'] != '') {
+                    list($iImageId, $sImageAlign) = explode($this->sParamsDivider, $aBlock['content']);
+
+                    $aBlock['content'] = "";
+                    if(is_numeric($iImageId) && (int)$iImageId != 0 && ($iImageId = $oStorege->storeFileFromStorage(array('id' => $iImageId))) !== false)
+                        $aBlock['content'] = implode($this->sParamsDivider, array($iImageId, $sImageAlign));
+                }
+
+                // add indexing data
+                $aBlock = array_merge($aBlock, $this->getIndexingDataForBlock($aBlock['type'], $aBlock['content']));
+
+                if(!$this->oDb->insertBlock($aBlock)) {
+                    if($sContentKey != "")
+                        $oLanguage->deleteLanguageString($sContentKey);
+
+                    if($iImageId != "")
+                        $oStorege->deleteFile((int)$iImageId, 0);
+
+                    $bResult = false;
+                    break;
+                }
+
+                //--- Process Title copy
+                foreach($aTitleValues as $iLangId => $aTitleValue)
+                	$oLanguage->addLanguageString($sTitleKey, $aTitleValue['string'], $iLangId, 0, false);
+            }
+
+            // the new titles are compiled once for all the blocks, not once for each string
+            $oLanguage->compileLanguage();
+
+            if($bResult)
+                return array('eval' => $sJsObject . '.onCreateBlock(oData)', 'layout' => $this->getPageLayout());
+            else
+                return array('msg' => _t('_adm_bp_err_block_added'));
+        }
+
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($this->aHtmlIds['create_block_popup_id'], _t('_adm_bp_txt_new_block_popup'), $oTemplate->parseHtmlByName('bp_add_block.html', array(
+        	'action' => 'create',
+            'form_id' => $aForm['form_attrs']['id'],
+            'form' => $oForm->getCode(true)
+        )));
+
+        return array('popup' => $sContent);
+    }
+
+    protected function actionBlockEdit()
+    {
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $iId = (int)bx_get('id');
+        if(!$iId)
+            return array();
+
+        $aBlock = array();
+        $this->oDb->getBlocks(array('type' => 'by_id', 'value' => $iId), $aBlock, false);
+        if(empty($aBlock) || !is_array($aBlock))
+            return array('msg' => _t('_adm_bp_err_block_not_found'));
+
+        bx_import('BxDolStudioUtils');
+        // Where the block's title, background and padding are hidden (BxDolPageDesignbox).
+        $aDesignboxHiddenOn = array(
+            BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
+            BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
+            BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
+            BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
+        );
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-block-edit',
+                'action' => sprintf($this->sPageUrl, $this->sType, $this->sPage) . '&bp_action=' . $this->sActionBlockEdit,
+                'method' => 'post'
+            ),
+            'params' => array (
+                'db' => array(
+                    'table' => 'sys_pages_blocks',
+                    'key' => 'id',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'do_submit'
+                ),
+            ),
+            'inputs' => array (
+                'id' => array(
+                    'type' => 'hidden',
+                    'name' => 'id',
+                    'value' => $iId,
+                    'db' => array (
+                        'pass' => 'Int',
+                    ),
+                ),
+                'title' => array(
+                    'type' => 'text_translatable',
+                    'name' => 'title',
+                    'caption' => _t('_adm_bp_txt_block_title'),
+                    'info' => _t('_adm_bp_dsc_block_title'),
+                    'value' => $aBlock['title'],
+                    'required' => '1',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                    'checker' => array (
+                        'func' => 'LengthTranslatable',
+                        'params' => array(3, 100, 'title'),
+                        'error' => _t('_adm_bp_err_block_title'),
+                    ),
+                ),
+                'description' => array(
+                    'type' => 'text_translatable',
+                    'name' => 'description',
+                    'caption' => _t('_adm_bp_txt_block_description'),
+                    'info' => _t('_adm_bp_dsc_block_description'),
+                    'value' => $aBlock['description'],
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'icon' => array(
+                    'type' => 'textarea',
+                    'name' => 'icon',
+                    'caption' => _t('_adm_bp_txt_block_icon'),
+                    'info' => _t('_adm_bp_dsc_block_icon'),
+                    'value' => $aBlock['icon'],
+                    'code' => 1,
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                    'attrs' => array('class' => 'bx-form-input-textarea-small'),
+                ),
+                'header_icon' => array(
+                    'type' => 'textarea',
+                    'name' => 'header_icon',
+                    'caption' => _t('_adm_bp_txt_block_header_icon'),
+                    'info' => _t('_adm_bp_dsc_block_header_icon'),
+                    'value' => $aBlock['header_icon'] ?? '',
+                    'code' => 1,
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                    'attrs' => array('class' => 'bx-form-input-textarea-small'),
+                ),
+                'designbox_id' => array(
+                    'type' => 'select',
+                    'name' => 'designbox_id',
+                    'caption' => _t('_adm_bp_txt_block_designbox'),
+                    'info' => '',
+                    'value' => $this->sSelectKeyPrefix . $aBlock['designbox_id'],
+                    'values' => array(
+                        array('key' => '', 'value' => _t('_adm_bp_txt_block_designbox_empty')),
+                    ),
+                    'required' => '1',
+                    'attrs' => array(
+                        'onchange' => $sJsObject . '.onChangeDesignbox(this)',
+                    ),
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                    'checker' => array (
+                        'func' => 'avail',
+                        'params' => array(),
+                        'error' => _t('_adm_bp_err_block_designbox'),
+                    ),
+                ),
+                'async' => array(
+                    'type' => 'select',
+                    'name' => 'async',
+                    'caption' => _t('_adm_bp_txt_block_async'),
+                    'info' => '',
+                    'value' => isset($aBlock['async']) ? $aBlock['async'] : 0,
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Int',
+                    ),
+                ),
+                'submenu' => array(
+                    'type' => 'select',
+                    'name' => 'submenu',
+                    'caption' => _t('_adm_bp_txt_block_submenu'),
+                    'info' => '',
+                    'value' => isset($aBlock['submenu']) ? $aBlock['submenu'] : '',
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'tabs' => array(
+                    'type' => 'switcher',
+                    'name' => 'tabs',
+                    'caption' => _t('_adm_bp_txt_block_tabs'),
+                    'info' => '',
+                    'value' => '1',
+                    'checked' => $aBlock['tabs'] == '1',
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                ),
+                'hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'hidden_on',
+                    'caption' => _t('_adm_bp_txt_block_hidden_on'),
+                    'info' => '',
+                    'value' => (int)$aBlock['hidden_on'],
+                    'values' => array(
+                        BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
+                        BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
+                        BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
+                        BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
+                    ),
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                'title_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'title_hidden_on',
+                    'caption' => _t('_adm_bp_txt_block_title_hidden_on'),
+                    'info' => _t('_adm_bp_txt_block_part_hidden_on_info'),
+                    'value' => (int)$aBlock['title_hidden_on'],
+                    'values' => $aDesignboxHiddenOn,
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                'bg_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'bg_hidden_on',
+                    'caption' => _t('_adm_bp_txt_block_bg_hidden_on'),
+                    'info' => _t('_adm_bp_txt_block_part_hidden_on_info'),
+                    'value' => (int)$aBlock['bg_hidden_on'],
+                    'values' => $aDesignboxHiddenOn,
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                'padding_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'padding_hidden_on',
+                    'caption' => _t('_adm_bp_txt_block_padding_hidden_on'),
+                    'info' => _t('_adm_bp_txt_block_part_hidden_on_info'),
+                    'value' => (int)$aBlock['padding_hidden_on'],
+                    'values' => $aDesignboxHiddenOn,
+                    'db' => array (
+                        'pass' => 'Set',
+                    )
+                ),
+                // A title and padding size, each only for the Block Layouts with that part (BxDolPageDesignbox); the rows
+                // follow the Block Layout (onChangeDesignbox).
+                'title_size' => $this->getBlockSizeInput($aBlock, 'title'),
+                'padding_size' => $this->getBlockSizeInput($aBlock, 'padding'),
+                'visible_for' => array(
+                    'type' => 'select',
+                    'name' => 'visible_for',
+                    'caption' => _t('_adm_bp_txt_block_visible_for'),
+                    'info' => '',
+                    'value' => $aBlock['visible_for_levels'] == BX_DOL_INT_MAX ? BX_DOL_STUDIO_VISIBLE_ALL : BX_DOL_STUDIO_VISIBLE_SELECTED,
+                    'values' => array(
+                        array('key' => BX_DOL_STUDIO_VISIBLE_ALL, 'value' => _t('_adm_bp_txt_block_visible_for_all')),
+                        array('key' => BX_DOL_STUDIO_VISIBLE_SELECTED, 'value' => _t('_adm_bp_txt_block_visible_for_selected')),
+                    ),
+                    'required' => '0',
+                    'attrs' => array(
+                        'onchange' => $sJsObject . '.onChangeVisibleFor(this)'
+                    ),
+                    'db' => array (
+                        'pass' => 'Xss',
+                    )
+                ),
+                'visible_for_levels' => array(
+                    'type' => 'checkbox_set',
+                    'name' => 'visible_for_levels',
+                    'caption' => _t('_adm_bp_txt_block_visible_for_levels'),
+                    'info' => _t('_adm_bp_dsc_block_visible_for_levels'),
+                    'value' => array(),
+                    'values' => array(),
+                    'tr_attrs' => array(
+                        'style' => $aBlock['visible_for_levels'] == BX_DOL_INT_MAX ? 'display:none' : ''
+                    ),
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                ),
+                'content_empty' => array(
+                    'type' => 'text_translatable',
+                    'name' => 'content_empty',
+                    'caption' => _t('_adm_bp_txt_block_content_empty'),
+                    'info' => _t('_adm_bp_dsc_block_content_empty'),
+                    'value' => $aBlock['content_empty'],
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'help' => array(
+                    'type' => 'textarea_translatable',
+                    'name' => 'help',
+                    'caption' => _t('_adm_bp_txt_block_help'),
+                    'info' => '',
+                    'value' => $aBlock['help'],
+                    'required' => '0',
+                    'html' => 2,
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'class' => array(
+                    'type' => 'text',
+                    'name' => 'class',
+                    'caption' => _t('_adm_bp_txt_block_class'),
+                    'info' => '',
+                    'value' => $aBlock['class'],
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'cache_lifetime' => array(
+                    'type' => 'text',
+                    'name' => 'cache_lifetime',
+                    'caption' => _t('_adm_bp_txt_block_cache_lifetime'),
+                    'info' => '',
+                    'value' => isset($aBlock['cache_lifetime']) ? $aBlock['cache_lifetime'] : 0,
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Int',
+                    ),
+                ),
+                'active' => array(
+                    'type' => 'switcher',
+                    'name' => 'active',
+                    'caption' => _t('_adm_bp_txt_block_active'),
+                    'info' => '',
+                    'value' => '1',
+                    'checked' => $aBlock['active'] == '1',
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                ),
+                'active_api' => array(
+                    'type' => 'switcher',
+                    'name' => 'active_api',
+                    'caption' => _t('_adm_bp_txt_block_active_api'),
+                    'info' => '',
+                    'value' => '1',
+                    'checked' => $aBlock['active_api'] == '1',
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                ),
+                'controls' => array(
+                    'name' => 'controls',
+                    'type' => 'input_set',
+                    array(
+                        'type' => 'submit',
+                        'name' => 'do_submit',
+                        'value' => _t('_adm_bp_btn_block_save')
+                    ),
+                    array (
+                        'type' => 'reset',
+                        'name' => 'close',
+                        'value' => _t('_adm_bp_btn_block_cancel'),
+                        'attrs' => array(
+                            'onclick' => $sJsObject . '.onEditBlockCancel(this)',
+                            'class' => 'bx-def-margin-sec-left',
+                        ),
+                    )
+                )
+            )
+        );
+
+        $aDBoxes = array();
+        $this->oDb->getDesignBoxes(array('type' => 'ordered'), $aDBoxes, false);
+        $aDBoxesWith = array_fill_keys(BxDolPageDesignbox::SIZED_PARTS, array());
+        foreach($aDBoxes as $aDBox) {
+            $aForm['inputs']['designbox_id']['values'][] = array('key' => $this->sSelectKeyPrefix . $aDBox['id'], 'value' => _t($aDBox['title']));
+            foreach(BxDolPageDesignbox::SIZED_PARTS as $sPart) {
+                if(BxDolPageDesignbox::hasPart($aDBox['id'], $sPart)) {
+                    $aDBoxesWith[$sPart][] = $this->sSelectKeyPrefix . $aDBox['id'];
+                }
+            }
+        }
+        // The Block Layouts with a title and with padding, for the size rows to follow the choice (onChangeDesignbox).
+        foreach($aDBoxesWith as $sPart => $aIds) {
+            $aForm['inputs']['designbox_id']['attrs']['data-' . $sPart] = implode(',', $aIds);
+        }
+
+        $aContentPlaceholders = $this->oDb->getContentPlaceholders();
+        $aForm['inputs']['async']['values'][] = array('key' => 0, 'value' => _t('_sys_no_async'));
+        foreach ($aContentPlaceholders as $iKey => $sTitle)
+            $aForm['inputs']['async']['values'][] = array('key' => $iKey, 'value' => _t($sTitle));
+
+        $aSubmenus = $this->oDb->getBlockSubmenus();
+        $aForm['inputs']['submenu']['values'][] = array('key' => '', 'value' => _t('_sys_menu_item_title_inherited'));
+        $aForm['inputs']['submenu']['values'][] = array('key' => 'disabled', 'value' => _t('_sys_menu_item_title_disabled'));
+        foreach ($aSubmenus as $sObject => $sTitle)
+            $aForm['inputs']['submenu']['values'][] = array('key' => $sObject, 'value' => _t($sTitle));
+
+        BxDolStudioUtils::getVisibilityValues($aBlock['visible_for_levels'], $aForm['inputs']['visible_for_levels']['values'], $aForm['inputs']['visible_for_levels']['value']);
+
+        $aForm['inputs'] = $this->addInArray($aForm['inputs'], 'visible_for_levels', $this->getBlockContent($aBlock));
+        $aForm['inputs'] = $this->getBlockInputsWithAdvanced($aForm['inputs']);
+
+        if((int)$aBlock['deletable'] != 0)
+            $aForm['inputs']['controls'][] = array (
+                'type' => 'reset',
+                'name' => 'close',
+                'value' => _t('_adm_bp_btn_block_delete'),
+                'attrs' => array(
+                    'onclick' => $sJsObject . '.deleteBlock(' . $aBlock['id'] . ')',
+                    'class' => 'bx-def-margin-sec-left',
+                ),
+            );
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            $this->onSaveBlock($oForm, $aBlock);
+
+            // add indexing data
+            $aBlockAddon = $this->getIndexingDataForBlock($aBlock['type'], $oForm->getCleanValue('content'));
+
+            if($oForm->update($iId, $aBlockAddon) !== false)
+                return array('eval' => $sJsObject . '.onEditBlock(oData)', 'layout' => $this->getPageLayout());
+            else
+                return array('msg' => _t('_adm_bp_err_block_edit'));
+        }
+
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($this->aHtmlIds['edit_block_popup_id'], _t('_adm_bp_txt_edit_block_popup', $this->getBlockTitleForStudio($aBlock)), $oTemplate->parseHtmlByName('bp_add_block.html', array(
+        	'action' => 'edit',
+            'form_id' => $aForm['form_attrs']['id'],
+            'form' => $oForm->getCode(true)
+        )));
+
+        return array('popup' => array('html' => $sContent, 'options' => array('onBeforeShow' => $sJsObject . '.onEditBlockBeforeShow($el)')));
+    }
+
+    /**
+     * The block form's technical fields (the service method, asynchronous loading, CSS class and cache lifetime) in a
+     * collapsed "Advanced" section after the others, above the buttons.
+     */
+    protected function getBlockInputsWithAdvanced($aInputs)
+    {
+        $aAdvanced = [];
+        foreach($this->aBlockInputsAdvanced as $sName) {
+            if(!isset($aInputs[$sName]))
+                continue;
+
+            $aAdvanced[$sName] = $aInputs[$sName];
+            unset($aInputs[$sName]);
+        }
+
+        if(empty($aAdvanced))
+            return $aInputs;
+
+        $aAdvanced = array_merge([
+            'advanced' => [
+                'type' => 'block_header',
+                'name' => 'advanced',
+                'caption' => _t('_adm_bp_txt_block_advanced'),
+                'collapsable' => true,
+                'collapsed' => true,
+            ]
+        ], $aAdvanced, [
+            'advanced_end' => [
+                'type' => 'block_end'
+            ]
+        ]);
+
+        $aControls = isset($aInputs['controls']) ? ['controls' => $aInputs['controls']] : [];
+        unset($aInputs['controls']);
+
+        return array_merge($aInputs, $aAdvanced, $aControls);
+    }
+
+    /**
+     * The select of a block's title or padding size (BxDolPageDesignbox), hidden for a Block Layout without that part.
+     */
+    protected function getBlockSizeInput($aBlock, $sPart)
+    {
+        return array(
+            'type' => 'select',
+            'name' => $sPart . '_size',
+            'caption' => _t('_adm_bp_txt_block_' . $sPart . '_size'),
+            'info' => _t('_adm_bp_txt_block_' . $sPart . '_size_info'),
+            'value' => BxDolPageDesignbox::normalizeSize(isset($aBlock[$sPart . '_size']) ? $aBlock[$sPart . '_size'] : ''),
+            'values' => array(
+                array('key' => '', 'value' => _t('_adm_bp_txt_block_size_regular')),
+                array('key' => 'compact', 'value' => _t('_adm_bp_txt_block_size_compact')),
+                array('key' => 'large', 'value' => _t('_adm_bp_txt_block_size_large')),
+            ),
+            'tr_attrs' => BxDolPageDesignbox::hasPart($aBlock['designbox_id'], $sPart) ? array() : array('style' => 'display:none'),
+            'db' => array (
+                'pass' => 'Xss',
+            )
+        );
+    }
+
+    /**
+     * A block's name in Studio, as the page's block list shows it: its system title, else its title, else its type.
+     */
+    protected function getBlockTitleForStudio($aBlock, $oPage = null)
+    {
+        $sTitle = '';
+        if(!empty($aBlock['title_system'])) {
+            $sTitle = _t($aBlock['title_system']);
+        }
+        elseif(!empty($aBlock['title'])) {
+            $sTitle = $oPage ? $oPage->getBlockTitle($aBlock) : _t($aBlock['title']);
+        }
+
+        $sTitle = trim(strip_tags((string)$sTitle));
+        if($sTitle === '' && !empty($aBlock['type'])) {
+            $sTitle = _t('_sys_block_type_' . $aBlock['type']);
+        }
+
+        return $sTitle;
+    }
+
+    protected function actionBlockDelete()
+    {
+        $sJsObject = $this->getPageJsObject();
+        $iId = (int)bx_get('id');
+
+        $aBlock = array();
+        $this->oDb->getBlocks(array('type' => 'by_id', 'value' => $iId), $aBlock, false);
+        if(empty($aBlock) || !is_array($aBlock))
+            return array('msg' => _t('_adm_bp_err_block_not_found'));
+
+        if((int)$aBlock['deletable'] == 0)
+            return array('msg' => _t('_adm_bp_err_block_not_deletable'));
+
+        if(!$this->oDb->deleteBlocks(array('type' => 'by_id', 'value' => $iId)))
+            return array('msg' => _t('_adm_bp_err_block_delete'));
+
+        $this->onBlockDelete($aBlock);
+        return array('eval' => $sJsObject . '.onDeleteBlock(' . $iId . ', oData)');
+    }
+
+    /**
+     * Turn a block on or off on the site (`active`) or in the apps (`active_api`) from its switch in the layout.
+     */
+    protected function actionBlockSwitch()
+    {
+        $sJsObject = $this->getPageJsObject();
+
+        $iId = (int)bx_get('id');
+        $sField = bx_process_input(bx_get('field'));
+        if(!$iId || !in_array($sField, $this->aBlockSwitchFields, true))
+            return array('msg' => _t('_adm_bp_err_cannot_process_action'));
+
+        $aBlock = array();
+        $this->oDb->getBlocks(array('type' => 'by_id', 'value' => $iId), $aBlock, false);
+        if(empty($aBlock) || !is_array($aBlock))
+            return array('msg' => _t('_adm_bp_err_block_not_found'));
+
+        $iValue = (int)bx_get('checked') != 0 ? 1 : 0;
+        if((int)$aBlock[$sField] != $iValue && !$this->oDb->updateBlock($iId, array($sField => $iValue)))
+            return array('msg' => _t('_adm_bp_err_block_edit'));
+
+        $aBlock[$sField] = $iValue;
+        return array(
+            'eval' => $sJsObject . '.onSwitchBlock(' . $iId . ', oData)',
+            'active' => (int)$aBlock['active'],
+            'active_api' => (int)$aBlock['active_api']
+        );
+    }
+
+    /**
+     * A block is greyed out in the layout only when it is off both on the site and in the apps.
+     */
+    protected function isBlockInactive($aBlock)
+    {
+        return (int)$aBlock['active'] == 0 && (int)$aBlock['active_api'] == 0;
+    }
+
+    /**
+     * The block's two switches in the layout: Site (`active`) and Apps (`active_api`). Each saves when it is turned.
+     */
+    protected function getBlockSwitchers($aBlock, $sTitle)
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $oForm = new BxTemplStudioFormView(array());
+
+        $sJsObject = $this->getPageJsObject();
+        $sTitle = strip_tags($sTitle);
+
+        $aSwitchers = array(
+            'active' => array('_sys_grid_lbl_site', '_sys_grid_lbl_show_on_site'),
+            'active_api' => array('_sys_grid_lbl_apps', '_sys_grid_lbl_show_in_apps')
+        );
+
+        $sResult = '';
+        foreach($aSwitchers as $sField => $aTitles) {
+            $sLabel = _t($aTitles[1]) . ($sTitle !== '' ? ': ' . $sTitle : '');
+
+            $aInput = array(
+                'type' => 'switcher',
+                'name' => 'bp_block_' . $sField . '_' . $aBlock['id'],
+                'caption' => '',
+                'value' => 1,
+                'checked' => (int)$aBlock[$sField] != 0,
+                'attrs' => array(
+                    'aria-label' => $sLabel,
+                    'onchange' => $sJsObject . ".switchBlock(this, " . (int)$aBlock['id'] . ", '" . $sField . "')"
+                )
+            );
+
+            $sResult .= $oTemplate->parseHtmlByName('bp_block_switcher.html', array(
+                'title' => bx_html_attribute($sLabel),
+                'switcher' => $oForm->genInput($aInput),
+                'caption' => _t($aTitles[0]),
+            ));
+        }
+
+        return $sResult;
+    }
+
+    protected function actionUriGet()
+    {
+        $oLanguage = BxDolStudioLanguagesUtils::getInstance();
+        $aLanguages = $oLanguage->getLanguages();
+
+        $sLanguageDef = $oLanguage->getDefaultLangName();
+        $sLanguageCur = $oLanguage->getCurrentLangName(false);
+
+        $aValues = array();
+        foreach($aLanguages as $sName => $sTitle)
+            if(($mixedValue = bx_get($sName)) !== false)
+                $aValues[$sName] = bx_process_input($mixedValue);
+
+        $sUri = "";
+        if(($mixedValue = bx_get('uri')) !== false)
+        	$sUri = bx_process_input($mixedValue);
+        else if(array_key_exists('en', $aValues) && $aValues['en'] != '')
+            $sUri = $aValues['en'];
+        else if(array_key_exists($sLanguageDef, $aValues) && $aValues[$sLanguageDef] != '')
+            $sUri = $aValues[$sLanguageDef];
+        else if(array_key_exists($sLanguageCur, $aValues) && $aValues[$sLanguageCur] != '')
+            $sUri = $aValues[$sLanguageCur];
+        else if(count($aValues) > 0)
+            foreach($aValues as $sValue)
+                if(!empty($sValue)) {
+                    $sUri = $sValue;
+                    break;
+                }
+
+        $sUri = $sUri != "" ? uriGenerate($sUri, 'sys_objects_page', 'uri') : "";
+        $sUrl = BxDolPermalinks::getInstance()->permalink($this->sPageBaseUrl . $sUri);
+
+        return array('eval' => $this->getPageJsObject() . '.onGetUri(oData)', 'uri' => $sUri, 'url' => $sUrl);
+    }
+
+    protected function getSettingsOptions($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-options',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => array (
+                'title_system' => array(
+                    'type' => 'text_translatable',
+                    'name' => 'title_system',
+                    'caption' => _t('_adm_bp_txt_page_title_system'),
+                    'info' => _t('_adm_bp_dsc_page_title_system'),
+                    'value' => isset($aPage['title_system']) ? $aPage['title_system'] : '',
+                    'required' => '1',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                    'checker' => array (
+                        'func' => 'length',
+                        'params' => array(3,100),
+                        'error' => _t('_adm_bp_err_page_title_system'),
+                    ),
+                ),
+                'title' => array(
+                    'type' => 'text_translatable',
+                    'name' => 'title',
+                    'caption' => _t('_adm_bp_txt_page_title'),
+                    'info' => _t('_adm_bp_dsc_page_title'),
+                    'value' => isset($aPage['title']) ? $aPage['title'] : '',
+                    'required' => '1',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                    'checker' => array (
+                        'func' => 'length',
+                        'params' => array(3,100),
+                        'error' => _t('_adm_bp_err_page_title'),
+                    ),
+                ),
+                'url' => array(
+					'type' => 'text',
+					'name' => 'url',
+					'caption' => _t('_adm_bp_txt_page_url'),
+					'info' => _t('_adm_bp_dsc_page_url'),
+					'value' => isset($aPage['url']) ? BxDolPermalinks::getInstance()->permalink($aPage['url']) : '',
+					'required' => '0',
+					'attrs' => array(
+                		'id' => $this->aHtmlIds['url_field_id'],
+						'disabled' => 'disabled'
+					),
+				),
+				'type_id' => array(
+					'type' => 'select',
+					'name' => 'type_id',
+					'caption' => _t('_adm_bp_txt_page_type_id'),
+					'info' => _t('_adm_bp_dsc_page_type_id'),
+					'value' => isset($aPage['type_id']) ? $aPage['type_id'] : '',
+					'required' => '1',
+					'db' => array (
+                        'pass' => 'Int',
+                    ),
+				),
+                'submenu' => array(
+                    'type' => 'select',
+                    'name' => 'submenu',
+                    'caption' => _t('_adm_bp_txt_page_submenu'),
+                    'info' => _t('_adm_bp_dsc_page_submenu'),
+                    'value' => isset($aPage['submenu']) ? $aPage['submenu'] : '',
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'sticky_columns' => array(
+                    'type' => 'switcher',
+                    'name' => 'sticky_columns',
+                    'caption' => _t('_adm_bp_txt_page_sticky_columns'),
+                    'info' => '',
+                    'value' => '1',
+                    'checked' => isset($aPage['sticky_columns']) && $aPage['sticky_columns'] == 1,
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                )
+            )
+        );
+        
+        $aTypes = array();
+        $this->oDb->getTypes(array('type' => 'all'), $aTypes, false);
+        foreach($aTypes as $aType)
+        	$aForm['inputs']['type_id']['values'][] = array('key' => $aType['id'], 'value' => _t($aType['title']));
+
+        $aSubmenus = $this->oDb->getSubmenus();
+        $aForm['inputs']['submenu']['values'][] = array('key' => '', 'value' => _t('_sys_menu_item_title_inherited'));
+        $aForm['inputs']['submenu']['values'][] = array('key' => 'disabled', 'value' => _t('_sys_menu_item_title_disabled'));
+        foreach ($aSubmenus as $sObject => $sTitle)
+            $aForm['inputs']['submenu']['values'][] = array('key' => $sObject, 'value' => _t($sTitle));
+
+        if($bCreate) {
+        	$sJsObject = $this->getPageJsObject();
+
+        	$aForm['inputs']['title']['attrs']['onblur'] = $sJsObject . '.getUri(this);';
+
+        	$aForm['inputs'] = bx_array_insert_before(array(
+        		'uri' => array(
+					'type' => 'text',
+					'name' => 'uri',
+					'caption' => _t('_adm_bp_txt_page_uri'),
+					'info' => _t('_adm_bp_dsc_page_uri'),
+					'value' => '',
+					'required' => '1',
+        			'attrs' => array(
+						'id' => $this->aHtmlIds['uri_field_id'],
+						'onblur' => $sJsObject . '.getUri(this);'
+					),
+					'db' => array (
+						'pass' => 'Xss',
+					),
+					'checker' => array (
+						'func' => 'length',
+						'params' => array(3,100),
+					    'error' => _t('_adm_bp_err_page_uri'),
+					),
+				)
+        	), $aForm['inputs'], 'url');
+        }
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsOptionsFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsOptions($aPage, $bCreate, true);
+    }
+
+    /**
+     * The page's cover: who sees it, the screen sizes it is hidden on and its picture. A page of a section (the tabs of
+     * a main menu item) may take them from its section ("Same as section", the first choice), which shows them and
+     * links to the section's settings; any other choice sets them for this page only. A page that shows its owner's
+     * cover (a profile's, a context's) keeps who sees it and where.
+     */
+    protected function getSettingsCover($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $aSection = $this->_getPageSectionInfo($aPage);
+        $aResolved = BxDolPage::resolveSectionSettings($aPage, $aSection ? $aSection['row'] : false);
+        $iOwner = $this->_getPageOwnerCoverMode($aPage);
+        $bSame = $aSection && (!isset($aPage['cover']) || $aPage['cover'] === '');
+
+        $sJsObject = $this->getPageJsObject();
+        $aValues = $this->_getAudienceValues();
+        if($aSection)
+            array_unshift($aValues, array('key' => 'section', 'value' => _t('_adm_bp_txt_page_same_as_section')));
+
+        $aInputs = array();
+        if($iOwner)
+            $aInputs['cover_owner'] = $this->_getSettingsNote('cover_owner', _t($iOwner == BX_PAGE_OWNER_COVER_OTHERS ? '_adm_bp_txt_page_cover_owner_others' : '_adm_bp_txt_page_cover_owner'));
+
+        $aInputs['cover'] = array(
+            'type' => 'select',
+            'name' => 'cover',
+            'caption' => _t('_adm_bp_txt_page_cover'),
+            'info' => '',
+            'value' => $bSame ? 'section' : (int)$aResolved['cover'],
+            'values' => $aValues,
+            'attrs' => $aSection ? array('onchange' => $sJsObject . '.onChangeSameAsSection(this)') : array(),
+            'db' => array (
+                'pass' => 'Int',
+            )
+        );
+
+        if($aSection)
+            $aInputs['cover_section'] = $this->_getSettingsSectionSummary('cover', $aSection, $this->_getSectionCoverSummary($aSection['resolved']), $bSame);
+
+        // Per screen size, as a block's "Hidden on": the cover stays off there. The title has its own (Title tab).
+        $aInputs['cover_hidden_on'] = array(
+            'type' => 'select_multiple',
+            'name' => 'cover_hidden_on',
+            'caption' => _t('_adm_bp_txt_page_cover_hidden_on'),
+            'info' => _t('_adm_bp_txt_page_cover_hidden_on_info'),
+            // This settings form has no db binding to unpack the bits, so the options come as a list.
+            'value' => BxDolFormCheckerHelper::displaySet((int)$aResolved['cover_hidden_on']),
+            'values' => $this->_getHiddenOnValues(),
+            'tr_attrs' => $this->_getSectionOwnTrAttrs('cover', $bSame),
+            'db' => array (
+                'pass' => 'Set',
+            )
+        );
+
+        // The owner's cover has the owner's picture: the page's would show nowhere.
+        if(!$iOwner)
+            $aInputs['cover_image'] = array(
+                'type' => 'files',
+                'name' => 'cover_image',
+                'storage_object' => $this->sStorage,
+                'images_transcoder' => $this->sTranscoderCover,
+                'uploaders' => $this->aUploadersCover,
+                'multiple' => false,
+                'content_id' => isset($aPage['id']) ? $aPage['id'] : 0,
+                'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate('cover_image'),
+                'caption' => _t('_adm_bp_txt_page_cover_image'),
+                'tr_attrs' => $this->_getSectionOwnTrAttrs('cover', $bSame),
+                'db' => array (
+                    'pass' => 'Int',
+                )
+            );
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-cover',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => $aInputs
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsCoverFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsCover($aPage, $bCreate, true);
+    }
+
+    /**
+     * The page's title, apart from its cover: who sees it, the screen sizes it is hidden on and its custom text. A page
+     * of a section may take who sees it and where from its section ("Same as section"); the custom text is always the
+     * page's own. A page whose title was never set shows its cover's values (BxBasePage::getPageTitleMode), which
+     * saving stores. On a page that shows its owner's cover the owner's name is the title: only the owner's own list of
+     * a profile's items (owner=1) has the page's title.
+     */
+    protected function getSettingsTitle($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $aSection = $this->_getPageSectionInfo($aPage);
+        $aResolved = BxDolPage::resolveSectionSettings($aPage, $aSection ? $aSection['row'] : false);
+        $iOwner = $this->_getPageOwnerCoverMode($aPage);
+        $bSame = $aSection && (!isset($aPage['title_show']) || $aPage['title_show'] === '');
+
+        $sJsObject = $this->getPageJsObject();
+        $aValues = $this->_getAudienceValues();
+        if($aSection)
+            array_unshift($aValues, array('key' => 'section', 'value' => _t('_adm_bp_txt_page_same_as_section')));
+
+        $aInputs = array();
+        if($iOwner)
+            $aInputs['title_owner'] = $this->_getSettingsNote('title_owner', _t($iOwner == BX_PAGE_OWNER_COVER_OTHERS ? '_adm_bp_txt_page_title_owner_others' : '_adm_bp_txt_page_title_owner'));
+
+        // Always the owner's name: nothing here would show.
+        if($iOwner != BX_PAGE_OWNER_COVER_ALWAYS) {
+            list($iTitleMode, $iTitleHiddenOn) = self::getTitleResolved($aResolved);
+
+            $aInputs['title_show'] = array(
+                'type' => 'select',
+                'name' => 'title_show',
+                'caption' => _t('_adm_bp_txt_page_title_show'),
+                'info' => _t('_adm_bp_txt_page_title_show_info'),
+                'value' => $bSame ? 'section' : $iTitleMode,
+                'values' => $aValues,
+                'attrs' => $aSection ? array('onchange' => $sJsObject . '.onChangeSameAsSection(this)') : array(),
+                'db' => array (
+                    'pass' => 'Int',
+                )
+            );
+
+            if($aSection)
+                $aInputs['title_section'] = $this->_getSettingsSectionSummary('title', $aSection, $this->_getAudienceSummary($iTitleMode, $iTitleHiddenOn), $bSame);
+
+            // Per screen size, as the cover's: the title row on the site, the header's title in the apps.
+            $aInputs['title_hidden_on'] = array(
+                'type' => 'select_multiple',
+                'name' => 'title_hidden_on',
+                'caption' => _t('_adm_bp_txt_page_title_hidden_on'),
+                'info' => _t('_adm_bp_txt_page_title_hidden_on_info'),
+                // This settings form has no db binding to unpack the bits, so the options come as a list.
+                'value' => BxDolFormCheckerHelper::displaySet($iTitleHiddenOn),
+                'values' => $this->_getHiddenOnValues(),
+                'tr_attrs' => $this->_getSectionOwnTrAttrs('title', $bSame),
+                'db' => array (
+                    'pass' => 'Set',
+                )
+            );
+
+            // Stored as before, in `cover_title`, so the custom titles set on the Cover tab carry over. Always the page's.
+            $aInputs['cover_title'] = array(
+                'type' => 'text_translatable',
+                'name' => 'cover_title',
+                'caption' => _t('_adm_bp_txt_page_cover_title'),
+                'info' => _t('_adm_bp_txt_page_cover_title_info'),
+                'value' => isset($aPage['cover_title']) ? $aPage['cover_title'] : '',
+                'db' => array (
+                    'pass' => 'Xss',
+                )
+            );
+        }
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-title',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => $aInputs
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsTitleFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsTitle($aPage, $bCreate, true);
+    }
+
+    /**
+     * Who sees a title and where it is hidden, from resolved section settings (BxDolPage::resolveSectionSettings): a
+     * title left to the cover (NULL) as the cover, and off where Studio > Designer > Cover turns covers off, as
+     * BxBasePage::getPageTitleMode and getPageTitleHiddenOn.
+     * @param array $aResolved cover, cover_hidden_on, title_show, title_hidden_on
+     * @return array [mode: 0 disabled, 1 all, 2 guests, 3 members; BX_DB_HIDDEN_* bits]
+     */
+    public static function getTitleResolved($aResolved)
+    {
+        $iMode = isset($aResolved['title_show']) && $aResolved['title_show'] !== '' ? (int)$aResolved['title_show'] : (BxDolCover::getInstance()->isEnabled() ? (int)$aResolved['cover'] : 0);
+        $iHiddenOn = isset($aResolved['title_hidden_on']) ? (int)$aResolved['title_hidden_on'] : (int)$aResolved['cover_hidden_on'];
+
+        return array($iMode, $iHiddenOn);
+    }
+
+    /**
+     * The section of a page being edited, as its Cover and Title tabs need it.
+     * @param array $aPage the page's row as stored
+     * @return array|false object (the section's submenu), module, row (its own settings, [] for none), resolved (its
+     *         settings with the defaults), pages (its pages' titles); false for a page outside any section
+     */
+    protected function _getPageSectionInfo($aPage)
+    {
+        if(empty($aPage['uri']))
+            return false;
+
+        $sSection = BxDolPageQuery::getPageSection($aPage['uri'], isset($aPage['module']) ? $aPage['module'] : '');
+        if($sSection === '')
+            return false;
+
+        $aRow = BxDolPageQuery::getSection($sSection);
+        return array(
+            'object' => $sSection,
+            'row' => $aRow,
+            'resolved' => BxDolPage::resolveSectionSettings(array_fill_keys(array_keys(BxDolPage::SECTION_DEFAULTS), null), $aRow),
+        );
+    }
+
+    /**
+     * Whether a page being edited shows its owner's cover (BxDolPage::getOwnerCoverMode of its class).
+     * @param array $aPage the page's row
+     * @return int 0, BX_PAGE_OWNER_COVER_ALWAYS or BX_PAGE_OWNER_COVER_OTHERS
+     */
+    protected function _getPageOwnerCoverMode($aPage)
+    {
+        return empty($aPage) ? 0 : BxDolPage::getOwnerCoverModeOf($aPage);
+    }
+
+    protected function _getAudienceValues()
+    {
+        return array(
+            array('key' => 0, 'value' => _t('_adm_bp_txt_page_cover_0')),
+            array('key' => 1, 'value' => _t('_adm_bp_txt_page_cover_1')),
+            array('key' => 2, 'value' => _t('_adm_bp_txt_page_cover_2')),
+            array('key' => 3, 'value' => _t('_adm_bp_txt_page_cover_3'))
+        );
+    }
+
+    protected function _getHiddenOnValues()
+    {
+        return array(
+            BX_DB_HIDDEN_PHONE => _t('_adm_bp_txt_block_hidden_on_phone'),
+            BX_DB_HIDDEN_TABLET => _t('_adm_bp_txt_block_hidden_on_tablet'),
+            BX_DB_HIDDEN_DESKTOP => _t('_adm_bp_txt_block_hidden_on_desktop'),
+            BX_DB_HIDDEN_MOBILE => _t('_adm_bp_txt_block_hidden_on_mobile')
+        );
+    }
+
+    /**
+     * "Enabled for all", "Enabled for all, hidden on Phone, Tablet": who sees a cover or a title, and where it is hidden.
+     */
+    protected function _getAudienceSummary($iMode, $iHiddenOn)
+    {
+        $sResult = _t('_adm_bp_txt_page_cover_' . ((int)$iMode >= 0 && (int)$iMode <= 3 ? (int)$iMode : 0));
+        if(!(int)$iMode)
+            return $sResult;
+
+        $aSizes = array();
+        foreach($this->_getHiddenOnValues() as $iSize => $sSize)
+            if((int)$iHiddenOn & pow(2, $iSize - 1))
+                $aSizes[] = $sSize;
+
+        return $aSizes ? _t('_adm_bp_txt_page_section_hidden_on', $sResult, implode(', ', $aSizes)) : $sResult;
+    }
+
+    protected function _getSectionCoverSummary($aResolved)
+    {
+        $sResult = $this->_getAudienceSummary((int)$aResolved['cover'], (int)$aResolved['cover_hidden_on']);
+        if((int)$aResolved['cover'] && (int)$aResolved['cover_image'])
+            $sResult = _t('_adm_bp_txt_page_section_with_picture', $sResult);
+
+        return $sResult;
+    }
+
+    /**
+     * A tab's rows that set a value for this page only: hidden while it is "Same as section".
+     */
+    protected function _getSectionOwnTrAttrs($sGroup, $bSame)
+    {
+        $aAttrs = array('class' => 'adm-bp-section-own-' . $sGroup);
+        if($bSame)
+            $aAttrs['style'] = 'display:none';
+
+        return $aAttrs;
+    }
+
+    /**
+     * The row of a tab that shows what "Same as section" gives the page, with the section's settings a click away.
+     */
+    protected function _getSettingsSectionSummary($sGroup, $aSection, $sSummary, $bSame)
+    {
+        return array(
+            'type' => 'custom',
+            'name' => $sGroup . '_section',
+            'caption' => '',
+            'content' => BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_section_summary.html', array(
+                'js_object' => $this->getPageJsObject(),
+                'text' => bx_process_output(_t('_adm_bp_txt_page_section_summary', $sSummary)),
+            )),
+            'tr_attrs' => $bSame ? array('class' => 'adm-bp-section-same-' . $sGroup) : array('class' => 'adm-bp-section-same-' . $sGroup, 'style' => 'display:none'),
+        );
+    }
+
+    protected function _getSettingsNote($sName, $sText)
+    {
+        return array(
+            'type' => 'custom',
+            'name' => $sName,
+            'caption' => '',
+            'content' => BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_settings_note.html', array(
+                'text' => bx_process_output($sText),
+            )),
+        );
+    }
+
+    /**
+     * The settings tabs leave to the section what is "Same as section": the fields are stored as NULL after the page's
+     * other settings are (onPageChanged).
+     */
+    protected function onSavePage(&$oForm, &$aPage)
+    {
+        parent::onSavePage($oForm, $aPage);
+
+        $this->aPageFieldsToSection = array();
+        $sMethod = $oForm->aFormAttrs['method'];
+        $aGroups = array(
+            'cover' => array('cover', 'cover_image', 'cover_hidden_on'),
+            'title_show' => array('title_show', 'title_hidden_on'),
+        );
+        foreach($aGroups as $sSelect => $aFields) {
+            if(!isset($oForm->aInputs[$sSelect]) || BxDolForm::getSubmittedValue($sSelect, $sMethod) !== 'section')
+                continue;
+
+            foreach($aFields as $sField)
+                unset($oForm->aInputs[$sField]);
+
+            $this->aPageFieldsToSection = array_merge($this->aPageFieldsToSection, $aFields);
+        }
+    }
+
+    /**
+     * A section's settings (Studio > Pages > page > Cover or Title > "Edit section settings"): who sees the cover of
+     * the section's pages, where it is hidden and its picture, who sees their title and where. The pages that are
+     * "Same as section" take them.
+     */
+    protected function actionSectionEdit()
+    {
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $aSection = !empty($this->aPageRebuild) ? $this->_getPageSectionInfo($this->aPageRebuild) : false;
+        if(!$aSection)
+            return array('msg' => _t('_adm_bp_err_section_not_found'));
+
+        // The row a section's picture belongs to (the uploader's content), with the defaults where it has none yet.
+        if(empty($aSection['row'])) {
+            BxDolPageQuery::setSection($aSection['object'], $this->_getSectionModule($aSection['object']), array());
+            $aSection = $this->_getPageSectionInfo($this->aPageRebuild);
+        }
+
+        $aRow = $aSection['row'];
+
+        // The section's picture as an upload of the section's, so its files field lists it: the migration that made
+        // sections gave the section a page's picture, an upload of that page's.
+        $bPictureShown = false;
+        $oStorage = false;
+        $iSectionContentId = self::getSectionContentId((int)$aRow['id']);
+        if(($iPicture = (int)$aRow['cover_image']) && ($oStorage = BxDolStorage::getObjectInstance($this->sStorage)) !== false && ($aGhost = $oStorage->getGhost($iPicture))) {
+            if((int)$aGhost['content_id'] != $iSectionContentId)
+                $oStorage->updateGhostsContentId($iPicture, (int)$aGhost['profile_id'], $iSectionContentId, true);
+            $bPictureShown = true;
+        }
+
+        $bTitleAsCover = !isset($aRow['title_show']) || $aRow['title_show'] === '';
+
+        $aTitleValues = $this->_getAudienceValues();
+        array_unshift($aTitleValues, array('key' => 'cover', 'value' => _t('_adm_bp_txt_section_title_as_cover')));
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-section-edit',
+                'action' => sprintf($this->sPageUrl, $this->sType, $this->sPage) . '&bp_action=section_edit',
+                'method' => 'post'
+            ),
+            'params' => array (
+                'db' => array(
+                    'submit_name' => 'do_submit'
+                ),
+            ),
+            'inputs' => array (
+                'section_pages' => $this->_getSettingsNote('section_pages', _t('_adm_bp_txt_section_pages', implode(', ', $this->_getSectionPageTitles($aSection['object'])))),
+                'cover' => array(
+                    'type' => 'select',
+                    'name' => 'cover',
+                    'caption' => _t('_adm_bp_txt_page_cover'),
+                    'value' => (int)$aSection['resolved']['cover'],
+                    'values' => $this->_getAudienceValues(),
+                ),
+                'cover_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'cover_hidden_on',
+                    'caption' => _t('_adm_bp_txt_page_cover_hidden_on'),
+                    'value' => BxDolFormCheckerHelper::displaySet((int)$aSection['resolved']['cover_hidden_on']),
+                    'values' => $this->_getHiddenOnValues(),
+                ),
+                'cover_image' => array(
+                    'type' => 'files',
+                    'name' => 'cover_image',
+                    'storage_object' => $this->sStorage,
+                    'images_transcoder' => $this->sTranscoderCover,
+                    'uploaders' => $this->aUploadersCover,
+                    'multiple' => false,
+                    'content_id' => $iSectionContentId,
+                    'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate('cover_image'),
+                    'caption' => _t('_adm_bp_txt_page_cover_image'),
+                ),
+                'title_show' => array(
+                    'type' => 'select',
+                    'name' => 'title_show',
+                    'caption' => _t('_adm_bp_txt_page_title_show'),
+                    'info' => _t('_adm_bp_txt_section_title_show_info'),
+                    'value' => $bTitleAsCover ? 'cover' : (int)$aRow['title_show'],
+                    'values' => $aTitleValues,
+                    'attrs' => array('onchange' => $sJsObject . '.onChangeSectionTitle(this)'),
+                ),
+                'title_hidden_on' => array(
+                    'type' => 'select_multiple',
+                    'name' => 'title_hidden_on',
+                    'caption' => _t('_adm_bp_txt_page_title_hidden_on'),
+                    'value' => BxDolFormCheckerHelper::displaySet(isset($aRow['title_hidden_on']) ? (int)$aRow['title_hidden_on'] : (int)$aSection['resolved']['cover_hidden_on']),
+                    'values' => $this->_getHiddenOnValues(),
+                    'tr_attrs' => $bTitleAsCover ? array('class' => 'adm-bp-section-title-own', 'style' => 'display:none') : array('class' => 'adm-bp-section-title-own'),
+                ),
+                'search' => array(
+                    'type' => 'switcher',
+                    'name' => 'search',
+                    'caption' => _t('_adm_bp_txt_section_search'),
+                    'info' => _t('_adm_bp_txt_section_search_info'),
+                    'value' => 1,
+                    'checked' => !isset($aRow['search']) || (int)$aRow['search'] != 0,
+                ),
+                'controls' => array(
+                    'name' => 'controls',
+                    'type' => 'input_set',
+                    array(
+                        'type' => 'submit',
+                        'name' => 'do_submit',
+                        'value' => _t('_adm_bp_btn_page_apply')
+                    ),
+                    array (
+                        'type' => 'reset',
+                        'name' => 'close',
+                        'value' => _t('_adm_bp_btn_block_cancel'),
+                        'attrs' => array(
+                            'onclick' => $sJsObject . '.onEditSectionCancel(this)',
+                            'class' => 'bx-def-margin-sec-left',
+                        ),
+                    )
+                )
+            )
+        );
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        $oForm->initChecker();
+
+        if($oForm->isSubmittedAndValid()) {
+            $aValues = array(
+                'cover' => max(0, min(3, (int)$oForm->getCleanValue('cover'))),
+                'cover_hidden_on' => $this->_getSubmittedHiddenOn($oForm->getCleanValue('cover_hidden_on')),
+                'cover_image' => $this->_getSubmittedFileId($oForm->getCleanValue('cover_image')),
+                'search' => $oForm->getCleanValue('search') ? 1 : 0,
+            );
+
+            // A picture the form could not show (a stored file with no upload to list) stays. One removed in the form is
+            // deleted with its file by then, so it clears.
+            if(!$aValues['cover_image'] && !$bPictureShown && $iPicture && $oStorage && $oStorage->getFile($iPicture))
+                $aValues['cover_image'] = $iPicture;
+
+            $mixedTitle = $oForm->getCleanValue('title_show');
+            if($mixedTitle === 'cover' || $mixedTitle === false || $mixedTitle === null) {
+                $aValues['title_show'] = null;
+                $aValues['title_hidden_on'] = null;
+            }
+            else {
+                $aValues['title_show'] = max(0, min(3, (int)$mixedTitle));
+                $aValues['title_hidden_on'] = $this->_getSubmittedHiddenOn($oForm->getCleanValue('title_hidden_on'));
+            }
+
+            if(!BxDolPageQuery::setSection($aSection['object'], $this->_getSectionModule($aSection['object']), $aValues))
+                return array('msg' => _t('_adm_bp_err_section_save'));
+
+            $this->onPageChanged(null, $this->aPageRebuild);
+            return array('eval' => $sJsObject . '.onEditSection(oData)');
+        }
+
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox('adm-bp-section-edit-popup', _t('_adm_bp_txt_section_popup', $this->_getSectionTitle($aSection['object'])), $oTemplate->parseHtmlByName('bp_edit_section.html', array(
+            'js_object' => $sJsObject,
+            'form_id' => $aForm['form_attrs']['id'],
+            'form' => $oForm->getCode(true)
+        )));
+
+        return array('popup' => $sContent);
+    }
+
+    /**
+     * The uploader content of a section's picture, apart from the pages' (their ids): uploads are kept per content.
+     */
+    public static function getSectionContentId($iSectionId)
+    {
+        return 1000000000 + (int)$iSectionId;
+    }
+
+    /**
+     * A section's module: its submenu's.
+     */
+    protected function _getSectionModule($sSection)
+    {
+        $aMenu = BxDolMenuQuery::getMenuObject($sSection);
+        return !empty($aMenu['module']) ? $aMenu['module'] : '';
+    }
+
+    /**
+     * A section's name, as its pages' title shows it: the main menu item's, else its submenu's.
+     */
+    protected function _getSectionTitle($sSection)
+    {
+        $aSections = BxDolPageQuery::getSectionsWithPages();
+        if(!empty($aSections[$sSection]['title']))
+            return _t($aSections[$sSection]['title']);
+
+        $aMenu = BxDolMenuQuery::getMenuObject($sSection);
+        return !empty($aMenu['title']) ? _t($aMenu['title']) : $sSection;
+    }
+
+    protected function _getSectionPageTitles($sSection)
+    {
+        $aSections = BxDolPageQuery::getSectionsWithPages();
+        if(empty($aSections[$sSection]['pages']))
+            return array();
+
+        $aTitles = array();
+        foreach(array_keys($aSections[$sSection]['pages']) as $sObject)
+            $aTitles[] = $this->getPageTitleForStudio($sObject);
+
+        return $aTitles;
+    }
+
+    /**
+     * A submitted "Hidden on" as stored: its BX_DB_HIDDEN_* bits, '' for hidden nowhere.
+     */
+    protected function _getSubmittedHiddenOn($mixedValue)
+    {
+        $iBits = (int)BxDolFormCheckerHelper::passSet($mixedValue);
+        return $iBits ? (string)$iBits : '';
+    }
+
+    /**
+     * The file a single files input was submitted with, 0 for none.
+     */
+    protected function _getSubmittedFileId($mixedValue)
+    {
+        if(is_array($mixedValue))
+            $mixedValue = reset($mixedValue);
+
+        return (int)$mixedValue;
+    }
+
+    protected function getSettingsLayout($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $iLayout = isset($aPage['layout_id']) ? (int)$aPage['layout_id'] : 5;
+
+        $aLayouts = array();
+        $this->oDb->getLayouts(array('type' => 'all'), $aLayouts, false);
+
+        $aTmplParams = array(
+            'bx_repeat:layouts' => array(),
+            'form' => ''
+        );
+
+        foreach($aLayouts as $aLayout)
+            $aTmplParams['bx_repeat:layouts'][] = array(
+                'id' => $aLayout['id'],
+                'html_id' => $this->aHtmlIds['layout_id'] . $aLayout['id'],
+                'js_object' => $sJsObject,
+                'bx_if:active' => array(
+                    'condition' => (int)$aLayout['id'] == $iLayout,
+                    'content' => array()
+                ),
+                'icon' => $oTemplate->getImageUrl($aLayout['icon']),
+                'title' => _t($aLayout['title']),
+            );
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-layout',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => array (
+                'layout_id' => array(
+                    'type' => 'hidden',
+                    'name' => 'layout_id',
+                    'value' => $iLayout,
+                    'db' => array (
+                        'pass' => 'Int',
+                    ),
+                )
+            )
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        $aTmplParams['form'] = $oForm->getCode();
+
+        return $oTemplate->parseHtmlByName('bp_layouts.html', $aTmplParams);
+    }
+
+    protected function getSettingsLayoutFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsLayout($aPage, $bCreate, true);
+    }
+
+    protected function getSettingsVisibility($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+    	$iVisibleForLevels = isset($aPage['visible_for_levels']) ? (int)$aPage['visible_for_levels'] : BX_DOL_INT_MAX;
+
+        if(isset($aPage['visible_for_levels_editable']) && (int)$aPage['visible_for_levels_editable'] == 0)
+            $aInputs = array(
+                'visible_for_levels' => array(
+                    'type' => 'custom',
+                    'name' => 'visible_for_levels',
+                    'content' => MsgBox(_t('_adm_bp_err_page_visible_for_levels'))
+                )
+            );
+        else {
+        	bx_import('BxDolStudioUtils');
+            $aInputs = array(
+                'visible_for' => array(
+                    'type' => 'select',
+                    'name' => 'visible_for',
+                    'caption' => _t('_adm_bp_txt_block_visible_for'),
+                    'info' => '',
+                    'value' => $iVisibleForLevels == BX_DOL_INT_MAX ? BX_DOL_STUDIO_VISIBLE_ALL : BX_DOL_STUDIO_VISIBLE_SELECTED,
+                    'values' => array(
+                        array('key' => BX_DOL_STUDIO_VISIBLE_ALL, 'value' => _t('_adm_bp_txt_block_visible_for_all')),
+                        array('key' => BX_DOL_STUDIO_VISIBLE_SELECTED, 'value' => _t('_adm_bp_txt_block_visible_for_selected')),
+                    ),
+                    'required' => '0',
+                    'attrs' => array(
+                        'onchange' => $this->getPageJsObject() . '.onChangeVisibleFor(this)'
+                    ),
+                    'db' => array (
+                        'pass' => 'Xss',
+                    )
+                ),
+                'visible_for_levels' => array(
+                    'type' => 'checkbox_set',
+                    'name' => 'visible_for_levels',
+                    'caption' => _t('_adm_bp_txt_page_visible_for_levels'),
+                    'info' => _t('_adm_bp_dsc_page_visible_for_levels'),
+                    'value' => array(),
+                    'values' => array(),
+                    'tr_attrs' => array(
+                        'style' => $iVisibleForLevels == BX_DOL_INT_MAX ? 'display:none' : ''
+                    ),
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                )
+            );
+        }
+
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-visibility',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => $aInputs
+        );
+
+        BxDolStudioUtils::getVisibilityValues($iVisibleForLevels, $aForm['inputs']['visible_for_levels']['values'], $aForm['inputs']['visible_for_levels']['value']);
+
+        if($bInputsOnly)
+            return $aForm['inputs'];       	
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsVisibilityFields($aPage = array(), $bCreate = true)
+    {
+        return $this->getSettingsVisibility($aPage, $bCreate, true);
+    }
+
+    protected function getSettingsCache($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-cache',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => array (
+                'cache_lifetime' => array(
+                    'type' => 'text',
+                    'name' => 'cache_lifetime',
+                    'caption' => _t('_adm_bp_txt_page_cache_lifetime'),
+                    'info' => _t('_adm_bp_dsc_page_cache_lifetime'),
+                    'value' => isset($aPage['cache_lifetime']) ? $aPage['cache_lifetime'] : 0,
+                    'required' => '',
+                    'attrs' => array(
+                        'disabled' => isset($aPage['cache_editable']) && (int)$aPage['cache_editable'] == 0 ? 'disabled' : ''
+                    ),
+                    'db' => array (
+                        'pass' => 'Int',
+                    )
+                ),
+            )
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsCacheFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsCache($aPage, $bCreate, true);
+    }
+
+    protected function getSettingsSeo($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-settings-seo',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => array (
+                'meta_title' => array(
+                    'type' => 'text',
+                    'name' => 'meta_title',
+                    'caption' => _t('_adm_bp_txt_page_meta_title'),
+                    'value' => isset($aPage['meta_title']) ? $aPage['meta_title'] : '',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'meta_description' => array(
+                    'type' => 'textarea',
+                    'name' => 'meta_description',
+                    'caption' => _t('_adm_bp_txt_page_meta_description'),
+                    'info' => _t('_adm_bp_dsc_page_meta_description'),
+                    'value' => isset($aPage['meta_description']) ? $aPage['meta_description'] : '',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'meta_keywords' => array(
+                    'type' => 'textarea',
+                    'name' => 'meta_keywords',
+                    'caption' => _t('_adm_bp_txt_page_meta_keywords'),
+                    'info' => _t('_adm_bp_dsc_page_meta_keywords'),
+                    'value' => isset($aPage['meta_keywords']) ? $aPage['meta_keywords'] : '',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'meta_robots' => array(
+                    'type' => 'text',
+                    'name' => 'meta_robots',
+                    'caption' => _t('_adm_bp_txt_page_meta_robots'),
+                    'info' => _t('_adm_bp_dsc_page_meta_robots'),
+                    'value' => isset($aPage['meta_robots']) ? $aPage['meta_robots'] : '',
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    )
+                )
+            )
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsSeoFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsSeo($aPage, $bCreate, true);
+    }
+
+    protected function getSettingsInjections($aPage = array(), $bCreate = true, $bInputsOnly = false)
+    {
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => 'adm-bp-injections-seo',
+            ),
+            'params' => array (
+                'remove_form' => '1',
+                'csrf' => array(
+                    'disable' => true
+                )
+            ),
+            'inputs' => array (
+                'inj_head' => array(
+                    'type' => 'textarea',
+                    'name' => 'inj_head',
+                    'caption' => _t('_adm_bp_txt_page_inj_head'),
+                    'info' => _t('_adm_bp_dsc_page_inj_head'),
+                    'value' => isset($aPage['inj_head']) ? $aPage['inj_head'] : '',
+                    'code' => 1,
+                    'db' => array (
+                        'pass' => 'XssHtml',
+                    ),
+                ),
+                'inj_footer' => array(
+                    'type' => 'textarea',
+                    'name' => 'inj_footer',
+                    'caption' => _t('_adm_bp_txt_page_inj_footer'),
+                    'info' => _t('_adm_bp_dsc_page_inj_footer'),
+                    'value' => isset($aPage['inj_footer']) ? $aPage['inj_footer'] : '',
+                    'code' => 1,
+                    'db' => array (
+                        'pass' => 'XssHtml',
+                    ),
+                )
+            )
+        );
+
+        if($bInputsOnly)
+            return $aForm['inputs'];
+
+        $oForm = new BxTemplStudioFormView($aForm);
+        return $oForm->getCode();
+    }
+
+    protected function getSettingsInjectionsFields($aPage = array(), $bCreate = true)
+    {
+    	return $this->getSettingsInjections($aPage, $bCreate, true);
+    }
+
+    protected function getBlockIcon($aBlock)
+    {
+        $sIcon = $sIconUrl = "";
+
+        $sResult = '';
+        switch($aBlock['type']) {
+            case BX_DOL_STUDIO_BP_BLOCK_RAW:
+            	$sResult = 'file-text';
+            	break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_HTML:
+            	$sResult = 'code';
+            	break;
+            
+            case BX_DOL_STUDIO_BP_BLOCK_CREATIVE:
+            	$sResult = 'object-group';
+            	break;
+            
+            case BX_DOL_STUDIO_BP_BLOCK_BENTO_GRID:
+                $sResult = 'fa-grip-horizontal';
+                break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_RSS:
+            	$sResult = 'rss';
+            	break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_IMAGE:
+            	$sResult = 'image';
+            	break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_LANG:
+            	$sResult = 'globe';
+            	break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_MENU:
+            	$sResult = 'list-alt';
+            	break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_WIKI:
+            	$sResult = 'file-word';
+            	break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_CUSTOM:
+                $sResult = 'file';
+            	break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_SERVICE:
+                $sResult = $this->getModuleIcon($aBlock['module'], 'page');
+                break;
+        }
+
+        if(strpos($sResult, '.') === false)
+            $sIcon = $sResult;
+        else
+            $sIconUrl = $sResult;
+
+        return array($sIcon, $sIconUrl);
+    }
+
+    protected function getBlockModule($aBlock)
+    {
+        return  $aBlock['module'] != BX_DOL_STUDIO_BP_SKELETONS ? $aBlock['module'] : BX_DOL_STUDIO_MODULE_CUSTOM;
+    }
+
+    protected function getBlockContent($aBlock)
+    {
+        $aFields = array();
+
+        switch($aBlock['type']) {
+            case BX_DOL_STUDIO_BP_BLOCK_CUSTOM:
+            case BX_DOL_STUDIO_BP_BLOCK_RAW:
+            case BX_DOL_STUDIO_BP_BLOCK_BENTO_GRID:
+                $aFields = [
+                    'content' => [
+                        'type' => 'textarea',
+                        'name' => 'content',
+                        'caption' => _t('_adm_bp_txt_block_content_raw'),
+                        'info' => _t('_adm_bp_dsc_block_content_raw'),
+                        'value' => $aBlock['content'],
+                        'required' => '0',
+                        'code' => 1,
+                        'attrs' => [
+                            'class' => 'bx-form-input-textarea-codemirror'
+                        ],
+                        'db' => [
+                            'pass' => 'XssHtml',
+                        ],
+                    ],
+                ];
+                break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_HTML:
+                $aFields = [
+                    'content' => [
+                        'type' => 'textarea',
+                        'name' => 'content',
+                        'caption' => _t('_adm_bp_txt_block_content_raw'),
+                        'info' => _t('_adm_bp_dsc_block_content_raw'),
+                        'value' => $aBlock['content'],
+                        'required' => '0',
+                        'html' => 2,
+                        'html_toggle' => true,
+                        'attrs' => [
+                            'id' => $this->aHtmlIds['edit_block_editor_id']
+                        ],
+                        'db' => [
+                            'pass' => 'XssHtml',
+                        ],
+                    ],
+                    'attachments' => [
+                    	'type' => 'files',
+                        'name' => 'attachments',
+                        'storage_object' => $this->sStorage,
+                        'images_transcoder' => $this->sTranscoder,
+                        'uploaders' => $this->aUploaders,
+                        'multiple' => true,
+                        'content_id' => $aBlock['id'],
+                        'ghost_template' => BxDolStudioTemplate::getInstance()->parseHtmlByName('bp_fgt_attachments.html', [
+                            'js_object' => $this->getPageJsObject(),
+                            'name' => 'attachments',
+                            'editor_id' => $this->aHtmlIds['edit_block_editor_id'],
+                    	]),
+                        'caption' => _t('_adm_bp_txt_block_content_attachments_html')
+                    ]
+                ];
+                break;
+            
+            case BX_DOL_STUDIO_BP_BLOCK_CREATIVE:
+                $oTemplate = BxDolStudioTemplate::getInstance();
+
+                $sContent = $oTemplate->parseHtmlByName('bp_block_skeleton_creative.html', [
+                    'html_id' => $this->aHtmlIds['edit_block_builder_id'],
+                    'content_html' => $aBlock['content'],
+                    'content_data' => json_encode([
+                        'pages' => [
+                            ['component' => $aBlock['content']]
+                        ]
+                    ])
+                ]);
+
+                $aFields = [
+                    'content' => [
+                        'type' => 'custom',
+                        'name' => 'content',
+                        'caption' => _t('_adm_bp_txt_block_content_raw'),
+                        'content' => $sContent,
+                        'required' => '0',
+                        'db' => [
+                            'pass' => 'XssHtml',
+                        ],
+                    ],
+                ];
+                break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_LANG:
+                $aFields = [
+                    'content' => [
+                        'type' => 'textarea_translatable',
+                        'name' => 'content',
+                        'caption' => _t('_adm_bp_txt_block_content_lang'),
+                        'info' => _t('_adm_bp_dsc_block_content_lang'),
+                        'value' => $aBlock['content'],
+                        'required' => '0',
+                        'html' => 2,
+                        'html_toggle' => true,
+                        'db' => [
+                            'pass' => 'XssHtml',
+                        ],
+                    ],
+                ];
+                break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_IMAGE:
+                $iImageId = $sImageAlign = '';
+                if($aBlock['content'] != '')
+                    list($iImageId, $sImageAlign) = explode($this->sParamsDivider, $aBlock['content']);
+
+                $aFields = [
+                    'content' => [
+                        'type' => 'hidden',
+                        'name' => 'content',
+                        'value' => '',
+                        'db' => [
+                            'pass' => 'Xss',
+                        ],
+                    ],
+                    'image_file' => [
+                        'type' => 'files',
+                        'name' => 'image_file',
+                        'storage_object' => BX_DOL_STORAGE_OBJ_IMAGES,
+                        'images_transcoder' => 'sys_image_resize',
+                        'uploaders' => ['sys_html5'],
+                        'multiple' => false,
+                        'content_id' => $aBlock['id'],
+                        'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate('image_file'),
+                        'caption' => _t('_adm_bp_txt_block_content_image_file'),
+                    ],
+                    'image_align' => [
+                        'type' => 'select',
+                        'name' => 'image_align',
+                        'caption' => _t('_adm_bp_txt_block_content_image_align'),
+                        'info' => '',
+                        'value' => $sImageAlign,
+                        'values' => [
+                            ['key' => '', 'value' => _t('_adm_bp_txt_block_content_image_align_empty')],
+                            ['key' => 'left', 'value' => _t('_adm_bp_txt_block_content_image_align_left')],
+                            ['key' => 'center', 'value' => _t('_adm_bp_txt_block_content_image_align_center')],
+                            ['key' => 'right', 'value' => _t('_adm_bp_txt_block_content_image_align_right')],
+                        ],
+                        'required' => '0',
+                        'db' => [
+                            'pass' => 'Xss',
+                        ],
+                    ],
+                ];
+                break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_RSS:
+                $sRssUrl = $sRssLength = '';
+                if($aBlock['content'] != '')
+                    list($sRssUrl, $sRssLength) = explode($this->sParamsDivider, $aBlock['content']);
+
+                $aFields = [
+                    'content' => [
+                        'type' => 'hidden',
+                        'name' => 'content',
+                        'value' => '',
+                        'db' => [
+                            'pass' => 'Xss',
+                        ],
+                    ],
+                    'rss_url' => [
+                        'type' => 'text',
+                        'name' => 'rss_url',
+                        'caption' => _t('_adm_bp_txt_block_content_rss_url'),
+                        'info' => _t('_adm_bp_dsc_block_content_rss_url'),
+                        'value' => $sRssUrl,
+                        'required' => '0',
+                        'db' => [
+                            'pass' => 'Xss',
+                        ],
+                    ],
+                    'rss_length' => [
+                        'type' => 'text',
+                        'name' => 'rss_length',
+                        'caption' => _t('_adm_bp_txt_block_content_rss_length'),
+                        'info' => _t('_adm_bp_dsc_block_content_rss_length'),
+                        'value' => $sRssLength,
+                        'required' => '0',
+                        'db' => [
+                            'pass' => 'Int',
+                        ],
+                    ],
+                ];
+                break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_MENU:
+                $aFields = [
+                    'content' => [
+                        'type' => 'select',
+                        'name' => 'content',
+                        'caption' => _t('_adm_bp_txt_block_content_menu'),
+                        'info' => '',
+                        'value' => $aBlock['content'],
+                        'values' => [],
+                        'required' => '0',
+                        'db' => [
+                            'pass' => 'Xss',
+                        ],
+                    ]
+                ];
+
+                $sGroup = '';
+                $aMenus = $this->oDb->getMenus(true);
+                foreach($aMenus as $sKey => $aMenu) {
+                    if($sGroup != $aMenu['module']) {
+                        if(!empty($sGroup))
+                            $aFields['content']['values'][$sGroup . '_end'] = ['type' => 'group_end'];
+
+                        $sGroup = $aMenu['module'];
+                        $aFields['content']['values'][$sGroup . '_beg'] = ['type' => 'group_header', 'value' => BxDolStudioUtils::getModuleTitle($sGroup)];
+                    }
+
+                    $aFields['content']['values'][$sKey] = _t($aMenu['title']);
+                }
+
+                $aFields['content']['values'] = array_merge(['' => _t('_adm_bp_txt_block_content_menu_empty')], $aFields['content']['values']);
+                break;
+
+            case BX_DOL_STUDIO_BP_BLOCK_SERVICE:
+                $aService = ['module' => '', 'method' => ''];
+                if($aBlock['content'] != '')
+                    $aService = unserialize($aBlock['content']);
+
+                $aFields = [
+                    'service_module' => [
+                        'type' => 'value',
+                        'name' => 'service_module',
+                        'caption' => _t('_adm_bp_txt_block_content_service_module'),
+                        'value' => $this->getModuleTitle($aService['module'])
+                    ],
+                    'service_method' => [
+                        'type' => 'value',
+                        'name' => 'service_method',
+                        'caption' => _t('_adm_bp_txt_block_content_service_method'),
+                        'value' => $aService['method']
+                    ]
+                ];
+                break;
+        }
+
+        return $aFields;
+    }
+
+    protected function getBlockList($sModule)
+    {
+        if(empty($sModule))
+            return '';
+
+        $sJsObject = $this->getPageJsObject();
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $oForm = new BxTemplStudioFormView(array());
+
+        $aInputCheckbox = [
+            'type' => 'checkbox',
+            'name' => 'blocks[]',
+            'attrs' => [
+                'onChange' => 'javascript:' . $sJsObject . '.onSelectBlock(this);'
+            ],
+            'value' => ''
+        ];
+
+        $aTmplParams = [
+            'html_block_list_id' => $this->aHtmlIds['block_list_id'] . $sModule,
+            'bx_repeat:blocks' => []
+        ];
+
+        $aBlocks = $this->getDistinctBlocks($this->getBlocks($sModule));
+
+        // Different blocks with the same name: each says which page it comes from.
+        $aTitles = [];
+        foreach($aBlocks as $iIndex => $aBlock)
+            $aTitles[$iIndex] = $this->getBlockTitleForStudio($aBlock);
+        $aTitlesCount = array_count_values($aTitles);
+
+        foreach($aBlocks as $iIndex => $aBlock) {
+        	list($sIcon, $sIconUrl) = $this->getBlockIcon($aBlock);
+
+            $sTitle = $aTitles[$iIndex];
+
+            $sModuleTitle = $this->getModuleTitle($aBlock['module']);
+            $sLabel = $sTitle;
+            if($aTitlesCount[$sTitle] > 1 && ($sPageTitle = $this->getPageTitleForStudio($aBlock['object'])) !== '') {
+                $sModuleTitle .= ' &bull; ' . bx_process_output($sPageTitle);
+                $sLabel .= ', ' . $sPageTitle;
+            }
+
+            $aInputCheckbox['value'] = $aBlock['id'];
+            // the checkbox is named by the block it adds
+            $aInputCheckbox['attrs']['aria-label'] = $sLabel;
+
+            $aTmplParams['bx_repeat:blocks'][] = [
+                'js_object' => $sJsObject,
+                'html_id' => $this->aHtmlIds['block_id'] . $aBlock['id'],
+                'bx_if:is_inactive' => array(
+                    'condition' => false,
+                    'content' => [true]
+                ),
+                'bx_if:show_link' => [
+                    'condition' => false,
+                    'content' => [true]
+                ],
+                'bx_if:show_text' => [
+                    'condition' => true,
+                    'content' => [
+                        'title' => $sTitle,
+                    ]
+                ],
+                'bx_if:show_switchers' => [
+                    'condition' => false,
+                    'content' => [true]
+                ],
+                'bx_if:image' => [
+                    'condition' => (bool)$sIconUrl,
+                    'content' => array('icon_url' => $sIconUrl),
+                ],
+                'bx_if:icon' => [
+                    'condition' => (bool)$sIcon,
+                    'content' => ['icon' => $sIcon],
+                ],
+                'module' => $sModuleTitle,
+                'visible_for' => _t('_adm_bp_txt_visible_for', BxDolStudioUtils::getVisibilityTitle($aBlock['visible_for_levels'])),
+                'bx_if:show_checkbox' => [
+                    'condition' => true,
+                    'content' => [
+                        'content' => $oForm->genRow($aInputCheckbox)
+                    ]
+                ],
+                'bx_if:show_drag_handle' => [
+                    'condition' => false,
+                    'content' => []
+                ]
+            ];
+        }
+
+        return $oTemplate->parseHtmlByName('bp_blocks_list.html', $aTmplParams);
+    }
+
+    /**
+     * A page's name in Studio, as the page selector shows it: its system title, else its title. Empty for no page.
+     */
+    protected function getPageTitleForStudio($sObject)
+    {
+        if($sObject === '')
+            return '';
+
+        $aPage = $this->oDb->getPages(['type' => 'by_object_full', 'value' => $sObject]);
+        if(empty($aPage) || !is_array($aPage))
+            return '';
+
+        $sTitle = !empty($aPage['title_system']) ? _t($aPage['title_system']) : '';
+        if($sTitle === '' && !empty($aPage['title']))
+            $sTitle = _t($aPage['title']);
+
+        return trim(strip_tags($sTitle));
+    }
+
+    /**
+     * The blocks to offer in the "Add blocks" popup, each once. The same block placed on several pages (the operators'
+     * Get started checklist on the Homepage and the Dashboard) is one entry: blocks of the same module and type with
+     * the same content show the same thing. The page-less copy is kept when there is one, else the first.
+     */
+    public function getDistinctBlocks($aBlocks)
+    {
+        $aResult = [];
+        foreach($aBlocks as $aBlock) {
+            $sKey = hash('sha256', $aBlock['module'] . "\n" . $aBlock['type'] . "\n" . $aBlock['content']);
+            if(!isset($aResult[$sKey]) || ($aResult[$sKey]['object'] !== '' && $aBlock['object'] === ''))
+                $aResult[$sKey] = $aBlock;
+        }
+
+        return array_values($aResult);
+    }
+
+    protected function onBlockDelete($aBlock)
+    {
+    	if($aBlock['module'] != BX_DOL_STUDIO_MODULE_CUSTOM)
+    		return;
+
+        BxDolStudioLanguagesUtils::getInstance()->deleteLanguageString($aBlock['title']);
+
+        //--- Process Lang block
+        if($aBlock['type'] == BX_DOL_STUDIO_BP_BLOCK_LANG && $aBlock['content'] != '')
+            BxDolStudioLanguagesUtils::getInstance()->deleteLanguageString($aBlock['content']);
+
+        //--- Process Image block
+        if($aBlock['type'] == BX_DOL_STUDIO_BP_BLOCK_IMAGE && $aBlock['content'] != '') {
+            $iImageId = $sImageAlign = '';
+            list($iImageId, $sImageAlign) = explode($this->sParamsDivider, $aBlock['content']);
+
+            if(is_numeric($iImageId) && (int)$iImageId != 0)
+                BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->deleteFile((int)$iImageId, 0);
+        }
+    }
+
+    protected function getBlocks($sModule)
+    {
+        $aBlocks = array();
+        $this->oDb->getBlocks(array('type' => 'by_module_to_copy', 'value' => $sModule), $aBlocks, false);
+
+        return $aBlocks;
+    }
+
+    protected function _getPageCreateForm()
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $sForm = 'adm-bp-page-create';
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => $sForm,
+                'name' => $sForm,
+                'action' => sprintf($this->sPageUrl, $this->sType, $this->sPage) . '&bp_action=' . $this->sActionPageCreate,
+                'method' => 'post'
+            ),
+            'params' => array (
+                'db' => array(
+                    'table' => 'sys_objects_page',
+                    'key' => 'id',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'do_submit'
+                ),
+                'display' => $sForm
+            ),
+            'inputs' => array (
+                'module' => array(
+                    'type' => 'hidden',
+                    'name' => 'module',
+                    'value' => BX_DOL_STUDIO_MODULE_CUSTOM,
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'deletable' => array(
+                    'type' => 'hidden',
+                    'name' => 'deletable',
+                    'value' => 1,
+                    'db' => array (
+                        'pass' => 'Int',
+                    ),
+                ),
+                'settings' => array(
+                    'type' => 'custom',
+                    'name' => 'settings',
+                    'content' => $oTemplate->parseHtmlByName('bp_edit_page_form.html', $this->_getTmplVarsPageSettings()),
+                ),
+            )
+        );
+
+        return new BxTemplStudioFormView($aForm);
+    }
+
+    protected function _getPageEditForm()
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $sForm = 'adm-bp-page-edit';
+        $aForm = array(
+            'form_attrs' => array(
+                'id' => $sForm,
+                'name' => $sForm,
+                'action' => sprintf($this->sPageUrl, $this->sType, $this->sPage) . '&bp_action=' . $this->sActionPageEdit,
+                'method' => 'post'
+            ),
+            'params' => array (
+                'db' => array(
+                    'table' => 'sys_objects_page',
+                    'key' => 'id',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'do_submit'
+                ),
+                'display' => $sForm
+            ),
+            'inputs' => array (
+                'settings' => array(
+                    'type' => 'custom',
+                    'name' => 'settings',
+                    'content' => $oTemplate->parseHtmlByName('bp_edit_page_form.html', $this->_getTmplVarsPageSettings($this->aPageRebuild, false)),
+                ),
+            )
+        );
+
+        return new BxTemplStudioFormView($aForm);
+    }
+
+    protected function _getTmplVarsBlockPanelTop()
+    {
+        // the caption's controls and the row under it are built from the same values
+        if($this->aTmplVarsBlockPanelTop !== null) {
+            return $this->aTmplVarsBlockPanelTop;
+        }
+
+        $oPermalink = BxDolPermalinks::getInstance();
+        $sJsObject = $this->getPageJsObject();
+
+        $aInputTypes = [];
+        if(!in_array($this->sType, [BX_DOL_STUDIO_BP_TYPE_SYSTEM, BX_DOL_STUDIO_BP_TYPE_CUSTOM])) {
+            $aModulesDb = $this->oDb->getPages(['type' => 'modules_with_pages']);
+
+            $aInputTypesValues = [[
+                'key' => '',
+                'value' => _t('_adm_txt_select_module')
+            ]];
+            foreach($aModulesDb as $aModuleDb) {
+                $sName = $aModuleDb['name'];
+                if($sName == BX_DOL_STUDIO_MODULE_SYSTEM)
+                    continue;
+
+                $aInputTypesValues[] = [
+                    'key' => $sName,
+                    'value' => BxDolStudioUtils::getModuleTitle($sName)
+                ]; 
+            }
+
+            $aInputTypes = [
+                'type' => 'select',
+                'name' => 'page',
+                'attrs' => [
+                    'onChange' => 'javascript:' . $sJsObject . '.onChangeType(this)'
+                ],
+                'value' => $this->sType,
+                'values' => $aInputTypesValues
+            ];
+        }
+
+        $aPages = $this->oDb->getPages(['type' => 'by_module', 'value' => $this->sType]);
+
+        $aCounter = [];
+        $this->oDb->getBlocks(['type' => 'counter_by_pages'], $aCounter, false);
+        
+        $aInputPagesValues = [];
+        foreach($aPages as $aPage) {
+            $sTitle = _t($aPage['title_system']);
+            if(empty($sTitle))
+                $sTitle = _t($aPage['title']);
+
+            $aInputPagesValues[] = [
+                'key' => $aPage['object'], 
+                'value' => $sTitle,
+                'attrs' => [
+                    'data-url' => $aPage['url'] ? $oPermalink->permalink($aPage['url']) : '',
+                    'data-blocks' => $aCounter[$aPage['object']] ?? 0
+                ]
+            ];
+        }
+
+        usort($aInputPagesValues, function($aV1, $aV2) {
+            return strcmp($aV1['value'], $aV2['value']);
+        });
+
+        $aInputPages = [
+            'type' => 'select',
+            'name' => 'page',
+            'attrs' => [
+                'onChange' => 'javascript:' . $sJsObject . '.onChangePage(this)'
+            ],
+            'value' => $this->sPage,
+            'values' => array_merge([[
+                'key' => '', 
+                'value' => _t('_adm_bp_txt_select_page')
+            ]], $aInputPagesValues)
+        ];
+
+        $aTmplVarsActions = [];
+        if(($this->sPage != '' && !empty($this->aPageRebuild)) !== false)
+            $aTmplVarsActions = $this->_getTmplVarsBlockPanelTopActions();
+
+        $oForm = new BxTemplStudioFormView([]);
+
+        return $this->aTmplVarsBlockPanelTop = [
+            'js_object' => $sJsObject,
+            'bx_if:show_selector_types' => [
+                'condition' => !empty($aInputTypes),
+                'content' => [
+                    'selector_types' => $oForm->genRow($aInputTypes),
+                ]
+            ],
+            'selector_pages' => $oForm->genRow($aInputPages),
+            'action_page_create' => $this->sActionPageCreate,
+            'bx_if:show_actions' => [
+                'condition' => $this->sPage != '',
+                'content' => $aTmplVarsActions
+            ]
+        ];
+    }
+
+    protected function _getTmplVarsBlockPanelTopActions()
+    {
+        $sJsObject = $this->getPageJsObject();
+
+        $oPermalinks = BxDolPermalinks::getInstance();
+
+        return [
+            'js_object' => $sJsObject,
+            'bx_if:can_view' => [
+                'condition' => !empty($this->aPageRebuild['url']),
+                'content' => [
+                    'url_view' => bx_absolute_url($oPermalinks->permalink($this->aPageRebuild['url'])),
+                ]
+            ],
+            'action_page_edit' => $this->sActionPageEdit,
+            'bx_if:can_delete' => [
+                'condition' => (int)$this->aPageRebuild['deletable'] == 1,
+                'content' => [
+                    'js_object' => $sJsObject
+                ]
+            ],
+            'action_block_create' => $this->sActionBlockCreate,
+        ];
+    }
+
+    protected function _getTmplVarsPageSettings($aPage = array(), $bCreate = true)
+    {
+    	$sJsObject = $this->getPageJsObject();
+
+        $aTmplParams = array(
+            'js_object' => $sJsObject,
+            'menu' => array(),
+            'html_settings_groups_id' => $this->aHtmlIds['settings_groups_id'],
+            'bx_repeat:settings_groups' => array(),
+        	'submit' => _t($bCreate ? '_adm_bp_btn_page_create' : '_adm_bp_btn_page_apply')
+        );
+        foreach($this->aPageSettings as $aSetting) {
+            //--- get menu items
+            $aTmplParams['menu'][$aSetting['name']] = array(
+                'name' => $aSetting['name'],
+                'icon' => $aSetting['icon'] ?? '', // a Lucide glyph on the sidebar tile, like the app pages' side menus
+                'icon_bg' => true,
+                'onclick' => $sJsObject . '.onChangeSettingGroup(\'' . $aSetting['name'] . '\', this);',
+                'title' => $aSetting['title'],
+                'selected' => isset($aSetting['active']) && (int)$aSetting['active'] == 1
+            );
+
+            //--- get settings
+            $aTmplParams['bx_repeat:settings_groups'][] = array(
+                'html_settings_group_id' => $this->aHtmlIds['settings_group_id'] .  $aSetting['name'],
+                'bx_if:hidden' => array(
+                    'condition' => $aSetting['active'] != 1,
+                    'content' => array()
+                ),
+                'content' => $this->{'getSettings' . $this->getClassName($aSetting['name'])}($aPage, $bCreate)
+            );
+        }
+
+        $oMenu = new BxTemplStudioMenu(array('template' => 'menu_side.html', 'menu_items' => $aTmplParams['menu']));
+        $aTmplParams['menu'] = $oMenu->getCode();
+
+        return $aTmplParams;
+    }
+
+    protected function getIndexingDataForBlock($sType, $sContent)
+    {
+        $aBlock = array();   
+        switch($sType) {
+            case BX_DOL_STUDIO_BP_BLOCK_HTML:
+            case BX_DOL_STUDIO_BP_BLOCK_RAW:
+                $aBlock['text'] = trim(strip_tags($sContent));
+                $aBlock['text_updated'] = time();
+                break;
+        }
+        return $aBlock;
+    }
+
+    protected function onPageChanged($oForm, $aPage)
+    {
+        if(!empty($this->aPageFieldsToSection) && !empty($aPage['id'])) {
+            BxDolPageQuery::setPageFieldsToSection((int)$aPage['id'], $this->aPageFieldsToSection);
+            $this->aPageFieldsToSection = array();
+        }
+
+        $this->oDb->cleanCache('sys_pages_objects_data');
+        $this->oDb->cleanCache('sys_pages_uri_object_map');
+        $this->oDb->cleanCache('sys_pages_urirewrite_object_map');
+    }
+}
+
+/** @} */

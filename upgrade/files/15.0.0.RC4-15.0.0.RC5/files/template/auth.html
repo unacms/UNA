@@ -1,0 +1,20 @@
+<bx_if:show_or>
+    <div class="sys-auth-or flex items-center gap-3 my-4 text-sm text-gray-500 dark:text-gray-400">
+        <span class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></span>
+        <span>__text__</span>
+        <span class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></span>
+    </div>
+</bx_if:show_or>
+<div class="sys-auth-block flex flex-col gap-2">
+    <bx_repeat:buttons>
+        <a class="sys-auth __class__ bx-btn w-full justify-center" href="__href__" <bx_if:show_onclick> onclick="__onclick__"</bx_if:show_onclick>>
+            <bx_if:show_brand>
+                <span class="sys-auth-icon flex-none flex items-center justify-center h-5 w-5 ltr:mr-2 rtl:ml-2">__svg__</span>
+            </bx_if:show_brand>
+            <bx_if:show_icon>
+                <span class="sys-auth-icon flex-none flex items-center justify-center h-5 w-5 ltr:mr-2 rtl:ml-2"><i class="sys-icon __icon__"></i></span>
+            </bx_if:show_icon>
+            <span class="sys-auth-text truncate">__title__</span>
+        </a>
+    </bx_repeat:buttons>
+</div>

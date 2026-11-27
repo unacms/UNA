@@ -1,0 +1,1604 @@
+<?php defined('BX_DOL') or die('hack attempt');
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    UnaBaseView UNA Base Representation Classes
+ * @{
+ */
+
+class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
+{
+    protected $_oTemplate;
+
+    protected $_sDesignBoxMenuTmplDefault;
+
+    protected $_sDesignBoxMenuIcon;
+    protected $_sDesignBoxMenuIconType;
+    protected $_sDesignBoxMenuClick;
+
+    protected function __construct($oTemplate)
+    {
+        parent::__construct();
+
+        $this->_oTemplate = $oTemplate ? $oTemplate : BxDolTemplate::getInstance();
+
+        $this->_sDesignBoxMenuTmplDefault = 'menu_block_submenu_ver.html';
+
+        $this->_sDesignBoxMenuIcon = 'ellipsis-v';
+        $this->_sDesignBoxMenuIconType = 'icon';
+        $this->_sDesignBoxMenuClick = "bx_menu_popup_inline('#{design_box_menu}', this, " . json_encode(array(
+            'moveToDocRoot' => false
+        )) . ")";
+    }
+
+    /**
+     * Prevent cloning the instance
+     */
+    public function __clone()
+    {
+        if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
+            trigger_error('Clone is not allowed for the class: ' . get_class($this), E_USER_ERROR);
+    }
+
+    public static function getInstanceWithTemplate($oTemplate)
+    {
+        $sClassName = 'BxTemplFunctions';
+        if ($oTemplate){
+            $sClassName .= get_class($oTemplate);
+        }
+        if(!isset($GLOBALS['bxDolClasses'][$sClassName]))
+            $GLOBALS['bxDolClasses'][$sClassName] = new BxTemplFunctions($oTemplate);
+
+        return $GLOBALS['bxDolClasses'][$sClassName];
+    }
+    
+    public static function getInstance()
+    {
+        return self::getInstanceWithTemplate(null);
+    }
+
+    /**
+     * A block's footer: a quiet line under the block's content, ruled off from it (designbox_footer.html), for a notice
+     * such as the terms a form's visitor agrees to. A block's content ends with it.
+     * @param $sContent HTML of the footer; an empty one gives no footer
+     */
+    public function designBoxFooter($sContent)
+    {
+        if(trim((string)$sContent) === '')
+            return '';
+
+        return $this->_oTemplate->parseHtmlByName('designbox_footer.html', ['content' => $sContent]);
+    }
+
+    /**
+     * The header of the page being shown: Designer's for its layout (BxDolTemplate::getHeaderLayout). A template
+     * with header settings of its own overrides this.
+     * @return array ['layout' => ..., 'width' => 'page' or 'full', 'align' => 'start', 'center' or 'end']
+     */
+    public function getHeaderLayout()
+    {
+        return BxDolTemplate::getHeaderLayout(BxDolTemplate::getInstance()->getPageType());
+    }
+
+    /**
+     * The footer of the page being shown: Designer's for its layout and audience (BxDolTemplate::getFooterLayout).
+     * A template with footer settings of its own overrides this.
+     * @return array ['width' => 'page' or 'full']
+     */
+    public function getFooterLayout()
+    {
+        return BxDolTemplate::getFooterLayout(BxDolTemplate::getInstance()->getPageType());
+    }
+
+    /**
+     * How wide the content of the page being shown is: Designer's for its layout and audience
+     * (BxDolTemplate::getPageWidth). A template with a page width of its own overrides this.
+     * @return int|string pixels, or 'full'
+     */
+    public function getPageWidth()
+    {
+        return BxDolTemplate::getPageWidth(BxDolTemplate::getInstance()->getPageType());
+    }
+
+    function TemplPageAddComponent($sKey)
+    {
+        $mixedResult = false; // if you have not such component, return false!
+
+        switch($sKey) {
+            // The header's content is as wide as the page's, or as the window.
+            case 'sys_header_width':
+                $mixedResult = $this->getHeaderLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
+                break;
+
+            // The footer, its separator included, is as wide as the page's content, or as the window.
+            case 'sys_footer_width':
+                $mixedResult = $this->getFooterLayout()['width'] == 'full' ? '' : 'bx-def-page-width';
+                break;
+
+            // The page's width for .bx-def-page-width (default.less), set on <body> as --bx-page-width.
+            case 'sys_page_width':
+                $mixedWidth = $this->getPageWidth();
+                $mixedResult = $mixedWidth == 'full' ? 'none' : (int)$mixedWidth . 'px';
+                break;
+
+            // The logo once more, for a layout that shows it in two places (the Application layout's sidebar and header).
+            case 'sys_main_logo_copy':
+                $mixedResult = $this->getMainLogoCopy();
+                break;
+
+            // Where the main menu sits: next to the logo, in the middle of the header or next to the toolbar.
+            case 'sys_header_align':
+                $mixedResult = 'bx-header-menu-' . $this->getHeaderLayout()['align'];
+                break;
+
+            // The Application layout's header toolbar: the member toolbar, which the layout's styles hide on wide screens for a
+            // member (their tools and account are in the sidebar there); guests keep it (Log in, Join), and narrow screens have the
+            // standard header with it.
+            case 'sys_application_toolbar':
+                $oMenu = BxDolMenu::getObjectInstance('sys_toolbar_member');
+                $mixedResult = $oMenu ? $oMenu->getCode() : '';
+                break;
+
+            case 'sys_toolbar_search':
+                // The search window of the toolbar's 'search' item and of Cmd/Ctrl+K: the field, the filter chips and
+                // the results, as in the apps (BxBaseSearchWindow).
+                $mixedResult = (new BxTemplSearchWindow($this->_oTemplate))->getPopup();
+                break;
+        }
+
+        return $mixedResult;
+    }
+
+    /**
+     * A message in a box. A state says why something isn't shown and what to do: an array with 'text' and any of
+     * 'title', 'icon' (an icon name) and 'buttons' ([['title' => text, 'link' => url], ...], the first is primary).
+     * A message that BxDolAcl gave for a denied action becomes its state (BxDolAcl::getDenialState): a guest gets
+     * "Log in" and "Sign up", an account without a profile "Create profile".
+     *
+     * @param string|array $mixedText translated message, or a state
+     */
+    public function msgBox($mixedText, $iTimer = 0, $sOnClose = "")
+    {
+        $iId = time() . mt_rand(1, 1000);
+
+        // A timed message is a notice that fades out, never a denial.
+        $aState = null;
+        if(is_array($mixedText)) {
+            $aState = $mixedText;
+        }
+        elseif($iTimer <= 0 && $this->isEmptyText($mixedText)) {
+            return $this->emptyState();
+        }
+        elseif($iTimer <= 0) {
+            $aState = BxDolAcl::getDenialState($mixedText);
+        }
+        if($aState) {
+            return $this->msgBoxState($iId, $aState);
+        }
+
+        if($iTimer > 0) {
+            BxDolTemplate::getInstance()->addJs(array('jquery.anim.js'));
+        }
+
+        return $this->_oTemplate->parseHtmlByName('messageBox.html', array(
+            'id' => $iId,
+            'bx_if:plain' => array(
+                'condition' => true,
+                'content' => array(
+                    'msgText' => $mixedText,
+                    'bx_if:timer' => array(
+                        'condition' => $iTimer > 0,
+                        'content' => array(
+                            'timer_id' => $iId,
+                            'time' => 1000 * $iTimer,
+                            'on_close' => $sOnClose,
+                        )
+                    )
+                )
+            ),
+            'bx_if:state' => array('condition' => false, 'content' => array()),
+        ));
+    }
+
+    /**
+     * The empty state of a list or a block, the same on the site and in Studio: an icon, one line in muted text and
+     * an optional action, in place of the grey "Nothing here yet" plate.
+     *
+     * @param string $sText translated line; "Nothing here yet" when empty
+     * @param array $aButton optional action: ['title' => translated, 'link' => url] and/or 'onclick' => js; a button
+     *  with only 'onclick' is a <button>
+     * @param string $sIcon Lucide icon name
+     * @param string $sTitle optional translated title above the line, as the apps show it
+     */
+    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox', $sTitle = '')
+    {
+        return $this->msgBoxState('bx-empty-' . bin2hex(random_bytes(4)), [
+            'icon' => $sIcon,
+            'title' => $sTitle,
+            'text' => $sText !== '' ? $sText : _t('_Empty'),
+            'buttons' => !empty($aButton) ? [$aButton] : [],
+        ]);
+    }
+
+    /**
+     * Whether a message box says only that there is nothing here: it is then shown as an empty state.
+     */
+    protected function isEmptyText($mixedText)
+    {
+        if(!is_string($mixedText) || ($mixedText = trim($mixedText)) === '') {
+            return false;
+        }
+
+        return in_array($mixedText, [_t('_Empty'), _t('_sys_txt_empty')], true);
+    }
+
+    /**
+     * A state's icon: the Lucide SVG, or a font icon of the default iconset when Lucide has no such icon.
+     */
+    protected function msgBoxIcon($sIcon)
+    {
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide', $this->_oTemplate);
+        $sIconHtml = $oIconset ? $oIconset->getIconHtml($sIcon) : false;
+
+        return $sIconHtml !== false ? $sIconHtml : '<i class="sys-icon ' . bx_html_attribute($sIcon) . '"></i>';
+    }
+
+    /**
+     * The state version of msgBox: icon, title, text and buttons, centred, as the apps show an empty state.
+     */
+    protected function msgBoxState($iId, $aState)
+    {
+        // The state asks for a profile: the informer's "You don't have a profile yet" bar would say it twice.
+        if(($aState['level'] ?? 0) == MEMBERSHIP_ID_ACCOUNT) {
+            BxDolInformer::hide('sys-account-profile-system');
+        }
+
+        $sIconHtml = !empty($aState['icon']) && is_string($aState['icon']) ? $this->msgBoxIcon($aState['icon']) : '';
+        $aButtons = $this->msgBoxStateButtons($aState['buttons'] ?? null);
+
+        $sTitle = isset($aState['title']) && is_string($aState['title']) ? $aState['title'] : '';
+
+        return $this->_oTemplate->parseHtmlByName('messageBox.html', [
+            'id' => $iId,
+            'bx_if:plain' => ['condition' => false, 'content' => []],
+            'bx_if:state' => [
+                'condition' => true,
+                'content' => [
+                    'state_text' => $aState['text'] ?? '',
+                    'bx_if:icon' => [
+                        'condition' => $sIconHtml !== '',
+                        'content' => ['icon_html' => $sIconHtml],
+                    ],
+                    'bx_if:title' => [
+                        'condition' => $sTitle !== '',
+                        'content' => ['state_title' => bx_process_output($sTitle)],
+                    ],
+                    'bx_if:buttons' => [
+                        'condition' => !empty($aButtons),
+                        'content' => ['bx_repeat:buttons' => $aButtons],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * The state's buttons, the first one primary. A button that acts on the page (`onclick`) keeps its link as the
+     * fallback without script.
+     */
+    protected function msgBoxStateButtons($mixedButtons)
+    {
+        $aButtons = [];
+        foreach(is_array($mixedButtons) ? $mixedButtons : [] as $aButton) {
+            $bOnclick = !empty($aButton['onclick']) && is_string($aButton['onclick']);
+            if(empty($aButton['title']) || (empty($aButton['link']) && !$bOnclick)) {
+                continue;
+            }
+
+            $aVars = [
+                'class' => empty($aButtons) ? 'bx-btn-primary' : '',
+                'title' => bx_process_output($aButton['title']),
+                'attrs' => $bOnclick ? ' onclick="' . bx_html_attribute($aButton['onclick']) . '"' : '',
+            ];
+
+            // a link, or a button when the action happens on the page and has no address
+            $bLink = !empty($aButton['link']);
+            $aButtons[] = [
+                'bx_if:link' => [
+                    'condition' => $bLink,
+                    'content' => array_merge($aVars, ['link' => $bLink ? bx_html_attribute(bx_absolute_url(BxDolPermalinks::getInstance()->permalink($aButton['link']))) : '']),
+                ],
+                'bx_if:button' => [
+                    'condition' => !$bLink,
+                    'content' => $aVars,
+                ],
+            ];
+        }
+
+        return $aButtons;
+    }
+
+    /**
+     * Get standard popup box with title.
+     *
+     * @param  string $sName    - unique name
+     * @param  string $sTitle   - translated title
+     * @param  string $sContent - content of the box
+     * @return HTML   string
+     */
+    function popupBox($sName, $sTitle, $sContent, $isHiddenByDefault = false)
+    {
+        $iId = !empty($sName) ? $sName : time();
+
+        return $this->_oTemplate->parseHtmlByName('popup_box.html', array(
+            'id' => $iId,
+            'wrapper_style' => $isHiddenByDefault ? 'display:none;' : '',
+            'title' => $sTitle,
+            'content' => $sContent
+        ));
+    }
+
+    /**
+     * Get popup box without title.
+     *
+     * @param  string $sName    - unique name
+     * @param  string $sContent - content of the box
+     * @return HTML   string
+     */
+    function transBox($sName, $sContent, $isHiddenByDefault = false, $isPlaceInCenter = false)
+    {
+    	return $this->simpleBox($sName, $sContent, $isHiddenByDefault, $isPlaceInCenter, 'popup_trans.html');
+    }
+
+    function slideBox($sName, $sContent, $isHiddenByDefault = false)
+    {
+    	return $this->simpleBox($sName, $sContent, $isHiddenByDefault, false, 'popup_slide.html');
+    }
+
+    function inlineBox($sName, $sContent, $isHiddenByDefault = false)
+    {
+        return $this->simpleBox($sName, $sContent, $isHiddenByDefault, false, 'popup_inline.html');
+    }
+
+    protected function simpleBox($sName, $sContent, $isHiddenByDefault, $isPlaceInCenter, $sTemplate) 
+    {
+    	$iId = !empty($sName) ? $sName : time();
+
+        if(!is_array($sContent))
+            $sContent = array('content' => $sContent);
+
+        $sContent = $this->_oTemplate->parseHtmlByName($sTemplate, array_merge(array(
+            'id' => $iId,
+            'wrapper_class' => '',
+            'wrapper_style' => $isHiddenByDefault ? 'display:none;' : '',
+            'wrapper_role' => 'dialog',
+            'wrapper_attrs' => '',
+            'content' => ''
+        ), $sContent));
+
+        if($isPlaceInCenter)
+            $sContent = '<div class="login_ajax_wrap">' . $sContent . '</div>';
+
+        return $sContent;
+    }
+
+    function simpleBoxContent($sContent, $bWithIndent = true)
+    {
+        if(!$bWithIndent)
+            return $sContent;
+
+        return $this->_oTemplate->parseHtmlByName('popup_content_indent.html', array(
+            'content' => $sContent
+        ));
+    }
+
+    function getIcon($sCode, $aAttrs = array())
+    {
+        $sIconFont = false;
+        $sIconA = false;
+        $sIconUrl = false;
+        $sIconHtml = false;
+        $sIconFontWithHtml = false;
+
+        $sClass = '';
+        if(!empty($aAttrs['class'])) {
+            $sClass = ' ' . $aAttrs['class'] .' ';
+            unset($aAttrs['class']);
+        }
+
+        $sAttrs = '';
+        foreach($aAttrs as $sKey => $sValue)
+            $sAttrs .= ' ' . $sKey . '="' . bx_html_attribute($sValue) . '"';
+
+        if (!empty($sCode)) {
+            if (is_numeric($sCode) && (int)$sCode > 0) {
+                $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
+                $sIconUrl = $oStorage ? $oStorage->getFileUrlById((int)$sCode) : false;
+            } 
+            else {
+
+                if (strpos($sCode, '&lt;img') !== false || strpos($sCode, '<img') !== false) {
+                    if(strpos($sCode, '&lt;img') !== false)
+                        $sIconHtml = htmlspecialchars_decode($sCode);
+                    else
+                        $sIconHtml = $sCode;
+
+                    //--- Process Inline SVG
+                } else if (strpos($sCode, '&lt;svg') !== false || strpos($sCode, '<svg') !== false) {
+                        if(strpos($sCode, '&lt;svg') !== false)
+                            $sIconHtml = htmlspecialchars_decode($sCode);
+                        else
+                            $sIconHtml = $sCode;
+
+                        $sClass .= 'sys-icon sys-icon-svg ';
+
+
+                        $sIconHtmlClear = strip_tags($sIconHtml, '<svg>');
+                        if ($sClass != '' && strpos($sIconHtmlClear, 'class="') !== false)
+                            $sIconHtml = str_replace('class="', 'class="' . $sClass, $sIconHtml);
+                        else
+                            $sIconHtml = str_replace('<svg', '<svg class="' . $sClass . '" ', $sIconHtml);
+
+                        if ($sAttrs != '')
+                            $sIconHtml = str_replace('<svg', '<svg ' . $sAttrs . ' ', $sIconHtml);
+                }
+                else {
+                    $sEmojIsRegex =
+                        '/[\x{0080}-\x{02AF}'
+                        .'\x{0300}-\x{03FF}'
+                        .'\x{0600}-\x{06FF}'
+                        .'\x{0C00}-\x{0C7F}'
+                        .'\x{1DC0}-\x{1DFF}'
+                        .'\x{1E00}-\x{1EFF}'
+                        .'\x{2000}-\x{209F}'
+                        .'\x{20D0}-\x{214F}'
+                        .'\x{2190}-\x{23FF}'
+                        .'\x{2460}-\x{25FF}'
+                        .'\x{2600}-\x{27EF}'
+                        .'\x{2900}-\x{29FF}'
+                        .'\x{2B00}-\x{2BFF}'
+                        .'\x{2C60}-\x{2C7F}'
+                        .'\x{2E00}-\x{2E7F}'
+                        .'\x{3000}-\x{303F}'
+                        .'\x{A490}-\x{A4CF}'
+                        .'\x{E000}-\x{F8FF}'
+                        .'\x{FE00}-\x{FE0F}'
+                        .'\x{FE30}-\x{FE4F}'
+                        .'\x{1F000}-\x{1F02F}'
+                        .'\x{1F0A0}-\x{1F0FF}'
+                        .'\x{1F100}-\x{1F64F}'
+                        .'\x{1F680}-\x{1F6FF}'
+                        .'\x{1F910}-\x{1F96B}'
+                        .'\x{1F980}-\x{1F9E0}]/u';
+
+                    //--- Process Emoji
+                    if(preg_match($sEmojIsRegex, $sCode, $aTmp))
+                        $sIconHtml = $this->_oTemplate->parseHtmlByName('icon_emoji.html', array(
+                            'icon' => $sCode, 
+                            'class' => $sClass, 
+                            'attrs' => $sAttrs
+                        ));
+                    else {
+                        if (strpos($sCode, '.') === false) {
+                            //--- Process animated icon
+                            if (strncmp($sCode, 'a:', 2) === 0)
+                                $sIconA = substr($sCode, 2);
+                            //--- Process font icons
+                            else {
+                                $sIconFont = $sCode;
+                                $sIconFontWithHtml = $this->getFontIconAsHtml($sIconFont, $sClass, $sAttrs);
+                            }
+                        } 
+                        else {
+                            //--- Process common image
+                            if((!preg_match('/^https?:\/\//', $sCode)))
+                                $sIconUrl = $this->_oTemplate->getIconUrl($sCode);
+                            else
+                                $sIconUrl = $sCode;
+                        }
+                    }
+                }
+            }
+        }
+
+        return array ($sIconFont, $sIconUrl, $sIconA, $sIconHtml, $sIconFontWithHtml);
+    }
+
+    function getFontIconAsHtml($sIconFont, $sClass = '', $sAttrs = '')
+    {
+        return  '<i class="sys-icon ' . $sIconFont .' ' . $sClass . '"' . $sAttrs . '></i>';
+    }
+
+    function getIconAsHtml($sCode, $aAttrs = array())
+    {
+        $aIcons = $this->getIcon($sCode, $aAttrs);
+        return $aIcons[3] . $aIcons[4]; 
+    }
+    
+    function getIconPreview($iId, $sIconImage = '', $sIcon = '')
+    {
+        $bIconImage = !empty($sIconImage);
+
+        $aIcons = $this->getIcon($sIcon);
+        $sIconHtml = $aIcons[2] . $aIcons[3] . $aIcons[4];
+        $bIconHtml = !empty($sIconHtml) && !$bIconImage;
+
+        return $this->_oTemplate->parseHtmlByName('item_icon_preview.html', [
+            'id' => $iId,
+            'bx_if:show_icon_empty' => [
+                'condition' => !$bIconImage && !$bIconHtml,
+                'content' => []
+            ],
+            'bx_if:show_icon_image' => [
+                'condition' => $bIconImage,
+                'content' => [
+                    'url' => $sIconImage,
+                    'id' => $iId
+                ]
+            ],
+            'bx_if:show_icon_html' => [
+                'condition' => $bIconHtml,
+                'content' => [
+                    'icon' => $sIconHtml
+                ]
+            ]
+        ]);
+    }
+
+    function getTemplateIcon($sName)
+    {
+        $sUrl = $this->_oTemplate->getIconUrl($sName);
+        return !empty($sUrl) ? $sUrl : $this->_oTemplate->getIconUrl('spacer.gif');
+    }
+
+    function getTemplateImage($sName)
+    {
+        $sUrl = $this->_oTemplate->getImageUrl($sName);
+        return !empty($sUrl) ? $sUrl : $this->_oTemplate->getImageUrl('spacer.gif');
+    }
+
+    function sysIcon ($sIcon, $sName, $sUrl = '', $iWidth = 0)
+    {
+        return '<div class="sys_icon">' . ($sUrl ? '<a title="'.$sName.'" href="'.$sUrl.'">' : '') . '<img alt="'.$sName.'" src="'.$sIcon.'" '.($iWidth ? 'width='.$iWidth : '').' />' . ($sUrl ? '</a>' : '') . '</div>';
+    }
+
+    /**
+     * functions for limiting maximal string length
+     */
+    function getStringWithLimitedLength($mixedString, $iWidth = 45, $isPopupOnOverflow = false, $bReturnString = true, $sPopupString = null)
+    {
+        if(is_array($mixedString))
+            list($sStrPlane, $sStrOriginal) = $mixedString;
+        else
+            $sStrPlane = $sStrOriginal = $mixedString;
+
+        if(empty($sStrPlane) || mb_strlen($sStrPlane, 'UTF-8') <= $iWidth)
+            return $bReturnString ? $sStrPlane : [$sStrPlane];
+
+        $sResult = '';
+        $aWords = mb_split("[\s\r\n]", $sStrPlane);
+        $iPosition = 0;
+        $iWidthReal = $iWidth - 3;
+        $iWidthMin = $iWidth - 15;
+        foreach($aWords as $sWord) {
+            $sWord = trim($sWord);
+            $iWord = mb_strlen($sWord, 'UTF-8');
+            if ($iPosition + $iWord > $iWidthReal)
+                break;
+
+            // add word and continue
+            $sResult .= ' ' . $sWord;
+            $iPosition += 1 + $iWord;
+        }
+
+        // last word is too long, cut it
+        if(!$iPosition || $iPosition < $iWidthMin)
+            $sResult .= ' ' . mb_substr($sWord, 0, $iWidthReal - $iPosition - $iWord, 'UTF-8');
+        $sResult = trim($sResult);
+
+        // add tripple dot
+        if(!$isPopupOnOverflow) {
+            $sResult .= '...';
+            return $bReturnString ? $sResult : [$sResult];
+        }
+
+        // add button width popup
+        $sId = 'bx-str-limit-' . rand(1, PHP_INT_MAX);
+        $sTitle = bx_html_attribute(_t('_sys_str_limit_show'));
+        $sPopup = '<button type="button" class="bx-str-limit pl-2" title="' . $sTitle . '" aria-label="' . $sTitle . '" onclick="$(\'#' . $sId . '\').dolPopup({pointer:{el:$(this), offset:\'10 1\'}})"><i class="sys-icon ellipsis"></i></button>';
+        $sPopup .= BxTemplFunctions::getInstance()->transBox($sId, '<div class="bx-def-padding">' . ($sPopupString ?? $sStrOriginal) . '</div>', true);
+
+        return $bReturnString ? $sResult . $sPopup : [$sResult, $sPopup];
+    }
+
+    /**
+     * Get plain text of an html for page meta (description, link previews): the words of separate paragraphs,
+     * list items, headings and table cells don't run together, entities are decoded and whitespace is collapsed.
+     * @param $sHtml - html
+     * @param $iLength - cut the text on a word boundary to this number of characters, 0 - don't cut
+     * @return string plain text, escape it for output
+     */
+    public function getMetaText($sHtml, $iLength = 200)
+    {
+        $s = preg_replace('#<(script|style)\b.*?</\1\s*>#is', ' ', (string)$sHtml);
+        $s = preg_replace('#<(?:br|/?(?:p|div|li|ul|ol|h[1-6]|blockquote|pre|tr|td|th|dt|dd|figcaption|section|article))\b[^>]*>#i', ' ', $s);
+        $s = html_entity_decode(strip_tags($s), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $s = trim(preg_replace('/\s+/u', ' ', $s));
+
+        if(!$iLength || get_mb_len($s) <= $iLength)
+            return $s;
+
+        // Cut at the last space that keeps at least half of the text, else inside the long word, then end with an ellipsis.
+        $s = get_mb_substr($s, 0, $iLength - 1);
+        if(($iSpace = mb_strrpos($s, ' ', 0, 'UTF-8')) !== false && $iSpace >= $iLength / 2)
+            $s = get_mb_substr($s, 0, $iSpace);
+
+        return rtrim($s, ' ,;:-') . '…';
+    }
+
+    /**
+     * Display design box with specified title, template, content and menu.
+     * @param $sTitle - design box title, please note that some templates don't use title.
+     * @param $sContent - design box content.
+     * @param $iTemplateNum - number of design box template, use predefined contants only, default is BX_DB_DEF.
+     * @param $mixedMenu - design box menu, it can be:
+     *      - object: instance of BxTemplMenu class
+     *      - string: menu object identifier
+     *      - array: array of menu links to create menu from
+     * @param $mixedButtons - design box menu representation, it can be:
+     *      - false: design box menu will be used as horizontal menu (tabs)
+     *      - array: array of menu links to create menu from. If empty array is used and 'design box menu' isn't empty, then 'design box menu' will be added as one of menu items automatically. If non-empty array is used and 'design box menu' isn't empty then it should be added as one of menu items. Use array('menu' => 1) to define menu item for 'design box menu'.
+     * @return string
+     *
+     * @see BX_DB_CONTENT_ONLY
+     * @see BX_DB_DEF
+     * @see BX_DB_EMPTY
+     * @see BX_DB_NO_CAPTION
+     * @see BX_DB_PADDING_CONTENT_ONLY
+     * @see BX_DB_PADDING_DEF
+     * @see BX_DB_PADDING_NO_CAPTION
+     */
+    function designBoxContent ($sTitle, $sContent, $iTemplateNum = BX_DB_DEF, $mixedMenu = false, $mixedButtons = [])
+    {
+        $bNoTitle = in_array($iTemplateNum, [BX_DB_CONTENT_ONLY, BX_DB_PADDING_CONTENT_ONLY, BX_DB_NO_CAPTION, BX_DB_PADDING_NO_CAPTION]);
+        $sMenu = $this->designBoxMenu($mixedMenu, $mixedButtons);
+
+        $aTmplVarsDbMenu = [];
+        if($bNoTitle && $sMenu)
+            $aTmplVarsDbMenu = [
+                'caption_item' => $sMenu
+            ];
+
+        // A title given as an array is [title, description, title icon, header icon]: the title icon is small, on the
+        // title's line; the header icon is a 44px tile before the title and the description.
+        $sDescription = $sIcon = $sIconHtml = $sHeaderIcon = $sHeaderIconHtml = '';
+        if(is_array($sTitle)) {
+            $sHeaderIcon = $sTitle[3] ?? '';
+            list($sTitle, $sDescription, $sIcon) = $sTitle;
+
+            if($sIcon) {
+                list($sIcon, $sIconUrl, $sIconA, $sIconHtml) = $this->getIcon($sIcon);
+
+                if($sIcon)
+                    $sIcon = BxDolIconset::getObjectInstance()->getIcon($sIcon);
+            }
+
+            if($sHeaderIcon) {
+                list($sHeaderIcon, $sIconUrl, $sIconA, $sHeaderIconHtml) = $this->getIcon($sHeaderIcon);
+
+                if($sHeaderIcon)
+                    $sHeaderIcon = BxDolIconset::getObjectInstance()->getIcon($sHeaderIcon);
+            }
+        }
+
+        return $this->_oTemplate->parseHtmlByName('designbox_' . (int)$iTemplateNum . '.html', array_merge([
+                'bx_if:show_db_header_icon' => [
+                    'condition' => !empty($sHeaderIcon),
+                    'content' =>  [
+                        'icon' => $sHeaderIcon,
+                    ]
+                ],
+                'bx_if:show_db_header_icon_html' => [
+                    'condition' => !empty($sHeaderIconHtml),
+                    'content' =>  [
+                        'icon_html' => $sHeaderIconHtml,
+                    ]
+                ],
+                'bx_if:show_db_icon' => [
+                    'condition' => !empty($sIcon),
+                    'content' =>  [
+                        'icon' => $sIcon,
+                    ]
+                ],
+                'bx_if:show_db_icon_html' => [
+                    'condition' => !empty($sIconHtml),
+                    'content' =>  [
+                        'icon_html' => $sIconHtml,
+                    ]
+                ],
+                'title' => $sTitle,
+                'bx_if:show_db_description' => [
+                    'condition' => !empty($sDescription),
+                    'content' =>  [
+                        'description' => $sDescription,
+                    ]
+                ],
+                'designbox_content' => $sContent,
+            ], ($bNoTitle ? [
+                'bx_if:show_db_menu' => [
+                    'condition' => !empty($aTmplVarsDbMenu),
+                    'content' => $aTmplVarsDbMenu
+                ]
+            ] : [
+                'caption_item' => $sMenu
+            ]))
+        );
+    }
+
+    function designBoxMenu ($mixedMenu, $mixedButtons = [])
+    {
+        $bUseTabs = is_bool($mixedButtons) && $mixedButtons === true;
+
+        $sClass = $sMenu = '';
+        if(!empty($mixedMenu)) {
+            if(is_string($mixedMenu)) {
+                if(($oMenu = BxTemplMenu::getObjectInstance($mixedMenu)) !== false) {
+                    $oMenu->setTemplateById($bUseTabs ? BX_DB_MENU_TEMPLATE_TABS : BX_DB_MENU_TEMPLATE_POPUP);
+
+                    $sMenu = $oMenu->getCode();
+                }
+                else
+                    $sMenu = $mixedMenu;
+            } 
+            else if(is_array($mixedMenu)) {
+                if(isset($mixedMenu['template']) && isset($mixedMenu['menu_items']))
+                    $aMenu = $mixedMenu;
+                else
+                    $aMenu = array('template' => $this->_sDesignBoxMenuTmplDefault, 'menu_items' => $mixedMenu);
+
+                if(($oMenu = new BxTemplMenu($aMenu, $this->_oTemplate)) !== false) {
+                    $oMenu->setTemplateById($bUseTabs ? BX_DB_MENU_TEMPLATE_TABS : BX_DB_MENU_TEMPLATE_POPUP);
+
+                    $sMenu = $oMenu->getCode();
+                }
+                else
+                    $sMenu = '';
+            }
+            else if(is_object($mixedMenu) && is_a($mixedMenu, 'BxTemplMenu')) {
+                $mixedMenu->setTemplateById($bUseTabs ? BX_DB_MENU_TEMPLATE_TABS : BX_DB_MENU_TEMPLATE_POPUP);
+                if(($mixedMenu instanceof BxBaseMenuMoreAuto) && $mixedMenu->isMoreAuto())
+                    $sClass = ' bx-db-menu-tab-more-auto';
+
+                $sMenu = $mixedMenu->getCode();
+            }
+        }
+        $bMenu = !empty($sMenu);
+
+        $sResult = '';
+        if($bUseTabs && $bMenu)
+            $sResult = $sMenu;
+        else if(is_array($mixedButtons)) {
+            $sPopup = '';
+
+            if($bMenu) {
+                $aButton = array();
+                if(empty($mixedButtons))
+                    list($aButton, $sPopup) = $this->_designBoxMenuButton($sMenu);
+                //--- For backward compatibility
+                else if(!empty($mixedButtons['menu']) && is_array($mixedButtons['menu'])) {
+                    list($aButton, $sPopup) = $this->_designBoxMenuButton($sMenu, $mixedButtons['menu']);
+                    unset($mixedButtons['menu']);
+                }
+
+                if(!empty($aButton))
+                    $mixedButtons[] = $aButton;
+            }
+
+            foreach($mixedButtons as $aButton) {
+                if($bMenu && isset($aButton['menu'])) {
+                    if(is_numeric($aButton['menu']) && (int)$aButton['menu'] == 1)
+                        list($aButton, $sPopup) = $this->_designBoxMenuButton($sMenu);
+                    else if(is_array($aButton['menu']))
+                        list($aButton, $sPopup) = $this->_designBoxMenuButton($sMenu, $aButton['menu']);
+
+                    if(isset($aButton['menu']))
+                        continue;
+                }
+
+                $aAttrs = [];
+                if(!empty($aButton['href']))
+                    $aAttrs['href'] = $aButton['href'];
+                // a button that only runs a script (see BxBaseMenu::_getMenuAttrs)
+                if(!empty($aButton['onclick'])) {
+                    $aAttrs['href'] = "javascript:void(0);";
+                    $aAttrs['role'] = 'button';
+                    $aAttrs['onclick'] = $aButton['onclick'];
+                }
+                
+                $aAttrs['class'] = 'bx-btn bx-btn-small';
+                if(!empty($aButton['class']))
+                    $aAttrs['class'] .= ' ' . trim($aButton['class']);
+
+                // an icon-only button renders no text, so it needs an accessible name of its own
+                if(empty($aButton['title'])) {
+                    $sButtonLabel = _t(!empty($aButton['area_label']) ? $aButton['area_label'] : '_sys_menu_item_title_system_more');
+                    $aAttrs['aria-label'] = $sButtonLabel;
+                }
+
+                // the popup opened by bx_menu_popup* is role="dialog", bx_menu_popup_inline keeps aria-expanded in sync
+                if(!empty($aAttrs['onclick']) && strpos($aAttrs['onclick'], 'bx_menu_popup') !== false) {
+                    $aAttrs['aria-haspopup'] = 'dialog';
+                    $aAttrs['aria-expanded'] = 'false';
+                }
+
+                $bTmplVarsButtonIcon = !empty($aButton['icon']);
+                $aTmplVarsButtonIcon = !$bTmplVarsButtonIcon ? array() : array(
+                    'icon' => $aButton['icon']
+                );
+
+                $bTmplVarsButtonIconA = !empty($aButton['icon-a']);
+                $aTmplVarsButtonIconA = !$bTmplVarsButtonIconA ? array() : array(
+                    'icon_a' => $aButton['icon-a']
+                );
+
+                $bTmplVarsButtonTitle = !empty($aButton['title']);
+                $aTmplVarsButtonTitle = !$bTmplVarsButtonTitle ? array() : array(
+                    'title' => $aButton['title']
+                );
+
+                $sResult .= $this->_oTemplate->parseHtmlByName('designbox_menu_button.html', array(
+                    'attrs' => bx_convert_array2attrs($aAttrs),
+                    'bx_if:show_icon' => array(
+                        'condition' => $bTmplVarsButtonIcon,
+                        'content' => $aTmplVarsButtonIcon
+                    ),
+                    'bx_if:show_icon_a' => array(
+                        'condition' => $bTmplVarsButtonIconA,
+                        'content' => $aTmplVarsButtonIconA
+                    ),
+                    'bx_if:show_title' => array(
+                        'condition' => $bTmplVarsButtonTitle,
+                        'content' => $aTmplVarsButtonTitle
+                    )
+                ));
+            }
+
+            $sResult .= $sPopup;
+        }
+
+        if(!empty($sResult))
+            $sResult = $this->_oTemplate->parseHtmlByName('designbox_menu.html', array(
+                'class' => $sClass,
+                'content' => $sResult
+            ));
+
+        return $sResult;
+    }
+
+    protected function _designBoxMenuId ()
+    {
+        return 'bx-menu-db-' . time() . rand(0, PHP_INT_MAX);
+    }
+
+    protected function _designBoxMenuButton ($sMenu, $aParams = array())
+    {
+        $sId = $this->_designBoxMenuId();
+        $aButton = array($this->_sDesignBoxMenuIconType => $this->_sDesignBoxMenuIcon, 'onclick' => $this->_sDesignBoxMenuClick);
+
+        if(!empty($aParams)) {
+            if(!empty($aParams['id']))
+                $sId = $aParams['id'];
+
+            $aButton = array_merge($aButton, $aParams);
+        }
+
+        $aButton['onclick'] = bx_replace_markers($aButton['onclick'], array(
+            'design_box_menu' => $sId
+        ));
+
+        $sMenu = $this->_oTemplate->parseHtmlByName('designbox_menu_popup.html', array(
+            'content' => $sMenu
+        ));
+
+        return array($aButton, $this->transBox($sId, $sMenu, true));
+    }
+
+    /**
+     * Get logo URL.
+     * @return string
+     */
+    function getMainLogoUrl()
+    {
+        return BxDolDesigns::getInstance()->getSiteLogoUrl();
+    }
+
+    /**
+     * Get mark URL.
+     * @return string
+     */
+    function getMainMarkUrl()
+    {
+        return BxDolDesigns::getInstance()->getSiteMarkUrl();
+    }
+
+    /**
+     * Get logo HTML.
+     * @return string
+     */
+    function getMainLogo($aParams = array())
+    {
+        $oDesigns = BxDolDesigns::getInstance();
+
+        $sAlt = $oDesigns->getSiteLogoAlt();
+        if(empty($sAlt))
+            $sAlt = getParam('site_title');
+
+        $aLogoImages = [];
+        $mixedFileUrl = $this->getMainLogoUrl();
+
+        // Nothing uploaded: the default logo (template/images/logo-generic.svg, or the template's own copy).
+        $bDefault = false;
+        if(empty($mixedFileUrl)) {
+            $aLogo = $oDesigns->getSiteLogoSources(function($sFile) {
+                return $this->_oTemplate->getImageUrl($sFile);
+            })['logo'];
+
+            if($aLogo['source'] == BxDolDesigns::LOGO_SOURCE_BUILTIN) {
+                $mixedFileUrl = $aLogo['url'];
+                $bDefault = true;
+            }
+        }
+
+        if(!empty($mixedFileUrl)) {
+            if(!is_array($mixedFileUrl))
+                $mixedFileUrl = ['light' => $mixedFileUrl];
+
+            foreach($mixedFileUrl as $sName => $sFileUrl) {
+                // The default SVG gets the height only; the browser takes the width from its aspect ratio.
+                $iLogoWidth = !$bDefault ? (int)$oDesigns->getSiteLogoWidth() : 0;
+                $sWidth = $iLogoWidth > 0 ? 'width:' . round($iLogoWidth/16, 3) . 'rem;' : '';
+
+                $iLogoHeight = (int)$oDesigns->getSiteLogoHeight();
+                if($bDefault && $iLogoHeight <= 0)
+                    $iLogoHeight = 40; // the SVG's own size is 335x100
+                $sHeight = $iLogoHeight > 0 ? 'height:' . round($iLogoHeight/16, 3) . 'rem;' : '';
+
+                // width/height attributes let the browser reserve the space before the image arrives
+                $aSize = BxDolDesigns::getLogoSizeAttrs(
+                    $bDefault ? BxDolDesigns::getImageFileSize($this->_oTemplate->getImagePath(BxDolDesigns::$aLogoBuiltins['logo'])) : [],
+                    $iLogoWidth, $iLogoHeight
+                );
+
+                $aLogoImages[] = [
+                    'id' => 'bx-logo', 
+                    'src' => $sFileUrl, 
+                    'alt' => bx_html_attribute($sAlt, BX_ESCAPE_STR_QUOTE),
+                    'style' => $sWidth . ' ' . $sHeight . $aSize['style'],
+                    'size' => $aSize['attrs'],
+                ];
+            }
+        }
+        $bLogoImages = !empty($aLogoImages) && is_array($aLogoImages);
+
+        $aAttrs = array(
+            'class' => 'bx-def-font-contrasted',
+            'href' => BX_DOL_URL_ROOT,
+            'title' => bx_html_attribute($sAlt, BX_ESCAPE_STR_QUOTE)
+        );
+        if(!empty($aParams['attrs']) && is_array($aParams['attrs']))
+            $aAttrs = array_merge($aAttrs, $aParams['attrs']);
+
+        $sTmplName = 'logo_main.html';
+        $aTmplVars = [
+            'attrs' => bx_convert_array2attrs($aAttrs),
+             'bx_if:show_title' => [
+                'condition' => !$bLogoImages,
+                'content' => [
+                    'logo' => $sAlt,
+                ]
+            ],
+            'bx_if:show_logo' => [
+                'condition' => $bLogoImages,
+                'content' => [
+                    'bx_repeat:images' => $aLogoImages,
+                ]
+            ],
+        ];
+
+        bx_alert('system', 'get_logo', 0, 0, [
+            'tmpl_name' => &$sTmplName,
+            'tmpl_vars' => &$aTmplVars,
+
+            'tmpl_name_ref' => &$sTmplName,
+            'tmpl_vars_ref' => &$aTmplVars,
+        ]);
+
+        return $this->_oTemplate->parseHtmlByName($sTmplName, $aTmplVars);
+    }
+
+    /**
+     * The logo for a second place on the same page: the same link and images as getMainLogo, without the element ids
+     * (bx-logo, ...), which only the first copy keeps. The layout shows one of the two at a time.
+     * @return string
+     */
+    public function getMainLogoCopy($aParams = array())
+    {
+        return (string)preg_replace('/\sid="[^"]*"/', '', $this->getMainLogo($aParams));
+    }
+
+    /**
+     * Get HTML code for manifests.
+     * @return HTML string to insert into HEAD section
+     */
+    function getManifests()
+    {
+        return '<link rel="manifest" href="' . BX_DOL_URL_ROOT . 'manifest.json.php" crossorigin="use-credentials" />';
+    }
+
+    /**
+     * Get HTML code for meta icons.
+     * @return HTML string to insert into HEAD section
+     */
+    function getMetaIcons()
+    {
+        // favicons uploaded in Designer, the dark one for a dark browser/OS colour scheme
+        ['fav' => $sImageUrlFav, 'svg' => $sImageUrlSvg, 'dark' => $sImageUrlDark] = self::getUploadedFaviconUrls();
+
+        // else the default icon, with the template's dark variant unless a dark one was uploaded
+        if(empty($sImageUrlFav) && empty($sImageUrlSvg)) {
+            $sImageUrlFav = $sImageUrlSvg = $this->_oTemplate->getIconUrl('favicon.svg');
+            if(empty($sImageUrlDark)) {
+                $sImageUrlDark = $this->getMetaIconDarkUrl();
+            }
+        }
+        $bImageDark = !empty($sImageUrlDark);
+
+        // apple device icon
+        $sImageUrlApl = '';
+        if(($iId = (int)getParam('sys_site_icon_apple')) != 0)
+            $sImageUrlApl = BxDolTranscoderImage::getObjectInstance(BX_DOL_TRANSCODER_OBJ_ICON_APPLE)->getFileUrl($iId);
+        if(empty($sImageUrlApl))
+            $sImageUrlApl = $this->_oTemplate->getIconUrl('apple-touch-icon.png');
+
+/* 
+ * TODO: 
+ * 1. Remove commented code later if it won't be used.
+ * 2. Remove 'sys_icon_favicon' and 'sys_icon_facebook' transcoders and related transcoder filters.
+ * 
+        // facebook icon
+        $sImageUrlFcb = '';
+        $oTranscoder = BxDolTranscoderImage::getObjectInstance(BX_DOL_TRANSCODER_OBJ_ICON_FACEBOOK);
+        $sImageUrlFcb = $oTranscoder->getFileUrl($iId);
+        if(empty($sImageUrlFcb))
+            $sImageUrlFcb = $this->_oTemplate->getIconUrl('facebook-icon.png');
+*/
+
+        return $this->_oTemplate->parseHtmlByName('meta_icons.html', [
+            'bx_if:icon_fav' => [
+                'condition' => !$bImageDark && !empty($sImageUrlFav),
+                'content' => ['url' => bx_html_attribute($sImageUrlFav)]
+            ],
+            'bx_if:icon_svg' => [
+                'condition' => !$bImageDark && !empty($sImageUrlSvg),
+                'content' => ['url' => bx_html_attribute($sImageUrlSvg)]
+            ],
+            'bx_if:icon_dark' => [
+                'condition' => $bImageDark,
+                'content' => [
+                    'url_fav' => bx_html_attribute($sImageUrlFav ?: $sImageUrlSvg),
+                    'url_svg' => bx_html_attribute($sImageUrlSvg ?: $sImageUrlFav),
+                    'url_dark' => bx_html_attribute($sImageUrlDark)
+                ]
+            ],
+            'url_apple' => bx_html_attribute($sImageUrlApl),
+        ]);
+    }
+
+    /**
+     * Favicons uploaded in Designer (Studio > Designer > Icon): any format in 'fav', an SVG in 'svg', and an SVG or PNG
+     * for dark browser tabs in 'dark'. favicon.php sends /favicon.ico to 'fav' or 'svg'.
+     * @return array ['fav' => URL, 'svg' => URL, 'dark' => URL], '' for each one not uploaded
+     */
+    public static function getUploadedFaviconUrls()
+    {
+        $aUrls = ['fav' => '', 'svg' => '', 'dark' => ''];
+
+        if(($iId = (int)getParam('sys_site_icon')) != 0)
+            $aUrls['fav'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_FILES)->getFileUrlById($iId);
+
+        if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
+            $aUrls['svg'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+
+        if(($iId = (int)getParam('sys_site_icon_dark')) != 0) {
+            $aUrls['dark'] = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
+        }
+
+        return $aUrls;
+    }
+
+    /**
+     * Default favicon for a dark browser/OS colour scheme (browser tabs follow it, not the site's own colour scheme).
+     * @return string URL, or an empty string when the default favicon has no dark variant.
+     */
+    protected function getMetaIconDarkUrl()
+    {
+        return $this->_oTemplate->getIconUrl('favicon-dark.svg');
+    }
+
+    function getInjectionHead() 
+    {
+        return $this->getInjection('getInjHead');
+    }
+
+    function getInjectionHeader() 
+    {
+        return $this->getInjection('getInjHeader');
+    }
+
+    function getInjectionFooter() 
+    {
+        return $this->getInjection('getInjFooter');
+    }
+
+    public function getPopupAlert()
+    {
+        return $this->transBox('bx-popup-alert', [
+            'content' => $this->_oTemplate->parseHtmlByName('popup_trans_alert_cnt.html', []),
+            'wrapper_role' => 'alertdialog',
+            'wrapper_attrs' => 'aria-labelledby="bx-popup-alert-text"',
+        ], true);
+    }
+
+    public function getPopupConfirm()
+    {
+        return $this->transBox('bx-popup-confirm', [
+            'content' => $this->_oTemplate->parseHtmlByName('popup_trans_confirm_cnt.html', []),
+            'wrapper_role' => 'alertdialog',
+            'wrapper_attrs' => 'aria-labelledby="bx-popup-confirm-text"',
+        ], true);
+    }
+
+    public function getPopupPrompt()
+    {
+        $sInputText = 'bx-popup-prompt-value';
+        $aInputText = array(
+            'type' => 'text',
+            'name' => $sInputText,
+            'attrs' => array(
+                'id' => $sInputText,
+                'aria-labelledby' => 'bx-popup-prompt-text',
+            ),
+            'value' => '',
+            'caption' => ''
+        );
+
+        $oForm = new BxTemplFormView(array(), $this->_oTemplate);
+        return $this->transBox('bx-popup-prompt', [
+            'content' => $this->_oTemplate->parseHtmlByName('popup_trans_prompt_cnt.html', [
+                'input' => $oForm->genRow($aInputText)
+            ]),
+            'wrapper_attrs' => 'aria-labelledby="bx-popup-prompt-text"',
+        ], true);
+    }
+
+    public function getPopupToast()
+    {
+        $sHtmlId = 'bx-popup-toast';
+        return $this->_oTemplate->parseHtmlByName('popup_trans_toast_holder.html', [
+            'html_id' => $sHtmlId . '-holder',
+            'sample' => $this->transBox($sHtmlId, $this->_oTemplate->parseHtmlByName('popup_trans_toast_cnt.html', []), true)
+        ]);
+    }
+
+    /**
+     * Output time wrapped in <time> tag in HTML.
+     * Then time is autoformatted using JS upon page load, this is aumatically converted to user's timezone and
+     * updated in realtime in case of short periods of 'from now' time format.
+     *
+     * Short version of this function:
+     * @see bx_time_js
+     *
+     * @param $iUnixTimestamp time as unixtimestamp
+     * @param $sFormatIdentifier output format identifier
+     *     @see BX_FORMAT_DATE
+     *     @see BX_FORMAT_TIME
+     *     @see BX_FORMAT_DATE_TIME
+     * @param $bForceFormat force provided format and don't use "from now" time autoformat.
+     */
+    function timeForJs ($iUnixTimestamp, $sFormatIdentifier = BX_FORMAT_DATE, $bForceFormat = false)
+    {
+        $sDateUTC = bx_time_utc ($iUnixTimestamp);
+        return $this->timeForJsFullDate ($sDateUTC, $sFormatIdentifier, $bForceFormat);
+    }
+
+    /**
+     * Same as @see timeForJs but instead of unxtimestamp full date format is used (ex: 2005-08-15T15:52:01) as passec date param
+     */ 
+    function timeForJsFullDate ($sDateUTC, $sFormatIdentifier = BX_FORMAT_DATE, $bForceFormat = false, $bUTC = false)
+    {
+        return '<time datetime="' . $sDateUTC . '" data-bx-format="' . getParam($sFormatIdentifier) . '" data-bx-autoformat="' . ($bForceFormat ? 0 : getParam('sys_format_timeago')) . '" data-bx-utc="' . ($bUTC ? 1 : 0) . '">' . $sDateUTC . '</time>';
+    }
+    
+    function statusOnOff ($mixed, $isMsg = false)
+    {
+        if ((is_bool($mixed) && !$mixed) || (is_string($mixed) && 'fail' == $mixed))
+            return '<i class="sys-icon circle col-red2"></i> ' . ($isMsg ? _t('_sys_off') : '');
+        elseif (is_string($mixed) && 'warn' == $mixed)
+            return '<i class="sys-icon circle col-red3"></i> ' . ($isMsg ? _t('_sys_warn') : '');
+        elseif (is_string($mixed) && 'undef' == $mixed)
+            return '<i class="sys-icon circle col-gray"></i> ' . ($isMsg ? _t('_undefined') : '');
+        else
+            return '<i class="sys-icon circle col-green1"></i> ' . ($isMsg ? _t('_sys_on') : '');
+    }
+
+    /**
+     * Ouputs HTML5 video player.
+     * @param $sUrlPoster video poster image
+     * @param $sUrlMP4 .mp4 video
+     * @param $sUrlMP4Hd .mp4 video in better quality
+     * @param $aAttrs custom attributes, defaults are: controls="" preload="none" autobuffer=""
+     * @param $sStyles custom styles, defaults are: width:100%; height:auto;
+     */
+    function videoPlayer ($sUrlPoster, $sUrlMP4, $sUrlMP4Hd = '', $aAttrs = false, $sStyles = false, $bDynamicMode = false)
+    {
+        $oPlayer = BxDolPlayer::getObjectInstance();
+        if(!$oPlayer)
+            return '';
+
+        if($sStyles === false)
+            $sStyles = 'width:100%; height:auto;';
+
+        return $oPlayer->getCodeVideo (BX_PLAYER_STANDARD, array(
+            'poster' => $sUrlPoster,
+            'mp4' => array('sd' => $sUrlMP4, 'hd' => $sUrlMP4Hd),
+            'attrs' => $aAttrs,
+            'styles' => $sStyles,
+        ), $bDynamicMode);
+    }
+
+    /**
+     * Letter avatar for an email, for a profile without a picture: the first letter of the
+     * display name on the profile's colour (as on the site), drawn with inline styles only,
+     * since email clients block SVG, so the no-picture image shows as broken there.
+     * @param $oProfile profile object (BxDolProfile, BxDolProfileUndefined or BxDolProfileAnonymous)
+     * @return string HTML, empty when no profile is given
+     */
+    public function getEmailLetterAvatar($oProfile)
+    {
+        if(!is_object($oProfile))
+            return '';
+
+        $sTitle = trim(html_entity_decode((string)$oProfile->getDisplayName(), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+        $sLetter = mb_strtoupper(get_mb_substr($sTitle, 0, 1), 'UTF-8');
+        if($sLetter === '')
+            $sLetter = '?';
+
+        return $this->_oTemplate->parseHtmlByName('et_letter_avatar.html', [
+            'color' => $this->_getEmailAvatarColor((int)$oProfile->id()),
+            'letter' => htmlspecialchars($sLetter, ENT_QUOTES, 'UTF-8'),
+        ]);
+    }
+
+    /**
+     * Site logo for the email header ({site_logo} marker): the email logo uploaded in Designer, else the site logo,
+     * when it is a PNG, JPEG or GIF, otherwise the site title as text, since email clients block SVG.
+     * The dark-mode logo goes next to it, hidden; the default header shows it in dark mode.
+     * @return string HTML
+     */
+    public function getEmailLogo()
+    {
+        $sTitle = trim(html_entity_decode((string)getParam('site_title'), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+        $oDesigns = BxDolDesigns::getInstance();
+        $aSources = $this->getEmailLogoSources();
+        $sUrl = $aSources['logo']['url'];
+        $sUrlDark = $aSources['logo_dark']['url'];
+
+        $sAlt = trim(html_entity_decode((string)$oDesigns->getSiteLogoAlt(), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        if($sAlt === '')
+            $sAlt = $sTitle;
+        $sAlt = bx_html_attribute($sAlt);
+
+        $bUrl = $sUrl !== '';
+        return $this->_oTemplate->parseHtmlByName('et_site_logo.html', [
+            'bx_if:show_image' => [
+                'condition' => $bUrl,
+                'content' => [
+                    'url' => bx_html_attribute($sUrl),
+                    'alt' => $sAlt,
+                    'bx_if:show_image_dark' => [
+                        'condition' => $sUrlDark !== '',
+                        'content' => [
+                            'url_dark' => bx_html_attribute($sUrlDark),
+                            'alt' => $sAlt,
+                        ]
+                    ],
+                ]
+            ],
+            'bx_if:show_title' => [
+                'condition' => !$bUrl,
+                'content' => [
+                    'title' => htmlspecialchars($sTitle, ENT_QUOTES, 'UTF-8'),
+                ]
+            ],
+        ]);
+    }
+
+    /**
+     * Where the email header's logos come from: the email logos uploaded in Designer (sys_site_logo_email*) when they
+     * are a PNG, JPEG or GIF, else the site's logos. Without a light logo there is no dark one either, and a light email
+     * logo is never paired with the site's dark logo.
+     * @return array by type (logo, logo_dark): ['source' => 'email' | 'site' | 'none', 'url' => string]
+     */
+    public function getEmailLogoSources()
+    {
+        $oDesigns = BxDolDesigns::getInstance();
+        $aNone = ['source' => 'none', 'url' => ''];
+
+        $aResult = ['logo' => $aNone, 'logo_dark' => $aNone];
+        if(($sUrl = $this->_getEmailLogoUrl((int)getParam('sys_site_logo_email'))) !== '')
+            $aResult['logo'] = ['source' => 'email', 'url' => $sUrl];
+        else if(($sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogo())) !== '')
+            $aResult['logo'] = ['source' => 'site', 'url' => $sUrl];
+
+        if($aResult['logo']['source'] == 'none')
+            return $aResult;
+
+        if(($sUrl = $this->_getEmailLogoUrl((int)getParam('sys_site_logo_email_dark'))) !== '')
+            $aResult['logo_dark'] = ['source' => 'email', 'url' => $sUrl];
+        else if($aResult['logo']['source'] == 'site' && ($sUrl = $this->_getEmailLogoUrl((int)$oDesigns->getSiteLogoDark())) !== '')
+            $aResult['logo_dark'] = ['source' => 'site', 'url' => $sUrl];
+
+        return $aResult;
+    }
+
+    /**
+     * A Designer logo's URL that lasts in an email: a public transcoded copy, since Designer
+     * stores the original as a private file whose links expire. Empty unless it is a PNG, JPEG or GIF.
+     */
+    protected function _getEmailLogoUrl($iFileId)
+    {
+        if(!$iFileId)
+            return '';
+
+        $oDesigns = BxDolDesigns::getInstance();
+        $aFile = $oDesigns->getSiteLogoInfo($iFileId);
+        if(empty($aFile) || !in_array($aFile['mime_type'] ?? '', ['image/png', 'image/jpeg', 'image/gif']))
+            return '';
+
+        // 80px for 40px at 2x
+        return (string)$oDesigns->getSiteLogoUrlScaled($iFileId, 80);
+    }
+
+    /**
+     * The profile's letter avatar colour (BxDolTemplate::getColorCode, as on the site, AA with the white letter)
+     * as hex, since some email clients ignore rgba().
+     */
+    protected function _getEmailAvatarColor($iProfileId)
+    {
+        $aRgb = array_map('intval', array_slice(BxDolTemplate::getColorCode($iProfileId), 0, 3));
+
+        return sprintf('#%02x%02x%02x', $aRgb[0], $aRgb[1], $aRgb[2]);
+    }
+
+    protected function getInjection($sPrefix)
+    {
+        $sContent = '';
+
+        $aMethods = get_class_methods($this);
+        foreach($aMethods as $sMethod)
+            if(preg_match("/^(" . $sPrefix . ")[A-Z].+$/", $sMethod))
+                $sContent .= $this->$sMethod();
+
+        return $sContent;
+    }
+
+    /**
+     * Interface sounds: Cuelume's cues (plugins_public/cuelume, MIT) with the settings of BxDolSounds. The module is
+     * loaded and bound only where sounds are on for this platform and the visitor hasn't turned them off.
+     * See bx_sound_init in inc/js/functions.js.
+     */
+    protected function getInjHeadSounds()
+    {
+        $oSounds = BxDolSounds::getInstance();
+        $bOn = $oSounds->isOn($this->getSoundsPlatform());
+        if(!$bOn && !$this->isSoundsPreview())
+            return '';
+
+        $aConfig = $oSounds->getConfig();
+        unset($aConfig['platforms']);
+
+        $aLabels = [];
+        foreach(BxDolSounds::LEVELS as $sLevel)
+            $aLabels[$sLevel] = _t('_sys_txt_sounds_level_' . $sLevel);
+
+        return $this->_oTemplate->parseHtmlByName('sounds_init.html', [
+            'url' => bx_js_string(BX_DOL_URL_PLUGINS_PUBLIC . 'cuelume/cuelume.min.js', BX_ESCAPE_STR_APOS),
+            'config' => json_encode(array_merge($aConfig, ['on' => $bOn, 'labels' => $aLabels]), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+        ]);
+    }
+
+    protected function getSoundsPlatform()
+    {
+        return 'site';
+    }
+
+    /**
+     * Whether visitors can pick a light or dark colour scheme here. A template with a dark scheme (Artificer) says
+     * yes and builds the menu; the footer's Theme item shows only then (BxBaseMenuFooter).
+     */
+    public function isColorSchemeSwitchable()
+    {
+        return false;
+    }
+
+    /**
+     * The colour scheme menu, hidden until a trigger opens it with bx_menu_popup_inline('#' + $sId, ...).
+     */
+    public function getColorSchemeMenu($sId)
+    {
+        return '';
+    }
+
+    /**
+     * Whether pages get the sounds setup while sounds are off here, to preview them (Studio's Settings > Sounds).
+     */
+    protected function isSoundsPreview()
+    {
+        return false;
+    }
+
+    /**
+     * The icon set's code for <head> (BxBaseIconset::getCodeHead), for a set that loads a script there.
+     */
+    protected function getInjHeadIcons()
+    {
+        $oIconset = BxDolIconset::getObjectInstance();
+        if(!$oIconset) {
+            return '';
+        }
+
+        $sCode = $oIconset->getCodeHead();
+        return $sCode !== false ? $sCode : '';
+    }
+
+    /**
+     * The site's corner radii (Studio > Designer > Settings > Corners) for the styles: the size as a factor of the
+     * design's own radii, and smooth corners with their multiplier (design_radius.html, template/css/tailwind.css).
+     * Nothing is printed for the design's own corners.
+     * A smooth corner (corner-shape: squircle) looks tighter than a round one of the same radius, so where the browser
+     * draws it the radii are multiplied to look the same size. A pill or a circle stays round.
+     */
+    protected function getInjHeadDesignRadius()
+    {
+        $aSizes = ['none' => '0', 'small' => '0.75', 'large' => '1'];
+        $sSize = (string)getParam('sys_design_radius');
+        $sSize = isset($aSizes[$sSize]) ? $sSize : 'large';
+
+        $bSmooth = getParam('sys_design_radius_smooth') == 'on' && $sSize != 'none';
+        if($sSize == 'large' && !$bSmooth) {
+            return '';
+        }
+
+        // the multiplier is a number between 1 and 3, whatever was saved
+        $fFactor = min(2, max(1, (float)getParam('sys_design_radius_smooth_factor')));
+
+        return $this->_oTemplate->parseHtmlByName('design_radius.html', [
+            'size' => $aSizes[$sSize],
+            'bx_if:smooth' => [
+                'condition' => $bSmooth,
+                'content' => ['factor' => rtrim(rtrim(number_format($fFactor, 2, '.', ''), '0'), '.')],
+            ],
+        ]);
+    }
+
+    /**
+     * The accent color Studio > Designer > Settings picks, when it isn't the default blue: its scale as the
+     * --bx-accent-* variables that every blue-* class reads (template/css/tailwind.css, BxDolDesigns::getAccentPresets).
+     */
+    protected function getInjHeadDesignAccent()
+    {
+        $aScale = BxDolDesigns::getAccentScale();
+        if(empty($aScale))
+            return '';
+
+        $aSteps = [];
+        foreach($aScale as $iStep => $sRgb)
+            $aSteps[] = ['step' => (int)$iStep, 'rgb' => preg_replace('/[^0-9 ]/', '', $sRgb)];
+
+        return $this->_oTemplate->parseHtmlByName('design_accent.html', [
+            'bx_repeat:steps' => $aSteps,
+        ]);
+    }
+
+    protected function getInjHeadLiveUpdates() 
+    {
+        $sContent = '';
+
+        if(($oLiveUpdates = BxDolLiveUpdates::getInstance()) !== false)
+            $sContent .= $oLiveUpdates->init();
+
+        return $sContent;
+    }
+
+    protected function getInjHeaderPushNotifications() 
+    {
+        $sResult = '';
+
+        if(($oPush = BxDolPush::getObjectInstance()) !== false)
+            $sResult = $oPush->getCode('page_header');
+
+        return $sResult;
+    }
+
+    protected function getInjHeaderPopupLoading() 
+    {
+        return $this->transBox('bx-popup-loading', $this->_oTemplate->parsePageByName('popup_loading.html', array()), true);  
+    }
+    
+    protected function getInjFooterMenuLoading() 
+    {
+        return $this->_oTemplate->parsePageByName('menu_loading.html', array());  
+    }
+
+    protected function getInjFooterPopupMenus() 
+    {
+        $sContent = '';
+
+        $oSearch = new BxTemplSearch();
+        $oSearch->setLiveSearch(true);
+        $sContent .= $this->_oTemplate->parsePageByName('search.html', array(
+            'search_form' => $oSearch->getForm(BX_DB_CONTENT_ONLY),
+            'results' => $oSearch->getResultsContainer(),
+        ));
+
+        $sContent .= $this->_oTemplate->getMenu ('sys_site');
+        if(isLogged()) {
+            $sContent .= $this->_oTemplate->getMenu ('sys_add_content');
+            $sContent .= $this->_oTemplate->getMenu ('sys_account_popup');
+        }
+
+        return $sContent;
+    }
+    
+    protected function getInjFooterPopupApps() 
+    {
+        if($this->_oTemplate->getPageType() != BX_PAGE_TYPE_APPLICATION) 
+            return '';
+
+        $oMenu = BxDolMenu::getObjectInstance('sys_homepage');
+        if(!$oMenu) 
+            return '';
+
+        $this->_oTemplate->addJs(['popper.js']);
+        return $this->_oTemplate->parsePageByName('menu_apps.html', [
+            'name' => 'sys-menu-apps',
+            'title' => _t('_apps'),
+            'bx_repeat:menu_items' => $oMenu->getMenuItems(),
+        ]);
+    }
+
+    protected function getInjFooterPopups() 
+    {
+        $sContent = '';
+        $sContent .= $this->getPopupAlert();
+        $sContent .= $this->getPopupConfirm();
+        $sContent .= $this->getPopupPrompt();
+        $sContent .= $this->getPopupToast();
+        return $sContent;
+    }
+
+    protected function getInjFooterEmbed() 
+    {    
+        // Load embed files
+        $oEmbed = BxDolEmbed::getObjectInstance(false);
+        if ($oEmbed) 
+            return $oEmbed->addJsCss() . $oEmbed->addProcessLinkMethod();
+
+        return '';
+    }
+}
+
+/** @} */

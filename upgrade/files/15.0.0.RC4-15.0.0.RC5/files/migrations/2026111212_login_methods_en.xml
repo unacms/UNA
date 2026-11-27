@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sign-in methods under the form: the "or" between them, and no "compact view" setting. The login form no longer repeats the terms notice of the join form. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_txt_auth_or"><![CDATA[or]]></string_add>
+    <string_add name="_sys_txt_login_description"><![CDATA[Don't have an account?]]></string_add>
+    <string_add name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string_add>
+    <string_upd name="_sys_txt_login_description_action"><![CDATA[Sign up]]></string_upd>
+    <string_del name="_adm_stg_cpt_option_site_login_social_compact"></string_del>
+    <string_del name="_sys_form_login_input_agreement_value"></string_del>
+</resources>

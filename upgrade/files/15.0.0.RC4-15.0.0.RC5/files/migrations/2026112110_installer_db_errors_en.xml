@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Installer: a failed database connection says which field to fix and how. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_inst_msg_db_err_host"><![CDATA[No database server answered at this host.]]></string_add>
+    <string_add name="_sys_inst_msg_db_err_access"><![CDATA[The database server refused this user and password.]]></string_add>
+    <string_add name="_sys_inst_msg_db_err_not_allowed"><![CDATA[This user has no database with this name it may use.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_connect"><![CDATA[Check the host, and the port or socket if you set one.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_host"><![CDATA[Nothing answers here. Use the MySQL host your hosting panel shows, often localhost; with Docker, the database service's name, such as mysql.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_user"><![CDATA[Check the user name, and that this user may connect from this web server.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_password"><![CDATA[Check the password of this user.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_name"><![CDATA[Create an empty database with this name first, or enter the name of one you have created.]]></string_add>
+    <string_add name="_sys_inst_conf_err_db_not_allowed"><![CDATA[Check the name. If the database exists, give this user all privileges on it in your hosting panel; if not, create it first, empty.]]></string_add>
+    <string_upd name="_sys_inst_msg_db_err_select"><![CDATA[There's no database with this name on the server.]]></string_upd>
+</resources>

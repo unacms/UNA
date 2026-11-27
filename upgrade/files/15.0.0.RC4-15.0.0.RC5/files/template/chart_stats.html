@@ -1,0 +1,32 @@
+<div class="bx-chart-stats bx-def-font-align-center">
+    <div class="bx-chart-stats-graph">
+        <canvas class="bx-canvas" id="__chart_id__" width="100%"></canvas>
+        <script language="javascript">
+            var oStatsData = __chart_data__;
+            if(oStatsData.datasets && oStatsData.datasets[0])
+                $.extend(oStatsData.datasets[0], {backgroundColor: bx_chart_series_colors(oStatsData.labels.length), borderColor: 'transparent', borderWidth: 2});
+            bx_chart_theme_defaults();
+            var oStatsChart = new Chart($("#__chart_id__"), {
+                    type: 'doughnut',
+                    data: oStatsData,
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        layout: {
+                            padding: {
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0
+                            }
+                        },
+                        maintainAspectRatio: false
+                    },
+            });
+            $("#__chart_id__").height(450);
+        </script>
+    </div>
+</div>

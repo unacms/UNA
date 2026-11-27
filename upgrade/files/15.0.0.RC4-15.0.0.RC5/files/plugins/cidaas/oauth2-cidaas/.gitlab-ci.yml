@@ -1,0 +1,107 @@
+include:
+  - project: "widas/codequality"
+    file: "ci_templates/php8.gitlab-ci.yml"
+
+stages:
+  - test
+  - badges
+  - deploy
+  - release
+  - publish
+
+codecoverage:
+  image: php:fpm-alpine
+  before_script:
+    - apk add --no-cache tar git zip unzip $PHPIZE_DEPS linux-headers
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install
+    # Composer >= 2.9 blocks insecure packages on install; audit makes advisories visible in the job log.
+    - php composer.phar audit
+  script:
+    - XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-text | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" > coverage_report.txt
+  coverage: '/Lines:\s+(\d+.\d+)%/'
+  artifacts:
+    paths:
+      - coverage_report.txt
+
+# The widas/codequality template runs Code Climate via `docker pull` / `docker run`, which needs a
+# Docker daemon. The Kubernetes runners have none ("Cannot connect to the Docker daemon at
+# unix:///var/run/docker.sock"), so both jobs always failed. Run PHPStan instead: it emits the
+# GitLab Code Quality format natively, so the MR widget and the pages artifacts keep working.
+.php_code_quality:
+  before_script:
+    - apk add --no-cache git unzip
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-interaction --no-progress --prefer-dist
+  script:
+    # Findings must not abort the job before the report is uploaded; a crashed run (invalid JSON) still fails.
+    - vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=gitlab > gl-code-quality-report.json || true
+    - php -r 'json_decode(file_get_contents("gl-code-quality-report.json"), true, 512, JSON_THROW_ON_ERROR);'
+
+# Keys are set on the jobs directly (not via `extends`): the template's own image/script for these
+# jobs is merged in first and would take precedence over anything inherited through `extends`.
+code_quality_json:
+  image: php:8.2-cli-alpine
+  before_script: !reference [.php_code_quality, before_script]
+  script: !reference [.php_code_quality, script]
+
+code_quality_html:
+  image: php:8.2-cli-alpine
+  before_script: !reference [.php_code_quality, before_script]
+  script:
+    - !reference [.php_code_quality, script]
+    - php scripts/codequality-html.php gl-code-quality-report.json > codeclimate.html
+
+create_codequality_badges:
+  rules:
+    - when: never
+
+pages:
+  before_script:
+    - mkdir public
+
+release:
+  image: docker-registry.widas.de:5050/dockerregistry/common/semantic-release:v1.0.5
+  stage: release
+  script:
+    - semantic-release
+  only:
+    - master
+    - /^hotfix.*$/
+    - /^release-v.*$/
+
+github_sync:
+  stage: publish
+  image: bitnami/git
+  script:
+    - git config --global --add safe.directory $PWD
+    - git config --global user.name $GITLAB_USER_NAME
+    - git config --global user.email $GITLAB_USER_EMAIL
+    - git checkout master
+    - git remote -v >> temp
+    - if grep -q github temp;then echo 'remote github already exists';else git remote add github https://github.com/Cidaas/cidaas-sdk-php.git;fi
+    - |
+      OBJECTS="Dockerfile .gitlab-ci.yml scripts temp docker docker-compose.yml run-php-docker.sh Jenkinsfile public codeclimate.html gl-code-quality-report.json"
+      ISFILECHANGED=false
+      for FILE in $OBJECTS
+      do
+        if grep -Fxq $FILE .gitignore;
+        then echo "do nothing";
+        else echo "$FILE" >> .gitignore;
+        ISFILECHANGED=true
+        fi
+      done
+      if $ISFILECHANGED;
+      then
+        git add .gitignore;
+        git commit -m "fix(): cleanup";
+        git rm -r --cached .;
+        git add .;
+        git commit -m "fix(): gitignore update"
+      fi
+    - git push https://$USER:$PAT@github.com/Cidaas/cidaas-sdk-php.git HEAD:master -f
+  only:
+    - master
+  when: manual

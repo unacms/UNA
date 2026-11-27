@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sign-in methods under the form: the "or" between them; the link to the other form is a line of text. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_txt_auth_or"><![CDATA[или]]></string_add>
+    <string_add name="_sys_txt_login_description"><![CDATA[Нет аккаунта?]]></string_add>
+    <string_add name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string_add>
+    <string_upd name="_sys_txt_login_description_action"><![CDATA[Зарегистрироваться]]></string_upd>
+</resources>

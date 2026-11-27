@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Designer > Settings > Header: the header width and main menu alignment and the page width per page layout, for visitors and for members. -->
+<resources name="en" flag="gb" title="English">
+	<string_add name="_adm_dsg_inf_settings_section_header"><![CDATA[How wide pages are, how wide the header is and where the main menu sits in it, for each page layout, for visitors and for members. The site and the apps follow these; a template can set its own in its settings.]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align"><![CDATA[Main menu]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_center"><![CDATA[Center]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_end"><![CDATA[End]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_start"><![CDATA[Start]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_application"><![CDATA[Application layout]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_standard"><![CDATA[Standard layout]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width"><![CDATA[Header width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width_full"><![CDATA[Full width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width_page"><![CDATA[Page width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_header"><![CDATA[Page and header]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_application_member"><![CDATA[Main menu alignment on Application pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_application_visitor"><![CDATA[Main menu alignment on Application pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_standard_member"><![CDATA[Main menu alignment on Standard pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_standard_visitor"><![CDATA[Main menu alignment on Standard pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_application_member"><![CDATA[Header width on Application pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_application_visitor"><![CDATA[Header width on Application pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_standard_member"><![CDATA[Header width on Standard pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_standard_visitor"><![CDATA[Header width on Standard pages for visitors]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width"><![CDATA[Page width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_full"><![CDATA[Full width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_limited"><![CDATA[Limited]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_px"><![CDATA[Page width in pixels]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_application_member"><![CDATA[Page width on Application pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_application_visitor"><![CDATA[Page width on Application pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_standard_member"><![CDATA[Page width on Standard pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_standard_visitor"><![CDATA[Page width on Standard pages for visitors]]></string_add>
+</resources>

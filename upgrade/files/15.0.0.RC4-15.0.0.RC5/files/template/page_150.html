@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="__lang__" class="__class_name__">
+<head>
+    <bx_injection:injection_head_begin />
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=__page_charset__" />
+    <meta name="viewport" content="__page_viewport__" />
+    <title>__page_header__</title>
+    __meta_icons__
+    <base href="<bx_url_root />" />
+
+    <meta http-equiv="refresh" content="1;URL=__url_relocate__" />
+
+    <bx_include_css_system />
+    <bx_include_css />
+
+    <bx_include_js_system />
+    <bx_include_js />
+    __extra_js__
+
+    __dol_images__
+
+    <bx_injection:injection_head />
+</head>
+<body class="bx-def-font bx-def-color-bg-page" dir="__lang_direction__" <bx_injection:injection_body /> >
+
+    <div class="bx-transition" role="status">
+        <canvas class="bx-loading-orb" aria-hidden="true"></canvas>
+        <div class="bx-transition-msg">__page_main_code__</div>
+    </div>
+    <script language="javascript">
+        bx_set_color_scheme_html();
+        bx_loading_orb_start($('.bx-transition'));
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio captions of the API v2 rate limit settings. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: ограничивать число запросов]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: запросов в минуту от одного участника или с одного адреса гостя (0 — без ограничения)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: изменений в минуту — публикации, правки, удаления, реакции (0 — без ограничения)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: поисковых запросов в минуту (0 — без ограничения)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: предпросмотров ссылок в минуту (0 — без ограничения)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: сообщений ИИ-агентам в минуту (0 — без ограничения)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: загрузок файлов в минуту (0 — без ограничения)]]></string_add>
+</resources>

@@ -1,0 +1,18 @@
+<nav class="bx-nav-crumbs" aria-label="__txt_label__">
+    <bx_repeat:crumbs>
+        <bx_if:sep>
+            <svg class="bx-nav-crumb-sep" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </bx_if:sep>
+        <span class="bx-nav-crumb">
+            <bx_if:label>
+                <span class="bx-nav-crumb-label">__label__:</span>
+            </bx_if:label>
+            <bx_if:control>
+                __control__
+            </bx_if:control>
+            <bx_if:text>
+                <span class="bx-nav-crumb-text" aria-current="page">__text__</span>
+            </bx_if:text>
+        </span>
+    </bx_repeat:crumbs>
+</nav>

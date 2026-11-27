@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_ATT_UNCONFIRMED_E"><![CDATA[You will need to follow the link supplied in the email to get your account submitted for approval. <br />Send me <a target=_blank href="activation_email.php">confirmation email</a>.]]></string_upd>
+    <string_upd name="_Enter_value_here"><![CDATA[Please enter a value here]]></string_upd>
+    <string_upd name="_favorite_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+    <string_upd name="_feature_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+    <string_upd name="_report_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+    <string_upd name="_adm_bp_dsc_page_uri"><![CDATA[Page address used after 'youdomain.com/page/'. It must be unique and it cannot be changed later.]]></string_upd>
+    <string_upd name="_adm_bp_err_page_layout"><![CDATA[Please select a page layout.]]></string_upd>
+    <string_upd name="_adm_form_err_search_forms_essential"><![CDATA[The field is required. Please fill in.]]></string_upd>
+    <string_upd name="_adm_form_txt_field_checker_email"><![CDATA[Email (correct email address format)]]></string_upd>
+    <string_upd name="_adm_form_txt_field_required"><![CDATA[Required]]></string_upd>
+    <string_upd name="_adm_nav_err_menus_set_name"><![CDATA[Please assign a Set.]]></string_upd>
+    <string_upd name="_adm_nav_err_menus_style"><![CDATA[Please select a presentation style.]]></string_upd>
+    <string_upd name="_adm_prm_dsc_level_quota_number"><![CDATA[Limit amount of files a user with this level can upload (0 - unlimited).]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_accounts_password_log_count"><![CDATA[Number of stored old passwords (0 = do not store)]]></string_upd>
+    <string_upd name="_adm_stg_inf_option_sys_autoupdate"><![CDATA[Try to update core system and modules automatically.]]></string_upd>
+    <string_upd name="_adm_stg_cpt_option_sys_storage_s3_amz_iam_role"><![CDATA[Authenticate using Amazon IAM Role (S3v4alt storage only)]]></string_upd>
+    <string_upd name="_adm_stg_txt_mix_title_err"><![CDATA[Title is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_adm_strg_err_width"><![CDATA[Width is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_adm_strg_err_height"><![CDATA[Height is required. Please fill in this field.]]></string_upd>
+    <string_upd name="_adm_txt_login_subtitle"><![CDATA[Enter your email and password to log in to Studio.]]></string_upd>
+    <string_upd name="_cmt_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+    <string_upd name="_sys_acl_action_pending"><![CDATA[You are currently not an active member. Please ask the site <a href="mailto:{7}">administrator</a> to make you an active member so you would be able to <b>{1}</b>.]]></string_upd>
+    <string_upd name="_sys_agents_form_field_err_enter"><![CDATA[This field is required. Please enter something here.]]></string_upd>
+    <string_upd name="_sys_agents_form_field_err_select"><![CDATA[This field is required. Please select something here.]]></string_upd>
+    <string_upd name="_sys_et_txt_body_account_password_expired"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your password will expire {expired_date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please sign-in and change password</p>
+{email_footer}]]></string_upd>
+    <string_upd name="_sys_et_txt_name_system_confirmation"><![CDATA[Profile email confirmation message]]></string_upd>
+    <string_upd name="_sys_form_account_input_captcha_error"><![CDATA[Security image input failed. Please try again.]]></string_upd>
+    <string_upd name="_sys_form_account_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string_upd>
+    <string_upd name="_sys_form_account_input_email_uniq_error"><![CDATA[This email address is already registered. Please use <a href="{0}">Forgot password</a> to restore access to your account.]]></string_upd>
+    <string_upd name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to log in to this site.]]></string_upd>
+    <string_upd name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string_upd>
+    <string_upd name="_sys_form_forgot_password_phone_and_email_empty_error"><![CDATA[Please fill phone or email field]]></string_upd>
+    <string_upd name="_sys_form_login_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string_upd>
+    <string_upd name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share on Facebook]]></string_upd>
+    <string_upd name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on Twitter]]></string_upd>
+    <string_upd name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string_upd>
+    <string_upd name="_sys_menu_item_title_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string_upd>
+    <string_upd name="_sys_menu_item_title_social_sharing_whatsapp"><![CDATA[Share on WhatsApp]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_whatsapp"><![CDATA[Share on WhatsApp]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Share on Facebook]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on Twitter]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string_upd>
+    <string_upd name="_sys_score_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+    <string_upd name="_sys_splash_err_domain_incorrect"><![CDATA[Domain is required. Please fill in this field, for example, my-first-site.]]></string_upd>
+    <string_upd name="_sys_storage_restriction_ext_allowed"><![CDATA[Please upload only files of these types: {0}]]></string_upd>
+    <string_upd name="_sys_txt_account_unconfirmed_email"><![CDATA[Your email address is unconfirmed. Please check your email ({1}) for a confirmation letter and click email confirmation link or use confirmation code (6 digit) to <a href="{2}">confirm your email</a>. Can't find the letter? Check your SPAM folder or <a href="{0}">send the verification letter again</a>.]]></string_upd>
+    <string_upd name="_sys_txt_account_unconfirmed_phone"><![CDATA[Your phone is unconfirmed. Please confirm it on <a href="{0}">verification page</a>.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_email_error_occured"><![CDATA[Error occurred, please try to log in to your account and resend verification email.]]></string_upd>
+    <string_upd name="_sys_txt_confirm_phone_set_phone_error_occured"><![CDATA[Error occurred, please try to log in to your account and repeat verification.]]></string_upd>
+    <string_upd name="_sys_txt_form_submission_error"><![CDATA[Incorrect info. Please check your inputs and try to submit again.]]></string_upd>
+    <string_upd name="_sys_txt_reset_pasword_success"><![CDATA[Your password was reset. You are welcome to log in to your account.]]></string_upd>
+    <string_upd name="_sys_uploader_html5_number_of_files_exceeded"><![CDATA[You cannot upload any more files.]]></string_upd>
+    <string_upd name="_vote_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+    <string_upd name="_sys_javascript_requred"><![CDATA[This site requires JavaScript! Please enable it in the browser!]]></string_upd>
+    <string_upd name="_sys_wiki_error_occured"><![CDATA[Error occurred (code:{0})]]></string_upd>
+    <string_upd name="_sys_wiki_add_page_text"><![CDATA[Such wiki page doesn't exist.]]></string_upd>
+</resources>

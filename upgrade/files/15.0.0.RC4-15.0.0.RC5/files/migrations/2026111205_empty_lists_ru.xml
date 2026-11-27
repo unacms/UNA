@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Empty states of personal lists and search results for API clients (BxDolEmptyState). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_txt_empty_list_text_joined"><![CDATA[Здесь появится то, к чему вы присоединитесь.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_connections"><![CDATA[Здесь появятся ваши связи.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_followed"><![CDATA[Здесь появится то, на что вы подпишетесь.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_favorite"><![CDATA[Здесь появится то, что вы добавите в избранное.]]></string_add>
+    <string_add name="_sys_txt_empty_list_text_online"><![CDATA[Сейчас никого нет в сети.]]></string_add>
+    <string_add name="_sys_txt_empty_search_title"><![CDATA[Ничего не найдено]]></string_add>
+    <string_add name="_sys_txt_empty_search_text"><![CDATA[Попробуйте другие слова или меньше фильтров.]]></string_add>
+</resources>

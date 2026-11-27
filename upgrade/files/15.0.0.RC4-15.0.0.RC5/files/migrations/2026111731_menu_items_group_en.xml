@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation > an item: the item's group in the apps. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_nav_txt_items_group"><![CDATA[Group in the apps]]></string_add>
+    <string_add name="_adm_nav_dsc_items_group"><![CDATA[The apps draw a menu whose items have groups as sections: Account first, then the current profile's items under its name, the items without a group, and the dangerous ones last. The account's settings use them.]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_none"><![CDATA[None]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_account"><![CDATA[Account]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_profile"><![CDATA[Profile]]></string_add>
+    <string_add name="_adm_nav_txt_items_group_danger"><![CDATA[Danger]]></string_add>
+</resources>

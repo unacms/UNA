@@ -1,0 +1,2 @@
+-- Database changes of this release are its migrations (migrations/, modules/system/migrations/),
+-- which script.php runs after this file. script.php also sets the new version, once they all went through.

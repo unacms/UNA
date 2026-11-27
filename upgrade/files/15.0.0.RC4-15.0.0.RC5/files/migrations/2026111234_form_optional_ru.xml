@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Forms: the "(optional)" mark after an optional field's label. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_form_txt_optional"><![CDATA[(необязательно)]]></string_add>
+</resources>

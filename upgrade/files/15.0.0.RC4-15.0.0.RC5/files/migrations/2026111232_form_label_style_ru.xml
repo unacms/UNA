@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Form label style: the Designer setting and the form display field. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Подписи полей]]></string_add>
+    <string_add name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string_add>
+    <string_add name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string_add>
+    <string_add name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Над полем]]></string_add>
+    <string_add name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Плавающие: в пустом поле, на верхней границе после заполнения]]></string_add>
+    <string_add name="_adm_form_txt_displays_label_style"><![CDATA[Подписи полей]]></string_add>
+    <string_add name="_adm_form_dsc_displays_label_style"><![CDATA[Плавающие подписи применяются к однострочным текстовым полям. У остальных полей подписи остаются сверху.]]></string_add>
+    <string_add name="_adm_form_txt_displays_label_style_default"><![CDATA[Как на сайте]]></string_add>
+</resources>

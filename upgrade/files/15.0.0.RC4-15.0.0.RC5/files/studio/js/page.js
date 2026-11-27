@@ -1,0 +1,386 @@
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    UnaStudio UNA Studio
+ * @{
+ */
+function BxDolStudioPage(oOptions) {
+    this.sActionsUrl = oOptions.sActionUrl;
+    this.sObjName = oOptions.sObjName == undefined ? 'oBxDolStudioPage' : oOptions.sObjName;
+    this.sCodeMirror = oOptions.sCodeMirror == undefined ? '' : oOptions.sCodeMirror;
+    this.sAnimationEffect = oOptions.sAnimationEffect == undefined ? 'slide' : oOptions.sAnimationEffect;
+    this.iAnimationSpeed = oOptions.iAnimationSpeed == undefined ? 'slow' : oOptions.iAnimationSpeed;
+    this.oPopupOptions = {
+        fog: {
+            color: '#fff',
+            opacity: .7
+        },
+        closeOnOuterClick: false
+    };
+    
+    var $this = this;
+    $(document).ready (function () {
+    	if($this.sCodeMirror != '')
+            $this.initCodeMirror($this.sCodeMirror);
+    });
+}
+
+BxDolStudioPage.prototype.processJson = function (oData) {
+    bx_loading('bx-std-page-columns', false);
+
+    processJsonData(oData);
+};
+
+BxDolStudioPage.prototype.togglePopup = function(sName, oLink) {
+    var $this = this;
+
+    var sId = '#bx-std-pcap-menu-popup-' + sName;
+    if(sName == 'actions' && $(sId).length == 0)
+        sId = '#bx-std-pmenu-popup-' + sName;
+
+    if($(sId + ':visible').length > 0) {
+        $(sId).dolPopupHide();
+        return;
+    }
+
+    $(oLink).parent().addClass('bx-menu-tab-active');
+
+    var oPopupOptions = {
+        pointer:{
+            el:$(oLink)
+        },
+        onHide: function() {
+            $(oLink).parent().removeClass('bx-menu-tab-active');
+        }
+    };
+
+    switch(sName) {
+        case 'assistant':
+            break;
+
+    }
+
+    if($(sId).html().length > 0)
+        $(sId).dolPopup(oPopupOptions);
+};
+
+BxDolStudioPage.prototype.initCodeMirror = function(sSelector) {
+    var oSelector = $(sSelector);
+    for(var i = 0; i < oSelector.length; i++) {
+        var e = CodeMirror.fromTextArea(oSelector.get(i), {
+            lineNumbers: true,
+            mode: "htmlmixed",
+            htmlMode: true,
+            matchBrackets: true
+        });
+    }
+};
+
+/**
+ * Phone layout: the page menu is a horizontal row of tabs, so the active one is brought into view on load.
+ */
+$(document).ready(function() {
+    if(!window.matchMedia('(max-width: 767px)').matches)
+        return;
+
+    var oMenu = document.querySelector('.bx-std-page-column.bx-std-page-menu > .bx-std-page-column-cnt');
+    var oActive = oMenu ? oMenu.querySelector('.bx-std-pmen-item.bx-menu-tab-active') : null;
+    if(!oActive || oMenu.scrollWidth <= oMenu.clientWidth)
+        return;
+
+    // the row scrolls on its own; scrollIntoView would move every scrollable ancestor, the page included
+    oMenu.scrollLeft += oActive.getBoundingClientRect().left - oMenu.getBoundingClientRect().left - (oMenu.clientWidth - oActive.offsetWidth) / 2;
+});
+
+/**
+ * Phone layout: the row of tabs fades out towards an edge that has more tabs beyond it (page_columns.css). The row is marked
+ * with data-bx-fade-left / data-bx-fade-right as it scrolls and as its width changes.
+ */
+function bx_std_pmen_fades() {
+    var oRow = document.querySelector('.bx-std-page-column.bx-std-page-menu > .bx-std-page-column-cnt');
+    if(!oRow)
+        return;
+
+    var iMax = oRow.scrollWidth - oRow.clientWidth;
+    var iScroll = oRow.scrollLeft; // from 0 down to -iMax in a right-to-left row
+    var bRtl = window.getComputedStyle(oRow).direction == 'rtl';
+
+    oRow.toggleAttribute('data-bx-fade-left', iMax > 1 && (bRtl ? iMax + iScroll > 1 : iScroll > 1));
+    oRow.toggleAttribute('data-bx-fade-right', iMax > 1 && (bRtl ? -iScroll > 1 : iMax - iScroll > 1));
+}
+$(document).ready(function() {
+    var oRow = document.querySelector('.bx-std-page-column.bx-std-page-menu > .bx-std-page-column-cnt');
+    if(!oRow)
+        return;
+
+    oRow.addEventListener('scroll', bx_std_pmen_fades, {passive: true});
+    if(typeof ResizeObserver != 'undefined')
+        new ResizeObserver(bx_std_pmen_fades).observe(oRow);
+
+    bx_std_pmen_fades();
+});
+
+/**
+ * Page menu tooltips: where an item shows its tile alone (the strip, the phone tabs), its name shows in a tooltip while the item
+ * is hovered with a mouse or has keyboard focus: beside the tile in the strip, under it in the row of tabs. The link's own title
+ * is put aside meanwhile, so the browser doesn't show a second one.
+ */
+function bx_std_pmen_tip(oLink) {
+    var oTip = document.getElementById('bx-std-pmen-tip');
+
+    $('.bx-std-pmen-item > a[data-bx-title]').each(function() {
+        this.setAttribute('title', this.getAttribute('data-bx-title'));
+        this.removeAttribute('data-bx-title');
+    });
+    if(oTip)
+        oTip.hidden = true;
+
+    var oLabel = oLink ? oLink.querySelector('.bx-std-pmen-ic-title') : null;
+    var oTile = oLink ? oLink.querySelector('.bx-std-pmen-ic-icon') : null;
+    var sText = oLink ? (oLink.getAttribute('aria-label') || oLink.getAttribute('title') || (oLabel ? oLabel.textContent : '')).trim() : '';
+    if(!oLabel || !oTile || !sText || oLabel.getClientRects().length)
+        return;
+
+    if(!oTip) {
+        oTip = document.createElement('div');
+        oTip.id = 'bx-std-pmen-tip';
+        oTip.className = 'bx-std-pmen-tip';
+        oTip.setAttribute('aria-hidden', 'true'); // the link already has this name
+        document.body.appendChild(oTip);
+    }
+
+    if(oLink.hasAttribute('title')) {
+        oLink.setAttribute('data-bx-title', oLink.getAttribute('title'));
+        oLink.removeAttribute('title');
+    }
+
+    oTip.textContent = sText;
+    oTip.hidden = false;
+
+    var oBox = oTile.getBoundingClientRect(), iGap = 14;
+    var iLeft, iTop;
+    if(window.matchMedia('(max-width: 767px)').matches) {
+        iLeft = oBox.left + (oBox.width - oTip.offsetWidth) / 2;
+        iTop = oBox.bottom + iGap;
+    }
+    else {
+        iLeft = window.getComputedStyle(oLink).direction == 'rtl' ? oBox.left - iGap - oTip.offsetWidth : oBox.right + iGap;
+        iTop = oBox.top + (oBox.height - oTip.offsetHeight) / 2;
+    }
+
+    oTip.style.left = Math.round(Math.max(8, Math.min(iLeft, window.innerWidth - oTip.offsetWidth - 8))) + 'px';
+    oTip.style.top = Math.round(Math.max(8, Math.min(iTop, window.innerHeight - oTip.offsetHeight - 8))) + 'px';
+}
+$(document).on('mouseenter', '.bx-std-page-menu .bx-std-pmen-item > a', function() {
+    if(window.matchMedia('(hover: hover)').matches)
+        bx_std_pmen_tip(this);
+}).on('focusin', '.bx-std-page-menu .bx-std-pmen-item > a', function() {
+    if(this.matches(':focus-visible'))
+        bx_std_pmen_tip(this);
+}).on('mouseleave focusout click', '.bx-std-page-menu .bx-std-pmen-item > a', function() {
+    bx_std_pmen_tip(null);
+});
+$(window).on('scroll resize', function() {
+    bx_std_pmen_tip(null);
+});
+
+/**
+ * Wide screens: the toggle between the page menu and the content (page_content_2_col.html) narrows the menu to the tablet strip
+ * and back. The choice is kept per browser and applied before the first paint (page_3.html). The button's name is whichever of
+ * its two labels the CSS shows; the tooltip copies it on hover. Delegated, so a redrawn page (a module enabled) keeps working.
+ */
+$(document).on('click', '.bx-std-page-menu-toggle', function() {
+    var bNarrow = document.documentElement.classList.toggle('bx-std-pmen-narrow');
+    try {
+        if(bNarrow)
+            localStorage.setItem('bx-std-page-menu-narrow', '1');
+        else
+            localStorage.removeItem('bx-std-page-menu-narrow');
+    }
+    catch(e) {}
+
+    $(this).trigger('mouseenter');
+}).on('mouseenter', '.bx-std-page-menu-toggle', function() {
+    $(this).attr('title', $(this).children(':visible').text());
+});
+
+/**
+ * Overlay scrollbar for a block's scroll box (div.bx-std-block-content, see page.css): bx_scrollbar_overlay (inc/js/functions.js) draws
+ * a track and a thumb over the block, along the box's right edge and round its rounded corners, with the block's own class names.
+ */
+function bx_std_scrollbars(sSelector) {
+    // Block contents, the forms that scroll inside their block under a fixed Save footer (page.css "Options forms") and grids,
+    // which scroll between their toolbar and footer (page.css "Grids").
+    $(sSelector || 'div.bx-std-block-content, form[name="adm-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-logo-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-icon-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-cover-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-splash-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-injections-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-pwa-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-settings-form"] > .bx-form-advanced-wrapper, form[name="adm-dsg-templates-form"] > .bx-form-advanced-wrapper, div.bx-std-block-content > [id^="bx-grid-wrap-"]').each(function() {
+        bx_std_scrollbar(this);
+    });
+}
+
+function bx_std_scrollbar(oScroller) {
+    var oBlock = $(oScroller).closest('div.bx-std-block')[0];
+    if(!oBlock)
+        return;
+
+    bx_std_scrollbar_pinned(oScroller);
+
+    bx_scrollbar_overlay(oScroller, oBlock, {
+        svg: 'bx-std-scrollbar',
+        track: 'bx-std-scrollbar-track',
+        thumb: 'bx-std-scrollbar-thumb',
+        scroller: '', // page.css hides the native bar of div.bx-std-block-content
+        scrolling: 'bx-std-scrolling',
+        hover: '', // page.css shows the bar on div.bx-std-block:hover
+        inset: 4 // the 4px bar 2px from the block's edge: in the middle of the 8px the block keeps round its content
+    });
+}
+
+/**
+ * A grid pins its toolbar to the top of its scroll box and its footer to the bottom (page.css "Grids"); an options form pins its last
+ * section, the Save footer ("Options forms"). Their heights become the box's scroll-padding, which the overlay bar keeps clear of: it
+ * runs between the two instead of under them, and a row or field focused from the keyboard scrolls into the part that shows. The
+ * toolbar wraps on narrow screens and the footer comes and goes, so both are watched.
+ */
+function bx_std_scrollbar_pinned(oScroller) {
+    var oHeader = $(oScroller).children('.bx-grid-header')[0], oFooter = $(oScroller).children('.bx-grid-footer')[0];
+    if(!oFooter) {
+        oFooter = $(oScroller).filter('.bx-form-advanced-wrapper').children('.bx-form-section-wrapper:last-child:not(:first-child)')[0];
+        if(oFooter && getComputedStyle(oFooter).position !== 'sticky')
+            oFooter = null;
+    }
+    if(!oHeader && !oFooter)
+        return;
+
+    var fUpdate = function() {
+        oScroller.style.scrollPaddingTop = (oHeader ? oHeader.offsetHeight : 0) + 'px';
+        oScroller.style.scrollPaddingBottom = (oFooter ? oFooter.offsetHeight : 0) + 'px';
+
+        if(oScroller.bxScrollbar)
+            bx_scrollbar_overlay_update(oScroller.bxScrollbar);
+    };
+
+    if(window.ResizeObserver) {
+        var oResize = new ResizeObserver(fUpdate);
+        if(oHeader)
+            oResize.observe(oHeader);
+        if(oFooter)
+            oResize.observe(oFooter);
+    }
+
+    fUpdate();
+}
+
+$(document).ready(function() {
+    bx_std_scrollbars();
+
+    // One-column pages (the launcher, the dashboard) scroll a box of the window's height under the fixed header; it gets the same
+    // bar, drawn over the page's content area down the window's right edge and starting under the header (general.css).
+    $('div.bx-std-content-wrp.bx-std-one-col').each(function() {
+        bx_scrollbar_overlay(this, this.parentNode, {
+            svg: 'bx-std-scrollbar',
+            track: 'bx-std-scrollbar-track',
+            thumb: 'bx-std-scrollbar-thumb',
+            scroller: '', // general.css hides the native bar
+            scrolling: 'bx-std-scrolling',
+            hover: '' // page.css shows the bar while the pointer is over the page
+        });
+    });
+});
+
+/**
+ * Button loader (the launcher's tile wave, page.css .bx-std-btn-loading) for a button whose request is in flight: the button is disabled
+ * and its label gives way to the wave at the button's width, so nothing moves; the label (and the button) comes back when the request
+ * ends. The label stays the accessible name meanwhile. Replaces the site's bx_loading_btn spinner in Studio.
+ */
+function bx_std_loading_btn(oButton, bShow) {
+    oButton = $(oButton);
+    if(!oButton.length)
+        return;
+
+    if(bShow) {
+        if(oButton.data('bx-loading'))
+            return;
+
+        oButton.data('bx-loading', {html: oButton.html(), label: oButton.attr('aria-label'), disabled: oButton.prop('disabled') || oButton.hasClass('bx-btn-disabled')});
+        if(!oButton.attr('aria-label'))
+            oButton.attr('aria-label', oButton.text().trim());
+
+        oButton.css('min-width', oButton.outerWidth() + 'px').prop('disabled', true).attr('aria-disabled', 'true').addClass('bx-btn-disabled bx-btn-loading');
+        oButton.html('<span class="bx-std-btn-loading" aria-hidden="true"></span>');
+        return;
+    }
+
+    var oSaved = oButton.data('bx-loading');
+    if(!oSaved)
+        return;
+
+    // a button that was disabled before stays so
+    oButton.removeData('bx-loading').css('min-width', '').removeClass('bx-btn-loading').html(oSaved.html);
+    if(!oSaved.disabled)
+        oButton.prop('disabled', false).removeAttr('aria-disabled').removeClass('bx-btn-disabled');
+    if(oSaved.label == undefined)
+        oButton.removeAttr('aria-label');
+}
+
+/**
+ * Segmented switchers (.bx-std-segmented, tailwind.css): the selected tab's raised plate is the track's ::after, placed under the tab
+ * through --bx-seg-x and --bx-seg-w, so it slides from tab to tab when aria-selected moves (the block scripts only set the attribute).
+ * Placed without the slide first (data-bx-seg="1"), then on; kept in place when the track resizes (compact phone tabs, fonts loading).
+ */
+(function() {
+    if(!('MutationObserver' in window))
+        return;
+
+    var place = function(oTrack) {
+        var oTab = oTrack.querySelector('[aria-selected="true"]');
+        if(!oTab?.offsetWidth)
+            return;
+
+        oTrack.style.setProperty('--bx-seg-x', oTab.offsetLeft + 'px');
+        oTrack.style.setProperty('--bx-seg-w', oTab.offsetWidth + 'px');
+        if(oTrack.dataset.bxSeg === undefined) {
+            oTrack.dataset.bxSeg = '1';
+            oTrack.getBoundingClientRect(); // the first place is applied before the slide is turned on
+            oTrack.dataset.bxSeg = 'on';
+        }
+    };
+
+    var oResize = 'ResizeObserver' in window ? new ResizeObserver(function(aEntries) {
+        aEntries.forEach(function(oEntry) {
+            place(oEntry.target);
+        });
+    }) : null;
+
+    var init = function(oRoot) {
+        $(oRoot).find('.bx-std-segmented').addBack('.bx-std-segmented').each(function() {
+            if(this.bxSeg)
+                return;
+
+            this.bxSeg = true;
+            place(this);
+            if(oResize)
+                oResize.observe(this);
+        });
+    };
+
+    $(document).ready(function() {
+        init(document.body);
+
+        new MutationObserver(function(aMutations) {
+            aMutations.forEach(function(oMutation) {
+                if(oMutation.type == 'attributes') {
+                    var oTrack = $(oMutation.target).closest('.bx-std-segmented').get(0);
+                    if(oTrack)
+                        place(oTrack);
+                }
+                else
+                    oMutation.addedNodes.forEach(function(oNode) {
+                        if(oNode.nodeType == 1)
+                            init(oNode);
+                    });
+            });
+        }).observe(document.body, {subtree: true, childList: true, attributes: true, attributeFilter: ['aria-selected']});
+    });
+})();
+
+/** @} */

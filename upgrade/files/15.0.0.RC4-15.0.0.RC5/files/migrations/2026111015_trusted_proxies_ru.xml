@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Studio > Settings > Security: the Trusted proxies setting. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_adm_stg_cpt_option_sys_trusted_proxies"><![CDATA[Доверенные прокси]]></string_add>
+    <string_add name="_adm_stg_inf_option_sys_trusted_proxies"><![CDATA[Адреса или диапазоны CIDR публичных прокси-серверов и CDN перед сайтом, например Cloudflare, через запятую или с новой строки. Прокси в частных сетях указывать не нужно. Адрес посетителя — ближайший адрес в X-Forwarded-For, который не принадлежит доверенному прокси, поэтому укажите все публичные прокси, через которые проходят запросы.]]></string_add>
+</resources>

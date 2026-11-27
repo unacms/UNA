@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Audit: the admin log tab, its grid and the two settings. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_lmi_cpt_admin"><![CDATA[Admin log]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_admin_log_enable"><![CDATA[Record admin actions]]></string_add>
+    <string_add name="_adm_stg_inf_option_sys_admin_log_enable"><![CDATA[Studio and agents. The reports above stay separate.]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_admin_log_days_before_expire"><![CDATA[Delete entries older than (days)]]></string_add>
+    <string_add name="_adm_stg_inf_option_sys_admin_log_days_before_expire"><![CDATA[0 = no limit]]></string_add>
+    <string_add name="_adm_form_txt_admin_log_added"><![CDATA[Added]]></string_add>
+    <string_add name="_adm_form_txt_admin_log_profile"><![CDATA[Administrator]]></string_add>
+    <string_add name="_adm_form_txt_admin_log_source"><![CDATA[Source]]></string_add>
+    <string_add name="_adm_form_txt_admin_log_agent"><![CDATA[Agent]]></string_add>
+    <string_add name="_adm_form_txt_admin_log_object"><![CDATA[Object]]></string_add>
+    <string_add name="_adm_form_txt_admin_log_object_id"><![CDATA[Object id]]></string_add>
+    <string_add name="_adm_form_txt_admin_log_action"><![CDATA[Action]]></string_add>
+    <string_add name="_adm_txt_admin_log_source_any"><![CDATA[Any source]]></string_add>
+    <string_add name="_adm_txt_admin_log_profile_any"><![CDATA[Any administrator]]></string_add>
+    <string_add name="_adm_txt_admin_log_agent_any"><![CDATA[Any agent]]></string_add>
+    <string_add name="_adm_txt_admin_log_object_any"><![CDATA[Any object]]></string_add>
+    <string_add name="_adm_txt_admin_log_source_studio"><![CDATA[Studio]]></string_add>
+    <string_add name="_adm_txt_admin_log_source_agent"><![CDATA[Agent]]></string_add>
+    <string_add name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string_add>
+    <string_add name="_adm_txt_admin_log_source_cli"><![CDATA[Command line]]></string_add>
+    <string_add name="_adm_txt_admin_log_before"><![CDATA[Before]]></string_add>
+    <string_add name="_adm_txt_admin_log_after"><![CDATA[After]]></string_add>
+    <string_add name="_adm_txt_admin_log_popup"><![CDATA[Change]]></string_add>
+    <string_add name="_adm_txt_admin_log_empty"><![CDATA[Nothing was recorded.]]></string_add>
+    <string_add name="_adm_txt_admin_log_from"><![CDATA[From]]></string_add>
+    <string_add name="_adm_txt_admin_log_to"><![CDATA[To]]></string_add>
+</resources>
