@@ -1107,6 +1107,7 @@
 	<string name="_adm_err_modules_cannot_delete_from_cart"><![CDATA[Cannot delete the product(s) from shopping cart.]]></string>
 	<string name="_adm_err_modules_cannot_remove_package"><![CDATA[Cannot remove package.]]></string>
 	<string name="_adm_err_modules_cannot_subscribe"><![CDATA[Cannot initialize the subscription.]]></string>
+	<string name="_adm_err_modules_deprecated"><![CDATA[{0} is deprecated and cannot be installed.]]></string>
 	<string name="_adm_err_modules_missing_php_packages"><![CDATA[This module needs PHP libraries that are not installed: {0}. Run "composer install" in the UNA folder, or install UNA from a release package, which includes them.]]></string>
 	<string name="_adm_err_modules_module_not_found"><![CDATA[Module not found]]></string>
 	<string name="_adm_err_modules_module_not_match"><![CDATA[Update is not suitable for this module.]]></string>
@@ -1582,6 +1583,9 @@
     <string name="_adm_mod_err_only_admin_can_perform_operations_with_modules"><![CDATA[Only admin can perform operations with modules]]></string>
 	<string name="_adm_mod_err_process_operation_failed"><![CDATA[Cannot {0} module from "{1}" directory]]></string>
 	<string name="_adm_mod_msg_process_operation_scheduled"><![CDATA[Operation was scheduled and will be performed in a few minutes. Please wait.]]></string>	
+	<string name="_adm_msg_module_deprecated"><![CDATA[{0} is deprecated and gets no new versions. It will be removed in the next major version of UNA.]]></string>
+	<string name="_adm_msg_module_deprecated_core"><![CDATA[{0} is deprecated: what it does is now part of UNA. It will be removed in the next major version of UNA.]]></string>
+	<string name="_adm_msg_module_deprecated_replaced"><![CDATA[{0} is deprecated and replaced by {1}. It will be removed in the next major version of UNA.]]></string>
 	<string name="_adm_msg_modules_success_added_to_cart"><![CDATA[Added to the cart.]]></string>
 	<string name="_adm_msg_modules_success_checkouted"><![CDATA[Payment accepted. The purchased apps show up in Apps -&gt; Purchases within a few minutes. If they don't, contact the vendor with your payment details.]]></string>
 	<string name="_adm_msg_modules_success_delete"><![CDATA[The package was deleted.]]></string>

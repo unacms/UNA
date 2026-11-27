@@ -506,6 +506,10 @@ class BxBaseStudioStore extends BxDolStudioStore
             $bIcon = ($bCacheImage && substr($sIcon, 0, 10) == 'data:image') || strpos($sIcon, '.') !== false;
 
             $bInstalled = $aModule['installed'];
+            // A deprecated module can't be installed, so it isn't offered where it isn't installed.
+            if(!$bInstalled && !empty($aModule['deprecated']))
+                continue;
+
             $bQueued = !$bInstalled && $this->oDb->isQueued('action', $aModule['dir']);
 
             $sModules .= $oTemplate->parseHtmlByName('str_product_v1.html', array(

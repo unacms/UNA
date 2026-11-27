@@ -65,6 +65,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
     public function cleanModulesListCache()
     {
         $this->cleanMemory('BxDolModuleQuery::getModuleByName');
+        $this->cleanMemory('sys_modules');
         return $this->cleanCache('sys_modules_list');
     }
     function getModuleByUri($sUri, $bFromCache = true)
@@ -339,6 +340,58 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         return $mixedRet;        
     }
     
+    /**
+     * Deprecation that a module's install/config.php declares, as stored in `sys_modules`.
+     * The config says `'deprecated' => true`, or `'deprecated' => array('replaced_by' => 'bx_polls')`,
+     * where 'system' means that the feature is now part of the core.
+     * @param array $aConfig module config
+     * @return array|null `deprecated` and `replaced_by`, or null when the config doesn't say
+     */
+    public static function getConfigDeprecation($aConfig)
+    {
+        if(!is_array($aConfig) || !array_key_exists('deprecated', $aConfig))
+            return null;
+
+        $mixedValue = $aConfig['deprecated'];
+        $sReplacedBy = is_array($mixedValue) && isset($mixedValue['replaced_by']) && is_string($mixedValue['replaced_by']) ? $mixedValue['replaced_by'] : '';
+
+        return [
+            'deprecated' => !empty($mixedValue) ? 1 : 0,
+            'replaced_by' => !empty($mixedValue) ? get_mb_substr($sReplacedBy, 0, 32) : '',
+        ];
+    }
+
+    /**
+     * Copy the deprecation from a module's config to its `sys_modules` row. Separate from the other columns:
+     * on a site whose code is newer than its database the columns may not be there yet, and nothing else
+     * of the install or update must fail on that.
+     * @param int $iModuleId module id
+     * @param array $aConfig module config
+     * @return bool whether the row was written
+     */
+    public function setModuleDeprecation($iModuleId, $aConfig)
+    {
+        $aSet = self::getConfigDeprecation($aConfig);
+        if($aSet === null || !$this->isFieldExists('sys_modules', 'deprecated') || !$this->isFieldExists('sys_modules', 'replaced_by'))
+            return false;
+
+        return $this->updateModule($aSet, ['id' => (int)$iModuleId]) !== false;
+    }
+
+    /**
+     * Installed modules that are deprecated.
+     * @return array module rows, in title order
+     */
+    public function getDeprecatedModules()
+    {
+        $aResult = [];
+        foreach($this->getModules() as $aModule)
+            if(!empty($aModule['deprecated']))
+                $aResult[] = $aModule;
+
+        return $aResult;
+    }
+
     public function checkModulesSubtypes()
     {
         return (int)$this->getOne("SELECT COUNT(`id`) FROM `sys_modules` WHERE `type` = :type AND `subtypes` <> 0", [

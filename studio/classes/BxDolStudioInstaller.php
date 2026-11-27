@@ -149,6 +149,14 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
 
     public function install($aParams, $bAutoEnable = false)
     {
+        //--- A deprecated module is not installed again: it is kept only where it already runs ---//
+        if(!empty(BxDolModuleQuery::getConfigDeprecation($this->_aConfig)['deprecated']) && !$this->oDb->isModule($this->_aConfig['home_uri']))
+            return array(
+                'code' => BX_DOL_STUDIO_IU_RCE_DEPRECATED,
+                'message' => _t('_adm_err_modules_deprecated', $this->_aConfig['title']),
+                'result' => false
+            );
+
     	//--- Auto uninstall before install ---//
     	$this->disable($aParams);
     	$this->uninstall($aParams);
@@ -222,6 +230,7 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
         $aResult = $this->_perform('install', $aParams);
         if($aResult['result']) {
             $iModuleId = $this->oDb->insertModule($this->_aConfig);
+            $this->oDb->setModuleDeprecation($iModuleId, $this->_aConfig);
 
             // The install SQL that just ran has every change of the module's migrations.
             try {

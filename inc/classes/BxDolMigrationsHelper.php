@@ -92,6 +92,8 @@ class BxDolMigrationsHelper
             $aConfig = BxDolInstallerUtils::getModuleConfig($aModule);
             if (isset($aConfig['note']) && is_string($aConfig['note']))
                 $oQuery->setModuleNote($sUri, $aConfig['note']);
+            if (is_array($aConfig))
+                $oQuery->setModuleDeprecation($sUri, $aConfig);
 
             return $bResult;
         });
