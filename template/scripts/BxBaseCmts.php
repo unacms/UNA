@@ -848,6 +848,8 @@ class BxBaseCmts extends BxDolCmts
         $bShowReversed = isset($aParams['show_counter_reversed']) && $aParams['show_counter_reversed'] == true;
         $bShowScript = !isset($aParams['show_script']) || (bool)$aParams['show_script'] === true;
         $bRecalculateCounter = isset($aParams['recalculate_counter']) && $aParams['recalculate_counter'] == true;
+        // The number alone, without the recent authors or the word (an action's count, a menu's Counters).
+        $bNumberOnly = isset($aParams['show_counter_number_only']) && (bool)$aParams['show_counter_number_only'] === true;
 
         $sClass = 'sys-action-counter';
         if(isset($aParams['show_counter_only']) && (bool)$aParams['show_counter_only'] === true)
@@ -864,7 +866,7 @@ class BxBaseCmts extends BxDolCmts
             $sClass .= ' bx-btn-height';
 
         $iCmtsLimit = 5;
-        $aCmts = $this->_getCounterItems($iCmtsLimit);
+        $aCmts = $bNumberOnly ? [] : $this->_getCounterItems($iCmtsLimit);
         if(!$bShowReversed)
             $aCmts = array_reverse($aCmts);
 
@@ -908,10 +910,10 @@ class BxBaseCmts extends BxDolCmts
                     'onclick' => $sOnclick
                 ]
             ],
-            'content' => $this->_getCounterLabel($iCount, $aParams),
+            'content' => $bNumberOnly ? ($iCount > 0 ? (string)$iCount : '') : $this->_getCounterLabel($iCount, $aParams),
             'bx_repeat:profiles' => $aTmplVarsProfiles,
             'bx_if:show_icon' => [
-                'condition' => ($bShowEmpty || !empty($aTmplVarsProfiles)) && (!isset($aParams['show_icon']) || $aParams['show_icon']),
+                'condition' => !$bNumberOnly && ($bShowEmpty || !empty($aTmplVarsProfiles)) && (!isset($aParams['show_icon']) || $aParams['show_icon']),
                 'content' => [
                     'style_prefix' => $this->_sStylePrefix,
                     'icon' => !empty($aParams['custom_icon']) ? $aParams['custom_icon'] : $this->_oTemplate->getImageAuto('comment|' . $this->_sStylePrefix . '-counter-icon')

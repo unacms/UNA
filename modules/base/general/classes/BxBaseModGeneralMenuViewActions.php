@@ -223,8 +223,19 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
             'dynamic_mode' => $this->_bDynamicMode,
             'show_do_comment_as_button' => $this->_bShowAsButton,
             'show_do_comment_label' => $this->_bShowTitle,
-            'show_counter' => false
+            // the apps get the count and draw the menu's Counters themselves
+            'show_counter' => $this->_bIsApi
         );
+        if(!$this->_bIsApi)
+            switch($this->getCounters()) {
+                case BxDolMenu::COUNTERS_COUNT:
+                    $aObjectOptions = array_merge($aObjectOptions, ['show_do_comment_label' => false, 'show_counter' => true, 'show_counter_number_only' => true]);
+                    break;
+
+                case BxDolMenu::COUNTERS_GROUP:
+                    $aObjectOptions = array_merge($aObjectOptions, ['show_counter' => true, 'show_counter_number_only' => true]);
+                    break;
+            }
         if(!empty($aParams['object_options']) && is_array($aParams['object_options']))
             $aObjectOptions = array_merge($aObjectOptions, $aParams['object_options']);
 
@@ -236,6 +247,84 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
             return '';
 
         return array($sResult, $this->_sClassMiSa);
+    }
+
+    /**
+     * The actions and, on the site, their stats beside them: the counts of the menu's own reactions, comments and views,
+     * as the menu's Counters leave them to show (all beside labels, who reacted beside counts, none beside button
+     * groups). The apps build the same row from the menu's items.
+     */
+    public function getCode()
+    {
+        $sActions = parent::getCode();
+        if($this->_bIsApi || empty($sActions) || !is_string($sActions))
+            return $sActions;
+
+        $sStats = $this->_getStatsCode();
+        if($sStats === '')
+            return $sActions;
+
+        return BxDolTemplate::getInstance()->parseHtmlByName('menu_actions_stats.html', [
+            'actions' => $sActions,
+            'stats' => $sStats,
+        ]);
+    }
+
+    /**
+     * Counters of the menu's reaction, vote, score, comment and view items that are on, in the menu's order.
+     */
+    protected function _getStatsCode()
+    {
+        $sMode = $this->getCounters();
+        if($sMode === BxDolMenu::COUNTERS_GROUP || empty($this->_aContentInfo))
+            return '';
+
+        $CNF = &$this->_oModule->_oConfig->CNF;
+        $aReactionItems = ['reaction', 'vote', 'score'];
+
+        $aRaw = $this->getMenuItemsRaw();
+        $aStats = [];
+        foreach($aRaw as $aItem) {
+            $sName = $aItem['name'] ?? '';
+            if(empty($aItem['active']) || !$this->_isVisible($aItem))
+                continue;
+            if($sMode === BxDolMenu::COUNTERS_COUNT && !in_array($sName, $aReactionItems))
+                continue;
+
+            $sCounter = '';
+            switch($sName) {
+                case 'reaction':
+                case 'vote':
+                    $sObject = $CNF[$sName == 'reaction' ? 'OBJECT_REACTIONS' : 'OBJECT_VOTES'] ?? '';
+                    $oObject = $sObject ? BxDolVote::getObjectInstance($sObject, $this->_iContentId) : false;
+                    if($oObject && $oObject->isEnabled())
+                        $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
+                    break;
+
+                case 'score':
+                    $oObject = !empty($CNF['OBJECT_SCORES']) ? BxDolScore::getObjectInstance($CNF['OBJECT_SCORES'], $this->_iContentId) : false;
+                    if($oObject && $oObject->isEnabled())
+                        $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
+                    break;
+
+                case 'comment':
+                    $oObject = !empty($CNF['OBJECT_COMMENTS']) ? BxTemplCmts::getObjectInstance($CNF['OBJECT_COMMENTS'], $this->_iContentId) : false;
+                    if($oObject && $oObject->isEnabled() && (int)$oObject->getCommentsCountAll() > 0)
+                        $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
+                    break;
+
+                case 'view':
+                    $oObject = !empty($CNF['OBJECT_VIEWS']) ? BxDolView::getObjectInstance($CNF['OBJECT_VIEWS'], $this->_iContentId) : false;
+                    if($oObject && $oObject->isEnabled())
+                        $sCounter = $oObject->getCounter(['dynamic_mode' => $this->_bDynamicMode]);
+                    break;
+            }
+
+            if(trim(strip_tags($sCounter, '<img><svg><i>')) !== '')
+                $aStats[] = $sCounter;
+        }
+
+        return implode('', $aStats);
     }
 
     /**

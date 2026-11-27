@@ -213,6 +213,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iViewsObject = $this->_aEvent['views']['object_id'];
         $aViewsParams = array(
             'show_do_view_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters, 
             'show_counter_label_icon' => $this->_bShowCountersIcons,
             'dynamic_mode' => $this->_bDynamicMode
@@ -238,13 +239,41 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         return $oObject->$sViewsMethod($aViewsParams);
     }
 
+    /**
+     * The site's comment link with the number of comments: the number alone in place of the title with counts (the
+     * icon alone at 0), the title and the number with button groups. Built as the default item is.
+     */
+    protected function _getMenuItemCommentCounted($aItem)
+    {
+        if(!isset($this->_aEvent['comments']['system'], $this->_aEvent['comments']['object_id']))
+            return true;
+
+        $oCmts = $this->_oModule->getCmtsObject($this->_aEvent['comments']['system'], $this->_aEvent['comments']['object_id']);
+        if(!$oCmts)
+            return true;
+
+        $aItem = BxTemplMenu::_getMenuItem($aItem);
+        if($aItem === false)
+            return false;
+
+        $iCount = (int)$oCmts->getCommentsCountAll();
+        $sTitle = $this->_bShowTitles ? $aItem['title'] . ($iCount > 0 ? ' ' . $iCount : '') : ($iCount > 0 ? (string)$iCount : '');
+
+        $aItem['title'] = $sTitle;
+        $aItem['bx_if:title']['condition'] = $sTitle !== '';
+        $aItem['bx_if:title']['content']['title'] = $sTitle;
+
+        return $this->_getMenuItemDefault($aItem);
+    }
+
     protected function _getMenuItemItemComment($aItem)
     {
         /**
-         * For now use the default link (not Object based) for non-api calls.
+         * The site keeps the default link (not Object based), which opens the comments in place. With counts or button
+         * groups (the menu's Counters) the link shows the number of comments; its accessible name stays the action's.
          */
         if(!$this->_bIsApi)
-            return true;
+            return $this->_bShowCounters ? $this->_getMenuItemCommentCounted($aItem) : true;
 
         if(!isset($this->_aEvent['comments']) || !is_array($this->_aEvent['comments']) || !isset($this->_aEvent['comments']['system'])) 
             return false;
@@ -396,8 +425,9 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $sReportsSystem = $this->_aEvent['reports']['system'];
         $iReportsObject = $this->_aEvent['reports']['object_id'];
         $aReportsParams = array(
-            'show_do_report_label' => $this->_bShowTitles,
-            'show_counter' => $this->_bShowCounters,
+            // a report is no public count: the action keeps its label in every Counters mode
+            'show_do_report_label' => true,
+            'show_counter' => false,
             'dynamic_mode' => $this->_bDynamicMode
         );
         
