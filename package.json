@@ -79,7 +79,7 @@
     "theia-sticky-sidebar": "^2.0.1",
     "thinking-orbs": "^0.3.2",
     "urijs": "^1.19.11",
-    "xymbols": "0.7.0"
+    "xymbols": "0.8.0"
   },
   "scripts": {
     "install-bower-components": "bower install",
