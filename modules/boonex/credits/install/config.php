@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_credits',
     'title' => 'Credits',
     'note' => 'Credits, virtual currency, balance',
-    'version' => '15.0.5.DEV',
+    'version' => '15.0.5',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

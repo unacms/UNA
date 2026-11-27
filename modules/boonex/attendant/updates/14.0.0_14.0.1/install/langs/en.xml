@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_attendant_adm_stg_cpt_category_on_profile_creation"><![CDATA[Popup with recommended profiles after profile creation]]></string_upd>
+</resources>

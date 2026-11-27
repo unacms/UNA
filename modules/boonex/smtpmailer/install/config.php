@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_smtp',
     'title' => 'SMTP Mailer',
     'note' => 'SMTP mailer, outgoing email',
-    'version' => '15.0.2.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

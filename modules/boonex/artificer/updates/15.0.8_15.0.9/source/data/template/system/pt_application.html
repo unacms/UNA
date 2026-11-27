@@ -1,0 +1,167 @@
+<bx_include_auto:_header.html />
+<div id="bx-content-preload" class="hidden"></div>
+<div class="bx-main bx-pt-application <bx_injection:injection_main_class />">
+    <bx_injection:top />
+    <!-- BEG: Navigation: the Application header.
+         Wide screens (the sidebar beside the content): a strip over the page with no surface of its own and 8px above and below
+         what it holds, 16px while empty, as for members (their logo, tools and account are in the sidebar); guests keep the member
+         toolbar (Log in, Join).
+         Below that: the standard header (its surface and 64px), with the button that opens the sidebar as a drawer over the page,
+         the logo and the member toolbar, as a page of the Standard layout has it. css/common.css "Application".
+         The standard header's element and id, so its styles apply; js/sidebar.js keeps its height in --bx-app-header. -->
+    <header id="bx-toolbar" class="bx-header bx-app-header bx-def-z-index-nav fixed top-0 w-full">
+        <div class="bx-header-cnt __sys_header_width__ __sys_header_align__ mx-auto px-4 box-border">
+            <div class="bx-toolbar-content-wrapper">
+                <div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start py-2">
+                    <!-- Sidebar drawer button: below the sidebar's breakpoint the sidebar is a drawer, opened from here -->
+                    <button type="button" id="toggleSidebarMobile" aria-expanded="false" aria-controls="sidebar" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle bx-app-sidebar-open-btn inline-flex flex-none items-center justify-center h-11 w-11 ltr:-ml-1 rtl:-mr-1 rounded-full cursor-pointer">
+                        <span class="bx-icon flex items-center justify-center">
+                            <bx_image_auto:panel-left-open />
+                        </span>
+                    </button>
+                    <!-- Below the sidebar's breakpoint: the logo (wide screens have it in the sidebar, with its ids) -->
+                    <div class="bx-toolbar-item bx-ti-left bx-ti-logo bx-app-header-logo flex-none items-center">__sys_main_logo_copy__</div>
+                    <div class="bx-toolbar-items-group relative flex flex-1 items-center justify-start">
+                        <!-- Search box, opened by the sidebar's Search -->
+                        __sys_toolbar_search__
+                    </div>
+                    __sys_application_toolbar__
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- END: Navigation -->
+
+    <div class="bx-main-content flex overflow-hidden">
+        <!-- BEG: Sidebar: the left column under the header strip: the logo and its button, the context switcher and the Application
+             toolbar, the menus, and the member's account at the foot. Wide screens: expanded (16rem) or narrow
+             (4rem, icons only), as the member left it; below the breakpoint: a drawer over the page. One state, the classes
+             bx-app-sidebar-narrow / bx-app-sidebar-open on .bx-main, drives the styles (css/common.css "Application"); js/sidebar.js flips it. -->
+        <aside id="sidebar" class="bx-app-sidebar bx-main-column narrow" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />">
+            <script>
+                // before the first paint: the narrow sidebar as it was left, on wide screens only (the drawer is never narrow)
+                (function(oSidebar) {
+                    var bNarrow = false;
+                    try { bNarrow = localStorage.getItem('sidebarExpanded') === 'false'; } catch(e) {}
+                    if(!window.matchMedia || !window.matchMedia('(min-width: 1280px)').matches)
+                        return;
+
+                    // the width the member dragged it to
+                    var iWidth = 0;
+                    try { iWidth = parseInt(localStorage.getItem('sidebarWidth'), 10) || 0; } catch(e) {}
+                    if(iWidth > 0)
+                        oSidebar.closest('.bx-main').style.setProperty('--bx-sidebar-width-expanded', iWidth + 'px');
+
+                    if(!bNarrow)
+                        return;
+
+                    oSidebar.classList.add('bx-mc-narrowed');
+                    oSidebar.closest('.bx-main').classList.add('bx-app-sidebar-narrow');
+                })(document.currentScript.parentNode);
+            </script>
+            <!-- The sidebar's top row: the logo and the Application toolbar (Search, Add); in the drawer also the button that closes it.
+                 On wide screens the sidebar's edge (the handle below) narrows, widens and sizes it. -->
+            <div class="bx-app-sidebar-head">
+                <div id="bx-logo-container" class="bx-app-sidebar-logo bx-ti-logo">
+                    <bx_injection:injection_logo_before />
+                    __main_logo__
+                    <bx_injection:injection_logo_after />
+                </div>
+                <bx_menu:sys_toolbar_application />
+                <!-- In the drawer: closes it (wide screens have the handle instead). -->
+                <button type="button" id="toggleSidebar" aria-expanded="true" aria-controls="sidebar-content" title="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" aria-label="<bx_text_attribute:_sys_menu_item_title_system_main_menu />" class="bx-sidebar-toggle inline-flex flex-none items-center justify-center h-11 w-11 rounded-full cursor-pointer">
+                    <span class="bx-app-sidebar-icon-close bx-icon flex items-center justify-center">
+                        <bx_image_auto:panel-left-close />
+                    </span>
+                    <span class="bx-app-sidebar-icon-open bx-icon flex items-center justify-center">
+                        <bx_image_auto:panel-left-open />
+                    </span>
+                </button>
+            </div>
+            <!-- The second row: the context switcher, if the site has one. -->
+            <div class="bx-app-sidebar-tools">
+                __sys_app_context_switcher__
+            </div>
+            <div id="sidebar-content" class="bx-app-sidebar-body">
+                <div class="bx-mc-cnt px-2 space-y-1 divide-y divide-gray-200 dark:divide-gray-700">
+                    <bx_menu:sys_site_panel />
+                </div>
+            </div>
+            <!-- Wide screens: the sidebar's edge, a handle. Dragged, it sizes the sidebar (narrower than the limit, it snaps to the
+                 icons); pressed, it narrows or widens it. js/sidebar.js. -->
+            <div id="sidebarResizer" class="bx-app-sidebar-resizer" role="separator" aria-orientation="vertical" aria-controls="sidebar" tabindex="0" aria-label="<bx_text_attribute:_sys_txt_sidebar_resize />" title="<bx_text_attribute:_sys_txt_sidebar_resize />"></div>
+            <!-- The foot, always in view: the member's account. -->
+            <div class="bx-app-sidebar-foot">
+                __sys_app_account__
+            </div>
+        </aside>
+        <div id="sidebarBackdrop" class="bx-app-sidebar-backdrop"></div>
+        <!-- END: Sidebar -->    
+
+        <!-- BEG: Main Content: one block between the header strip, the footer strip and the sidebar (the blocks' fill, edge, shadow
+             and corners), scrolling inside it. -->
+        <div id="main-content" class="bx-main-column wide bx-app-content bx-def-color-bg-block bx-def-border-block bx-def-border-radius-block relative w-full h-full overflow-y-auto">
+            <main role="main" id="bx-content-main" tabindex="-1">
+                <!-- The informer: across the content's block, before the cover, the tabs and the content -->
+                <div id="bx-informer-strip" class="bx-informer-strip">__informer__</div>
+                <bx_injection:injection_between_cover_logo />
+                __cover__
+                <bx_injection:injection_between_cover_top_menu />
+                <div id="bx-menu-main-bar-wrapper" class="bx-menu-main-bar-wrapper bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 __site_submenu_hidden__">
+                    <div id="bx-menu-main-bar" class="bx-menu-main-bar __site_submenu_class__ mx-auto px-3 box-border">
+                        <div class="bx-menu-main-bar-cnt -mb-px">
+                            <bx_injection:injection_top_menu_before />
+                            <div class="flex items-center h-full text-left">
+                                <!-- The tabs scroll in their own column (not with a More menu: its popup opens in here), so they never run under the tools and the add action at the row's end. -->
+                                <div class="bx-menu-main-bar-tabs relative flex-1 min-w-0 h-full">
+                                    <div class="absolute w-full h-full">
+                                        <bx_menu:sys_site_submenu />
+                                    </div>
+                                </div>
+                                <div class="bx-menu-main-bar-tools flex-none self-stretch flex items-stretch z-0">
+                                    <bx_menu:sys_site_manage />
+                                    __site_submenu_add__
+                                </div>
+                            </div>
+                            <bx_injection:injection_top_menu_after />
+                        </div>
+                    </div>
+                </div>
+                <bx_injection:injection_between_content_menu />
+                <div id="bx-content-wrapper" class="bx-def-page-width mx-auto">
+                    <div class="bx-page-wrapper mx-auto px-3 md:px-4 lg:px-6 box-border">
+                        <div id="bx-content-container" class="bx-content-container">
+                            <div class="bx-content-main my-2 lg:my-3">
+                                <bx_injection:injection_content_before />
+                                __page_main_code__
+                                <bx_injection:injection_content_after />
+                                <bx_injection:banner_bottom />
+                            </div> <!-- .bx-content-main -->
+                            <bx_injection:injection_between_content_footer />
+                        </div> <!-- #bx-content-container -->
+                    </div> <!-- .bx-page-wrapper -->
+                </div> <!-- #bx-content-wrapper -->
+            </main> <!-- #bx-content-main -->
+            <!-- As wide as the page's content, where it lines up with the page's blocks (css/common.css "Application"), or as
+                 the content's block (Designer > Settings) -->
+            <div class="bx-footer-box __sys_footer_width__ mx-auto">
+                <footer class="p-4 m-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 xl:p-8 dark:bg-gray-800">
+                    <bx_injection:injection_footer_before />
+                    <div id="bx-menu-bottom">
+                        <bx_menu:sys_footer />
+                    </div>
+                    <bx_injection:injection_footer_after />
+                </footer>
+            </div>
+        </div>
+        <!-- END: Main Content -->
+    </div>
+    <!-- The Application footer: a strip under the page as the header is over it, with no surface of its own and 8px above and
+         below what it holds, so 16px while empty (as installed). js/sidebar.js keeps its height in --bx-app-footer, which the
+         sidebar and the content end above. -->
+    <footer id="bx-app-footer" class="bx-app-footer bx-def-z-index-nav fixed bottom-0 w-full">
+        <div class="bx-app-footer-cnt flex items-center px-4 py-2"></div>
+    </footer>
+    <bx_menu:sys_site_action />
+</div> <!-- .bx-main -->
+<bx_include_auto:_footer.html />

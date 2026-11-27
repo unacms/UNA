@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_forum_page_title_browse_latest"><![CDATA[Обсуждения с последними сообщениями]]></string_upd>
+	<string_upd name="_bx_forum_form_post_input_link_err_delete"><![CDATA[Не удалось удалить ссылку. Попробуйте ещё раз.]]></string_upd>
+	<string_add name="_bx_forum_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string_add>
+	<string_add name="_bx_forum_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string_add>
+	<string_add name="_bx_forum_txt_empty_title"><![CDATA[Обсуждений пока нет]]></string_add>
+	<string_upd name="_bx_forum_email_new_reply_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Новый ответ в <a href="{PageUrl}">{PageTitle}</a> дискуссии от <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+{email_footer}]]></string_upd>
+</resources>

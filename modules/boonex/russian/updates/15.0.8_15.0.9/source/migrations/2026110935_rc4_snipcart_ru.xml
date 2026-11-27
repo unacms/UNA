@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- RC3 to RC4: Russian strings of the snipcart module, released with the Russian language module. -->
+<resources name="ru" flag="ru" title="Russian" category="Snipcart">
+
+
+	<string_upd name="_bx_snipcart_page_title_sys_home"><![CDATA[Покупки]]></string_upd>
+	<string_upd name="_bx_snipcart_page_title_home"><![CDATA[Покупки]]></string_upd>
+	<string_upd name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Покупки]]></string_upd>
+	<string_upd name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Покупки]]></string_upd>
+</resources>

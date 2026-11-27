@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_oauth',
     'title' => 'OAuth2 Server',
     'note' => 'OAuth2, site credentials, API access',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

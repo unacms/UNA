@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- OAuth2 consent page: the lead line, what a native app will be able to do as a list, the profiles label, the terms notice; the two paragraphs they replace are removed. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_oauth_authorization_desc"><![CDATA[Connect an app to your account.]]></string_add>
+    <string_add name="_bx_oauth_authorize_lead"><![CDATA[<strong>{0}</strong> wants to connect to your account on {1}.]]></string_add>
+    <string_add name="_bx_oauth_authorize_can"><![CDATA[It will be able to:]]></string_add>
+    <string_add name="_bx_oauth_authorize_can_read"><![CDATA[Read everything you can see on the site]]></string_add>
+    <string_add name="_bx_oauth_authorize_can_write"><![CDATA[Post, comment and react for you]]></string_add>
+    <string_add name="_bx_oauth_authorize_can_messages"><![CDATA[Read and send your messages]]></string_add>
+    <string_add name="_bx_oauth_authorize_can_profiles"><![CDATA[Act as whichever of your profiles you are using on the site. Switching profiles in the app switches them on the site too]]></string_add>
+    <string_add name="_bx_oauth_authorize_choose"><![CDATA[Connect as:]]></string_add>
+    <string_add name="_bx_oauth_connect_as"><![CDATA[Connect as {0}]]></string_add>
+    <string_add name="_bx_oauth_authorize_agreement"><![CDATA[By connecting, you agree to the <a href="{0}">Terms of Service</a> and <a href="{1}">Privacy Policy</a>.]]></string_add>
+    <string_del name="_bx_oauth_authorize_app"></string_del>
+    <string_del name="_bx_oauth_authorize_scope_api"></string_del>
+</resources>

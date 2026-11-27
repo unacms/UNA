@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_accnt_grid_column_title_adm_logged"><![CDATA[Last sign-in]]></string_upd>
+	<string_upd name="_bx_accnt_txt_field_logged"><![CDATA[Last sign-in]]></string_upd>
+</resources>

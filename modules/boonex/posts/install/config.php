@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_posts',
     'title' => 'Posts',
     'note' => 'Posts, articles, blog entries, news',
-    'version' => '15.0.6.DEV',
+    'version' => '15.0.6',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

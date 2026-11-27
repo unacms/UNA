@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_photos_form_entry_input_title_err"><![CDATA[Title is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_photos_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_photos_form_entry_input_pictures_err"><![CDATA[Photo is required. Please upload some photo(s).]]></string_upd>
+	<string_upd name="_bx_photos_form_entry_input_picture_err"><![CDATA[Photo is required. Please upload a photo.]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_create_entry"><![CDATA[Upload photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_create_entry"><![CDATA[Upload photos]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_create_entry"><![CDATA[Upload photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_view_entry"><![CDATA[View photo]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_view_entry_brief"><![CDATA[Brief view photo]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_home"><![CDATA[Photos home]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_featured_entries"><![CDATA[Featured photos]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_recent_entries"><![CDATA[Latest photos]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_entry_all_actions"><![CDATA[All actions]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_entries_popular"><![CDATA[Popular photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_entries_popular"><![CDATA[Popular photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_entries_top"><![CDATA[Top photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_entries_top"><![CDATA[Top photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_entries_updated"><![CDATA[Updated photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_entries_updated"><![CDATA[Updated photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_entries_favorites"><![CDATA[Favorite photos]]></string_upd>
+	<string_upd name="_bx_photos_page_title_entries_favorites"><![CDATA[Favorite photos]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_popular_entries"><![CDATA[Popular photos]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_top_entries"><![CDATA[Top photos]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_updated_entries"><![CDATA[Updated photos]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_view_entry_comments"><![CDATA[Photo comments]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_manage"><![CDATA[Manage own]]></string_upd>
+	<string_upd name="_bx_photos_page_title_sys_manage_administration"><![CDATA[Manage all]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_popular_keywords"><![CDATA[Popular hashtags]]></string_upd>
+	<string_upd name="_bx_photos_page_block_title_cats"><![CDATA[Photo categories]]></string_upd>
+	<string_upd name="_bx_photos_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+	<string_add name="_bx_photos_txt_empty_title"><![CDATA[No photos yet]]></string_add>
+</resources>

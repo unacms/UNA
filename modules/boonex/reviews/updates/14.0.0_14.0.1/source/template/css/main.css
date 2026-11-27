@@ -1,0 +1,41 @@
+.bx-review-vertical-flex {
+    display: flex;
+    flex-direction: column;
+}
+.bx-reviews-align-left {
+    text-align: left;
+}
+.bx-review-extra-info,
+.bx-review-rating {
+    text-align: left;
+    line-height: 2rem;
+}
+
+.bx-review-rating {
+    margin: 0.5rem 0;
+}
+
+.bx-reviews-rating-row {
+    margin-top: auto;
+}
+
+.bx-review-rating * {
+    line-height: unset!important;
+}
+
+.bx-review-extra-info {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bx-reviews-capitalize {
+    text-transform: capitalize;
+}
+
+.bx-review-reset-color {
+    color:unset!important;
+}
+
+.bx-reviews-voting-options .bx-def-margin-bottom:last-of-type {
+    margin-bottom: 0px;
+}

@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_en',
     'title' => 'English',
     'note' => 'English language, translations',
-    'version' => '15.0.9.DEV',
+    'version' => '15.0.9',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

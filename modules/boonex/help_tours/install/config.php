@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_help_tours',
     'title' => 'Help Tours',
     'note' => 'Help tours, guided tours, onboarding',
-    'version' => '14.0.1.DEV',
+    'version' => '14.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

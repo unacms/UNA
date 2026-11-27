@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_antispam_dnsbl_status"><![CDATA[
+<table style="width:100%;"><tr>
+    <td>DNSBL: {0}</td>
+    <td>URI DNSBL: {1}</td>
+    <td>Sign-in behavior: {2}</td>
+    <td>Sign-up behavior: {3}</td>
+</tr></table>
+]]></string_upd>
+	<string_upd name="_bx_antispam_option_dnsbl_behaviour_login"><![CDATA[Sign-in behavior if listed in DNS block lists]]></string_upd>
+	<string_upd name="_bx_antispam_option_dnsbl_behaviour_join"><![CDATA[Sign-up behavior if listed in DNS block lists]]></string_upd>
+	<string_upd name="_bx_antispam_option_disposable_email_domains_behaviour_join"><![CDATA[Sign-up behavior]]></string_upd>
+	<string_upd name="_bx_antispam_spam_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{SpammerUrl}">{SpammerNickName}</a><br />
+
+<b>Page:</b> {Page}<br /><br />
+
+<b>GET variables:</b>
+<pre>
+{Get}
+</pre>
+
+<b>POST variables:</b>
+<pre>
+{Post}
+</pre>
+
+<b>Spam content:</b>
+<pre>
+{SpamContent}
+</pre></div>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Toxicity score at which a text counts as toxic (0 to 100)]]></string_upd>
+	<string_upd name="_bx_antispam_form_submission_error"><![CDATA[Incorrect info. The form seems to contain some toxic content. Please check your inputs and try to submit again.]]></string_upd>
+	<string_upd name="_bx_antispam_toxicity_blocked_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<b>Page:</b> {Page}<br /><br />
+<b>Content:</b>
+<pre>
+{Content}
+</pre></div>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_antispam_toxicity_posted_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<b>Page:</b> {Page}<br /><br />
+<bx_if:content_url>
+	<b>Content:</b> <a href="{c_url}">{c_url}</a><br /><br />
+</bx_if:content_url>
+<bx_if:manage_content_url>
+	<b>Manage:</b> <a href="{m_url}">{m_url}</a><br /><br />
+</bx_if:manage_content_url></div>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_antispam_option_lasso_moderation_webhook_secret"><![CDATA[Webhook secret]]></string_upd>
+	<string_upd name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Toxicity threshold (0 to 100)]]></string_upd>
+	<string_upd name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Threat threshold (0 to 100)]]></string_upd>
+	<string_upd name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Identity attack threshold (0 to 100)]]></string_upd>
+	<string_upd name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Profanity threshold (0 to 100)]]></string_upd>
+	<string_upd name="_bx_antispam_et_lasso_moderation_report_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><b>Profile:</b> <a href="{AuthorUrl}">{AuthorNickName}</a><br />
+<bx_if:content_url>
+	<b>Content:</b> <a href="{c_url}">{c_url}</a><br /><br />
+</bx_if:content_url>
+<bx_if:manage_content_url>
+	<b>Manage:</b> <a href="{m_url}">{m_url}</a><br /><br />
+</bx_if:manage_content_url></div>
+{email_footer}]]></string_upd>
+</resources>

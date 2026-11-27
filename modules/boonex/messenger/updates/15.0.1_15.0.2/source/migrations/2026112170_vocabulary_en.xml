@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_messenger_page_inbox_block_title"><![CDATA[Chats]]></string_upd>
+    <string_upd name="_bx_messenger_symbols_num_brief_jot"><![CDATA[Message's length in chat's preview]]></string_upd>
+    <string_upd name="_bx_messenger_not_logged"><![CDATA[Please sign in first.]]></string_upd>
+    <string_upd name="_bx_messenger_not_found"><![CDATA[Chat is not found!]]></string_upd>
+    <string_upd name="_bx_messenger_lots_menu_star_off"><![CDATA[Unmark chat]]></string_upd>
+    <string_upd name="_bx_messenger_lots_private_lot"><![CDATA[Private chat]]></string_upd>
+    <string_upd name="_bx_messenger_successfully_left"><![CDATA[You left the chat!]]></string_upd>
+    <string_upd name="_bx_messenger_cant_leave"><![CDATA[You cannot leave your own chat!]]></string_upd>
+    <string_upd name="_bx_messenger_leave_chat_confirm"><![CDATA[Are you sure you want to leave the chat?]]></string_upd>
+    <string_upd name="_bx_messenger_friends_page_all_friends_block"><![CDATA[My friends chat]]></string_upd>
+    <string_upd name="_bx_messenger_lots_menu_create_lot_title"><![CDATA[Create new chat]]></string_upd>
+    <string_upd name="_bx_messenger_lots_menu_star_title"><![CDATA[Show only marked/unmarked chats]]></string_upd>
+    <string_upd name="_bx_messenger_search_for_lost_title"><![CDATA[Find chats by title or message]]></string_upd>
+    <string_upd name="_bx_messenger_search_desc"><![CDATA[Joined - {1}<br/>Last sign-in - {0}]]></string_upd>
+    <string_upd name="_bx_messenger_max_ntfs_number"><![CDATA[Maximum notifications number per member from one chat during 1 hour]]></string_upd>
+    <string_upd name="_bx_messenger_max_parts_views"><![CDATA[Display viewers icons on messages within chats that have reached the maximum defined number of participants]]></string_upd>
+    <string_upd name="_bx_messenger_jitsi_err_no_members"><![CDATA[There are no members in the chat to start conversation]]></string_upd>
+    <string_upd name="_bx_messenger_jisti_not_active_conference"><![CDATA[Active conference is not found. Please reload the chat or try to create your own conference.]]></string_upd>
+    <string_upd name="_bx_messenger_jitsi_enable_only_for_private"><![CDATA[Enable video conference only for private chats]]></string_upd>
+    <string_upd name="_bx_messenger_lot_parts_error"><![CDATA[Chat with the same participants list already exists.]]></string_upd>
+    <string_upd name="_bx_messenger_menu_video_conference_sys_title"><![CDATA[Video chat]]></string_upd>
+    <string_upd name="_bx_messenger_menu_video_conference_action_title"><![CDATA[Video chat]]></string_upd>
+    <string_upd name="_bx_messenger_acl_action_create_talks"><![CDATA[Create chats]]></string_upd>
+    <string_upd name="_bx_messenger_acl_action_administrate_talks"><![CDATA[Administrate chats (remove/edit)]]></string_upd>
+    <string_upd name="_bx_messenger_allow_to_moderate_messages"><![CDATA[Allow chats' authors moderate messages (delete/edit)]]></string_upd>
+    <string_upd name="_bx_messenger_clear_lot"><![CDATA[Are you sure you want to remove the all messages from "{0}" chat?]]></string_upd>
+    <string_upd name="_bx_messenger_lot_action_not_allowed"><![CDATA[{0} action is not allowed for this chat]]></string_upd>
+    <string_upd name="_bx_messenger_lot_can_change_settings"><![CDATA[You cannot change settings of the chat]]></string_upd>
+    <string_upd name="_bx_messenger_lot_options_title"><![CDATA[Allow to perform selected actions for the chat:]]></string_upd>
+    <string_upd name="_bx_messenger_max_max_lots_number"><![CDATA[Default number of chats in chats' list block]]></string_upd>
+    <string_upd name="_bx_messenger_menu_item_title_star"><![CDATA[Mark chats as important]]></string_upd>
+    <string_upd name="_bx_messenger_menu_item_title_mute"><![CDATA[Mute chat]]></string_upd>
+    <string_upd name="_bx_messenger_menu_set_title_talk_menu"><![CDATA[Chat menu]]></string_upd>
+    <string_upd name="_bx_messenger_show_friends"><![CDATA[Show member's friends list in chats' area if there are no chats yet]]></string_upd>
+    <string_upd name="_bx_messenger_contact_privacy_not_allowed"><![CDATA[Participant of the chat doesn't allow to contact]]></string_upd>
+    <string_upd name="_bx_messenger_groups_desc_info"><![CDATA[Describe the group, it helps users to find appropriate chat]]></string_upd>
+    <string_upd name="_bx_messenger_menu_item_title_group_list"><![CDATA[Chats list]]></string_upd>
+    <string_upd name="_bx_messenger_groups_talks_title"><![CDATA[Chats list]]></string_upd>
+    <string_upd name="_bx_messenger_menu_title_view"><![CDATA[Chat's header menu]]></string_upd>
+    <string_upd name="_bx_messenger_menu_lot_info_title"><![CDATA[Chat's info menu]]></string_upd>
+    <string_upd name="_bx_messenger_menu_set_title_talk_info_menu"><![CDATA[Chat's info menu]]></string_upd>
+    <string_upd name="_bx_messenger_search_item_titles"><![CDATA[chats titles]]></string_upd>
+    <string_upd name="_bx_messenger_time_in_history"><![CDATA[Use <b>from now</b> time format in chat's history]]></string_upd>
+    <string_upd name="_bx_messenger_talk_is_not_allowed"><![CDATA[Chat is not available for you!]]></string_upd>
+    <string_upd name="_bx_messenger_connect_friends_only"><![CDATA[Allow to create chats only with friends]]></string_upd>
+    <string_upd name="_bx_messenger_view_in_chat"><![CDATA[View in chat]]></string_upd>
+    <string_upd name="_bx_messenger_not_allowed_to_read"><![CDATA[You cannot read this message, because you are not a participant of the chat!]]></string_upd>
+    <string_upd name="_bx_messenger_not_found_to_read"><![CDATA[Chat with the message was not found, please specify the url!]]></string_upd>
+    <string_upd name="_bx_messenger_create_convo_menu_title"><![CDATA[Create chat menu]]></string_upd>
+    <string_upd name="_bx_messenger_create_convo_menu_set_title"><![CDATA[Create chat menu set]]></string_upd>
+    <string_upd name="_bx_messenger_create_convo_template_title"><![CDATA[Create chat menu template]]></string_upd>
+    <string_upd name="_bx_messenger_create_talk_confirm"><![CDATA[You are sure, you would like to create the chat?]]></string_upd>
+    <string_upd name="_bx_messenger_neo_app_form_input_caption_id"><![CDATA[Chat ID]]></string_upd>
+    <string_upd name="_bx_messenger_neo_app_form_input_id"><![CDATA[Chat ID]]></string_upd>
+    <string_upd name="_bx_messenger_hide_parts"><![CDATA[Hide last answered users in chats briefs]]></string_upd>
+    <string_upd name="_bx_messenger_show_search_box"><![CDATA[Enable search input in the chats list column is open by default]]></string_upd>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_albums_page_title_sys_create_entry"><![CDATA[New album]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_add_images"><![CDATA[Add/edit pictures]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_view_entry"><![CDATA[View album]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_view_media"><![CDATA[Media - view]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_edit_media"><![CDATA[Media - edit]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_move_media"><![CDATA[Media - move]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_delete_media"><![CDATA[Media - delete]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_home"><![CDATA[Albums home]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_entries_popular_media"><![CDATA[Popular images]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_entries_top_media"><![CDATA[Top images]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_manage"><![CDATA[Manage own albums]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_manage_administration"><![CDATA[Manage all albums]]></string_upd>
+    <string_upd name="_bx_albums_page_title_sys_entries_favorites"><![CDATA[Favorite media]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_edit_album"><![CDATA[Edit album]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_add_images"><![CDATA[Add/edit pictures]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_edit_image"><![CDATA[Edit image]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_delete_image"><![CDATA[Delete image]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_move_image"><![CDATA[Move image to]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_view_entry"><![CDATA[View album]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_entries_popular_media"><![CDATA[Popular images]]></string_upd>
+    <string_upd name="_bx_albums_menu_item_title_system_entries_top_media"><![CDATA[Top images]]></string_upd>
+</resources>

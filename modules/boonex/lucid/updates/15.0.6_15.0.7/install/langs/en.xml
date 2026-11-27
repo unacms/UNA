@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_lucid_menu_item_title_system_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_bx_lucid_menu_item_title_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_bx_lucid_menu_item_title_system_join"><![CDATA[Sign up]]></string_upd>
+	<string_upd name="_bx_lucid_menu_item_title_join"><![CDATA[Sign up]]></string_upd>
+</resources>

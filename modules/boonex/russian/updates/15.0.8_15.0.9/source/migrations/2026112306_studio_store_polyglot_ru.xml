@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio: Polyglot opens on Languages (with Get more), App Store cards keep Delete in a More menu, and the Storefront says where to enter the UNA account key and secret. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_lmi_cpt_pgt_languages"><![CDATA[Языки]]></string_add>
+    <string_add name="_adm_pgt_btn_get_more"><![CDATA[Найти ещё]]></string_add>
+    <string_add name="_adm_pgt_txt_language"><![CDATA[Язык]]></string_add>
+    <string_add name="_adm_pgt_txt_code"><![CDATA[Код]]></string_add>
+    <string_add name="_adm_pgt_txt_status"><![CDATA[Состояние]]></string_add>
+    <string_add name="_adm_pgt_txt_status_default"><![CDATA[По умолчанию]]></string_add>
+    <string_add name="_adm_pgt_txt_status_on"><![CDATA[Вкл.]]></string_add>
+    <string_add name="_adm_pgt_txt_status_off"><![CDATA[Выкл.]]></string_add>
+    <string_add name="_adm_str_txt_more_actions"><![CDATA[Другие действия: {0}]]></string_add>
+    <string_upd name="_adm_err_oauth_empty_key_secret"><![CDATA[Чтобы открыть магазин, введите ключ и секрет аккаунта UNA в <a href="{0}">настройках</a>.]]></string_upd>
+</resources>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_groups_form_profile_input_initial_members"><![CDATA[Invite members]]></string_upd>
+	<string_upd name="_bx_groups_form_profile_input_group_name"><![CDATA[Group name]]></string_upd>
+	<string_upd name="_bx_groups_form_profile_input_group_name_err"><![CDATA[Name is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_groups_form_profile_input_cover"><![CDATA[Upload new cover picture]]></string_upd>
+	<string_upd name="_bx_groups_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_joined_entries"><![CDATA[Profile groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_joined_entries"><![CDATA[Profile groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_create_profile"><![CDATA[Create group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_create_profile"><![CDATA[Create group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_edit_profile"><![CDATA[Edit group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_edit_profile"><![CDATA[Edit group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_edit_profile_settings"><![CDATA[Edit group settings]]></string_upd>
+	<string_upd name="_bx_groups_page_title_edit_profile_settings"><![CDATA[Edit settings]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_delete_profile"><![CDATA[Delete group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_delete_profile"><![CDATA[Delete group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_join_profile"><![CDATA[Join group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_join_profile"><![CDATA[Join group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_view_profile_closed"><![CDATA[View closed group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_view_profile"><![CDATA[View group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_profile_info"><![CDATA[Group info]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_recent"><![CDATA[New groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_recent"><![CDATA[New groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_manage"><![CDATA[Manage own groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_manage_administration"><![CDATA[Manage all groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_manage"><![CDATA[Manage groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_top"><![CDATA[Top groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_top"><![CDATA[Top groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_joined"><![CDATA[Joined groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_joined"><![CDATA[Joined groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_invite_to_group"><![CDATA[Invite members to the group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_invite_to_group"><![CDATA[Invite members to the group]]></string_upd>
+	<string_upd name="_bx_groups_page_title_sys_entries_favorites"><![CDATA[Favorite groups]]></string_upd>
+	<string_upd name="_bx_groups_page_title_entries_favorites"><![CDATA[Favorite groups]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_favorites_of_author"><![CDATA[Favorite groups]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_entries_in_context"><![CDATA[Groups in this community]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_joined_entries"><![CDATA[Joined groups]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_create_profile"><![CDATA[Create group]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_edit_profile"><![CDATA[Edit group]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_edit_profile_settings"><![CDATA[Edit settings]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_delete_profile"><![CDATA[Delete group]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_join_profile"><![CDATA[Join group]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_system_fans_manage"><![CDATA[Manage members]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_featured_profiles"><![CDATA[Featured groups]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_latest_profiles"><![CDATA[New groups]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_manage"><![CDATA[Manage groups]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_top_profiles"><![CDATA[Top groups]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_invite_to_group"><![CDATA[Invite members to the group]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+	<string_upd name="_bx_groups_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_edit_pricing"><![CDATA[Edit pricing]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_edit_pricing"><![CDATA[Edit pricing]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_edit_profile"><![CDATA[Edit group]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_edit_profile"><![CDATA[Edit group]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_edit_settings"><![CDATA[Edit settings]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_edit_settings"><![CDATA[Edit settings]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_delete_profile"><![CDATA[Delete group]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_delete_profile"><![CDATA[Delete group]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_add_content"><![CDATA[Add content]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_add_content"><![CDATA[Add content]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_fans"><![CDATA[Members]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_fans"><![CDATA[Members]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_become_fan"><![CDATA[Join group]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_leave_group"><![CDATA[Leave group]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_pay_and_join"><![CDATA[Pay & join]]></string_upd>
+	<string_upd name="_bx_groups_menu_item_title_system_more_actions"><![CDATA[More actions]]></string_upd>
+	<string_add name="_bx_groups_menu_item_title_system_memberships"><![CDATA[Groups (member of)]]></string_add>
+	<string_add name="_bx_groups_menu_item_title_memberships"><![CDATA[Your groups]]></string_add>
+	<string_upd name="_bx_groups_grid_action_title_adm_delete_with_content"><![CDATA[Delete with content]]></string_upd>
+	<string_upd name="_bx_groups_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+	<string_add name="_bx_groups_txt_unit_view"><![CDATA[View group]]></string_add>
+	<string_upd name="_bx_groups_txt_set_role"><![CDATA[Set role]]></string_upd>
+	<string_add name="_bx_groups_txt_empty_title"><![CDATA[No groups yet]]></string_add>
+	<string_upd name="_bx_groups_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this group. The invitation is expired or deleted.]]></string_upd>
+	<string_upd name="_bx_groups_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this group. This invitation cannot be used by you.]]></string_upd>
+	<string_upd name="_bx_groups_msg_performed"><![CDATA[Done.]]></string_upd>
+	<string_upd name="_bx_groups_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_upd name="_bx_groups_email_join_request_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> group from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_groups_email_join_reject_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was rejected by group admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_groups_email_join_confirm_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> group was confirmed by the group admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_groups_email_fan_remove"><![CDATA[Profile was removed from group members]]></string_upd>
+	<string_upd name="_bx_groups_email_fan_remove_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> group by the group admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_groups_email_fan_become_admin_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> group now.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_groups_email_admin_become_fan_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> group.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_groups_email_set_role_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> group was changed to <b>{Role}</b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_groups_email_invitation_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} group</a>.</p>
+{email_footer}]]></string_upd>
+</resources>

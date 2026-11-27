@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_glossary_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_glossary_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_add name="_bx_glossary_txt_empty_title"><![CDATA[No terms yet]]></string_add>
+</resources>

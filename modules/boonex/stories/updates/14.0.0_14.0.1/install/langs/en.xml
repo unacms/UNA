@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_stories_form_entry_input_title_err"><![CDATA[Caption is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_stories_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_stories_form_entry_input_pictures_err"><![CDATA[Content is required. Please select at least one photo or video.]]></string_upd>
+	<string_upd name="_bx_stories_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string_upd>
+	<string_upd name="_bx_stories_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+</resources>

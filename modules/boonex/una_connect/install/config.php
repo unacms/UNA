@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_unacon',
     'title' => 'UNA connect',
     'note' => 'UNA connect, join with another UNA site',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

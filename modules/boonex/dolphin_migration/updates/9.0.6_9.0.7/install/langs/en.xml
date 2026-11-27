@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_dolphin_migration_cpt_update"><![CDATA[Set the path]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_defined_path"><![CDATA[Path to the Dolphin script]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_reupload_data"><![CDATA[If you update the path, all the information from table below will be lost, but it will not influence on already transferred data.]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_started_migration_profile_field_can_not_be_transferred"><![CDATA[Custom Fields cannot be transferred]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_started_migration_photos_finished"><![CDATA[{0} photos were transferred]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_started_migration_videos_finished"><![CDATA[{0} videos were transferred]]></string_upd>
+	<string_add name="_bx_dolphin_migration_started_migration_photos_albums_finished"><![CDATA[{0} Albums and {1} Photos were transferred]]></string_add>
+	<string_add name="_bx_dolphin_migration_started_migration_videos_albums_finished"><![CDATA[{0} Albums and {1} Video files were transferred]]></string_add>
+	<string_upd name="_bx_dolphin_migration_started_migration_photos_album_error"><![CDATA[Database Error. Albums cannot be created!]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_friends_exports_error"><![CDATA[Database error: Friends cannot be transferred]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_data_photos"><![CDATA[Photos]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_data_videos"><![CDATA[Videos]]></string_upd>
+	<string_add name="_bx_dolphin_migration_data_photos_albums"><![CDATA[Photo Albums, Photos]]></string_add>
+	<string_add name="_bx_dolphin_migration_data_videos_albums"><![CDATA[Video Albums, Videos]]></string_add>
+	<string_upd name="_bx_dolphin_migration_started_migration_groups_finished"><![CDATA[{0} groups with members were transferred]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_started_migration_events_finished"><![CDATA[{0} events with members were transferred]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_cpt_overwrite"><![CDATA[If account with the same NickName or Email already exists, then to overwrite its info.
+	<br/><b>This option is useful if you already have account on current version with the same Nickname as in Dolphin. If you enable this option all existed on UNA accounts will be updated using profiles' info from Dolphin and don't forget that info of your current signed-in member may be also updated and you can be signed out.</b>]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_cpt_clean"><![CDATA[Clear]]></string_upd>
+	<string_upd name="_bx_dolphin_migration_cpt_clean_warning"><![CDATA[The all data from the table below will be removed. Continue?]]></string_upd>
+	<string_add name="_bx_dolphin_migration_started_migration_conversations"><![CDATA[Migration has been started]]></string_add>
+	<string_add name="_bx_dolphin_migration_cpt_media_modules"><![CDATA[Transfer media content to suitable media modules (Dolphin <b>photos</b> to UNA <b>Photos</b> and <b>videos</b> to UNA <b>Videos</b> module). Otherwise photos and videos will be transferred to UNA <b>Albums</b> module.]]></string_add>
+</resources>

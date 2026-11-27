@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The account settings menu's sections (items without a link). -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Аккаунт (раздел)]]></string_add>
+    <string_add name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Аккаунт]]></string_add>
+    <string_add name="_sys_menu_item_title_system_account_settings_section_profile"><![CDATA[Текущий профиль (раздел)]]></string_add>
+    <string_add name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string_add>
+</resources>

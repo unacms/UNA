@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_froala_information_block"><![CDATA[The Froala editor isn't supported anymore. UNA default editor is free and has all Froala features and even more. <b>Froala module has to be remain installed to preserve files uploaded directly into the editor</b> if you used Froala before.]]></string_upd>
+</resources>

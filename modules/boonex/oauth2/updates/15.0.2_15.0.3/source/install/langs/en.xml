@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+    <string name="_sys_module_oauth2"><![CDATA[OAuth2 Server]]></string>
+    <string name="_bx_oauth_administration"><![CDATA[OAuth2 Server]]></string>
+    <string name="_bx_oauth"><![CDATA[OAuth2 Server]]></string>
+    <string name="_bx_oauth_help"><![CDATA[Information]]></string>
+    <string name="_bx_oauth_help_text"><![CDATA[Add clients to allow them to use profile information from this site on client's sites. <br />
+Client's sites must have "UNA Connect" module installed. <br />
+Specify the following "Main UNA Site URL" on the client sites:<br />
+<strong>{0}</strong>]]></string>
+    <string name="_bx_oauth_client_url"><![CDATA[Client Site URL]]></string>
+    <string name="_bx_oauth_client_id"><![CDATA[Client Key]]></string>
+    <string name="_bx_oauth_client_secret"><![CDATA[Client Secret]]></string>
+    <string name="_bx_oauth_add"><![CDATA[Add new client]]></string>
+    <string name="_bx_oauth_clients"><![CDATA[OAuth2 clients]]></string>
+    <string name="_bx_oauth_authorization"><![CDATA[Authorization]]></string>
+    <string name="_bx_oauth_form_valid_url"><![CDATA[Valid URL is required]]></string>
+    <string name="_bx_oauth_url"><![CDATA[URL]]></string>
+    <string name="_bx_oauth_connect"><![CDATA[Connect]]></string>
+    <string name="_bx_oauth_authorize_redirect"><![CDATA[After you choose, your browser goes back to <strong>{0}</strong>. Continue only if you started this sign-in yourself.]]></string>
+    <string name="_bx_oauth_authorization_desc"><![CDATA[Connect an app to your account.]]></string>
+    <string name="_bx_oauth_authorize_lead"><![CDATA[<strong>{0}</strong> wants to connect to your account on {1}.]]></string>
+    <string name="_bx_oauth_authorize_no_profile"><![CDATA[You need a profile to connect <strong>{0}</strong>. Create one, and you will come back here to finish.]]></string>
+    <string name="_bx_oauth_authorize_can"><![CDATA[It will be able to:]]></string>
+    <string name="_bx_oauth_authorize_can_read"><![CDATA[Read everything you can see on the site]]></string>
+    <string name="_bx_oauth_authorize_can_write"><![CDATA[Post, comment and react for you]]></string>
+    <string name="_bx_oauth_authorize_can_messages"><![CDATA[Read and send your messages]]></string>
+    <string name="_bx_oauth_authorize_can_profiles"><![CDATA[Act as whichever of your profiles you are using on the site. Switching profiles in the app switches them on the site too]]></string>
+    <string name="_bx_oauth_authorize_choose"><![CDATA[Connect as:]]></string>
+    <string name="_bx_oauth_connect_as"><![CDATA[Connect as {0}]]></string>
+    <string name="_bx_oauth_authorize_agreement"><![CDATA[By connecting, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string>
+
+    <string name="_bx_oauth_lmi_cpt_keys"><![CDATA[Keys]]></string>
+
+    <string name="_bx_oauth_adm_stg_cpt_type"><![CDATA[OAuth2 Server]]></string>
+    <string name="_bx_oauth_adm_stg_cpt_category_general"><![CDATA[General]]></string>
+    <string name="_bx_oauth_adm_stg_opt_refresh_token_lifetime"><![CDATA[Refresh token lifetime (in seconds)]]></string>
+    <string name="_bx_oauth_adm_stg_opt_always_issue_new_refresh_token"><![CDATA[Always issue new refresh token]]></string>
+    <string name="_bx_oauth_connected_apps"><![CDATA[Connected apps]]></string>
+    <string name="_bx_oauth_connected_apps_info"><![CDATA[Apps and AI assistants you signed in to with this account. Disconnect one to take its access away: it has to be connected again.]]></string>
+    <string name="_bx_oauth_connected_apps_disconnect"><![CDATA[Disconnect]]></string>
+    <string name="_bx_oauth_connected_apps_confirm"><![CDATA[Disconnect {0}?]]></string>
+    <string name="_bx_oauth_connected_apps_api"><![CDATA[Connected apps: {0}. Disconnect them on the site, in account settings > Connectors.]]></string>
+</resources>

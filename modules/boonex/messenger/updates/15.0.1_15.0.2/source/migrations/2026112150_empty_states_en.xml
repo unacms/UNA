@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Messenger's empty states (inbox, a list of one kind, the conversation pane, the people finder, search) and the clear-search button. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_messenger_empty_inbox_title"><![CDATA[No conversations yet]]></string_add>
+    <string_add name="_bx_messenger_empty_inbox_text"><![CDATA[Conversations you start or are added to show up here.]]></string_add>
+    <string_add name="_bx_messenger_empty_list_text"><![CDATA[Conversations of this kind show up here.]]></string_add>
+    <string_add name="_bx_messenger_empty_history_title"><![CDATA[No messages here yet]]></string_add>
+    <string_add name="_bx_messenger_empty_history_text"><![CDATA[Choose a conversation, or start a new one.]]></string_add>
+    <string_add name="_bx_messenger_empty_action_new"><![CDATA[New message]]></string_add>
+    <string_add name="_bx_messenger_search_clear"><![CDATA[Clear search]]></string_add>
+    <string_add name="_bx_messenger_empty_people_text"><![CDATA[Type a name to find someone to write to.]]></string_add>
+    <string_add name="_bx_messenger_empty_search_text"><![CDATA[Try another name or word.]]></string_add>
+</resources>

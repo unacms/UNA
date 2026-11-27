@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_googletagman',
     'title' => 'Google Tag Manager',
     'note' => 'Google Tag Manager, marketing tags, analytics tags',
-    'version' => '15.0.2.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

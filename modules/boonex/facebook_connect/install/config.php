@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_facebook',
     'title' => 'Facebook connect',
     'note' => 'Facebook login, join with a Facebook account',
-    'version' => '15.0.2.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

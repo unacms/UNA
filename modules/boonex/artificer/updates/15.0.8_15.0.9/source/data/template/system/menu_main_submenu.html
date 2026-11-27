@@ -1,0 +1,18 @@
+<ul id="bx-menu-main-submenu" class="bx-menu-main-submenu bx-menu-object-__object__ inline-flex items-stretch w-max">
+    <bx_repeat:menu_items>
+        <li class="bx-menu-item bx-menu-item-__name__ __class_add__ flex" __attrs_wrp__>
+            <a class="group block relative py-4 px-4 text-gray-600 dark:text-gray-400 hover:text-gray-950 dark:hover:text-gray-50 transition-colors duration-150 ease-out whitespace-nowrap text-sm font-medium text-center focus:z-10 box-sizing" href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick> __attrs__>
+                <span class="bx-mi-pill absolute inset-x-1 inset-y-2 rounded-full transition-colors duration-150 ease-out group-hover:bg-gray-200/50 dark:group-hover:bg-gray-700/50 group-active:bg-gray-200 dark:group-active:bg-gray-700 group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-blue-600 dark:group-focus-visible:outline-blue-400" aria-hidden="true"></span>
+                <bx_if:title>
+                    <span class="bx-menu-item-title relative">__title__</span>
+                </bx_if:title>
+                <bx_if:addon>
+                    <span class="bx-menu-addon bx-stl-mia relative ml-1">
+                        <span class="bx-menu-addon-cnt">__addon__</span>
+                    </span>
+                </bx_if:addon>
+                <span class="bx-mi-underline absolute inset-x-1 bottom-0 h-0.5 rounded-md"></span>
+            </a>
+        </li>
+    </bx_repeat:menu_items>
+</ul>

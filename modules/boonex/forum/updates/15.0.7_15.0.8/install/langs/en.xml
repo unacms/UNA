@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_forum_option_auto_activation_for_categories"><![CDATA[Auto-activation for categories]]></string_upd>
+	<string_upd name="_bx_forum_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_forum_form_entry_input_covers"><![CDATA[Header image]]></string_upd>
+	<string_upd name="_bx_forum_form_entry_input_title_err"><![CDATA[Topic is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_forum_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_entry_all_actions"><![CDATA[All actions]]></string_upd>
+	<string_upd name="_bx_forum_page_title_browse_latest"><![CDATA[Discussions With Recent Posts]]></string_upd>
+	<string_upd name="_bx_forum_page_title_sys_home"><![CDATA[Discussions home]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_featured_entries_view_showcase"><![CDATA[Featured discussions]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_home"><![CDATA[Discussion list]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_popular_entries"><![CDATA[Popular discussions]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+	<string_upd name="_bx_forum_page_title_sys_entries_categories"><![CDATA[Discussion categories]]></string_upd>
+	<string_upd name="_bx_forum_page_title_entries_categories"><![CDATA[Discussion categories]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_entries_categories"><![CDATA[Discussion categories]]></string_upd>
+	<string_upd name="_bx_forum_page_title_sys_manage"><![CDATA[Manage own]]></string_upd>
+	<string_upd name="_bx_forum_page_title_sys_manage_administration"><![CDATA[Manage all]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_popular_keywords"><![CDATA[Popular hashtags]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_cats"><![CDATA[Discussion categories]]></string_upd>
+	<string_upd name="_bx_forum_page_title_sys_entries_favorites"><![CDATA[Favorite discussions]]></string_upd>
+	<string_upd name="_bx_forum_page_title_entries_favorites"><![CDATA[Favorite discussions]]></string_upd>
+	<string_upd name="_bx_forum_page_block_title_entries_search_results"><![CDATA[Search results]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_cpa_photo_html5"><![CDATA[Add photos]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_cpa_video_html5"><![CDATA[Add videos]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_system_cpa_video_record"><![CDATA[Record video]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_cpa_video_record"><![CDATA[Record video]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_cpa_file_html5"><![CDATA[Add files]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_system_cpa_poll"><![CDATA[Add poll]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_cpa_poll"><![CDATA[Add poll]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_system_add_link"><![CDATA[Add link]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_add_link"><![CDATA[Add link]]></string_upd>
+	<string_upd name="_bx_forum_form_post_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string_upd>
+	<string_upd name="_bx_forum_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string_upd>
+	<string_upd name="_bx_forum_form_attach_link_input_url"><![CDATA[Add link]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_resolve_entry"><![CDATA[Mark as resolved]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_unresolve_entry"><![CDATA[Mark as unresolved]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_system_resolve_entry"><![CDATA[Mark as resolved]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_system_unresolve_entry"><![CDATA[Mark as unresolved]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_system_more"><![CDATA[More actions]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_system_entries_categories"><![CDATA[Categories]]></string_upd>
+	<string_upd name="_bx_forum_menu_item_title_entries_categories"><![CDATA[Categories]]></string_upd>
+	<string_upd name="_bx_forum_grid_column_title_visible_for_levels"><![CDATA[Visible for]]></string_upd>
+	<string_upd name="_bx_forum_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+	<string_upd name="_bx_forum_grid_action_title_show_to"><![CDATA[Show to]]></string_upd>
+	<string_add name="_bx_forum_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string_add>
+	<string_add name="_bx_forum_txt_empty_title"><![CDATA[No discussions yet]]></string_add>
+	<string_upd name="_bx_forum_email_new_reply_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New reply in <a href="{PageUrl}">{PageTitle}</a> discussion from <a href="{SenderUrl}">{SenderDisplayName}</a>:</p>
+<div class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;"><hr /></div>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+{email_footer}]]></string_upd>
+</resources>

@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_reminders',
     'title' => 'Reminders',
     'note' => 'Reminders, scheduled reminders',
-    'version' => '11.0.0',
+    'version' => '11.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

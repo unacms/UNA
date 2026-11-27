@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_events_option_reminder_interval"><![CDATA[Reminder interval]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_joined"><![CDATA[Profile events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_joined_entries"><![CDATA[Profile events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_create_profile"><![CDATA[Create event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_edit_profile"><![CDATA[Edit event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_manage_profile"><![CDATA[Manage event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_delete_profile"><![CDATA[Delete event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_join_profile"><![CDATA[Join event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_view_profile_closed"><![CDATA[View closed event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_view_profile"><![CDATA[View event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_group_fans"><![CDATA[Event guests]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_profile_info"><![CDATA[Event info]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_recent"><![CDATA[New events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_manage"><![CDATA[Manage own events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_manage_administration"><![CDATA[Manage all events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_top"><![CDATA[Top events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_upcoming"><![CDATA[Upcoming events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_past"><![CDATA[Past events]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_calendar"><![CDATA[Events calendar]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_invite_to_group"><![CDATA[Invite members to the event]]></string_upd>
+    <string_upd name="_bx_events_page_title_sys_entries_favorites"><![CDATA[Favorite events]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_edit_profile"><![CDATA[Edit event]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_delete_profile"><![CDATA[Delete event]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_add_content"><![CDATA[Add content]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_become_fan"><![CDATA[Join event]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_leave_group"><![CDATA[Leave event]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_pay_and_join"><![CDATA[Pay & join]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_check_in"><![CDATA[Check in]]></string_upd>
+    <string_upd name="_bx_events_menu_item_title_system_more_actions"><![CDATA[More actions]]></string_upd>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_analytics_adm_stg_cpt_items_count"><![CDATA[Maximum items]]></string_upd>
+	<string_upd name="_bx_analytics_txt_online_now"><![CDATA[visitors in the last {0} minutes]]></string_upd>
+	<string_upd name="_bx_analytics_action_login"><![CDATA[Sign in]]></string_upd>
+</resources>

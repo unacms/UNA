@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_donations',
     'title' => 'Donations',
     'note' => 'Donations, contributions, fundraising',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

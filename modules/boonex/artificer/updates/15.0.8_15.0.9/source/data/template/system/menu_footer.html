@@ -1,0 +1,40 @@
+<!-- Two groups, as in the apps' footer (BxBaseMenuFooter::_getTemplateVars): the links and text, then the tools.
+     From desktop width they sit at the two ends; on smaller screens each wraps as a whole, centred. -->
+<div id="bx-menu-footer" class="bx-menu-object-__object__ flex flex-wrap items-center justify-center lg:justify-between gap-x-6 gap-y-4">
+    <bx_if:links>
+        <ul class="bx-menu-hor bx-menu-footer-links max-w-full flex flex-wrap items-center justify-center gap-4">
+            <bx_repeat:menu_links>
+                <li class="bx-menu-item bx-menu-item-__name__ bx-stl-mil-wo-bg-gaps __class_add__">
+                    <bx_if:link>
+                        <a href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick>__attrs__>
+                            <bx_include_auto:menu_icon.html />
+                            <bx_if:title>__title__</bx_if:title>
+                            <bx_if:tooltip><span class="bx-menu-footer-tooltip" aria-hidden="true">__tooltip__</span></bx_if:tooltip>
+                        </a>
+                    </bx_if:link>
+                    <bx_if:text>
+                        <span class="bx-menu-footer-text"><span class="sm:hidden">__text_short__</span><span class="hidden sm:inline">__text__</span></span>
+                    </bx_if:text>
+                </li>
+            </bx_repeat:menu_links>
+        </ul>
+    </bx_if:links>
+    <bx_if:tools>
+        <ul class="bx-menu-hor bx-menu-footer-tools max-w-full flex flex-wrap items-center justify-center gap-4">
+            <bx_repeat:menu_tools>
+                <li class="bx-menu-item bx-menu-item-__name__ bx-stl-mil-wo-bg-gaps __class_add__">
+                    <bx_if:link>
+                        <a href="__link__" <bx_if:onclick>onclick="__onclick__"</bx_if:onclick>__attrs__>
+                            <bx_include_auto:menu_icon.html />
+                            <bx_if:title>__title__</bx_if:title>
+                            <bx_if:tooltip><span class="bx-menu-footer-tooltip" aria-hidden="true">__tooltip__</span></bx_if:tooltip>
+                        </a>
+                    </bx_if:link>
+                    <bx_if:text>
+                        <span class="bx-menu-footer-text"><span class="sm:hidden">__text_short__</span><span class="hidden sm:inline">__text__</span></span>
+                    </bx_if:text>
+                </li>
+            </bx_repeat:menu_tools>
+        </ul>
+    </bx_if:tools>
+</div>

@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_convos',
     'title' => 'Private messages',
     'note' => 'Conversations, private messages, inbox',
-    'version' => '15.0.5.DEV',
+    'version' => '15.0.5',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

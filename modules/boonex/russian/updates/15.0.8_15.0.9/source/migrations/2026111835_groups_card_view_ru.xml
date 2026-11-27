@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- A group's card with no button to offer says View group. -->
+<resources name="ru" flag="ru" title="Russian" category="Groups">
+    <string_add name="_bx_groups_txt_unit_view"><![CDATA[Смотреть группу]]></string_add>
+</resources>

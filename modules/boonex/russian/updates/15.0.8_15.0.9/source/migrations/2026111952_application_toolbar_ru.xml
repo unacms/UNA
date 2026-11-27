@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The Application layout's toolbar menu, in its sidebar's top row, and the sidebar's resize handle. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_menu_title_toolbar_application"><![CDATA[Панель инструментов приложения]]></string_add>
+    <string_add name="_sys_menu_set_title_toolbar_application"><![CDATA[Панель инструментов приложения]]></string_add>
+    <string_add name="_sys_txt_sidebar_resize"><![CDATA[Изменить ширину боковой панели]]></string_add>
+</resources>

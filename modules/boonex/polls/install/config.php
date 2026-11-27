@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_polls',
     'title' => 'Polls',
     'note' => 'Polls, votes',
-    'version' => '15.0.5.DEV',
+    'version' => '15.0.5',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

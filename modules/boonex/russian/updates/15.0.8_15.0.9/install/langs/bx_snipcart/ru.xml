@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Snipcart]]></string_upd>
+	<string_upd name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Snipcart]]></string_upd>
+</resources>

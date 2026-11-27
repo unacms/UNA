@@ -1,0 +1,68 @@
+<?php 
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    OktaConnect Okta Connect
+ * @ingroup     UnaModules
+ *
+ * @{
+ */
+
+$aConfig = array(
+    /**
+     * Main Section.
+     */
+    'type' => BX_DOL_MODULE_TYPE_MODULE,
+    'name' => 'bx_oktacon',
+    'title' => 'Okta Connect',
+    'note' => 'Okta login, join with an Okta account',
+    'version' => '13.0.1',
+    'vendor' => 'UNA INC',
+    'help_url' => '',
+
+    'compatible_with' => array(
+        '15.0.0-RC5'
+    ),
+
+    /**
+     * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
+     */
+    'home_dir' => 'boonex/okta_connect/',
+    'home_uri' => 'oktacon',
+
+    'db_prefix' => 'bx_oktacon_',
+    'class_prefix' => 'BxOktaCon',
+
+    /**
+     * Category for language keys.
+     */
+    'language_category' => 'Okta Connect',
+
+    /**
+     * Installation/Uninstallation Section.
+     */
+    'install' => array(
+        'execute_sql' => 1,
+        'update_languages' => 1,
+    ),
+    'uninstall' => array (
+        'execute_sql' => 1,
+        'update_languages' => 1,
+    ),
+    'enable' => array(
+        'execute_sql' => 1,
+        'clear_db_cache' => 1,
+    ),
+    'disable' => array (
+        'execute_sql' => 1,
+        'clear_db_cache' => 1,
+    ),
+
+    /**
+     * Dependencies Section
+     */
+    'dependencies' => array(),
+);
+
+/** @} */

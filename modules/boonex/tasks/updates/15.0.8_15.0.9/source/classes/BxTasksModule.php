@@ -1,0 +1,3107 @@
+<?php defined('BX_DOL') or die('hack attempt');
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT 
+ * @defgroup    Tasks Tasks
+ * @ingroup     UnaModules
+ *
+ * @{
+ */
+
+/**
+ * Task states
+ */
+define('BX_TASKS_STATE_BACBLOG', 1);
+define('BX_TASKS_STATE_TODO', 2);
+define('BX_TASKS_STATE_IN_PROGRESS', 3);
+define('BX_TASKS_STATE_IN_REVIEW', 4);
+define('BX_TASKS_STATE_CANCELLED', 5);
+define('BX_TASKS_STATE_DUPLICATE', 6);
+define('BX_TASKS_STATE_DONE', 7);
+
+class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
+{
+    /** The longest prefix of task numbers: UNA-12 has the prefix UNA. */
+    const PREFIX_MAX = 10;
+    const PREFIX_PATTERN = '/^[A-Za-z][A-Za-z0-9]{1,9}$/';
+
+    protected $_aTimeRights = [];
+    /** The current prefixes of communities (id => prefix, 0 for the tasks in none), once per request. */
+    protected $_aPrefixes = [];
+
+    function __construct(&$aModule)
+    {
+        parent::__construct($aModule);
+
+        $this->_oConfig->init($this->_oDb);
+
+        $CNF = &$this->_oConfig->CNF;
+        $this->_aSearchableNamesExcept = array_merge($this->_aSearchableNamesExcept, array(
+            $CNF['FIELD_PUBLISHED'],
+            $CNF['FIELD_ALLOW_COMMENTS'],
+            $CNF['FIELD_NUMBER'],
+            $CNF['FIELD_NUMBER_CONTEXT']
+        ));
+    }
+
+    /**
+    * Action methods
+    */
+    public function actionImportAction($sAction)
+    {
+        $aResults = [];
+
+        switch($sAction) {
+            case 'get_params':
+                $sSource = '';
+                if(!($sSource = bx_get('source')) || !($sSource = bx_process_input($sSource)) || !in_array($sSource, ['linear']))
+                    break;
+
+                $sClass = 'Import' . bx_gen_method_name($sSource);
+                bx_import($sClass, $this->_aModule);
+
+                $sClass = $this->_oConfig->getClassPrefix() . $sClass;
+                $oImport = new $sClass($this);
+
+                $aResults = [
+                    'content' => $oImport->getRequestParams(),
+                    'eval' => $this->_oConfig->getJsObject('import') . '.onChangeSource(oData)'
+                ];
+                break;
+        }
+
+        echoJson($aResults);
+    }
+
+    public function actionAjaxGetDestinations()
+    {
+        $sTerm = bx_get('term');
+        $aResults = bx_srv('system', 'contexts_search', [$sTerm, [
+            'module' => $this->_oConfig->getName(),
+        ]], 'TemplServiceProfiles');
+
+        header('Content-Type:text/javascript; charset=utf-8');
+        echo json_encode($aResults);
+    }
+
+    /**
+     * Get possible recipients for start conversation form
+     */
+    public function actionAjaxGetInitialMembers($iContextPid)
+    {
+        $sTerm = bx_get('term');
+
+        header('Content-Type:text/javascript; charset=utf-8');
+        echo json_encode($this->serviceGetInitialMembers($iContextPid, $sTerm));
+    }
+
+    public function actionSetCompleted($iContentId, $iCompleted)
+    {
+        return echoJson($this->serviceSetCompleted($iContentId, $iCompleted));
+    }
+
+    public function actionApplyFilter($iContextId, $iFilterId)
+    {
+        return echoJson([
+            'content' => $this->serviceApplyFilter($iContextId, $iFilterId),
+            'eval' => $this->_oConfig->getJsObject('tasks') . '.onApplyFilter(oData)'
+        ]);
+    }
+
+    public function actionCreateFilter($iContextId)
+    {
+        $mixedResult = $this->serviceCreateFilter($iContextId);
+        if(is_array($mixedResult))
+            return echoJson($mixedResult);
+
+        $sContent = BxTemplFunctions::getInstance()->popupBox($this->_oConfig->getHtmlIds('filter_popup'), _t('_bx_tasks_popup_f_title_add'), $this->_oTemplate->parseHtmlByName('popup_form.html', [
+            'form_id' => $mixedResult->getId(),
+            'form' => $mixedResult->getCode(true)
+        ]));
+
+        return echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
+    }
+
+    public function actionProcessTaskListForm($iContextId, $iId)
+    {
+        $mixedResult = $this->serviceProcessTaskListForm($iContextId, $iId);
+        if(($bReload = is_bool($mixedResult) || is_numeric($mixedResult)) || is_array($mixedResult)) {
+            if($bReload)
+                $mixedResult = [
+                    'eval' => $this->_oConfig->getJsObject('tasks') . '.reloadData(oData, ' . $iContextId . ')',
+                ];
+
+            return echoJson($mixedResult);
+        }
+
+        echo $mixedResult;
+    }
+
+    public function actionDeleteTaskList($iContextId, $iId)
+    {
+        return echoJson($this->serviceDeleteTaskList($iContextId, $iId) ? [
+            'context_id' => $iContextId,
+        ] : ['msg' => _t('_bx_tasks_txt_err_delete_list')]);
+    }
+
+    public function actionProcessTaskForm($iContextId, $iListId)
+    {
+        $mixedResult = $this->serviceProcessTaskForm($iContextId, $iListId);
+        if(($bReload = is_bool($mixedResult) || is_numeric($mixedResult)) || is_array($mixedResult)) {
+            if($bReload)
+                $mixedResult = [
+                    'eval' => $this->_oConfig->getJsObject('tasks') . '.reloadData(oData, ' . $iContextId . ')',
+                ];
+
+            return echoJson($mixedResult);
+        }
+
+        echo $mixedResult;
+    }
+
+    public function actionProcessTaskFormEditProperty($iContentId, $sProperty)
+    {
+        $mixedResult = $this->serviceProcessTaskFormEditProperty($iContentId, $sProperty);
+        if(($bReload = is_bool($mixedResult)) || is_array($mixedResult)) {
+            if($bReload)
+                $mixedResult = [
+                    'eval' => $this->_oConfig->getJsObject('tasks') . '.reload(oData)',
+                ];
+
+            return echoJson($mixedResult);
+        }
+
+        echo $mixedResult;
+    }
+
+    public function actionCalendarData()
+    {
+        // check permissions
+        $aSQLPart = array();
+        $iContextId = (int)bx_get('context_id');
+        
+        if(!$this->isAllowView($iContextId))
+            return; 
+		
+        $oPrivacy = BxDolPrivacy::getObjectInstance($this->_oConfig->CNF['OBJECT_PRIVACY_VIEW']);
+
+        if($iContextId) {
+            $aSQLPart = $oPrivacy ? $oPrivacy->getContentByGroupAsSQLPart(- $iContextId) : array();
+        }
+
+        // get entries
+        $aEntries = $this->_oDb->getEntriesByDate(bx_get('start'), bx_get('end'), bx_get('event'), $aSQLPart);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($aEntries);
+    }
+
+    public function actionProcessTimer($sAction, $iContentId, $iProfileId)
+    {
+        if(!$this->_iProfileId || $this->_iProfileId != $iProfileId)
+            return echoJson(['msg' => _t('_sys_txt_access_denied')]);
+
+        $sName = '';
+        if(($sName = bx_get('name')) !== false)
+            $sName = bx_process_input($sName);
+
+        $aResult = $this->serviceProcessTimer($sAction, $iContentId, $iProfileId);
+        if($aResult['code'] == 0)
+            $aResult = array_merge($aResult, [
+                'content_id' => $iContentId,
+                'profile_id' => $iProfileId,
+                'content' => $this->_oTemplate->getTimer($iContentId, $iProfileId, $sName),
+                'eval' => $this->_oConfig->getJsObject('timer') . '.onPerformAction' . bx_gen_method_name($sAction) . '(oData)'
+            ]);
+
+        return echoJson($aResult);
+    }
+
+    public function actionImportFrom($sType = 'linear', $iContextId = 0)
+    {
+        if(!isAdmin() && !bx_acl_is_administrator())
+            return;
+
+        $aParams = [];
+        switch($sType) {
+            case 'linear':
+                $aParams = [
+                    'req_api_key' => bx_get('lk') ?: '',
+                    'req_params' => ($sP = bx_get('lp')) !== false && is_string($sP) ? json_decode($sP, true) : []
+                ];
+                break;
+        }
+
+        $mixedResult = $this->serviceImportFrom($sType, $iContextId, $aParams);
+        if($mixedResult === false || !is_array($mixedResult))
+            return;
+
+        echo call_user_func_array('sprintf', array_merge(["Processed: %s, Issues: %s"], $mixedResult));
+    }
+
+    public function serviceGetSafeServices()
+    {
+        return array_merge(parent::serviceGetSafeServices(), [
+            'GetInitialMembers' => '',
+            'BrowseContext' => '',
+            'BrowseTasksByProfile' => '',
+            'ProcessTaskListForm' => '',
+            'DeleteTaskList' => '',
+            'ProcessTaskForm' => '',
+            'ProcessTaskFormEditProperty' => '',
+            'SetProperty' => '',
+            'SetCompleted' => '',
+            'CreateFilter' => '',
+            'SaveFilter' => '',
+            'ApplyFilter' => '',
+            'ProcessTimer' => '',
+            'GetBlockTimers' => '',
+            'GetBlockTimersStats' => '',
+            'GetBlockTimeSummary' => '',
+            'GetBlockTimeSummaryContext' => '',
+            'GetBlockBillingSummary' => '',
+        ]);
+    }
+
+    public function serviceGetOptionsExportTimeTo()
+    {
+        return [
+            'csv' => _t('_bx_tasks_option_export_time_to_csv'),
+            'xml' => _t('_bx_tasks_option_export_time_to_xml'),
+        ];
+    }
+    
+    public function serviceGetOptionsExportTimeFields()
+    {
+        $aResult = [];
+        $sLkPrefix = '_bx_tasks_option_export_time_field_';
+
+        $aFields = $this->_oDb->getExportTimeFields();
+        if($aFields && ($aOriginal = $aFields['original'] ?? false) && is_array($aOriginal)) {
+            foreach($aOriginal as $sField) {
+                if(($sLk = $sLkPrefix . $sField) && ($_sLk = _t($sLk)) && strcmp($sLk, $_sLk) != 0) {
+                    $aResult[] = ['key' => $sField, 'value' => $_sLk];
+                }
+            }
+        }
+
+        return $aResult;
+    }
+
+    public function serviceGetInitialMembers($iContextPid, $sTerm)
+    {
+        if(!$this->isAllowView($iContextPid))
+            return [];
+
+        if($this->_bIsApi) {
+            if(!$sTerm)
+                return [];
+
+            $aParams = json_decode($sTerm, true);
+            if(!isset($aParams['term']))
+                return [];
+
+            $sTerm = $aParams['term'];
+        }
+
+        $sModule = $this->_oConfig->getName();
+        return bx_srv('system', 'profiles_search', [$sTerm, [
+            'module' => $sModule,
+            'search_params' => ['name' => $sModule . '_initial_members', 'context_pid' => $iContextPid]
+        ]], 'TemplServiceProfiles');
+    }
+
+    public function serviceProcessTaskListForm($iContextId, $iId)
+    {
+        if(!$this->isAllowAdd(abs($iContextId)))
+            return [];
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $bAdd = (int)$iId == 0;
+
+        $aContentInfo = [];
+        $sFormDisplay = $sPopupTitle = '';
+        if($bAdd) {
+            $sFormDisplay = $CNF['OBJECT_FORM_LIST_ENTRY_DISPLAY_ADD'];
+            $sPopupTitle = _t('_bx_tasks_form_list_entry_display_add');
+        }
+        else {
+            $aContentInfo = $this->getListInContext($iId, $iContextId);
+            if($aContentInfo === false)
+                return [];
+
+            $sFormDisplay = $CNF['OBJECT_FORM_LIST_ENTRY_DISPLAY_EDIT'];
+            $sPopupTitle = _t('_bx_tasks_form_list_entry_display_edit');
+        }
+
+        $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_LIST_ENTRY'], $sFormDisplay);
+        if(!$oForm)
+            return [];
+
+	$oForm->setAction(BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'process_task_list_form/' . $iContextId . '/' . $iId . '/');
+        $oForm->initChecker($aContentInfo, []);
+        if($oForm->isSubmittedAndValid()) {
+            $mixedResult = $bAdd ? $oForm->insert(['context_id' => $iContextId]) : (bool)$oForm->update($iId);
+
+            return $this->_bIsApi ? [] : $mixedResult;
+        }
+        else {
+            if($this->_bIsApi)
+                return [bx_api_get_block('form', $oForm->getCodeAPI(), [
+                    'ext' => [
+                        'name' => $this->_aModule['name'], 
+                        'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/process_task_list_form/&params[]=' . $iContextId . '&params[]=' . $iId, 'immutable' => true]
+                    ]
+                ])];
+
+            $sContent = $this->_oTemplate->parseHtmlByName('popup_form.html', [
+                'form_id' => $oForm->getId(),
+                'form' => $oForm->getCode(true)
+            ]);
+
+            if($oForm->isSubmitted())
+                return [
+                    'form' => $sContent, 
+                    'form_id' => $oForm->getId()
+                ];
+
+            return $sContent;
+        }
+    }
+
+    public function serviceDeleteTaskList($iContextId, $iId)
+    {
+        if(!$this->isAllowManageByContext($iContextId))
+            return false;
+
+        if(!is_array($this->getListInContext($iId, $iContextId)))
+            return false;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $aTasks = $this->_oDb->getTasks($iContextId, $iId);
+        $bTasks = !empty($aTasks) && is_array($aTasks);
+
+        if($bTasks)
+            foreach($aTasks as $aTask)
+                if($this->checkAllowedDelete($aTask) !== CHECK_ACTION_RESULT_ALLOWED)
+                    return false;
+
+        if($bTasks && ($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])) !== false)
+            foreach($aTasks as &$aTask)
+                $oConnection->onDeleteContent($aTask[$CNF['FIELD_ID']]);
+
+        return $this->_oDb->deleteList($iId);
+    }
+
+    public function serviceProcessTaskForm($iContextId, $iListId = 0)
+    {
+        if(!$this->isAllowAdd($iContextId))
+            return [];
+
+        if($this->getListInContext($iListId, $iContextId) === false)
+            return [];
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_ENTRY'], $CNF['OBJECT_FORM_ENTRY_DISPLAY_ADD']);
+        if(!$oForm)
+            return [];
+
+        $oForm->setAction(BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'process_task_form/' . $iContextId . '/' . $iListId . '/');
+        $oForm->setContextId($iContextId);
+
+        $oForm->initChecker();
+        if($oForm->isSubmittedAndValid()) {
+            $iContentId = $oForm->insert([$CNF['FIELD_TASKLIST'] => $iListId]);
+            if($iContentId)
+                $this->onPublished($iContentId);
+
+            return $this->_bIsApi ? [] : $iContentId;
+        }
+        else {
+            if($this->_bIsApi)
+                return [bx_api_get_block('form', $oForm->getCodeAPI(), [
+                    'ext' => [
+                        'name' => $this->_aModule['name'], 
+                        'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/process_task_form/&params[]=' . $iContextId . '&params[]=' . $iListId, 'immutable' => true]
+                    ]
+                ])];
+
+            $sContent = $this->_oTemplate->parseHtmlByName('popup_form.html', [
+                'form_id' => $oForm->getId(),
+                'form' => $oForm->getCode(true)
+            ]);
+
+            if($oForm->isSubmitted()) 
+                return [
+                    'form' => $sContent, 
+                    'form_id' => $oForm->getId()
+                ];
+
+            return $sContent;
+        }
+    }
+
+    public function serviceProcessTaskFormEditProperty($iContentId, $sProperty)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo || !$this->isAllowManage($iContentId))
+            return [];
+
+        $sForm = $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_' . strtoupper($sProperty)] ?? false;
+        if(!$sForm)
+            return [];
+
+        $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_ENTRY'], $sForm);
+        $oForm->setId($sForm);
+        $oForm->setName($sForm);
+        $oForm->setAction(BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'process_task_form_edit_property/' . $iContentId . '/' . $sProperty . '/');
+        if(!$oForm)
+            return [];
+
+        $oForm->initChecker($aContentInfo);
+        if($oForm->isSubmittedAndValid()) {
+            if(!$oForm->update($iContentId))
+                return ['msg' => _t('_bx_tasks_txt_err_cannot_perform_action')];
+
+            $mixedPropertyValue = $oForm->getCleanValue($CNF['FIELD_' . strtoupper($sProperty)]);
+            if(($sMethod = '_onEdit' . bx_gen_method_name($sProperty)) && method_exists($this, $sMethod))
+                $this->$sMethod($aContentInfo, $mixedPropertyValue);
+            else
+                $this->_onEditProperty($aContentInfo, $sProperty, $mixedPropertyValue);
+
+            return $this->_bIsApi ? [] : true;
+        }
+        else {
+            if($this->_bIsApi)
+                return [bx_api_get_block('form', $oForm->getCodeAPI(), [
+                    'ext' => [
+                        'name' => $this->_aModule['name'], 
+                        'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/process_task_form/&params[]=' . $iContextId . '&params[]=' . $sProperty, 'immutable' => true]
+                    ]
+                ])];
+
+            $sContent = $this->_oTemplate->parseHtmlByName('popup_form.html', [
+                'form_id' => $oForm->getId(),
+                'form' => $oForm->getCode(true)
+            ]);
+
+            if($oForm->isSubmitted())
+                return [
+                    'form' => $sContent, 
+                    'form_id' => $oForm->getId()
+                ];
+
+            return $sContent;
+        }
+    }
+
+    public function serviceSetProperty($iContentId, $sProperty, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo || !$this->isAllowManage($iContentId))
+            return [];
+
+        // labels (stickers, a set) come as a comma-separated list of values, stored as bit (value - 1) for each
+        if($this->_bIsApi && $sProperty == $CNF['FIELD_STICKERS']) {
+            $iMask = 0;
+            foreach(array_filter(explode(',', urldecode((string)$mixedValue)), 'strlen') as $sValue)
+                if(($i = (int)$sValue) >= 1 && $i <= 31)
+                    $iMask |= 1 << ($i - 1);
+
+            $mResult = $this->setStickers($iContentId, $iMask);
+            return $mResult === true ? [] : $mResult;
+        }
+
+        $aProperties = $this->_oConfig->getProperties();
+        if($this->_bIsApi)
+            $aProperties = array_merge($aProperties, [$CNF['FIELD_TITLE'], $CNF['FIELD_TEXT']]);
+
+        if(in_array($sProperty, $aProperties) && !$this->_oDb->updateEntriesBy([$sProperty => $mixedValue], [$CNF['FIELD_ID'] => $iContentId]))
+            return ['msg' => _t('_bx_tasks_txt_err_cannot_perform_action')];
+
+        if(($sMethod = '_onEdit' . bx_gen_method_name($sProperty)) && method_exists($this, $sMethod))
+            $this->$sMethod($aContentInfo, $mixedValue);
+        else
+            $this->_onEditProperty($aContentInfo, $sProperty, $mixedValue);
+
+        return $this->_bIsApi ? [] : true;
+    }
+
+    /**
+     * API v2 only: set a task's labels (stickers, a set), for who manages the task, as
+     * set_property sets a property. It is no service and set_property does not take labels: the
+     * site and API v1 change them in the edit form only, as they always did.
+     * @param $mixedValue the set as it is stored (bit value - 1 for each label)
+     * @return true when set, otherwise what set_property answers ([] not allowed, ['msg' => ...] not saved)
+     */
+    public function setStickers($iContentId, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo || !$this->isAllowManage($iContentId))
+            return [];
+
+        if(!$this->_oDb->updateEntriesBy([$CNF['FIELD_STICKERS'] => $mixedValue], [$CNF['FIELD_ID'] => $iContentId]))
+            return ['msg' => _t('_bx_tasks_txt_err_cannot_perform_action')];
+
+        $this->_logStickersEdit($aContentInfo, $mixedValue);
+
+        return true;
+    }
+
+    public function serviceSetCompleted($iContentId, $iCompleted)
+    {
+        if(!$this->isAllowManage($iContentId) || !$this->complete($iContentId, $iCompleted))
+            return ['code' => 1];
+
+        return $this->_bIsApi ? [
+            'title' => _t('_bx_tasks_menu_item_title_system_set_' . ($iCompleted ? 'un' : '') . 'completed'),
+            'request_url' => $this->_aModule['name'] . '/set_completed/&params[]=' . $iContentId . '&params[]=' . (1 - $iCompleted),
+        ] : [
+            'code' => 0, 
+            'reload' => 1
+        ];
+    }
+
+    public function serviceCreateFilter($iContextId)
+    {
+        if(!$this->isAllowView($iContextId))
+            return [];
+
+        $iAuthorId = bx_get_logged_profile_id();
+        $iFilterId = $this->_oDb->getTemporaryFilterId($iContextId, $iAuthorId);
+
+        $oForm = $this->_getFilterForm($iContextId);
+        if(!$oForm)
+            return [];
+
+        $oForm->initChecker();
+        if($oForm->isSubmittedAndValid()) {
+            $aValsToAdd = [
+                'context_id' => $iContextId,
+                'author' => $iAuthorId, 
+                'added' => time()
+            ];
+
+            $sTitle = '';
+            $aValues = [];
+            foreach($oForm->aInputs as $sName => $aInput) {
+                if(in_array($sName, ['save_me', 'save_all', 'title', 'controls']))
+                    continue;
+
+                if(($mixedValue = $oForm->getCleanValue($sName))) {
+                    $sFltTitle = '';
+                    if(($aFltValues = $aInput['values'] ?? false) && is_array($aFltValues))
+                        $sFltTitle = ' (' . (is_array($mixedValue) ? implode(', ', array_intersect_key($aFltValues, array_flip($mixedValue))) : $aFltValues[$mixedValue]) . ')';
+
+                    $sTitle .= $aInput['caption'] . $sFltTitle . ' + ';
+                    $aValues[] = [
+                        'f' => $sName,
+                        'v' => $mixedValue,
+                        'r' => ($mixedR = $oForm->getCleanValue($sName . '_reverse')) !== false ? (int)$mixedR : 0
+                    ];
+                }
+            }
+
+            if($aValues && is_array($aValues) && ($aCnds = $this->_getFilterConditions($iContextId, $aValues)))
+                $aValsToAdd['conditions'] = json_encode($aCnds);
+
+            $bForAll = $oForm->getCleanValue('save_all') == 'on' && $this->isAllowManageByContext($iContextId);
+            if($bForAll || ($oForm->getCleanValue('save_me') == 'on')) {
+                $aValsToAdd = array_merge($aValsToAdd, [
+                    'author' => $bForAll ? 0 : $iAuthorId,
+                    'title' => $oForm->getCleanValue('title') ?: $sFltTitle,
+                    'permanent' => 1
+                ]);
+            }
+            else
+                $aValsToAdd['title'] = trim($sTitle, " +");
+
+            $aRes = [];
+            if(($iFilterId && $oForm->update($iFilterId, $aValsToAdd)) || (!$iFilterId && ($iFilterId = (int)$oForm->insert($aValsToAdd)) != 0)) {
+                $this->applyFilter($iContextId, $iFilterId);
+
+                $aRes = $this->_bIsApi ? [] : ['reload' => 1];
+            }
+            else
+                $aRes = ($sMsg = _t('_bx_tasks_txt_err_cannot_perform_action')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['msg' => $sMsg];
+
+            return $aRes;
+        }
+
+        return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
+            'ext' => [
+                'name' => $this->_aModule['name'], 
+                'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/create_filter/&params[]=' . $iContextId, 'immutable' => true]
+            ]
+        ])] : $oForm;
+    }
+
+    public function serviceSaveFilter($iContextId, $iFilterId = 0)
+    {
+        if(!$this->isAllowView($iContextId))
+            return [];
+
+        $iAuthorId = bx_get_logged_profile_id();
+        $iFilterId = $iFilterId ?: $this->_oDb->getTemporaryFilterId($iContextId, $iAuthorId);
+        $aFilter = $this->_oDb->getFilterById($iFilterId);
+        if(!$aFilter || (int)$aFilter['context_id'] !== (int)$iContextId || ((int)$aFilter['author'] !== $iAuthorId && (!$this->isAllowManageByContext($iContextId) || (int)$aFilter['author'] !== 0)))
+            return [];
+
+        $oForm = $this->_getSaveFilterForm($iContextId);
+        if(!$oForm)
+            return [];
+
+        $oForm->initChecker();
+        if($oForm->isSubmittedAndValid()) {
+            $bForAll = $oForm->getCleanValue('save_all') == ($this->_bIsApi ? 1 : 'on') && $this->isAllowManageByContext($iContextId);
+            $aValsToAdd = [
+                'author' => $bForAll ? 0 : $iAuthorId,
+                'title' => $oForm->getCleanValue('title'),
+                'permanent' => 1
+            ];
+
+            $aRes = [];
+            if($oForm->update($iFilterId, $aValsToAdd)) {
+                $this->applyFilter($iContextId, $iFilterId);
+
+                $aRes = $this->_bIsApi ? [] : ['reload' => 1];
+            }
+            else
+                $aRes = ($sMsg = _t('_bx_tasks_txt_err_cannot_perform_action')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['msg' => $sMsg];
+
+            return $aRes;
+        }
+
+        return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
+            'ext' => [
+                'name' => $this->_aModule['name'], 
+                'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/save_filter/&params[]=' . $iContextId, 'immutable' => true]
+            ]
+        ])] : $oForm;
+    }
+
+    public function serviceApplyFilter($iContextId, $iFilterId)
+    {
+        if(!$this->isAllowView($iContextId))
+            return [];
+
+        $this->applyFilter($iContextId, $iFilterId);
+
+        return $this->_oTemplate->getEntries($iContextId, ['filter' => $iFilterId]);
+    }
+
+    public function serviceProcessTimer($sAction, $iContentId, $iProfileId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResult = ['code' => 1, 'msg' => _t('_sys_txt_error_occured')];
+        $iProfileId = bx_get_logged_profile_id();
+        if(!$iProfileId || !$this->isAllowManage($iContentId))
+            return $aResult;
+
+        if(in_array($sAction, ['start', 'resume', 'log']) && !$this->getTimeRightsByContentId($iContentId, $iProfileId)['log'])
+            return $aResult;
+
+        $iNow = time();
+        switch($sAction) {
+            case 'start':
+                $this->pauseTimerByAuthor($iProfileId);
+
+                $iTimer = false;
+                $aTimer = $this->getTimer($iContentId, $iProfileId);
+                if($aTimer && is_array($aTimer)) {
+                    if($this->updateTimerById($aTimer['id'], ['started' => $iNow]))
+                        $iTimer = $aTimer['id'];
+                }
+                else
+                    $iTimer = $this->_oDb->insertTimer(['content_id' => $iContentId, 'profile_id' => $iProfileId, 'started' => $iNow]);
+
+                if($iTimer !== false)
+                    $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : ['code' => 0, 'id' => $iTimer];
+                break;
+
+            case 'pause':
+                if($this->pauseTimerByAuthor($iProfileId))
+                    $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : ['code' => 0];
+                break;
+
+            case 'resume':
+                $this->pauseTimerByAuthor($iProfileId);
+
+                $aTimer = $this->getTimer($iContentId, $iProfileId);
+                if($aTimer && is_array($aTimer) && $this->updateTimerById($aTimer['id'], ['started' => $iNow]))
+                    $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : ['code' => 0];
+                break;
+
+            case 'reload':
+                $aTimer = $this->getTimer($iContentId, $iProfileId);
+
+                $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : [
+                    'code' => 0,
+                    'started' => $aTimer && ($aTimer['started'] ?? 0) != 0
+                ];
+                break;
+
+            case 'log':
+                $this->pauseTimer($iContentId, $iProfileId);
+
+                $aTimer = $this->getTimer($iContentId, $iProfileId);
+                if(!$aTimer || !is_array($aTimer) || !$aTimer['duration'])
+                    break;
+
+                list($iH, $iM) = $this->_oConfig->timeI2A($aTimer['duration'], true);
+                $iSpent = $this->_oConfig->timeA2I([(int)$iH, (int)$iM + 1]);
+
+                $iNow = time();
+                $iTrackId = $this->_oDb->insertTimeTrack([
+                    'object_id' => $iContentId,
+                    'author_id' => $iProfileId,
+                    'author_nip' => $iProfileId == $this->_iProfileId ? bx_get_ip_hash(getVisitorIP()) : 0,
+                    'value' => $iSpent,
+                    'value_original' => $iSpent,
+                    'by_timer' => 1,
+                    'value_date' => $iNow,
+                    'date' => $iNow
+                ]);
+                if(!$iTrackId)
+                    break;
+
+                $oTime = BxDolReport::getObjectInstance($CNF['OBJECT_REPORTS_TIME'], $iContentId);
+                if(!$oTime || !$oTime->isEnabled())
+                    break;
+
+                if(!$oTime->putReport($iContentId, $iProfileId, $iTrackId))
+                    break;
+
+                $this->_oDb->deleteTimer([
+                    'content_id' => $iContentId, 
+                    'profile_id' => $iProfileId
+                ]);
+
+                $this->spendBudgetByContentId($iContentId, $iSpent);
+
+                $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : ['code' => 0];
+                break;
+
+            case 'log_all':
+                $aTimers = $this->getTimersByAuthor($iProfileId);
+
+                $iAffected = 0;
+                foreach($aTimers as $aTimer) {
+                    $aSubResult = $this->serviceProcessTimer('log', $aTimer['content_id'], $iProfileId);
+                    if(($aSubResult['code'] ?? false) === 0 || ($this->_bIsApi && ($aSubResult['id'] ?? false)))
+                        $iAffected++;
+                }
+
+                if(count($aTimers) == $iAffected)
+                    $aResult = ['code' => 0, 'reload' => 1];
+                break;
+
+            case 'clear':
+                if($this->_oDb->deleteTimer(['content_id' => $iContentId, 'profile_id' => $iProfileId]) !== false)
+                    $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : ['code' => 0];
+                break;
+
+            case 'clear_all':
+                $aTimers = $this->getTimersByAuthor($iProfileId);
+
+                $iAffected = 0;
+                foreach($aTimers as $aTimer) {
+                    $aSubResult = $this->serviceProcessTimer('clear', $aTimer['content_id'], $iProfileId);
+                    if(($aSubResult['code'] ?? false) === 0)
+                        $iAffected++;
+                }
+
+                if(count($aTimers) == $iAffected)
+                    $aResult = ['code' => 0, 'reload' => 1];
+                break;
+        }
+
+        if($sAction != 'reload' && ($aResult['code'] ?? 0) === 0)
+            $this->sendTimersEvent($iProfileId, $sAction);
+
+        return $aResult;
+    }
+
+    /**
+     * Tell the author's other screens and devices that the timers changed. The channel is public,
+     * so the event carries the action only and clients reload the timers through the API.
+     */
+    public function sendTimersEvent($iProfileId, $sAction)
+    {
+        if(!($oSockets = BxDolSockets::getInstance()) || !$oSockets->isEnabled())
+            return;
+
+        $oSockets->sendEvent($this->_oConfig->getName() . '_timers', $iProfileId, 'changed', json_encode(['action' => $sAction]));
+    }
+
+    public function serviceManageTools($sType = 'common')
+    {
+        $mixedResults = parent::serviceManageTools($sType);
+        if(!$mixedResults)
+            return $mixedResults;
+
+        if($this->_bIsApi)
+            return $mixedResults;
+
+        if(isset($mixedResults['menu']))
+            unset($mixedResults['menu']);
+
+        return $mixedResults;
+    }
+
+    public function serviceGetBlockMenuBrowse()
+    {
+        $mixedResult = $this->_oTemplate->getBlockMenuBrowse();
+
+        return $this->_bIsApi ? [
+            bx_api_get_block('tasks_menu', $mixedResult)
+        ] : $mixedResult;
+    }
+
+    public function serviceGetBlockMenuContext($iProfileId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(!$this->isAllowView($iProfileId))
+            return $this->_bIsApi ? [] : ''; 
+
+        $oMenu = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_SUBMENU_VIEW_CONTEXT']);
+        if(!$oMenu)
+            return $this->_bIsApi ? [] : '';
+
+        $oMenu->setContextId($iProfileId);
+        return $this->_bIsApi ? [bx_api_get_block('menu', [
+            'title' => '', 
+            'content' => $oMenu->getCodeAPI()
+        ])] : $oMenu->getCode();
+    }
+
+    public function serviceGetBlockContextPreValues($iContextPid = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        //--- Site-wide properties (no context) are for site administrators.
+        if(!($iContextPid ? $this->getTimeRights($iContextPid)['manage_properties'] : isAdmin()))
+            return $this->_bIsApi ? [] : '';
+
+        $bContextPid = !empty($iContextPid);
+
+        $sGrid = $CNF['OBJECT_GRID_PRE_VALUES'];
+        $oGrid = BxDolGrid::getObjectInstance($sGrid);
+        if(!$oGrid)
+            return $this->_bIsApi ? [] : '';
+
+        if($bContextPid)
+            $oGrid->setContextPid($iContextPid);
+
+        if($this->_bIsApi)
+            return [
+                bx_api_get_block('grid', $oGrid->getCodeAPI())
+            ];
+
+        $this->_oTemplate->addCss(['manage_tools.css']);
+        $this->_oTemplate->addJs(['modules/base/text/js/|manage_tools.js', 'pre_values.js']);
+        $this->_oTemplate->addJsTranslation(['_sys_grid_search']);
+        $aResult = [
+            'content' => $this->_oTemplate->getJsCode('pre_values', [
+                'sObjNameGrid' => $sGrid,
+                'sPageUrl' => BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink($CNF['URL_CONTEXT_VALUES'], ['profile_id' => $iContextPid])
+            ]) . $oGrid->getCode()
+        ];
+
+        return $aResult;
+    }
+
+    public function serviceGetBlockContextAuthorize($iContextPid = 0)
+    {
+        $sModule = 'bx_github';
+        $sMethod = 'get_block_authorize';
+        if(!bx_is_srv($sModule, $sMethod))
+            return '';
+
+        $aContext = $this->_oDb->getContexts(['sample' => 'id', 'id' => $iContextPid]);
+        if(empty($aContext) || !is_array($aContext) || empty($aContext['gh_app_id']) || empty($aContext['gh_username']) || empty($aContext['gh_repository']))
+            return '';
+
+        return bx_srv($sModule, $sMethod, [$aContext['gh_app_id']]);
+    }
+
+    public function serviceGetBlockContextSettings($iContextPid = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContextAuthorPid = 0;
+        if(!$this->isAllowManageByContext($iContextPid) || !($iContextAuthorPid = $this->getContextAuthorId($iContextPid)))
+            return $this->_bIsApi ? [] : '';
+
+        // the prefix of the community's task numbers is made now if it has no task yet (and its row with it)
+        $this->getContextPrefix($iContextPid);
+
+        $aContext = $this->_oDb->getContexts(['sample' => 'id', 'id' => $iContextPid]);
+        $bContext = !empty($aContext) && is_array($aContext);
+
+        $sMessageText = '';
+        $iMessageTimer = 0;
+
+        $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_CONTEXT'], $CNF['OBJECT_FORM_CONTEXT_DISPLAY_EDIT']);
+        $oForm->setProfileId($iContextAuthorPid);
+        $oForm->setContextId($iContextPid);
+        $oForm->initChecker($aContext);
+        if($oForm->isSubmittedAndValid()) {
+            if(!$bContext)
+                $bResult = $oForm->insert(['id' => $iContextPid]);
+            else
+                $bResult = $oForm->update($iContextPid) !== false;
+
+            $sMessageText = '_bx_tasks_txt' . (!$bResult ? '_err_cannot' : '_msg') . '_perform_action';
+            $iMessageTimer = $bResult ? 3 : 0;
+        }
+
+        return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
+            'ext' => [
+                'name' => $oForm->getName(),
+                'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/get_block_context_settings&profile_id=' . $iContextPid, 'immutable' => true]
+            ]
+        ])] : (!empty($sMessageText) ? MsgBox(_t($sMessageText), $iMessageTimer) : '') . $oForm->getCode();
+    }
+
+    public function serviceGetBlockManageTime($sType = 'common', $iContextPid = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $bContextPid = !empty($iContextPid);
+
+        //--- Everybody's time in a context: those who see everybody's Logged time.
+        if($sType == 'administration' && (($bContextPid && !$this->getTimeRights($iContextPid)['view_logged_any']) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
+            return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+        //--- My Time in a context: those who log time there.
+        if($sType == 'common' && $bContextPid && !$this->getTimeRights($iContextPid)['log'])
+            return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+        $sGrid = $CNF['OBJECT_GRID_TIME_' . ($bContextPid ? 'CONTEXT_' : '') . strtoupper($sType)];
+        $oGrid = BxDolGrid::getObjectInstance($sGrid);
+        if(!$oGrid)
+            return $this->_bIsApi ? [] : '';
+
+        if($bContextPid)
+            $oGrid->setContextPid($iContextPid);
+
+        if($this->_bIsApi)
+            return [
+                bx_api_get_block('grid', $oGrid->getCodeAPI())
+            ];
+
+        list($aCssCalendar, $aJsCalendar) = BxBaseFormView::getCssJsCalendar();
+
+        $this->_oTemplate->addCss(array_merge($aCssCalendar, ['manage_tools.css', 'time.css']));
+        $this->_oTemplate->addJs(array_merge($aJsCalendar, ['modules/base/text/js/|manage_tools.js', 'time.js']));
+        $this->_oTemplate->addJsTranslation(['_sys_grid_search']);
+        $aResult = [
+            'content' => $this->_oTemplate->getJsCode('time', [
+                'sObjNameGrid' => $sGrid
+            ]) . $oGrid->getCode()
+        ];
+
+        if(!$bContextPid)
+            $aResult['menu'] = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_MANAGE_TOOLS_SUBMENU']);
+
+        return $aResult;
+    }
+
+    public function serviceGetBlockTimers()
+    {
+        $mixedResult = $this->_oTemplate->getBlockTimers($this->_iProfileId);
+
+        return $this->_bIsApi ? [
+            bx_api_get_block('tasks_timers', $mixedResult)
+        ] : $mixedResult;
+    }
+
+    public function serviceGetBlockTimersStats()
+    {
+        if(!$this->_bIsApi)
+            return '';
+
+        return [
+            bx_api_get_block('tasks_timers_stats', $this->_oTemplate->getBlockTimersStats($this->_iProfileId))
+        ];
+    }
+
+    /**
+     * Who logged what on a task. Those who manage the task see everybody, others only their own time.
+     */
+    public function serviceGetBlockTimeSummary($iContentId = 0)
+    {
+        if(!$iContentId)
+            $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
+
+        $aContentInfo = $iContentId ? $this->_oDb->getContentInfoById((int)$iContentId) : false;
+        if(!$this->_iProfileId || !$aContentInfo || !is_array($aContentInfo))
+            return $this->_bIsApi ? [] : '';
+
+        $aData = $this->_oTemplate->getBlockTimeSummary((int)$iContentId, $this->_iProfileId, $this->getTimeRightsByContentId((int)$iContentId));
+
+        return $this->_getBlockTimeSummary($aData);
+    }
+
+    /**
+     * Time in a context by person and then by task. Who sees whose time, and which of Logged and Billed, comes from getTimeRights.
+     */
+    /**
+     * $sType 'my' (the My Time tab): the viewer's own time only; otherwise (All Time) whose time the rights allow.
+     */
+    public function serviceGetBlockTimeSummaryContext($iContextPid = 0, $sType = '')
+    {
+        if(!$iContextPid)
+            $iContextPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+
+        if(!$this->_iProfileId || !$iContextPid || BxDolProfile::getInstance((int)$iContextPid) === false)
+            return $this->_bIsApi ? [] : '';
+
+        $sType = $sType == 'my' ? $sType : '';
+        $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, $this->getTimeRights((int)$iContextPid), 'get_block_time_summary_context', $sType);
+
+        return $this->_getBlockTimeSummary($aData);
+    }
+
+    /**
+     * The Billing tab: everybody's Billed time in a context, Billed time only (admins too), for those who see Billed time.
+     */
+    public function serviceGetBlockBillingSummary($iContextPid = 0)
+    {
+        if(!$iContextPid)
+            $iContextPid = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+
+        if(!$this->_iProfileId || !$iContextPid || BxDolProfile::getInstance((int)$iContextPid) === false || !$this->getTimeRights((int)$iContextPid)['view_billed'])
+            return $this->_bIsApi ? [] : '';
+
+        $aData = $this->_oTemplate->getBlockTimeSummaryContext((int)$iContextPid, $this->_iProfileId, ['view_billed' => true], 'get_block_billing_summary');
+
+        return $this->_getBlockTimeSummary($aData);
+    }
+
+    /**
+     * A time summary block: the app's block with the data, or the site's tables.
+     */
+    protected function _getBlockTimeSummary($aData)
+    {
+        if($this->_bIsApi)
+            return $aData ? [bx_api_get_block('tasks_time_summary', $aData)] : [];
+
+        return $aData ? $this->_oTemplate->getBlockTimeSummaryHtml($aData) : '';
+    }
+
+    /**
+     * Who opens the Billing tab: every member of the context (the budget), and those who see Billed time.
+     */
+    public function isAllowViewBilling($iContextPid)
+    {
+        return $this->isMemberByContext($iContextPid) || $this->isAdministratorByContext($iContextPid) || $this->getTimeRights($iContextPid)['view_billed'];
+    }
+
+    public function serviceGetBlockManageBudget($sType = 'administration', $iContextPid = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $bContextPid = !empty($iContextPid);
+        if(!$bContextPid)
+            return $this->_bIsApi ? [] : '';
+
+        if($sType == 'administration' && (($bContextPid && !$this->isAdministratorByContext($iContextPid)) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
+            return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+        $sGrid = $CNF['OBJECT_GRID_BUDGET_' . ($bContextPid ? 'CONTEXT_' : '') . strtoupper($sType)];
+        $oGrid = BxDolGrid::getObjectInstance($sGrid);
+        if(!$oGrid)
+            return $this->_bIsApi ? [] : '';
+
+        if($bContextPid)
+            $oGrid->setContextPid($iContextPid);
+
+        if($this->_bIsApi)
+            return [
+                bx_api_get_block('grid', $oGrid->getCodeAPI())
+            ];
+
+        list($aCssCalendar, $aJsCalendar) = BxBaseFormView::getCssJsCalendar();
+
+        $this->_oTemplate->addCss($aCssCalendar);
+        $this->_oTemplate->addJs($aJsCalendar);
+        $this->_oTemplate->addJsTranslation(['_sys_grid_search']);
+        $aResult = [
+            'content' => $this->_oTemplate->getJsCode('budget', [
+                'sObjNameGrid' => $sGrid
+            ]) . $oGrid->getCode()
+        ];
+
+        if(!$bContextPid)
+            $aResult['menu'] = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_MANAGE_TOOLS_SUBMENU']);
+
+        return $aResult;
+    }
+
+    public function serviceGetBlockBudget($iContextPid = 0)
+    {
+        //--- Every member of the context sees the budget, those who see Billed time too; changing it is for administrators (the budget grid).
+        if(!$iContextPid || !($this->isMemberByContext($iContextPid) || $this->getTimeRights($iContextPid)['view_billed']))
+            return $this->_bIsApi ? [] : '';
+
+        $aBudget = $this->_oDb->getBudget(['sample'=> 'context_id', 'context_id' => $iContextPid]);
+        if(!$aBudget || !is_array($aBudget))
+            return $this->_bIsApi ? [] : MsgBox(_t('_Empty'));
+
+        $mixedResult = $this->_oTemplate->getBlockBudget($aBudget);
+
+        return $this->_bIsApi ? [
+            bx_api_get_block('tasks_budget', $mixedResult)
+        ] : $mixedResult;
+    }
+
+    /**
+     * Data for Timeline module
+     */
+    public function serviceGetTimelineData()
+    {
+    	$sModule = $this->_aModule['name'];
+        return array(
+            'handlers' => array(
+                array('group' => $sModule . '_object', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'added', 'module_name' => $sModule, 'module_method' => 'get_timeline_post', 'module_class' => 'Module', 'groupable' => 0, 'group_by' => ''),
+                array('group' => $sModule . '_completed', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'completed', 'module_name' => $sModule, 'module_method' => 'get_timeline_completed', 'module_class' => 'Module',  'groupable' => 0, 'group_by' => ''),
+                array('group' => $sModule . '_reopened', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'reopened', 'module_name' => $sModule, 'module_method' => 'get_timeline_reopened', 'module_class' => 'Module',  'groupable' => 0, 'group_by' => ''),
+                array('group' => $sModule . '_object', 'type' => 'update', 'alert_unit' => $sModule, 'alert_action' => 'edited'),
+                array('group' => $sModule . '_object', 'type' => 'delete', 'alert_unit' => $sModule, 'alert_action' => 'deleted'),
+            ),
+            'alerts' => array(
+                array('unit' => $sModule, 'action' => 'added'),
+                array('unit' => $sModule, 'action' => 'completed'),
+                array('unit' => $sModule, 'action' => 'reopened'),
+                array('unit' => $sModule, 'action' => 'edited'),
+                array('unit' => $sModule, 'action' => 'deleted'),
+            )
+        );
+    }
+
+    /**
+     * Entry task for Timeline module
+     */
+    public function serviceGetTimelinePost($aEvent, $aBrowseParams = array())
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResult = parent::serviceGetTimelinePost($aEvent, $aBrowseParams);
+        if(empty($aResult) || !is_array($aResult) || empty($aResult['date']))
+            return $aResult;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($aEvent['object_id']);
+        if($aContentInfo[$CNF['FIELD_PUBLISHED']] > $aResult['date'])
+            $aResult['date'] = $aContentInfo[$CNF['FIELD_PUBLISHED']];
+
+        return $aResult;
+    }
+	
+    public function serviceGetTimelineCompleted($aEvent, $aBrowseParams = array())
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResult = parent::serviceGetTimelinePost($aEvent, $aBrowseParams);
+        if(empty($aResult) || !is_array($aResult) || empty($aResult['date']))
+            return $aResult;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($aEvent['object_id']);
+        if($aContentInfo[$CNF['FIELD_PUBLISHED']] > $aResult['date'])
+            $aResult['date'] = $aContentInfo[$CNF['FIELD_PUBLISHED']];
+
+        $aResult['sample_action'] = $aResult['content']['sample_action'] = _t('_bx_tasks_txt_action_completed');
+        return $aResult;
+    }
+
+    public function serviceGetTimelineReopened($aEvent, $aBrowseParams = array())
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResult = parent::serviceGetTimelinePost($aEvent, $aBrowseParams);
+        if(empty($aResult) || !is_array($aResult) || empty($aResult['date']))
+            return $aResult;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($aEvent['object_id']);
+        if($aContentInfo[$CNF['FIELD_PUBLISHED']] > $aResult['date'])
+            $aResult['date'] = $aContentInfo[$CNF['FIELD_PUBLISHED']];
+
+        $aResult['sample_action'] = $aResult['content']['sample_action'] = _t('_bx_tasks_txt_action_reopened');
+        return $aResult;
+    }
+
+    public function serviceGetNotificationsData()
+    {
+        $sModule = $this->_aModule['name'];
+
+        $sEventPrivacy = $sModule . '_allow_view_event_to';
+        if(BxDolPrivacy::getObjectInstance($sEventPrivacy) === false)
+            $sEventPrivacy = '';
+
+        $aResult = parent::serviceGetNotificationsData();
+        $aResult['handlers'] = array_merge($aResult['handlers'], array(
+            array('group' => $sModule . '_completed', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'completed', 'module_name' => $sModule, 'module_method' => 'get_notifications_completed', 'module_class' => 'Module', 'module_event_privacy' => $sEventPrivacy),
+            array('group' => $sModule . '_reopened', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'reopened', 'module_name' => $sModule, 'module_method' => 'get_notifications_reopened', 'module_class' => 'Module', 'module_event_privacy' => $sEventPrivacy),
+            array('group' => $sModule . '_expired', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'expired', 'module_name' => $sModule, 'module_method' => 'get_notifications_expired', 'module_class' => 'Module', 'module_event_privacy' => $sEventPrivacy),
+
+            array('group' => $sModule . '_assign', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'assigned', 'module_name' => $sModule, 'module_method' => 'get_notifications_assigned', 'module_class' => 'Module', 'module_event_privacy' => $sEventPrivacy),
+            array('group' => $sModule . '_assign', 'type' => 'delete', 'alert_unit' => $sModule, 'alert_action' => 'unassigned'),
+
+            array('group' => $sModule . '_timer_stopped', 'type' => 'insert', 'alert_unit' => $sModule, 'alert_action' => 'timer_stopped', 'module_name' => $sModule, 'module_method' => 'get_notifications_timer_stopped', 'module_class' => 'Module', 'module_event_privacy' => $sEventPrivacy),
+        ));
+
+        $aResult['settings'] = array_merge($aResult['settings'], array(
+            array('group' => 'content', 'unit' => $sModule, 'action' => 'completed', 'types' => array('personal', 'follow_member', 'follow_context')),
+            array('group' => 'content', 'unit' => $sModule, 'action' => 'reopened', 'types' => array('personal', 'follow_member', 'follow_context')),
+            array('group' => 'content', 'unit' => $sModule, 'action' => 'expired', 'types' => array('personal')),
+            array('group' => 'content', 'unit' => $sModule, 'action' => 'assigned', 'types' => array('personal')),
+            array('group' => 'content', 'unit' => $sModule, 'action' => 'timer_stopped', 'types' => array('personal')),
+        ));
+
+        $aResult['alerts'] = array_merge($aResult['alerts'], array(
+            array('unit' => $sModule, 'action' => 'completed'),
+            array('unit' => $sModule, 'action' => 'reopened'),
+            array('unit' => $sModule, 'action' => 'expired'),
+
+            array('unit' => $sModule, 'action' => 'assigned'),
+            array('unit' => $sModule, 'action' => 'unassigned'),
+
+            array('unit' => $sModule, 'action' => 'timer_stopped'),
+        ));
+
+        return $aResult; 
+    }
+
+    public function serviceGetNotificationsCompleted($aEvent)
+    {
+        return $this->_serviceGetNotificationsByAction($aEvent, 'completed');
+    }
+
+    public function serviceGetNotificationsReopened($aEvent)
+    {
+        return $this->_serviceGetNotificationsByAction($aEvent, 'reopened');
+    }
+
+    public function serviceGetNotificationsExpired($aEvent)
+    {
+        return $this->_serviceGetNotificationsByAction($aEvent, 'expired');
+    }
+
+    public function serviceGetNotificationsAssigned($aEvent)
+    {
+        return $this->_serviceGetNotificationsByAction($aEvent, 'assigned');
+    }
+
+    /**
+     * The one notified is the event's object owner, the one whose timer it is comes as `subobject_id`.
+     */
+    public function serviceGetNotificationsTimerStopped($aEvent)
+    {
+        $aResult = $this->_serviceGetNotificationsByAction($aEvent, 'timer_stopped');
+        if(empty($aResult) || !is_array($aResult))
+            return $aResult;
+
+        $iTimerProfileId = (int)$aEvent['subobject_id'];
+        $aResult['entry_author'] = $iTimerProfileId;
+        $aResult['entry_author_name'] = ($oProfile = BxDolProfile::getInstance($iTimerProfileId)) !== false ? $oProfile->getDisplayName() : '';
+
+        return $aResult;
+    }
+
+    protected function _serviceGetNotificationsByAction($aEvent, $sAction)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResult = parent::serviceGetNotificationsPost($aEvent);
+        if(empty($aResult) || !is_array($aResult))
+            return $aResult;
+
+        $aResult['entry_author'] = $aEvent['object_owner_id'];
+        $aResult['entry_author_name'] = '';
+        if(($oAuthor = BxDolProfile::getInstance($aResult['entry_author'])) !== false)
+            $aResult['entry_author_name'] = $oAuthor->getDisplayName();
+
+        $sLangKey = '_bx_tasks_txt_notification_' . $sAction;
+        if((int)$aEvent['object_privacy_view'] < 0)
+            $sLangKey .= '_in_context';
+
+        $aResult['lang_key'] = _t($sLangKey);
+        return $aResult;
+    }
+
+    public function serviceCheckAllowedManageInContext($iContextPid)
+    {
+        if(!$this->isAllowManageByContext($iContextPid))
+            return false;
+
+        return true;
+    }
+
+    public function serviceCheckAllowedManage($iContentId)
+    {
+        if(!$this->isAllowManage($iContentId))
+            return false;
+
+        return true;
+    }
+
+    public function serviceCheckAllowedComplete($iContentId)
+    {
+        if(!$this->serviceCheckAllowedManage($iContentId))
+            return false;
+
+        return !$this->isCompleted($iContentId);
+    }
+    
+    public function serviceCheckAllowedUncomplete($iContentId)
+    {
+        if(!$this->serviceCheckAllowedManage($iContentId))
+            return false;
+
+        return $this->isCompleted($iContentId);
+    }
+
+    public function serviceIsCompleted($iContentId)
+    {
+        return $this->isCompleted($iContentId);
+    }
+
+    public function serviceIsUncompleted($iContentId)
+    {
+        return !$this->isCompleted($iContentId);
+    }
+    
+    public function serviceIsAllowBadges($iContentId)
+    {
+        if (!$this->isAllowManage($iContentId))
+            return false;
+        
+        if (!$this->serviceIsBadgesAvaliable())
+            return false;
+        
+        return true; 
+    }
+
+    public function serviceEntityTextBlock ($iContentId = 0)
+    {
+        if(!$iContentId)
+            $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
+        if(!$iContentId)
+            return false;
+        
+        $CNF = &$this->_oConfig->CNF;
+
+        $bAllowEdit = $this->isAllowEdit($iContentId);
+
+        if($this->_bIsApi) {
+            $aResult = parent::serviceEntityTextBlock($iContentId);
+            if($bAllowEdit) {
+                $aResult['0']['data']['editable'] = true;
+                $aResult['0']['data']['params']['request_url'] = $this->_aModule['name'] . '/set_property/&params[]=' . $iContentId  . '&params[]=';
+            }
+
+            return $aResult;
+        }
+
+        $sResult = '';
+        if(!$bAllowEdit)
+            $sResult = parent::serviceEntityTextBlock($iContentId);
+        else 
+            $sResult = $this->serviceEntityEdit($iContentId, $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_BODY']);
+
+        return $sResult;
+    }
+
+    public function serviceEntityAssignments($iContentId = 0, $bAsArray = false)
+    {
+        if(!$iContentId)
+            $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
+        if(!$iContentId)
+            return false;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $aProfiles = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])->getConnectedInitiators($iContentId);
+        if($bAsArray)
+            return $aProfiles;
+
+        $mixedResult = $this->_oTemplate->entryAssignments($aProfiles);
+
+        return $this->_bIsApi ? [
+            bx_api_get_block('profiles_list', ['data' => $mixedResult])
+        ] : $mixedResult;
+    }
+
+    public function serviceEntityTimer($iContentId = 0)
+    {
+        if(!$iContentId)
+            $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
+        if(!$iContentId)
+            return false;
+
+        $mixedResult = $this->_oTemplate->entryTimer($iContentId, $this->_iProfileId);
+        if(empty($mixedResult))
+            return $this->_bIsApi ? [] : '';
+
+        return $this->_bIsApi ? [
+            bx_api_get_block('task_timer', $mixedResult)
+        ] : $mixedResult;
+    }
+
+    public function serviceCheckAllowedCommentsTask($iContentId, $sObjectComments) 
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if($aContentInfo[$CNF['FIELD_ALLOW_COMMENTS']] == 0)
+            return false;
+
+        return parent::serviceCheckAllowedCommentsTask($iContentId, $sObjectComments);
+    }
+
+    public function serviceCheckAllowedCommentsView($iContentId, $sObjectComments) 
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        //negative id used in comments for reports
+        if($iContentId < 0)
+            return CHECK_ACTION_RESULT_ALLOWED;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if($aContentInfo[$CNF['FIELD_ALLOW_COMMENTS']] == 0)
+            return false;
+
+        return parent::serviceCheckAllowedCommentsView($iContentId, $sObjectComments);
+    }
+	
+    /**
+     * @page service Service Calls
+     * @section bx_tasks Tasks
+     * @subsection bx_tasks-page_blocks Page Blocks
+     * @subsubsection bx_tasks-calendar calendar
+     * 
+     * @code bx_srv('bx_tasks', 'calendar', [...]); @endcode
+     * 
+     * Shows tasks calendar baced on die date
+     * 
+     * @param $aData additional data to point which events to show, leave empty to show all events, specify event's ID in 'event' array key to show calendar for one event only, specify context's ID in 'context_id' array key to show calendar for one context events only. If only one event is specified then it will show calendar only if it's repeating event.
+     * @param $sTemplate template to use to show calendar, or leave empty for default template, possible options: calendar.html, calendar_compact.html
+     * @return HTML string with calendar to display on the site, all necessary CSS and JS files are automatically added to the HEAD section of the site HTML. On error empty string is returned.
+     *
+     * @see BxTasksModule::serviceCalendar
+     */
+    /** 
+     * @ref bx_tasks-calendar "calendar"
+     */
+    public function serviceCalendar($aData = array(), $sTemplate = 'calendar.html')
+    {
+        if (!$this->isAllowView($aData['context_id']))
+            return; 
+        
+        $o = new BxTemplCalendar(array(
+            'eventSources' => array (
+                bx_append_url_params(BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'calendar_data', $aData),
+            ),
+        ), $this->_oTemplate);
+        return $o->display($sTemplate);
+    }
+	
+    public function serviceGetCalendarEntries($iProfileId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $oConn = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION']);
+        $aData = $oConn->getConnectedInitiators($iProfileId);
+        $aData2 = array(0);
+        foreach($aData as $iProfileId2) {
+            $oProfile = BxDolProfile::getInstance($iProfileId2);
+            array_push($aData2, $oProfile->getContentId());
+        }
+        $aSQLPart['where'] = " AND " . $CNF['TABLE_ENTRIES'] . ".`" . $CNF['FIELD_ID'] . "` IN(" . implode(',', $aData2) . ")";
+        return $this->_oDb->getEntriesByDate(bx_get('start'), bx_get('end'), null, $aSQLPart);
+    }
+
+    public function serviceBrowseHome($aParams = [])
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sContent = '';
+        if(($iContextPid = bx_process_input(bx_get('context_pid'), BX_DATA_INT))) {
+            $sContent = $this->serviceBrowseTasks($iContextPid);
+            if($sContent && ($oProfile = BxDolProfile::getInstance($iContextPid)) !== false)
+                return [
+                    'title' => bx_replace_markers(_t('_bx_tasks_page_block_title_entries_in_context'), [
+                        'display_name' => $oProfile->getDisplayName(),
+                        'profile_link' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink($CNF['URL_CONTEXT_ENTRIES'], ['profile_id' => $iContextPid]))
+                    ]),
+                    'content' => $sContent
+                ];
+        }
+        else
+            $sContent = $this->serviceBrowseTasksByProfile();
+
+        return $sContent ?: MsgBox(_t('_Empty'));
+    }
+
+    public function serviceBrowseContext($iProfileId = 0, $aParams = [])
+    {
+        if(!$iProfileId)
+            $iProfileId = bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+        if(!$iProfileId)
+            return '';
+
+        if($this->_bIsApi && is_string($aParams))
+            $aParams = bx_api_get_browse_params($aParams);
+
+        return $this->serviceBrowseTasks ($iProfileId, $aParams);
+    }
+
+    public function serviceBrowseTasks($iContextId = 0, $aParams = [])
+    {
+        if(!$this->isAllowView($iContextId))
+            return $this->_bIsApi ? [] : '';
+
+        $mixedResult = $this->_oTemplate->getEntriesList($iContextId, $aParams);
+
+        return $this->_bIsApi ? [
+            bx_api_get_block('tasks_list', $mixedResult)
+        ] : $mixedResult;
+    }
+
+    public function serviceBrowseTasksByProfile($iProfileId = 0, $aParams = [])
+    {
+        if(!$iProfileId && $this->_iProfileId)
+            $iProfileId = $this->_iProfileId;
+
+        if($this->_bIsApi && (int)$iProfileId !== (int)$this->_iProfileId)
+            return [];
+
+        $mixedResult = $this->_oTemplate->getEntriesList(0, array_merge($aParams, [
+            'for_profile' => $iProfileId
+        ]));
+ 
+        return $this->_bIsApi ? [
+            bx_api_get_block('tasks_list', $mixedResult)
+        ] : $mixedResult;
+    }
+
+    public function serviceImportFrom($sType = 'linear', $iContextId = 0, $aParams = [])
+    {
+        $sClass = 'Import' . ucwords($sType);
+        bx_import($sClass, $this->_aModule);
+
+        $sClass = $this->_aModule['class_prefix'] . $sClass;
+        $oImport = new $sClass($this);
+
+        return $oImport->perform($iContextId, $aParams);
+    }
+
+    /**
+     * Common methods
+     */
+    public function getModuleTitle($sName)
+    {
+        $sResult = $sName;
+
+        if(($_sTitle = '_' . $sName) && ($sTitle = _t($_sTitle)) && strcmp($_sTitle, $sTitle) != 0)
+            $sResult = $sTitle;
+        else if(($aModule = $this->_oDb->getModuleByName($sName)) && is_array($aModule))
+            $sResult = $aModule['title'] ?? _t('_undefined');
+
+        return $sResult;
+    }
+
+    public function getAssignees()
+    {
+        $aResults = [];
+        if(($oProfile = BxDolProfile::getInstance()) !== false && ($aIds = $this->_oDb->getTimeTracks(['sample' => 'assignees'])))
+            foreach($aIds as $iId)
+                $aResults[] = ['key' => $iId, 'value' => $oProfile->getDisplayName($iId)];
+
+        return $aResults;
+    }
+    
+    public function getPreLists()
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResults = [];
+        if(($aPreLists = $this->_oDb->getPreLists(['sample' => 'all'])) && is_array($aPreLists))
+            foreach($aPreLists as $aPreList)
+                $aResults[$aPreList['name']] = _t($aPreList['title']);
+
+        return $aResults;
+    }
+
+    public function getContexts()
+    {
+        $aContexts = [];
+
+        $aModules = bx_srv('system', 'get_modules_by_type', ['context', ['name_as_key' => true]]);
+        foreach($aModules as $sModule => $aModule)
+            $aContexts[$sModule] = ($_sTitle = '_' . $sModule) && ($sTitle = _t($_sTitle)) && strcmp($_sTitle, $sTitle) != 0 ? $sTitle : $aModule['title'];
+        
+        return $aContexts; 
+    }
+    
+    public function getContextAuthorId($iContextPid)
+    {
+        $iContextAuthorPid = 0;
+        if(($oContext = BxDolProfile::getInstance($iContextPid)) !== false)
+            $iContextAuthorPid = bx_srv($oContext->getModule(), 'get_author', [$oContext->getContentId()]);
+        
+        return $iContextAuthorPid;
+    }
+
+    public function getContextMembers($iContextPid)
+    {
+        $aMembers = [];
+        if(($oContext = BxDolProfile::getInstance($iContextPid)) !== false) {
+            $aPids = bx_srv($oContext->getModule(), 'fans', [$oContext->getContentId(), true]);
+            foreach($aPids as $iPid)
+                $aMembers[$iPid] = $oContext->getDisplayName($iPid);
+        }
+
+        return $aMembers;
+    }
+
+    public function getContextEntries($iContextPid)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aEntries = [];
+        if(($aTasks = $this->_oDb->getTasks($iContextPid)) && is_array($aTasks))
+            foreach($aTasks as $aTask)
+                $aEntries[$aTask[$CNF['FIELD_ID']]] = $aTask[$CNF['FIELD_TITLE']];
+
+        return $aEntries;
+    }
+
+    /*
+     * Numbers of tasks, as Linear has them: UNA-12 is the 12th task of the community whose prefix is
+     * UNA. The prefix is made from the community's name with its first task, and its administrators
+     * may change it on the Settings of its tasks. Every prefix a community had stays its own, so its
+     * old numbers and their links (view-task/una-12) still find the tasks. A task keeps its number
+     * when it moves to another community. Tasks in no community have the prefix of the
+     * bx_tasks_personal_prefix option.
+     */
+
+    /**
+     * The counter a task takes its number from: its community's, 0 for a task in none.
+     */
+    public function getNumberContextId($aContentInfo)
+    {
+        $iPrivacy = (int)($aContentInfo[$this->_oConfig->CNF['FIELD_ALLOW_VIEW_TO']] ?? 0);
+
+        return $iPrivacy < 0 ? -$iPrivacy : 0;
+    }
+
+    public function isPrefixValid($sPrefix)
+    {
+        return is_string($sPrefix) && preg_match(self::PREFIX_PATTERN, $sPrefix);
+    }
+
+    /**
+     * Whether a community may take a prefix: a valid one which no other community has or had.
+     */
+    public function isPrefixAvailable($sPrefix, $iContextId)
+    {
+        if(!$this->isPrefixValid($sPrefix))
+            return false;
+
+        $mixedOwner = $this->_oDb->getPrefixContextId(strtoupper($sPrefix));
+
+        return $mixedOwner === false || $mixedOwner === (int)$iContextId;
+    }
+
+    /**
+     * A community's prefix (0: the tasks in no community), made the first time it is needed.
+     */
+    public function getContextPrefix($iContextId, $bFresh = false)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContextId = (int)$iContextId;
+        if(!$bFresh && !empty($this->_aPrefixes[$iContextId]))
+            return $this->_aPrefixes[$iContextId];
+
+        $this->_oDb->addContextRow($iContextId);
+
+        $sPrefix = $this->_oDb->getContextPrefix($iContextId);
+        if($sPrefix === '') {
+            $aCandidates = [];
+            if($iContextId)
+                $aCandidates = $this->getPrefixCandidates(($oContext = BxDolProfile::getInstance($iContextId)) !== false ? $oContext->getDisplayName() : '', $iContextId);
+            else {
+                // the option's prefix as it is (TASK), made from it only when another community has it
+                $sOption = trim((string)getParam($CNF['PARAM_PERSONAL_PREFIX']));
+                if($this->isPrefixValid($sOption))
+                    $aCandidates[] = strtoupper($sOption);
+                $aCandidates = array_merge($aCandidates, $this->getPrefixCandidates($sOption !== '' ? $sOption : 'TASK', 0));
+            }
+
+            foreach(array_unique($aCandidates) as $sCandidate) {
+                if(!$this->_oDb->reservePrefix($sCandidate, $iContextId))
+                    continue;
+
+                // another request may have given the community its prefix meanwhile
+                $sPrefix = $this->_oDb->updateContextPrefix($iContextId, $sCandidate, '') ? $sCandidate : $this->_oDb->getContextPrefix($iContextId);
+                break;
+            }
+        }
+
+        return $this->_aPrefixes[$iContextId] = $sPrefix;
+    }
+
+    /**
+     * Changes a community's prefix (0: the tasks in no community). The former one stays the
+     * community's: its links lead to the tasks' new ones.
+     */
+    public function setContextPrefix($iContextId, $sPrefix)
+    {
+        $iContextId = (int)$iContextId;
+        if(!$this->isPrefixValid($sPrefix))
+            return false;
+
+        $sPrefix = strtoupper($sPrefix);
+        if(!$this->_oDb->lockPrefix($iContextId))
+            return false;
+
+        // read under the lock: a change finished by another request is the one this one changes
+        $sCurrent = $this->getContextPrefix($iContextId, true);
+        $bResult = $sPrefix === $sCurrent;
+        if(!$bResult && $this->_oDb->reservePrefix($sPrefix, $iContextId) && $this->_oDb->updateContextPrefix($iContextId, $sPrefix, $sCurrent)) {
+            $this->_aPrefixes[$iContextId] = $sPrefix;
+            $bResult = $this->_oDb->updateSeoLinksByNumberContext($iContextId, $sPrefix);
+        }
+
+        $this->_oDb->unlockPrefix($iContextId);
+
+        return $bResult;
+    }
+
+    /**
+     * The prefixes to try for a community, the best first: the initials of its name (UNA Core Team:
+     * UCT) or the start of a one word name (Marketing: MAR), then longer starts and numbers.
+     */
+    public function getPrefixCandidates($sName, $iContextId)
+    {
+        $sName = preg_replace('/[^\x20-\x7E]+/', ' ', $this->_transliterate((string)$sName));
+        $aWords = preg_split('/[^A-Z0-9]+/', strtoupper($sName), -1, PREG_SPLIT_NO_EMPTY);
+        // a prefix starts with a letter
+        while($aWords && ctype_digit($aWords[0][0]))
+            array_shift($aWords);
+
+        $aResult = [];
+        if($aWords) {
+            $sAll = implode('', $aWords);
+            $sBase = count($aWords) > 1 ? implode('', array_map(function($sWord) { return $sWord[0]; }, array_slice($aWords, 0, 4))) : substr($sAll, 0, 3);
+            if(strlen($sBase) < 2)
+                $sBase = substr($sAll, 0, 3);
+
+            if(strlen($sBase) >= 2) {
+                $aResult[] = $sBase;
+                for($i = 4; $i <= min(strlen($sAll), self::PREFIX_MAX); $i++)
+                    $aResult[] = substr($sAll, 0, $i);
+                for($i = 2; $i <= 99; $i++)
+                    $aResult[] = substr($sBase, 0, self::PREFIX_MAX - strlen((string)$i)) . $i;
+            }
+        }
+        $aResult[] = 'T' . (int)$iContextId;
+
+        return array_values(array_filter(array_unique($aResult), [$this, 'isPrefixValid']));
+    }
+
+    /**
+     * Gives a new task its number, the next of its community's counter.
+     * @return int the number, 0 when the task has one already or none could be given
+     */
+    public function assignNumber($iContentId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById((int)$iContentId, true);
+        if(!$aContentInfo || (int)$aContentInfo[$CNF['FIELD_NUMBER']] > 0)
+            return 0;
+
+        $iContextId = $this->getNumberContextId($aContentInfo);
+        if(!$this->_oDb->lockPrefix($iContextId))
+            return 0;
+
+        // the prefix is read under the lock, so a prefix change can't come between it and the link
+        $iResult = 0;
+        if(($sPrefix = $this->getContextPrefix($iContextId, true)) !== '' && ($iNumber = $this->_oDb->getNextNumber($iContextId)) && $this->_oDb->setTaskNumber($iContentId, $iContextId, $iNumber)) {
+            // a link the task got before its number takes it too
+            $this->_oDb->updateSeoLinksByTask($iContentId, mb_strtolower($sPrefix . '-' . $iNumber));
+            $iResult = $iNumber;
+        }
+
+        $this->_oDb->unlockPrefix($iContextId);
+
+        return $iResult;
+    }
+
+    /**
+     * A task's number with its community's current prefix (UNA-12), '' for a task without one.
+     */
+    public function getIdentifier($mixedContent)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = is_array($mixedContent) ? $mixedContent : $this->_oDb->getContentInfoById((int)$mixedContent);
+        if(!$aContentInfo || ($iNumber = (int)($aContentInfo[$CNF['FIELD_NUMBER']] ?? 0)) <= 0)
+            return '';
+
+        $iContextId = (int)$aContentInfo[$CNF['FIELD_NUMBER_CONTEXT']];
+        if(!isset($this->_aPrefixes[$iContextId]))
+            $this->_aPrefixes[$iContextId] = $this->_oDb->getContextPrefix($iContextId);
+
+        return $this->_aPrefixes[$iContextId] !== '' ? $this->_aPrefixes[$iContextId] . '-' . $iNumber : '';
+    }
+
+    /**
+     * Reads the prefixes a list of tasks shows at once.
+     */
+    public function primeIdentifiers($aContents)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = [];
+        foreach($aContents as $aContentInfo)
+            if(($iContextId = (int)($aContentInfo[$CNF['FIELD_NUMBER_CONTEXT']] ?? 0)) >= 0 && !isset($this->_aPrefixes[$iContextId]))
+                $aIds[] = $iContextId;
+        if(!$aIds)
+            return;
+
+        $aPrefixes = $this->_oDb->getContextsPrefixes($aIds);
+        foreach(array_unique($aIds) as $iContextId)
+            $this->_aPrefixes[$iContextId] = (string)($aPrefixes[$iContextId] ?? '');
+    }
+
+    /**
+     * A task by its number with the current or a former prefix of its community (una-12 or UNA-12).
+     */
+    public function getContentIdByIdentifier($sIdentifier)
+    {
+        if(!is_string($sIdentifier) || !preg_match('/^([A-Za-z][A-Za-z0-9]{1,9})-([1-9][0-9]{0,9})$/', $sIdentifier, $aMatches))
+            return 0;
+
+        return $this->_oDb->getTaskIdByNumber(strtoupper($aMatches[1]), (int)$aMatches[2]);
+    }
+
+    /**
+     * Latin letters for a name: intl's transliterator where PHP has it, otherwise Cyrillic letters
+     * by their code points and other accented letters by iconv.
+     */
+    protected function _transliterate($s)
+    {
+        if(function_exists('transliterator_transliterate') && ($sResult = transliterator_transliterate('Any-Latin; Latin-ASCII', $s)) !== false)
+            return $sResult;
+
+        // U+0430 ... U+044F, the lowercase Russian letters in their order
+        $aCyrillic = ['a', 'b', 'v', 'g', 'd', 'e', 'zh', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'kh', 'ts', 'ch', 'sh', 'shch', '', 'y', '', 'e', 'yu', 'ya'];
+        // U+0451 (yo), U+0454 (ye), U+0456 (i), U+0457 (yi), U+0491 (ghe with upturn)
+        $aCyrillicOther = [0x451 => 'e', 0x454 => 'ye', 0x456 => 'i', 0x457 => 'yi', 0x491 => 'g'];
+
+        $sResult = '';
+        foreach(mb_str_split($s) as $sChar) {
+            $iCode = mb_ord($sChar);
+            if($iCode >= 0x400 && $iCode <= 0x40F)
+                $iCode += 0x50;
+            else if(($iCode >= 0x410 && $iCode <= 0x42F) || $iCode == 0x490)
+                $iCode += $iCode == 0x490 ? 1 : 0x20;
+
+            if($iCode >= 0x430 && $iCode <= 0x44F)
+                $sResult .= $aCyrillic[$iCode - 0x430];
+            else if(isset($aCyrillicOther[$iCode]))
+                $sResult .= $aCyrillicOther[$iCode];
+            else
+                $sResult .= $sChar;
+        }
+
+        if(function_exists('iconv') && ($sAscii = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $sResult)) !== false)
+            $sResult = str_replace('?', '', $sAscii);
+
+        return $sResult;
+    }
+
+    public function getTimer($iContentId, $iProfileId)
+    {
+        return $this->_oDb->getTimers(['sample' => 'content_profile_ids', 'content_id' => $iContentId, 'profile_id' => $iProfileId]);
+    }
+
+    public function getTimersByAuthor($iProfileId, $bActive = false)
+    {
+        return $this->_oDb->getTimers(['sample' => 'profile_id', 'profile_id' => $iProfileId, 'active' => $bActive]);
+    }
+
+    public function pauseTimerByAuthor($iProfileId)
+    {
+        $aTimer = $this->getTimersByAuthor($iProfileId, true);
+        if(!$aTimer || !is_array($aTimer) || empty($aTimer['started']))
+            return false;
+
+        return $this->updateTimerById($aTimer['id'], [
+            'started' => 0,
+            'duration' => $aTimer['duration'] + (time() - $aTimer['started']),
+        ]);
+    }
+
+    /**
+     * Pause the timer of one task only, so logging it leaves the author's other timers alone.
+     * $iStartedBefore: only a run started then or earlier (the cron's, so a run resumed since stays).
+     */
+    public function pauseTimer($iContentId, $iProfileId, $iStartedBefore = 0)
+    {
+        $aTimer = $this->getTimer($iContentId, $iProfileId);
+        if(!$aTimer || !is_array($aTimer) || empty($aTimer['started']))
+            return false;
+
+        if($iStartedBefore && (int)$aTimer['started'] > $iStartedBefore)
+            return false;
+
+        //--- Only the run read here: a timer paused or resumed since has another `started`, and stays as it is.
+        return (int)$this->_oDb->updateTimer([
+            'started' => 0,
+            'duration' => $aTimer['duration'] + (time() - $aTimer['started']),
+        ], [
+            'id' => (int)$aTimer['id'],
+            'started' => (int)$aTimer['started'],
+        ]) > 0;
+    }
+
+    public function updateTimerById($iId, $aSet)
+    {
+        return $this->_oDb->updateTimer($aSet, ['id' => (int)$iId]) !== false;
+    }
+
+    public function spendBudgetByContentId($iContentId, $iValue)
+    {
+        $bResult = false;
+
+        $iContextId = $this->_oDb->getContextId($iContentId);
+        if(!$iContextId)
+            return $bResult;
+
+        if(!$this->_oDb->isBudgetByContext($iContextId))
+            $bResult = $this->_oDb->insertBudget($iContextId, 0, $iValue);
+        else
+            $bResult = $this->_oDb->updateBudgetSpent($iContextId, $iValue);
+
+        return $bResult;
+    }
+
+    public function onPublished($iContentId)
+    {
+        parent::onPublished($iContentId);
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo)
+            return;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        if(($iContextId = (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]) < 0) {
+            $iContextId = abs($iContextId);
+
+            $mixedRepo = $this->ghGetRepository($iContextId);
+            if($mixedRepo !== false && ($sMl = 'bx_github') && ($sMd = 'create_issue') && bx_is_srv($sMl, $sMd)) {
+                list($sGhUsername, $sGhRepository, $mixedAuth) = $mixedRepo;
+
+                $aFldLoc2Repo = [
+                    $CNF['FIELD_STICKERS'] => 'labels', 
+                    $CNF['FIELD_TYPE'] => 'type', 
+                ];
+
+                $aGhFields = [];
+                foreach($aFldLoc2Repo as $sLocField => $sRepoField)
+                    if(($sLocValue = $aContentInfo[$sLocField] ?? false))
+                        switch($sLocField) {
+                            case $CNF['FIELD_STICKERS']:
+                                $aStickers = $this->getStickers($sLocValue, $iContextId);
+                                if($aStickers && is_array($aStickers)) {
+                                    $aGhFields[$sRepoField] = [];
+                                    foreach($aStickers as $aSticker)
+                                        $aGhFields[$sRepoField][] = $aSticker['title'];
+                                }
+                                break;
+
+                            case $CNF['FIELD_TYPE']:
+                                $aGhFields[$sRepoField] = $this->getType($sLocValue, $iContextId);
+                                break;
+
+                            default:
+                                $aGhFields[$sRepoField] = $sLocValue;
+                        }
+
+                $aIssue = bx_srv($sMl, $sMd, [$sGhUsername, $sGhRepository, $mixedAuth, $aContentInfo[$CNF['FIELD_TITLE']], $aContentInfo[$CNF['FIELD_TEXT']], $aGhFields]);
+                if($aIssue && is_array($aIssue) && ($iNumber = (int)($aIssue['number'] ?? 0)) != 0 && ($sUrl = $aIssue['html_url'] ?? '') != '') {
+                    $this->_oDb->updateEntriesBy([
+                        $CNF['FIELD_GH_ISSUE'] => $iNumber,
+                        $CNF['FIELD_GH_ISSUE_URL'] => $sUrl,
+                    ], [$CNF['FIELD_ID'] => $iContentId]);
+
+                    $this->logActivity($iContentId, ['key' => '_bx_tasks_txt_msg_synced', 'markers' => [
+                        'ghi_link' => $sUrl,
+                        'ghi_number' => $iNumber
+                    ]]);
+                }
+            }
+        }
+    }
+
+    public function onExpired($iContentId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo)
+            return;
+
+        $sModule = $this->getName();
+        $sAction = 'expired';
+
+        $iPerformer = getParam('sys_profile_bot');
+        $sSource = $sModule . '_' . $sAction . '_' . $iContentId;
+        $sSourceMac = $sModule . '_' . $sAction . '_' . $iPerformer . '_' . time();
+
+        $oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION']);
+        if($oConnection) {
+            // the assignees: an assignment's initiator is the profile, its content is the task
+            $aProfileIds = $oConnection->getConnectedInitiators($iContentId);
+            if(!empty($aProfileIds) && is_array($aProfileIds))
+                foreach($aProfileIds as $iProfileId) {
+                    /**
+                     * @hooks
+                     * @hookdef hook-bx_tasks-expired 'bx_tasks', 'expired' - hook on task unassigned to profile
+                     * - $unit_name - equals `bx_tasks`
+                     * - $action - equals `expired`
+                     * - $object_id - task id 
+                     * - $sender_id - not used 
+                     * - $extra_params - array of additional params with the following array keys:
+                     *      - `object_author_id` - [int] profile_id for task's author
+                     *      - `privacy_view` - [string] privacy view value
+                     * @hook @ref hook-bx_tasks-expired
+                     */
+                    bx_alert($sModule, $sAction, $iContentId, $iPerformer, [
+                        'object_author_id' => $iProfileId,
+                        'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                        'source' => $sSource,
+                        'source_mac' => $sSourceMac,
+                    ]);
+                }
+        }
+    }
+
+    /**
+     * A timer that ran too long was paused (BxTasksCronTimers): the one whose timer it is and the context administrators
+     * (its author and the members with the Administrator role) get a personal notification each.
+     */
+    public function onTimerStopped($iContentId, $iTimerProfileId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        if(!$aContentInfo)
+            return;
+
+        $aRecipients = [(int)$iTimerProfileId];
+        if(($iContextPid = $this->_oDb->getContextId($iContentId)) && ($oContext = BxDolProfile::getInstance($iContextPid)) && ($oContextModule = BxDolModule::getInstance($oContext->getModule()))) {
+            $aRecipients[] = (int)$this->getContextAuthorId($iContextPid);
+
+            if(method_exists($oContextModule->_oDb, 'getAdmins'))
+                foreach($oContextModule->_oDb->getAdmins($iContextPid) as $iAdminId)
+                    if($this->isAdministratorByContext($iContextPid, (int)$iAdminId))
+                        $aRecipients[] = (int)$iAdminId;
+        }
+        $aRecipients = array_unique(array_filter($aRecipients));
+
+        $sModule = $this->getName();
+        $sAction = 'timer_stopped';
+
+        $iPerformer = getParam('sys_profile_bot');
+        $sSource = $sModule . '_' . $sAction . '_' . $iContentId . '_' . $iTimerProfileId;
+        $sSourceMac = $sModule . '_' . $sAction . '_' . $iPerformer . '_' . time();
+
+        foreach($aRecipients as $iRecipientId) {
+            /**
+             * @hooks
+             * @hookdef hook-bx_tasks-timer_stopped 'bx_tasks', 'timer_stopped' - hook on a timer paused for running too long
+             * - $unit_name - equals `bx_tasks`
+             * - $action - equals `timer_stopped`
+             * - $object_id - task id
+             * - $sender_id - the bot profile
+             * - $extra_params - array of additional params with the following array keys:
+             *      - `object_author_id` - [int] profile_id to notify
+             *      - `subobject_id` - [int] profile_id whose timer it is
+             *      - `privacy_view` - [string] privacy view value
+             * @hook @ref hook-bx_tasks-timer_stopped
+             */
+            bx_alert($sModule, $sAction, $iContentId, $iPerformer, [
+                'object_author_id' => $iRecipientId,
+                'subobject_id' => (int)$iTimerProfileId,
+                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                'source' => $sSource,
+                'source_mac' => $sSourceMac,
+            ]);
+        }
+    }
+
+    /**
+     * A list id from the request has to belong to the context that passed the permission check.
+     * Zero is a new list, or no list, and is not looked up.
+     *
+     * @return array|true|false list row, true when there is no list id, false when it is missing or belongs to another context
+     */
+    protected function getListInContext($iListId, $iContextId)
+    {
+        $iListId = (int)$iListId;
+        if($iListId === 0)
+            return true;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $aList = $this->_oDb->getList($iListId);
+        if(empty($aList) || !is_array($aList) || (int)$aList[$CNF['FIELD_LIST_CONTEXT_ID']] !== (int)$iContextId)
+            return false;
+
+        return $aList;
+    }
+
+    public function isAllowView($iContextId)
+    {
+        if(!($oContext = BxDolProfile::getInstance($iContextId)) || $oContext->checkAllowedProfileView($iContextId) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        return true;
+    }
+
+    public function isAllowAdd($iContextId)
+    {
+        if(!($oContext = BxDolProfile::getInstance($iContextId)) || $oContext->checkAllowedPostInProfile($iContextId) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        return true;
+    }
+
+    /**
+     * Managing the tasks of a context (lists, filters for all, completing, assigning, the context's settings):
+     * the `edit_any` permission of the viewer's role there (Studio > Forms > Groups Roles > Tasks > Edit any entry).
+     * A role without saved permissions for the module gets Studio's default: the Administrator and Moderator roles.
+     * Site administrators and the context's author always. Not the context's `is_admin`, which is any role but the common one.
+     */
+    public function isAllowManageByContext($iContextId, $iProfileId = 0)
+    {
+        if(isAdmin())
+            return true;
+
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        if($this->isAuthorByContext($iContextId, $iProfileId))
+            return true;
+
+        if(!method_exists($oContextModule, 'isFanByGroupProfileId') || !$oContextModule->isFanByGroupProfileId($iContextId, $iProfileId))
+            return false;
+
+        //--- A context without roles: its admins, as before.
+        if(!method_exists($oContextModule, 'isRole') || !method_exists($oContextModule->_oConfig, 'isRoles') || !$oContextModule->_oConfig->isRoles())
+            return (bool)BxDolService::call($oContext->getModule(), 'is_admin', [$iContextId, $iProfileId]);
+
+        $iRole = (int)$oContextModule->_oDb->getRole($iContextId, $iProfileId);
+        $bAllowed = $oContextModule->isAllowedModuleActionByRole($this->getName(), 'edit_any', $iRole);
+        if($bAllowed !== null)
+            return $bAllowed;
+
+        $iRoleAdministrator = defined('BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR') ? BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR : 1;
+        $iRoleModerator = defined('BX_BASE_MOD_GROUPS_ROLE_MODERATOR') ? BX_BASE_MOD_GROUPS_ROLE_MODERATOR : 2;
+        return $oContextModule->isRole($iRole, $iRoleAdministrator) || $oContextModule->isRole($iRole, $iRoleModerator);
+    }
+
+    public function isMemberByContext($iContextId, $iProfileId = 0)
+    {
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        return method_exists($oContextModule, 'isFanByGroupProfileId') && $oContextModule->isFanByGroupProfileId($iContextId, $iProfileId);
+    }
+
+    /**
+     * The context's author or a member with the Administrator role, and site administrators.
+     * Unlike isAllowManageByContext: a context's `is_admin` is true for any role but the common one
+     * (moderators, clients and other custom roles too).
+     */
+    public function isAdministratorByContext($iContextId, $iProfileId = 0)
+    {
+        if(isAdmin())
+            return true;
+
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        if($this->isAuthorByContext($iContextId, $iProfileId))
+            return true;
+
+        if(!method_exists($oContextModule, 'isRole') || !method_exists($oContextModule, 'isFanByGroupProfileId') || !$oContextModule->isFanByGroupProfileId($iContextId, $iProfileId))
+            return false;
+
+        return $oContextModule->isRole((int)$oContextModule->_oDb->getRole($iContextId, $iProfileId), defined('BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR') ? BX_BASE_MOD_GROUPS_ROLE_ADMINISTRATOR : 1);
+    }
+
+    /**
+     * The one who created the context: often a member with the common role there, but its owner.
+     */
+    public function isAuthorByContext($iContextId, $iProfileId = 0)
+    {
+        if(!$iProfileId)
+            $iProfileId = bx_get_logged_profile_id();
+
+        if(!$iProfileId || !($oContext = BxDolProfile::getInstance($iContextId)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            return false;
+
+        $aContextInfo = $oContextModule->_oDb->getContentInfoById($oContext->getContentId());
+        $sFieldAuthor = $oContextModule->_oConfig->CNF['FIELD_AUTHOR'] ?? '';
+
+        return $sFieldAuthor && !empty($aContextInfo[$sFieldAuthor]) && (int)$aContextInfo[$sFieldAuthor] == (int)$iProfileId;
+    }
+
+    /**
+     * What a profile may do with time in a context, from the context roles (Studio > Forms > Groups Roles):
+     * - log - log time (timers, Log, Add time); everybody edits the Logged time they logged;
+     * - view_logged_any - see everybody's Logged time;
+     * - view_billed - see Billed time (the time the client sees);
+     * - edit_billed - change Billed time;
+     * - manage_properties - change the context's task properties (types, priorities, states...).
+     * A role without saved permissions for the module gets the defaults: context admins get everything,
+     * other members log time only. UNA operators and the context's author get everything, whatever their role.
+     */
+    public function getTimeRights($iContextPid, $iProfileId = 0)
+    {
+        if(!$iProfileId)
+            $iProfileId = $this->_iProfileId;
+
+        $sKey = (int)$iContextPid . '_' . (int)$iProfileId;
+        if(isset($this->_aTimeRights[$sKey]))
+            return $this->_aTimeRights[$sKey];
+
+        //--- Right => the action in the context roles.
+        $aActions = [
+            'log' => 'time_log',
+            'view_logged_any' => 'time_view_logged_any',
+            'view_billed' => 'time_view_billed',
+            'edit_billed' => 'time_edit_billed',
+            'manage_properties' => 'manage_properties',
+        ];
+
+        $aAll = array_fill_keys(array_keys($aActions), true);
+        $aNone = array_fill_keys(array_keys($aAll), false);
+        $aMember = array_merge($aNone, ['log' => true]);
+
+        if(!$iProfileId)
+            $aResult = $aNone;
+        else if($iProfileId == bx_get_logged_profile_id() && ($this->_isAdministrator() || $this->_isModerator()))
+            $aResult = $aAll;
+        else if(!$iContextPid)
+            $aResult = $aMember; //--- Tasks outside of contexts have nobody to bill.
+        else if($this->isAuthorByContext($iContextPid, $iProfileId))
+            $aResult = $aAll;
+        else if(!($oContext = BxDolProfile::getInstance($iContextPid)) || !($oContextModule = BxDolModule::getInstance($oContext->getModule())))
+            $aResult = $aNone;
+        else {
+            $bFan = method_exists($oContextModule, 'isFanByGroupProfileId') && $oContextModule->isFanByGroupProfileId($iContextPid, $iProfileId);
+            $bAdmin = $this->isAdministratorByContext($iContextPid, $iProfileId);
+
+            $aDefaults = $bAdmin ? $aAll : ($bFan ? $aMember : $aNone);
+
+            $aResult = $aDefaults;
+            if($bFan && method_exists($oContextModule->_oConfig, 'isRoles') && $oContextModule->_oConfig->isRoles()) {
+                $iRole = (int)$oContextModule->_oDb->getRole($iContextPid, $iProfileId);
+                foreach($aDefaults as $sRight => $bDefault)
+                    $aResult[$sRight] = $this->_getTimeRightByRole($oContextModule, $aActions[$sRight], $iRole) ?? $bDefault;
+            }
+        }
+
+        return $this->_aTimeRights[$sKey] = $aResult;
+    }
+
+    public function getTimeRightsByContentId($iContentId, $iProfileId = 0)
+    {
+        return $this->getTimeRights($this->_oDb->getContextId((int)$iContentId), $iProfileId);
+    }
+
+    /**
+     * The lookup of BxBaseModGroupsModule::isAllowedModuleActionByRole, null (the default applies, as Studio shows it)
+     * when the role's permissions for the module were saved before these actions existed: Studio marks
+     * them `time_rights_saved` since. Once marked, an action that isn't there is off: Studio doesn't send switchers that are off.
+     */
+    protected function _getTimeRightByRole($oContextModule, $sAction, $iProfileRole)
+    {
+        if(!method_exists($oContextModule, 'isRole') || !($aRoles = $oContextModule->_oConfig->getRolesData()) || !is_array($aRoles))
+            return null;
+
+        $sModule = $this->getName();
+        foreach($aRoles as $iRole => $aRoleData) {
+            if(!(($iRole == 0 && $iProfileRole == 0) || ($iRole > 0 && $oContextModule->isRole($iProfileRole, $iRole))))
+                continue;
+
+            $aPermissions = !empty($aRoleData['Data']) ? unserialize($aRoleData['Data']) : false;
+            if(!$aPermissions || !isset($aPermissions[$sModule]))
+                continue;
+
+            if(empty($aPermissions[$sModule]['time_rights_saved']))
+                return null;
+
+            return !empty($aPermissions[$sModule][$sAction]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Billed time of a time track: it follows the Logged time until somebody sets it.
+     */
+    public function getTrackBilled($aTrack)
+    {
+        return isset($aTrack['value_billed']) && $aTrack['value_billed'] !== null ? (int)$aTrack['value_billed'] : (int)$aTrack['value'];
+    }
+
+    public function isAllowEdit($mixedContent)
+    {
+        $aContentInfo = !is_array($mixedContent) ? $this->_oDb->getContentInfoById((int)$mixedContent) : $mixedContent;
+        if($this->checkAllowedEdit($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED)
+            return true;
+
+        return false;
+    }
+
+    public function isAllowManage($mixedContent)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = !is_array($mixedContent) ? $this->_oDb->getContentInfoById((int)$mixedContent) : $mixedContent;
+        if($this->checkAllowedEdit($aContentInfo) === CHECK_ACTION_RESULT_ALLOWED)
+            return true;
+
+        if($this->isAllowManageByContext(abs($aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']])))
+            return true;
+
+        if(($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])) !== false) {
+            $iLoggedId = bx_get_logged_profile_id();
+            $aProfileIds = $oConnection->getConnectedInitiators($aContentInfo[$CNF['FIELD_ID']]);
+            if(!empty($aProfileIds) && is_array($aProfileIds) && in_array($iLoggedId, $aProfileIds))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return CHECK_ACTION_RESULT_ALLOWED if access is granted or error message if access is forbidden. So make sure to make strict(===) checking.
+     */
+    public function checkAllowedDelete(&$aDataEntry, $isPerformAction = false)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sErr = _t('_sys_txt_access_denied');
+        $iContentId = (int)$aDataEntry[$CNF['FIELD_ID']];
+
+        $aTimeTracks = $this->_oDb->getTimeTracks(['sample' => 'object_id', 'object_id' => $iContentId]);
+        if($aTimeTracks && is_array($aTimeTracks))
+            return $sErr;
+
+        $aTimers = $this->_oDb->getTimers(['sample' => 'content_id', 'content_id' => $iContentId]);
+        if($aTimers && is_array($aTimers))
+            return $sErr;
+
+        return parent::checkAllowedDelete($aDataEntry, $isPerformAction);
+    }
+
+    /**
+     * @return CHECK_ACTION_RESULT_ALLOWED if access is granted or error message if access is forbidden. So make sure to make strict(===) checking.
+     */
+    public function checkAllowedManage ($aDataEntry, $isPerformAction = false)
+    {
+        return $this->isAllowManage($aDataEntry) ? CHECK_ACTION_RESULT_ALLOWED : _t('_sys_txt_access_denied');
+    }
+
+    public function isCompleted($iContentId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+
+        return (bool)$aContentInfo[$CNF['FIELD_COMPLETED']];
+    }
+
+    public function complete($iContentId, $iCompleted)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iCompleted = (int)$iCompleted;
+        $this->_oDb->updateEntriesBy([$CNF['FIELD_COMPLETED'] => $iCompleted], [$CNF['FIELD_ID'] => (int)$iContentId]);
+
+        $sModule = $this->getName();
+        $sAction = !$iCompleted ? 'reopened' : 'completed';
+
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+        $iContentAuthor = (int)$aContentInfo[$CNF['FIELD_AUTHOR']];
+
+        $iPerformer = bx_get_logged_profile_id();
+        $sSource = $sModule . '_' . $sAction . '_' . $iContentId;
+        $sSourceMac = $sModule . '_' . $sAction . '_' . $iPerformer . '_' . time();
+
+        /**
+         * @hooks
+         * @hookdef hook-bx_tasks-completed 'bx_tasks', 'completed' - hook on task unassigned to profile
+         * - $unit_name - equals `bx_tasks`
+         * - $action - can be `completed` or `reopened`
+         * - $object_id - task id 
+         * - $sender_id - not used 
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `object_author_id` - [int] profile_id for task's author
+         *      - `privacy_view` - [string] privacy view value
+         * @hook @ref hook-bx_tasks-completed
+         */
+        bx_alert($sModule, $sAction, $iContentId, $iPerformer, [
+            'object_author_id' => $iContentAuthor,
+            'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+            'source' => $sSource,
+            'source_mac' => $sSourceMac,
+        ]);
+
+        if(($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])) !== false) {
+            // the assignees: an assignment's initiator is the profile, its content is the task
+            $aProfileIds = $oConnection->getConnectedInitiators($iContentId);
+            if(!empty($aProfileIds) && is_array($aProfileIds))
+                foreach($aProfileIds as $iProfileId) {
+                    if($iProfileId == $iContentAuthor)
+                        continue;
+
+                    bx_alert($sModule, $sAction, $iContentId, $iPerformer, [
+                        'object_author_id' => $iProfileId,
+                        'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                        'source' => $sSource,
+                        'source_mac' => $sSourceMac,
+                    ]);
+                }
+        }
+
+        $this->logActivity($iContentId, ['key' => '_bx_tasks_txt_msg_' . ($iCompleted ? '' : 'un') . 'completed']);
+
+        if(($iContextId = (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]) < 0 && ($mixedRepo = $this->ghGetRepository(abs($iContextId))) !== false) {
+            $sModule = 'bx_github';
+            $sMethod = ($iCompleted ? 'close' : 'reopen') . '_issue';
+            if(bx_is_srv($sModule, $sMethod) && ($iGhIssue = (int)$aContentInfo[$CNF['FIELD_GH_ISSUE']]) != 0) {
+                list($sGhUsername, $sGhRepository, $mixedAuth) = $mixedRepo;
+
+                bx_srv($sModule, $sMethod, [$sGhUsername, $sGhRepository, $mixedAuth, $iGhIssue]);
+            }
+        }
+
+        return true;
+    }
+
+    public function logActivity($iContentId, $aMessage)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        
+        $oCmts = BxDolCmts::getObjectInstance($CNF['OBJECT_COMMENTS'], $iContentId);
+        if(!$oCmts || !$oCmts->isEnabled())
+            return false;
+
+        if(($oAuthor = BxDolProfile::getInstance()) !== false)
+            $aMessage['markers'] = array_merge($aMessage['markers'] ?? [], [
+                'author_id' => $oAuthor->id(), //--- who may see it (BxTasksCmts::getCommentsArray)
+                'author_link' => $oAuthor->getUrl(),
+                'author_name' => $oAuthor->getDisplayName(),
+            ]);
+
+        return $oCmts->addAuto($aMessage);
+    }
+
+    public function ghGetRepository($iContextId)
+    {
+        $mixedRepo = $this->_oDb->getContextRepository($iContextId);
+        if($mixedRepo === false) 
+            return false;
+
+        return [
+            $mixedRepo['gh_username'], 
+            $mixedRepo['gh_repository'], 
+            $mixedRepo['gh_app_id'] ? [$this->_iProfileId, (int)$mixedRepo['gh_app_id']] : $this->_iProfileId
+        ];
+    }
+
+    public function ghUpdateIssue($mixedContent, $aGhFields = [])
+    {
+        $aContentInfo = is_array($mixedContent) ? $mixedContent : $this->_oDb->getContentInfoById((int)$mixedContent);
+        if(!$aContentInfo || !is_array($aContentInfo))
+            return false;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+        $iContextId = (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']];
+        if($iContextId >= 0) 
+            return false;
+
+        $mixedRepo = $this->ghGetRepository(abs($iContextId));
+        if($mixedRepo === false) 
+            return false;
+
+        list($sGhUsername, $sGhRepository, $mixedAuth) = $mixedRepo;
+
+        $iGhIssue = (int)$aContentInfo[$CNF['FIELD_GH_ISSUE']];
+
+        $sMl = 'bx_github';
+        if($aGhFields && ($sMd = 'update_issue') && bx_is_srv($sMl, $sMd))
+            if(bx_srv($sMl, $sMd, [$sGhUsername, $sGhRepository, $mixedAuth, $iGhIssue, $aGhFields]) !== false) 
+                $this->logActivity($iContentId, ['key' => '_bx_tasks_txt_msg_synced', 'markers' => [
+                    'ghi_link' => $aContentInfo[$CNF['FIELD_GH_ISSUE_URL']],
+                    'ghi_number' => $iGhIssue
+                ]]);
+
+        return true;
+    }
+
+    public function getStickers($mixedValues, $iContextId = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aValues = is_array($mixedValues) ? $mixedValues : BxDolFormCheckerHelper::displaySet($mixedValues);
+
+        $aResults = [];
+        if($iContextId) {
+            $aStickers = $this->_oDb->getPreValues([
+                'sample' => 'context_list', 
+                'context_id' => $iContextId, 
+                'list' => 'sticker'
+            ]);
+
+            foreach($aValues as $sValue)
+                if(($aSticker = $aStickers[$sValue] ?? false))
+                    $aResults[] = [
+                        'title' => $aSticker['title'],
+                        'color' => $aSticker['color']
+                    ];
+        }
+
+        if(!$aResults) {
+            $aStickers = BxDolForm::getDataItems($CNF['OBJECT_PRE_LIST_STICKERS']);
+            foreach($aValues as $sValue)
+                $aResults[] = [
+                    'title' => $aStickers[$sValue],
+                    'color' => ''
+                ];
+        }
+
+        return $aResults;
+    }
+
+    public function getType($mixedValue, $iContextId = 0)
+    {
+        $sResult = '';
+
+        if($iContextId) {
+            $aType = $this->_oDb->getPreValues([
+                'sample' => 'context_list_value', 
+                'context_id' => $iContextId, 
+                'list' => 'type',
+                'value' => $mixedValue
+            ]);
+
+            if($aType && is_array($aType))
+                $sResult = $aType['title'];
+        }
+        
+        if(!$sResult && ($sTypeTitle = $this->_oConfig->getTypeTitle($mixedValue)) != '')
+            $sResult = _t($sTypeTitle);
+
+        return $sResult;
+    }
+
+    public function applyFilter($iContextId, $iFilterId)
+    {
+        $sCookieKey = $this->_oConfig->CNF['COOKIE_SETTING_KEY'];
+
+        $aFilters = [];
+        if(isset($_COOKIE[$sCookieKey]))
+            $aFilters = json_decode($_COOKIE[$sCookieKey], true);
+
+        if(($iFilterId = (int)$iFilterId) != 0)
+            $aFilters[$iContextId] = $iFilterId;
+        else
+            unset($aFilters[$iContextId]);
+
+        bx_setcookie($sCookieKey, json_encode($aFilters), time() + 60 * 60 * 24 * 365);
+    }
+
+    public function setAssignments($iContentId, $aMembers)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sModule = $this->getName();
+        $iPerformer = bx_get_logged_profile_id();
+        $oConn = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION']);
+
+        if($this->_bIsApi && is_string($aMembers))
+            $aMembers = explode(',', $aMembers);
+
+        $aMembersCurrent = $oConn->getConnectedInitiators($iContentId);
+
+        $aMembersToAdd = [];
+        $aMembersToRemove = $aMembersCurrent;
+        if (is_array($aMembers)){
+            $aMembersToAdd = array_diff($aMembers, $aMembersCurrent);
+            $aMembersToRemove = array_diff($aMembersCurrent, $aMembers);
+        }
+
+        $iNow = time();
+        $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
+
+        foreach($aMembersToAdd as $iProfileId){
+            $oConn->addConnection($iProfileId, $iContentId);
+
+             /**
+             * @hooks
+             * @hookdef hook-bx_tasks-assigned 'bx_tasks', 'assigned' - hook on task assigned to profile
+             * - $unit_name - equals `bx_tasks`
+             * - $action - equals `assigned` 
+             * - $object_id - task id 
+             * - $sender_id - not used 
+             * - $extra_params - array of additional params with the following array keys:
+             *      - `object_author_id` - [int] id for assigned profile
+             *      - `privacy_view` - [string] privacy view value
+             * @hook @ref hook-bx_tasks-assigned
+             */
+            bx_alert($sModule, 'assigned', $iContentId, $iPerformer, [
+                'object_author_id' => $iProfileId,
+                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                'source' => $sModule . '_assigned_' . $iContentId,
+                'source_mac' => $sModule . '_assigned_' . $iPerformer . '_' . $iNow,
+            ]);
+        }
+
+        foreach($aMembersToRemove as $iProfileId){
+            $oConn->removeConnection($iProfileId, $iContentId);
+
+            /**
+             * @hooks
+             * @hookdef hook-bx_tasks-unassigned 'bx_tasks', 'unassigned' - hook on task unassigned to profile
+             * - $unit_name - equals `bx_tasks`
+             * - $action - equals `unassigned` 
+             * - $object_id - task id 
+             * - $sender_id - not used 
+             * - $extra_params - array of additional params with the following array keys:
+             *      - `object_author_id` - [int] id for unassigned profile
+             *      - `privacy_view` - [string] privacy view value
+             * @hook @ref hook-bx_tasks-unassigned
+             */
+            bx_alert($sModule, 'unassigned', $iContentId, $iPerformer, [
+                'object_author_id' => $iProfileId,
+                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                'source' => $sModule . '_unassigned_' . $iContentId,
+                'source_mac' => $sModule . '_unassigned_' . $iPerformer . '_' . $iNow,
+            ]);
+        }
+    }
+
+    /**
+     * Internal methods
+     */
+    protected function _onEditProperty($aContentInfo, $sProperty, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $aPropLoc2Repo = [
+            $CNF['FIELD_TYPE'] => 'type',
+        ];
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+
+        if(($sMethod = 'get' . bx_gen_method_name($sProperty) . 'Title') && method_exists($this->_oConfig, $sMethod))
+            $mixedValue = $this->_oConfig->$sMethod($mixedValue);
+
+        $this->logActivity($iContentId, ['key' => '_bx_tasks_txt_msg_edit_' . $sProperty, 'markers' => ['value' => $mixedValue]]);
+
+        if(($sPropRepo = $aPropLoc2Repo[$sProperty] ?? false))
+            $this->ghUpdateIssue($aContentInfo, [
+                $sPropRepo => _t($mixedValue)
+            ]);        
+    }
+
+    /**
+     * Labels (stickers, a set) as setStickers set them: their titles in the task's activity.
+     */
+    protected function _logStickersEdit($aContentInfo, $mixedValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+        $iContextId = ($iPrivacy = (int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]) < 0 ? -$iPrivacy : 0;
+
+        // the set's values: bit (value - 1) for each
+        $aValues = [];
+        if(is_array($mixedValue))
+            $aValues = $mixedValue;
+        else
+            for($i = 1; $i <= 31; $i++)
+                if((int)$mixedValue & (1 << ($i - 1)))
+                    $aValues[] = $i;
+
+        $aTitles = [];
+        foreach($aValues ? $this->getStickers($aValues, $iContextId) : [] as $aSticker)
+            $aTitles[] = _t($aSticker['title']);
+
+        $this->logActivity($iContentId, $aTitles ? ['key' => '_bx_tasks_txt_msg_edit_stickers', 'markers' => ['value' => implode(', ', $aTitles)]] : ['key' => '_bx_tasks_txt_msg_edit_stickers_none']);
+    }
+
+    protected function _onEditState($aContentInfo, $iState)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+
+        $this->logActivity($iContentId, ['key' => '_bx_tasks_txt_msg_edit_state', 'markers' => ['value' => $this->_oConfig->getStateTitle($iState)]]);
+
+        $iCompleted = (int)$this->_oConfig->isCompleted($iState);
+        if($iCompleted != (int)$this->_oConfig->isCompleted($aContentInfo[$CNF['FIELD_STATE']]) || $iCompleted != (int)$aContentInfo[$CNF['FIELD_COMPLETED']])
+            $this->complete($iContentId, $iCompleted);
+    }
+    
+    protected function _onEditInitialMembers($aContentInfo, $mixedIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        
+        if(is_string($mixedIds))
+            $mixedIds = explode(',', $mixedIds);
+        
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
+
+        $aValue = [];
+        if(($oProfile = BxDolProfile::getInstance()) !== false)
+            foreach($mixedIds as $iId)
+                $aValue[] = $oProfile->getDisplayName($iId);
+
+        $this->logActivity($iContentId, ['key' => '_bx_tasks_txt_msg_edit_initial_members', 'markers' => ['value' => implode(', ', $aValue)]]);
+
+        $this->setAssignments($iContentId, $mixedIds);
+    }
+
+    protected function _getFilterConditions($iContextId = 0, $aItems = [])
+    {
+        $iJoins = 0;
+        $aResult = [
+            'join' => [],
+            'where' => []
+        ];
+
+        if(count($aItems) > 1) {
+            $aResult['where'] = ['grp' => true, 'o' => 'AND', 'cnds' => []];
+
+            foreach($aItems as $aItem)
+                if(($mixedCnd = $this->_getFilterCondition($iContextId, $aItem)) !== false) {
+                    if(isset($mixedCnd['join'])) {
+                        $iJoins++;
+                        $aResult['join'][] = $mixedCnd['join'];
+                    }
+
+                    if(isset($mixedCnd['where']))
+                        $aResult['where']['cnds'][] = $mixedCnd['where'];
+                }
+        }
+        else {
+            $mixedCnd = $this->_getFilterCondition($iContextId, reset($aItems));
+
+            if(isset($mixedCnd['join'])) {
+                $iJoins++;
+                $aResult['join'][] = $mixedCnd['join'];
+            }
+
+            if(isset($mixedCnd['where']))
+                $aResult['where'] = $mixedCnd['where'];
+        }
+
+        if($iJoins == 1)
+            $aResult['join'] = reset($aResult['join']);
+        else if($iJoins > 1)
+            $aResult['join'] = ['grp' => true, 'cnds' => $aResult['join']];
+
+        return $aResult;
+    }
+
+    protected function _getFilterCondition($iContextId = 0, $aItem = [])
+    {
+        $sMethod = '_getFilterCondition' . bx_gen_method_name($aItem['f']);
+        if(method_exists($this, $sMethod))
+            return $this->$sMethod($iContextId, $aItem);
+
+        $mixedV = $mixedO = false;
+        if(!($bArray = is_array($aItem['v'])) || count($aItem['v']) == 1) {
+            $mixedV = $bArray ? reset($aItem['v']) : $aItem['v'];
+            $mixedO = '=';
+        }
+        else {
+            $mixedV = $aItem['v'];
+            $mixedO = !($aItem['r'] ?? 0) ? 'IN' : 'NOT IN';
+        }
+
+        if(!$mixedV || !$mixedO)
+            return false;
+
+        return [
+            'where' => ['cnd' => true, 't' => 'te', 'f' => $aItem['f'], 'v' => $mixedV, 'o' => $mixedO]
+        ];
+    }
+    
+    protected function _getFilterConditionInitialMembers ($iContextId = 0, $aItem = [])
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $mixedV = $mixedO = false;
+        if(!($bArray = is_array($aItem['v'])) || count($aItem['v']) == 1) {
+            $mixedV = $bArray ? reset($aItem['v']) : $aItem['v'];
+            $mixedO = '=';
+        }
+        else {
+            $mixedV = $aItem['v'];
+            $mixedO = !($aItem['r'] ?? 0) ? 'IN' : 'NOT IN';
+        }
+
+        return [
+            'join' => ['cnd' => true, 'j' => 'LEFT', 'tj' => $CNF['TABLE_ASSIGNMENTS'], 'taj' => 'ta', 'fj' => 'content', 'tam' => 'te', 'fm' => 'id'],
+            'where' => ['cnd' => true, 't' => 'ta', 'f' => 'initiator', 'v' => $mixedV, 'o' => $mixedO]
+        ];
+    }
+
+    protected function _getFilterForm($iContextId = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $sJsObject = $this->_oConfig->getJsObject('tasks');
+        
+        $aFieldToList = [
+            $CNF['FIELD_TYPE'] => $CNF['OBJECT_PRE_LIST_TYPES'],
+            $CNF['FIELD_PRIORITY'] => $CNF['OBJECT_PRE_LIST_PRIORITIES'],
+            $CNF['FIELD_ESTIMATE'] => $CNF['OBJECT_PRE_LIST_ESTIMATES'],
+            $CNF['FIELD_STATE'] => $CNF['OBJECT_PRE_LIST_STATES']
+        ];
+
+        $aForm = [
+            'form_attrs' => [
+                'id' => 'bx-tasks-filter-add',
+                'action' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'create_filter/' . $iContextId,
+                'method' => BX_DOL_FORM_METHOD_DEFAULT
+            ],
+            'params' => [
+                'db' => [
+                    'table' => $CNF['TABLE_FILTERS'],
+                    'key' => 'id',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'do_apply'
+                ],
+            ],
+            'inputs' => [
+                $CNF['FIELD_AUTHOR'] => [
+                    'type' => 'checkbox_set',
+                ],
+                $CNF['FIELD_INITIAL_MEMBERS'] => [
+                    'type' => 'checkbox_set',
+                ],
+                $CNF['FIELD_TYPE'] => [
+                    'type' => 'checkbox_set',
+                ],
+                $CNF['FIELD_PRIORITY'] => [
+                    'type' => 'checkbox_set',
+                ],
+                $CNF['FIELD_ESTIMATE'] => [
+                    'type' => 'checkbox_set',
+                ],
+                $CNF['FIELD_STATE'] => [
+                    'type' => 'checkbox_set',
+                ],
+                'save_me' => [
+                    'type' => 'switcher',
+                    'name' => 'save_me',
+                    'caption' => _t('_bx_tasks_form_f_input_save_me'),
+                    'value' => 'on',
+                    'attrs' => [
+                        'onchange' => $sJsObject . '.onChangeSave(this)'
+                    ]
+                ],
+                'save_all' => [
+                    'type' => 'switcher',
+                    'name' => 'save_all',
+                    'caption' => _t('_bx_tasks_form_f_input_save_all'),
+                    'value' => 'on',
+                    'attrs' => [
+                        'onchange' => $sJsObject . '.onChangeSave(this)'
+                    ]
+                ],
+                'title' => [
+                    'type' => 'text',
+                    'name' => 'title',
+                    'caption' => _t('_bx_tasks_form_f_input_title'),
+                    'value' => '',
+                    'required' => '0',
+                    'tr_attrs' => [
+                        'class' => 'bx-tasks-ffi-hidden'
+                    ]
+                ],
+                'controls' => [
+                    'name' => 'controls',
+                    'type' => 'input_set',
+                    [
+                        'type' => 'submit',
+                        'name' => 'do_apply',
+                        'value' => _t('_bx_tasks_form_f_input_apply'),
+                    ], [
+                        'type' => 'reset',
+                        'name' => 'do_cancel',
+                        'value' => _t('_bx_tasks_form_f_input_cancel'),
+                        'attrs' => [
+                            'onclick' => "$('.bx-popup-applied:visible').dolPopupHide()",
+                            'class' => 'bx-def-margin-sec-left',
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        foreach($aForm['inputs'] as $sName => $aInput) {
+            if(isset($aInput['name']))
+                continue;
+
+            $aForm['inputs'][$sName] = array_merge($aForm['inputs'][$sName], [
+                'name' => $sName,
+                'caption' => _t('_bx_tasks_form_f_input_' . $sName),
+                'value' => '',
+                'values' => []
+            ]);
+
+            if(($sList = $aFieldToList[$sName] ?? false) && ($aList = BxDolForm::getDataItems($sList))) {
+                if(isset($aList['']))
+                    unset($aList['']);
+
+                $aForm['inputs'][$sName]['values'] = $aList;
+            }
+        }
+
+        $oContext = false;
+        $sContextModule = '';
+        if($iContextId && ($oContext = BxDolProfile::getInstance($iContextId)) !== false)
+            $sContextModule = $oContext->getModule();
+
+        foreach([$CNF['FIELD_AUTHOR'], $CNF['FIELD_INITIAL_MEMBERS']] as $sK){
+            if(!isset($aForm['inputs'][$sK])) 
+                continue;
+
+            if($oContext !== false) {
+                $aForm['inputs'][$sK]['values']['{logged_pid}'] = _t('_bx_tasks_txt_flt_user_current');
+
+                $aMembers = bx_srv($sContextModule, 'fans', [$oContext->getContentId(), true]);
+                foreach($aMembers as $iMember)
+                    if(($iMember != $this->_iProfileId) && ($oMember = BxDolProfile::getInstance($iMember)) !== false && !($oMember instanceof BxDolProfileUndefined))
+                        $aForm['inputs'][$sK]['values'][$iMember] = $oMember->getDisplayName();
+            }
+            else
+                unset($aForm['inputs'][$sK]);
+        }
+
+        if(!$oContext || !bx_srv($sContextModule, 'is_admin', [$iContextId, $this->_iProfileId]))
+            unset($aForm['inputs']['save_all']);
+
+        return new BxTemplFormView($aForm);
+    }
+
+    protected function _getSaveFilterForm($iContextId = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aForm = [
+            'form_attrs' => [
+                'id' => 'bx-tasks-filter-save',
+                'action' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'save_filter/' . $iContextId,
+                'method' => BX_DOL_FORM_METHOD_DEFAULT
+            ],
+            'params' => [
+                'db' => [
+                    'table' => $CNF['TABLE_FILTERS'],
+                    'key' => 'id',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'do_save'
+                ],
+            ],
+            'inputs' => [
+                'save_all' => [
+                    'type' => 'switcher',
+                    'name' => 'save_all',
+                    'caption' => _t('_bx_tasks_form_f_input_save_all'),
+                    'value' => 'on',
+                ],
+                'title' => [
+                    'type' => 'text',
+                    'name' => 'title',
+                    'caption' => _t('_bx_tasks_form_f_input_title'),
+                    'value' => '',
+                    'required' => '0',
+                ],
+                'controls' => [
+                    'name' => 'controls',
+                    'type' => 'input_set',
+                    [
+                        'type' => 'submit',
+                        'name' => 'do_save',
+                        'value' => _t('_bx_tasks_form_f_input_save'),
+                    ], [
+                        'type' => 'reset',
+                        'name' => 'do_cancel',
+                        'value' => _t('_bx_tasks_form_f_input_cancel'),
+                        'attrs' => [
+                            'onclick' => "$('.bx-popup-applied:visible').dolPopupHide()",
+                            'class' => 'bx-def-margin-sec-left',
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $oContext = false;
+        $sContextModule = '';
+        if($iContextId && ($oContext = BxDolProfile::getInstance($iContextId)) !== false)
+            $sContextModule = $oContext->getModule();
+
+        if(!$oContext || !bx_srv($sContextModule, 'is_admin', [$iContextId, $this->_iProfileId]))
+            unset($aForm['inputs']['save_all']);
+
+        return new BxTemplFormView($aForm);
+    }
+}
+
+/** @} */

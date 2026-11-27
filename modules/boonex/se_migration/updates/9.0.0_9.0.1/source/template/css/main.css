@@ -1,0 +1,16 @@
+.bx-se-migrate-not-finished {
+	color:limegreen;
+	font-weight:bold;
+}
+
+.bx-se-migrate-error {
+	font-weight:bold;
+	color:red;
+}
+table#bx-grid-table-bx_se_migration_transfers td{
+	text-align:center;
+}
+
+.bx-grid-header-cnt > div{
+	width:50%;	
+}

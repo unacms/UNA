@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_ads_form_entry_input_link_err_delete"><![CDATA[Не удалось удалить ссылку. Попробуйте ещё раз.]]></string_upd>
+	<string_upd name="_bx_ads_et_txt_body_interested"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b><a href="{viewer_url}">{viewer_name}</a></b> заинтересован в вашем объявлении <b><a href="{ad_url}">{ad_name}</a></b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_ads_et_txt_body_purchased"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {client_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы оплатили <a href="{entry_url}">{entry_name}</a> объявление ({count} шт.), размещенное <a href="{vendor_url}">{vendor_name}</a>.<br />Ваша лицензия - <b>{license}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_ads_et_txt_body_shipped"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {client_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Товар был отправлен продавцом (<a href="{vendor_url}">{vendor_name}</a>) в соответствии с <a href="{entry_url}">{entry_name}</a> объявлением.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_ads_et_txt_body_offer_added"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b><a href="{viewer_url}">{viewer_name}</a></b> сделал предложение по вашему объявлению <b><a href="{ad_url}">{ad_name}</a></b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_ads_et_txt_body_offer_accepted"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {offerer_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваше предложение по <b><a href="{ad_url}">{ad_name}</a></b> объявлению было принято.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_ads_et_txt_body_offer_declined"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {offerer_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваше предложение по <b><a href="{ad_url}">{ad_name}</a></b> объявлению было отклонено.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_ads_et_txt_body_offer_canceled"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{offerer_url}">{offerer_name}</a> отменил его предложение по <b><a href="{ad_url}">{ad_name}</a></b> объявлению.</p>
+{email_footer}]]></string_upd>
+	<string_add name="_bx_ads_txt_empty_title"><![CDATA[Объявлений пока нет]]></string_add>
+	<string_upd name="_bx_ads_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+	<string_add name="_bx_ads_txt_poll_answer_vote_counter_few"><![CDATA[{0} голоса]]></string_add>
+	<string_add name="_bx_ads_txt_poll_answer_vote_counter_one"><![CDATA[{0} голос]]></string_add>
+</resources>

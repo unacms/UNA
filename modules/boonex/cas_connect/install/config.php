@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_cas',
     'title' => 'CAS connect',
     'note' => 'CAS login, join with a CAS identity provider',
-    'version' => '12.0.0.DEV',
+    'version' => '12.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

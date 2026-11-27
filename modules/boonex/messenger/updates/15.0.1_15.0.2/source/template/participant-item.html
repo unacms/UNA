@@ -1,0 +1,15 @@
+<button type="button" onclick="$(this).closest('b').remove();" data-id="{id}" class="group p-1 w-full flex items-center justify-between rounded-full border border-gray-300 shadow-sm space-x-3 text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+    <span class="min-w-0 flex-1 flex items-center space-x-3">
+       <span class="block flex-shrink-0 avatar">
+           <img title="__name__" src="__img__" class="flex items-center justify-center rounded-full w-6 h-6">
+       </span>
+     <span class="block min-w-0 flex-1">
+        <span class="block text-sm font-medium text-gray-500 truncate username">__name__</span>
+     </span>
+    </span>
+    <span class="flex-shrink-0 inline-flex items-center justify-center">
+        <i class="sys-icon minus h-6 w-6" aria-hidden="true"></i>
+    </span>
+  <input type="hidden" name="users[]" value="__id__">
+</button>
+

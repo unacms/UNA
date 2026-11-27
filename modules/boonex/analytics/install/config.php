@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_analytics',
     'title' => 'Analytics',
     'note' => 'Analytics, statistics, site metrics',
-    'version' => '15.0.4.DEV',
+    'version' => '15.0.4',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

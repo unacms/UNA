@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_froala',
     'title' => 'Froala (not supported)',
     'note' => 'Froala, rich text editor',
-    'version' => '13.0.3.DEV',
+    'version' => '13.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

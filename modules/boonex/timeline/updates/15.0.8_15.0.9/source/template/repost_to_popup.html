@@ -1,0 +1,20 @@
+<div class="__style_prefix__-repost-to">
+    <div class="__style_prefix__-repost-to-cnt">
+        __form__
+        <script language="javascript">
+            $(document).ready(function () {
+                $("#__form_id__").ajaxForm({ 
+                    dataType: "json",
+                    beforeSubmit: function (formData, jqForm, options) {
+                        bx_loading($("#__form_id__"), true);
+                    },
+                    success: function (oData) {
+                        $("#__form_id__").parents(".bx-popup-applied:visible:first").dolPopupHide();
+
+                        processJsonData(oData);
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>

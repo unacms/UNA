@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- OAuth2 consent page of a native app (the desktop app, API v2): what the `api` scope allows, and where the browser goes back to. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_oauth_authorize_scope_api"><![CDATA[It will be able to read, post, comment, react and send messages for your account, as whichever of your profiles you are using on the site at the time. Switching profiles in the app switches them on the site too.]]></string_add>
+    <string_add name="_bx_oauth_authorize_redirect"><![CDATA[After you choose, your browser goes back to <strong>{0}</strong>. Continue only if you started this sign-in yourself.]]></string_add>
+</resources>

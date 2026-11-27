@@ -17,7 +17,7 @@ $aConfig = [
     'name' => 'bx_reputation',
     'title' => 'Reputation',
     'note' => 'Reputation, points, ranks',
-    'version' => '15.0.0',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

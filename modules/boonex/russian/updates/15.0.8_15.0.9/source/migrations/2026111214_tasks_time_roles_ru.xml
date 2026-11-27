@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Russian strings: the time and properties actions of the Tasks module in the context roles. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+	<string_add name="_adm_form_txt_groups_role_time_log"><![CDATA[Логировать время]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[Видеть залогированное время всех]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string_add>
+</resources>

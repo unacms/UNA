@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_contact',
     'title' => 'Contact',
     'note' => 'Contact form, messages to the site',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

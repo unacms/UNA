@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_mailchimp',
     'title' => 'Mailchimp',
     'note' => 'Mailchimp, email lists, newsletters',
-    'version' => '15.0.2.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

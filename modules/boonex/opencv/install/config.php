@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_opencv',
     'title' => 'OpenCV',
     'note' => 'OpenCV, image recognition',
-    'version' => '13.0.0.DEV',
+    'version' => '13.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

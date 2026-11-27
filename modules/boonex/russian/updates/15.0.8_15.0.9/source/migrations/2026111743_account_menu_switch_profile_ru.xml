@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The account menu's profile switcher item. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_menu_item_title_system_switch_profile"><![CDATA[Переключение профиля]]></string_add>
+    <string_add name="_sys_menu_item_title_switch_profile"><![CDATA[Сменить профиль]]></string_add>
+</resources>

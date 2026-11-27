@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_azrcon',
     'title' => 'Azure AD Connect',
     'note' => 'Azure AD login, join with an Azure AD account',
-    'version' => '13.0.0.DEV',
+    'version' => '13.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

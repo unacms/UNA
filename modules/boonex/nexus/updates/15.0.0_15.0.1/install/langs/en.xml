@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_nexus_option_guest_pages"><![CDATA[Comma-separated list of page URIs available to guests]]></string_upd>
+	<string_upd name="_bx_nexus_option_custom_homepage"><![CDATA[Display custom homepage with the sign-in form only]]></string_upd>
+</resources>

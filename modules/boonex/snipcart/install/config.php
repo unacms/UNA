@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_snipcart',
     'title' => 'Snipcart',
     'note' => 'Snipcart, shopping cart, products for sale',
-    'version' => '15.0.5.DEV',
+    'version' => '15.0.5',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

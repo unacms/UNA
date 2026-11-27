@@ -1,0 +1,50 @@
+<div class="bx-messenger-post-box text-area">
+    <div class="flex items-center">
+      <bx_if:topics>
+        <input type="text" name="title" id="bx-messenger-talk-title" class="bx-messenger-talk-title bx-def-font-inputs bx-form-input-text" style="display:none" placeholder="<bx_text:_bx_messenger_text_area_topic_title />">
+      </bx_if:topics>
+      <div class="bx-messenger-reply-area pt-2 px-2">
+          <span class="bx-messenger-reply-area-message bx-def-font-small bx-def-border-left" onclick="oMessenger.jumpToParentMessage();"></span>
+          <a href="javascript:void(0);" onclick="oMessenger.onCleanReplayArea();" class="bx-def-font-medium">
+              <i class="sys-icon x"></i>
+          </a>
+      </div>
+      <div class="bx-messenger-attachment-group pt-2 px-2">
+          <div class="bx-messenger-send-area-attachments"></div>
+      </div>
+      __giphy__
+      <bx_if:text>
+          <div id="bx-messenger-message-box" placeholder="<bx_text:_bx_messenger_post_area_message />" class="bx-messenger-message-box-input-area"></div>
+      </bx_if:text>
+      <div class="bx-messenger-post-box-send-actions">
+        <div class="bx-messenger-post-box-send-actions-items">
+            <bx_if:smiles>
+                <button type="button" title="<bx_text:_bx_messenger_post_emoji />" class="smiles group" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                  <i class="sys-icon face-slightly-smiling" aria-hidden="true"></i>
+                </button>
+            </bx_if:smiles>
+            <bx_if:recording>
+                <button title="<bx_text:_bx_messenger_send_recorded_video />" type="button" onclick="oMessenger.getVideoRecording(this);" class="group" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                    <i class="sys-icon video" aria-hidden="true"></i>
+                </button>
+            </bx_if:recording>
+            <bx_if:files>
+                 <button type="button" title="<bx_text:_bx_messenger_post_attache_files />" class="group attachefile" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                   <i class="sys-icon paperclip" aria-hidden="true"></i>
+                 </button>
+            </bx_if:files>
+            <bx_if:giphy>
+              <button title="<bx_text:_bx_messenger_giphy_gifs_button />" type="button" id="bx-messenger-send-area-giphy" class="group" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                  <i class="sys-icon sticker" aria-hidden="true"></i>
+              </button>
+            </bx_if:giphy>
+        </div>
+        <div class="bx-messenger-post-box-send-button">
+            <button id="send-button" title="<bx_text:_bx_messenger_post_button_title />" type="button">
+                <i class="sys-icon circle-arrow-up h-6 w-6" aria-hidden="true"></i>
+                <span class="ml-2 hidden md:block"><bx_text:_bx_messenger_post_button_title /></span>
+            </button>
+        </div>
+      </div>
+    </div>
+</div>

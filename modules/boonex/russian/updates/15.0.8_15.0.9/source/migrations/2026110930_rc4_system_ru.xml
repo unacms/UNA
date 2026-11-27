@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+	<string_add name="_adm_bp_err_page_not_deletable"><![CDATA[Невозможно удалить данную страницу.]]></string_add>
+	<string_add name="_adm_bp_txt_block_bg_hidden_on"><![CDATA[Фон скрыт на]]></string_add>
+	<string_add name="_adm_bp_txt_block_padding_hidden_on"><![CDATA[Отступы скрыты на]]></string_add>
+	<string_add name="_adm_bp_txt_block_part_hidden_on_info"><![CDATA[На сайте и в приложениях. Если в оформлении блока этой части нет, она так и не показывается.]]></string_add>
+	<string_add name="_adm_bp_txt_block_title_hidden_on"><![CDATA[Заголовок скрыт на]]></string_add>
+	<string_add name="_adm_bp_txt_page_cover_hidden_on"><![CDATA[Обложка скрыта на]]></string_add>
+	<string_add name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[На выбранных размерах экрана страница показывается без обложки и без названия, на сайте и в приложениях.]]></string_add>
+	<string_add name="_adm_dsg_btn_code_fullscreen"><![CDATA[Редактировать на весь экран]]></string_add>
+	<string_add name="_adm_dsg_btn_cover_remove_cover_common"><![CDATA[Удалить обложку страницы]]></string_add>
+	<string_add name="_adm_dsg_btn_cover_remove_cover_unit_profile"><![CDATA[Удалить обложку карточки профиля]]></string_add>
+	<string_add name="_adm_dsg_btn_fullscreen_done"><![CDATA[Готово]]></string_add>
+	<string_add name="_adm_dsg_btn_icon_remove_icon"><![CDATA[Удалить favicon.ico]]></string_add>
+	<string_add name="_adm_dsg_btn_icon_remove_icon_android"><![CDATA[Удалить иконку для Android]]></string_add>
+	<string_add name="_adm_dsg_btn_icon_remove_icon_android_splash"><![CDATA[Удалить изображение экрана запуска Android]]></string_add>
+	<string_add name="_adm_dsg_btn_icon_remove_icon_apple"><![CDATA[Удалить иконку для iPhone и iPad]]></string_add>
+	<string_add name="_adm_dsg_btn_icon_remove_icon_svg"><![CDATA[Удалить SVG-иконку]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove"><![CDATA[Удалить]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_logo"><![CDATA[Удалить логотип светлой темы]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_logo_dark"><![CDATA[Удалить логотип тёмной темы]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_mark"><![CDATA[Удалить знак светлой темы]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_mark_dark"><![CDATA[Удалить знак тёмной темы]]></string_add>
+	<string_add name="_adm_dsg_btn_splash_preview"><![CDATA[Показать изменения]]></string_add>
+	<string_add name="_adm_dsg_btn_splash_preview_fullscreen"><![CDATA[Просмотр на весь экран]]></string_add>
+	<string_add name="_adm_dsg_btn_tmpl_choose_default"><![CDATA[Выбрать шаблон по умолчанию]]></string_add>
+	<string_add name="_adm_dsg_btn_tmpl_fullscreen"><![CDATA[На весь экран]]></string_add>
+	<string_add name="_adm_dsg_btn_tmpl_preview"><![CDATA[Предпросмотр]]></string_add>
+	<string_add name="_adm_dsg_btn_tmpl_reload"><![CDATA[Обновить]]></string_add>
+	<string_add name="_adm_dsg_cnf_logo_remove"><![CDATA[Удалить это изображение? Оно будет удалено безвозвратно.]]></string_add>
+	<string_add name="_adm_dsg_err_logo_remove"><![CDATA[Не удалось удалить изображение. Попробуйте ещё раз.]]></string_add>
+	<string_add name="_adm_dsg_inf_cover_section_page"><![CDATA[Изображение за заголовком на страницах с обложкой. Страница или модуль могут задать свою, остальные используют эту.]]></string_add>
+	<string_add name="_adm_dsg_inf_cover_section_unit"><![CDATA[Изображение вверху карточек профилей, у которых нет своей обложки.]]></string_add>
+	<string_add name="_adm_dsg_inf_cover_upload_page"><![CDATA[Широкое изображение, обрезается до 1920×720.]]></string_add>
+	<string_add name="_adm_dsg_inf_cover_upload_unit"><![CDATA[Широкое изображение, обрезается до 640×240.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_section_home"><![CDATA[Показывается, когда сайт добавляют на главный экран телефона, и на экране запуска Android, пока сайт открывается. Используйте квадратное изображение с полями и фоном вокруг символа.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_section_tab"><![CDATA[Показывается во вкладках браузера, закладках и истории. Браузеры, которые читают SVG, берут SVG-иконку, остальные — favicon.ico.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_upload_icon"><![CDATA[Файл .ico размером 32×32.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_upload_icon_android"><![CDATA[192×192.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_upload_icon_android_splash"><![CDATA[512×512.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_upload_icon_apple"><![CDATA[180×180. iOS заливает прозрачные области чёрным, поэтому задайте фон.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_upload_icon_svg"><![CDATA[Файл .svg. Он может менять цвета для тёмной темы стилем prefers-color-scheme.]]></string_add>
+	<string_add name="_adm_dsg_inf_inj_section_body"><![CDATA[Добавляется на каждую страницу сайта прямо перед <code>&lt;/body&gt;</code>. Подходит для скриптов, которые загружаются после содержимого, например виджетов чата.]]></string_add>
+	<string_add name="_adm_dsg_inf_inj_section_head"><![CDATA[Добавляется на каждую страницу сайта прямо перед <code>&lt;/head&gt;</code>. Подходит для мета-тегов, подтверждения сайта, шрифтов, стилей и аналитики.]]></string_add>
+	<string_add name="_adm_dsg_inf_logo_code"><![CDATA[Рисует логотип из SVG-разметки вместо изображения по умолчанию. Загруженное изображение важнее.]]></string_add>
+	<string_add name="_adm_dsg_inf_logo_section"><![CDATA[Показывается в шапке на широких экранах.]]></string_add>
+	<string_add name="_adm_dsg_inf_logo_text"><![CDATA[Его читают экранные дикторы, и он показывается в шапке, когда нет изображения логотипа. Оставьте пустым, чтобы использовать название сайта.]]></string_add>
+	<string_add name="_adm_dsg_inf_mark_code"><![CDATA[Рисует знак из SVG-разметки вместо изображения по умолчанию. Загруженное изображение важнее.]]></string_add>
+	<string_add name="_adm_dsg_inf_mark_section"><![CDATA[Компактный символ: показывается в шапке на телефонах и планшетах.]]></string_add>
+	<string_add name="_adm_dsg_inf_page_type_application"><![CDATA[Меню сбоку и узкая панель сверху, как в приложении.]]></string_add>
+	<string_add name="_adm_dsg_inf_page_type_standard"><![CDATA[Шапка и меню сайта сверху, подвал внизу.]]></string_add>
+	<string_add name="_adm_dsg_inf_page_type_wo_hf"><![CDATA[Только содержимое страницы: без шапки, меню и подвала.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_background_color"><![CDATA[Заполняет экран за иконкой, пока приложение запускается. По умолчанию белый.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_description"><![CDATA[Одно-два предложения о сайте. Его показывают некоторые окна установки.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_name"><![CDATA[Показывается при установке и в списке приложений. По умолчанию — название сайта.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_preview_home"><![CDATA[Иконка и короткое название.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_preview_launch"><![CDATA[Показывается, пока приложение запускается.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_preview_window"><![CDATA[Заголовок окна в цвете окна.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_section_app"><![CDATA[Сайт можно добавить на главный экран или установить из браузера. Тогда он открывается в отдельном окне, как приложение. Оставьте поле пустым, чтобы использовать значение по умолчанию, которое в нём показано. Иконка приложения задаётся в разделе <a href="{0}">Иконка</a>.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_section_sw"><![CDATA[Service worker — небольшой скрипт, который браузер хранит для сайта. Он сохраняет стили, скрипты и иконки сайта на устройстве, поэтому страницы открываются быстрее, и может показать офлайн-страницу, когда нет связи.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_short_name"><![CDATA[Показывается под иконкой на главном экране, где помещается около 12 символов. По умолчанию — название приложения, сокращённое.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_sw_cache"><![CDATA[По одному адресу в строке, на этом сайте или полный. Они сохраняются при установке service worker вместе со стилями, скриптами и иконками сайта, которые он сохраняет в любом случае.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_sw_enable"><![CDATA[Когда вы меняете стили или скрипты сайта, посетители получают новые при следующем открытии сайта.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_sw_offline"><![CDATA[Показывается вместо ошибки браузера, когда нет связи: адрес на этом сайте, например page.php?i=about. Оставьте пустым, чтобы показывать страницу браузера.]]></string_add>
+	<string_add name="_adm_dsg_inf_pwa_theme_color"><![CDATA[Цвет заголовка окна приложения, а на телефонах — строки состояния. По умолчанию — цвет, заданный шаблоном.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_layout"><![CDATA[Где вокруг содержимого страницы стоят шапка, меню и подвал. Страницы со своим макетом в разделе <a href="{0}">Страницы</a> сохраняют его, остальные используют макеты ниже.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_template"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Все видят этот шаблон, если сами не выбрали другой включённый.]]></string_add>
+	<string_add name="_adm_dsg_inf_splash_section_apps"><![CDATA[Код только для одного приложения. Пустое поле использует код страницы выше. Приложения рисуют формы, логотип и иллюстрацию своими компонентами и пропускают скрипты и всё, что отмечено <code>data-site-only</code>. Приложения для iOS и Android показывают текст, заголовки, списки и ссылки без стилей и раскладки. Добавьте <code>&lt;neo-slot name="social_login"&gt;&lt;/neo-slot&gt;</code>, чтобы показать только кнопки входа через соцсети.]]></string_add>
+	<string_add name="_adm_dsg_inf_splash_section_code"><![CDATA[HTML заставки. Эти подстановки заменяются при показе: <code>__logo__</code> — логотип сайта, <code>__illustration__</code> — иллюстрация заставки, <code>__join_form_in_box__</code> и <code>__login_form_in_box__</code> — формы регистрации и входа в блоке, <code>__join_form__</code> и <code>__login_form__</code> — те же формы без блока, <code>__join_link__</code> и <code>__login_link__</code> — их адреса, <code>{site_title}</code> — название сайта. Приложения тоже показывают этот код, если в «Коде для приложений» ниже нет своего, и пропускают элементы с атрибутом <code>data-site-only</code>.]]></string_add>
+	<string_add name="_adm_dsg_inf_splash_section_landing"><![CDATA[Гости, открывшие главную страницу, видят вместо неё заставку. Участники, которые вошли на сайт, по-прежнему видят главную. Включите её для сайта и для каждого приложения. Там, где заставка приложения выключена, гости видят блоки главной страницы из конструктора страниц. Заставка — не экран запуска, который приложения для iOS и Android показывают при старте: он задаётся в разделе «Значок».]]></string_add>
+	<string_add name="_adm_dsg_inf_splash_section_preview"><![CDATA[Так заставку видят гости сайта. «Показать изменения» показывает код из редактора до сохранения.]]></string_add>
+	<string_add name="_adm_dsg_inf_tmpl_section_list"><![CDATA[Шаблон отвечает за весь вид сайта: шапку, меню, цвета и шрифты. Здесь установленные и включённые шаблоны. Нажмите «Предпросмотр», чтобы увидеть шаблон ниже, или откройте с ним сайт, чтобы посмотреть настоящие страницы.]]></string_add>
+	<string_add name="_adm_dsg_inf_tmpl_section_preview"><![CDATA[Настоящий сайт с этим шаблоном, на выбранной странице и при выбранном размере экрана. Вы видите его как вошедший пользователь, а ссылки внутри сохраняют шаблон. Для остальных ничего не меняется.]]></string_add>
+	<string_add name="_adm_dsg_lmi_cpt_template"><![CDATA[Шаблон]]></string_add>
+	<string_add name="_adm_dsg_lnk_logo_system"><![CDATA[Открыть «Дизайнер › Лого»]]></string_add>
+	<string_add name="_adm_dsg_lnk_logo_template"><![CDATA[Открыть настройки логотипа {0}]]></string_add>
+	<string_add name="_adm_dsg_lnk_splash_open"><![CDATA[Открыть в новой вкладке]]></string_add>
+	<string_add name="_adm_dsg_lnk_tmpl_open"><![CDATA[Открыть сайт с ним]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_code"><![CDATA[SVG-код]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_dark_src_none"><![CDATA[Нет. В тёмной теме показывается логотип светлой темы.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_note_previews"><![CDATA[Превью показывают, что рисует шаблон сайта, {0}.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_note_system"><![CDATA[Эти логотипы используют все шаблоны. Шаблон может заменить их в своих настройках логотипа.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_note_template"><![CDATA[Логотипы здесь заменяют логотипы из «Дизайнер › Лого», только для шаблона {0}.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_section"><![CDATA[Логотип]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_builtin"><![CDATA[Логотип {0} по умолчанию. Загрузите свой, чтобы заменить его.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_code"><![CDATA[Нарисован по SVG-коду ниже.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_code_system"><![CDATA[Нарисован по SVG-коду из «Дизайнер › Лого».]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_code_template"><![CDATA[Не показывается: {0} рисует его по SVG-коду из своих настроек логотипа.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_default"><![CDATA[Логотип по умолчанию. Загрузите свой, чтобы заменить его.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_here"><![CDATA[Загружено здесь.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_none"><![CDATA[Нет. В шапке показывается название сайта текстом.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_system"><![CDATA[Из «Дизайнер › Лого». Загрузите здесь, чтобы заменить его только для {0}.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_template"><![CDATA[Не показывается: {0} использует изображение из своих настроек логотипа.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_src_unused"><![CDATA[{0} не использует это изображение.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_text"><![CDATA[Текст]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_text_section"><![CDATA[Текст логотипа]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_upload_dark"><![CDATA[Тёмная тема]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_upload_for_dark"><![CDATA[Загрузить для тёмной темы]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_upload_for_light"><![CDATA[Загрузить для светлой темы]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_upload_light"><![CDATA[Светлая тема]]></string_add>
+	<string_add name="_adm_dsg_txt_mark_dark_src_none"><![CDATA[Нет. В тёмной теме показывается знак светлой темы.]]></string_add>
+	<string_add name="_adm_dsg_txt_mark_section"><![CDATA[Знак]]></string_add>
+	<string_add name="_adm_dsg_txt_mark_src_builtin"><![CDATA[Знак {0} по умолчанию. Загрузите свой, чтобы заменить его.]]></string_add>
+	<string_add name="_adm_dsg_txt_mark_src_default"><![CDATA[Знак по умолчанию. Загрузите свой, чтобы заменить его.]]></string_add>
+	<string_add name="_adm_dsg_txt_mark_src_none"><![CDATA[Нет. На телефонах и планшетах показывается логотип.]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_background_color"><![CDATA[Цвет экрана запуска]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_description"><![CDATA[Описание]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_name"><![CDATA[Название приложения]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_note"><![CDATA[Установленные приложения получают новое название, цвета или иконку при следующем запуске. Некоторые телефоны показывают их только после переустановки приложения.]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_preview"><![CDATA[Предпросмотр]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_preview_home"><![CDATA[Главный экран]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_preview_launch"><![CDATA[Экран запуска]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_preview_window"><![CDATA[Окно приложения]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_section_app"><![CDATA[Установленное приложение]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_section_sw"><![CDATA[Офлайн и кеширование]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_short_name"><![CDATA[Короткое название]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_sw_cache"><![CDATA[Другие файлы для офлайна]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_sw_enable"><![CDATA[Использовать service worker]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string_add>
+	<string_add name="_adm_dsg_txt_pwa_theme_color"><![CDATA[Цвет окна]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_layout_member"><![CDATA[Для участников]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_layout_visitor"><![CDATA[Для гостей]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_note"><![CDATA[Макет без шапки и подвала не оставляет меню для перехода по сайту. Задавайте его отдельным страницам в разделе Страницы, а не по умолчанию.]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_layout"><![CDATA[Макет страниц]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_template"><![CDATA[Шаблон сайта]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_template_current"><![CDATA[Используется]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_template_version"><![CDATA[Версия]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_upload_page"><![CDATA[Загрузить обложку страницы]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_upload_unit"><![CDATA[Загрузить обложку карточки профиля]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_section_page"><![CDATA[Обложка страницы]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_section_unit"><![CDATA[Обложка карточки профиля]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_show"><![CDATA[Показывать обложки страниц]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_src_default"><![CDATA[Обложка по умолчанию. Загрузите свою, чтобы заменить её.]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_src_default_dark"><![CDATA[Обложка по умолчанию, с версией для тёмной темы. Загрузите свою, чтобы заменить её.]]></string_add>
+	<string_add name="_adm_dsg_txt_cover_src_none"><![CDATA[Нет. Страницы показывают простую обложку.]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_code"><![CDATA[HTML-код]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_code_android"><![CDATA[Код для приложения Android]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_code_ios"><![CDATA[Код для приложения iOS]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_code_web"><![CDATA[Код для веб-приложения]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_enable"><![CDATA[Включить заставку сайта]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_enable_android"><![CDATA[Включить заставку приложения для Android]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_enable_ios"><![CDATA[Включить заставку приложения для iOS]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_enable_web"><![CDATA[Включить заставку веб-приложения]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_note"><![CDATA[Ошибки в HTML могут сломать страницу. Проверьте её в предпросмотре перед сохранением.]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_preview_title"><![CDATA[Предпросмотр заставки]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_section_apps"><![CDATA[Код для приложений]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_section_code"><![CDATA[Код страницы]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_section_landing"><![CDATA[Заставка для гостей]]></string_add>
+	<string_add name="_adm_dsg_txt_splash_section_preview"><![CDATA[Предпросмотр]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_default"><![CDATA[По умолчанию]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_footer"><![CDATA[Все видят шаблон {0}, если сами не выбрали другой.]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_frame"><![CDATA[Предпросмотр сайта]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page"><![CDATA[Страница]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page_about"><![CDATA[О сайте]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page_explore"><![CDATA[Обзор]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page_home"><![CDATA[Главная]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page_other"><![CDATA[Другая страница]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page_people"><![CDATA[Люди]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page_profile"><![CDATA[Ваш профиль]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_page_timeline"><![CDATA[Лента]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_section_list"><![CDATA[Шаблоны]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_section_preview"><![CDATA[Предпросмотр]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_upload_icon"><![CDATA[Загрузить favicon.ico]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_upload_icon_android"><![CDATA[Загрузить для Android]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_upload_icon_android_splash"><![CDATA[Загрузить для экрана запуска Android]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_upload_icon_apple"><![CDATA[Загрузить для iPhone и iPad]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_upload_icon_svg"><![CDATA[Загрузить SVG-иконку]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_preview_icon"><![CDATA[favicon.ico]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_preview_icon_android"><![CDATA[Android]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_preview_icon_android_splash"><![CDATA[Экран запуска Android]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_preview_icon_apple"><![CDATA[iPhone и iPad]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_preview_icon_svg"><![CDATA[SVG-иконка]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_section_home"><![CDATA[Главный экран]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_section_tab"><![CDATA[Вкладка браузера]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_src_default"><![CDATA[Иконка по умолчанию. Загрузите свою, чтобы заменить её.]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_src_default_svg"><![CDATA[Иконка по умолчанию, с версией для тёмной темы. Загрузите свою, чтобы заменить её.]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_src_none_icon"><![CDATA[Нет. Браузеры используют SVG-иконку.]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_src_none_icon_svg"><![CDATA[Нет. Браузеры используют favicon.ico.]]></string_add>
+	<string_add name="_adm_dsg_txt_viewport"><![CDATA[Размер экрана]]></string_add>
+	<string_add name="_adm_dsg_txt_viewport_custom"><![CDATA[Свой]]></string_add>
+	<string_add name="_adm_dsg_txt_viewport_desktop"><![CDATA[Компьютер]]></string_add>
+	<string_add name="_adm_dsg_txt_viewport_mobile"><![CDATA[Телефон]]></string_add>
+	<string_add name="_adm_dsg_txt_viewport_tablet"><![CDATA[Планшет]]></string_add>
+	<string_add name="_adm_dsg_txt_viewport_width"><![CDATA[Ширина]]></string_add>
+	<string_add name="_adm_dsg_txt_inj_note"><![CDATA[Этот код выполняется на каждой странице для каждого посетителя. Ошибка может сломать сайт, а скрипт может прочитать то, что вводят посетители. Добавляйте только код, которому доверяете.]]></string_add>
+	<string_add name="_adm_dsg_txt_inj_section_body"><![CDATA[Конец страницы]]></string_add>
+	<string_add name="_adm_dsg_txt_inj_section_head"><![CDATA[Заголовок страницы]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Требовать профайл для работы с сайтом (аккаунты без профайла направляются к его созданию)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_security_upload_token_enable"><![CDATA[Включить токены безопасности загрузки]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_security_upload_token_lifetime"><![CDATA[Время жизни токена безопасности загрузки]]></string_add>
+	<string_add name="_adm_txt_page_menu_collapse"><![CDATA[Свернуть боковую панель]]></string_add>
+	<string_add name="_adm_txt_page_menu_expand"><![CDATA[Развернуть боковую панель]]></string_add>
+	<string_add name="_sys_form_login_input_code_error_attempts"><![CDATA[Слишком много неверных кодов. <a href="{0}">Войдите снова</a>.]]></string_add>
+	<string_add name="_sys_form_login_input_code_error_expired"><![CDATA[Срок действия кода подтверждения истёк. <a href="{0}">Отправить новый код</a>.]]></string_add>
+	<string_add name="_sys_form_login_input_code_error_restart"><![CDATA[Время входа истекло. <a href="{0}">Войдите снова</a>.]]></string_add>
+	<string_add name="_sys_form_login_input_code_error_wrong"><![CDATA[Неверный код подтверждения. Попробуйте ещё раз или <a href="{0}">отправьте новый код</a>.]]></string_add>
+	<string_add name="_sys_form_profile_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы от {0}]]></string_add>
+	<string_add name="_sys_form_profile_input_receive_news_info"><![CDATA[Это можно изменить в любой момент в настройках аккаунта.]]></string_add>
+	<string_add name="_sys_menu_item_title_switch_language_current"><![CDATA[Язык: {0}]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_overview"><![CDATA[Обзор]]></string_add>
+	<string_add name="_sys_menu_item_title_join"><![CDATA[Присоединиться]]></string_add>
+	<string_add name="_sys_menu_item_title_login"><![CDATA[Вход]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_overview"><![CDATA[Обзор]]></string_add>
+	<string_add name="_sys_menu_item_title_system_color_scheme"><![CDATA[Тема]]></string_add>
+	<string_add name="_sys_menu_item_title_system_join"><![CDATA[Присоединиться]]></string_add>
+	<string_add name="_sys_page_block_title_settings"><![CDATA[Настройки]]></string_add>
+	<string_add name="_sys_page_meta_description_default"><![CDATA[{site_title} — онлайн-сообщество, где люди делятся новостями, обсуждают и общаются с теми, кому интересно то же самое.]]></string_add>
+	<string_add name="_sys_page_title_system_settings"><![CDATA[Настройки]]></string_add>
+	<string_add name="_sys_page_title_settings"><![CDATA[Настройки]]></string_add>
+	<string_add name="_sys_request_page_not_found_text"><![CDATA[Возможно, страницу перенесли или ссылка неверна. <a href="{0}">На главную страницу</a>]]></string_add>
+	<string_add name="_sys_search_see_all_results"><![CDATA[Все результаты]]></string_add>
+	<string_add name="_sys_txt_copyright_full"><![CDATA[© {0} {1}. Все права защищены.]]></string_add>
+	<string_add name="_sys_txt_copyright_short"><![CDATA[© {0} {1}]]></string_add>
+	<string_add name="_sys_txt_login_2fa_continue"><![CDATA[Чтобы завершить вход, введите код из SMS: <a href="{0}">продолжить</a>.]]></string_add>
+	<string_add name="_sys_txt_login_2fa_description_phone"><![CDATA[Включена двухфакторная аутентификация: мы отправим код подтверждения на телефон ниже.]]></string_add>
+	<string_add name="_sys_txt_join_text"><![CDATA[Регистрация быстрая и простая. Создайте аккаунт, чтобы начать.]]></string_add>
+	<string_add name="_sys_txt_join_text_invite"><![CDATA[Регистрация только по приглашению. Используйте код приглашения.]]></string_add>
+	<string_add name="_sys_txt_join_title"><![CDATA[Пора присоединиться!]]></string_add>
+	<string_add name="_sys_txt_join_title_invite"><![CDATA[Запросить приглашение]]></string_add>
+	<string_add name="_sys_txt_powered_by_una"><![CDATA[Работает на UNA]]></string_add>
+	<string_add name="_sys_upgrade_dev_channel"><![CDATA[Сайт на канале обновлений dev: он следует за репозиторием кода и получает изменения базы данных из periodic/migration.php, поэтому пакеты обновлений на нём не запускаются.]]></string_add>
+
+	<string_upd name="_Empty"><![CDATA[Здесь пока ничего нет]]></string_upd>
+	<string_upd name="_adm_dsg_txt_inj_head"><![CDATA[Код перед &lt;/head&gt;]]></string_upd>
+	<string_upd name="_adm_dsg_txt_inj_body"><![CDATA[Код перед &lt;/body&gt;]]></string_upd>
+	<string_upd name="_adm_lmi_cpt_splash"><![CDATA[Заставка]]></string_upd>
+	<string_upd name="_adm_lmi_cpt_icon"><![CDATA[Иконка]]></string_upd>
+	<string_upd name="_adm_lmi_cpt_pwa"><![CDATA[PWA]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_api_root_page_guest"><![CDATA[Корневая страница для гостей (по ней работают приложения, чей переключатель в «Дизайнер > Заставка» ещё не сохраняли)]]></string_upd>
+	<string_upd name="_sys_form_account_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string_upd>
+	<string_upd name="_sys_form_account_input_publish"><![CDATA[Создать аккаунт]]></string_upd>
+	<string_upd name="_sys_form_forgot_password_input_submit"><![CDATA[Отправить ссылку]]></string_upd>
+	<string_upd name="_sys_form_unsubscribe_input_receive_news"><![CDATA[Присылать мне на почту новости и анонсы]]></string_upd>
+	<string_upd name="_sys_page_lang_block_about"><![CDATA[<p>Добро пожаловать! Это сообщество для тех, кто хочет находить людей со схожими интересами, делиться знаниями и оставаться на связи.</p>
+<p>Участники заполняют профиль, публикуют новости, фото и ссылки, комментируют записи друг друга и подписываются на интересных им людей и темы. Смотреть сайт может любой. Чтобы публиковать, комментировать и писать другим участникам, зарегистрируйтесь.</p>
+<p>Чтобы здесь было хорошо всем, мы просим участников:</p>
+<ul>
+<li>уважать друг друга, особенно в спорах;</li>
+<li>публиковать только то, на что у них есть права;</li>
+<li>не раскрывать чужие личные данные;</li>
+<li>сообщать о нарушениях этих правил, чтобы модераторы могли разобраться.</li>
+</ul>
+<p>Полностью правила изложены в Правилах пользования, а как мы обращаемся с вашими данными, описано в Политике конфиденциальности.</p>
+<p>Сайт <a href="https://unacms.com">работает на платформе UNA CMS</a> с открытым исходным кодом для создания онлайн-сообществ и социальных сетей.</p>]]></string_upd>
+	<string_upd name="_sys_page_lang_block_terms"><![CDATA[<p><em>Примечание для владельца сайта: это шаблон для начала работы, а не юридическая консультация. Заполните места в квадратных скобках, измените остальное под свой сайт и законы, которые к вам применяются, при необходимости покажите текст юристу, а затем удалите это примечание.</em></p>
+<h3>Об этих правилах</h3>
+<p>Эти правила действуют для всех, кто заходит на {site_title} (далее «сайт») или пользуется им. Пользуясь сайтом или регистрируясь на нём, вы соглашаетесь с ними. Если вы не согласны, пожалуйста, не пользуйтесь сайтом.</p>
+<h3>Кто управляет сайтом</h3>
+<p>Сайтом {site_title} управляет [имя человека или название организации, которые управляют сайтом] (далее «мы»). Мы устанавливаем эти правила, решаем, как они применяются, и следим за их соблюдением.</p>
+<p>Сайт сделан на UNA — программе с открытым исходным кодом для сообществ, которую разрабатывает UNA, Inc. UNA, Inc. не управляет этим сайтом, не является стороной этих правил и не контролирует ни их, ни то, что здесь публикуется, ни то, как мы их применяем. Вопросы и жалобы о сайте направляйте нам, а не UNA, Inc.</p>
+<h3>Ваша учётная запись</h3>
+<ul>
+<li>Для регистрации вам должно быть не меньше [минимальный возраст] лет.</li>
+<li>Указывайте при регистрации верные данные и поддерживайте их в актуальном состоянии.</li>
+<li>Храните пароль в тайне. Вы отвечаете за то, что происходит в вашей учётной записи, поэтому сразу сообщите нам, если думаете, что ею воспользовался кто-то другой.</li>
+<li>Не создавайте учётную запись за другого человека без его разрешения.</li>
+</ul>
+<h3>Ваши материалы</h3>
+<p>Права на то, что вы публикуете, остаются за вами. Публикуя материал, вы разрешаете нам хранить его, показывать выбранной вами аудитории и делать копии, которые нужны для работы сайта. Это разрешение прекращается, когда вы удаляете материал или учётную запись, кроме копий, которыми уже поделились другие участники, и копий, которые мы должны хранить ограниченное время, например резервных.</p>
+<p>Вы отвечаете за то, что публикуете. Публикуйте только то, чем имеете право делиться.</p>
+<h3>Правила поведения</h3>
+<p>На сайте запрещено:</p>
+<ul>
+<li>нарушать закон, помогать в этом другим или подталкивать их к этому;</li>
+<li>преследовать, запугивать и травить людей или нападать на них из-за того, кто они;</li>
+<li>раскрывать чужие личные данные без согласия их владельца;</li>
+<li>публиковать материалы, нарушающие чужие авторские права, права на товарные знаки и другие права;</li>
+<li>публиковать что-либо, что сексуализирует детей или эксплуатирует их;</li>
+<li>рассылать спам, мошенничать и выдавать себя за другого человека;</li>
+<li>загружать вредоносные программы, пытаться попасть в чужие учётные записи и закрытые разделы, собирать данные других участников без их согласия или мешать работе сайта.</li>
+</ul>
+<p>[Добавьте правила, которые нужны именно вашему сообществу.]</p>
+<h3>Модерация</h3>
+<p>Мы можем проверять, скрывать и удалять материалы, а также ограничивать, приостанавливать и закрывать учётные записи, которые нарушают эти правила или создают угрозу сайту и другим людям. Когда это возможно, мы сообщим, что сделали и почему. Чтобы пожаловаться на материал или участника, воспользуйтесь кнопкой «Пожаловаться» на сайте или свяжитесь с нами.</p>
+<h3>Платные функции</h3>
+<p>Если на сайте есть платные уровни участия или другие платные функции, цена, состав и порядок отмены показываются до оплаты. [Опишите условия оплаты, продления, отмены и возврата денег или удалите этот раздел, если на сайте нет ничего платного.]</p>
+<h3>Чужие материалы и другие сайты</h3>
+<p>Материалы участников принадлежат их авторам и не обязательно отражают наше мнение. Ссылки на другие сайты даны для удобства. Мы не отвечаем за эти сайты.</p>
+<h3>Удаление учётной записи</h3>
+<p>Вы можете в любой момент перестать пользоваться сайтом и удалить учётную запись в её настройках. Мы можем закрыть учётную запись, как описано в разделе «Модерация».</p>
+<h3>Отказ от гарантий и ограничение ответственности</h3>
+<p>Мы предоставляем сайт «как есть» и «по мере доступности». Мы стараемся, чтобы он работал и был безопасным, но не можем обещать, что он всегда будет доступен, без ошибок и в безопасности. В той мере, в какой это допускает закон, мы не отвечаем за косвенные убытки и за убытки от материалов и действий других участников. Эти правила не лишают вас прав, которые даёт вам закон и от которых нельзя отказаться.</p>
+<h3>Изменения правил</h3>
+<p>Мы можем обновлять эти правила. Действующая версия всегда находится на этой странице вместе с датой последнего изменения. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте. Если вы продолжаете пользоваться сайтом после вступления изменений в силу, вы принимаете обновлённые правила.</p>
+<h3>Применимое право</h3>
+<p>[Укажите, законы какой страны или штата применяются к этим правилам и где рассматриваются споры.]</p>
+<h3>Контакты</h3>
+<p>С вопросами об этих правилах обращайтесь к нам: [адрес электронной почты, почтовый адрес или ссылка на страницу контактов].</p>
+<p>Последнее обновление: [дата].</p>]]></string_upd>
+	<string_upd name="_sys_page_lang_block_privacy"><![CDATA[<p><em>Примечание для владельца сайта: это шаблон для начала работы, а не юридическая консультация. Перечислите, что на самом деле собирает ваш сайт и какими сервисами вы пользуетесь, заполните места в квадратных скобках, попросите юриста проверить текст на соответствие законам, которые к вам применяются, а затем удалите это примечание.</em></p>
+<h3>Кто отвечает за ваши данные</h3>
+<p>Сайтом {site_title} (далее «сайт») управляет [имя человека или название организации, которые управляют сайтом] (далее «мы»). Мы решаем, какие персональные данные собирает сайт, зачем и как долго их хранить, и отвечаем за них. В некоторых законах эта роль называется оператором или контролёром данных.</p>
+<p>Сайт сделан на UNA — программе с открытым исходным кодом для сообществ, которую разрабатывает UNA, Inc. UNA, Inc. не управляет этим сайтом. Сбор, использование и хранение персональных данных здесь полностью зависят от нашего решения и находятся под нашим контролем, а не под контролем UNA, Inc. Вопросы и запросы о ваших данных направляйте нам.</p>
+<h3>Что мы собираем</h3>
+<ul>
+<li><strong>Данные учётной записи:</strong> адрес электронной почты и пароль, а также номер телефона, если вы его добавите. Мы не храним пароль в читаемом виде.</li>
+<li><strong>Профиль и материалы:</strong> данные и фотографии профиля, а также то, что вы публикуете, комментируете, оцениваете, на что подписываетесь и куда вступаете. Кто видит каждый материал, зависит от выбранных вами настроек приватности.</li>
+<li><strong>Сообщения:</strong> личные сообщения хранятся на серверах сайта, чтобы их можно было доставить.</li>
+<li><strong>Данные об использовании и устройстве:</strong> какие страницы вы открываете и что делаете, а также время, IP-адрес, браузер, тип устройства и язык. Наши серверы также ведут журналы запросов и ошибок.</li>
+<li><strong>Cookies и локальное хранилище:</strong> один cookie сохраняет вход на сайт, другие запоминают настройки, например язык и тему. Если вы пользуетесь нашим мобильным приложением и разрешили уведомления, мы храним токен устройства, чтобы их отправлять. [Перечислите сервисы аналитики, рекламы и другие сторонние сервисы, которые вы подключили, и cookies, которые они ставят.]</li>
+<li><strong>Платежи:</strong> если вы что-то покупаете на сайте, оплату обрабатывает платёжный сервис. Мы получаем подтверждение оплаты, а не полные данные карты. [Удалите этот пункт, если на сайте нет ничего платного.]</li>
+<li><strong>От других людей:</strong> другие участники могут упомянуть вас, отметить или пригласить по электронной почте.</li>
+</ul>
+<h3>Зачем мы их используем</h3>
+<ul>
+<li>чтобы ваша учётная запись работала, а ваши материалы видела выбранная вами аудитория;</li>
+<li>чтобы отправлять письма и уведомления о вашей учётной записи и активности; их можно отключить в настройках, кроме обязательных, например для сброса пароля;</li>
+<li>чтобы присылать новости сайта, только если вы согласились их получать;</li>
+<li>чтобы сайт оставался безопасным: бороться со спамом, злоупотреблениями и мошенничеством и разбирать жалобы;</li>
+<li>чтобы понимать, как пользуются сайтом, и улучшать его;</li>
+<li>чтобы выполнять требования закона.</li>
+</ul>
+<p>Если закон требует правового основания для обработки персональных данных, мы опираемся на соглашение с вами (Правила пользования), наш законный интерес в том, чтобы сайт был безопасным и полезным, ваше согласие (его можно отозвать в любой момент) и обязанности, которые возлагает на нас закон. [Проверьте, какие из этих оснований применимы по вашим законам.]</p>
+<h3>Кто может их видеть</h3>
+<ul>
+<li><strong>Другие участники и посетители</strong> видят ваш профиль и публикации в пределах ваших настроек приватности.</li>
+<li><strong>Сервисы, которые помогают нам вести сайт,</strong> например хостинг, хранилище файлов, отправка писем и приём платежей, обрабатывают данные по нашему поручению и только для оказания своих услуг. [Перечислите их.]</li>
+<li><strong>Государственные органы</strong> получают данные, когда этого требует закон или когда это нужно для защиты чьих-то прав и безопасности.</li>
+<li><strong>Новый владелец</strong> получает данные, если сайт перейдёт к кому-то другому, и эта политика продолжит действовать.</li>
+</ul>
+<p>Мы не продаём ваши персональные данные. [Если вы передаёте данные для рекламы или других целей, опишите это здесь.]</p>
+<p>Наши серверы и сервисы могут находиться в других странах. [Укажите, где они находятся и как защищены данные, которые туда передаются.]</p>
+<h3>Как долго мы их храним</h3>
+<p>Данные учётной записи и материалы хранятся, пока существует учётная запись. Когда вы удаляете учётную запись, мы удаляем профиль и удаляем или обезличиваем ваши материалы в течение [срок], кроме того, что обязаны хранить по закону. Копии в резервных копиях удаляются в течение [срок]. Журналы серверов хранятся [срок].</p>
+<h3>Ваши права</h3>
+<ul>
+<li><strong>Доступ и копия:</strong> вы можете узнать у нас, какие данные о вас мы храним, и получить их копию.</li>
+<li><strong>Исправление:</strong> большую часть данных можно исправить самостоятельно в настройках профиля и учётной записи или попросить об этом нас.</li>
+<li><strong>Удаление:</strong> вы можете удалить свои материалы или всю учётную запись в её настройках.</li>
+<li><strong>Возражение и согласие:</strong> вы можете возразить против некоторых способов использования данных и отозвать данное согласие, например отписавшись от рассылки.</li>
+</ul>
+<p>Чтобы воспользоваться этими правами, свяжитесь с нами. Сначала нам может понадобиться подтвердить вашу личность. В зависимости от того, где вы живёте, вы также можете подать жалобу в орган по защите персональных данных.</p>
+<h3>Безопасность</h3>
+<p>Мы принимаем разумные меры для защиты ваших данных, например ограничиваем круг людей, у которых есть к ним доступ. Полностью защищённых систем не бывает, поэтому мы не можем этого гарантировать. Используйте надёжный пароль, который вы больше нигде не используете. Если утечка затронет ваши данные, мы сообщим вам, когда этого требует закон.</p>
+<h3>Дети</h3>
+<p>Сайт не предназначен для детей младше [минимальный возраст] лет. Мы сознательно не собираем их данные. Если вы считаете, что ребёнок передал нам персональные данные, свяжитесь с нами, и мы их удалим.</p>
+<h3>Изменения политики</h3>
+<p>Мы можем обновлять эту политику. Действующая версия всегда находится на этой странице вместе с датой последнего изменения. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте.</p>
+<h3>Контакты</h3>
+<p>С вопросами и запросами о ваших данных обращайтесь к нам: [адрес электронной почты, почтовый адрес или ссылка на страницу контактов]. [Добавьте контакты ответственного за защиту данных или представителя, если они есть.]</p>
+<p>Последнее обновление: [дата].</p>]]></string_upd>
+	<string_upd name="_sys_page_title_home"><![CDATA[Добро пожаловать в {site_title}]]></string_upd>
+	<string_upd name="_sys_txt_login_description_action"><![CDATA[Создать аккаунт]]></string_upd>
+	<string_upd name="_sys_txt_splash_slogan"><![CDATA[Вступай в наше сообщество сейчас, чтобы найти единомышленников, делиться захватывающими новостями и создавать вдохновляющий контент.]]></string_upd>
+</resources>

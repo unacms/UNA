@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_developer',
     'title' => 'Developer',
     'note' => 'Developer tools, debugging',
-    'version' => '15.0.6.DEV',
+    'version' => '15.0.6',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

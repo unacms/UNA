@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for titles, menus, blocks and form captions members see; Organizations and Dashboard in full; grammar slips. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_timeline_form_attach_link_input_url"><![CDATA[Add link]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_view"><![CDATA[Profile feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_view_home"><![CDATA[Public feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_view_hot"><![CDATA[Hot feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_item"><![CDATA[Feed item]]></string_upd>
+    <string_upd name="_bx_timeline_page_title_item_brief"><![CDATA[Feed item preview]]></string_upd>
+    <string_upd name="_bx_timeline_page_block_title_post_profile"><![CDATA[Post to feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_block_title_view_profile"><![CDATA[Profile feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_block_title_post_home"><![CDATA[Post to feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_block_title_view_home_outline"><![CDATA[Public feed]]></string_upd>
+    <string_upd name="_bx_timeline_page_block_title_view_hot_outline"><![CDATA[Hot feed]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_item_repost_with"><![CDATA[Repost with text]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_item_send"><![CDATA[Send to friend]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_item_mute"><![CDATA[Mute author]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_add_link"><![CDATA[Add link]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_add_photo"><![CDATA[Add photo]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_add_file"><![CDATA[Add file]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_add_video"><![CDATA[Add video]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_add_video_record"><![CDATA[Record video]]></string_upd>
+    <string_upd name="_bx_timeline_menu_item_title_add_poll"><![CDATA[Add poll]]></string_upd>
+</resources>

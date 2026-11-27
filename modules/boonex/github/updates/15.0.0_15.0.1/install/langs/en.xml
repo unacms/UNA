@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_github_option_authorize_app"><![CDATA[Sign in with GitHub (APP)]]></string_upd>
+	<string_upd name="_bx_github_form_input_err_enter"><![CDATA[This field is required. Please enter a value.]]></string_upd>
+	<string_upd name="_bx_github_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_upd name="_bx_github_txt_login"><![CDATA[Sign in with GitHub]]></string_upd>
+</resources>

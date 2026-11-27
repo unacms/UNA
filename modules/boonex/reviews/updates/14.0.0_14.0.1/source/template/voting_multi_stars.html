@@ -1,0 +1,18 @@
+<div class="bx-reviews-voting-options">
+    <bx_repeat:voting_options>
+    <div class="bx-def-margin-bottom">
+        <div class="bx-def-font">__voting_option_name__</div>
+        <div class="sys-action bx-vote bx-vote-stars bx-def-margin-right-auto bx-def-margin-thd-topbottom" bx_vote_data_rate="__rate__">
+            <div class="sys-action-cnt bx-vote-cnt bx-vote-do bx-def-valign-center bx-clearfix">
+                <div class="sys-action-element-holder bx-vote-element-holder">
+                    __stars__
+                    <bx_if:vote_allowed>
+                        <input type="hidden" name="voting_options[__option_id__]" value="__rate__" class="bx-review-voting-input" />
+                    </bx_if:vote_allowed>
+                </div>
+            </div>
+        </div>
+    </div>
+    </bx_repeat:voting_options>
+    __js_code__
+</div>

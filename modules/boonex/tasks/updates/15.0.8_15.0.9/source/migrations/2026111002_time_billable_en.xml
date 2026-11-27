@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_tasks_form_time_input_sys_billable"><![CDATA[Billable]]></string_add>
+    <string_add name="_bx_tasks_form_time_input_billable"><![CDATA[Billable]]></string_add>
+    <string_add name="_bx_tasks_page_block_title_system_entry_time_summary"><![CDATA[Task Logged Time by Person]]></string_add>
+    <string_add name="_bx_tasks_page_block_title_system_context_time_summary"><![CDATA[Context Logged Time by Person]]></string_add>
+    <string_add name="_bx_tasks_grid_column_title_tm_billable"><![CDATA[Billable]]></string_add>
+    <string_add name="_bx_tasks_txt_billable"><![CDATA[Billable]]></string_add>
+    <string_add name="_bx_tasks_txt_non_billable"><![CDATA[Non-billable]]></string_add>
+    <string_add name="_bx_tasks_txt_timers_stats_today"><![CDATA[Today]]></string_add>
+    <string_add name="_bx_tasks_txt_timers_stats_this_week"><![CDATA[This Week]]></string_add>
+    <string_add name="_bx_tasks_txt_timers_stats_all_time"><![CDATA[All Time]]></string_add>
+</resources>

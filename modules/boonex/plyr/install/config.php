@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_plyr',
     'title' => 'Plyr',
     'note' => 'Plyr, video player, audio player',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

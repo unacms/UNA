@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_massmailer',
     'title' => 'Email campaigns',
     'note' => 'Mass mailer, newsletters, bulk email',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_tasks_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+    <string_upd name="_bx_tasks_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+    <string_upd name="_bx_tasks_form_list_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+    <string_upd name="_bx_tasks_form_time_input_object_id_err"><![CDATA[This field in essential. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_tasks_form_pv_input_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_tasks_form_import_input_err"><![CDATA[This field in essential. Please fill it in.]]></string_upd>
+    <string_upd name="_bx_tasks_category_form_entry_input_value_err"><![CDATA[Value is required. Please fill in this field]]></string_upd>
+</resources>

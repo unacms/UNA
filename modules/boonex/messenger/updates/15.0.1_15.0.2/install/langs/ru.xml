@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_messenger_title_search"><![CDATA[Найти]]></string_upd>
+	<string_add name="_bx_messenger_menu_item_title_system_messages"><![CDATA[Сообщения (приложения)]]></string_add>
+	<string_add name="_bx_messenger_informer_no_server"><![CDATA[Новые сообщения появляются после обновления страницы.]]></string_add>
+	<string_add name="_bx_messenger_informer_no_server_action"><![CDATA[Настройки мессенджера]]></string_add>
+	<string_add name="_bx_messenger_informer_no_server_operator"><![CDATA[Сообщения не приходят в реальном времени: у мессенджера нет сервера Jot. Укажите его адрес в настройках мессенджера.]]></string_add>
+	<string_upd name="_bx_messenger_allow_to_use_jitsi"><![CDATA[Видеозвонки]]></string_upd>
+	<string_upd name="_bx_messenger_jitsi_server"><![CDATA[Домен сервера Jitsi, например meet.example.com. Пока он не указан, видеозвонки выключены.]]></string_upd>
+	<string_add name="_bx_messenger_empty_action_new"><![CDATA[Новое сообщение]]></string_add>
+	<string_add name="_bx_messenger_empty_history_text"><![CDATA[Выберите беседу или начните новую.]]></string_add>
+	<string_add name="_bx_messenger_empty_history_title"><![CDATA[Здесь пока нет сообщений]]></string_add>
+	<string_add name="_bx_messenger_empty_inbox_text"><![CDATA[Здесь появятся беседы, которые вы начнёте или в которые вас добавят.]]></string_add>
+	<string_add name="_bx_messenger_empty_inbox_title"><![CDATA[Пока нет бесед]]></string_add>
+	<string_add name="_bx_messenger_empty_list_text"><![CDATA[Здесь появятся беседы этого вида.]]></string_add>
+	<string_add name="_bx_messenger_empty_people_text"><![CDATA[Введите имя, чтобы найти собеседника.]]></string_add>
+	<string_add name="_bx_messenger_empty_search_text"><![CDATA[Попробуйте другое имя или слово.]]></string_add>
+	<string_add name="_bx_messenger_search_clear"><![CDATA[Очистить поиск]]></string_add>
+	<string_add name="_bx_messenger_menu_item_title_messages"><![CDATA[Сообщения]]></string_add>
+</resources>

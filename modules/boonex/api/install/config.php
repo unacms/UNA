@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_api',
     'title' => 'API',
     'note' => 'API, backend interface',
-    'version' => '13.0.2.DEV',
+    'version' => '13.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

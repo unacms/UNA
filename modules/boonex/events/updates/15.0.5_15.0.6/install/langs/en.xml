@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_events_option_reminder_interval"><![CDATA[Reminder interval]]></string_upd>
+	<string_upd name="_bx_events_option_rm_from_timeline_after"><![CDATA[Remove past events from Timeline after this many hours (0 = never)]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_initial_members"><![CDATA[Invite members]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_event_name"><![CDATA[Event name]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_event_name_err"><![CDATA[Name is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_cover"><![CDATA[Upload new cover picture]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_sys_reoccurring"><![CDATA[Repeats]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_reoccurring"><![CDATA[Repeats]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_sys_threshold"><![CDATA[Radius around the location]]></string_upd>
+	<string_upd name="_bx_events_form_profile_input_threshold"><![CDATA[Radius around the location, meters]]></string_upd>
+	<string_upd name="_bx_events_form_questionnaire_input_question_err"><![CDATA[Please answer the question.]]></string_upd>
+	<string_upd name="_bx_events_form_session_input_title_err"><![CDATA[Session title is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_joined"><![CDATA[Profile events]]></string_upd>
+	<string_upd name="_bx_events_page_title_joined"><![CDATA[Profile events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_joined_entries"><![CDATA[Profile events]]></string_upd>
+	<string_upd name="_bx_events_page_title_joined_entries"><![CDATA[Profile events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_create_profile"><![CDATA[Create event]]></string_upd>
+	<string_upd name="_bx_events_page_title_create_profile"><![CDATA[Create event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_edit_profile"><![CDATA[Edit event]]></string_upd>
+	<string_upd name="_bx_events_page_title_edit_profile"><![CDATA[Edit event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_manage_profile"><![CDATA[Manage event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_delete_profile"><![CDATA[Delete event]]></string_upd>
+	<string_upd name="_bx_events_page_title_delete_profile"><![CDATA[Delete event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_join_profile"><![CDATA[Join event]]></string_upd>
+	<string_upd name="_bx_events_page_title_join_profile"><![CDATA[Join event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_view_profile_closed"><![CDATA[View closed event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_view_profile"><![CDATA[View event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_group_fans"><![CDATA[Event guests]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_profile_info"><![CDATA[Event info]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_recent"><![CDATA[New events]]></string_upd>
+	<string_upd name="_bx_events_page_title_recent"><![CDATA[New events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_manage"><![CDATA[Manage own events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_manage_administration"><![CDATA[Manage all events]]></string_upd>
+	<string_upd name="_bx_events_page_title_manage"><![CDATA[Manage events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_top"><![CDATA[Top events]]></string_upd>
+	<string_upd name="_bx_events_page_title_top"><![CDATA[Top events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_upcoming"><![CDATA[Upcoming events]]></string_upd>
+	<string_upd name="_bx_events_page_title_upcoming"><![CDATA[Upcoming events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_past"><![CDATA[Past events]]></string_upd>
+	<string_upd name="_bx_events_page_title_past"><![CDATA[Past events]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_calendar"><![CDATA[Events calendar]]></string_upd>
+	<string_upd name="_bx_events_page_title_calendar"><![CDATA[Events calendar]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_invite_to_group"><![CDATA[Invite members to the event]]></string_upd>
+	<string_upd name="_bx_events_page_title_invite_to_group"><![CDATA[Invite members to the event]]></string_upd>
+	<string_upd name="_bx_events_page_title_sys_entries_favorites"><![CDATA[Favorite events]]></string_upd>
+	<string_upd name="_bx_events_page_title_entries_favorites"><![CDATA[Favorite events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_browse_for_context"><![CDATA[Events in this community]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_favorites_entries"><![CDATA[{title} list]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_favorites_entries_actions"><![CDATA[Favorite list actions]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_favorites_of_author"><![CDATA[Favorite events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_joined_entries"><![CDATA[Joined events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_joined_calendar"><![CDATA[Joined events calendar]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_create_profile"><![CDATA[Create event]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_edit_profile"><![CDATA[Edit event]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_delete_profile"><![CDATA[Delete event]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_join_profile"><![CDATA[Join event]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_system_fans_manage"><![CDATA[Manage members]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_featured_profiles"><![CDATA[Featured events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_latest_profiles"><![CDATA[New events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_manage"><![CDATA[Manage events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_top_profiles"><![CDATA[Top events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_upcoming_profiles"><![CDATA[Upcoming events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_past_profiles"><![CDATA[Past events]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_invite_to_group"><![CDATA[Invite members to the event]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_search_form"><![CDATA[Search form]]></string_upd>
+	<string_upd name="_bx_events_page_block_title_search_results"><![CDATA[Search results]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_edit_profile"><![CDATA[Edit event]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_edit_profile"><![CDATA[Edit event]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_delete_profile"><![CDATA[Delete event]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_delete_profile"><![CDATA[Delete event]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_add_content"><![CDATA[Add content]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_add_content"><![CDATA[Add content]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_become_fan"><![CDATA[Join event]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_leave_group"><![CDATA[Leave event]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_pay_and_join"><![CDATA[Pay & join]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_check_in"><![CDATA[Check in]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_check_in"><![CDATA[Check in]]></string_upd>
+	<string_upd name="_bx_events_menu_item_title_system_more_actions"><![CDATA[More actions]]></string_upd>
+	<string_add name="_bx_events_menu_item_title_system_memberships"><![CDATA[Events (participant of)]]></string_add>
+	<string_add name="_bx_events_menu_item_title_memberships"><![CDATA[Your events]]></string_add>
+	<string_add name="_bx_events_menu_item_title_sm_join_short"><![CDATA[Attend]]></string_add>
+	<string_add name="_bx_events_menu_item_title_sm_joined"><![CDATA[Going]]></string_add>
+	<string_upd name="_bx_events_menu_item_title_ical_export"><![CDATA[Sync to calendar]]></string_upd>
+	<string_upd name="_bx_events_grid_action_title_adm_delete_with_content"><![CDATA[Delete with content]]></string_upd>
+	<string_upd name="_bx_events_grid_action_title_adm_more_actions"><![CDATA[More actions]]></string_upd>
+	<string_upd name="_bx_events_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string_upd>
+	<string_add name="_bx_events_txt_unit_view"><![CDATA[View event]]></string_add>
+	<string_upd name="_bx_events_txt_set_role"><![CDATA[Set role]]></string_upd>
+	<string_upd name="_bx_events_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this event. The invitation is expired or deleted.]]></string_upd>
+	<string_upd name="_bx_events_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this event. This invitation cannot be used by you.]]></string_upd>
+	<string_add name="_bx_events_txt_empty_title"><![CDATA[No events yet]]></string_add>
+	<string_upd name="_bx_events_msg_performed"><![CDATA[Done.]]></string_upd>
+	<string_upd name="_bx_events_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_upd name="_bx_events_email_join_request_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> event from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_join_reject_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was rejected by event admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_join_confirm_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> event was confirmed by the event admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_fan_remove_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> event by the event admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_fan_become_admin_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> event now.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_admin_become_fan_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> event.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_invitation_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} event</a>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_set_role_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> event was changed to <b>{Role}</b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_events_email_reminder_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{EntryUrl}" class="summary">{EntryTitle}</a> event reminder:</a><br />
+    Date: <abbr class="dtstart" title="{EntryBeginUTC}">{EntryBegin}</abbr><br />
+    {EntryLocation}</p>
+{email_footer}]]></string_upd>
+</resources>

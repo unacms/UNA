@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_protean',
     'title' => 'Protean',
     'note' => 'Protean, design template, site theme',
-    'version' => '15.0.6.DEV',
+    'version' => '15.0.6',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

@@ -1,0 +1,853 @@
+/*--
+import url(../../../../../../../template/css/general.css);
+--*/
+
+
+/*--- Page scrollbar: its gutter is always kept, so a page that scrolls and one that doesn't are the same width and the header menu
+      doesn't reflow between them (nor when a popup locks the page's scrolling). It is thin. The page's own bar is always drawn
+      with its track filled, as in NEO (global.web.css html: a border-coloured thumb on a muted/50 track), so a page that doesn't
+      scroll shows the track, not an empty gutter. The page's scroll boxes inherit the body's colours: the theme's thumb on no track. ---*/
+html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d8 rgba(228, 228, 231, 0.5);
+}
+html.dark {
+    scrollbar-color: #3f3f46 rgba(63, 63, 70, 0.5);
+}
+body {
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+html.dark body {
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+
+/*--- Toolbar ---*/
+.bx-toolbar-anim {
+    -webkit-transition: all .25s ease-in-out;
+    -moz-transition: all .25s ease-in-out;
+    -o-transition: all .25s ease-in-out;
+    transition: all .25s ease-in-out
+}
+.bx-toolbar-reset {
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0)
+}
+.bx-toolbar-up {
+    -webkit-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    transform: translateY(-100%)
+}
+.bx-toolbar-item.bx-ti-logo a:hover {
+    text-decoration: none;
+}
+/* SVG code as the logo or the mark: as tall as its wrapper's height (Designer's logo height, set inline), and as wide as
+   its viewBox makes it. inherit, not 100%: the wrapper is an inline span where no class makes it a block, and an inline
+   box has no height for a percentage. max-height alone gave an SVG with only a viewBox no size at all. */
+.bx-toolbar-item.bx-ti-logo .bx-logo-inline svg {
+    height: inherit;
+    max-height: 100%;
+    width: auto;
+}
+/*--- Search popup, opened by the member toolbar's 'search' item, as the apps' search: a full-screen sheet below 1024px
+      (the apps' desktop breakpoint), from there a 48rem dialog of a fixed height, so it doesn't move as results come ---*/
+#bx-site-search-popup .bx-popup-width {
+    width: 48rem;
+}
+#bx-site-search-popup .bx-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+/* NEO's search modal: its 24px corners, its line under the title (--border, neutral-300 / -700, at 60%) and a quick
+   colour change on Close */
+#bx-site-search-popup .bx-popup {
+    border-radius: 1.5rem;
+}
+#bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(212 212 216 / 0.6);
+}
+.dark #bx-site-search-popup .bx-popup-header {
+    border-bottom-color: rgb(63 63 70 / 0.6);
+}
+#bx-site-search-popup .bx-popup-element-close {
+    transition-property: color, background-color;
+    transition-duration: 100ms;
+    transition-timing-function: ease-out;
+}
+#bx-site-search-popup .bx-site-search-title {
+    padding-inline: 2.5rem; /* clear of Close */
+}
+#bx-site-search-popup .bx-popup-element-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+/* As tall as the results, up to 20rem: no empty box while the results load or when there are none */
+#bx-site-search-popup .bx-site-search-results {
+    max-height: 20rem;
+    overflow-y: auto;
+}
+#bx-site-search-popup .bx-form-advanced .bx-loading-ajax {
+    top: 0;
+    max-height: 100%;
+}
+#bx-site-search-popup .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
+    margin-top: 0;
+}
+#bx-site-search-popup .sys-search-results-quick .bx-btn.sys-agents-ask {
+    display: flex;
+    float: none;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+@media (max-width: 1023px) {
+    #bx-site-search-popup {
+        position: fixed !important;
+        inset: 0 !important;
+        border-radius: 0;
+    }
+    #bx-site-search-popup .bx-popup-gap {
+        height: 100%;
+        margin: 0;
+    }
+    #bx-site-search-popup .bx-popup {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    #bx-site-search-popup .bx-popup-content,
+    #bx-site-search-popup .bx-site-search,
+    #bx-site-search-popup .bx-site-search-results {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+    #bx-site-search-popup .bx-site-search-results {
+        height: auto;
+    }
+}
+
+/*--- Agents: Assistants ---*/
+#bx_agents_assistants_ask .bx-popup.bx-popup-width {
+    width: 42rem;
+}
+.bx-agents-popup .cmts {
+    max-height: calc(0.5 * 100vh);
+    overflow-y: auto;
+}
+.bx-agents-popup .cmt-reply {
+    margin-bottom: 0;
+}
+.cmt.cmt-agents .cmt-body .cmt-agents-loading .bx-loading-ajax {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 2.0rem;
+    height: 2.0rem;
+    left: 0 !important;
+    top: 0 !important;
+    margin-left: 0.5rem;
+}
+.cmt-body.cmt-body-agents .bx-form-value .bx-form-input-files-uploaders .bx-btn {
+    margin: 0 0.5rem 0 0;
+}
+.cmt-body.cmt-body-agents .bx-form-value .bx-form-input-textarea {
+    height: 2.5rem;
+    line-height: 1.25rem;
+}
+
+
+
+/*--- Page Content with Cover ---*/
+#bx-content-with-cover-wrapper {
+    opacity: 1;
+    transition: opacity 400ms ease-out;
+}
+#bx-content-with-cover-wrapper.htmx-added {
+    opacity: 0;
+}
+
+
+/*--- Page Submenu ---*/
+.bx-menu-main-bar-cnt {
+    height: 3.25rem;
+}
+
+.bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-cnt > div {
+    overflow-x: auto;
+}
+/* The tabs scroll in their own column, so they never run under the tools and the section's add action at the row's end.
+   Not with a More menu: it fits the tabs to the column, and its popup opens inside it. */
+.bx-menu-main-bar:not(.bx-menu-more-auto) .bx-menu-main-bar-tabs {
+    overflow-x: auto;
+}
+
+.bx-menu-main-bar-gap.bx-menu-main-bar-hidden,
+.bx-menu-main-bar-wrapper.bx-menu-main-bar-hidden,
+.bx-menu-main-bar.bx-menu-main-bar-hidden {
+    display: none;
+}
+
+
+/*--- Page Content ---*/
+/* The page is at least as tall as the window: on a short page the footer stays at the bottom of the screen, on a
+   long one it comes right after the content. The toolbar is fixed, so main and the footer are the flex items. */
+#bx-content-with-toolbar-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+#bx-content-with-toolbar-wrapper > #bx-content-main {
+    flex-grow: 3;
+}
+/* The guest splash page (.bx-landing as the page's whole content, Studio > Designer > Splash) fills the screen between
+   the header and the footer, as in the apps: every wrapper from main down to it is a column that grows, so the footer
+   stays in view. The splash's own "first screen" height (in its code, for a page without these wrappers) gives way
+   here: with it the page's margins and the footer ended up below the fold. Only where the splash is the direct child
+   of .bx-content-main: as a block of a Page builder page it sits in that page's rows and columns, which stay as set. */
+#bx-content-main:has(.bx-content-main > .bx-landing),
+#bx-content-main :has(.bx-content-main > .bx-landing),
+#bx-content-main .bx-content-main:has(> .bx-landing) {
+    display: flex;
+    flex-direction: column;
+}
+#bx-content-main :has(.bx-content-main > .bx-landing),
+#bx-content-main .bx-content-main:has(> .bx-landing),
+#bx-content-main .bx-content-main > .bx-landing {
+    flex: 1 1 auto;
+    box-sizing: border-box;
+    width: 100%;
+}
+#bx-content-main .bx-content-main > .bx-landing {
+    min-height: 0;
+}
+/* No page margins around it (my-4): the splash has its own padding, and the apps show it flush with the header
+   and the footer. */
+#bx-content-main .bx-content-main:has(> .bx-landing) {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* The footer at the window's width (Designer > Settings > Footer width; its box then has no bx-def-page-width,
+   footer.html): the separator runs from edge to edge and the content keeps the 16px from the window's sides. */
+#bx-footer-wrapper > .bx-footer-box:not(.bx-def-page-width) {
+    padding-left: 0;
+    padding-right: 0;
+}
+#bx-footer-wrapper > .bx-footer-box:not(.bx-def-page-width) > .bx-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#bx-content-wrapper.htmx-added {
+    opacity: 0;
+}
+
+#bx-content-wrapper.ltr.htmx-swapping:not(.htmx-added) {
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    animation: slide-to-right 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+#bx-content-wrapper.ltr.htmx-settling {
+    opacity: 1;
+    animation: slide-from-left 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+
+#bx-content-wrapper.rtl.htmx-swapping:not(.htmx-added) {
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    animation: slide-to-left 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+#bx-content-wrapper.rtl.htmx-settling {
+    opacity: 1;
+    animation: slide-from-right 400ms cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+
+@keyframes slide-from-right {
+    from { transform: translateX(100%); }
+}
+@keyframes slide-to-right {
+    to { transform: translateX(100%); }
+}
+@keyframes slide-from-left {
+    from { transform: translateX(-100%); }
+}
+@keyframes slide-to-left {
+    to { transform: translateX(-100%); }
+}
+
+
+/*--- Profile Avatar ---*/
+.bx-db-content.bx-content-padding-block .bx-profile-avatar-cnt {
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+}
+#bx-profile-switcher .bx-pas-list .bx-def-hr:first-child {
+    display: none;
+}
+
+/*--- Profile Stats ---*/
+.bx-menu-vertical-more-less li.bx-psmi-show-more,
+.bx-menu-vertical-more-less li.bx-psmi-show-less {
+    font-size: 0.875rem;
+}
+
+.bx-menu-vertical-more-less li.bx-psmi-show-more:hover,
+.bx-menu-vertical-more-less li.bx-psmi-show-less:hover {
+    background-color: transparent;
+}
+
+/*--- Author Info ---*/
+.sys-author-profile .bx-menu-custom.bx-menu-custom-hor > li:first-child .bx-base-general-unit-meta-div {
+    display: none;
+}
+
+/*--- Join/Login Forms ---*/
+.sys-jf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
+.sys-lf .bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn,
+#sys_forgot_password.bx-form-advanced .bx-form-element .bx-form-input-submit.bx-btn {
+    width: 100%;
+    -webkit-justify-content: center;
+    justify-content: center;
+    text-align: center;
+}
+#bx-form-element-submit_text .bx-form-value {
+    text-align: right;
+}
+
+/*--- Page Type: Application ---*/
+.bx-menu-panel-item .bx-profile-avatar .bx-profile-avatar-cnt {
+    min-height: 2.5rem;
+}
+
+/*--- Create Post Form ---*/
+.sys-cpf-form:not(.sys-cpf-loading) {
+    -webkit-animation: sys-cpf-scale-in 0.4s cubic-bezier(0.37, 0.82, 0.2, 1);
+    animation: sys-cpf-scale-in 0.4s cubic-bezier(0.37, 0.82, 0.2, 1);
+}
+
+@keyframes sys-cpf-scale-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.0);
+    }
+}
+
+@-webkit-keyframes sys-cpf-scale-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.0);
+    }
+}
+
+/* --------------- System objects like Views, Votes, Comments, etc, */
+.sys-action .sys-action-element-holder .sys-action-do-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+.sys-action-counter.sys-ac-hidden {
+    display: none;
+}
+.sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 0.75rem;
+}
+.bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 0;
+    padding-right: 0.75rem;
+}
+.bx-media-phone .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 1.0rem;
+}
+.bx-media-phone .bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-ac-link,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-ac-link {
+    padding-left: 0;
+    padding-right: 1.0rem;
+}
+.sys-action-counter.sys-action-counter-iconset .bx-def-icon-size {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: -0.5rem;
+}
+.bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: 0;
+    margin-right: -0.5rem;
+}
+.bx-media-phone .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-phone .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: -0.75rem;
+}
+.bx-media-phone .bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-phone .bx-dir-rtl .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-thin .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .bx-base-pofile-unit-wo-info,
+.bx-media-tablet .bx-dir-rtl .bx-layout-column-half .sys-action-counter.sys-action-counter-iconset .sys-action-counter-icon {
+    margin-left: 0;
+    margin-right: -0.75rem;
+}
+
+/* The header's More list: an item's icon is centred in its 32px circle. The 8px between icon and label that the header tabs put on the
+   icon itself (tailwind.css, #bx-toolbar .bx-menu-main .bx-stl-mii) is on the circle here. */
+#bx-toolbar .bx-menu-main .bx-menu-item-more-popup .bx-popup .bx-stl-mii > *,
+#bx-toolbar .bx-menu-main .bx-popup .bx-menu-item-more-popup .bx-stl-mii > * {
+    margin: 0;
+}
+
+/* Menus on the page: one highlight slides under the items to the one the pointer is on (bx_menu_highlight_list in
+   functions.js), as in popup menus, in the items' own hover colour, and the items don't light up on their own. It is
+   the list's ::before. On the header's main menu (12px corners like its tabs; the current tab keeps its own background),
+   the homepage's apps grid and the profile menu beside the feed. */
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list,
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list > li,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list > li {
+    position: relative;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--bx-menu-highlight-w, 0);
+    height: var(--bx-menu-highlight-h, 0);
+
+    border-radius: var(--bx-radius-xl); /* the items' own corners (rounded-xl): 12px on the radius scale, so the hover has the current tab's corners at any corner size */
+    background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50%, the items' hover */
+    opacity: 0;
+    pointer-events: none;
+
+    transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+    transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), width 150ms cubic-bezier(0.22, 1, 0.36, 1), height 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
+html.dark .bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
+html.dark .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
+    background-color: rgba(63, 63, 70, 0.5); /* gray-700 at 50% */
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on::before,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list.bx-menu-highlight-on::before,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list.bx-menu-highlight-on::before {
+    opacity: 1;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-jump::before,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list.bx-menu-highlight-jump::before,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list.bx-menu-highlight-jump::before {
+    transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+    #bx-toolbar .bx-menu-main.bx-menu-highlight-list::before,
+    .bx-menu-object-sys_homepage.bx-menu-highlight-list::before,
+    .bx-menu-object-sys_profile_stats.bx-menu-highlight-list::before {
+        transition: opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil:hover,
+.bx-menu-object-sys_homepage.bx-menu-highlight-list > li > a:hover,
+.bx-menu-object-sys_profile_stats.bx-menu-highlight-list > li:not(.bx-menu-tab-active) > .bx-stl-mil-wo-gaps:hover {
+    background-color: transparent;
+}
+/* Pressing a header tab, as in NEO's header (menu-items/topmenu.tsx, .neo-menu-highlight-bar in its global.web.css):
+   the tab shrinks to 95% and the highlight under it shrinks with it and takes the full hover colour, so the press is on
+   the one highlight. */
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li {
+    transition: scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+    scale: 0.95;
+}
+#bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(228, 228, 231); /* gray-200 */
+    transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0)) scale(0.95);
+    transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1), background-color 100ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+html.dark #bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(63, 63, 70); /* gray-700 */
+}
+/* The More list's rows press the same way (tailwind.css draws them as the tabs). */
+#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li {
+    transition: scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+    scale: 0.95;
+}
+#bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(228, 228, 231); /* gray-200 */
+    transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0)) scale(0.95);
+    transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1), background-color 100ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+html.dark #bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+    background-color: rgb(63, 63, 70); /* gray-700 */
+}
+@media (prefers-reduced-motion: reduce) {
+    #bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+        scale: none;
+    }
+    #bx-toolbar .bx-menu-submenu-more-auto.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+        transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+    }
+    #bx-toolbar .bx-menu-main.bx-menu-highlight-list > li:has(> .bx-stl-mil:active) {
+        scale: none;
+    }
+    #bx-toolbar .bx-menu-main.bx-menu-highlight-list.bx-menu-highlight-on:has(> li > .bx-stl-mil:active)::before {
+        transform: translate(var(--bx-menu-highlight-x, 0), var(--bx-menu-highlight-y, 0));
+    }
+}
+
+/* The profile menu beside the feed has the popup menus' rows (tailwind.css, "Popup menu items look and behave like
+   NEO's regular menu items"): 12px corners, 4px apart, a 20px glyph in a 32px circle 8px from the row's side and from
+   the label, and a 14px semibold label. At rest the label and the glyph are a step lighter than the text; on hover
+   they turn to the full text colour while the circle darkens, in the sliding highlight's 150ms. The profile row above
+   the list has the same corners. */
+.bx-artificer ul.bx-menu-object-sys_profile_stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li {
+    margin-top: 0;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li,
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li > div,
+.bx-artificer .bx-profile-stats .bx-profile-avatar-cnt {
+    border-radius: 0.75rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li > div > a:has(> .bx-stl-mii > *) {
+    padding-inline-start: 0.5rem;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii:has(> *) {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    margin-inline-end: 0.5rem;
+
+    border-radius: 9999px;
+    background-color: rgba(228, 228, 231, 0.5); /* gray-200 at 50% */
+    color: #52525b; /* gray-600 */
+
+    transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii > * {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+
+    font-size: 1.25rem;
+    color: inherit;
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mit {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: #52525b;
+
+    transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mii:has(> *) {
+    background-color: #d4d4d8; /* gray-300 */
+    color: #0a0a0c; /* gray-950 */
+}
+.bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mit {
+    color: #0a0a0c;
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mii:has(> *) {
+    background-color: rgba(63, 63, 70, 0.5); /* gray-700 at 50% */
+    color: #a1a1aa; /* gray-400 */
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li .bx-stl-mit {
+    color: #a1a1aa;
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mii:has(> *) {
+    background-color: #3f3f46; /* gray-700 */
+    color: #fafafc; /* gray-50 */
+}
+html.dark .bx-artificer ul.bx-menu-object-sys_profile_stats > li:hover .bx-stl-mit {
+    color: #fafafc;
+}
+
+/* Login form: "Forgot password?" sits on the Password label's line, at its end. The link's row comes after the field
+   in the page (so Tab goes Email, Password, the link), is ordered before it and takes no height: the link drops into
+   the label's line of the Password row under it. Only while the form has both rows. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password):has(> #bx-form-element-submit_text) {
+    display: flex;
+    flex-direction: column;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password {
+    order: 2;
+    margin-top: 0;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password ~ * {
+    order: 3;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password) > #bx-form-element-submit_text {
+    position: relative;
+    z-index: 1;
+    order: 1;
+    align-self: flex-end;
+    height: 0;
+}
+/* The link is a size under the labels, the size of a field's description. */
+#sys-form-login #bx-form-element-submit_text .bx-form-value {
+    font-size: 0.75rem;
+    line-height: 1.25rem; /* centred on the label's line */
+}
+/* A floating label leaves no label line: the link goes under the field, at its end. With a description or an error
+   under the field it shares their line: the row takes no height and the link is lifted onto it, and the text keeps
+   clear of the link. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password.bx-form-element-adaptive {
+    order: 1;
+    margin-top: 1rem;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive) > #bx-form-element-submit_text {
+    order: 2;
+    height: auto;
+    margin-top: 0.375rem; /* the link is 15px tall: 6px from the field keep a 24px circle around it clear of the field (WCAG 2.5.8) */
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info) > #bx-form-element-submit_text {
+    height: 0;
+    margin-top: 0;
+}
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info) > #bx-form-element-submit_text .bx-form-element {
+    position: absolute;
+    inset-inline-end: 0;
+    bottom: -0.25rem; /* onto the description's last line */
+
+    white-space: nowrap;
+}
+#sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info,
+#sys-form-login #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info ~ .bx-form-warn {
+    padding-inline-end: 9.5rem;
+}
+/* The same 6px between the field and the line the link shares with the description. */
+#sys-form-login .bx-form-section-content:has(> #bx-form-element-submit_text) > #bx-form-element-Password.bx-form-element-adaptive > .bx-form-info {
+    margin-top: 0.375rem;
+}
+
+/* A block's footer (designbox_footer.html, BxBaseFunctions::designBoxFooter): a quiet, centred notice under the block's
+   content, ruled off from it edge to edge. Wrapped lines are balanced. The template's own bx-def-* classes give other
+   templates the rule, the spacing and the small grey text; these set Artificer's. The rule reaches the block's edges
+   through the content's padding, whatever its size (--bx-db-padding, page_layouts.css). Its links are medium and
+   underlined, as NEO's (u-block-footer). */
+.bx-artificer .bx-db-footer {
+    margin: 1rem calc(-1 * var(--bx-db-padding, 1rem)) 0;
+    padding: 1rem var(--bx-db-padding, 1rem) 0;
+    border-top: 1px solid rgba(10, 10, 12, 0.08);
+
+    color: #52525b;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    text-align: center;
+    text-wrap: balance;
+}
+.bx-artificer .bx-db-footer a {
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+html.dark .bx-artificer .bx-db-footer {
+    border-top-color: rgba(250, 250, 252, 0.08);
+    color: #a1a1aa;
+}
+
+/* A block's header, as in NEO (theme.blocks): a row of the header icon, the title over the description, the actions.
+   The header icon (a block's "Header icon") is a 48px tile, as tall as the title over a description (24px), a 4px gap and
+   one line of the description (14px on 20px, which may wrap) together; a block's Title size makes it 44px or 56px
+   (css/page_layouts.css). The title icon (a block's "Title icon") is a 24px
+   icon in a 28px box with no background, before the title on its line. */
+.bx-artificer .bx-db-title > .bx-dbt-hic {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+
+    border-radius: 0.5rem;
+    background: rgba(10, 10, 12, 0.045);
+    font-size: 1.5rem;
+}
+html.dark .bx-artificer .bx-db-title > .bx-dbt-hic {
+    background: rgba(250, 250, 252, 0.06);
+}
+.bx-artificer .bx-db-title > .bx-dbt-hic + .bx-dbt-cnt {
+    margin-inline-start: 0.75rem;
+}
+.bx-artificer .bx-db-title > .bx-dbt-cnt {
+    min-width: 0;
+}
+.bx-artificer .bx-db-title .bx-dbt-row > .bx-dbt-ic {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-inline-end: 0.5rem;
+
+    font-size: 1.5rem;
+}
+/* A 24px glyph in the 28px box, no background, as NEO's title icon (theme.blocks u-block-title-icon). */
+.bx-artificer .bx-db-title .bx-dbt-row > .bx-dbt-ic :is(svg, .sys-icon) {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.bx-artificer .bx-db-title:has(.bx-dbt-dsc) {
+    align-items: flex-start;
+}
+.bx-artificer .bx-db-title:has(.bx-dbt-dsc) .bx-dbt-ttl {
+    line-height: 1.5rem;
+}
+.bx-artificer .bx-db-title .bx-dbt-dsc {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    letter-spacing: normal;
+    white-space: normal;
+    margin-top: 0.25rem;
+}
+
+/* Glass buttons: a regular button over a picture or any backdrop that varies.
+   The regular button is a translucent fill of the text ink (see "Common elements: Buttons" in template/css/tailwind.css), which needs a plain
+   surface under it: over a cover picture it all but disappears. There the button is NEO's glass button (NeoButton `glass`, web): a white fill
+   over a blurred backdrop whose contrast is flattened, so a photo stays apart from the label (light lifts black under the dark label, dark
+   dims white under the light one), with the glass rim as its edge.
+   Where it applies:
+   - a menu whose Button style is Glass (Studio > Navigation > a menu; BxDolMenu::BUTTON_STYLE_GLASS), which puts .bx-menu-btn-style-glass on
+     each of its items. This is the way to choose it for a menu, and the apps get the same choice through the menu's API;
+   - by itself inside a cover (.bx-cover-wrapper) and on the buttons that edit a picture in place (.bx-image-edit-buttons), unless the menu's
+     Button style says Regular or Plain;
+   - .bx-btn-glass on a button that is in no menu and sits over a picture.
+   A bordered menu item (.bx-stl-mib, the actions beside a profile's name) of a menu whose Button style is Glass takes the same look.
+   A primary button there is the glass prominent one (below); a disabled button keeps its own fill. Inside a cover all of them are capsules. */
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *),
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
+    background-color: rgb(255 255 255 / 0.3);
+    color: #0a0a0c;
+
+    /* No border: the rim is an inset shadow, which starts inside a border, so the 1px transparent one of a regular button would push the rim
+       1px in and leave a line of plain fill around it. The height is a min-height, so only the width loses 2px, as NeoButton's has none. */
+    border-width: 0;
+
+    -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+    backdrop-filter: blur(12px) saturate(150%) contrast(50%) brightness(130%);
+
+    /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
+    --tw-shadow: inset 0 3px 1.5px -1.5px rgb(255 255 255 / 1), inset 0 -3px 1.5px -1.5px rgb(255 255 255 / 1), 0 0 0 0.6px rgb(0 0 0 / 0.08), 1px 0 0 -0.4px rgb(0 0 0 / 0.22), -1px 0 0 -0.4px rgb(0 0 0 / 0.22), 0 4px 10px -2px rgb(0 0 0 / 0.03);
+}
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover,
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):hover {
+    background-color: rgb(255 255 255 / 0.4);
+    color: #0a0a0c;
+}
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active,
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):active {
+    background-color: rgb(255 255 255 / 0.55);
+    color: #0a0a0c;
+}
+.bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) i:not(.sys-colored),
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass :is(.sys-action-do-icon, .bx-mi-icon):not(.bx-popup *) {
+    color: inherit;
+}
+body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
+    box-shadow: var(--tw-shadow); /* a menu item has no shadow utility to carry --tw-shadow, as .bx-btn has */
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *),
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *) {
+    background-color: rgb(255 255 255 / 0.15);
+    color: #fafafc;
+
+    -webkit-backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+    backdrop-filter: blur(12px) saturate(150%) brightness(35%);
+
+    --tw-shadow: inset 0 1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 -1px 1px -0.5px rgb(255 255 255 / 0.28), inset 0 4px 5px -4px rgb(255 255 255 / 0.08), inset 0 -4px 5px -4px rgb(255 255 255 / 0.08), 0 0 0 0.6px rgb(0 0 0 / 0.5);
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover,
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):hover {
+    background-color: rgb(255 255 255 / 0.19);
+    color: #fafafc;
+}
+.dark .bx-btn:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-primary, .bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active,
+.dark body:not(.bx-std) .bx-stl-mib.bx-menu-btn-style-glass:not(.bx-popup *):active {
+    background-color: rgb(255 255 255 / 0.23);
+    color: #fafafc;
+}
+
+/* Glass prominent: the primary button wherever a regular one is glass (NeoButton `glassProminent`, web; NEO maps a menu's primary items
+   to it the same way, `button_primary_style`). The same values as NEO's `glass-prominent` and `shadow-glass-prominent` (global.css there),
+   tuned to the iOS button: the primary fill at 90% over a blurred backdrop, so a picture behind tints it a little (the backdrop is dimmed
+   first: over white the label would drop under 4.5:1); a rim of lighter tint along the top and the bottom with a soft glow inside it; a
+   hairline of darker tint, darker still at the sides (black on dark); a faint drop below.
+   Rim, glow and hairline are mixed from the fill (--bx-gp), so hover and active only change that one colour. */
+.bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+    --bx-gp: rgb(37 99 235);
+    --bx-gp-rim: color-mix(in oklab, var(--bx-gp) 75%, white);
+    --bx-gp-glow: color-mix(in srgb, var(--bx-gp-rim) 30%, transparent);
+    --bx-gp-edge: color-mix(in oklab, var(--bx-gp) 88%, black);
+    --bx-gp-side: color-mix(in oklab, var(--bx-gp) 78%, black);
+
+    background-color: color-mix(in srgb, var(--bx-gp) 90%, transparent);
+    border-width: 0; /* as the glass button above: the rim has to sit on the edge */
+
+    -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+    backdrop-filter: blur(12px) saturate(180%) brightness(70%);
+
+    /* --tw-shadow, not box-shadow: the focus ring is drawn by the same box-shadow and stays. */
+    --tw-shadow: inset 0 2px 1px -1px var(--bx-gp-rim), inset 0 -2px 1px -1px var(--bx-gp-rim), inset 0 5px 4px -4px var(--bx-gp-glow), inset 0 -5px 4px -4px var(--bx-gp-glow), 0 0 0 0.6px var(--bx-gp-edge), 1px 0 0 -0.4px var(--bx-gp-side), -1px 0 0 -0.4px var(--bx-gp-side), 0 4px 10px -2px rgb(0 0 0 / 0.06);
+}
+.bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):hover {
+    --bx-gp: rgb(29 78 216);
+}
+.bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *):active {
+    --bx-gp: rgb(30 64 175);
+}
+.dark .bx-btn.bx-btn-primary:is(.bx-btn-glass, .bx-menu-btn-style-glass *, .bx-cover-wrapper *, .bx-image-edit-buttons *):not(.bx-btn-disabled, .bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+    --bx-gp-glow: color-mix(in srgb, var(--bx-gp-rim) 20%, transparent);
+
+    --tw-shadow: inset 0 2px 1px -1px var(--bx-gp-rim), inset 0 -2px 1px -1px var(--bx-gp-rim), inset 0 8px 8px -6px var(--bx-gp-glow), inset 0 -8px 8px -6px var(--bx-gp-glow), 0 0 0 0.6px rgb(0 0 0 / 0.5), 1px 0 0 -0.4px rgb(0 0 0 / 0), -1px 0 0 -0.4px rgb(0 0 0 / 0), 0 4px 10px -2px rgb(0 0 0 / 0.3);
+}
+
+/* Over a cover the buttons are capsules, as NEO draws the buttons of its covers and header. A menu whose Button style says Regular or
+   Plain keeps the regular corners with the regular look. */
+.bx-cover-wrapper .bx-btn:not(.bx-menu-btn-style-regular *, .bx-menu-btn-style-plain *) {
+    border-radius: 9999px;
+}
+
+/* A menu whose Button style is Plain (BxDolMenu::BUTTON_STYLE_PLAIN; NeoButton `plain`): no fill in any state, the label alone. */
+.bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled),
+.bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):hover,
+.bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):active,
+.dark .bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled),
+.dark .bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):hover,
+.dark .bx-menu-btn-style-plain .bx-btn:not(.bx-btn-primary, .bx-btn-disabled):active {
+    background-color: transparent;
+}

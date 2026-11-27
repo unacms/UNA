@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Caption of the additional allowed Client IDs setting. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_bx_googlecon_option_client_ids"><![CDATA[Дополнительные разрешенные Client ID (через запятую, для веб, iOS и Android приложений NEO)]]></string_add>
+</resources>

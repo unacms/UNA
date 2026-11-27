@@ -1,0 +1,26 @@
+<div class="bx-stories-play">
+    <div class="bx-stories-play-cnt bx-def-padding">
+        <div class="bx-stories-p-progress bx-def-border-block flex flex-nowrap w-full h-1 rounded">
+            <div class="bx-stories-pp-pointer relative h-full bg-gray-400 dark:bg-gray-500 rounded" style="width:__width__%"></div>
+        </div>
+        <div class="bx-stories-p-list mt-4">
+            <bx_repeat:media>
+                <div class="bx-stories-pl-media">
+                    <div class="bx-stories-plm-cnt flex flex-col items-center w-full">
+                        <bx_if:title>
+                            <div class="bx-stories-plm-title mb-2 text-2xl">__title__</div>
+                        </bx_if:title>
+                        <div class="bx-stories-m-content flex-1">
+                            <bx_if:image>
+                                <img class="bx-stories-unit-size" src="__url_img__" alt="__title_attr__" />
+                            </bx_if:image>
+                            <bx_if:video>
+                                <div class="bx-stories-mt-video">__video__</div>
+                            </bx_if:video>
+                        </div>
+                    </div>
+                </div>
+            </bx_repeat:media>
+        </div>
+    </div>
+</div>

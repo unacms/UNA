@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Module install and enable fail when PHP libraries the module needs are missing; the audit names an ffmpeg built for another CPU. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_err_modules_missing_php_packages"><![CDATA[Этому модулю нужны PHP-библиотеки, которые не установлены: {0}. Выполните "composer install" в папке UNA или установите UNA из релизного пакета, в котором они есть.]]></string_add>
+    <string_add name="_sys_audit_msg_ffmpeg_not_runnable"><![CDATA[{0} не запускается на этом сервере ({1}): конвертация видео и аудио работать не будет. Установите ffmpeg для этого сервера и укажите путь к нему в BX_SYSTEM_FFMPEG в inc/header.inc.php или выполните здесь "composer install", чтобы скачать подходящую сборку.]]></string_add>
+</resources>

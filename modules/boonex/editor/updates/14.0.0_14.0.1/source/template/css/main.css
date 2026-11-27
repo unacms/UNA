@@ -1,0 +1,89 @@
+.bx-form-input-html-editor{
+	border: none !important;
+}
+
+.bx-form-input-html-editor .bx-embed-link{
+    width: calc(100% - 1rem);
+    margin: 0.5rem;
+    background: #f3e8c8;
+    color:#b19370;
+    box-shadow rgb(255, 255, 255) 0px 0px 0px 0px, rgb(209, 213, 219) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px;
+    display: block;
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    
+}
+.bx-form-input-html-editor .bx-embed-link::after{
+    content: attr(source);
+    width: 100%;
+    display: block;
+    position: relative;
+    text-align: center;
+    vertical-align: baseline;
+    font-size: 16px;
+    text-indent: 0px;
+}
+.cdx-input.image-tool__caption{
+    display: none;
+}
+.cdx-search-field{
+    display: none;
+}
+.ce-block__content,
+.ce-toolbar__content{
+    max-width: min(80ch, calc(100% - 60px));
+}
+.dark .ce-toolbar__settings-btn:hover{
+    background-color: rgb(55 65 81);
+    color: rgb(229 231 235);
+}
+.dark .ce-settings{
+    background-color: rgb(55 65 81);
+    border:none;
+    box-shadow: none;
+}
+.dark .ce-settings__button{
+    color:rgb(156, 163, 175);
+}
+.dark .ce-settings__button:hover
+{
+    background-color: rgb(75 85 99);
+}
+.dark .ce-block--selected .ce-block__content
+{
+    background-color: rgb(55 65 81);
+}
+.dark .ce-toolbar__plus
+{
+    color:rgb(156, 163, 175);
+}
+.dark .ce-toolbar__plus:hover
+{
+    background-color: rgb(75 85 99);
+}
+.dark .ce-popover
+{
+    background-color: rgb(55 65 81);
+    border: none;
+}
+.dark .ce-popover__item:hover{
+    background-color: rgb(55 65 81);
+    color: rgb(229 231 235);
+}
+.dark .ce-popover__item-icon{
+    background-color: rgb(55 65 81);
+    color: rgb(229 231 235);
+}
+.dark .cdx-settings-button{
+     color: rgb(156, 163, 175);
+}
+.dark .ce-toolbar__settings-btn:hover{
+     background-color: rgb(75 85 99);
+}
+.dark .cdx-settings-button:hover {
+    background-color: rgb(75 85 99);
+}
+.bx-form-input-html-editor{
+    height: auto !important;
+}

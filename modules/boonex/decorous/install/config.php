@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_decorous',
     'title' => 'Decorous (discontinued)',
     'note' => 'Decorous, design template, site theme',
-    'version' => '13.0.10.DEV',
+    'version' => '13.0.10',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

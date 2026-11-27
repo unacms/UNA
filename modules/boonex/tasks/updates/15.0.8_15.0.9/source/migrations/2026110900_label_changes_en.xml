@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- What a task's activity says when its labels change through set_property (API v2). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_tasks_txt_msg_edit_stickers"><![CDATA[<a href="{author_link}">{author_name}</a> changed labels to <b>{value}</b>]]></string_add>
+    <string_add name="_bx_tasks_txt_msg_edit_stickers_none"><![CDATA[<a href="{author_link}">{author_name}</a> removed the labels]]></string_add>
+</resources>

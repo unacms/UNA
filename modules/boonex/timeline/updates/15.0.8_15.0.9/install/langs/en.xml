@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Enable infinite scroll]]></string_upd>
+	<string_upd name="_bx_timeline_option_hot_threshold_age"><![CDATA[Maximum age of a commented or voted post that can be in the Hot feed, days (0 = no limit)]]></string_upd>
+	<string_upd name="_bx_timeline_option_hot_interval"><![CDATA[Time window for Hot events, hours (0 = no limit)]]></string_upd>
+	<string_upd name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Content age adjustment coefficient (0 = no adjustment)]]></string_upd>
+	<string_upd name="_bx_timeline_option_limit_attach_links"><![CDATA[Maximum attached links (0 = no limit)]]></string_upd>
+	<string_upd name="_bx_timeline_option_filters_style"><![CDATA[Filters: style]]></string_upd>
+	<string_upd name="_bx_timeline_form_post_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string_upd>
+	<string_upd name="_bx_timeline_form_attach_link_input_url"><![CDATA[Add link]]></string_upd>
+	<string_upd name="_bx_timeline_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string_upd>
+	<string_upd name="_bx_timeline_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_timeline_form_filters_input_by_contexts"><![CDATA[Communities:]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_sys_view"><![CDATA[Profile feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_view"><![CDATA[Profile feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_sys_view_home"><![CDATA[Public feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_view_home"><![CDATA[Public feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_sys_view_hot"><![CDATA[Hot feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_view_hot"><![CDATA[Hot feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_sys_item"><![CDATA[Feed item]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_item"><![CDATA[Feed item]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_sys_item_brief"><![CDATA[Feed item preview]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_item_brief"><![CDATA[Feed item preview]]></string_upd>
+	<string_upd name="_bx_timeline_page_title_sys_manage_administration"><![CDATA[Manage all]]></string_upd>
+	<string_upd name="_bx_timeline_page_block_title_system_post_profile"><![CDATA[Post to Context Feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_block_title_post_profile"><![CDATA[Post to feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_block_title_view_profile"><![CDATA[Profile feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_block_title_post_home"><![CDATA[Post to feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_block_title_view_home_outline"><![CDATA[Public feed]]></string_upd>
+	<string_upd name="_bx_timeline_page_block_title_view_hot_outline"><![CDATA[Hot feed]]></string_upd>
+	<string_add name="_bx_timeline_menu_item_info_onboarding_post"><![CDATA[A post in the feed shows new members what the site is about.]]></string_add>
+	<string_upd name="_bx_timeline_menu_item_title_system_item_repost_with"><![CDATA[Repost with text]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_item_repost_with"><![CDATA[Repost with text]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_system_item_repost_to"><![CDATA[Repost to context]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_item_repost_to"><![CDATA[Repost to a community]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_item_send"><![CDATA[Send to friend]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_system_item_mute"><![CDATA[Mute author]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_item_mute"><![CDATA[Mute author]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_system_add_link"><![CDATA[Add link]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_add_link"><![CDATA[Add link]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_add_photo"><![CDATA[Add photo]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_add_file"><![CDATA[Add file]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_add_video"><![CDATA[Add video]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_system_add_video_record"><![CDATA[Record video]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_add_video_record"><![CDATA[Record video]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_system_add_poll"><![CDATA[Add poll]]></string_upd>
+	<string_upd name="_bx_timeline_menu_item_title_add_poll"><![CDATA[Add poll]]></string_upd>
+	<string_add name="_bx_timeline_menu_item_title_system_onboarding_post"><![CDATA[Write the first post]]></string_add>
+	<string_add name="_bx_timeline_menu_item_title_onboarding_post"><![CDATA[Write the first post]]></string_add>
+	<string_upd name="_bx_timeline_txt_msg_performed_action"><![CDATA[Done.]]></string_upd>
+	<string_upd name="_bx_timeline_txt_msg_posted"><![CDATA[Posted.]]></string_upd>
+	<string_upd name="_bx_timeline_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_upd name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to a community]]></string_upd>
+	<string_add name="_bx_timeline_txt_empty_feed_create"><![CDATA[Create new…]]></string_add>
+	<string_add name="_bx_timeline_txt_empty_feed_text"><![CDATA[Write a new post or follow someone to get started.]]></string_add>
+	<string_add name="_bx_timeline_txt_empty_feed_title"><![CDATA[Nothing here yet]]></string_add>
+	<string_upd name="_bx_timeline_txt_err_cannot_repost"><![CDATA[The post could not be reposted. Please try again.]]></string_upd>
+	<string_upd name="_bx_timeline_txt_msg_success_repost"><![CDATA[Reposted.]]></string_upd>
+	<string_add name="_bx_timeline_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string_add>
+</resources>

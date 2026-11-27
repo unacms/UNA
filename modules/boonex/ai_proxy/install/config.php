@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_ai_proxy',
     'title' => 'AI Proxy',
     'note' => 'Operator chat proxy. Installed on the master site only.',
-    'version' => '15.0.0.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_spaces',
     'title' => 'Spaces',
     'note' => 'Spaces, communities',
-    'version' => '15.0.6.DEV',
+    'version' => '15.0.6',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

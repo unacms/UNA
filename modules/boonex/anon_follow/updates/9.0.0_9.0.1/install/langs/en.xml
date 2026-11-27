@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_anon_follow_persons_fields"><![CDATA[People fields]]></string_upd>
+	<string_upd name="_bx_anon_follow_orgs_fields"><![CDATA[Organizations fields]]></string_upd>
+	<string_upd name="_bx_anon_follow_fields_separator"><![CDATA[Fields separator]]></string_upd>
+</resources>

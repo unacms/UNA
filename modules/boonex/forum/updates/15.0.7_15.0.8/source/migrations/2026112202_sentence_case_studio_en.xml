@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_forum_option_auto_activation_for_categories"><![CDATA[Auto-activation for categories]]></string_upd>
+    <string_upd name="_bx_forum_page_title_sys_home"><![CDATA[Discussions home]]></string_upd>
+    <string_upd name="_bx_forum_page_title_sys_entries_categories"><![CDATA[Discussion categories]]></string_upd>
+    <string_upd name="_bx_forum_page_title_sys_manage"><![CDATA[Manage own]]></string_upd>
+    <string_upd name="_bx_forum_page_title_sys_manage_administration"><![CDATA[Manage all]]></string_upd>
+    <string_upd name="_bx_forum_page_title_sys_entries_favorites"><![CDATA[Favorite discussions]]></string_upd>
+    <string_upd name="_bx_forum_menu_item_title_system_cpa_video_record"><![CDATA[Record video]]></string_upd>
+    <string_upd name="_bx_forum_menu_item_title_system_cpa_poll"><![CDATA[Add poll]]></string_upd>
+    <string_upd name="_bx_forum_menu_item_title_system_add_link"><![CDATA[Add link]]></string_upd>
+    <string_upd name="_bx_forum_menu_item_title_system_resolve_entry"><![CDATA[Mark as resolved]]></string_upd>
+    <string_upd name="_bx_forum_menu_item_title_system_unresolve_entry"><![CDATA[Mark as unresolved]]></string_upd>
+    <string_upd name="_bx_forum_menu_item_title_system_more"><![CDATA[More actions]]></string_upd>
+</resources>

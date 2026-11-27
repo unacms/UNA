@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Artificer's header width and main menu alignment, in place of Stretched Header; its page width follows Designer when empty. -->
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_artificer_stg_cpt_option_header_width"><![CDATA[Header width]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_width_full"><![CDATA[Full width]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_width_page"><![CDATA[Page width]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align"><![CDATA[Main menu alignment]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_center"><![CDATA[Center]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_end"><![CDATA[End]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_start"><![CDATA[Start]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_designer"><![CDATA[As set in Designer]]></string_add>
+	<string_del name="_bx_artificer_stg_cpt_option_header_stretched"></string_del>
+	<string_upd name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Page width in pixels (empty: as set in Designer)]]></string_upd>
+</resources>

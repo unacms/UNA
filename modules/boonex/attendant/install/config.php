@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_attendant',
     'title' => 'Attendant',
     'note' => 'Attendant, site assistant',
-    'version' => '14.0.1.DEV',
+    'version' => '14.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

@@ -1,0 +1,34 @@
+<bx_if:logged_in>
+<style>
+    .bx-hide-when-logged-in {
+        display:none !important;
+    }
+</style>
+</bx_if:logged_in>
+<div class="bx-menu-toolbar-padding pt-16">
+    <div class="bx-cover-gap overflow-hidden">
+        <div class="bx-cover-wrapper<bx_if:empty_cover_class> bx-cover-empty</bx_if:empty_cover_class> relative" <bx_if:bg>style="background-image:url(__image_url__)"</bx_if:bg>>
+            <div class="bx-cover-gradient absolute inset-0 pointer-events-none"></div>
+            <div class="relative mx-auto py-16 text-center">
+                <div>
+                    <h1 class="text-4xl  sm:text-5xl xl:text-6xl tracking-tight  font-bold text-white">
+                        <span class="block pb-1 relative"><bx_text:_bx_artificer_txt_splash_welcome_l1 /></span>
+                        <span class="block pb-1  bg-clip-text text-transparent bg-gradient-to-r from-green-200 to-blue-200"><bx_text:_bx_artificer_txt_splash_welcome_l2 /></span>
+                    </h1>
+                    <p class="p-8  font-light text-white text-base  sm:text-lg xl:text-xl">
+                        <span class="block">__site_description__</span>
+                    </p>
+                    <div class=" w-full flex justify-center items-center">
+                        <a href="__link_join__" class="bx-btn bx-btn-primary">
+                            <bx_text:_bx_artificer_txt_splash_welcome_a1 />
+                        </a>
+                        <a href="__link_login__" class="bx-btn ml-3">
+                            <i class="sys-icon arrow-right -ml-1 mr-2" aria-hidden="true"></i>
+                            <bx_text:_bx_artificer_txt_splash_welcome_a2 />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

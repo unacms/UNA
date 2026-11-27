@@ -1,0 +1,53 @@
+.bx-messenger-history-block-header {
+    @apply p-4 flex gap-2 md:gap-3 items-center w-full min-h-[4.25rem];
+}
+
+.bx-messenger-history-block-header .bx-db-title{
+    @apply flex-1 min-w-[1.5rem] truncate;
+}
+
+/* the buttons keep their size, the title takes the rest */
+.bx-messenger-history-block-header .bx-db-menu{
+    @apply flex-none justify-end overflow-visible max-w-none flex items-center;
+}
+
+.bx-messenger-participants-usernames {
+    @apply truncate;
+}
+
+.bx-messenger-block-menu-align-right {
+    @apply gap-1 md:gap-2;
+}
+
+.bx-messenger-block-menu-align-right .bx-menu-item {
+    @apply flex;
+}
+
+/* A starred talk: the star filled (oMessenger.starLot) */
+.bx-messenger-block-menu-align-right .bx-menu-item .star.fill {
+    fill: currentColor;
+}
+
+/*.bx-messenger-lot-header-menu {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.bx-messenger-lot-header-menu a {
+    margin-right: 0.4rem;
+}
+
+.bx-messenger-lot-header-menu a:last-child {
+    margin-right: 0;
+}
+
+.bx-messenger-block .bx-db-menu {
+    max-width: 85%;
+    flex: 1 1 60%;
+}
+
+.bx-media-phone .bx-messenger-block .bx-db-title {
+    flex: 1 1 5%;
+}*/

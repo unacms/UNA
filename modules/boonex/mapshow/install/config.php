@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_mapshow',
     'title' => 'Map Show',
     'note' => 'Maps, locations shown on a map',
-    'version' => '1.0.0.DEV',
+    'version' => '1.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

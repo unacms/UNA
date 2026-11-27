@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_tasks_option_personal_prefix"><![CDATA[Префикс номеров задач вне сообществ]]></string_add>
+	<string_add name="_bx_tasks_option_personal_prefix_err"><![CDATA[Используйте от 2 до 10 латинских букв и цифр, первой должна быть буква.]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_sys_prefix"><![CDATA[Префикс]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix"><![CDATA[Префикс номеров задач]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix_err"><![CDATA[Используйте от 2 до 10 латинских букв и цифр, первой должна быть буква.]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix_err_taken"><![CDATA[Этот префикс используется или использовался другим сообществом. Выберите другой.]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix_info"><![CDATA[С него начинаются номера задач, например UNA-12. Ссылки с прежним префиксом продолжают работать.]]></string_add>
+	<string_upd name="_bx_tasks_form_pv_input_err"><![CDATA[Это поле обязательно. Пожалуйста, заполните его.]]></string_upd>
+	<string_add name="_bx_tasks_form_import_input_source"><![CDATA[Источник]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_source_linear"><![CDATA[Linear]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_destination"><![CDATA[Назначение]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_params"><![CDATA[Параметры]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_submit"><![CDATA[Импортировать]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_err"><![CDATA[Это поле обязательно. Пожалуйста, заполните его.]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_import"><![CDATA[Импорт]]></string_add>
+	<string_add name="_bx_tasks_txt_empty_title"><![CDATA[Задач пока нет]]></string_add>
+	<string_upd name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+	<string_add name="_bx_tasks_txt_err_timer_not_found"><![CDATA[Таймер не найден или пуст.]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_perform_action"><![CDATA[Действие было выполнено.]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_schedule_action"><![CDATA[Действие было запланировано.]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_stickers"><![CDATA[<a href="{author_link}">{author_name}</a> изменил(а) метки на <b>{value}</b>]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_stickers_none"><![CDATA[<a href="{author_link}">{author_name}</a> убрал(а) метки]]></string_add>
+	<string_add name="_bx_tasks_txt_time_logged"><![CDATA[Залогировано]]></string_add>
+	<string_add name="_bx_tasks_txt_time_billed"><![CDATA[К оплате]]></string_add>
+	<string_add name="_bx_tasks_txt_time_original"><![CDATA[Исходное]]></string_add>
+	<string_add name="_bx_tasks_txt_time_by_timer"><![CDATA[Таймер]]></string_add>
+	<string_add name="_bx_tasks_txt_time_by_hand"><![CDATA[Вручную]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_tm_value_total"><![CDATA[Всего]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_tm_value_manual"><![CDATA[Вручную]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[К оплате]]></string_add>
+	<string_add name="_bx_tasks_form_time_input_value_billed"><![CDATA[Оплачиваемое время]]></string_add>
+	<string_add name="_bx_tasks_page_title_sys_entries_billing_in_context"><![CDATA[Биллинг задач в контексте]]></string_add>
+	<string_add name="_bx_tasks_page_title_entries_billing_in_context"><![CDATA[Биллинг]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Оплачиваемое время контекста по участникам]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Оплачиваемое время]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_view_context_billing"><![CDATA[Биллинг в контексте]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_view_context_billing"><![CDATA[Биллинг]]></string_add>
+	<string_add name="_bx_tasks_alert_action_timer_stopped_personal"><![CDATA[Остановка слишком долгого таймера]]></string_add>
+	<string_add name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} остановлен: он работал слишком долго]]></string_add>
+	<string_add name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[Таймер <b class="bx-ntfs-content-profile">{entry_author_name}</b> по <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} в <b class="bx-ntfs-content-profile">{owner_name}</b> остановлен: он работал слишком долго]]></string_add>
+	<string_add name="_bx_tasks_option_timer_running_limit"><![CDATA[Ставить на паузу таймер, который идёт без паузы дольше, часов (0 - никогда)]]></string_add>
+	<string_add name="_bx_tasks_txt_time_period"><![CDATA[Период]]></string_add>
+</resources>

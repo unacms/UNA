@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_artificer_stg_cpt_option_page_width"><![CDATA[Ширина страницы в пикселях (пусто: как в Дизайнере)]]></string_upd>
+	<string_add name="_bx_artificer_stg_cpt_option_header_width"><![CDATA[Ширина шапки]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_width_full"><![CDATA[Во всю ширину]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_width_page"><![CDATA[По ширине страницы]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align"><![CDATA[Положение главного меню]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_center"><![CDATA[По центру]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_end"><![CDATA[В конце]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_align_start"><![CDATA[В начале]]></string_add>
+	<string_add name="_bx_artificer_stg_cpt_option_header_designer"><![CDATA[Как в Дизайнере]]></string_add>
+	<string_upd name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Каждая строка — одно изображение: <b>имя</b> => <b>значение</b> => <b>тип</b> => <b>класс</b>. <b>тип</b> и <b>класс</b> можно опустить. Типы: <b>ic</b> — значок (имя значка Lucide, как на lucide.dev), <b>im</b> — изображение (имя файла или URL), <b>sc</b> — код SVG.<br />Чтобы увидеть изменения, очистите кеш шаблонов (если он включён).]]></string_upd>
+	<string_add name="_bx_artificer_page_block_title_system_splash"><![CDATA[Титульная страница со статистикой]]></string_add>
+	<string_upd name="_bx_artificer_txt_splash_login_join"><![CDATA[Зарегистрироваться]]></string_upd>
+</resources>
