@@ -2,6 +2,7 @@
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
 <!-- Module title: Stream is now Live (una-vocabulary skill). Names, URIs and language keys stay. -->
 <resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_module_stream"><![CDATA[Live]]></string_upd>
     <string_upd name="_bx_stream"><![CDATA[Live]]></string_upd>
     <string_upd name="_bx_stream_cmts"><![CDATA[Live comments]]></string_upd>
     <string_upd name="_bx_stream_reactions"><![CDATA[Live reactions]]></string_upd>

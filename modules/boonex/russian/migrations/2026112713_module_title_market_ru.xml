@@ -2,6 +2,7 @@
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
 <!-- Module title in Russian to match the new English title. -->
 <resources name="ru" flag="ru" title="Russian" category="Market">
+    <string_upd name="_sys_module_market"><![CDATA[Маркетплейс]]></string_upd>
     <string_upd name="_bx_market"><![CDATA[Маркетплейс]]></string_upd>
     <string_upd name="_bx_market_page_title_home"><![CDATA[Маркетплейс]]></string_upd>
     <string_upd name="_bx_market_cmts"><![CDATA[Маркетплейс - Обзоры]]></string_upd>

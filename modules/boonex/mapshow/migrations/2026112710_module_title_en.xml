@@ -2,6 +2,7 @@
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
 <!-- Module title: Map Show is now Map (una-vocabulary skill). Names, URIs and language keys stay. -->
 <resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_module_mapshow"><![CDATA[Map]]></string_upd>
     <string_upd name="_bx_mapshow"><![CDATA[Map]]></string_upd>
     <string_upd name="_bx_mapshow_adm_stg_cpt_type"><![CDATA[Map]]></string_upd>
     <string_upd name="_bx_mapshow_adm_stg_cpt_category_general"><![CDATA[Map]]></string_upd>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The module title string the installer writes (BxDolModule::getTitleKey), which Nexus and other pickers read: it still had the title from before 2026112170_vocabulary. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_module_acl"><![CDATA[Memberships]]></string_upd>
+</resources>

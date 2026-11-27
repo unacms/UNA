@@ -2,6 +2,7 @@
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
 <!-- Module title: Market is now Marketplace (una-vocabulary skill). Names, URIs and language keys stay. -->
 <resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_module_market"><![CDATA[Marketplace]]></string_upd>
     <string_upd name="_bx_market"><![CDATA[Marketplace]]></string_upd>
     <string_upd name="_bx_market_cmts"><![CDATA[Marketplace reviews]]></string_upd>
     <string_upd name="_bx_market_reactions"><![CDATA[Marketplace reactions]]></string_upd>

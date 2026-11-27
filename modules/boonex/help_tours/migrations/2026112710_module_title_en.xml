@@ -2,6 +2,7 @@
 <!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
 <!-- Module title: Help Tours is now Guided tours (una-vocabulary skill). Names, URIs and language keys stay. -->
 <resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_module_help_tours"><![CDATA[Guided tours]]></string_upd>
     <string_upd name="_bx_help_tours"><![CDATA[Guided tours]]></string_upd>
     <string_upd name="_bx_help_tours_page_tours"><![CDATA[Guided tours]]></string_upd>
     <string_upd name="_bx_help_tours_cpt_tour_details"><![CDATA[Tour details]]></string_upd>
