@@ -228,8 +228,10 @@
     <!-- ============================================  -->
     <target name="package_upgrade">
         <tstamp />
-        <propertyprompt propertyName="version_from" promptText="Enter version to upgrade from" />
-        <propertyprompt propertyName="version_to" promptText="Enter version to upgrade to" />
+        <!-- asked only when not given: phing -Dversion_from=15.0.0.RC4 -Dversion_to=15.0.0.RC5 package_upgrade
+             (propertyprompt, used here before, is not in Phing 3) -->
+        <input propertyName="version_from" message="Enter version to upgrade from" />
+        <input propertyName="version_to" message="Enter version to upgrade to" />
         <property name="package_name" value="UNA-Patch-v.${version_from}-to-v.${version_to}" override="yes" />
         <property name="package_file" value="${package_name}.zip" />
         <echo msg="Packaging ${package_file} file..." />

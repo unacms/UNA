@@ -218,6 +218,26 @@ php periodic/migration.php --accept
 
 A module that is disabled is not checked until it is enabled again.
 
+## Update packs
+
+An update pack built with `scripts/release/` has no SQL of its own. It brings the migrations and
+runs them with `BxDolMigrations::forUpdate()`, whatever the site's update channel:
+
+- the system pack (`upgrade/files/<from>-<to>/script.php`) runs the common folder and the system
+  module's folder, after the pack's files are copied, and only then sets the new system version: a
+  failed migration leaves the site on the previous version, so the update can be run again and the
+  module packs, which need the new version, wait;
+- a module's pack runs that module's folder in its `execute_sql` step
+  (`BxDolStudioUpdater::actionExecuteSql`, through `BxDolMigrations::runForModule()`), after
+  `update_files` copied it from the pack's `source/migrations/`. For a disabled module nothing
+  runs: its files and version are updated, and its migrations run when it is enabled
+  (`BxDolStudioInstaller::enable`), whatever the channel.
+
+Each migration runs once and is recorded in the ledger, so the site has nothing pending
+afterwards. A pack carries the module's whole `migrations/` folder: a site that got earlier
+changes from packs' SQL has none of those files, and a migration is safe to run on a database
+that already has its change.
+
 ## Updating by copying files
 
 A site updated by copying a newer release's files over its own (not with the update packs):

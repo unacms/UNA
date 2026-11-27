@@ -201,6 +201,50 @@ class BxDolMigrations
     }
 
     /**
+     * The migrations an update pack applies, as an instance that runs them whatever the site's
+     * update channel: the pack is the release a beta or stable site was given, and its files are
+     * on the site by then. With no module: the common folder and the system module, for the
+     * system update pack. With a module's name: that module's folder, for its update pack.
+     * A disabled module has no source, as in any run: its migrations hold rows that enable.sql
+     * inserts, so they wait until the module is enabled.
+     *
+     * @param string $sModule module name (`sys_modules`.`name`), '' for common and system
+     */
+    public function forUpdate(string $sModule = '', ?callable $fLog = null): self
+    {
+        $aSources = [];
+        foreach ($this->getSources() as $aSource) {
+            if ($sModule === '' ? $aSource['scope'] !== self::SCOPE_MODULE : $aSource['module'] === $sModule) {
+                $aSources[] = $aSource;
+            }
+        }
+
+        return new self($this->_oQuery, $aSources, $fLog ?? $this->_fLog, $this->_sSystemVersion, self::CHANNEL_DEV);
+    }
+
+    /**
+     * Run a module's pending migrations, whatever the site's update channel: after its update pack
+     * copied them (BxDolStudioUpdater), and when it is enabled (BxDolStudioInstaller), which catches
+     * up a module whose pack came while it was disabled. A disabled module's run does nothing.
+     *
+     * @param string $sModule module name (`sys_modules`.`name`)
+     * @return string '' when nothing failed, otherwise what did
+     */
+    public function runForModule(string $sModule): string
+    {
+        $aResult = $this->forUpdate($sModule)->run();
+
+        if ($aResult['problems']) {
+            return implode('; ', $aResult['problems']);
+        }
+        if ($aResult['failed'] !== '') {
+            return $aResult['failed'] . ': ' . $aResult['error'];
+        }
+
+        return $aResult['refresh_error'];
+    }
+
+    /**
      * Every migration of the sources, in the order they run.
      *
      * @return list<array> source fields plus readFile() fields and `label`
