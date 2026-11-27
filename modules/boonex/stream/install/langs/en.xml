@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
 
-    <string name="_bx_stream"><![CDATA[Streams]]></string>
-    <string name="_bx_stream_cmts"><![CDATA[Streams' Comments]]></string>
-    <string name="_bx_stream_reactions"><![CDATA[Streams' Reactions]]></string>
+    <string name="_bx_stream"><![CDATA[Live]]></string>
+    <string name="_bx_stream_cmts"><![CDATA[Live comments]]></string>
+    <string name="_bx_stream_reactions"><![CDATA[Live reactions]]></string>
 
     <string name="_bx_stream_options_cat_streaming"><![CDATA[Streaming]]></string>
     <string name="_bx_stream_options_cat_engine_ome"><![CDATA[OvenMediaEngine]]></string>
@@ -108,7 +108,7 @@
     <string name="_bx_stream_page_title_sys_view_entry"><![CDATA[View Stream]]></string>
     <string name="_bx_stream_page_title_view_entry"><![CDATA[{title}]]></string>
     <string name="_bx_stream_page_block_title_entry_text"><![CDATA[Stream Text]]></string>
-    <string name="_bx_stream_page_title_browse"><![CDATA[Streams]]></string>
+    <string name="_bx_stream_page_title_browse"><![CDATA[Live]]></string>
     <string name="_bx_stream_page_title_search_results"><![CDATA[Streams matching "{0}"]]></string>
     <string name="_bx_stream_page_block_title_entry_rtmp_settings"><![CDATA[RTMP Settings]]></string>
     <string name="_bx_stream_page_block_title_entry_recordings"><![CDATA[Recordings]]></string>
@@ -158,8 +158,8 @@
 
     <string name="_bx_stream_menu_set_title_view_entry"><![CDATA[Stream Actions]]></string>
     <string name="_bx_stream_menu_title_view_entry"><![CDATA[Stream Actions]]></string>
-    <string name="_bx_stream_menu_title_submenu"><![CDATA[Streams Submenu]]></string>
-    <string name="_bx_stream_menu_set_title_submenu"><![CDATA[Streams Submenu]]></string>
+    <string name="_bx_stream_menu_title_submenu"><![CDATA[Live submenu]]></string>
+    <string name="_bx_stream_menu_set_title_submenu"><![CDATA[Live submenu]]></string>
     <string name="_bx_stream_menu_item_title_system_create_entry"><![CDATA[Stream]]></string>
     <string name="_bx_stream_menu_item_title_create_entry"><![CDATA[Stream]]></string>
     <string name="_bx_stream_menu_item_title_system_edit_entry"><![CDATA[Edit]]></string>
@@ -167,8 +167,8 @@
     <string name="_bx_stream_menu_item_title_system_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_stream_menu_item_title_delete_entry"><![CDATA[Delete]]></string>
     <string name="_bx_stream_menu_item_title_system_view_entry"><![CDATA[View Stream]]></string>
-    <string name="_bx_stream_menu_item_title_system_entries_home"><![CDATA[Streams]]></string>
-    <string name="_bx_stream_menu_item_title_entries_home"><![CDATA[Streams]]></string>
+    <string name="_bx_stream_menu_item_title_system_entries_home"><![CDATA[Live]]></string>
+    <string name="_bx_stream_menu_item_title_entries_home"><![CDATA[Live]]></string>
     <string name="_bx_stream_menu_item_title_system_entries_manage"><![CDATA[Manage]]></string>
     <string name="_bx_stream_menu_item_title_entries_manage"><![CDATA[Manage]]></string>
 
@@ -177,8 +177,8 @@
     <string name="_bx_stream_menu_title_manage_tools"><![CDATA[Manage Tools Submenu]]></string>
     <string name="_bx_stream_menu_item_title_system_manage_account"><![CDATA[Manage account]]></string>
     <string name="_bx_stream_menu_item_title_manage_account"><![CDATA[Manage account]]></string>
-    <string name="_bx_stream_menu_item_title_system_admt_stream"><![CDATA[Streams]]></string>
-    <string name="_bx_stream_menu_item_title_admt_stream"><![CDATA[Streams]]></string>
+    <string name="_bx_stream_menu_item_title_system_admt_stream"><![CDATA[Live]]></string>
+    <string name="_bx_stream_menu_item_title_admt_stream"><![CDATA[Live]]></string>
     <string name="_bx_stream_menu_item_title_manage_my"><![CDATA[My Streams]]></string>
     <string name="_bx_stream_menu_item_title_manage_all"><![CDATA[All Streams]]></string>
     <string name="_bx_stream_menu_item_title_system_manage_my_stream"><![CDATA[My streams]]></string>
@@ -205,11 +205,11 @@
     <string name="_bx_stream_grid_action_publish"><![CDATA[Publish in videos module]]></string>
     <string name="_bx_stream_grid_action_download"><![CDATA[Download recording]]></string>
 
-    <string name="_bx_stream_chart_growth"><![CDATA[Streams: Growth]]></string>
-    <string name="_bx_stream_chart_growth_speed"><![CDATA[Streams: Growth Speed]]></string>
+    <string name="_bx_stream_chart_growth"><![CDATA[Live: growth]]></string>
+    <string name="_bx_stream_chart_growth_speed"><![CDATA[Live: growth speed]]></string>
 
-    <string name="_bx_stream_search_extended"><![CDATA[Streams Search]]></string>
-    <string name="_bx_stream_search_extended_cmts"><![CDATA[Streams Comments Search]]></string>
+    <string name="_bx_stream_search_extended"><![CDATA[Live search]]></string>
+    <string name="_bx_stream_search_extended_cmts"><![CDATA[Live comments search]]></string>
 
     <string name="_bx_stream_pre_lists_cats"><![CDATA[Stream categories]]></string>
     <string name="_bx_stream_cat_Animals_Pets"><![CDATA[Animals & Pets]]></string>

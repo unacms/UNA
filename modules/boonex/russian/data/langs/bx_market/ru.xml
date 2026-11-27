@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="ru" flag="ru" title="Russian">
-    <string name="_bx_market"><![CDATA[Рынок]]></string>
-    <string name="_bx_market_cmts"><![CDATA[Рынок - Обзоры]]></string>
-    <string name="_bx_market_reactions"><![CDATA[Рынок - Реакции]]></string>
+    <string name="_bx_market"><![CDATA[Маркетплейс]]></string>
+    <string name="_bx_market_cmts"><![CDATA[Маркетплейс - Обзоры]]></string>
+    <string name="_bx_market_reactions"><![CDATA[Маркетплейс - Реакции]]></string>
 
     <string name="_bx_market_option_enable_auto_approve"><![CDATA[Автоматически активировать продукт после создания]]></string>
     <string name="_bx_market_option_enable_no_payments"><![CDATA[Разрешить работать без платежей]]></string>
@@ -175,8 +175,8 @@
     <string name="_bx_market_page_title_browse_updated"><![CDATA[Обновлённые продукты]]></string>
     <string name="_bx_market_page_title_browse_category"><![CDATA[Продукты в категории: {0}]]></string>
     <string name="_bx_market_page_title_browse_keyword"><![CDATA[Продукты с хэштегом: {0}]]></string>
-    <string name="_bx_market_page_title_sys_home"><![CDATA[Рынок - Домой]]></string>
-    <string name="_bx_market_page_title_home"><![CDATA[Рынок]]></string>
+    <string name="_bx_market_page_title_sys_home"><![CDATA[Маркетплейс - Домой]]></string>
+    <string name="_bx_market_page_title_home"><![CDATA[Маркетплейс]]></string>
     <string name="_bx_market_page_title_sys_entries_by_category"><![CDATA[Продукты в категории]]></string>
     <string name="_bx_market_page_title_entries_by_category"><![CDATA[Продукты в {category_name}]]></string>
     <string name="_bx_market_page_block_title_sys_entries_by_category"><![CDATA[Продукты в категории]]></string>
@@ -280,8 +280,8 @@
     <string name="_bx_market_menu_title_view_entry"><![CDATA[Продукт - Действия]]></string>
     <string name="_bx_market_menu_set_title_view_entry_more"><![CDATA[Продукт - Дополнительные действия]]></string>
     <string name="_bx_market_menu_title_view_entry_more"><![CDATA[Продукт - Дополнительные действия]]></string>
-    <string name="_bx_market_menu_title_submenu"><![CDATA[Рынок - Подменю]]></string>
-    <string name="_bx_market_menu_set_title_submenu"><![CDATA[Рынок - Подменю]]></string>
+    <string name="_bx_market_menu_title_submenu"><![CDATA[Маркетплейс - Подменю]]></string>
+    <string name="_bx_market_menu_set_title_submenu"><![CDATA[Маркетплейс - Подменю]]></string>
     <string name="_bx_market_menu_item_title_system_create_entry"><![CDATA[Продукт]]></string>
     <string name="_bx_market_menu_item_title_create_entry"><![CDATA[Продукт]]></string>
     <string name="_bx_market_menu_item_title_system_edit_entry"><![CDATA[Редактировать продукт]]></string>
@@ -300,12 +300,12 @@
     <string name="_bx_market_menu_item_title_unhide_entry"><![CDATA[Публиковать]]></string>
     <string name="_bx_market_menu_item_title_system_hide_entry"><![CDATA[Скрыть продукт]]></string>
     <string name="_bx_market_menu_item_title_hide_entry"><![CDATA[Скрыть]]></string>
-    <string name="_bx_market_menu_item_title_system_entries_home"><![CDATA[Рынок]]></string>
-    <string name="_bx_market_menu_item_title_entries_home"><![CDATA[Рынок]]></string>
+    <string name="_bx_market_menu_item_title_system_entries_home"><![CDATA[Маркетплейс]]></string>
+    <string name="_bx_market_menu_item_title_entries_home"><![CDATA[Маркетплейс]]></string>
     <string name="_bx_market_menu_item_title_system_entries_categories"><![CDATA[Категории]]></string>
     <string name="_bx_market_menu_item_title_entries_categories"><![CDATA[Категории]]></string>
-    <string name="_bx_market_menu_item_title_system_entries_public"><![CDATA[Рынок]]></string>
-    <string name="_bx_market_menu_item_title_entries_public"><![CDATA[Рынок]]></string>
+    <string name="_bx_market_menu_item_title_system_entries_public"><![CDATA[Маркетплейс]]></string>
+    <string name="_bx_market_menu_item_title_entries_public"><![CDATA[Маркетплейс]]></string>
     <string name="_bx_market_menu_item_title_system_entries_search"><![CDATA[Поиск]]></string>
     <string name="_bx_market_menu_item_title_entries_search"><![CDATA[Поиск]]></string>
     <string name="_bx_market_menu_item_title_system_entries_manage"><![CDATA[Управление продуктами]]></string>
@@ -398,8 +398,8 @@
     <string name="_bx_market_grid_txt_lcs_never"><![CDATA[никогда]]></string>
     <string name="_bx_market_popup_title_lcs_edit"><![CDATA[Редактировать лицензию]]></string>
 
-    <string name="_bx_market_chart_growth"><![CDATA[Рынок: Развитие]]></string>
-    <string name="_bx_market_chart_growth_speed"><![CDATA[Рынок: Скорость развития]]></string>
+    <string name="_bx_market_chart_growth"><![CDATA[Маркетплейс: Развитие]]></string>
+    <string name="_bx_market_chart_growth_speed"><![CDATA[Маркетплейс: Скорость развития]]></string>
 
     <string name="_bx_market_search_extended"><![CDATA[Поиск продуктов]]></string>
     <string name="_bx_market_search_extended_cmts"><![CDATA[Поиск комментариев к продуктам]]></string>

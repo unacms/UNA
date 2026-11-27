@@ -22,6 +22,15 @@ These rules apply to English strings: module, page, block and menu titles, optio
 | The Convos module | **Private messages** | Convos, Conversations |
 | Paid Levels (ACL) module | **Memberships** | Paid Levels, ACL |
 | Mass Mailer module | **Email campaigns** | Mass mailer |
+| Market module | **Marketplace**; its items are **products** | Market |
+| Map Show module | **Map** | Map Show |
+| Anonymous Follow module | **Guest follow** | Anonymous Follow |
+| New Comments module | **Unread comments** | New Comments |
+| Help Tours module | **Guided tours**; one **tour** | Help Tours |
+| Stream module | **Live**; one **stream** | Streams (as the module title) |
+| Azure AD Connect module | **Microsoft Connect**, "Continue with Microsoft" | Azure AD |
+| Twitter Connect module | **X Connect**, "Continue with X", "Share on X" | Twitter |
+| Nexus, Attendant, Profiler, Developer modules | These names | |
 | Email | **email** | e-mail, E-Mail |
 
 "Context" is fine in Studio text for site admins, in code and in language keys.

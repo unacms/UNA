@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="ru" flag="ru" title="Russian">
-    <string name="_bx_help_tours"><![CDATA[Туры помощи]]></string>
+    <string name="_bx_help_tours"><![CDATA[Обучающие туры]]></string>
 
-	<string name="_bx_help_tours_page_tours"><![CDATA[Туры помощи]]></string>
+	<string name="_bx_help_tours_page_tours"><![CDATA[Обучающие туры]]></string>
 	<string name="_bx_help_tours_page_items"><![CDATA[Элементы помощи]]></string>
 
 	<string name="_bx_help_tours_cpt_tour_details"><![CDATA[Детали тура помощи]]></string>

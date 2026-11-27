@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
-    <string name="_bx_market"><![CDATA[Market]]></string>
-    <string name="_bx_market_cmts"><![CDATA[Market's Reviews]]></string>
-    <string name="_bx_market_reactions"><![CDATA[Market's Reactions]]></string>
+    <string name="_bx_market"><![CDATA[Marketplace]]></string>
+    <string name="_bx_market_cmts"><![CDATA[Marketplace reviews]]></string>
+    <string name="_bx_market_reactions"><![CDATA[Marketplace reactions]]></string>
 
     <string name="_bx_market_option_enable_auto_approve"><![CDATA[Auto approve a product after creation]]></string>
     <string name="_bx_market_option_enable_no_payments"><![CDATA[Allow to work without payments]]></string>
@@ -178,8 +178,8 @@
     <string name="_bx_market_page_title_browse_updated"><![CDATA[Updated Products]]></string>
     <string name="_bx_market_page_title_browse_category"><![CDATA[Products by category: {0}]]></string>
     <string name="_bx_market_page_title_browse_keyword"><![CDATA[Products by hashtag: {0}]]></string>
-    <string name="_bx_market_page_title_sys_home"><![CDATA[Market Home]]></string>
-    <string name="_bx_market_page_title_home"><![CDATA[Market]]></string>
+    <string name="_bx_market_page_title_sys_home"><![CDATA[Marketplace home]]></string>
+    <string name="_bx_market_page_title_home"><![CDATA[Marketplace]]></string>
     <string name="_bx_market_page_title_sys_entries_by_category"><![CDATA[Products in category]]></string>
     <string name="_bx_market_page_title_entries_by_category"><![CDATA[Products in {category_name}]]></string>
     <string name="_bx_market_page_block_title_sys_entries_by_category"><![CDATA[Products in category]]></string>
@@ -284,8 +284,8 @@
     <string name="_bx_market_menu_title_view_entry"><![CDATA[Product Actions]]></string>
     <string name="_bx_market_menu_set_title_view_entry_more"><![CDATA[Product More Actions]]></string>
     <string name="_bx_market_menu_title_view_entry_more"><![CDATA[Product More Actions]]></string>
-    <string name="_bx_market_menu_title_submenu"><![CDATA[Market Submenu]]></string>
-    <string name="_bx_market_menu_set_title_submenu"><![CDATA[Market Submenu]]></string>
+    <string name="_bx_market_menu_title_submenu"><![CDATA[Marketplace submenu]]></string>
+    <string name="_bx_market_menu_set_title_submenu"><![CDATA[Marketplace submenu]]></string>
     <string name="_bx_market_menu_item_title_system_create_entry"><![CDATA[Product]]></string>
     <string name="_bx_market_menu_item_title_create_entry"><![CDATA[Product]]></string>
     <string name="_bx_market_menu_item_title_system_edit_entry"><![CDATA[Edit Product]]></string>
@@ -304,8 +304,8 @@
     <string name="_bx_market_menu_item_title_unhide_entry"><![CDATA[Publish]]></string>
     <string name="_bx_market_menu_item_title_system_hide_entry"><![CDATA[Hide Product]]></string>
     <string name="_bx_market_menu_item_title_hide_entry"><![CDATA[Hide]]></string>
-    <string name="_bx_market_menu_item_title_system_entries_home"><![CDATA[Market]]></string>
-    <string name="_bx_market_menu_item_title_entries_home"><![CDATA[Market]]></string>
+    <string name="_bx_market_menu_item_title_system_entries_home"><![CDATA[Marketplace]]></string>
+    <string name="_bx_market_menu_item_title_entries_home"><![CDATA[Marketplace]]></string>
     <string name="_bx_market_menu_item_title_system_entries_categories"><![CDATA[Categories]]></string>
     <string name="_bx_market_menu_item_title_entries_categories"><![CDATA[Categories]]></string>
     <string name="_bx_market_menu_item_title_system_entries_public"><![CDATA[Storefront]]></string>
@@ -403,11 +403,11 @@
     <string name="_bx_market_grid_txt_lcs_never"><![CDATA[never]]></string>
     <string name="_bx_market_popup_title_lcs_edit"><![CDATA[Edit License]]></string>
 
-    <string name="_bx_market_chart_growth"><![CDATA[Market: Growth]]></string>
-    <string name="_bx_market_chart_growth_speed"><![CDATA[Market: Growth Speed]]></string>
+    <string name="_bx_market_chart_growth"><![CDATA[Marketplace: growth]]></string>
+    <string name="_bx_market_chart_growth_speed"><![CDATA[Marketplace: growth speed]]></string>
 
-    <string name="_bx_market_search_extended"><![CDATA[Market Search]]></string>
-    <string name="_bx_market_search_extended_cmts"><![CDATA[Market Comments Search]]></string>
+    <string name="_bx_market_search_extended"><![CDATA[Marketplace search]]></string>
+    <string name="_bx_market_search_extended_cmts"><![CDATA[Marketplace comments search]]></string>
 
     <string name="_bx_market_pre_lists_cats"><![CDATA[Product categories]]></string>
     <string name="_bx_market_cat_administration"><![CDATA[Administration]]></string>

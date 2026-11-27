@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
-	<string name="_bx_anon_follow"><![CDATA[Anonymous Follow]]></string>
+	<string name="_bx_anon_follow"><![CDATA[Guest follow]]></string>
   <string name="_bx_anon_follow_page_block_title_sys_anon_follow"><![CDATA[Followers]]></string>
   <string name="_bx_anon_follow_page_block_title_anon_follow"><![CDATA[Followers]]></string>
    <string name="_bx_anon_follow_page_block_title_sys_anon_follow_subscriptions"><![CDATA[Following]]></string>

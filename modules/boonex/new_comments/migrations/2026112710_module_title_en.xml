@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Module title: New Comments is now Unread comments (una-vocabulary skill). Names, URIs and language keys stay. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_new_comments"><![CDATA[Unread comments]]></string_upd>
+</resources>

@@ -15,7 +15,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_new_comments',
-    'title' => 'New Comments',
+    'title' => 'Unread comments',
     'note' => 'New comments, unread comments',
     'version' => '9.0.0',
     'vendor' => 'UNA INC',
