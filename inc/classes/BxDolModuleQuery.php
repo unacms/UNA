@@ -349,16 +349,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
      */
     public static function getConfigDeprecation($aConfig)
     {
-        if(!is_array($aConfig) || !array_key_exists('deprecated', $aConfig))
-            return null;
-
-        $mixedValue = $aConfig['deprecated'];
-        $sReplacedBy = is_array($mixedValue) && isset($mixedValue['replaced_by']) && is_string($mixedValue['replaced_by']) ? $mixedValue['replaced_by'] : '';
-
-        return [
-            'deprecated' => !empty($mixedValue) ? 1 : 0,
-            'replaced_by' => !empty($mixedValue) ? get_mb_substr($sReplacedBy, 0, 32) : '',
-        ];
+        return BxDolMigrationsQuery::getConfigDeprecation($aConfig);
     }
 
     /**
