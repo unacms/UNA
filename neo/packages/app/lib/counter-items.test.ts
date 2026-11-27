@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { counterItemCount, hasCounterToShow } from './counter-items.ts';
+import { counterItemCount, hasCounterToShow, isDrawnCounter } from './counter-items.ts';
 
 test('a compound counter counts its parts', () => {
     const item = { display_type: 'element', data: { type: 'reactions', counter: { items: [{ count: 1 }, { count: '2' }, { count: 0 }] } } };
@@ -25,4 +25,9 @@ test('an item without counter data is kept', () => {
     assert.equal(counterItemCount({ display_type: 'element', data: { type: 'score' } }), null);
     assert.equal(hasCounterToShow({ display_type: 'element', data: { type: 'score' } }), true);
     assert.equal(hasCounterToShow({}), true);
+});
+
+test('a counter at zero is still drawn, an element without a type is not', () => {
+    assert.equal(isDrawnCounter({ display_type: 'element', data: { type: 'reactions', counter: { items: [{ count: 0 }] } } }), true);
+    assert.equal(isDrawnCounter({ display_type: 'element', data: {} }), false);
 });

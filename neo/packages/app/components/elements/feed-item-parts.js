@@ -38,7 +38,7 @@ import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
-import { hasCounterToShow } from 'app/lib/counter-items'
+import { isDrawnCounter } from 'app/lib/counter-items'
 import emitter, { EVENTS } from 'app/context/emitter';
 
 
@@ -491,8 +491,9 @@ export const ActionMenu = memo(({ data }) => {
 
 export const CounterMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'counters_menu')
-    // Only counters with something to show: one at zero still took a slot, and the row's gap before the next.
-    const items = data?.items?.filter(hasCounterToShow) || []
+    // Items the app never draws are left out. A counter at zero stays: its widget shows the first reaction
+    // as it comes; the row has no gap and each counter its own space after it, so it takes no room meanwhile.
+    const items = data?.items?.filter(isDrawnCounter) || []
     const data_other = {...data, items: items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
     const data_primary = {...data, items: items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
