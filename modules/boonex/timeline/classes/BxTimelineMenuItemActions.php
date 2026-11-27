@@ -257,13 +257,20 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
             return false;
 
         $iCount = (int)$oCmts->getCommentsCountAll();
+        $sLabel = $this->_bShowTitles ? (string)$aItem['title'] : '';
         $sTitle = $this->_bShowTitles ? $aItem['title'] . ($iCount > 0 ? ' ' . $iCount : '') : ($iCount > 0 ? (string)$iCount : '');
 
         $aItem['title'] = $sTitle;
         $aItem['bx_if:title']['condition'] = $sTitle !== '';
         $aItem['bx_if:title']['content']['title'] = $sTitle;
 
-        return $this->_getMenuItemDefault($aItem);
+        $mixedResult = $this->_getMenuItemDefault($aItem);
+        // BxDolCmts.js finds the link by its comments object and writes the new number when a comment is posted.
+        if(is_array($mixedResult))
+            $mixedResult['attrs'] = ($mixedResult['attrs'] ?? '') . ' data-cmt-count="' . bx_html_attribute($oCmts->getJsObjectName()) . '"'
+                . ' data-cmt-label="' . bx_html_attribute($sLabel) . '"';
+
+        return $mixedResult;
     }
 
     protected function _getMenuItemItemComment($aItem)

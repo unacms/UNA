@@ -314,8 +314,11 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
 
                 case 'comment':
                     $oObject = BxTemplCmts::getObjectInstance($aSource['object'], $aSource['id']);
-                    if($oObject && $oObject->isEnabled() && $oObject->isViewAllowed() === CHECK_ACTION_RESULT_ALLOWED && (int)$oObject->getCommentsCountAll() > 0)
-                        $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
+                    if($oObject && $oObject->isEnabled() && $oObject->isViewAllowed() === CHECK_ACTION_RESULT_ALLOWED) {
+                        // Mounted at zero too, hidden: BxDolCmts.js shows it when the first comment is posted.
+                        $aStats[] = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
+                        continue 2;
+                    }
                     break;
 
                 case 'view':

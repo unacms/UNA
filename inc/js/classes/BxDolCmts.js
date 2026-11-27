@@ -236,6 +236,17 @@ BxDolCmts.prototype.cmtUpdateCounter = function (oElement, oData)
         oCounter = oCounter.parents('.' + sClassHidden + ':first');
 
     oCounter.toggleClass(sClassHidden);
+
+    //--- A link that shows the count as its label (a feed item's Comment in a menu's Counters "count" or "group").
+    $('[data-cmt-count="' + this._sObjName + '"]').each(function() {
+        var sLabel = $(this).attr('data-cmt-label');
+        var sText = sLabel ? sLabel + ' ' + oData.count : String(oData.count);
+        var oTitle = $(this).find('.bx-menu-item-title');
+        if(oTitle.length)
+            oTitle.text(sText);
+        else
+            $(this).children().last().append($('<span class="bx-menu-item-title bx-def-margin-sec-left-auto"></span>').text(sText));
+    });
 };
 
 BxDolCmts.prototype.cmtUpdateCounterAs = function (oData)
