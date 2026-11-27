@@ -478,12 +478,16 @@ export const ActionMenu = memo(({ data }) => {
 
     // From the third item on, titles show from `sm` up. Items are copied, never written to, and keep UNA's
     // own params (`is_voted`, `t`).
-    const items = data?.items?.length > 2
+    // Beside counts (`count`), an action without a count (Share) is its icon alone, as the counted ones are at 0.
+    const iconOnly = mode === 'count'
+    const items = data?.items?.length > 2 || iconOnly
         ? data.items.map((item, i) => {
-            if (i < 2) return item
-            return item.data
-                ? { ...item, data: { ...item.data, params: { ...(item.data.params || {}), button_show_title_from_size: 'sm' } } }
-                : { ...item, params: { ...(item.params || {}), button_show_title_from_size: 'sm' } }
+            // An object's element (reactions, comments) draws its own count; any other item is a plain action.
+            if (iconOnly && item.display_type !== 'element')
+                return { ...item, button_icon_only: true } // an item's own flag: Menu gives every item the menu's params
+            if (item.data)
+                return i < 2 || iconOnly ? item : { ...item, data: { ...item.data, params: { ...(item.data.params || {}), button_show_title_from_size: 'sm' } } }
+            return i < 2 ? item : { ...item, params: { ...(item.params || {}), button_show_title_from_size: 'sm' } }
         })
         : data?.items
 

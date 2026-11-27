@@ -52,3 +52,11 @@ export function countLabel(count: unknown): string | false {
     const n = Number(count);
     return Number.isFinite(n) && n > 0 ? String(n) : false;
 }
+
+/** Items whose count a stats row shows: reactions, votes, scores, comments and views (not favorites, features ...). */
+const COUNT_STATS = [...REACTION_STATS, 'comments', 'views'];
+
+/** Whether a menu of actions' item is one whose count belongs in the stats row. */
+export function isCountStat(item: StatItem): boolean {
+    return COUNT_STATS.includes(item?.data?.type ?? '');
+}
