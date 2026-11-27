@@ -16,7 +16,7 @@ class BxMediaConfig extends BxBaseModGeneralConfig
      */
     const RECENT_FILES_LIMIT = 30;
 
-    function __construct($aModule)
+    public function __construct($aModule)
     {
         parent::__construct($aModule);
 

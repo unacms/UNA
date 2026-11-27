@@ -201,9 +201,32 @@ html.dark .bx-media-editor {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.15s;
-    background:
-        linear-gradient(to right, transparent calc(33.333% - 0.5px), rgb(255 255 255 / 0.6) calc(33.333% - 0.5px), rgb(255 255 255 / 0.6) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px), transparent calc(66.666% - 0.5px), rgb(255 255 255 / 0.6) calc(66.666% - 0.5px), rgb(255 255 255 / 0.6) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px)),
-        linear-gradient(to bottom, transparent calc(33.333% - 0.5px), rgb(255 255 255 / 0.6) calc(33.333% - 0.5px), rgb(255 255 255 / 0.6) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px), transparent calc(66.666% - 0.5px), rgb(255 255 255 / 0.6) calc(66.666% - 0.5px), rgb(255 255 255 / 0.6) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px));
+}
+
+/* rule of thirds: two vertical and two horizontal lines */
+.bx-media-editor-crop-grid::before,
+.bx-media-editor-crop-grid::after {
+    content: "";
+    position: absolute;
+    border: 0 solid rgb(255 255 255 / 0.6);
+}
+
+.bx-media-editor-crop-grid::before {
+    top: 0;
+    bottom: 0;
+    left: 33.333%;
+    right: 33.333%;
+    border-left-width: 1px;
+    border-right-width: 1px;
+}
+
+.bx-media-editor-crop-grid::after {
+    left: 0;
+    right: 0;
+    top: 33.333%;
+    bottom: 33.333%;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
 }
 
 .bx-media-editor-dragging .bx-media-editor-crop-grid {

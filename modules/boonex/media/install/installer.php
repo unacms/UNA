@@ -14,7 +14,7 @@ class BxMediaInstaller extends BxBaseModTextInstaller
     const UPLOADER = 'bx_media_uploader';
     const UPLOADER_ATTACHMENTS = 'bx_media_uploader_attachments';
 
-    function __construct($aConfig)
+    public function __construct($aConfig)
     {
         parent::__construct($aConfig);
     }

@@ -53,9 +53,6 @@ BxMediaChanger.prototype.init = function () {
 		$cnt.on('click', function (oEvent) {
 			oEvent.stopPropagation();
 		});
-		$cnt.find('.bx-media-editable-btn-add').on('click', function () {
-			$cnt.find('.bx-media-editable-file').trigger('click');
-		});
 		$cnt.find('.bx-media-editable-file').on('change', function () {
 			var oFile = this.files[0];
 			if (oFile)

@@ -20,7 +20,7 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/media/updates/update_11.0.1_15.0.0/',
+    'home_dir' => 'boonex/media/updates/update_11.0.1.DEV_15.0.0/',
     'home_uri' => 'media_update_1101_1500',
 
     'module_dir' => 'boonex/media/',

@@ -125,8 +125,8 @@ BxMediaUploader.prototype.popupShow = function (oLabels)
 
 	var aAcceptableFiles = [];
 	if ($this._acceptedFileTypes && $this._acceptedFileTypes != '') {
-		$this._acceptedFileTypes.trim().split(/\s*,\s*/).forEach(function (sItem) {
-			var mixedType = $this.getMimeTypefromString(sItem);
+		$this._acceptedFileTypes.split(',').forEach(function (sItem) {
+			var mixedType = $this.getMimeTypefromString(sItem.trim());
 			if (!mixedType)
 				return;
 			if (Array.isArray(mixedType))
@@ -188,7 +188,7 @@ BxMediaUploader.prototype.initFile = function (id, url) {
 
 BxMediaUploader.prototype.selectFile = function (obj) {
     var $this = this;
-    id = $(obj).attr('data-id');
+    var id = $(obj).attr('data-id');
 	if (!$this.isMultiple()){
 		$.each($this._aFilesForUpload, function(index, value) {
 			if ($this._aFilesForUpload[index] != null)
@@ -305,22 +305,37 @@ BxMediaUploader.prototype.showUploaderForm = function () {
 
 BxMediaUploader.prototype.finalize = function () {
 	var $this = this;
-	
-	if ($this._oFilePondObject.status == 3 || $this._oFilePondObject.status == 1){
-		return; // filepond is not ready yet
-	}
-	
-	$.each($this._aFilesForUpload, function(index, value) {
-    	if (value != null && !value.status)
-			return; // not all needed files uploaded yet
+
+	// FilePond still uploads or has files waiting
+	if ($this._oFilePondObject.status == 3 || $this._oFilePondObject.status == 1)
+		return;
+
+	// recent files still being copied
+	var bWaiting = false;
+	$.each($this._aFilesForUpload, function (sId, oFile) {
+		if (oFile != null && !oFile.status)
+			bWaiting = true;
+	});
+	if (bWaiting)
+		return;
+
+	var aResults = $this._aJsToEval;
+	$this._aJsToEval = [];
+	$.each(aResults, function (iIndex, sResult) {
+		$this._onUploadResult(sResult);
 	});
 
-	$.each($this._aJsToEval, function(index, value) {
-    	eval(value);
-		$this._aJsToEval = $this._aJsToEval.splice(index, 1);
-	}); 
-	
 	$this.hide();
+}
+
+// storage_uploader.php answers with a call of onUploadCompleted: read the uploader and the errors from it instead of running it
+BxMediaUploader.prototype._onUploadResult = function (sResult) {
+	var m = /window\.parent\.(\w+)\.onUploadCompleted\('((?:[^'\\]|\\.)*)'\)/.exec(sResult || '');
+	if (!m)
+		return;
+	var oUploader = window[m[1]];
+	if (oUploader && typeof oUploader.onUploadCompleted === 'function')
+		oUploader.onUploadCompleted(m[2].replace(/\\(.)/g, '$1'));
 }
 
 BxMediaUploader.prototype.hide = function () {
@@ -549,7 +564,6 @@ BxMediaUploader.prototype.getMimeTypefromString  = function (ext) {
         'aiff'   : 'audio/x-aiff',
         'asf'   : 'video/x-ms-asf',
         'au'     : 'audio/basic',
-        'avi'    : 'video/x-msvideo',
         'avi'    : 'video/avi',
         'bat'    : 'text/plain',
         'bin'    : 'application/octet-stream',
@@ -653,7 +667,6 @@ BxMediaUploader.prototype.getMimeTypefromString  = function (ext) {
         'txt'    : 'text/plain',
         'ustar'  : 'application/x-ustar',
         'vcf'    : 'text/x-vcard',
-        'wav'    : 'audio/x-wav',
         'wav'    : 'audio/wav',
         'webm'   : 'video/webm',
         'wmv'    : 'video/wmv',

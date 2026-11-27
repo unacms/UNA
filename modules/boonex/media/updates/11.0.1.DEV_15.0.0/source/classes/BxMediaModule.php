@@ -15,7 +15,7 @@
  */
 class BxMediaModule extends BxDolModule
 {
-    function __construct(&$aModule)
+    public function __construct(&$aModule)
     {
         parent::__construct($aModule);
     }
