@@ -190,6 +190,13 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
             'show_do_view_as_button' => $this->_bShowAsButton,
             'show_do_view_label' => $this->_bShowTitle
         );
+        if(!$this->_bIsApi) {
+            $aCounters = $this->_getCountersOptions();
+            if(isset($aCounters['show_do_vote_label']))
+                $aCounters['show_do_view_label'] = $aCounters['show_do_vote_label'];
+            unset($aCounters['show_do_vote_label']);
+            $aObjectOptions = array_merge($aObjectOptions, $aCounters);
+        }
         if(!empty($aParams['object_options']) && is_array($aParams['object_options']))
             $aObjectOptions = array_merge($aObjectOptions, $aParams['object_options']);
 
@@ -316,7 +323,7 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
                 case 'view':
                     $oObject = !empty($CNF['OBJECT_VIEWS']) ? BxDolView::getObjectInstance($CNF['OBJECT_VIEWS'], $this->_iContentId) : false;
                     if($oObject && $oObject->isEnabled())
-                        $sCounter = $oObject->getCounter(['dynamic_mode' => $this->_bDynamicMode]);
+                        $sCounter = $oObject->getCounter(['show_counter_label_icon' => true, 'show_counter_label_text' => true, 'dynamic_mode' => $this->_bDynamicMode]);
                     break;
             }
 
