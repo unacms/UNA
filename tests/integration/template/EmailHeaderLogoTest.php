@@ -97,22 +97,45 @@ class EmailHeaderLogoTest extends BxDolIntegrationTestCase
         $this->assertMatchesRegularExpression('#<img class="bx-email-logo-dark" src="' . preg_quote(bx_html_attribute($sUrlDark), '#') . '"[^>]*style="display: none;[^"]*mso-hide: all;"#', $sHtml);
     }
 
-    public function testDefaultHeaderSwitchesLogosInDarkMode(): void
+    /**
+     * The default header: the install SQL when it is there (CI removes install/ before these tests), otherwise the installed site's.
+     */
+    protected function defaultHeader(): string
     {
-        // The install SQL when it is there (CI removes install/ before these tests), otherwise the installed site's header.
         $sSqlFile = BX_DIRECTORY_PATH_ROOT . 'install/sql/system.sql';
         if (is_file($sSqlFile)) {
             $this->assertSame(1, preg_match("#'site_email_html_template_header', '[^']*', '((?:[^'\\\\]|\\\\.)*)'#", file_get_contents($sSqlFile), $a));
-            $sHeader = stripcslashes($a[1]);
+            return stripcslashes($a[1]);
         }
-        else
-            $sHeader = (string)getParam('site_email_html_template_header');
+
+        return (string)getParam('site_email_html_template_header');
+    }
+
+    public function testDefaultHeaderSwitchesLogosInDarkMode(): void
+    {
+        $sHeader = $this->defaultHeader();
 
         $this->assertStringContainsString('<meta name="color-scheme" content="light dark"', $sHeader);
         $this->assertStringContainsString('@media (prefers-color-scheme: dark)', $sHeader);
         $this->assertStringContainsString('.bx-email-logo-light { display:none !important; }', $sHeader);
         $this->assertStringContainsString('.bx-email-logo-dark { display:block !important;', $sHeader);
         $this->assertStringContainsString('{site_logo}', $sHeader);
+    }
+
+    /**
+     * In dark mode `.bx-email-panel a` (light links) outranks `.bx-email-btn`, which would leave a light label on the
+     * light button: the header gives a button in the panel its dark label back.
+     */
+    public function testDarkModeButtonKeepsItsLabel(): void
+    {
+        $sHeader = $this->defaultHeader();
+
+        $this->assertStringContainsString('.bx-email-panel a { color:#f4f4f5 !important; }', $sHeader);
+        $this->assertStringContainsString('.bx-email-panel a.bx-email-btn { color:#18181b !important; }', $sHeader);
+        $this->assertGreaterThan(
+            strpos($sHeader, '.bx-email-panel a { color:#f4f4f5 !important; }'),
+            strpos($sHeader, '.bx-email-panel a.bx-email-btn { color:#18181b !important; }')
+        );
     }
 
     public function testSvgLogoFallsBackToTheTitle(): void
