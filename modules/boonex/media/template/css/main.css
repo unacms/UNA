@@ -72,6 +72,10 @@
     vertical-align:middle;
 }
 .bx_media_close_button{
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
     position: absolute;
     top: 0rem;
     right: 0rem;

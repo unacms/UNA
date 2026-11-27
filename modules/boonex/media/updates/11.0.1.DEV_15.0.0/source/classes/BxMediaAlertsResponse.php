@@ -59,6 +59,7 @@ class BxMediaAlertsResponse extends BxDolAlertsResponse
 				'sImageUrl' => $oAlert->aExtras['image_url'],
 				'sImageType' => $oAlert->aExtras['image_type'],
 				'sUniqId' => $sUniq,
+				'sCsrfToken' => $this->_oModule->getCsrfToken(),
 				'sButtons' => $this->_oModule->_oTemplate->parseHtmlByName('media_changer_buttons.html', ['uniq_id' => $sUniq]),
 				'sUploadToken' => BxDolUploader::isUploadTokenEnabled() ? BxDolUploader::getUploadToken('upload', $oAlert->aExtras['storage'], $oAlert->aExtras['uploader']) : '',
 				'aCaptions' => [

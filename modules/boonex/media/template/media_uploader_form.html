@@ -13,7 +13,7 @@
                 <div class="bx-uploader-files-list">
 
                     <div id="__errors_container_id__"></div>
-                    <div class="bx-uploader-simple-file "><input name="f[]" __accepted_files__ type="file" /></div>
+                    <div class="bx-uploader-simple-file "><label for="__form_container_id__-file" class="sr-only"><bx_text:_bx_media_uploader_button_title /></label><input id="__form_container_id__-file" name="f[]" __accepted_files__ type="file" /></div>
                 </div>
 
             </form>
@@ -26,10 +26,10 @@
 	<br>
     <strong><bx_text:_bx_media_subheader_recent_files /></strong>
     <div class="bx_media_lists">
-        <div class="bx_media_lists_container" style="width:__item_count__0rem">
+        <div class="bx_media_lists_container" style="width:__list_width__">
             <bx_repeat:items>
                 <div class="bx_media_list_item_container bx-def-round-corners">
-					<div class="bx_media_list_item bx-def-round-corners " style="background-image:url(__url__)" data-id="__id__">
+					<div class="bx_media_list_item bx-def-round-corners " style="background-image:url(__url__)" data-id="__object__-__id__">
                     	<button class="filepond--file-action-button filepond--action-edit-item" type="button" data-align="bottom center" style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); opacity: 1;">
 							<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
 								<path d="M8.5 17h1.586l7-7L15.5 8.414l-7 7V17zm-1.707-2.707l8-8a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1 0 1.414l-8 8A1 1 0 0 1 10.5 19h-3a1 1 0 0 1-1-1v-3a1 1 0 0 1 .293-.707z" fill="currentColor" fill-rule="nonzero"></path>
@@ -37,20 +37,20 @@
 						</button>
                 	</div>
 				</div>
-				<script>__uploader_instance_name__.initFile('__id__', '__url__');</script>
+				<script>__uploader_instance_name__.initFile('__object__-__id__', '__id__', '__object__', '__url__');</script>
             </bx_repeat:items>
         </div>
     </div>
 </bx_if:recent_files>
 
 <div class="bx-def-padding-top bx-clearfix">
-    <div class="bx-btn" onclick="__uploader_instance_name__.uploadSelectedFiles(this)">
+    <button type="button" class="bx-btn" onclick="__uploader_instance_name__.uploadSelectedFiles(this)">
 		<bx_text:_bx_media_uploader_button_done_title />
-	</div>
+	</button>
 </div>
-<div class="bx_media_close_button" onclick="__uploader_instance_name__.close()">
+<button type="button" class="bx_media_close_button" onclick="__uploader_instance_name__.close()" title="<bx_text:_bx_media_editor_close />">
 	<i class="sys-icon times"></i>
-</div>
+</button>
 </div>
 <script>
 var aLabels = {

@@ -490,6 +490,10 @@
         oCtx.translate(-cr.x * b.w * fDown, -cr.y * b.h * fDown);
         this._drawBase(oCtx, fDown);
 
+        // the limit holds for the result too
+        var fFit = Math.min(1, oCanvas.width / oSize.w, oCanvas.height / oSize.h);
+        oSize = {w: Math.max(1, Math.round(oSize.w * fFit)), h: Math.max(1, Math.round(oSize.h * fFit))};
+
         if (oSize.w !== oCanvas.width || oSize.h !== oCanvas.height)
             oCanvas = this._scaleCanvas(oCanvas, oSize.w, oSize.h);
 

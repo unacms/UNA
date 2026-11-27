@@ -36,7 +36,9 @@ class BxMediaUploader extends BxDolUploader
      */
     public function getUploaderButtonTitle($mixed = false)
     {
-        return '<i class="sys-icon camera"></i> ' . _t('_bx_media_uploader_button_title');
+        return $this->_oModule->_oTemplate->parseHtmlByName('media_uploader_icon.html', [
+            'title' => _t('_bx_media_uploader_button_title')
+        ]);
     }
 
     /**
@@ -50,7 +52,8 @@ class BxMediaUploader extends BxDolUploader
 
         return parent::getUploaderJs($mixedGhostTemplate, $isMultiple, array_merge($aParams, [
             'module_path' => $this->_oModule->_aModule['path'],
-            'action_url' => $this->_oModule->_oConfig->getBaseUri()
+            'action_url' => $this->_oModule->_oConfig->getBaseUri(),
+            'csrf_token' => $this->_oModule->getCsrfToken()
         ]), $bDynamic);
     }
 
@@ -65,7 +68,12 @@ class BxMediaUploader extends BxDolUploader
         foreach ($aGhosts as $aGhost) {
             $oStorage = BxDolStorage::getObjectInstance($aGhost['object']);
             if ($oStorage){
-                $aStorageData[] = array('uploader_instance_name' => $this->getNameJsInstanceUploader(), 'url' => $oStorage->getFileUrlById($aGhost['id']), 'id' => $aGhost['id']);
+                $aStorageData[] = [
+                    'uploader_instance_name' => $this->getNameJsInstanceUploader(),
+                    'url' => $oStorage->getFileUrlById($aGhost['id']),
+                    'id' => $aGhost['id'],
+                    'object' => $aGhost['object'],
+                ];
             }
         }
 
@@ -86,10 +94,10 @@ class BxMediaUploader extends BxDolUploader
             'storage_private' => $isPrivate,
             'accepted_files' => null === $sAcceptedFiles ? '' : 'accept="' . bx_js_string($sAcceptedFiles) . '"',
             'bx_if:recent_files' => array(
-                'condition' => count($aStorageData) >0,
+                'condition' => !empty($aStorageData),
                 'content' => array(
                     'bx_repeat:items' => $aStorageData,
-                    'item_count' => count($aStorageData)
+                    'list_width' => (count($aStorageData) * 10) . 'rem'
                 )
             ),
         ));

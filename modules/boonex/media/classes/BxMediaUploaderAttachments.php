@@ -20,20 +20,17 @@ class BxMediaUploaderAttachments extends BxMediaUploader
         $this->_sJsTemplate = 'media_uploader_button_js.html';
         $this->_sUploaderFormTemplate = 'media_uploader_form.html';
 
-        if ($this->_oTemplate instanceof BxDolModuleProxy) {
-            $CNF = $this->_oTemplate->getModule()->_oConfig->CNF;
+        // the template of the module whose form has the uploader: the parent replaced $this->_oTemplate with the media one
+        if ($oTemplate instanceof BxDolModuleProxy) {
+            $CNF = $oTemplate->getModule()->_oConfig->CNF;
             if (isset($CNF['OBJECT_MENU_ENTRY_ATTACHMENTS'])) {
-                BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_ENTRY_ATTACHMENTS'], $this->_oTemplate)->addMarkers(array(
+                BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_ENTRY_ATTACHMENTS'], $oTemplate)->addMarkers(array(
                     'js_object_bx_media_uploader_attachments' => $this->getNameJsInstanceUploader()
                 ));
             }	
         }
     }
 
-    public function getUploaderButtonTitle($mixed = false)
-    {
-        return '<i class="sys-icon camera"></i> ' . _t('_bx_media_uploader_button_title');
-    }
 }
 
 /** @} */

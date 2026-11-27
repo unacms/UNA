@@ -24,15 +24,19 @@ class BxMediaDb extends BxDolModuleDb
      */
     public function getRecentGhosts($iProfileId, $iLimit)
     {
-        return $this->getAll("SELECT `id`, `object` FROM `sys_storage_ghosts` WHERE `profile_id` = :profile_id ORDER BY `created` DESC LIMIT " . (int)$iLimit, [
+        return $this->getAll("SELECT `id`, `object` FROM `sys_storage_ghosts` WHERE `profile_id` = :profile_id AND `content_id` = 0 ORDER BY `created` DESC LIMIT " . (int)$iLimit, [
             'profile_id' => (int)$iProfileId
         ]);
     }
 
-    public function getGhostOfProfile($iFileId, $iProfileId)
+    /**
+     * One of them: file ids are unique only within a storage.
+     */
+    public function getGhostOfProfile($iFileId, $sStorage, $iProfileId)
     {
-        return $this->getRow("SELECT `id`, `object`, `profile_id`, `content_id` FROM `sys_storage_ghosts` WHERE `id` = :id AND `profile_id` = :profile_id LIMIT 1", [
+        return $this->getRow("SELECT `id`, `object`, `profile_id`, `content_id` FROM `sys_storage_ghosts` WHERE `id` = :id AND `object` = :object AND `profile_id` = :profile_id AND `content_id` = 0 LIMIT 1", [
             'id' => (int)$iFileId,
+            'object' => $sStorage,
             'profile_id' => (int)$iProfileId
         ]);
     }

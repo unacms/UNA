@@ -43,6 +43,7 @@ BxMediaUploader.prototype.init = function (sUploaderObject, sStorageObject, sUni
     this._isPrivate = undefined == options.storage_private || parseInt(options.storage_private) ? 1 : 0;
     this._sUploaderInstanceName = options.uploader_instance_name ? options.uploader_instance_name : '';
     this._sUploadToken = options.upload_token ? options.upload_token : '';
+    this._sCsrfToken = options.csrf_token ? options.csrf_token : '';
     
     this._acceptedFileTypes = options.acceptedFiles ? options.acceptedFiles : '';
     
@@ -51,7 +52,7 @@ BxMediaUploader.prototype.init = function (sUploaderObject, sStorageObject, sUni
 	this._bNeedClose = false;
 	
 	this._aJsToEval = [];
-	this._aFilesForUpload = [];
+	this._aFilesForUpload = {};
 	
 	this._aLabels = [];
 	
@@ -84,7 +85,7 @@ BxMediaUploader.prototype.popupShow = function (oLabels)
 				formData.append('uo', $this._sUploaderObject);
 				formData.append('so', $this._sStorageObject);
 				formData.append('uid', $this._sUniqId);
-				formData.append('m', $this._isMultiple);
+				formData.append('m', $this._isMultiple ? 1 : 0);
 				formData.append('c', $this._iContentId);
 				formData.append('p', $this._isPrivate);
 				formData.append('a', 'upload');
@@ -152,15 +153,15 @@ BxMediaUploader.prototype.popupShow = function (oLabels)
 		oEvent.stopPropagation();
 
 		var eItem = $(this).parents('.bx_media_list_item');
-		var sId = eItem.attr('data-id');
-		var oFile = $this._aFilesForUpload[sId];
+		var sKey = eItem.attr('data-id');
+		var oFile = $this._aFilesForUpload[sKey];
 		BxMediaEditor.open({src: oFile.file || oFile.url}).then(function (oResult) {
 			if (!oResult)
 				return;
 			eItem.css('backgroundImage', 'url(' + URL.createObjectURL(oResult) + ')');
 			eItem.attr('data-upload', '1');
-			$this.addUploadedFile(oResult, sId);
-			if (!$this._aFilesForUpload[sId].selected)
+			$this.addUploadedFile(oResult, sKey);
+			if (!oFile.selected)
 				$this.selectFile(eItem.get(0));
 		});
 	});
@@ -181,50 +182,48 @@ BxMediaUploader.prototype.editPondFile = function (oItem) {
 	});
 }
 
-BxMediaUploader.prototype.initFile = function (id, url) {
-	var $this = this;
-	$this._aFilesForUpload[id] = {id: id, url: url, selected: false, file: null, status: true, statusInfo: ''};
+// sKey: the storage and the id, file ids are unique only within a storage
+BxMediaUploader.prototype.initFile = function (sKey, iId, sObject, sUrl) {
+	this._aFilesForUpload[sKey] = {key: sKey, id: iId, object: sObject, url: sUrl, selected: false, file: null, status: true};
 }
 
 BxMediaUploader.prototype.selectFile = function (obj) {
-    var $this = this;
-    var id = $(obj).attr('data-id');
-	if (!$this.isMultiple()){
-		$.each($this._aFilesForUpload, function(index, value) {
-			if ($this._aFilesForUpload[index] != null)
-			$this._aFilesForUpload[index].selected = false;
-			$this._aFilesForUpload[id].status = false;
-		}); 
-		$('.bx_media_list_item_container').removeClass('bx_media_list_item_container_selected');
-	}
-		
-	if (!$this._aFilesForUpload[id].selected){
-		$this._aFilesForUpload[id].selected = true;
-		$this._aFilesForUpload[id].status = false;
-		$(obj).parent().addClass('bx_media_list_item_container_selected');
-	}
-	else{
-		$this._aFilesForUpload[id].selected = false;
-		$this._aFilesForUpload[id].status = true;
-		$(obj).parent().removeClass('bx_media_list_item_container_selected');
+	var $this = this;
+	var sKey = $(obj).attr('data-id');
+	var oFile = $this._aFilesForUpload[sKey];
+	if (!oFile)
+		return;
+
+	var bSelect = !oFile.selected;
+	if (bSelect && !$this.isMultiple()) {
+		$.each($this._aFilesForUpload, function (sOther, oOther) {
+			oOther.selected = false;
+		});
+		$('#' + $this._sPopupContainerId + ' .bx_media_list_item_container').removeClass('bx_media_list_item_container_selected');
 	}
 
+	oFile.selected = bSelect;
+	$(obj).parent().toggleClass('bx_media_list_item_container_selected', bSelect);
 }
 
-BxMediaUploader.prototype.addUploadedFile = function (file, id) {
-	var $this = this;
-	$this._aFilesForUpload[id].file = file;
+BxMediaUploader.prototype.addUploadedFile = function (file, sKey) {
+	this._aFilesForUpload[sKey].file = file;
 }
 
 BxMediaUploader.prototype.uploadSelectedFiles = function (btn) {
 	var $this = this;
 	$(btn).text($this._aLabels['labelButtonProcessAll']);
 	$(btn).prop('disabled', true);
-	$.each($this._aFilesForUpload, function(index, value) {
-    	if (value != null && value.selected)
-			$this.uploadFile(value);
-	}); 
-	
+
+	// status false: being uploaded, finalize waits for it
+	$.each($this._aFilesForUpload, function (sKey, oFile) {
+		oFile.status = !oFile.selected;
+	});
+	$.each($this._aFilesForUpload, function (sKey, oFile) {
+		if (oFile.selected)
+			$this.uploadFile(oFile);
+	});
+
 	$this._oFilePondObject.processFiles();
 	$this._bNeedClose = true;
 	$this.finalize();
@@ -240,7 +239,7 @@ BxMediaUploader.prototype.uploadFile = function (oFile) {
         formData.append('uo', this._sUploaderObject);
         formData.append('so', this._sStorageObject);
         formData.append('uid', this._sUniqId);
-        formData.append('m', this._isMultiple);
+        formData.append('m', this._isMultiple ? 1 : 0);
         formData.append('c', this._iContentId);
         formData.append('p', this._isPrivate);
         formData.append('a', 'upload');
@@ -249,20 +248,29 @@ BxMediaUploader.prototype.uploadFile = function (oFile) {
         const request = new XMLHttpRequest();
         request.open('POST', sUrlRoot + 'storage_uploader.php');
 
-        request.onload = function(res) {
-            if (request.status >= 200 && request.status < 300) {
-				$this._aFilesForUpload[oFile.id].status = true;
-				$this._aJsToEval.push(jQuery(request.responseText).text());
-				$this.finalize();
-            }
+        // done either way, so finalize doesn't wait for it forever
+        var fDone = function (sResult) {
+            oFile.status = true;
+            if (sResult)
+                $this._aJsToEval.push(sResult);
+            $this.finalize();
+        };
+        request.onload = function () {
+            fDone(request.status >= 200 && request.status < 300 ? jQuery(request.responseText).text() : '');
+        };
+        request.onerror = function () {
+            fDone('');
         };
         request.send(formData);
     }
     else{
         // a recent file unchanged: the server copies it by its id
-        $.post(sUrlRoot + $this._sActionsUri + 'CopyFile/', { FileId: oFile.id, StorageObject: this._sStorageObject, UniqId: this._sUniqId, UploaderInstanceName: this._sUploaderInstanceName, UploaderObject: this._sUploaderObject, isPrivate: this._isPrivate, ContentId: this._iContentId, isMultiple: this._isMultiple ? 1 : 0 }, function (data, textStatus) {
-			$this._aFilesForUpload[oFile.id].status = true;
+        $.post(sUrlRoot + $this._sActionsUri + 'CopyFile/', { csrf_token: this._sCsrfToken, FileId: oFile.id, SourceStorage: oFile.object, StorageObject: this._sStorageObject, UniqId: this._sUniqId, UploaderInstanceName: this._sUploaderInstanceName, UploaderObject: this._sUploaderObject, isPrivate: this._isPrivate, ContentId: this._iContentId, isMultiple: this._isMultiple ? 1 : 0 }, function (data) {
+			oFile.status = true;
 			$this._aJsToEval.push(jQuery(data).text());
+			$this.finalize();
+        }).fail(function () {
+			oFile.status = true;
 			$this.finalize();
         });
     }
@@ -312,8 +320,8 @@ BxMediaUploader.prototype.finalize = function () {
 
 	// recent files still being copied
 	var bWaiting = false;
-	$.each($this._aFilesForUpload, function (sId, oFile) {
-		if (oFile != null && !oFile.status)
+	$.each($this._aFilesForUpload, function (sKey, oFile) {
+		if (oFile.selected && !oFile.status)
 			bWaiting = true;
 	});
 	if (bWaiting)

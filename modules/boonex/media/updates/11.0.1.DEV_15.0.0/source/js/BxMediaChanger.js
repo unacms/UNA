@@ -26,6 +26,7 @@ function BxMediaChanger(oOptions) {
 	this._sUploadToken = oOptions.sUploadToken ? oOptions.sUploadToken : '';
 	this._sImageType = oOptions.sImageType;
 	this._sButtons = oOptions.sButtons;
+	this._sCsrfToken = oOptions.sCsrfToken ? oOptions.sCsrfToken : '';
 	
 	this._bIsInline = (this._sImageType == 'cover' ? true : false);
 	this._bIsCaption = (this._sImageType == 'avatar' ? false : true);
@@ -175,6 +176,7 @@ BxMediaChanger.prototype.uploadFile = function (oFile) {
 						}
 						
 						$.post($this._sActionUrl + 'UpdateContent/', {
+							csrf_token: $this._sCsrfToken,
 							module: $this._sModule,
 							field: $this._sFieldName,
 							content_id: $this._iContentId,
