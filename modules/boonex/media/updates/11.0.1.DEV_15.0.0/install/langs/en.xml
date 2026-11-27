@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_media_editor_close"><![CDATA[Close]]></string_add>
+	<string_add name="_bx_media_editor_reset"><![CDATA[Reset]]></string_add>
+	<string_add name="_bx_media_editor_undo"><![CDATA[Undo]]></string_add>
+	<string_add name="_bx_media_editor_redo"><![CDATA[Redo]]></string_add>
+	<string_add name="_bx_media_editor_done"><![CDATA[Done]]></string_add>
+	<string_add name="_bx_media_editor_crop"><![CDATA[Crop]]></string_add>
+	<string_add name="_bx_media_editor_filter"><![CDATA[Filter]]></string_add>
+	<string_add name="_bx_media_editor_finetune"><![CDATA[Adjust]]></string_add>
+	<string_add name="_bx_media_editor_resize"><![CDATA[Resize]]></string_add>
+	<string_add name="_bx_media_editor_rotate_left"><![CDATA[Rotate left]]></string_add>
+	<string_add name="_bx_media_editor_flip_horizontal"><![CDATA[Flip horizontally]]></string_add>
+	<string_add name="_bx_media_editor_flip_vertical"><![CDATA[Flip vertically]]></string_add>
+	<string_add name="_bx_media_editor_straighten"><![CDATA[Straighten]]></string_add>
+	<string_add name="_bx_media_editor_aspect_free"><![CDATA[Free]]></string_add>
+	<string_add name="_bx_media_editor_aspect_original"><![CDATA[Original]]></string_add>
+	<string_add name="_bx_media_editor_filter_none"><![CDATA[Original]]></string_add>
+	<string_add name="_bx_media_editor_filter_mono"><![CDATA[Mono]]></string_add>
+	<string_add name="_bx_media_editor_filter_noir"><![CDATA[Noir]]></string_add>
+	<string_add name="_bx_media_editor_filter_sepia"><![CDATA[Sepia]]></string_add>
+	<string_add name="_bx_media_editor_filter_vintage"><![CDATA[Vintage]]></string_add>
+	<string_add name="_bx_media_editor_filter_fade"><![CDATA[Fade]]></string_add>
+	<string_add name="_bx_media_editor_filter_vivid"><![CDATA[Vivid]]></string_add>
+	<string_add name="_bx_media_editor_filter_warm"><![CDATA[Warm]]></string_add>
+	<string_add name="_bx_media_editor_filter_cool"><![CDATA[Cool]]></string_add>
+	<string_add name="_bx_media_editor_brightness"><![CDATA[Brightness]]></string_add>
+	<string_add name="_bx_media_editor_contrast"><![CDATA[Contrast]]></string_add>
+	<string_add name="_bx_media_editor_saturation"><![CDATA[Saturation]]></string_add>
+	<string_add name="_bx_media_editor_warmth"><![CDATA[Warmth]]></string_add>
+	<string_add name="_bx_media_editor_width"><![CDATA[Width]]></string_add>
+	<string_add name="_bx_media_editor_height"><![CDATA[Height]]></string_add>
+	<string_add name="_bx_media_editor_keep_ratio"><![CDATA[Keep proportions]]></string_add>
+	<string_add name="_bx_media_editor_resize_note"><![CDATA[The image cannot be made larger than the cropped area.]]></string_add>
+	<string_add name="_bx_media_editor_err_load"><![CDATA[This image cannot be opened. Try another file.]]></string_add>
+	<string_add name="_bx_media_editor_err_save"><![CDATA[The image cannot be saved. Please try again.]]></string_add>
+	<string_add name="_bx_media_txt_click_to_edit"><![CDATA[Click a photo to edit it before uploading.]]></string_add>
+</resources>
