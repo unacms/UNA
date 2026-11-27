@@ -97,7 +97,6 @@ class BxMediaUploader extends BxDolUploader
                 'condition' => !empty($aStorageData),
                 'content' => array(
                     'bx_repeat:items' => $aStorageData,
-                    'list_width' => (count($aStorageData) * 10) . 'rem'
                 )
             ),
         ));

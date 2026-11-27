@@ -50,7 +50,8 @@ class BxMediaModule extends BxDolModule
 
         // a single file field keeps only the new file
         if($iNewId && !$bMultiple) {
-            foreach($oStorage->getGhosts($iProfileId, $iContentId ? $iContentId : false, (bool)$iContentId) as $aGhost) {
+            // only the member's files of this content: 0 is a new content, false would take every file
+            foreach($oStorage->getGhosts($iProfileId, $iContentId, false) as $aGhost) {
                 if((int)$aGhost['id'] != $iNewId)
                     $oStorage->deleteFile($aGhost['id']);
             }

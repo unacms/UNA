@@ -140,6 +140,41 @@ class MediaManagerTest extends BxDolIntegrationTestCase
         $this->assertSame('', ob_get_clean(), 'CopyFile does nothing for a GET.');
     }
 
+    public function testSingleFileCopyKeepsFilesOfPublishedContent(): void
+    {
+        $this->bxLoginAsAdmin();
+
+        $iPublished = $this->storeImage(self::STORAGE, 555555555);
+        $iPending = $this->storeImage(self::STORAGE);
+        $iSource = $this->storeImage(self::STORAGE_OTHER);
+        $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_GET = [
+            'csrf_token' => $this->_oModule->getCsrfToken(),
+            'FileId' => $iSource,
+            'SourceStorage' => self::STORAGE_OTHER,
+            'StorageObject' => self::STORAGE,
+            'UploaderObject' => 'sys_html5',
+            'UniqId' => 'mmtest',
+            'UploaderInstanceName' => 'oTest',
+            'ContentId' => 0,
+            'isMultiple' => 0,
+        ];
+
+        ob_start();
+        $this->_oModule->actionCopyFile();
+        $sAnswer = ob_get_clean();
+
+        $this->assertStringContainsString("oTest.onUploadCompleted('')", $sAnswer, 'The copy succeeded.');
+        $this->assertNotEmpty($oStorage->getFile($iPublished), 'A file of a published content stays.');
+        $this->assertEmpty($oStorage->getFile($iPending), 'The other pending file of the new content is replaced.');
+
+        $iCopy = (int)BxDolDb::getInstance()->getOne("SELECT MAX(`id`) FROM `sys_storage_ghosts` WHERE `object` = :object AND `profile_id` = :profile AND `content_id` = 0", ['object' => self::STORAGE, 'profile' => $this->_iProfileId]);
+        $this->_aFiles[] = [self::STORAGE, $iCopy];
+        $this->assertGreaterThan($iPending, $iCopy, 'The copy is the new content\'s file.');
+    }
+
     public function testEditorCaptionsAreTranslated(): void
     {
         foreach ($this->_oModule->_oConfig->getEditorTranslations() as $sKey)

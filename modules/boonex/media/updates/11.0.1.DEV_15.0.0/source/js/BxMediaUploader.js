@@ -212,11 +212,16 @@ BxMediaUploader.prototype.addUploadedFile = function (file, sKey) {
 
 BxMediaUploader.prototype.uploadSelectedFiles = function (btn) {
 	var $this = this;
-	$(btn).text($this._aLabels['labelButtonProcessAll']);
-	$(btn).prop('disabled', true);
+	$this._eDoneBtn = $(btn);
+	if ($this._sDoneTitle === undefined)
+		$this._sDoneTitle = $this._eDoneBtn.html();
+	$this._eDoneBtn.text($this._aLabels['labelButtonProcessAll']).prop('disabled', true);
+	$this._clearErrors();
+	$this._isUploadsInProgress = true;
 
 	// status false: being uploaded, finalize waits for it
 	$.each($this._aFilesForUpload, function (sKey, oFile) {
+		oFile.failed = false;
 		oFile.status = !oFile.selected;
 	});
 	$.each($this._aFilesForUpload, function (sKey, oFile) {
@@ -251,6 +256,7 @@ BxMediaUploader.prototype.uploadFile = function (oFile) {
         // done either way, so finalize doesn't wait for it forever
         var fDone = function (sResult) {
             oFile.status = true;
+            oFile.failed = !sResult;
             if (sResult)
                 $this._aJsToEval.push(sResult);
             $this.finalize();
@@ -271,6 +277,7 @@ BxMediaUploader.prototype.uploadFile = function (oFile) {
 			$this.finalize();
         }).fail(function () {
 			oFile.status = true;
+			oFile.failed = true;
 			$this.finalize();
         });
     }
@@ -318,20 +325,39 @@ BxMediaUploader.prototype.finalize = function () {
 	if ($this._oFilePondObject.status == 3 || $this._oFilePondObject.status == 1)
 		return;
 
-	// recent files still being copied
-	var bWaiting = false;
+	// recent files still being uploaded or copied
+	var bWaiting = false, bFailed = false;
 	$.each($this._aFilesForUpload, function (sKey, oFile) {
 		if (oFile.selected && !oFile.status)
 			bWaiting = true;
+		if (oFile.selected && oFile.failed)
+			bFailed = true;
 	});
 	if (bWaiting)
 		return;
+
+	$this._isUploadsInProgress = false;
 
 	var aResults = $this._aJsToEval;
 	$this._aJsToEval = [];
 	$.each(aResults, function (iIndex, sResult) {
 		$this._onUploadResult(sResult);
 	});
+
+	// keep the popup with the failed files still selected, so Done tries them again
+	if (bFailed || $this._oFilePondObject.status == 2) {
+		$.each($this._aFilesForUpload, function (sKey, oFile) {
+			if (oFile.selected && !oFile.failed) {
+				oFile.selected = false;
+				$('#' + $this._sPopupContainerId + ' .bx_media_list_item[data-id="' + sKey + '"]').parent().removeClass('bx_media_list_item_container_selected');
+			}
+		});
+		$this._bNeedClose = false;
+		$this._showError($this._aLabels['labelFileProcessingError']);
+		if ($this._eDoneBtn)
+			$this._eDoneBtn.html($this._sDoneTitle).prop('disabled', false);
+		return;
+	}
 
 	$this.hide();
 }
@@ -390,8 +416,11 @@ BxMediaUploader.prototype.onUploadCompleted = function (sErrorMsg) {
 }
 
 BxMediaUploader.prototype.cancelAll = function () {
-    $('#' + this._sIframeId).attr('src', 'javascript:false;');
-    this.uploadCompleted(_t('_sys_uploader_upload_canceled'));
+    this._isUploadsInProgress = false;
+    this._bNeedClose = false;
+    this._aJsToEval = [];
+    if (this._oFilePondObject)
+        this._oFilePondObject.removeFiles();
 }
 
 BxMediaUploader.prototype.restoreGhosts = function (bInitReordering, onComplete) {

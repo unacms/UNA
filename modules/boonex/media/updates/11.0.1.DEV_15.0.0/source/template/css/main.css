@@ -24,7 +24,8 @@
     position:absolute;
     top:0px;
     left:0px;
-    width:calc(100%)
+    display:flex;
+    width:max-content;
 }
 .bx_media_lists{
     height:10rem;
