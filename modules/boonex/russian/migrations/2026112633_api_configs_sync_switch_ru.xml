@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > API > Configs: the title of the "Keep in sync" column (#6346). -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_adm_api_ttl_sync_api"><![CDATA[Синхр.]]></string_add>
+</resources>
