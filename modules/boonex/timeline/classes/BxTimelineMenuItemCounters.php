@@ -16,6 +16,8 @@ require_once('BxTimelineMenuItemActions.php');
  */
 class BxTimelineMenuItemCounters extends BxTimelineMenuItemActions
 {
+    protected $_bCodeApi = false;
+
     public function __construct($aObject, $oTemplate = false)
     {
         parent::__construct($aObject, $oTemplate);
@@ -50,9 +52,24 @@ class BxTimelineMenuItemCounters extends BxTimelineMenuItemActions
         return BxDolMenu::COUNTERS_LABEL;
     }
 
+    /**
+     * The apps get every counter: they apply the actions' Counters themselves, so an older app keeps its counts.
+     */
+    public function getCodeAPI()
+    {
+        $bCodeApi = $this->_bCodeApi;
+        $this->_bCodeApi = true;
+        try {
+            return parent::getCodeAPI();
+        }
+        finally {
+            $this->_bCodeApi = $bCodeApi;
+        }
+    }
+
     protected function _isVisible($a)
     {
-        if(!$this->_bIsApi)
+        if(!$this->_bIsApi && !$this->_bCodeApi)
             switch($this->_getActionsCounters()) {
                 case BxDolMenu::COUNTERS_GROUP:
                     return false;
