@@ -256,7 +256,7 @@ BxMediaUploader.prototype.uploadFile = function (oFile) {
         // done either way, so finalize doesn't wait for it forever
         var fDone = function (sResult) {
             oFile.status = true;
-            oFile.failed = !sResult;
+            oFile.failed = !sResult || $this._getUploadError(sResult) !== '';
             if (sResult)
                 $this._aJsToEval.push(sResult);
             $this.finalize();
@@ -272,8 +272,10 @@ BxMediaUploader.prototype.uploadFile = function (oFile) {
     else{
         // a recent file unchanged: the server copies it by its id
         $.post(sUrlRoot + $this._sActionsUri + 'CopyFile/', { csrf_token: this._sCsrfToken, FileId: oFile.id, SourceStorage: oFile.object, StorageObject: this._sStorageObject, UniqId: this._sUniqId, UploaderInstanceName: this._sUploaderInstanceName, UploaderObject: this._sUploaderObject, isPrivate: this._isPrivate, ContentId: this._iContentId, isMultiple: this._isMultiple ? 1 : 0 }, function (data) {
+			var sResult = jQuery(data).text();
 			oFile.status = true;
-			$this._aJsToEval.push(jQuery(data).text());
+			oFile.failed = !sResult || $this._getUploadError(sResult) !== '';
+			$this._aJsToEval.push(sResult);
 			$this.finalize();
         }).fail(function () {
 			oFile.status = true;
@@ -363,13 +365,24 @@ BxMediaUploader.prototype.finalize = function () {
 }
 
 // storage_uploader.php answers with a call of onUploadCompleted: read the uploader and the errors from it instead of running it
-BxMediaUploader.prototype._onUploadResult = function (sResult) {
+BxMediaUploader.prototype._parseUploadResult = function (sResult) {
 	var m = /window\.parent\.(\w+)\.onUploadCompleted\('((?:[^'\\]|\\.)*)'\)/.exec(sResult || '');
-	if (!m)
+	return m ? {uploader: m[1], errors: m[2].replace(/\\(.)/g, '$1')} : null;
+}
+
+// the errors of an answer, null when it isn't one
+BxMediaUploader.prototype._getUploadError = function (sResult) {
+	var o = this._parseUploadResult(sResult);
+	return o ? o.errors : null;
+}
+
+BxMediaUploader.prototype._onUploadResult = function (sResult) {
+	var o = this._parseUploadResult(sResult);
+	if (!o)
 		return;
-	var oUploader = window[m[1]];
+	var oUploader = window[o.uploader];
 	if (oUploader && typeof oUploader.onUploadCompleted === 'function')
-		oUploader.onUploadCompleted(m[2].replace(/\\(.)/g, '$1'));
+		oUploader.onUploadCompleted(o.errors);
 }
 
 BxMediaUploader.prototype.hide = function () {
