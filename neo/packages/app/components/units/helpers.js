@@ -1,6 +1,7 @@
 import { Fragment, useMemo, useRef, useState, useCallback, createContext, use } from 'react';
 import { Platform } from 'react-native';
 import Image from 'app/ui/atoms/image';
+import { Icon } from 'app/ui/atoms/icon';
 import Letter from 'app/ui/atoms/letter';
 import { Text } from 'app/design/typography';
 import CountText from 'app/ui/atoms/count-text';
@@ -739,7 +740,7 @@ export function UnitProfileConnections({ data, skeleton, labelClassName = PROFIL
  * name, the counts 8px under it (like the two buttons), then the buttons 12px lower, full width. `subtitle` is a
  * line that belongs to the name (an event's date), 4px under it.
  */
-export function UnitProfileCard({ data, unitType, module, subtitle = null }) {
+export function UnitProfileCard({ data, unitType, module, subtitle = null, subtitleIcon = null }) {
     const { t } = useTranslation();
     const { primaryMenuItem, secondaryMenuItem, deleteMenuItem } = useUnitActions({
         unitType,
@@ -772,7 +773,14 @@ export function UnitProfileCard({ data, unitType, module, subtitle = null }) {
                             />
                             {hasSubtitle ? (
                                 <Skeleton visible={isSkeleton} className="h-4 w-1/2">
-                                    <Text numberOfLines={1} className={PROFILE_ROW_SUBTITLE}>{subtitle}</Text>
+                                    {subtitleIcon ? (
+                                        <Row className="items-center gap-1 min-w-0">
+                                            <Icon icon={subtitleIcon} size={14} className="text-secondary-foreground flex-none" />
+                                            <Text numberOfLines={1} className={cn(PROFILE_ROW_SUBTITLE, 'flex-1 min-w-0')}>{subtitle}</Text>
+                                        </Row>
+                                    ) : (
+                                        <Text numberOfLines={1} className={PROFILE_ROW_SUBTITLE}>{subtitle}</Text>
+                                    )}
                                 </Skeleton>
                             ) : null}
                         </View>

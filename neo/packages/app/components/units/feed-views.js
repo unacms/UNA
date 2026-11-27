@@ -1,8 +1,8 @@
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import Time from 'app/ui/atoms/time'
 import Embed from 'app/ui/molecules/content/embed'
 import { memo, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher'
@@ -10,13 +10,12 @@ import { Icon } from 'app/ui/atoms/icon'
 import { Pressable } from 'app/design/view'
 import { ContentMore } from 'app/ui/molecules/content/content-more'
 import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
-import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
+import { appSetting, formatDateInterval, LAYOUT_BREAKPOINTS, stripTags, useDateLocaleTag } from 'app/lib/util'
 import Carousel from 'app/ui/molecules/content/carousel'
 import { PollItem } from 'app/components/elements/entity-poll'
 import Html from 'app/ui/atoms/html'
 import Video from 'app/ui/atoms/video';
 import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
-import { appSetting } from 'app/lib/util'
 
 export const LinkContent = memo(({ url, data }) => (
     <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
@@ -63,6 +62,8 @@ export const UnitImages = memo(({ images }) => {
 })
 
 export const GroupView = memo(({ data, styles, url, isCompact }) => {
+    const { t } = useTranslation()
+    const dateLocaleTag = useDateLocaleTag()
     const pref = isCompact ? '' : 'md:'
     return (
         <View
@@ -90,28 +91,22 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
             )}
             <View className="flex-auto my-auto flex-col">
                <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
-                    <Text
-                        numberOfLines={1}
-                        className=" text-muted-foreground  text-xs uppercase tracking-tight overflow-hidden"
-                    >
-                        {data.content?.date_start && (
-                            <>
-                                <Time
-                                    stylesName="text-xs flex-none"
-                                    ts={data.content?.date_start}
-                                ></Time>
-                                {data.content?.date_end && (
-                                    <>
-                                        {' - '}
-                                        <Time
-                                            stylesName="text-xs flex-none"
-                                            ts={data.content?.date_end}
-                                        ></Time>
-                                    </>
+                    {data.content?.date_start ? (
+                        <Row className="items-center gap-1 min-w-0">
+                            <Icon icon="Calendar" size={13} className="text-muted-foreground flex-none" />
+                            <Text
+                                numberOfLines={1}
+                                className="text-muted-foreground text-xs uppercase tracking-tight overflow-hidden flex-1 min-w-0"
+                            >
+                                {formatDateInterval(
+                                    data.content.date_start,
+                                    data.content.date_end || data.content.date_start,
+                                    t,
+                                    dateLocaleTag
                                 )}
-                            </>
-                        )}
-                    </Text>
+                            </Text>
+                        </Row>
+                    ) : null}
                     <Text
                         numberOfLines={2}
                         className=" text-foreground web:hover:text-primary text-lg font-semibold tracking-tight"

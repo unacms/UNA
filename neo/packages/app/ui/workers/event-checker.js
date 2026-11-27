@@ -3,10 +3,9 @@ import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import * as Location from 'expo-location'; 
-import { stripTags } from 'app/lib/util';
+import { formatDateInterval, stripTags, useDateLocaleTag } from 'app/lib/util';
 import { NeoButton } from 'app/design/controls';
 import Image from 'app/ui/atoms/image'
-import Time from 'app/ui/atoms/time';
 import { Text } from 'app/design/typography'
 import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -41,6 +40,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
 export default function WorkerEventChecker(oProps) {
     const { setBottomSheetData } = useBottomSheetData();
+    const dateLocaleTag = useDateLocaleTag();
 
     const redirectdRef = useRef();
     const [data, setData] = useState(false);
@@ -83,12 +83,14 @@ export default function WorkerEventChecker(oProps) {
                         <Row >
                             <View className={(item.cover ? 'w-4/5' : 'w-full') + ' gap-y-2'}>
                                 <Text className=" text-popover-foreground  tracking-tight  web:hover:text-primary leading-tight text-base font-bold">{item.title}</Text>
-                                <Row className='text-center gap-x-2 items-center'>
-                                    <NeoButton controlSize="mini" image="CalendarCheck" classNames={{ root: 'self-center' }} />
-                                    <Time className=" " ts={item.date_start} />
-                                    <Text className=" " >-</Text>
-                                    <Time className=" " ts={item.date_end} />
-                                </Row>
+                                {item.date_start ? (
+                                    <Row className='text-center gap-x-2 items-center'>
+                                        <NeoButton controlSize="mini" image="CalendarCheck" classNames={{ root: 'self-center' }} />
+                                        <Text className="text-xs text-muted-foreground">
+                                            {formatDateInterval(item.date_start, item.date_end || item.date_start, i18n.t, dateLocaleTag)}
+                                        </Text>
+                                    </Row>
+                                ) : null}
                                 {item.location != '' && (<Row className='text-center gap-x-2 items-center'><NeoButton controlSize="mini" image="MapPin" classNames={{ root: 'self-center' }} /><Text className="text-xs text-muted-foreground ">{item.location}</Text></Row>)}
                                 <Text className="text-muted-foreground " numberOfLines={2}> {stripTags(item.description)}</Text>
                             </View>

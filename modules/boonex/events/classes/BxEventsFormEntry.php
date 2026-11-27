@@ -208,8 +208,10 @@ class BxEventsFormEntry extends BxBaseModGroupsFormEntry
         $aStartEnd = $this->_getStartEnd();
         if($aStartEnd === false || (is_array($aStartEnd) && empty($aStartEnd)))
             return false;
-        else
-            return $aStartEnd['start']->format('Y-m-d') == $aStartEnd['end']->format('Y-m-d');
+        if(empty($aStartEnd['start']) || empty($aStartEnd['end']))
+            return false;
+
+        return $aStartEnd['start']->format('Y-m-d') == $aStartEnd['end']->format('Y-m-d');
     }
 
     protected function _getStartEnd()
@@ -223,8 +225,10 @@ class BxEventsFormEntry extends BxBaseModGroupsFormEntry
         $iTimeStart = bx_process_input ($this->aInputs['date_start']['value'], isset($this->aInputs['date_start']['date_filter']) ? $this->aInputs['date_start']['date_filter'] : BX_DATA_DATETIME_TS, false, false);
         $iTimeEnd = bx_process_input ($this->aInputs['date_end']['value'], isset($this->aInputs['date_end']['date_filter']) ? $this->aInputs['date_end']['date_filter'] : BX_DATA_DATETIME_TS, false, false);
 
-        $oDateStart = date_create("@$iTimeStart");
-        $oDateEnd = date_create("@$iTimeEnd");
+        $oDateStart = !empty($iTimeStart) ? date_create("@$iTimeStart") : false;
+        $oDateEnd = !empty($iTimeEnd) ? date_create("@$iTimeEnd") : false;
+        if($oDateStart === false && $oDateEnd === false)
+            return array();
 
         return array('start' => $oDateStart, 'end' => $oDateEnd);
     }
@@ -243,7 +247,7 @@ class BxEventsFormEntry extends BxBaseModGroupsFormEntry
         else if(is_array($aStartEnd) && empty($aStartEnd))
             $aInput['value'] = '';
         else {
-            if ($aStartEnd['start']->format('Y-m-d') == $aStartEnd['end']->format('Y-m-d'))
+            if (!empty($aStartEnd['start']) && !empty($aStartEnd['end']) && $aStartEnd['start']->format('Y-m-d') == $aStartEnd['end']->format('Y-m-d'))
                 $aInput['value'] = _t('_bx_events_txt_from_time_to_time', date(getParam($CNF['PARAM_FORMAT_TIME']), $aStartEnd['start']->getTimestamp()), date(getParam($CNF['PARAM_FORMAT_TIME']), $aStartEnd['end']->getTimestamp()));
             else
                 $aInput['value'] = '';
@@ -264,8 +268,12 @@ class BxEventsFormEntry extends BxBaseModGroupsFormEntry
             if(is_array($aStartEnd) && empty($aStartEnd))
                 return null;
 
-            $sFormat = getParam($aStartEnd['start']->format('Y-m-d') == $aStartEnd['end']->format('Y-m-d') ? $CNF['PARAM_FORMAT_DATE'] : $CNF['PARAM_FORMAT_DATETIME']);
             $oDate = 'date_start' == $aInput['name'] ? $aStartEnd['start'] : $aStartEnd['end'];
+            if (empty($oDate))
+                return null;
+
+            $bSameDay = !empty($aStartEnd['start']) && !empty($aStartEnd['end']) && $aStartEnd['start']->format('Y-m-d') == $aStartEnd['end']->format('Y-m-d');
+            $sFormat = getParam($bSameDay ? $CNF['PARAM_FORMAT_DATE'] : $CNF['PARAM_FORMAT_DATETIME']);
             return date($sFormat, $oDate->getTimestamp());
         }
         return parent::genViewRowValue($aInput);

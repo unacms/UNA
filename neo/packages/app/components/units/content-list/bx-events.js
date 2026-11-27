@@ -12,5 +12,13 @@ export default function Unit({ data, unitType, module }) {
     if (data?.date_start)
         subtitle = formatDateInterval(data.date_start, data.date_end, t, dateLocaleTag)
 
-    return <UnitProfileCard data={data} unitType={unitType} module={module} subtitle={subtitle} />
+    return (
+        <UnitProfileCard
+            data={data}
+            unitType={unitType}
+            module={module}
+            subtitle={subtitle}
+            subtitleIcon={data?.date_start ? 'Calendar' : null}
+        />
+    )
 }

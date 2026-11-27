@@ -4,7 +4,6 @@ import { Image as ExpoImage } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { BottomSheet, Button, Divider, Group, HStack, Host, Image, RNHostView, Spacer, Text, VStack } from '@expo/ui/swift-ui';
 import {
-    accessibilityLabel,
     background,
     buttonStyle,
     contentShape,
@@ -17,7 +16,7 @@ import {
     resizable,
     shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { useIosStyleColors, useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
+import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { appSetting } from 'app/lib/util';
 import { getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
 import type { MoreSheetItem, MoreSheetProfile, NativeMoreSheetProps } from 'app/components/nav/tabs/more-sheet.types';
@@ -34,7 +33,6 @@ export const hasNativeMoreSheet = !!appSetting('theme', 'expo_ui', 'tabs')?.more
 
 const ICON_PT = 22;
 const AVATAR_PT = 44;
-const AGENT_BUTTON_PT = 44;
 
 const AVATAR_STYLE = StyleSheet.create({
     image: { width: AVATAR_PT, height: AVATAR_PT, borderRadius: AVATAR_PT / 2 },
@@ -129,65 +127,24 @@ function ProfileHeader({ profile, selectedColors, onPress }: { profile: MoreShee
     );
 }
 
-type IosStyleColors = { tint?: string; foreground?: string };
-
-/**
- * Icon-only Agent button on the right of the header row — toggles the operator
- * agent. Colored like a `bordered` NeoButton (`expo_ui.button.iosColors`); while
- * the chat is open it takes the toggled look of selected tabs / subtabs.
- */
-function AgentButton({ active, onPress }: { active?: boolean; onPress: () => void }) {
-    const { t } = useTranslation();
-    const iosColors = appSetting('theme', 'expo_ui', 'button')?.iosColors;
-    const restingMap = iosColors?.bordered;
-    // Same lookup as NeoButton: the style's own `selected`, else the shared toggled palette.
-    const selectedMap = restingMap?.selected ?? iosColors?.glass?.selected;
-    const resting = useIosStyleColors(restingMap) as IosStyleColors | undefined;
-    const toggled = useIosStyleColors(selectedMap) as IosStyleColors | undefined;
-    const colors = active ? toggled ?? resting : resting;
-    return (
-        <Button
-            onPress={onPress}
-            modifiers={[
-                buttonStyle('plain'),
-                accessibilityLabel(t(active ? 'operator_agent_close' : 'operator_agent_open')),
-            ]}
-        >
-            <HStack
-                modifiers={[
-                    frame({ width: AGENT_BUTTON_PT, height: AGENT_BUTTON_PT }),
-                    colors?.tint
-                        ? background(colors.tint, shapes.circle())
-                        : background({ type: 'hierarchical', style: 'quaternary' }, shapes.circle()),
-                    contentShape(shapes.circle()),
-                ]}
-            >
-                <RowIcon icon="Sparkles" color={colors?.foreground} />
-            </HStack>
-        </Button>
-    );
-}
-
-export function NativeMoreSheet({ open, onOpenChange, items, onSelect, profile, onAgentPress, agentActive }: NativeMoreSheetProps) {
+export function NativeMoreSheet({ open, onOpenChange, items, onSelect, profile }: NativeMoreSheetProps) {
     const tabsSelected = appSetting('theme', 'native_tabs', 'selected');
     const selectedColors: SelectedColors = {
         fill: useNativeTokenColor(tabsSelected?.iosMoreIndicator ?? tabsSelected?.indicator) as string | undefined,
         ink: useNativeTokenColor(tabsSelected?.foreground) as string | undefined,
     };
-    const hasHeader = !!profile || !!onAgentPress;
     return (
         // The sheet presents over the window; its host only needs to be mounted.
         <Host style={{ position: 'absolute', width: 0, height: 0 }}>
             <BottomSheet isPresented={open} onIsPresentedChange={onOpenChange} fitToContents>
                 <Group modifiers={[presentationDragIndicator('hidden')]}>
                     <VStack spacing={2} modifiers={[padding({ horizontal: 12, top: 20, bottom: 8 })]}>
-                        {hasHeader ? (
+                        {profile ? (
                             <HStack spacing={8} modifiers={[padding({ trailing: 4 })]}>
-                                {profile ? <ProfileHeader profile={profile} selectedColors={selectedColors} onPress={() => onSelect(profile.item)} /> : <Spacer />}
-                                {onAgentPress ? <AgentButton active={agentActive} onPress={onAgentPress} /> : null}
+                                <ProfileHeader profile={profile} selectedColors={selectedColors} onPress={() => onSelect(profile.item)} />
                             </HStack>
                         ) : null}
-                        {hasHeader ? <Divider modifiers={[padding({ horizontal: 16, vertical: 8 })]} /> : null}
+                        {profile ? <Divider modifiers={[padding({ horizontal: 16, vertical: 8 })]} /> : null}
                         {items.map((item, index) => (
                             item.type === 'separator'
                                 ? <Divider key={`separator-${index}`} modifiers={[padding({ horizontal: 16, vertical: 8 })]} />
