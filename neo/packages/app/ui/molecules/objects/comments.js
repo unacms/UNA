@@ -141,7 +141,9 @@ export default function ElementComments(props) {
                     width={props.params?.button_full_width ? 'fill' : 'auto'}
                     onPress={!isDisabled ? handlePress : undefined}
                     disabled={isDisabled}
-                    accessibilityLabel={actionLabel === count && count > 0 ? counterName(count) : (neoLabel || undefined)}
+                    accessibilityLabel={asCount
+                        ? (count > 0 ? counterName(count) : title)
+                        : actionLabel === count && count > 0 ? counterName(count) : (neoLabel || undefined)}
                 />
             );
         }
