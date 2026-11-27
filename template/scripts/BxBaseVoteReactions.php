@@ -196,8 +196,8 @@ class BxBaseVoteReactions extends BxDolVoteReactions
             'bx_if:show_text' => array(
                 'condition' => !$bActive,
                 'content' => array(
-                    'text_class' => 'cursor-pointer',
-                    'text_onclick' => "jQuery(this).closest('.sys-action').find('." . $this->_sStylePrefix . "-do-vote').first().click()",
+                    // BxDolVoteReactions.js passes a press on it to the action's own control.
+                    'text_class' => 'bx-vote-counter-do cursor-pointer',
                     'counter' => !$bActive ? parent::getCounter(array_merge($aParams, array('show_script' => false))) : '',
                 )
             ),
@@ -253,7 +253,6 @@ class BxBaseVoteReactions extends BxDolVoteReactions
                 'condition' => true,
                 'content' => array(
                     'text_class' => '',
-                    'text_onclick' => '',
                     'counter' => $sResult,
                 )
             ),

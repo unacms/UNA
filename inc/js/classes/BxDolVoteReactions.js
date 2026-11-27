@@ -28,6 +28,14 @@ function BxDolVoteReactions(oOptions)
 BxDolVoteReactions.prototype = Object.create(BxDolVote.prototype);
 BxDolVoteReactions.prototype.constructor = BxDolVoteReactions;
 
+/**
+ * A count shown as an action's label (a menu's Counters "count") is text: pressing it presses the action.
+ * The action's own control takes the keyboard, so the text needs no focus of its own.
+ */
+$(document).off('click.bxVoteCounterDo').on('click.bxVoteCounterDo', '.bx-vote-counter-do', function() {
+    $(this).closest('.sys-action').find('.bx-vote-do-vote').first().trigger('click');
+});
+
 BxDolVoteReactions.prototype.init = function()
 {
     BxDolVote.prototype.init.call(this);
