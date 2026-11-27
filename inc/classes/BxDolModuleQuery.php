@@ -378,10 +378,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
      */
     public static function getConfigPreview($aConfig)
     {
-        if(!is_array($aConfig) || empty($aConfig['name']))
-            return null;
-
-        return ['preview' => !empty($aConfig['preview']) ? 1 : 0];
+        return BxDolMigrationsQuery::getConfigPreview($aConfig);
     }
 
     /**

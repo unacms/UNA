@@ -220,11 +220,26 @@ class BxDolMigrationsQuery extends BxDolDb
     }
 
     /**
-     * Copies a module config's preview mark to `sys_modules`, when the config says and the column is there.
+     * Whether a module's install/config.php marks it as a preview (`'preview' => true`); a config without the key
+     * is a finished module. Here rather than in BxDolModuleQuery (which calls it) for the reason given at
+     * getConfigDeprecation: a system update pack runs migrations with the previous BxDolModuleQuery loaded.
+     *
+     * @return array{preview: int}|null null when there is no config to read
+     */
+    public static function getConfigPreview($aConfig): ?array
+    {
+        if (!is_array($aConfig) || empty($aConfig['name']))
+            return null;
+
+        return ['preview' => !empty($aConfig['preview']) ? 1 : 0];
+    }
+
+    /**
+     * Copies a module config's preview mark to `sys_modules`, when the column is there.
      */
     public function setModulePreview(string $sUri, array $aConfig): void
     {
-        $aSet = BxDolModuleQuery::getConfigPreview($aConfig);
+        $aSet = self::getConfigPreview($aConfig);
         if ($aSet === null || !$this->isColumn('sys_modules', 'preview'))
             return;
 
