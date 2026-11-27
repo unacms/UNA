@@ -318,6 +318,10 @@
 	<string name="_bx_messenger_txt_sample_comment_reply_single"><![CDATA[ответ]]></string>
 	<string name="_bx_messenger_txt_sample_comment_repost_single"><![CDATA[репост]]></string>
 	<string name="_bx_messenger_txt_sample_email_push"><![CDATA[прислал(а) {0}]]></string>
+	<string name="_bx_messenger_txt_email_message"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> прислал(а) вам сообщение]]></string>
+	<string name="_bx_messenger_txt_email_message_in"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> прислал(а) сообщение в «{entry_caption}»]]></string>
+	<string name="_bx_messenger_txt_email_mention"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> упомянул(а) вас в сообщении]]></string>
+	<string name="_bx_messenger_txt_email_broadcast"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> прислал(а) рассылку]]></string>
 	<string name="_bx_messenger_lot_parts_empty"><![CDATA[Пожалуйста укажите хотя бы одного участника разговора!]]></string>
 	<string name="_bx_messenger_dont_update_title"><![CDATA[Не обновлять заголовок страницы при поступлении новых сообщений]]></string>
 	<string name="_bx_messenger_acl_action_edit_messages"><![CDATA[Редактировать сообщения]]></string>

@@ -2396,6 +2396,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
             'entry_caption' => $sTitle,
             'entry_author' => $aEvent['object_owner_id'],
             'subentry_sample' => $sMessage,
+            'subentry_summary' => $this->_getNtfsEmailText($aJotInfo, false, $sMessage),
             'lang_key' => '_bx_messenger_txt_subobject_added_broadcast'
         ];
 
@@ -2404,7 +2405,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
 
         $aResult['lang_key'] = [
             'site' => $aResult['lang_key'],
-            'email' => $sAlterBody,
+            'email' => '_bx_messenger_txt_email_broadcast',
             'push' => $sAlterBody
         ];
 
@@ -2427,6 +2428,26 @@ class BxMessengerModule extends BxBaseModGeneralModule
 
         return $aResult;
     }
+    /**
+     * The text of a message for its notification email, as plain text with its line breaks:
+     * Notifications crops it to its summary length (bx_notifications_summary_chars) and escapes it.
+     * A message without text (a file, a GIF, a repost) gets its short description instead.
+     * @param array $aJotInfo message
+     * @param bool $bRepost the message only reposts another one
+     * @param string $sSample the short description of the message used on the site
+     * @return string
+     */
+    protected function _getNtfsEmailText($aJotInfo, $bRepost, $sSample)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sText = '';
+        if (!$bRepost && !empty($aJotInfo[$CNF['FIELD_MESSAGE']]))
+            $sText = trim(preg_replace("/\n{3,}/", "\n\n", html2txt(preg_replace(['/<br\W*?\/?>\r?\n?/i', '/\r\n?/'], "\n", $aJotInfo[$CNF['FIELD_MESSAGE']]))));
+
+        return $sText !== '' ? $sText : trim(html2txt($sSample));
+    }
+
     /**
      * Jot info for Notifications module
      * @param array Input alert params
@@ -2485,6 +2506,7 @@ class BxMessengerModule extends BxBaseModGeneralModule
             'entry_caption' => $sTitle,
             'entry_author' => $aEvent['object_owner_id'],
             'subentry_sample' => $sMessage,
+            'subentry_summary' => $this->_getNtfsEmailText($aJotInfo, $bAttachmentRepost, $sMessage),
             'lang_key' => $bAttachmentFiles || $bAttachmentGiphy
                 ? '_bx_messenger_txt_subobject_added_single' : "_bx_messenger_txt_subobject_added_{$sType}"
         );
@@ -2493,15 +2515,24 @@ class BxMessengerModule extends BxBaseModGeneralModule
 
         $sAlterBody = $sTruncatedMessage ? $sTruncatedMessage : _t('_bx_messenger_txt_sample_email_push', html2txt($sMessage));
 
+        /**
+         * The email says who wrote and where, the message itself follows it as the summary.
+         */
+        if ($sType === BX_MSG_NTFS_MENTION)
+            $sEmailLangKey = '_bx_messenger_txt_email_mention';
+        else
+            $sEmailLangKey = !empty($aLotInfo[$CNF['FIELD_TITLE']]) ? '_bx_messenger_txt_email_message_in' : '_bx_messenger_txt_email_message';
+
         $aResult['lang_key'] = array(
             'site' => $aResult['lang_key'],
-            'email' => $sAlterBody,
+            'email' => $sEmailLangKey,
             'push' => $sAlterBody
         );
 
         $aResult['settings'] = array(
             'email' => array(
-                'subject' => $sSubject
+                'subject' => $sSubject,
+                'button' => _t('_bx_messenger_jot_menu_reply')
             ),
             'push' => array(
                 'subject' => $sSubject

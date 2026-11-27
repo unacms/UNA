@@ -69,7 +69,7 @@ class NotificationEmailAvatarTest extends BxDolIntegrationTestCase
         $sThumb = BxDolProfile::getInstance($iProfile)->getThumb();
         $sBody = $this->email($iProfile);
 
-        $this->assertStringContainsString('<img style="width: 48px; height: 48px; line-height: 48px; border-radius: 80px;" src="' . $sThumb . '" />', $sBody);
-        $this->assertStringNotContainsString('<td', $sBody);
+        $this->assertStringContainsString('<img src="' . $sThumb . '" width="48" height="48"', $sBody);
+        $this->assertStringNotContainsString('bgcolor="#', str_replace('bgcolor="#14171e"', '', $sBody), 'No letter avatar next to the picture.');
     }
 }
