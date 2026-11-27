@@ -38,6 +38,7 @@ import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
+import { hasCounterToShow } from 'app/lib/counter-items'
 import emitter, { EVENTS } from 'app/context/emitter';
 
 
@@ -490,8 +491,10 @@ export const ActionMenu = memo(({ data }) => {
 
 export const CounterMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'counters_menu')
-    const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
-    const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
+    // Only counters with something to show: one at zero still took a slot, and the row's gap before the next.
+    const items = data?.items?.filter(hasCounterToShow) || []
+    const data_other = {...data, items: items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
+    const data_primary = {...data, items: items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
     return settings && <Row className="flex-auto justify-between">
         <Menu {...data_primary} displayType="button" params={settings} />

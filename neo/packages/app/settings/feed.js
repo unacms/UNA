@@ -46,7 +46,7 @@ export const settingsFeed = {
             button_variant: 'default', // bordered: a counter is a small button, its fill lines it up with the card's edges
             rounded: true,
             button_size: 'xs',
-            button_rounded: false,
+            button_rounded: true, // capsules
             justify_items: 'between',
             no_gap_between_buttons: false,
             counter_button_class: 'mt-1 sm:mt-2',
