@@ -1609,6 +1609,7 @@
 	<string name="_adm_nav_dsc_items_visible_for_levels"><![CDATA[Выбрать членства, разрешённые для просмотра элемента данного меню]]></string>
         <string name="_adm_nav_dsc_menus_button_size"><![CDATA[Размер всех кнопок этого меню на сайте и в приложениях. «Автоматически» оставляет каждой кнопке размер, заданный стилем меню.]]></string>
         <string name="_adm_nav_dsc_menus_button_style"><![CDATA[Как выглядят кнопки этого меню на сайте и в приложениях. «Автоматически» оставляет кнопку стиля меню и делает её стеклянной поверх обложки. Выберите «Стекло» для меню поверх изображения, «Обычные» для меню на ровном фоне.]]></string>
+        <string name="_adm_nav_dsc_menus_counters"><![CDATA[Как действия в этом меню показывают свои счётчики, на сайте и в приложениях. Подписи: каждое действие показывает своё название, а счётчики может показать меню статистики. Счётчики: каждое действие показывает свой счётчик вместо названия, и только значок, пока счётчик равен 0. Группы кнопок: каждое действие — две соединённые кнопки, действие и его счётчик, который показывает, кто это сделал. Автоматически: выбор самого меню.]]></string>
         <string name="_adm_nav_dsc_menus_persistent"><![CDATA[Количество постоянных пунктов меню. Применимо только для авто-перестраиваемых меню.]]></string>
 	<string name="_adm_nav_dsc_menus_set_name"><![CDATA[Назначить набор для элемента меню]]></string>
 	<string name="_adm_nav_dsc_menus_set_title"><![CDATA[Описательное имя для использования только в Студии. Используйте как минимум 3 символа.]]></string>
@@ -1699,6 +1700,10 @@
 	<string name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Стекло]]></string>
 	<string name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Без фона]]></string>
 	<string name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Обычные]]></string>
+	<string name="_adm_nav_txt_menus_counters"><![CDATA[Счётчики]]></string>
+	<string name="_adm_nav_txt_menus_counters_count"><![CDATA[Счётчики]]></string>
+	<string name="_adm_nav_txt_menus_counters_group"><![CDATA[Группы кнопок]]></string>
+	<string name="_adm_nav_txt_menus_counters_label"><![CDATA[Подписи]]></string>
 	<string name="_adm_nav_txt_menus_create_popup"><![CDATA[Добавить новое меню]]></string>
 	<string name="_adm_nav_txt_menus_edit_popup"><![CDATA[Редактировать "{0}" меню]]></string>
 	<string name="_adm_nav_txt_menus_gl_items"><![CDATA[Элементы]]></string>

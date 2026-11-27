@@ -14,6 +14,11 @@
  */
 class BxTimelineMenuItemActions extends BxTemplMenuCustom
 {
+    /**
+     * A feed item's actions show their counts as their labels unless the menu says otherwise (Studio > Navigation).
+     */
+    const COUNTERS_DEFAULT = BxDolMenu::COUNTERS_COUNT;
+
     protected static $_sModeActions = 'actions';
     protected static $_sModeCounters = 'counters';
 
@@ -32,6 +37,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
     protected $_bShowCounters;
     protected $_bShowCountersEmpty;
     protected $_bShowCountersIcons;
+    protected $_bShowCountersActive;
 
     protected $_sTmplNameItem;
 
@@ -52,7 +58,10 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $this->_bShowCounters = false;
         $this->_bShowCountersEmpty = false;
         $this->_bShowCountersIcons = true;
+        $this->_bShowCountersActive = true;
         $this->_sTmplNameItem = 'menu_custom_item_hor.html';
+
+        $this->_applyCounters();
 
         $this->_aItem2CheckFunc = array(
             'item-view' => 'isAllowedViewCounter',
@@ -145,6 +154,37 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
     public function setTemplateNameItem($sName)
     {
         $this->_sTmplNameItem = $sName;
+    }
+
+    /**
+     * The menu's Counters (Studio > Navigation > the menu) on the site: labels, counts or button groups. The apps get
+     * every element with its counter and draw the menu's `counters` themselves, so the API is left as it is.
+     */
+    protected function _applyCounters()
+    {
+        if($this->_bIsApi)
+            return;
+
+        switch($this->getCounters()) {
+            case BxDolMenu::COUNTERS_COUNT:
+                // the count is the label: no title, no count while there is none, and pressing it acts
+                $this->_bShowTitles = false;
+                $this->_bShowCounters = true;
+                $this->_bShowCountersEmpty = false;
+                $this->_bShowCountersActive = false;
+                break;
+
+            case BxDolMenu::COUNTERS_GROUP:
+                $this->_bShowTitles = true;
+                $this->_bShowCounters = true;
+                $this->_bShowCountersEmpty = false;
+                $this->_bShowCountersActive = true;
+                break;
+
+            default:
+                $this->_bShowTitles = true;
+                $this->_bShowCounters = false;
+        }
     }
 
     protected function _setBrowseParams($aBrowseParams = array())
@@ -247,6 +287,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iVotesObject = $this->_aEvent['votes']['object_id'];
         $aVotesParams = array(
             'show_do_vote_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters,
             'show_counter_empty' => $this->_bShowCountersEmpty,
             'show_counter_label_icon' => $this->_bShowCountersIcons,
@@ -282,6 +323,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iReactionsObject = $this->_aEvent['reactions']['object_id'];
         $aReactionsParams = array(
             'show_do_vote_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters,
             'show_counter_empty' => $this->_bShowCountersEmpty,
             'show_counter_style' => 'compound',
@@ -318,6 +360,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iScoresObject = $this->_aEvent['scores']['object_id'];
         $aScoresParams = array(
             'show_do_vote_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters,
             'show_counter_empty' => $this->_bShowCountersEmpty,
             'show_counter_label_icon' => $this->_bShowCountersIcons,

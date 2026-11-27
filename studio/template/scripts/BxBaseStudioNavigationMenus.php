@@ -458,6 +458,23 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
                         'pass' => 'Xss',
                     ),
                 ),
+                'counters' => array(
+                    'type' => 'select',
+                    'name' => 'counters',
+                    'caption' => _t('_adm_nav_txt_menus_counters'),
+                    'info' => _t('_adm_nav_dsc_menus_counters'),
+                    'value' => isset($aMenu['counters']) ? $aMenu['counters'] : BxDolMenu::COUNTERS_AUTO,
+                    'values' => array(
+                        array('key' => BxDolMenu::COUNTERS_AUTO, 'value' => _t('_adm_nav_txt_menus_button_auto')),
+                        array('key' => BxDolMenu::COUNTERS_LABEL, 'value' => _t('_adm_nav_txt_menus_counters_label')),
+                        array('key' => BxDolMenu::COUNTERS_COUNT, 'value' => _t('_adm_nav_txt_menus_counters_count')),
+                        array('key' => BxDolMenu::COUNTERS_GROUP, 'value' => _t('_adm_nav_txt_menus_counters_group')),
+                    ),
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
                 'section_nav' => array(
                     'type' => 'select',
                     'name' => 'section_nav',

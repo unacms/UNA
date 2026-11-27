@@ -16,6 +16,12 @@ bx_import('BxDolPrivacy');
  */
 class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
 {
+    /**
+     * A content page's actions are button groups (the action and its count, who did it) unless the menu says
+     * otherwise (Studio > Navigation > the menu's Counters).
+     */
+    const COUNTERS_DEFAULT = BxDolMenu::COUNTERS_GROUP;
+
     protected $_sModule;
     protected $_oModule;
 
@@ -232,6 +238,25 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
         return array($sResult, $this->_sClassMiSa);
     }
 
+    /**
+     * A vote element's options for the menu's Counters on the site; the apps draw the menu's `counters` themselves.
+     */
+    protected function _getCountersOptions()
+    {
+        if($this->_bIsApi)
+            return [];
+
+        switch($this->getCounters()) {
+            case BxDolMenu::COUNTERS_COUNT:
+                return ['show_do_vote_label' => false, 'show_counter' => true, 'show_counter_empty' => false, 'show_counter_active' => false];
+
+            case BxDolMenu::COUNTERS_GROUP:
+                return ['show_counter' => true, 'show_counter_empty' => false, 'show_counter_active' => true];
+        }
+
+        return ['show_counter' => false];
+    }
+
     protected function _getMenuItemVote($aItem, $aParams = [])
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
@@ -277,11 +302,11 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
         if(!$oObject || !$oObject->isEnabled())
             return '';
 
-        $aObjectOptions = array(
+        $aObjectOptions = array_merge(array(
             'dynamic_mode' => $this->_bDynamicMode,
             'show_do_vote_as_button' => $this->_bShowAsButton,
             'show_do_vote_label' => $this->_bShowTitle
-        );
+        ), $this->_getCountersOptions());
         if(!empty($aParams['object_options']) && is_array($aParams['object_options']))
             $aObjectOptions = array_merge($aObjectOptions, $aParams['object_options']);
 
