@@ -344,7 +344,8 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
 
         switch($this->getCounters()) {
             case BxDolMenu::COUNTERS_COUNT:
-                return ['show_do_vote_label' => false, 'show_counter' => true, 'show_counter_empty' => false, 'show_counter_active' => false];
+                // The count beside the action's own icon is the number alone.
+                return ['show_do_vote_label' => false, 'show_counter' => true, 'show_counter_empty' => false, 'show_counter_active' => false, 'show_counter_label_icon' => false, 'show_counter_style' => 'simple'];
 
             case BxDolMenu::COUNTERS_GROUP:
                 return ['show_counter' => true, 'show_counter_empty' => false, 'show_counter_active' => true];
