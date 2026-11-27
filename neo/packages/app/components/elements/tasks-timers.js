@@ -70,6 +70,9 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
         let latestRequest = 0;
         // A timer started, paused or logged on this screen, another page or another device.
         const reload = () => {
+            // An answer still on its way was read before this change: drop it, or it would put the
+            // old state back over a timer that has just been started, paused or resumed.
+            latestRequest++;
             clearTimeout(timeout);
             timeout = setTimeout(async () => {
                 const request = ++latestRequest;
@@ -81,6 +84,9 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
 
         const subscription = emitter.addListener(EVENTS.taskTimer, reload);
         const unsubscribe = profileId ? subscribe(`bx_tasks_timers_${profileId}`, 'changed', reload) : null;
+        // The page may come from the cache: a timer used on another page while this list was
+        // not on screen is missing from it. Show what there is and reload in the background.
+        reload();
         return () => {
             clearTimeout(timeout);
             subscription.remove();
