@@ -44,6 +44,7 @@ class BxWorkspacesConfig extends BxBaseModProfileConfig
             'FIELD_CHANGED' => 'changed',
             'FIELD_NAME' => '',
             'FIELD_TITLE' => '',
+            'FIELD_TEXT' => '',
             'FIELD_PICTURE' => '',
             'FIELD_COVER' => '',
             //'FIELD_COVER_POSITION' => '',

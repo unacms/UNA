@@ -19,29 +19,27 @@ class BxWorkspacesAlertsResponse extends BxBaseModProfileAlertsResponse
 
     public function response($oAlert)
     {
-        $sContextModule = getParam('bx_workspaces_context_module');
+        parent::response($oAlert);
 
-        // logo URL is refferring to the context when in workspace
-        if ('system' == $oAlert->sUnit && 'get_logo' == $oAlert->sAction && bx_get_context_workspace()) {
-            $o = BxDolProfile::getInstance(bx_get_context_workspace());
-            if ($o) {
-                $oAlert->aExtras['tmpl_vars']['attrs'] = preg_replace('/href="([^"]+)" title="([^"]+)"/', 'href="' . $o->getUrl() . '" title="' . $o->getDisplayName() . '"', $oAlert->aExtras['tmpl_vars']['attrs']);
-            }
-        }
+        if('system' != $oAlert->sUnit)
+            return;
 
-        // site menu is off when in workspace
-        if ($sContextModule && 'menu' == $oAlert->sUnit && 'get_code_before' == $oAlert->sAction && isset($oAlert->aExtras['object_name']) && $oAlert->aExtras['object_name'] == 'sys_site' && bx_get_context_workspace()) {
-            $oAlert->aExtras['override_result'] = "site menu is off when in workspace (" . bx_get_context_workspace() . ")";
-        }
+        switch($oAlert->sAction) {
+            // In a workspace the logo leads to its context.
+            case 'get_logo':
+                if(($iContext = bx_get_context_workspace()) && ($o = BxDolProfile::getInstance($iContext)))
+                    $oAlert->aExtras['tmpl_vars']['attrs'] = preg_replace('/href="([^"]+)" title="([^"]+)"/', 'href="' . $o->getUrl() . '" title="' . bx_html_attribute($o->getDisplayName()) . '"', $oAlert->aExtras['tmpl_vars']['attrs']);
+                break;
 
-        // TODO: replace 'bx_groups_fans' with proper connection object from $sContextModule
+            case 'connection_before_add':
+                if(($oAlert->aExtras['object_name'] ?? '') === $this->_oModule->getContextConnection())
+                    $this->_oModule->onContextConnectionBeforeAdd($oAlert);
+                break;
 
-        if ($sContextModule && 'system' == $oAlert->sUnit && 'connection_before_add' == $oAlert->sAction && isset($oAlert->aExtras['object_name']) && $oAlert->aExtras['object_name'] == 'bx_groups_fans') {
-            $this->_oModule->addConnection($sContextModule, $oAlert);
-        } 
-
-        if ($sContextModule && 'system' == $oAlert->sUnit && 'connection_removed' == $oAlert->sAction && isset($oAlert->aExtras['object_name']) && $oAlert->aExtras['object_name'] == 'bx_groups_fans') {
-            $this->_oModule->removeConnection($sContextModule, $oAlert);
+            case 'connection_removed':
+                if(($oAlert->aExtras['object_name'] ?? '') === $this->_oModule->getContextConnection())
+                    $this->_oModule->onContextConnectionRemoved($oAlert);
+                break;
         }
     }
 }
