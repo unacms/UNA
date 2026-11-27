@@ -21,11 +21,17 @@ class MessengerNotificationEmailTest extends BxDolIntegrationTestCase
 
     protected function tearDown(): void
     {
-        $oModule = $this->bxModule();
-        foreach ($this->aLotIds as $iLotId)
-            $oModule->_oDb->deleteLot($iLotId);
-
-        parent::tearDown();
+        try {
+            // PHPUnit runs tearDown after setUp skipped too, when Messenger may not be installed.
+            if ($this->aLotIds) {
+                $oModule = $this->bxModule();
+                foreach ($this->aLotIds as $iLotId)
+                    $oModule->_oDb->deleteLot($iLotId);
+            }
+        }
+        finally {
+            parent::tearDown();
+        }
     }
 
     protected function bxModule(): BxMessengerModule
