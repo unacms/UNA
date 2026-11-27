@@ -1566,6 +1566,7 @@
 	<string name="_adm_msg_module_deprecated"><![CDATA[Приложение {0} устарело и больше не получает новых версий. Оно будет удалено в следующей основной версии UNA.]]></string>
 	<string name="_adm_msg_module_deprecated_core"><![CDATA[Приложение {0} устарело: его возможности теперь есть в UNA. Оно будет удалено в следующей основной версии UNA.]]></string>
 	<string name="_adm_msg_module_deprecated_replaced"><![CDATA[Приложение {0} устарело, его заменяет {1}. Оно будет удалено в следующей основной версии UNA.]]></string>
+	<string name="_adm_msg_module_preview"><![CDATA[Приложение {0} — предварительная версия: оно ещё в разработке и может измениться с обновлением. Проверьте его на тестовом сайте, прежде чем на него полагаться.]]></string>
 	<string name="_adm_msg_modules_success_added_to_cart"><![CDATA[Товар был успешно добавлен в корзину.]]></string>
 	<string name="_adm_msg_modules_success_checkouted"><![CDATA[Оплата успешно принята и будет автоматически обработана через несколько минут. Затем приобретённые товары будут доступны в меню Приложения -> Покупки. Если по какой-то причине этого не произошло, пожалуйста свяжитесь с продавцом товара, предоставив ему детали транзакции.]]></string>
 	<string name="_adm_msg_modules_success_delete"><![CDATA[Пакет удачно удалён]]></string>
@@ -5294,6 +5295,7 @@
     <string name="_sys_txt_login_description_action"><![CDATA[Зарегистрироваться]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Введённый email или пароль неправильны. Пожалуйста, попытайтесь снова.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Ваш аккаунт заблокирован, для разблокировки, пожалуйста, используйте  <a href="{0}">страницу сброса пароля</a>.]]></string>
+    <string name="_sys_txt_module_preview"><![CDATA[Предварительная версия]]></string>
     <string name="_sys_txt_following_counter"><![CDATA[Подписки: {0}]]></string>
     <string name="_sys_txt_followers_counter"><![CDATA[Подписчики: {0}]]></string>
     <string name="_sys_txt_friends_counter"><![CDATA[Друзья: {0}]]></string>

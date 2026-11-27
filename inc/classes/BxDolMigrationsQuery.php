@@ -195,6 +195,19 @@ class BxDolMigrationsQuery extends BxDolDb
         $oStatement->execute([$aSet['deprecated'], $aSet['replaced_by'], $sUri]);
     }
 
+    /**
+     * Copies a module config's preview mark to `sys_modules`, when the config says and the column is there.
+     */
+    public function setModulePreview(string $sUri, array $aConfig): void
+    {
+        $aSet = BxDolModuleQuery::getConfigPreview($aConfig);
+        if ($aSet === null || !$this->isColumn('sys_modules', 'preview'))
+            return;
+
+        $oStatement = $this->_pdo()->prepare("UPDATE `sys_modules` SET `preview` = ? WHERE `uri` = ?");
+        $oStatement->execute([$aSet['preview'], $sUri]);
+    }
+
     public function isColumn(string $sTable, string $sColumn): bool
     {
         self::_checkName($sTable);

@@ -1586,6 +1586,7 @@
 	<string name="_adm_msg_module_deprecated"><![CDATA[{0} is deprecated and gets no new versions. It will be removed in the next major version of UNA.]]></string>
 	<string name="_adm_msg_module_deprecated_core"><![CDATA[{0} is deprecated: what it does is now part of UNA. It will be removed in the next major version of UNA.]]></string>
 	<string name="_adm_msg_module_deprecated_replaced"><![CDATA[{0} is deprecated and replaced by {1}. It will be removed in the next major version of UNA.]]></string>
+	<string name="_adm_msg_module_preview"><![CDATA[{0} is a preview: it is still being built and may change in an update. Try it on a test site before you rely on it.]]></string>
 	<string name="_adm_msg_modules_success_added_to_cart"><![CDATA[Added to the cart.]]></string>
 	<string name="_adm_msg_modules_success_checkouted"><![CDATA[Payment accepted. The purchased apps show up in Apps -&gt; Purchases within a few minutes. If they don't, contact the vendor with your payment details.]]></string>
 	<string name="_adm_msg_modules_success_delete"><![CDATA[The package was deleted.]]></string>
@@ -5375,6 +5376,7 @@
     <string name="_sys_txt_login_description_action"><![CDATA[Sign up]]></string>
     <string name="_sys_txt_login_error"><![CDATA[Entered email or password is incorrect. Please try again.]]></string>
     <string name="_sys_txt_login_locked"><![CDATA[Your account is locked and needs to be unlocked using <a href="{0}">forgot password page</a>.]]></string>
+    <string name="_sys_txt_module_preview"><![CDATA[Preview]]></string>
   
     <string name="_sys_txt_following_counter"><![CDATA[Following: {0}]]></string>
     <string name="_sys_txt_followers_counter"><![CDATA[Followers: {0}]]></string>

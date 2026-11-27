@@ -99,6 +99,8 @@ class BxBaseStudioModule extends BxDolStudioModule
 
         if(($sMessage = self::getDeprecationMessage($this->aModule)) != '')
             $sResult = MsgBox($sMessage) . $sResult;
+        else if(($sMessage = self::getPreviewMessage($this->aModule)) != '')
+            $sResult = MsgBox($sMessage) . $sResult;
 
         return $sResult;
     }

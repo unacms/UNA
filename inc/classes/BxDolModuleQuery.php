@@ -379,6 +379,36 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
     }
 
     /**
+     * Whether a module's install/config.php marks it as a preview: unfinished work that is installed and updated
+     * like any module, labelled so admins know it may change. The config says `'preview' => true`.
+     * @param array $aConfig module config
+     * @return array|null `preview`, or null when the config doesn't say
+     */
+    public static function getConfigPreview($aConfig)
+    {
+        if(!is_array($aConfig) || !array_key_exists('preview', $aConfig))
+            return null;
+
+        return ['preview' => !empty($aConfig['preview']) ? 1 : 0];
+    }
+
+    /**
+     * Copy the preview mark from a module's config to its `sys_modules` row, apart from the other columns
+     * for the same reason as setModuleDeprecation.
+     * @param int $iModuleId module id
+     * @param array $aConfig module config
+     * @return bool whether the row was written
+     */
+    public function setModulePreview($iModuleId, $aConfig)
+    {
+        $aSet = self::getConfigPreview($aConfig);
+        if($aSet === null || !$this->isFieldExists('sys_modules', 'preview'))
+            return false;
+
+        return $this->updateModule($aSet, ['id' => (int)$iModuleId]) !== false;
+    }
+
+    /**
      * Installed modules that are deprecated.
      * @return array module rows, in title order
      */

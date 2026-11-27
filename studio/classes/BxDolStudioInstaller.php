@@ -231,6 +231,7 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
         if($aResult['result']) {
             $iModuleId = $this->oDb->insertModule($this->_aConfig);
             $this->oDb->setModuleDeprecation($iModuleId, $this->_aConfig);
+            $this->oDb->setModulePreview($iModuleId, $this->_aConfig);
 
             // The install SQL that just ran has every change of the module's migrations.
             try {

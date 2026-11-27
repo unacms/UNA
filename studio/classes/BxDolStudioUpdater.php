@@ -111,6 +111,7 @@ class BxDolStudioUpdater extends BxDolStudioInstaller
 
             $this->oDb->updateModule($aSet, array('id' => $aModuleInfo['id']));
             $this->oDb->setModuleDeprecation($aModuleInfo['id'], $aModuleConfig);
+            $this->oDb->setModulePreview($aModuleInfo['id'], $aModuleConfig);
 
             //--- Remove update package ---//
             $this->delete($aParams);

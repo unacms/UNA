@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio and the installer: the notice and the label of a preview module (sys_modules.preview). -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_msg_module_preview"><![CDATA[Приложение {0} — предварительная версия: оно ещё в разработке и может измениться с обновлением. Проверьте его на тестовом сайте, прежде чем на него полагаться.]]></string_add>
+    <string_add name="_sys_txt_module_preview"><![CDATA[Предварительная версия]]></string_add>
+</resources>

@@ -92,6 +92,18 @@ class BxDolStudioModule extends BxTemplStudioWidget
         return _t('_adm_msg_module_deprecated', $sTitle);
     }
 
+    /**
+     * What Studio says about a preview module, or '' when it is not one.
+     * @param array $aModule `sys_modules` row
+     */
+    public static function getPreviewMessage($aModule)
+    {
+        if(empty($aModule['preview']))
+            return '';
+
+        return _t('_adm_msg_module_preview', _t($aModule['title']));
+    }
+
     public function init()
     {
         $this->aModule = BxDolModuleQuery::getInstance()->getModuleByName($this->sModule);

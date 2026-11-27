@@ -637,6 +637,7 @@ class BxDolStudioInstallerUtils extends BxDolInstallerUtils implements iBxDolSin
             'dir' => $aConfig['home_dir'],
             'note' => isset($aConfig['note']) ? bx_process_output($aConfig['note']) : '',
             'deprecated' => !empty(BxDolModuleQuery::getConfigDeprecation($aConfig)['deprecated']),
+            'preview' => !empty(BxDolModuleQuery::getConfigPreview($aConfig)['preview']),
             'installed' => $bInstalled,
             'enabled' => $bEnabled
         );
