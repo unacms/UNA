@@ -95,11 +95,11 @@ export default function TasksTimersStats({ data, blockWrapperProps }: TasksTimer
 
         // Logged time reaches this block without a page reload.
         const subscription = emitter.addListener(EVENTS.taskTimer, (event: { action?: string }) => {
-            if (REFRESH_ACTIONS.includes(String(event.action))) reload();
+            if (REFRESH_ACTIONS.includes(String(event.action))) void reload();
         });
         // The page may come from the cache: time logged on another page while this block was
         // not on screen is missing from it. Show what there is and reload in the background.
-        reload();
+        void reload();
         return () => {
             mounted = false;
             subscription.remove();
