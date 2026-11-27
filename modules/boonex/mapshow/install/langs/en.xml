@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
+	<string name="_sys_module_mapshow"><![CDATA[Map]]></string>
 	<string name="_bx_mapshow"><![CDATA[Map]]></string>
   <string name="_bx_mapshow_adm_stg_cpt_type"><![CDATA[Map]]></string>
   <string name="_bx_mapshow_adm_stg_cpt_category_general"><![CDATA[Map]]></string>

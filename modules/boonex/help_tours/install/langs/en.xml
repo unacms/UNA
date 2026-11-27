@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
+	<string name="_sys_module_help_tours"><![CDATA[Guided tours]]></string>
 	<string name="_bx_help_tours"><![CDATA[Guided tours]]></string>
 
 	<string name="_bx_help_tours_page_tours"><![CDATA[Guided tours]]></string>

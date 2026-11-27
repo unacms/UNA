@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="ru" flag="ru" title="Russian">
+    <string name="_sys_module_convos"><![CDATA[Переписка]]></string>
 
 	<string name="_bx_cnv"><![CDATA[Переписка]]></string>
 	<string name="_bx_convos"><![CDATA[Переписка]]></string>

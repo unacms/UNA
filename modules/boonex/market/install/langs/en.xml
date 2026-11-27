@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
+    <string name="_sys_module_market"><![CDATA[Marketplace]]></string>
     <string name="_bx_market"><![CDATA[Marketplace]]></string>
     <string name="_bx_market_cmts"><![CDATA[Marketplace reviews]]></string>
     <string name="_bx_market_reactions"><![CDATA[Marketplace reactions]]></string>
