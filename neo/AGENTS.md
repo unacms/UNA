@@ -262,6 +262,14 @@ UNA says per menu how its buttons look and how big they are: Studio > Navigation
   - the action button of a people or groups card (`UnitRecommendation` in `components/units/helpers.js`), from the card's snippet meta menu: borderless, small.
 - Glass is for a menu over a picture or another backdrop that varies (a cover, a header without chrome). Prefer setting it on the menu in UNA over hard-coding `glass` at a call site, so the site and the apps agree.
 
+### Action counters
+
+UNA says per menu of actions how the actions show their counts: Studio > Navigation > a menu > "Counts" (Automatic, Labels, Counts, Button groups), sent as the menu's `counters` (`label`, `count`, `group`; Automatic is resolved to the menu class's own choice: counts for a feed item's and a comment's actions, button groups for a content page's, labels elsewhere).
+
+- `lib/counters-mode.ts` (with tests) turns it into the molecules' flags (`countersModeParams`): `label` is the action alone (icon and name, with its state: your reaction, undo); `count` sets `show_action_count`, the action's count as its label and its icon alone at 0, pressing it acts (reactions, likes and comments draw it); `group` is the action and its count as a button group, the count opening who did it.
+- A feed item draws its actions and its stats (`menu_counters`) on one line, actions at the start and stats at the end, the stats above when both don't fit (`ActionsAndStats` in `components/elements/feed-item-parts.js`). What the stats row keeps follows the actions (`isStatShown`): every count beside labels, the reactions summary beside counts, nothing beside button groups. UNA's site applies the same rule to its own row; the apps get the whole row, so an older app keeps its counts.
+- A content page's actions (`components/elements/entity-actions.js`) and a comment's (`components/units/comments.js`) take the same setting. Where UNA sends none (an older UNA), the call site's own settings apply: `feed.actions_menu` / `counters_menu`, button groups on a content page, labels with the counts apart under a comment.
+
 ### Card buttons
 
 People, organizations, groups, events and spaces share one card (`UnitProfileCard` in `components/units/helpers.js`), which shows the buttons UNA's site shows on it, unless the list has its own.

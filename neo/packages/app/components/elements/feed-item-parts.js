@@ -521,12 +521,14 @@ export const CounterMenu = memo(({ data, actions }) => {
  * A feed item's actions and stats on one line: actions at the start, stats at the end; when both don't fit,
  * the stats go above the actions (wrap-reverse).
  */
-export const ActionsAndStats = memo(({ actions, counters, className = '' }) => (
-    <Row className={'flex-wrap-reverse items-center justify-between gap-x-2 gap-y-1 ' + className}>
-        <ActionMenu data={actions} />
-        {!!counters?.items?.length && <CounterMenu data={counters} actions={actions} />}
-    </Row>
-))
+export const ActionsAndStats = memo(function ActionsAndStats({ actions, counters, className = '' }) {
+    return (
+        <Row className={'flex-wrap-reverse items-center justify-between gap-x-2 gap-y-1 ' + className}>
+            <ActionMenu data={actions} />
+            {!!counters?.items?.length && <CounterMenu data={counters} actions={actions} />}
+        </Row>
+    )
+})
 
 export const VisibilityInfo = memo(({ data }) => {
     const { t } = useTranslation()
