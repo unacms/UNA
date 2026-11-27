@@ -5,7 +5,7 @@
     "ag-grid-community": "36.3.0",
     "@claviska/jquery-minicolors": "^2.3.6",
     "@egjs/hammerjs": "^2.0.17",
-    "@stripe/connect-js": "^3.5.0",
+    "@stripe/connect-js": "^3.5.1",
     "at.js": "^1.5.4",
     "autosize": "^6.0.1",
     "chart.js": "^4.6.2",
