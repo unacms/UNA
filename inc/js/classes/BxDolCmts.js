@@ -224,7 +224,7 @@ BxDolCmts.prototype.cmtUpdateCounter = function (oElement, oData)
     if(oData.countf != undefined && oData.countf.length != 0) {
         var oCounter = this._getCounter(oElement);
         if(oCounter && oCounter.length > 0)
-            oCounter.replaceWith(oData.countf);
+            oCounter.not('.sys-ac-number').replaceWith(oData.countf); // a number-only counter takes the number below
     }
 
     var oCounter = this._getCounter(oElement, true);

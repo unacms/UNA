@@ -258,7 +258,7 @@ UNA says per menu how its buttons look and how big they are: Studio > Navigation
 - UNA's style is set as `button_style` and also as `button_variant`, because the items drawn by the legacy adapter (likes, favorites, reports and the like) read only the variant. The adapter and `ButtonsGroupMenu` take a NeoButton style name there.
 - Menus that follow UNA this way, with their defaults for Automatic:
   - the cover's actions (`CoverMenu`, `CoverMenuMore` in `components/elements/covers/menu-cover.js`): glass on phone and tablet, where the actions sit over the cover picture, bordered on desktop;
-  - a content page's actions (`components/elements/entity-actions.js`): the legacy default variant (bordered), small;
+  - a content page's actions (`components/elements/entity-actions.tsx`): the legacy default variant (bordered), small;
   - the action button of a people or groups card (`UnitRecommendation` in `components/units/helpers.js`), from the card's snippet meta menu: borderless, small.
 - Glass is for a menu over a picture or another backdrop that varies (a cover, a header without chrome). Prefer setting it on the menu in UNA over hard-coding `glass` at a call site, so the site and the apps agree.
 
@@ -268,7 +268,7 @@ UNA says per menu of actions how the actions show their counts: Studio > Navigat
 
 - `lib/counters-mode.ts` (with tests) turns it into the molecules' flags (`countersModeParams`): `label` is the action alone (icon and name, with its state: your reaction, undo); `count` sets `show_action_count`, the action's count as its label and its icon alone at 0, pressing it acts (reactions, likes and comments draw it); `group` is the action and its count as a button group, the count opening who did it.
 - A feed item draws its actions and its stats (`menu_counters`) on one line, actions at the start and stats at the end, the stats above when both don't fit (`ActionsAndStats` in `components/elements/feed-item-parts.js`). What the stats row keeps follows the actions (`isStatShown`): every count beside labels, the reactions summary beside counts, nothing beside button groups. UNA's site applies the same rule to its own row; the apps get the whole row, so an older app keeps its counts.
-- A content page's actions (`components/elements/entity-actions.js`) and a comment's (`components/units/comments.js`) take the same setting. A content page has a stats row too, from its own actions menu: the items that are counts (`isCountStat`: reactions, votes, scores, comments, views) drawn as counters at the end of the actions' line, kept by the same rule; UNA's site draws it with `menu_actions_stats.html` (`BxBaseModGeneralMenuViewActions::getCode`). Where UNA sends none (an older UNA), the call site's own settings apply: `feed.actions_menu` / `counters_menu`, button groups on a content page, labels with the counts apart under a comment.
+- A content page's actions (`components/elements/entity-actions.tsx`) and a comment's (`components/units/comments.js`) take the same setting. A content page has a stats row too, from its own actions menu: the items that are counts (`isCountStat`: reactions, votes, scores, comments, views) drawn as counters at the end of the actions' line, kept by the same rule; UNA's site draws it with `menu_actions_stats.html` (`BxBaseModGeneralMenuViewActions::getCode`). Where UNA sends none (an older UNA), the call site's own settings apply: `feed.actions_menu` / `counters_menu`, button groups on a content page, labels with the counts apart under a comment.
 
 ### Card buttons
 

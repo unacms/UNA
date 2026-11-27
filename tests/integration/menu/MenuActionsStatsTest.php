@@ -17,14 +17,51 @@ class MenuActionsStatsTest extends BxDolIntegrationTestCase
             $this->markTestSkipped('Posts are not installed.');
     }
 
-    /** A post with at least one of `$sField` (views, comments), or skip. */
-    protected function postWith(string $sField): int
-    {
-        $iId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `bx_posts_posts` WHERE `" . $sField . "` > 0 ORDER BY `id` LIMIT 1");
-        if(!$iId)
-            $this->markTestSkipped('No post with ' . $sField . '.');
+    protected int $_iPostId = 0;
 
-        return $iId;
+    protected function tearDown(): void
+    {
+        if($this->_iPostId) {
+            $oDb = BxDolDb::getInstance();
+            $oDb->query("DELETE FROM `bx_posts_posts` WHERE `id` = :id", ['id' => $this->_iPostId]);
+            $oDb->cleanMemoryAll();
+            $this->_iPostId = 0;
+        }
+
+        parent::tearDown();
+    }
+
+    /** A post of the test's own, with the given views and comments counted on it (the counts the counters read). */
+    protected function addPost(int $iViews, int $iComments): int
+    {
+        $iAuthor = (int)BxDolProfile::getInstanceAccountProfile($this->bxAccount('admin')->id())->id();
+        $iNow = time();
+
+        $oDb = BxDolDb::getInstance();
+        $oDb->query("INSERT INTO `bx_posts_posts` SET " . $oDb->arrayToSQL([
+            'author' => $iAuthor,
+            'added' => $iNow,
+            'changed' => $iNow,
+            'published' => $iNow,
+            'thumb' => 0,
+            'thumb_data' => '',
+            'title' => 'MenuActionsStatsTest post',
+            'cat' => 0,
+            'multicat' => '',
+            'abstract' => '',
+            'text' => '<p>MenuActionsStatsTest</p>',
+            'labels' => '',
+            'location' => '',
+            'allow_view_to' => BX_DOL_PG_ALL,
+            'status' => 'active',
+            'status_admin' => 'active',
+            'views' => $iViews,
+            'comments' => $iComments,
+        ]));
+        $this->_iPostId = (int)$oDb->lastId();
+        $oDb->cleanMemoryAll();
+
+        return $this->_iPostId;
     }
 
     /** The posts' actions menu for a post, with the given Counters. */
@@ -49,7 +86,7 @@ class MenuActionsStatsTest extends BxDolIntegrationTestCase
     public function testViewCountAsLabelIsText(): void
     {
         $this->bxLoginAsAdmin();
-        $iId = $this->postWith('views');
+        $iId = $this->addPost(3, 0);
 
         $oView = BxDolView::getObjectInstance('bx_posts', $iId);
         $this->assertNotNull($oView);
@@ -63,7 +100,8 @@ class MenuActionsStatsTest extends BxDolIntegrationTestCase
 
     public function testCommentsCountNumberOnly(): void
     {
-        $iId = $this->postWith('comments');
+        $this->bxLoginAsAdmin();
+        $iId = $this->addPost(0, 2);
 
         $oCmts = BxDolCmts::getObjectInstance('bx_posts', $iId);
         $this->assertNotNull($oCmts);
@@ -77,7 +115,7 @@ class MenuActionsStatsTest extends BxDolIntegrationTestCase
     public function testStatsRowFollowsCounters(): void
     {
         $this->bxLoginAsAdmin();
-        $iId = $this->postWith('views');
+        $iId = $this->addPost(3, 0);
 
         $sGroup = $this->actionsMenu($iId, 'group')->getCode();
         $this->assertStringNotContainsString('bx-menu-actions-stats', (string)$sGroup, 'Button groups have no stats row.');

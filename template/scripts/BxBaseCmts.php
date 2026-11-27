@@ -858,6 +858,8 @@ class BxBaseCmts extends BxDolCmts
         $iCount = (int)$this->getCommentsCountAll(0, $bRecalculateCounter);        
         if($iCount == 0 && !$bShowEmpty)
             $sClass .= ' sys-ac-hidden';
+        if($bNumberOnly)
+            $sClass .= ' sys-ac-number'; // BxDolCmts.js keeps it the number alone when the count changes
 
         $sClass .= ' ' . $this->_sStylePrefix . '-counter';
         if($bShowDoCommentAsButtonSmall)

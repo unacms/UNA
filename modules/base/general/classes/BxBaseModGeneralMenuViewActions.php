@@ -299,30 +299,28 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
                 continue;
 
             $sCounter = '';
+            $aSource = $this->_getStatsSource($sName);
+            if(empty($aSource['object']) || empty($aSource['id']))
+                continue;
+
             switch($sName) {
                 case 'reaction':
                 case 'vote':
-                    $sObject = $CNF[$sName == 'reaction' ? 'OBJECT_REACTIONS' : 'OBJECT_VOTES'] ?? '';
-                    $oObject = $sObject ? BxDolVote::getObjectInstance($sObject, $this->_iContentId) : false;
-                    if($oObject && $oObject->isEnabled())
-                        $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
-                    break;
-
                 case 'score':
-                    $oObject = !empty($CNF['OBJECT_SCORES']) ? BxDolScore::getObjectInstance($CNF['OBJECT_SCORES'], $this->_iContentId) : false;
-                    if($oObject && $oObject->isEnabled())
+                    $oObject = $sName == 'score' ? BxDolScore::getObjectInstance($aSource['object'], $aSource['id']) : BxDolVote::getObjectInstance($aSource['object'], $aSource['id']);
+                    if($oObject && $oObject->isEnabled() && $oObject->isAllowedVoteView())
                         $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
                     break;
 
                 case 'comment':
-                    $oObject = !empty($CNF['OBJECT_COMMENTS']) ? BxTemplCmts::getObjectInstance($CNF['OBJECT_COMMENTS'], $this->_iContentId) : false;
-                    if($oObject && $oObject->isEnabled() && (int)$oObject->getCommentsCountAll() > 0)
+                    $oObject = BxTemplCmts::getObjectInstance($aSource['object'], $aSource['id']);
+                    if($oObject && $oObject->isEnabled() && $oObject->isViewAllowed() === CHECK_ACTION_RESULT_ALLOWED && (int)$oObject->getCommentsCountAll() > 0)
                         $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
                     break;
 
                 case 'view':
-                    $oObject = !empty($CNF['OBJECT_VIEWS']) ? BxDolView::getObjectInstance($CNF['OBJECT_VIEWS'], $this->_iContentId) : false;
-                    if($oObject && $oObject->isEnabled())
+                    $oObject = BxDolView::getObjectInstance($aSource['object'], $aSource['id']);
+                    if($oObject && $oObject->isEnabled() && $oObject->isAllowedViewView())
                         $sCounter = $oObject->getCounter(['show_counter_label_icon' => true, 'show_counter_label_text' => true, 'dynamic_mode' => $this->_bDynamicMode]);
                     break;
             }
@@ -332,6 +330,21 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
         }
 
         return implode('', $aStats);
+    }
+
+    /**
+     * The object and the content a stats row item counts: the module's own objects for its content. A menu of actions
+     * for something else (an album's image) overrides it with the objects and the id its own items use.
+     */
+    protected function _getStatsSource($sName)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aKeys = ['reaction' => 'OBJECT_REACTIONS', 'vote' => 'OBJECT_VOTES', 'score' => 'OBJECT_SCORES', 'comment' => 'OBJECT_COMMENTS', 'view' => 'OBJECT_VIEWS'];
+        if(!isset($aKeys[$sName]))
+            return [];
+
+        return ['object' => $CNF[$aKeys[$sName]] ?? '', 'id' => $this->_iContentId];
     }
 
     /**
