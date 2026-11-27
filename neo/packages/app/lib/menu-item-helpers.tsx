@@ -106,6 +106,8 @@ export function MenuItemActionButton({
     const titleText = title ?? item?.title ?? '';
     const iconValue = image ?? icon ?? item?.icon ?? '';
     const ButtonAction = getActionButton(params);
+    // An action beside counts that show as icons (a menu's Counters `count`): its icon alone, its name spoken.
+    const iconOnly = !!(item?.button_icon_only || params?.button_icon_only) && !!iconValue;
 
     // No onPress while a parent owns the press (Link, dropdown trigger): keep the hover/press visuals.
     const pressProps = onPress ? { onPress } : (interactive ? { interactive: true } : {});
@@ -113,7 +115,8 @@ export function MenuItemActionButton({
     if (params?.button_style) {
         return (
             <NeoButton
-                label={titleText}
+                label={iconOnly ? '' : titleText}
+                accessibilityLabel={iconOnly && typeof titleText === 'string' ? titleText : undefined}
                 image={iconValue}
                 style={getNeoButtonStyle(item)}
                 controlSize={params?.button_size}
@@ -129,7 +132,7 @@ export function MenuItemActionButton({
 
     return (
         <ButtonAction
-            title={titleText}
+            title={iconOnly ? '' : titleText}
             startDecorator={icon ?? item?.icon ?? ''}
             {...getDefaultActionButtonProps(item)}
             {...actionButtonProps}

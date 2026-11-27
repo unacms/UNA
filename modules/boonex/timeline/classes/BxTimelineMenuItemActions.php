@@ -263,14 +263,13 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $aItem['title'] = $sTitle;
         $aItem['bx_if:title']['condition'] = $sTitle !== '';
         $aItem['bx_if:title']['content']['title'] = $sTitle;
+        $aItem['keep_title'] = true; // the count is the label
 
-        $mixedResult = $this->_getMenuItemDefault($aItem);
         // BxDolCmts.js finds the link by its comments object and writes the new number when a comment is posted.
-        if(is_array($mixedResult))
-            $mixedResult['attrs'] = ($mixedResult['attrs'] ?? '') . ' data-cmt-count="' . bx_html_attribute($oCmts->getJsObjectName()) . '"'
+        $aItem['attrs'] = ($aItem['attrs'] ?? '') . ' data-cmt-count="' . bx_html_attribute($oCmts->getJsObjectName()) . '"'
                 . ' data-cmt-label="' . bx_html_attribute($sLabel) . '"';
 
-        return $mixedResult;
+        return $this->_getMenuItemDefault($aItem);
     }
 
     protected function _getMenuItemItemComment($aItem)
@@ -510,6 +509,14 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
             $aItem['class_link'] = '';
 
         $aItem['class_link'] = 'bx-menu-item-link' . (!empty($aItem['class_link']) ? ' ' : '') . $aItem['class_link'];
+
+        $bKeepTitle = !empty($aItem['keep_title']);
+        unset($aItem['keep_title']);
+
+        // Beside counts shown on their icons (the menu's Counters `count`) an action without a count (Share) is its
+        // icon alone too; its name stays in the link's title.
+        if(!$this->_bIsApi && !$this->_bShowTitles && !$bKeepTitle && !empty($aItem['icon']) && isset($aItem['bx_if:title']))
+            $aItem['bx_if:title']['condition'] = false;
 
         return parent::_getMenuItemDefault ($aItem);
     }
