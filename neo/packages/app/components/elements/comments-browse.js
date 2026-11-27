@@ -858,7 +858,8 @@ export function parseData(browse, dynamicData) {
  * nothing behind it to reveal.
  *
  * `flush` — the composer sits inside a padded container (a page block), so it adds
- * no side padding of its own and lines up with the block's content.
+ * no side or bottom padding of its own: the block's padding is its edge, and it lines
+ * up with the block's content.
  */
 export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface, flush = false }) {
     if (!initialForm?.data?.inputs)
@@ -1015,8 +1016,9 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
         <EdgeBlurView
             edge="bottom"
             config={fadeSurface ? edgeBlurConfig('footer') : null}
-            // 16px from the sides on every size, as the content above it.
-            className={flush ? 'py-2 sm:py-4' : 'px-4 py-2 sm:py-4'}
+            // 16px from the sides on every size, as the content above it. In a block the block's
+            // own bottom padding (10px) is below it, so 6px more makes the same 16px there.
+            className={flush ? 'pt-2 pb-1.5 sm:pt-4' : 'px-4 py-2 sm:py-4'}
             washClassName={FADE_SURFACE_CLASS[fadeSurface] || ''}
             style={fadeSurface ? { paddingTop: FADE_RUN_UP } : undefined}
         >

@@ -13,7 +13,7 @@ function BxDolVoteReactions(oOptions)
     this._bSingleMode = oOptions.bSingleMode === undefined ? 0 : oOptions.bSingleMode; // enable 'single' mode - vote with the only one available reaction when clicked.
 
     this._iTimeoutShowId = 0;
-    this._iTimeoutShowDelay = 750;
+    this._iTimeoutShowDelay = 800; // long enough that a click on the button, or a pointer passing over it, opens nothing
     this._iTimeoutHideId = 0;
     this._iTimeoutHideDelay = 1000;
     this._fOnVoteIn = null;
@@ -204,6 +204,9 @@ BxDolVoteReactions.prototype.toggleDoPopup = function(oLink, iValue, oOptions)
     if(this._iTimeoutShowId)
         clearTimeout(this._iTimeoutShowId);
 
+    // the item that opened the popup keeps its hover look while the popup covers it
+    this._oDoHeld = $(oLink).closest('.bx-menu-item').length ? $(oLink).closest('.bx-menu-item') : $(oLink);
+
     oOptions = oOptions || {};
     oOptions = $.extend({}, {
         id: {value: this._aHtmlIds['do_popup'], force: true}, 
@@ -245,11 +248,17 @@ BxDolVoteReactions.prototype.onDoPopupShow = function(oPopup)
     };
 
     $(oPopup).hover(this._fOnDoPopupIn, this._fOnDoPopupOut);
+
+    if(this._oDoHeld)
+        this._oDoHeld.addClass('bx-hover-held');
 };
 
 BxDolVoteReactions.prototype.onDoPopupHide = function(oPopup)
 {
     $(oPopup).unbind('mouseenter', this._fOnDoPopupIn).unbind('mouseleave', this._fOnDoPopupOut);
+
+    if(this._oDoHeld)
+        this._oDoHeld.removeClass('bx-hover-held');
 };
 
 BxDolVoteReactions.prototype.onDoPopupIn = function(oPopup)

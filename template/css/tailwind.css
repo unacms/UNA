@@ -1731,6 +1731,11 @@
     .bx-stl-mil-hover-bg {
         @apply hover:bg-gray-200/50 dark:hover:bg-gray-700/50;
     }
+    /* A menu item that opened a popup over itself (the reactions choice) keeps its hover look while the popup is open:
+       the pointer is on the popup, not on the item. BxDolVoteReactions sets the class. */
+    .bx-hover-held:is(.bx-stl-mil, .bx-stl-mil-sm, .bx-stl-mil-wo-gaps, .bx-stl-mil-wo-gaps-sm) {
+        @apply bg-gray-200/50 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200;
+    }
     .bx-stl-mil-hover {
         @apply bx-stl-mil-hover-text;
         @apply bx-stl-mil-hover-bg;

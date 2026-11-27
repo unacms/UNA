@@ -395,7 +395,8 @@ function buildCounterCompound({
 // `hoverOpen`), or on click (`openOnPress`). Otherwise a click calls `onPress`.
 // ---------------------------------------------------------------------------
 
-const HOVER_OPEN_DELAY = 500;
+// Long enough that a pointer passing over the button, or about to click it, doesn't open the choice.
+const HOVER_OPEN_DELAY = 800;
 const HOVER_CLOSE_DELAY = 300;
 const HOVER_SLOP = 8;
 // Ignore the click that ends the long press which opened the popover.
@@ -712,6 +713,8 @@ function ReactionPopover({
     ) : null;
 
     const button = React.cloneElement(trigger, {
+        // The open popover covers the button; it still looks hovered while the choice is open.
+        ...(isWeb && modalVisible ? { hovered: true } : null),
         onPress: disabled ? undefined : handlePress,
         onLongPress: disabled ? undefined : handleLongPress,
         ...(isWeb ? {} : { [childRefProp]: buttonRef }),

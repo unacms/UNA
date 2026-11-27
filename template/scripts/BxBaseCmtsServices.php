@@ -580,6 +580,20 @@ class BxBaseCmtsServices extends BxDol
             return 'Ok';
         }
         
+        // the card of a comment's link off, the link kept: answers with the comment as it is now
+        if (isset($aParams['action']) && isset($aParams['id']) && $aParams['action'] == 'embed_off'){
+            $oCmts = BxDolCmts::getObjectInstance($aParams['module'], $aParams['object_id']);
+            if (!$oCmts || !$oCmts->isEnabled())
+                return false;
+
+            // nothing saved (no right to edit it, or no link left to mark): the app puts the card back
+            if (!$oCmts->removeEmbed((int)$aParams['id']))
+                return false;
+
+            $aParams['comment_id'] = (int)$aParams['id'];
+            return ['browse' => $this->serviceGetCommentsApi($oCmts, $aParams)];
+        }
+
         if (isset($aParams['action']) && isset($aParams['id']) && $aParams['action'] == 'edit'){
             $iCmtId = $aParams['id'];
             $oCmts = BxDolCmts::getObjectInstance($aParams['module'], $aParams['object_id']);

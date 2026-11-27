@@ -2972,8 +2972,74 @@ function bx_linkify($text, $sAttrs = '', $bHtmlSpecialChars = false)
     return $text;
 }
 
+/**
+ * Class of a link its author keeps as a link: no preview card is made for it (BX_LINK_PLAIN_CLASS).
+ */
+define('BX_LINK_PLAIN_CLASS', 'bx-link-plain');
+
+/**
+ * The text with each link marked BX_LINK_PLAIN_CLASS taken out, so no card is made for it.
+ */
+function bx_linkify_embeded_strip_plain($sText)
+{
+    if(!is_string($sText) || !preg_match('#' . preg_quote(BX_LINK_PLAIN_CLASS, '#') . '#i', $sText))
+        return $sText;
+
+    return preg_replace('#<a\b[^>]*\bclass\s*=\s*(["\'])[^"\']*\b' . preg_quote(BX_LINK_PLAIN_CLASS, '#') . '\b[^"\']*\1[^>]*>.*?</a>#is', '', $sText);
+}
+
+/**
+ * The text with BX_LINK_PLAIN_CLASS on each link to another site, so it stays a link without a card.
+ * A bare address (text that is shown as a link) becomes a link first, so it can carry the class too.
+ * The text is changed through the DOM, as bx_linkify_html does, not by writing markup.
+ */
+function bx_linkify_plain($sText)
+{
+    if(!is_string($sText) || $sText === '')
+        return $sText;
+
+    $sText = bx_linkify_html($sText);
+
+    // the element that holds the text in a document of its own: any id no text can carry
+    $sId = 'bx-linkify-plain-root';
+    $oDom = new DOMDocument();
+    if(!@$oDom->loadHTML('<?xml encoding="UTF-8"><div id="' . $sId . '">' . $sText . '</div>', LIBXML_HTML_NODEFDTD))
+        return $sText;
+
+    $oRoot = $oDom->getElementById($sId);
+    if(!$oRoot)
+        return $sText;
+
+    $sUrlRoot = BX_DOL_URL_ROOT;
+    $bChanged = false;
+    foreach((new DOMXPath($oDom))->query('.//a[@href]', $oRoot) as $oLink) {
+        $sHref = $oLink->getAttribute('href');
+        if(!preg_match('#^https?://#i', $sHref) || strncmp($sHref, $sUrlRoot, get_mb_len($sUrlRoot)) === 0)
+            continue;
+
+        $aClasses = preg_split('/\s+/', trim($oLink->getAttribute('class')), -1, PREG_SPLIT_NO_EMPTY);
+        if(in_array(BX_LINK_PLAIN_CLASS, $aClasses))
+            continue;
+
+        $aClasses[] = BX_LINK_PLAIN_CLASS;
+        $oLink->setAttribute('class', implode(' ', $aClasses));
+        $bChanged = true;
+    }
+
+    if(!$bChanged)
+        return $sText;
+
+    $s = '';
+    foreach($oRoot->childNodes as $oNode)
+        $s .= $oDom->saveHTML($oNode);
+
+    return $s;
+}
+
 function bx_linkify_embeded($sText)
 {
+    $sText = bx_linkify_embeded_strip_plain($sText);
+
     $sRegex = '/\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*\'().&=+$%-]+:)?[0-9a-zA-Z_!~*\'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*\'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*\'().;?:@&=+$,%#-]*)*))/';
     $aMatches = [];
     preg_match_all($sRegex, $sText, $aMatches, PREG_SET_ORDER);

@@ -32,6 +32,7 @@ class BxBaseEmbedSystem extends BxDolEmbed
         $aData = $this->getData($sLink, '');
 
         if(bx_is_api()) {
+            $aData = $this->_getDataApi($aData);
             if(bx_get('mode') == 'alt')
                 return json_encode($aData);
 
@@ -101,6 +102,10 @@ class BxBaseEmbedSystem extends BxDolEmbed
 
         unset($a['OGImage'], $a['thumbnailUrl'], $a['icon'], $a['icon2'], $a['icon3']);
 
+        foreach(['image', 'logo'] as $sKey)
+            if(!empty($a[$sKey]) && !$this->_isRemoteImageUrl($a[$sKey]))
+                $a[$sKey] = '';
+
         $this->_storeImages($a);
 
         return json_encode($a);
@@ -124,6 +129,38 @@ class BxBaseEmbedSystem extends BxDolEmbed
                 if(($iMediaId = $aData[$sKey] ?? false))
                     $oStorage->updateGhostsContentId($iMediaId, $this->_iProfileId, $iId, true);
         }
+    }
+
+    /**
+     * Data for the apps: `image` and `logo` are addresses an app can load. A picture the site keeps
+     * (`image_id`, `logo_id`) is given as its local copy, and the other keys stay as they are.
+     */
+    protected function _getDataApi ($aData)
+    {
+        if(!is_array($aData))
+            return $aData;
+
+        $oStorage = BxDolStorage::getObjectInstance($this->_sStorage);
+        foreach(['image', 'logo'] as $sKey) {
+            $sUrl = '';
+            if($oStorage && ($iId = (int)($aData[$sKey . '_id'] ?? 0)))
+                $sUrl = (string)$oStorage->getFileUrlById($iId);
+            if($sUrl === '' && ($sValue = $aData[$sKey] ?? '') && is_string($sValue) && $this->_isRemoteImageUrl($sValue))
+                $sUrl = $sValue;
+
+            $aData[$sKey] = $sUrl;
+        }
+
+        return $aData;
+    }
+
+    /**
+     * An http(s) address a picture can be fetched from. A page can name its icon as a data: URI, which
+     * becomes the page's address followed by "data:..." once it is resolved against it.
+     */
+    protected function _isRemoteImageUrl ($sUrl)
+    {
+        return is_string($sUrl) && preg_match('#^https?://#i', $sUrl) && !preg_match('#data:#i', $sUrl);
     }
 
     protected function _deleteLocalFiles ($aData)

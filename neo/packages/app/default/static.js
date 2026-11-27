@@ -69,20 +69,17 @@ const ComponentsCommentsEmpty = () => {
     const { t } = useTranslation()
     return (
         <>
-            <View className="p-6 border-t border-border/40">
-                <Row className=" gap-2 mx-auto my-auto  py-4 px-6 rounded-2xl bg-muted/50 ">
-                    <View className="flex-col mx-auto text-muted-foreground  ">
-                        <Icon icon="MessageCircle" width={28} height={28} />
-                    </View>
-                    <View className="flex-col gap-1">
-                    <Text className="text-lg text-muted-foreground font-semibold ">
-                        {t('No comments yet')}
-                    </Text>
-                    <Text className="text-sm text-muted-foreground ">
-                        {t('Be the first to share what you think')}
-                    </Text>
-                    </View>
-                </Row>
+            {/* Quiet on purpose: a hint under the post, not a card competing with it. */}
+            <View className="px-6 py-8 border-t border-border/40 items-center gap-1">
+                <View className="text-muted-foreground/70 mb-1">
+                    <Icon icon="MessageCircle" width={20} height={20} />
+                </View>
+                <Text className="text-sm text-secondary-foreground font-medium text-center">
+                    {t('No comments yet')}
+                </Text>
+                <Text className="text-sm text-muted-foreground text-center">
+                    {t('Be the first to share what you think')}
+                </Text>
             </View>
         </>
     )

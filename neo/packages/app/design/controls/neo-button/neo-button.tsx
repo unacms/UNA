@@ -526,6 +526,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         disabled = false,
         loading = false,
         selected = false,
+        hovered = false,
         selectedState = 'pressedToggle',
         addon = '',
         interactive = false,
@@ -618,7 +619,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         disabled ? 'disabled' :
         isPressedToggle ? selectedState :
         isPressed ? 'pressed' :
-        isHovered ? 'hovered' :
+        isHovered || hovered ? 'hovered' :
         isFocused ? 'focused' :
         'default';
 

@@ -43,15 +43,15 @@ export const settingsFeed = {
             show_counter: true,
             show_combined: true,
             menu_width: '',
-            button_variant: 'link',
+            button_variant: 'default', // bordered: a counter is a small button, its fill lines it up with the card's edges
             rounded: true,
             button_size: 'xs',
-            button_rounded: true,
+            button_rounded: true, // capsules
             justify_items: 'between',
             no_gap_between_buttons: false,
-            counter_button_class: 'mt-1 sm:mt-2',
+            counter_button_class: 'mt-1 sm:mt-2 me-1', // the space after a counter is its own: one at zero takes none
             menu_item_spacing: 'me-0',
-            menu_gap: 'gap-1',
+            menu_gap: '', // no gap: an empty counter slot would still get one
         },
         /*
         FOR COMBINED BUTTONS SHOULD BE SET IN THE FOLLOWING WAY:
