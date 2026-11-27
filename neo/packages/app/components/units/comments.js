@@ -1,3 +1,4 @@
+import { countersModeParams, menuCountersMode } from 'app/lib/counters-mode'
 import { useMemo, memo, useCallback, useState, useEffect } from 'react'
 import { Platform, Animated } from 'react-native'
 import { menuItemsByName, FeedbackHaptics, appSetting, getDataForMenu, attachmentKindByName } from 'app/lib/util';
@@ -235,6 +236,8 @@ function UnitCommentsDefault(props) {
     const Badges = components['molecule']['badges'];
 
 
+    const countersMode = menuCountersMode(data?.menu_actions)
+
     const isShowReply = data?.menu_actions?.items?.find(
         (x) => x.name === 'item-reply'
     )
@@ -392,9 +395,9 @@ function UnitCommentsDefault(props) {
                                     displayType="element"
                                     showMatched={true}
                                     params={{
-                                        show_action: true,
-                                        show_counter: false,
-                                        show_combined: false,
+                                        // UNA's Counters for the comment's actions (Studio > Navigation); labels
+                                        // with the counts apart where it sends none.
+                                        ...(countersMode ? countersModeParams(countersMode) : { show_action: true, show_counter: false, show_combined: false }),
                                         button_size: 'xs',
                                         button_variant: 'link',
                                         button_rounded: true,
@@ -402,7 +405,8 @@ function UnitCommentsDefault(props) {
                                 />}
 
                                 <View className="ml-auto flex-row items-center gap-1">
-                                    {data.menu_actions?.items?.length > 0 && <Menu
+                                    {/* The counts apart only beside labels: counts and button groups show them on the actions. */}
+                                    {data.menu_actions?.items?.length > 0 && (!countersMode || countersMode === 'label') && <Menu
                                         {...data.menu_actions}
                                         displayType="element"
                                         showMatched={true}

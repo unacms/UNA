@@ -1,6 +1,7 @@
 import { View } from 'app/design/view';
 import Menu from 'app/components/menu';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { countersModeParams, menuCountersMode } from 'app/lib/counters-mode'
 
 export default function ElementEntityActions({ data, blockWrapperProps }) {
 
@@ -33,7 +34,9 @@ export default function ElementEntityActions({ data, blockWrapperProps }) {
                         button_variant_default: 'default',
                         button_size_default: 'small',
                         button_rounded: false,
-                        button_full_width: false, show_action: true, show_counter: true, show_combined: true
+                        button_full_width: false,
+                        // UNA's Counters for the menu (Studio > Navigation): button groups unless it says otherwise.
+                        ...countersModeParams(menuCountersMode(data) || 'group'),
                     }}
                 />
             </View>

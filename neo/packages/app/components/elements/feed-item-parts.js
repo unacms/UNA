@@ -39,6 +39,7 @@ import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
 import { isDrawnCounter } from 'app/lib/counter-items'
+import { countersModeParams, isStatShown, menuCountersMode } from 'app/lib/counters-mode'
 import emitter, { EVENTS } from 'app/context/emitter';
 
 
@@ -470,38 +471,62 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
 
 export const ActionMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'actions_menu');
+    // The menu's Counters from UNA (Studio > Navigation): labels, counts or button groups; the feed's own
+    // settings where UNA sends none.
+    const mode = menuCountersMode(data)
+    const params = settings && mode ? { ...settings, ...countersModeParams(mode) } : settings
 
-    // From the third item on, titles show from `sm` up. Items are copied, never written to.
+    // From the third item on, titles show from `sm` up. Items are copied, never written to, and keep UNA's
+    // own params (`is_voted`, `t`).
     const items = data?.items?.length > 2
         ? data.items.map((item, i) => {
             if (i < 2) return item
-            const params = { 'button_show_title_from_size': 'sm' }
-            return item.data ? { ...item, data: { ...item.data, params } } : { ...item, params }
+            return item.data
+                ? { ...item, data: { ...item.data, params: { ...(item.data.params || {}), button_show_title_from_size: 'sm' } } }
+                : { ...item, params: { ...(item.params || {}), button_show_title_from_size: 'sm' } }
         })
         : data?.items
 
     const data_other = {...data, items: items?.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
     const data_primary = {...data, items: items?.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
-    return settings && <Row className="flex-auto justify-between gap-1">
-        <Menu {...data_primary} displayType="button" params={settings} />
-        <Menu {...data_other} displayType="button" params={settings} />
+    return params && <Row className="justify-between gap-1">
+        <Menu {...data_primary} displayType="button" params={params} />
+        <Menu {...data_other} displayType="button" params={params} />
     </Row>
 })
 
-export const CounterMenu = memo(({ data }) => {
+/**
+ * A feed item's stats (`menu_counters`), beside its actions, whose Counters say what is left to show here
+ * (`isStatShown`): every count beside labels, the reactions summary beside counts, nothing beside button groups.
+ */
+export const CounterMenu = memo(({ data, actions }) => {
     const settings = appSetting('feed', 'counters_menu')
+    const mode = menuCountersMode(actions)
     // Items the app never draws are left out. A counter at zero stays: its widget shows the first reaction
     // as it comes; the row has no gap and each counter its own space after it, so it takes no room meanwhile.
-    const items = data?.items?.filter(isDrawnCounter) || []
+    const items = data?.items?.filter(item => isDrawnCounter(item) && isStatShown(item, mode)) || []
+    if (!settings || !items.length) return null
+
     const data_other = {...data, items: items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
     const data_primary = {...data, items: items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
-    return settings && <Row className="flex-auto justify-between">
+    return <Row className="justify-between">
         <Menu {...data_primary} displayType="button" params={settings} />
         <Menu {...data_other} displayType="button" params={settings} />
     </Row>
 })
+
+/**
+ * A feed item's actions and stats on one line: actions at the start, stats at the end; when both don't fit,
+ * the stats go above the actions (wrap-reverse).
+ */
+export const ActionsAndStats = memo(({ actions, counters, className = '' }) => (
+    <Row className={'flex-wrap-reverse items-center justify-between gap-x-2 gap-y-1 ' + className}>
+        <ActionMenu data={actions} />
+        {!!counters?.items?.length && <CounterMenu data={counters} actions={actions} />}
+    </Row>
+))
 
 export const VisibilityInfo = memo(({ data }) => {
     const { t } = useTranslation()

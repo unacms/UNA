@@ -7,8 +7,7 @@ import { NeoButtonLink } from 'app/design/controls'
 import {
     CommentsSection,
     MenuManage,
-    ActionMenu,
-    CounterMenu,
+    ActionsAndStats,
     Author,
     AuthorActions,
     UnitFeed,
@@ -170,22 +169,10 @@ function DefaultFeedUnit({ data, compact = false }) {
                         <MainContent url={url} data={data} compact={compact} />
                     </Skeleton>
                 </View>
-                {!!menuCounters?.items?.length && <>
-                
-                    <View className="flex-auto px-4 ">
-                        {appSetting('feed', 'counters_menu') && (
-                            <CounterMenu
-                                data={menuCounters}
-                            />
-                        )}
-                    </View>
-                </>}
-
-                <Row className="gap-2 items-center flex-auto justify-between p-4 pt-3">
-                    <ActionMenu
-                        data={menuActions}
-                    />
-                </Row>
+                {/* Actions and stats on one line, the stats above when both don't fit (the menu's Counters). */}
+                <View className="flex-auto p-4 pt-3">
+                    <ActionsAndStats actions={menuActions} counters={appSetting('feed', 'counters_menu') ? menuCounters : null} />
+                </View>
                 {commentsData && !compact && (
                     <View className="">
                         <CommentsSection

@@ -1,3 +1,4 @@
+import { countLabel } from 'app/lib/counters-mode'
 import { useState, useMemo, useCallback, useRef } from 'react';
 import { appSetting } from 'app/lib/util';
 import { useActionsData } from 'app/context/actions';
@@ -98,6 +99,8 @@ export default function ElementComments(props) {
     const isDisabled = action?.is_disabled === true;
     const iconName = isTextMode ? '' : 'MessageCircleMore';
 
+    const asCount = !!settings?.show_action_count
+
     const neoButtonStyle = props.params?.button_style
         ? props?.primary
             ? props.params?.button_primary_style || props.params.button_style
@@ -107,7 +110,10 @@ export default function ElementComments(props) {
     const actionButton = useMemo(() => {
         // A counter shows only the number; its name says what is counted ("Comment: 2").
         const counterName = (value) => (title ? `${title}: ${value}` : undefined);
-        const actionLabel = showCounter
+        // The menu's Counters `count`: the count is the label, the icon alone at 0.
+        const actionLabel = asCount
+            ? countLabel(count)
+            : showCounter
             ? count > 0
                 ? count
                 : showLabel
@@ -159,7 +165,8 @@ export default function ElementComments(props) {
                 <ActionButton
                     key="action"
                     startDecorator={iconName}
-                    title={showLabel ? title : false}
+                    title={asCount ? countLabel(count) : showLabel ? title : false}
+                    accessibilityLabel={asCount ? (count > 0 ? counterName(count) : title) : undefined}
                     onPress={!isDisabled ? handlePress : undefined}
                     disabled={isDisabled}
                     {...buttonProps}
@@ -179,6 +186,7 @@ export default function ElementComments(props) {
             />
         );
     }, [
+        asCount,
         showAction,
         showLabel,
         isDisabled,
