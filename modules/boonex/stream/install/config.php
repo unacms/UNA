@@ -16,7 +16,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_stream',
-    'title' => 'Stream',
+    'title' => 'Live',
     'note' => 'Live streams, broadcasts',
     'version' => '15.0.5.DEV',
     'vendor' => 'UNA INC',

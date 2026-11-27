@@ -15,7 +15,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_anon_follow',
-    'title' => 'Anonymous Follow',
+    'title' => 'Guest follow',
     'note' => 'Anonymous follow, follow without signing in',
     'version' => '9.0.0',
     'vendor' => 'UNA INC',

@@ -15,7 +15,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_twitter',
-    'title' => 'Twitter connect',
+    'title' => 'X Connect',
     'note' => 'Twitter login, join with a Twitter account',
     'version' => '15.0.1.DEV',
     'vendor' => 'UNA INC',

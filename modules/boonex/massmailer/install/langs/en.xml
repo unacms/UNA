@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
+  <string name="_sys_module_massmailer"><![CDATA[Email campaigns]]></string>
   <string name="_bx_massmailer"><![CDATA[Email campaigns]]></string>
   <string name="_bx_massmailer_acl_action_use_massmailer"><![CDATA[Use Massmailer]]></string>
   <string name="_bx_massmailer_adm_stg_cpt_type"><![CDATA[Email campaigns]]></string>

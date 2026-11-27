@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
+    <string name="_sys_module_persons"><![CDATA[People]]></string>
 
     <string name="_bx_persons"><![CDATA[People]]></string>
     <string name="_bx_persons_cmts"><![CDATA[People's comments]]></string>

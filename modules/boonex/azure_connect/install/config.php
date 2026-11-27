@@ -15,7 +15,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_azrcon',
-    'title' => 'Azure AD Connect',
+    'title' => 'Microsoft Connect',
     'note' => 'Azure AD login, join with an Azure AD account',
     'version' => '13.0.0.DEV',
     'vendor' => 'UNA INC',
