@@ -237,6 +237,12 @@ function UnitCommentsDefault(props) {
 
 
     const countersMode = menuCountersMode(data?.menu_actions)
+    const actionItems = data?.menu_actions?.items || []
+    const counterItems = !countersMode || countersMode === 'label'
+        ? actionItems
+        : countersMode === 'count'
+          ? actionItems.filter((item) => ['score', 'scores'].includes(item?.data?.type))
+          : []
 
     const isShowReply = data?.menu_actions?.items?.find(
         (x) => x.name === 'item-reply'
@@ -405,9 +411,11 @@ function UnitCommentsDefault(props) {
                                 />}
 
                                 <View className="ml-auto flex-row items-center gap-1">
-                                    {/* The counts apart only beside labels: counts and button groups show them on the actions. */}
-                                    {data.menu_actions?.items?.length > 0 && (!countersMode || countersMode === 'label') && <Menu
+                                    {/* The counts apart beside labels; beside counts only scores, whose buttons don't draw
+                                        their count yet; button groups show them on the actions. */}
+                                    {counterItems.length > 0 && <Menu
                                         {...data.menu_actions}
+                                        items={counterItems}
                                         displayType="element"
                                         showMatched={true}
                                         params={{

@@ -79,4 +79,16 @@ class MenuCountersTest extends BxDolIntegrationTestCase
         $this->assertIsArray($aCode);
         $this->assertSame('count', $aCode['counters'] ?? null);
     }
+
+    public function testStudioEditFormReadsTheSavedValues(): void
+    {
+        $oDb = BxDolDb::getInstance();
+        $iId = (int)$oDb->getOne("SELECT `id` FROM `sys_objects_menu` WHERE `object`='sys_cmts_item_actions'");
+        $this->assertGreaterThan(0, $iId);
+
+        $aMenu = [];
+        (new BxDolStudioNavigationQuery())->getMenus(['type' => 'by_id', 'value' => $iId], $aMenu, false);
+        foreach(['button_style', 'button_size', 'counters'] as $sField)
+            $this->assertArrayHasKey($sField, $aMenu, 'Studio\'s edit form shows the saved ' . $sField . ' and saves it back.');
+    }
 }
