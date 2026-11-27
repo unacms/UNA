@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+    <string name="_bx_media_editor_aspect_free"><![CDATA[Свободно]]></string>
+    <string name="_bx_media_editor_aspect_original"><![CDATA[Как в оригинале]]></string>
+    <string name="_bx_media_editor_brightness"><![CDATA[Яркость]]></string>
+    <string name="_bx_media_editor_close"><![CDATA[Закрыть]]></string>
+    <string name="_bx_media_editor_contrast"><![CDATA[Контраст]]></string>
+    <string name="_bx_media_editor_crop"><![CDATA[Обрезка]]></string>
+    <string name="_bx_media_editor_done"><![CDATA[Готово]]></string>
+    <string name="_bx_media_editor_err_load"><![CDATA[Не удалось открыть изображение. Попробуйте другой файл.]]></string>
+    <string name="_bx_media_editor_err_save"><![CDATA[Не удалось сохранить изображение. Попробуйте ещё раз.]]></string>
+    <string name="_bx_media_editor_filter"><![CDATA[Фильтр]]></string>
+    <string name="_bx_media_editor_filter_cool"><![CDATA[Холодный]]></string>
+    <string name="_bx_media_editor_filter_fade"><![CDATA[Выцветание]]></string>
+    <string name="_bx_media_editor_filter_mono"><![CDATA[Ч/б]]></string>
+    <string name="_bx_media_editor_filter_noir"><![CDATA[Нуар]]></string>
+    <string name="_bx_media_editor_filter_none"><![CDATA[Без фильтра]]></string>
+    <string name="_bx_media_editor_filter_sepia"><![CDATA[Сепия]]></string>
+    <string name="_bx_media_editor_filter_vintage"><![CDATA[Винтаж]]></string>
+    <string name="_bx_media_editor_filter_vivid"><![CDATA[Сочный]]></string>
+    <string name="_bx_media_editor_filter_warm"><![CDATA[Тёплый]]></string>
+    <string name="_bx_media_editor_finetune"><![CDATA[Коррекция]]></string>
+    <string name="_bx_media_editor_flip_horizontal"><![CDATA[Отразить по горизонтали]]></string>
+    <string name="_bx_media_editor_flip_vertical"><![CDATA[Отразить по вертикали]]></string>
+    <string name="_bx_media_editor_height"><![CDATA[Высота]]></string>
+    <string name="_bx_media_editor_keep_ratio"><![CDATA[Сохранять пропорции]]></string>
+    <string name="_bx_media_editor_redo"><![CDATA[Повторить]]></string>
+    <string name="_bx_media_editor_reset"><![CDATA[Сбросить]]></string>
+    <string name="_bx_media_editor_resize"><![CDATA[Размер]]></string>
+    <string name="_bx_media_editor_resize_note"><![CDATA[Изображение нельзя сделать больше обрезанной области.]]></string>
+    <string name="_bx_media_editor_rotate_left"><![CDATA[Повернуть влево]]></string>
+    <string name="_bx_media_editor_saturation"><![CDATA[Насыщенность]]></string>
+    <string name="_bx_media_editor_straighten"><![CDATA[Выравнивание]]></string>
+    <string name="_bx_media_editor_undo"><![CDATA[Отменить]]></string>
+    <string name="_bx_media_editor_warmth"><![CDATA[Теплота]]></string>
+    <string name="_bx_media_editor_width"><![CDATA[Ширина]]></string>
+    <string name="_bx_media_txt_click_to_edit"><![CDATA[Нажмите на фото, чтобы отредактировать его перед загрузкой.]]></string>
+</resources>
