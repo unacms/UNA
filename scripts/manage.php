@@ -113,6 +113,7 @@ class BxDolManageCmd
         $s .= str_pad("\t -c", 35) . "Command to run:\n";
         $s .= str_pad("\t", 39) . "- update - options:\n";
         $s .= str_pad("\t", 43) . "'ignore_version_check' to ignore version comparison in DB and files\n";
+        $s .= str_pad("\t", 43) . "'patch=<path>' to apply an unpacked patch from this folder instead of downloading one\n";
         $s .= str_pad("\t", 39) . "- check_update - no options\n";
         $s .= str_pad("\t", 39) . "- update_modules - options:\n";
         $s .= str_pad("\t", 43) . "comma separated list of modules (ex: 'bx_nexus,bx_albums')\n";
@@ -224,7 +225,19 @@ class BxDolManageCmd
         $oCronDb = BxDolCronQuery::getInstance();
         $aCronJobs = $oCronDb->getTransientJobs();
 
-        if (!isset($aCronJobs['sys_perform_upgrade'])) {
+        // an unpacked patch on this server: nothing is asked from or downloaded from the update server
+        $sPatchLocal = '';
+        foreach ($aOptions as $sOption)
+            if (0 === strncmp($sOption, 'patch=', 6))
+                $sPatchLocal = rtrim(substr($sOption, 6), '/') . '/';
+
+        if ($sPatchLocal) {
+            if ('dev' == getParam('sys_upgrade_channel'))
+                $this->finish($this->_aReturnCodes['system update failed']['code'], $this->_aReturnCodes['system update failed']['msg'] . _t('_sys_upgrade_dev_channel'));
+            if (!file_exists($sPatchLocal . 'classes/BxDolUpgradeController.php') || !is_dir($sPatchLocal . 'files'))
+                $this->finish($this->_aReturnCodes['system update failed']['code'], $this->_aReturnCodes['system update failed']['msg'] . 'no unpacked patch in ' . $sPatchLocal);
+        }
+        elseif (!isset($aCronJobs['sys_perform_upgrade'])) {
             $oUpgrader = bx_instance('BxDolUpgrader');
             $aUpdateInfo = $oUpgrader->getVersionUpdateInfo();
 
@@ -236,30 +249,43 @@ class BxDolManageCmd
                 $this->finish($this->_aReturnCodes['system update failed']['code'], $this->_aReturnCodes['system update failed']['msg'] . $oUpgrader->getError());
         }
 
-        $aCronJobs = $oCronDb->getTransientJobs();
-        if (empty($aCronJobs['sys_perform_upgrade']))
-            $this->finish($this->_aReturnCodes['system update failed']['code'], $this->_aReturnCodes['system update failed']['msg'] . 'no cron job with patch path was found');
+        if ($sPatchLocal) {
+            $sPatchDir = $sPatchLocal;
+        }
+        else {
+            $aCronJobs = $oCronDb->getTransientJobs();
+            if (empty($aCronJobs['sys_perform_upgrade']))
+                $this->finish($this->_aReturnCodes['system update failed']['code'], $this->_aReturnCodes['system update failed']['msg'] . 'no cron job with patch path was found');
 
-        $sPatchDir = BX_DIRECTORY_PATH_ROOT . $aCronJobs['sys_perform_upgrade']['file'];
-        $sPatchDir = str_replace('BxDolUpgradeCron.php', '', $sPatchDir);
+            $sPatchDir = BX_DIRECTORY_PATH_ROOT . $aCronJobs['sys_perform_upgrade']['file'];
+            $sPatchDir = str_replace('BxDolUpgradeCron.php', '', $sPatchDir);
+        }
         define ('BX_UPGRADE_DIR_UPGRADES', $sPatchDir . 'files/');
 
         require_once($sPatchDir . 'classes/BxDolUpgradeController.php');
         require_once($sPatchDir . 'classes/BxDolUpgradeUtil.php');
         require_once($sPatchDir . 'classes/BxDolUpgradeDb.php');
 
+        $bApplied = false;
         $oController = new BxDolUpgradeController();
         if ($oController->setMaintenanceMode(true)) {
             $sFolder = $oController->getAvailableUpgrade();
             if ($sFolder && $oController->runUpgrade($sFolder, in_array('ignore_version_check', $aOptions), $this->_isSkipFilesOperation)) {
+                $bApplied = true;
                 setParam('sys_revision', getParam('sys_revision') + 1);
                 $oController->writeLog();
-                @bx_rrmdir($sUpgradeDir);
+                // a downloaded patch is removed; a patch given with the 'patch' option is left where it is
+                if (!$sPatchLocal && 0 === strpos($sPatchDir, BX_DIRECTORY_PATH_TMP))
+                    @bx_rrmdir($sPatchDir);
             }
             $oController->setMaintenanceMode(false);
         }
 
-        $oCronDb->deleteTransientJobs();
+        if (!$sPatchLocal)
+            $oCronDb->deleteTransientJobs();
+
+        if (!$bApplied && !$oController->getErrorMsg())
+            $this->finish($this->_aReturnCodes['system update failed']['code'], $this->_aReturnCodes['system update failed']['msg'] . 'the patch has no update for version ' . bx_get_ver());
 
         if ($sErrorMsg = $oController->getErrorMsg()) {
             $this->finish($this->_aReturnCodes['system update failed']['code'], $this->_aReturnCodes['system update failed']['msg'] . $sErrorMsg);
