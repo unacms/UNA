@@ -75,6 +75,15 @@ abstract class BxDolIntegrationTestCase extends BxDolTestCase
 
         unset($_COOKIE['memberID'], $_COOKIE['memberPassword'], $_COOKIE[BX_DOL_SESSION_COOKIE]);
         $this->bxSetLoggedFlags(0);
+        $this->bxSyncModuleProfiles(0);
+    }
+
+    protected function bxSyncModuleProfiles(int $iProfileId): void
+    {
+        // Loaded module singletons cache the profile that was logged in when they were first instantiated.
+        foreach ($GLOBALS['bxDolClasses'] ?? [] as $oObj)
+            if ($oObj instanceof BxDolModule && method_exists($oObj, 'setProfileId'))
+                $oObj->setProfileId($iProfileId);
     }
 
     protected function bxSetLoggedFlags(int $iRole): void
@@ -101,6 +110,7 @@ abstract class BxDolIntegrationTestCase extends BxDolTestCase
 
         $this->bxSyncSessionCookie();
         $this->bxSetLoggedFlags((int)$aInfo['role']);
+        $this->bxSyncModuleProfiles((int)bx_get_logged_profile_id());
 
         return $aInfo;
     }
