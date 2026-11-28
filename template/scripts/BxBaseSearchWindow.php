@@ -311,7 +311,7 @@ class BxBaseSearchWindow extends BxDol
                     'suggest_url' => BX_DOL_URL_ROOT . 'searchExtended.php?action=get_authors',
                     'bx_if:me' => [
                         'condition' => isLogged(),
-                        'content' => ['me' => bx_get_logged_profile_id(), 'title' => _t('_sys_search_chip_created_by_me')],
+                        'content' => ['name' => $aChip['name'], 'me' => bx_get_logged_profile_id(), 'title' => _t('_sys_search_chip_created_by_me')],
                     ],
                 ]);
 

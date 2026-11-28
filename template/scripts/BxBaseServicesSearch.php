@@ -920,6 +920,7 @@ class BxBaseServicesSearch extends BxDol
                 continue;
 
             $sChips .= $oTemplate->parseHtmlByName('search_window_chip.html', [
+                'group' => 'bx-btn-group',
                 'class' => 'bx-search-window-chip-active',
                 'attrs' => 'disabled="disabled"',
                 'icon' => '',

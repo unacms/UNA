@@ -230,6 +230,9 @@ class SearchWindowTest extends ApiV2TestCase
         $this->assertStringContainsString('data-remove="title_only"', $aParts['chips']);
         $this->assertStringContainsString('data-remove="author"', $aParts['chips']);
         $this->assertStringContainsString('bx-btn-group', $aParts['chips']);
+        $this->assertStringNotContainsString('__group__', $aParts['chips']);
+        $this->assertStringContainsString('data-name="author" data-value="' . $iOwner . '"', $aParts['chips']);
+        $this->assertStringNotContainsString('__name__', $aParts['chips']);
         $this->assertStringNotContainsString('data-add="toggle" data-value="title_only"', $aParts['chips']);
 
         // the scope chip shows where the window was opened
