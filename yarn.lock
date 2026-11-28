@@ -590,10 +590,10 @@
   resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.1.0.tgz#a79b55dbaf8604812f52d140b2c9ab41bc150bb8"
   integrity sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==
 
-"@stripe/connect-js@^3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@stripe/connect-js/-/connect-js-3.5.0.tgz#c6d42578d63b521909c9a2c96d466eb19380955d"
-  integrity sha512-r0x134GLNJaQa0xY2bVEWZ/57D2QU78bigs+F/I3GJx4UBNwkmq4WeZKkYla9vHPZZ00454lDKpz0KJwnXzE5g==
+"@stripe/connect-js@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@stripe/connect-js/-/connect-js-3.5.1.tgz#eaf999e7de14a8e6550d073188a68d195171fdf3"
+  integrity sha512-dO1jekavdc8nklD2vemd5Ysu8sAmnjHKNyGQE3nApDs1UsYLplsQSjHgCq8c/3lCVPBvgbR3Me9NOz/Nb78VHw==
 
 "@svta/cml-608@1.1.0":
   version "1.1.0"
