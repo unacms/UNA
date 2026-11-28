@@ -46,6 +46,8 @@ repository and in the local commits that fixed them.
 
 ## What each score rests on, and what moves it
 
+*Snapshot as of 2026-11-11 (last score update). Subsequent Lane A items completed on `master` (per-section `ListRoute`, `src/lib/dates.ts`, lazy editor/task chunks, section registry, shell hooks, query-key factories, route codecs) are recorded in [Plan after the merge](#plan-after-the-merge-revised-2026-11-12) and the [Log](#log) below and are awaiting a re-score.*
+
 ### 1. Parity with UNA and NEO: 4
 - 15 of the 35 app-enabled modules have API v2 endpoints and a desktop feature. Inside those, reading
   is at 85 to 90%.
