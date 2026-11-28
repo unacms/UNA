@@ -27,10 +27,14 @@ function BxDolSearchWindow(oRoot)
 
     this._iTimer = 0;
     this._iSeq = 0;
+    // the pills' names in the order the member added them (the row shows them so)
+    this._aOrder = [];
     this._oRequest = null;
     this._iMinLen = 2;
 
     this._bind();
+    this._orderPills();
+    this._placeFilter();
     this._toggleExplore();
 }
 
@@ -52,7 +56,11 @@ BxDolSearchWindow.open = function(oScope, oTrigger)
     oWindow.setScope(oScope || {});
     oWindow._oTrigger = oTrigger ? $(oTrigger) : null;
 
+    // its top edge stays where it opens, 4rem from the window's top (NEO's dialog too): only the bottom moves as results come and go
     oPopup.dolPopup({
+        position: 'fixed',
+        left: 'center',
+        top: '4rem',
         onShow: function() {
             if(oWindow._oTrigger)
                 oWindow._oTrigger.attr('aria-expanded', 'true');
@@ -206,16 +214,12 @@ BxDolSearchWindow.prototype._bind = function()
         $(BxDolSearchWindow.POPUP).dolPopupHide();
     });
 
-    // chips
+    // chips and their dropdowns ("+ Filter", a filter's own picker): one open at a time, under the chips
     oRoot.on('click', '.bx-search-window-chip[data-panel]', function() {
-        var oChip = $(this), sPanel = oChip.attr('data-panel'), bOpen = oChip.attr('aria-expanded') == 'true';
-        oRoot.find('.bx-search-window-chip[data-panel]').attr('aria-expanded', 'false');
-        oRoot.find('.bx-search-window-panel').addClass('hidden');
-        if(!bOpen) {
-            oChip.attr('aria-expanded', 'true');
-            var oPanel = oRoot.find('#' + sPanel).removeClass('hidden');
-            oPanel.find('input, select, button').filter(':visible').first().focus();
-        }
+        var oChip = $(this), bOpen = oChip.attr('aria-expanded') == 'true';
+        $this._closePanels(false);
+        if(!bOpen)
+            $this._openPanel(oChip.attr('data-panel'), oChip);
     });
 
     oRoot.on('click', '.bx-search-window-chip[data-toggle]', function() {
@@ -224,11 +228,14 @@ BxDolSearchWindow.prototype._bind = function()
             delete $this._oQuery[sName];
         else
             $this._oQuery[sName] = 1;
+        delete $this._oQuery.tab;
+        $this._bFocusFilter = true;
         $this._run(true);
     });
 
     oRoot.on('click', '.bx-search-window-chip-remove', function() {
         var sName = $(this).attr('data-remove');
+        $this._aOrder = $.grep($this._aOrder, function(s) { return s != sName; });
         if(sName == 'date') {
             delete $this._oQuery.date_from;
             delete $this._oQuery.date_to;
@@ -253,34 +260,70 @@ BxDolSearchWindow.prototype._bind = function()
             delete $this._oQuery[sName];
 
         delete $this._oQuery.tab;
+        // the removed chip is gone: the keyboard goes on from "+ Filter"
+        $this._bFocusFilter = true;
         $this._run(true);
-        $this.focusInput();
     });
 
-    // "+ Filter": a module to look in, or one of the module's fields
+    // "+ Filter": a module to look in, Title only, or a filter to set in its own picker (Created by, Date, a module's field)
     oRoot.on('click', '.bx-search-window-add', function() {
         var sName = $(this).attr('data-add'), sValue = $(this).attr('data-value');
-        if(sName == 'section') {
-            $this._oQuery.section = sValue;
+        if(sName == 'section' || sName == 'toggle') {
+            if(sName == 'section')
+                $this._oQuery.section = sValue;
+            else
+                $this._oQuery[sValue] = 1;
+            $this._added(sName == 'section' ? 'section' : sValue);
             delete $this._oQuery.tab;
+            $this._closePanels(false);
+            $this._bFocusFilter = true;
             $this._run(true);
             return;
         }
 
-        oRoot.find('.bx-search-window-panel').addClass('hidden');
-        oRoot.find('#bx-search-window-panel-' + sValue).removeClass('hidden').find('input').first().focus();
+        var oFilter = oRoot.find('.bx-search-window-chip-add');
+        $this._closePanels(false);
+        $this._openPanel('bx-search-window-panel-' + sValue, oFilter);
     });
 
     oRoot.on('click', '.bx-search-window-set', function() {
         $this._oQuery[$(this).attr('data-name')] = $(this).attr('data-value');
+        $this._added($(this).attr('data-name'));
+        delete $this._oQuery.tab;
+        $this._closePanels(false);
+        $this._bFocusFilter = true;
+        $this._run(true);
+    });
+
+    oRoot.on('click', '.bx-search-window-date-preset', function() {
+        var o = $(this), iDays = parseInt(o.attr('data-days'), 10), bAhead = o.attr('data-ahead') == '1';
+        var fYmd = function(d) {
+            return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+        };
+        var oToday = new Date(), oOther = new Date(oToday.getTime() + (bAhead ? 1 : -1) * iDays * 86400000);
+        $this._oQuery.date_from = fYmd(bAhead ? oToday : oOther);
+        $this._oQuery.date_to = fYmd(bAhead ? oOther : oToday);
+        if(o.attr('data-field'))
+            $this._oQuery.date_field = o.attr('data-field');
+        else
+            delete $this._oQuery.date_field;
+        try {
+            $this._oQuery.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        } catch (e) {}
+        $this._added('date');
+        delete $this._oQuery.tab;
+        $this._closePanels(false);
+        $this._bFocusFilter = true;
         $this._run(true);
     });
 
     oRoot.on('click', '.bx-search-window-date-apply', function() {
         var oPanel = $(this).parents('.bx-search-window-panel:first');
         var sFrom = oPanel.find('.bx-search-window-date-from').val(), sTo = oPanel.find('.bx-search-window-date-to').val();
-        if(!sFrom)
+        if(!sFrom) {
+            oPanel.find('.bx-search-window-date-from').focus();
             return;
+        }
 
         $this._oQuery.date_from = sFrom;
         if(sTo)
@@ -298,6 +341,10 @@ BxDolSearchWindow.prototype._bind = function()
             $this._oQuery.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         } catch (e) {}
 
+        $this._added('date');
+        delete $this._oQuery.tab;
+        $this._closePanels(false);
+        $this._bFocusFilter = true;
         $this._run(true);
     });
 
@@ -310,28 +357,85 @@ BxDolSearchWindow.prototype._bind = function()
         else
             delete oFilters[sName];
         $this._setFilters(oFilters);
+        $this._added(sName);
+        delete $this._oQuery.tab;
+        $this._closePanels(false);
+        $this._bFocusFilter = true;
         $this._run(true);
     });
 
-    // "Created by": people whose name matches
+    // "Created by": people whose name matches, as a combobox (the arrows move to the names, Enter takes one)
     oRoot.on('input', '.bx-search-window-profile-input', function() {
         var oInput = $(this), oPanel = oInput.parents('.bx-search-window-panel:first'), sTerm = $.trim(oInput.val());
+        var oList = oPanel.find('.bx-search-window-profile-list');
         clearTimeout($this._iProfileTimer);
-        if(sTerm.length < 2) {
-            oPanel.find('.bx-search-window-profile-list').html('');
+        oList.find('.bx-search-window-person').remove();
+        oInput.attr('aria-expanded', oList.children().length ? 'true' : 'false');
+        if(sTerm.length < 2)
             return;
-        }
 
         $this._iProfileTimer = setTimeout(function() {
             $.getJSON(oPanel.attr('data-suggest'), {term: sTerm}, function(aData) {
-                var oList = oPanel.find('.bx-search-window-profile-list').html('');
+                oList.find('.bx-search-window-person').remove();
                 $.each(Array.isArray(aData) ? aData.slice(0, 8) : [], function(i, oItem) {
-                    $('<button type="button" class="bx-search-window-set bx-btn bx-btn-small"></button>')
-                        .attr('data-name', 'author').attr('data-value', oItem.value).text($('<div/>').html(oItem.label).text())
-                        .appendTo(oList);
+                    var oLink = $('<a href="javascript:void(0);" role="option" class="bx-search-window-set flex items-center"><span class="bx-stl-mit"></span></a>')
+                        .attr('data-name', 'author').attr('data-value', oItem.value);
+                    oLink.find('.bx-stl-mit').text($('<div/>').html(oItem.label).text());
+                    $('<li class="bx-menu-item bx-search-window-person" role="none"></li>').append(oLink).appendTo(oList);
                 });
+                oInput.attr('aria-expanded', oList.children().length ? 'true' : 'false');
             });
         }, 300);
+    });
+
+    // in a dropdown: the arrows move between its rows and fields, Enter in the name field takes the first name, Escape
+    // closes it (not the window) and leaves the keyboard on what opened it
+    oRoot.on('keydown', '.bx-search-window-panel', function(oEvent) {
+        var oPanel = $(this);
+        if(oEvent.key == 'Escape') {
+            oEvent.preventDefault();
+            oEvent.stopPropagation();
+            // the popup closes on Escape's keyup (dolPopup): that keyup is this dropdown's
+            $this._bSwallowEscape = true;
+            $this._closePanels(true);
+            return;
+        }
+        if(oEvent.key == 'Enter' && $(oEvent.target).is('.bx-search-window-profile-input')) {
+            oEvent.preventDefault();
+            oPanel.find('.bx-search-window-person a').first().trigger('click');
+            return;
+        }
+        if(oEvent.key != 'ArrowDown' && oEvent.key != 'ArrowUp')
+            return;
+        if($(oEvent.target).is('select, input[type=date], input[type=checkbox], input[type=radio]'))
+            return;
+        var aStops = oPanel.find('a[role=menuitem], a[role=option], .bx-search-window-profile-input').filter(':visible');
+        var i = aStops.index(oEvent.target);
+        oEvent.preventDefault();
+        i = oEvent.key == 'ArrowDown' ? Math.min(i + 1, aStops.length - 1) : Math.max(i - 1, 0);
+        aStops.eq(i).focus();
+    });
+
+    oRoot.on('keyup', function(oEvent) {
+        if(oEvent.key == 'Escape' && $this._bSwallowEscape) {
+            $this._bSwallowEscape = false;
+            oEvent.stopPropagation();
+        }
+    });
+
+    // a press outside a dropdown, or the keyboard leaving it, closes it
+    $(document).on('mousedown.bx-search-window', function(oEvent) {
+        var oTarget = $(oEvent.target);
+        if(!oTarget.closest('.bx-search-window-panel, .bx-search-window-chip[data-panel]').length)
+            $this._closePanels(false);
+    });
+    oRoot.on('focusout', '.bx-search-window-panel', function() {
+        var oPanel = $(this);
+        setTimeout(function() {
+            var oActive = $(document.activeElement);
+            if(!oPanel.hasClass('hidden') && !oActive.closest('.bx-search-window-panel').length && !oActive.closest('.bx-search-window-chip[data-panel]').length && oActive.closest(oRoot).length)
+                $this._closePanels(false);
+        }, 0);
     });
 
     // results
@@ -408,6 +512,8 @@ BxDolSearchWindow.prototype._moveSelection = function(iStep)
 
     aItems.removeClass('bx-search-window-item-active').attr('aria-selected', null);
     var oItem = aItems.eq(iIndex).addClass('bx-search-window-item-active').attr('aria-selected', 'true');
+    // "Open ↵" at the chosen row's end (CSS reads it from the link)
+    oItem.children('a').attr('data-open', this._oRoot.find('.bx-search-window-results').attr('data-open') || '');
     if(oItem.get(0) && oItem.get(0).scrollIntoView)
         oItem.get(0).scrollIntoView({block: 'nearest'});
 };
@@ -444,6 +550,12 @@ BxDolSearchWindow.prototype._run = function(bAi)
         }
 
         $this._oRoot.find('.bx-search-window-chips-wrap').html(oData.chips);
+        $this._orderPills();
+        $this._placeFilter();
+        if($this._bFocusFilter) {
+            $this._bFocusFilter = false;
+            $this._oRoot.find('.bx-search-window-chip-add').focus();
+        }
         $this._oRoot.find('.bx-search-window-results').html(oData.results);
         $this._oRoot.find('.bx-search-window-full').attr('href', oData.results_url);
         $this._oRoot.find('.bx-search-window-status').text(oData.count || '');
@@ -454,6 +566,85 @@ BxDolSearchWindow.prototype._run = function(bAi)
 
         $this._toggleExplore();
     });
+};
+
+/**
+ * A pill was added (`sName` as its remove button names it): it goes to the end of the row.
+ */
+BxDolSearchWindow.prototype._added = function(sName)
+{
+    this._aOrder = $.grep(this._aOrder, function(s) { return s != sName; });
+    this._aOrder.push(sName);
+};
+
+/**
+ * The pills after "+ Filter" in the order they were added; those the window opened with (its scope) come first, in UNA's order.
+ */
+BxDolSearchWindow.prototype._orderPills = function()
+{
+    var aOrder = this._aOrder, oRow = this._oRoot.find('.bx-search-window-chips');
+    var aPills = oRow.children('.bx-search-window-chip-wrap').filter(function() {
+        return $(this).find('.bx-search-window-chip-remove').length > 0;
+    }).get();
+    var fIndex = function(el) {
+        return aOrder.indexOf($(el).find('.bx-search-window-chip-remove').attr('data-remove'));
+    };
+    aPills.sort(function(a, b) {
+        return fIndex(a) - fIndex(b);
+    });
+    $.each(aPills, function(i, el) {
+        oRow.append(el);
+    });
+};
+
+/**
+ * In a block (Explore, the results page) "+ Filter" sits beside the field, as the feed's composer trigger's buttons: 44px,
+ * icon-only below lg (its label stays its name). The chips come anew with each answer, so it is moved there each time.
+ */
+BxDolSearchWindow.prototype._placeFilter = function()
+{
+    if(!this._bPage)
+        return;
+
+    var oSlot = this._oRoot.find('.bx-search-window-filter-slot').empty();
+    var oFilter = this._oRoot.find('.bx-search-window-chips .bx-search-window-chip-add');
+    if(!oFilter.length)
+        return;
+
+    // labelled from lg (its name in the label), icon-only below
+    oFilter.removeClass('bx-btn-small bx-btn-icon').addClass('bx-btn-icon-mobile').removeAttr('title');
+    oFilter.children('span').addClass('bx-btn-icon-mobile-label').text(oFilter.attr('aria-label') || '');
+    oSlot.append(oFilter.parent('.bx-search-window-chip-wrap').length ? oFilter.parent() : oFilter);
+};
+
+/**
+ * A dropdown under the chips, opened from its chip ("+ Filter", a set filter's chip): the keyboard goes to its first row or field.
+ */
+BxDolSearchWindow.prototype._openPanel = function(sId, oTrigger)
+{
+    var oPanel = this._oRoot.find('#' + sId);
+    if(!oPanel.length)
+        return;
+
+    this._oPanelTrigger = oTrigger && oTrigger.length ? oTrigger : this._oRoot.find('.bx-search-window-chip-add');
+    this._oPanelTrigger.attr('aria-expanded', 'true');
+    oPanel.removeClass('hidden');
+    oPanel.find('.bx-search-window-profile-input, a[role=menuitem], a[role=option], input, select, button').filter(':visible').first().focus();
+};
+
+/**
+ * Closes the open dropdown; `bFocus`: the keyboard goes back to what opened it.
+ */
+BxDolSearchWindow.prototype._closePanels = function(bFocus)
+{
+    var oOpen = this._oRoot.find('.bx-search-window-panel').not('.hidden');
+    this._oRoot.find('.bx-search-window-chip[data-panel]').attr('aria-expanded', 'false');
+    if(!oOpen.length)
+        return;
+
+    oOpen.addClass('hidden');
+    if(bFocus && this._oPanelTrigger && this._oPanelTrigger.closest(document.documentElement).length)
+        this._oPanelTrigger.focus();
 };
 
 /**
@@ -494,7 +685,7 @@ BxDolSearchWindow.prototype._request = function(oQuery, onSuccess)
         },
         error: function(oXhr, sStatus) {
             if(sStatus != 'abort')
-                $this._oRoot.find('.bx-search-window-results').html($('<p class="py-6 text-center text-sm text-red-700 dark:text-red-400"></p>').text(_t('_sys_search_window_error')));
+                $this._oRoot.find('.bx-search-window-results').html($('<p class="bx-search-window-hint px-2 py-3 text-sm text-red-700 dark:text-red-400" role="alert"></p>').text(_t('_sys_search_window_error')));
         },
         complete: function(oXhr, sStatus) {
             if(sStatus == 'abort')

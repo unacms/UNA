@@ -83,6 +83,8 @@ class SearchAiSiteBlockTest extends BxDolIntegrationTestCase
         ]]);
 
         $this->assertSame(2, substr_count($sHtml, 'class="bx-search-window-chip '));
+        $this->assertStringContainsString('bx-btn-group', $sHtml);
+        $this->assertStringNotContainsString('__group__', $sHtml);
         $this->assertStringContainsString('Gender: Woman', $sHtml);
         $this->assertStringContainsString('data-remove="gender"', $sHtml);
         $this->assertStringContainsString('data-remove="fullname"', $sHtml);

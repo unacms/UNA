@@ -210,9 +210,21 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
      *  with only 'onclick' is a <button>
      * @param string $sIcon Lucide icon name
      * @param string $sTitle optional translated title above the line, as the apps show it
+     * @param string $sLayout '' (centred) or 'rows': in a list of rows (search results), the words as one row of that
+     *  list, its icon where a row's picture is, over two faint placeholder rows, so the list keeps its shape and size
      */
-    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox', $sTitle = '')
+    public function emptyState($sText = '', $aButton = [], $sIcon = 'inbox', $sTitle = '', $sLayout = '')
     {
+        if($sLayout == 'rows')
+            return $this->_oTemplate->parseHtmlByName('empty_state_rows.html', [
+                'icon' => $this->msgBoxIcon($sIcon),
+                'title' => bx_process_output($sTitle !== '' ? $sTitle : ($sText !== '' ? $sText : _t('_Empty'))),
+                'bx_if:text' => [
+                    'condition' => $sTitle !== '' && $sText !== '',
+                    'content' => ['text' => $sText],
+                ],
+            ]);
+
         return $this->msgBoxState('bx-empty-' . bin2hex(random_bytes(4)), [
             'icon' => $sIcon,
             'title' => $sTitle,

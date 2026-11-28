@@ -1,2 +1,14 @@
-<div class="bx-search-window-chips flex flex-wrap items-center gap-2" role="group" aria-label="__label__">__chips__</div>
+<!-- One row, in this order: the sort, "+ Filter" (icon-only), then the pills in the order they were added (BxDolSearchWindow);
+     the same gap and 36px height, wrapping to more lines when it doesn't fit. -->
+<div class="bx-search-window-chips flex flex-wrap items-center gap-2" role="group" aria-label="__label__">
+    <bx_if:sort>
+        <label class="flex items-center"><span class="sr-only">__sort_label__</span>
+            <select class="bx-search-window-sort bx-form-input-select bx-form-input-small w-auto">
+                <option value="best" __sort_best_selected__>__sort_best__</option>
+                <option value="new" __sort_new_selected__>__sort_new__</option>
+            </select>
+        </label>
+    </bx_if:sort>
+    __chips__
+</div>
 <div class="bx-search-window-panels">__panels__</div>

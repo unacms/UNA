@@ -1,10 +1,18 @@
-<div id="__id__" class="bx-search-window-panel hidden mt-3 flex flex-wrap items-end gap-3">
-    <bx_if:fields>
-        <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__label__
-            <select class="bx-search-window-date-field bx-form-input-select"><bx_repeat:fields><option value="__value__" __selected__>__title__</option></bx_repeat:fields></select>
-        </label>
-    </bx_if:fields>
-    <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__from_label__<input type="date" class="bx-search-window-date-from bx-form-input-text" value="__from__" /></label>
-    <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__to_label__<input type="date" class="bx-search-window-date-to bx-form-input-text" value="__to__" /></label>
-    <button type="button" class="bx-search-window-date-apply bx-btn bx-btn-small bx-btn-primary">__apply__</button>
+<div id="__id__" class="bx-search-window-panel bx-search-window-dropdown hidden">
+    <ul class="bx-menu-ver" role="menu" aria-label="__label__">
+        <bx_repeat:presets><li class="bx-menu-item" role="none"><a href="javascript:void(0);" role="menuitem" class="bx-search-window-date-preset flex items-center" data-days="__days__" data-ahead="__ahead__" data-field="__field__"><span class="bx-stl-mit">__title__</span></a></li></bx_repeat:presets>
+    </ul>
+    <div class="bx-search-window-dropdown-sep" role="separator"></div>
+    <div class="flex flex-col gap-2 p-2">
+        <bx_if:fields>
+            <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__label__
+                <select class="bx-search-window-date-field bx-form-input-select bx-form-input-small"><bx_repeat:fields><option value="__value__" __selected__>__title__</option></bx_repeat:fields></select>
+            </label>
+        </bx_if:fields>
+        <div class="flex flex-col gap-2">
+            <label class="flex min-w-0 flex-1 flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__from_label__<input type="date" class="bx-search-window-date-from bx-form-input-text bx-form-input-small" value="__from__" /></label>
+            <label class="flex min-w-0 flex-1 flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">__to_label__<input type="date" class="bx-search-window-date-to bx-form-input-text bx-form-input-small" value="__to__" /></label>
+        </div>
+        <button type="button" class="bx-search-window-date-apply bx-btn bx-btn-small bx-btn-primary self-end">__apply__</button>
+    </div>
 </div>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The search window: "Open" on the result chosen with the arrow keys. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_search_window_open"><![CDATA[Open]]></string_add>
+</resources>

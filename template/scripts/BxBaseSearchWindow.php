@@ -118,7 +118,8 @@ class BxBaseSearchWindow extends BxDol
         return [
             'chips' => $this->_getChips($aScope, $aQuery),
             'results' => $this->_getResults($aScope, $aQuery, $aResults, $aAll, $bHasQuery, $bPage),
-            'count' => $bHasQuery ? $this->_getCountText($aResults) : '',
+            // the status region's words: the count, or that nothing was found for the words
+            'count' => $bHasQuery ? ($this->_getCountNumber($aResults) === '0' && $this->_isTried($aQuery) ? ($aQuery['keyword'] !== '' ? _t('_sys_search_window_no_results_for', $aQuery['keyword']) : _t('_sys_search_window_no_results')) : $this->_getCountText($aResults)) : '',
             'results_url' => $aScope['results_url'],
             'ai' => !empty($aScope['ai']),
             'query' => $this->_oSearch->toUrlParams($aQuery),
@@ -129,54 +130,86 @@ class BxBaseSearchWindow extends BxDol
     {
         $aChips = [];
         $aPanels = [];
-        $aFields = [];
+        $aUnset = [];
         foreach($aScope['chips'] as $aChip) {
-            if($aChip['type'] == 'options') {
-                $aFields[] = $aChip;
-                // a field chip shows once it has a value; "+ Filter" adds the others
-                if(empty($aChip['value']))
-                    continue;
+            // a filter shows as a chip once it is picked (the scope always: where the window was opened chose it);
+            // "+ Filter" lists the others
+            if($aChip['type'] != 'scope' && empty($aChip['value'])) {
+                $aUnset[] = $aChip;
+                continue;
             }
 
             $aChips[] = $this->_getChip($aChip, $aPanels);
         }
 
-        // "+ Filter": the module's fields without a value, or the modules to look in
+        // "+ Filter": the filters not picked (Title only, Created by, Date, the module's fields), then the modules to look in
         $aAdd = [];
-        foreach($aFields as $aField)
-            if(empty($aField['value']))
-                $aAdd[] = ['name' => 'field', 'value' => $aField['name'], 'title' => $aField['caption']];
+        $aTypeIcons = ['toggle' => 'type', 'profile' => 'user-round', 'date_range' => 'calendar', 'options' => 'list-filter'];
+        foreach($aUnset as $aField)
+            $aAdd[] = [
+                'name' => $aField['type'] == 'toggle' ? 'toggle' : 'field',
+                'value' => $aField['name'],
+                'title' => $aField['caption'],
+                'icon' => $aTypeIcons[$aField['type']] ?? 'list-filter',
+            ];
 
-        if($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL)
-            foreach($aScope['groups'] as $aGroup)
-                $aAdd[] = ['name' => 'section', 'value' => $aGroup['name'], 'title' => _t('_sys_search_chip_in', $aGroup['title'])];
+        if($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL && count($aScope['groups']) > 1)
+            foreach($aScope['groups'] as $i => $aGroup)
+                $aAdd[] = ['name' => 'section', 'value' => $aGroup['name'], 'title' => _t('_sys_search_chip_in', $aGroup['title']), 'icon' => $aGroup['icon'] ?? 'search', 'sep' => $i == 0 && $aUnset];
 
         if($aAdd) {
             $sPanelId = 'bx-search-window-panel-add';
             $aPanels[] = $this->_oTemplate->parseHtmlByName('search_window_panel_add.html', [
                 'id' => $sPanelId,
+                'label' => bx_html_attribute(_t('_sys_search_chip_filter')),
                 'bx_repeat:items' => array_map(function($a) {
-                    return ['name' => $a['name'], 'value' => bx_html_attribute($a['value']), 'title' => bx_process_output($a['title'])];
+                    return [
+                        'name' => $a['name'],
+                        'value' => bx_html_attribute($a['value']),
+                        'title' => bx_process_output($a['title']),
+                        'icon' => $this->_getIcon($a['icon'], 'size-5'),
+                        'bx_if:sep' => ['condition' => !empty($a['sep']), 'content' => []],
+                    ];
                 }, $aAdd),
             ]);
-            $aChips[] = $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
-                'class' => 'bx-search-window-chip-add',
-                'attrs' => 'aria-expanded="false" aria-controls="' . $sPanelId . '" data-panel="' . $sPanelId . '"',
-                'icon' => $this->_getIcon('plus', 'size-4'),
-                'caption' => _t('_sys_search_chip_filter'),
+            // icon-only, named and titled "Filter" (a block shows its label beside the field: BxDolSearchWindow._placeFilter)
+            $sFilter = bx_html_attribute(_t('_sys_search_chip_filter'));
+            $sFilterButton = $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
+                'group' => '',
+                'class' => 'bx-search-window-chip-add bx-btn-icon',
+                'attrs' => 'aria-expanded="false" aria-controls="' . $sPanelId . '" data-panel="' . $sPanelId . '" aria-label="' . $sFilter . '" title="' . $sFilter . '"',
+                'icon' => $this->_getIcon('list-filter-plus', 'size-4'),
+                'caption' => '',
                 'bx_if:remove' => ['condition' => false, 'content' => []],
             ]);
+            // the row's order: the sort, "+ Filter", then the pills
+            array_unshift($aChips, $sFilterButton);
         }
 
-        // hidden panels of the field chips, so "+ Filter" can open them
-        foreach($aFields as $aField)
-            if(empty($aField['value']))
+        // hidden panels of the filters not picked, so "+ Filter" can open them
+        foreach($aUnset as $aField)
+            if($aField['type'] != 'toggle')
                 $aPanels[] = $this->_getPanel($aField);
+
+        // the sort first: always in the window; in a block (its field and "+ Filter" are a row of their own) once there is
+        // something to sort or a pill to show
+        $bBlock = in_array($this->_sMode, ['page', 'explore']);
+        $bSort = !$bBlock || $this->_oSearch->hasQuery($aQuery);
 
         return $this->_oTemplate->parseHtmlByName('search_window_chips.html', [
             'label' => bx_html_attribute(_t('_sys_search_window_filters')),
             'chips' => implode('', $aChips),
             'panels' => implode('', $aPanels),
+            'bx_if:sort' => [
+                'condition' => $bSort,
+                'content' => [
+                    'sort_label' => bx_html_attribute(_t('_sys_search_window_sort')),
+                    'sort_best' => _t('_sys_search_window_sort_best'),
+                    'sort_new' => _t('_sys_search_window_sort_new'),
+                    'sort_best_selected' => $aQuery['sort'] == 'best' ? 'selected="selected"' : '',
+                    'sort_new_selected' => $aQuery['sort'] == 'new' ? 'selected="selected"' : '',
+                ],
+            ],
         ]);
     }
 
@@ -191,6 +224,7 @@ class BxBaseSearchWindow extends BxDol
             case 'scope':
                 $sIcon = $this->_getIcon($aChip['name'] == 'context' ? 'users-round' : ($aChip['icon'] ?? 'search'), 'size-4');
                 return $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
+                    'group' => 'bx-btn-group',
                     'class' => 'bx-search-window-chip-active bx-search-window-chip-scope',
                     'attrs' => 'data-name="' . $aChip['name'] . '" data-value="' . bx_html_attribute($aChip['value']) . '" disabled="disabled"',
                     'icon' => $sIcon,
@@ -243,12 +277,13 @@ class BxBaseSearchWindow extends BxDol
         }
 
         return $this->_oTemplate->parseHtmlByName('search_window_chip.html', [
+            'group' => $bActive ? 'bx-btn-group' : '',
             'class' => $bActive ? 'bx-search-window-chip-active' : '',
             'attrs' => $sAttrs,
             'icon' => $sIcon,
             'caption' => bx_process_output($sCaption),
             'bx_if:remove' => [
-                'condition' => $bActive && $aChip['type'] != 'toggle',
+                'condition' => $bActive,
                 'content' => [
                     'name' => $aChip['name'],
                     'value' => '',
@@ -276,14 +311,31 @@ class BxBaseSearchWindow extends BxDol
                     'suggest_url' => BX_DOL_URL_ROOT . 'searchExtended.php?action=get_authors',
                     'bx_if:me' => [
                         'condition' => isLogged(),
-                        'content' => ['me' => bx_get_logged_profile_id(), 'title' => _t('_sys_search_chip_created_by_me')],
+                        'content' => ['name' => $aChip['name'], 'me' => bx_get_logged_profile_id(), 'title' => _t('_sys_search_chip_created_by_me')],
                     ],
                 ]);
 
             case 'date_range':
                 $aValue = is_array($aChip['value']) ? $aChip['value'] : ['from' => '', 'to' => '', 'field' => 'created'];
+                // presets first (the past week, month and year; the coming week and month for a module with start dates),
+                // then a range of one's own
+                $bStarts = false;
+                foreach($aChip['fields'] as $aField)
+                    if($aField['value'] == 'starts')
+                        $bStarts = true;
+                $aPresets = [
+                    ['title' => _t('_sys_search_chip_past_week'), 'days' => 7, 'ahead' => 0, 'field' => ''],
+                    ['title' => _t('_sys_search_chip_past_month'), 'days' => 30, 'ahead' => 0, 'field' => ''],
+                    ['title' => _t('_sys_search_chip_past_year'), 'days' => 365, 'ahead' => 0, 'field' => ''],
+                ];
+                if($bStarts) {
+                    $aPresets[] = ['title' => _t('_sys_search_chip_starts_week'), 'days' => 7, 'ahead' => 1, 'field' => 'starts'];
+                    $aPresets[] = ['title' => _t('_sys_search_chip_starts_month'), 'days' => 30, 'ahead' => 1, 'field' => 'starts'];
+                }
                 return $this->_oTemplate->parseHtmlByName('search_window_panel_date.html', [
                     'id' => $sId,
+                    'label' => bx_html_attribute($aChip['caption']),
+                    'bx_repeat:presets' => $aPresets,
                     'from' => bx_html_attribute($aValue['from']),
                     'to' => bx_html_attribute($aValue['to']),
                     'from_label' => _t('_sys_search_chip_date_from'),
@@ -338,9 +390,10 @@ class BxBaseSearchWindow extends BxDol
         // a page with no row the viewer may see can still have more after it (the rows checked per request are capped)
         $aGroups = $bOneGroup ? (!empty($aResults['group']['items']) || $aResults['group']['cursor'] !== '' ? [$aResults['group']] : []) : $aResults['groups'];
 
-        // tabs: "All" and a tab per module with results; a module scope has none
+        // tabs: "All" with the count and a tab per module with results, where there is more than one module; a module
+        // scope has none. The count has no row of its own: "All" shows it, and the status region announces it.
         $aTabs = [];
-        if($aScope['scope'] != BxDolSearchUnified::SCOPE_MODULE && !empty($aAll['groups'])) {
+        if($aScope['scope'] != BxDolSearchUnified::SCOPE_MODULE && !empty($aAll['groups']) && count($aAll['groups']) > 1) {
             $aTabs[] = ['value' => '', 'title' => _t('_sys_search_window_tab_all'), 'count' => $this->_getCountNumber($aAll), 'selected' => $aQuery['tab'] === '' ? 'true' : 'false'];
             foreach($aAll['groups'] as $aGroup)
                 $aTabs[] = ['value' => $aGroup['name'], 'title' => bx_process_output($aGroup['title']), 'count' => $aGroup['count'] . ($aGroup['count_more'] ? '+' : ''), 'selected' => $aQuery['tab'] === $aGroup['name'] ? 'true' : 'false'];
@@ -351,8 +404,17 @@ class BxBaseSearchWindow extends BxDol
             $sCount = $aGroup['count'] . ($aGroup['count_more'] ? '+' : '');
             $aGroupsOut[] = [
                 'name' => $aGroup['name'],
-                'title' => bx_process_output($aGroup['title']),
-                'icon' => $this->_getIcon($aGroup['icon'], 'size-4'),
+                // a tab names the module it shows; without tabs the heading says how many
+                'bx_if:head' => [
+                    'condition' => !($bOneGroup && $aTabs),
+                    'content' => [
+                        'title' => bx_process_output($aGroup['title']),
+                        'bx_if:count' => [
+                            'condition' => !$aTabs,
+                            'content' => ['count' => $sCount],
+                        ],
+                    ],
+                ],
                 'items' => implode('', $aGroup['items']),
                 'bx_if:all' => [
                     'condition' => !$bOneGroup && ($aGroup['count'] > count($aGroup['items']) || $aGroup['count_more']),
@@ -371,17 +433,25 @@ class BxBaseSearchWindow extends BxDol
             ];
         }
 
+        // nothing found: after words or a filter the member chose, the list says so in its own rows; a window only opened
+        // with a scope (a context's Search) shows its hint instead, no empty state before anything was tried
         $sEmpty = '';
-        if(!$aGroupsOut)
-            $sEmpty = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->emptyState(_t('_sys_search_window_empty'), [], 'search', _t('_sys_search_window_empty_title'));
+        if(!$aGroupsOut) {
+            if(!$this->_isTried($aQuery))
+                return $this->_oTemplate->parseHtmlByName('search_window_hint.html', [
+                    'text' => _t($aScope['scope'] == BxDolSearchUnified::SCOPE_GLOBAL ? '_sys_search_window_hint' : '_sys_search_window_hint_scope'),
+                ]);
+
+            $sEmpty = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->emptyState(
+                _t('_sys_search_window_empty'),
+                [],
+                'search-x',
+                $aQuery['keyword'] !== '' ? _t('_sys_search_window_no_results_for', $aQuery['keyword']) : _t('_sys_search_window_no_results'),
+                'rows'
+            );
+        }
 
         return $this->_oTemplate->parseHtmlByName('search_window_results.html', [
-            'count' => $this->_getCountText($aResults),
-            'sort_label' => bx_html_attribute(_t('_sys_search_window_sort')),
-            'sort_best' => _t('_sys_search_window_sort_best'),
-            'sort_new' => _t('_sys_search_window_sort_new'),
-            'sort_best_selected' => $aQuery['sort'] == 'best' ? 'selected="selected"' : '',
-            'sort_new_selected' => $aQuery['sort'] == 'new' ? 'selected="selected"' : '',
             'bx_if:tabs' => [
                 'condition' => count($aTabs) > 1,
                 'content' => [
@@ -392,6 +462,19 @@ class BxBaseSearchWindow extends BxDol
             'bx_repeat:groups' => $aGroupsOut,
             'empty' => $sEmpty,
         ]);
+    }
+
+    /**
+     * Whether the member searched for something: words, or a filter of their own (not the scope the window opened with).
+     */
+    protected function _isTried($aQuery)
+    {
+        // the author is also the scope of a person's Search ("Search in Marcus Bell"): alone it is not a search yet
+        foreach(['keyword', 'date_from', 'date_to', 'filters', 'title_only'] as $sKey)
+            if(!empty($aQuery[$sKey]))
+                return true;
+
+        return false;
     }
 
     protected function _getCountText($aResults)

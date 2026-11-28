@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Text } from 'app/design/typography';
 import { View, Row, ScrollView } from 'app/design/view';
-import { NeoButton, NeoButtonLink, Input } from 'app/design/controls';
+import { InputWithIcons, ModalHeaderBar, NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
-import { appStatic } from 'app/lib/app-static';
+import EmptyState from 'app/ui/molecules/misc/empty-state';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { hasSearchQuery, searchResultsHref, withSearchValue, type SearchQuery } from 'app/lib/search-window';
@@ -27,6 +27,19 @@ function countText(count: number, more: boolean): string {
  * count, sort and a tab per module, then the full results page. The header's Search, a section's or context's Search
  * and Cmd/Ctrl+K open it in a dialog (SearchWindowHost); the results page and Explore have it in the page.
  */
+/** The hint, an error and the first load: one short line, so the window before a search is only its field and chips. */
+const STATE_LINE = 'px-2 py-3';
+
+/** Inside a block (Explore, the results page) the block's padding is the edge: the field and chips line up with its title. */
+const INSET = { modal: 'px-4', page: '', explore: '' } as const;
+
+/**
+ * The results as a command palette's list: rows sit 8px from the window's edge and pad 8px, so pictures line up with the
+ * group labels and the search icon (16px in) and a row's highlight reaches 8px past them. In a block (Explore, the results
+ * page) the list reaches 8px past the block's content for the same.
+ */
+const LIST = { modal: 'px-2', page: '-mx-2', explore: '-mx-2' } as const;
+
 export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFocus = true, onClose, onQueryChange }: SearchWindowProps) {
     const [query, setQuery] = useState<SearchQuery>(initialQuery);
     const [keyword, setKeyword] = useState<string>(initialQuery.keyword ?? '');
@@ -54,6 +67,9 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
     const scope = data?.scope;
     const results = data?.results;
     const hasQuery = hasSearchQuery(query);
+    // words or a filter: the scope the window opened with (a context, a module, a person's author) is not a search yet
+    const tried = !!(query.keyword || query.date_from || query.date_to || query.filters || query.title_only);
+    const noResults = query.keyword ? fillString(strings.no_results_for, query.keyword) : (strings.no_results || '');
     const oneGroup = results && 'group' in results && results.group ? results.group : null;
     const groups: SearchGroupData[] = oneGroup
         // a page with no row the viewer may see can still have more after it (UNA checks a capped number per request)
@@ -61,6 +77,9 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
         : (results?.groups ?? []);
     const cursor = oneGroup ? (extra?.key === queryKey ? extra.cursor : oneGroup.cursor) : '';
     const total = oneGroup ? countText(oneGroup.count, oneGroup.count_more) : countText(results?.total ?? 0, !!results?.total_more);
+    const allTotal = oneGroup && allGroups.length
+        ? countText(allGroups.reduce((sum, group) => sum + group.count, 0), allGroups.some((group) => group.count_more))
+        : total;
     const flat = groups.flatMap((group) => group.items.map((item) => ({ item, group })));
 
     const change = (next: SearchQuery) => {
@@ -117,83 +136,129 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
         }
     };
 
+    const focusedRef = useRef(false);
+    const hasField = mode === 'modal' || !!scope;
     useEffect(() => {
-        if (autoFocus) setTimeout(() => inputRef.current?.focus?.(), 50);
-    }, [autoFocus]);
+        if (!autoFocus || !hasField || focusedRef.current) return;
+        focusedRef.current = true;
+        const id = setTimeout(() => inputRef.current?.focus?.(), 50);
+        return () => clearTimeout(id);
+    }, [autoFocus, hasField]);
 
+    // a tab per module only where there is more than one: "All" counts them all, so no count row of its own
     const tabs = scope && scope.scope !== 'module' && allGroups.length > 1 ? allGroups : null;
+
+    // the field: the search icon in a 36px slot (a small icon button's), so the slot's edge lines up with the chips and
+    // results below and the text starts after it
+    const field = (
+        <>
+            <View className="h-9 w-7 shrink-0 justify-center" aria-hidden>
+                <Icon icon="Search" size={20} className="text-muted-foreground" />
+            </View>
+            {/* borderless, as UNA's window: the dialog's top row is the field */}
+            <TextInputClear
+                ref={inputRef}
+                className="min-w-0 flex-1 bg-transparent border-0 p-0 h-9 text-lg text-foreground placeholder:text-muted-foreground web:outline-none web:focus:outline-none web:focus-visible:outline-none"
+                role="searchbox"
+                accessibilityLabel={strings.title || 'Search'}
+                placeholder={strings.placeholder || ''}
+                value={keyword}
+                onChangeText={onChangeText}
+                onSubmitEditing={onSubmit}
+                onKeyPress={onKeyPress}
+                // the web's arrows come as keydown (a key press has none)
+                {...({ onKeyDown: onKeyPress } as Record<string, unknown>)}
+                returnKeyType="search"
+                autoCorrect={false}
+                autoCapitalize="none"
+                // the caret is the focus, as in UNA's window (no field box to ring)
+                style={{ outline: 'none', boxShadow: 'none' } as Record<string, string>}
+            />
+            {loading && <View className="ms-2 size-4 rounded-full border-2 border-border border-t-accent-foreground web:animate-spin" aria-hidden />}
+        </>
+    );
+
+    // in a block (Explore, the results page): the standard field, filled and round with the search icon inside, as tall
+    // as the feed's "Create new update" (44px); "+ Filter" sits at its side (SearchChips, `field`)
+    const blockField = (
+        <View className="min-w-0 flex-1">
+            <InputWithIcons
+                ref={inputRef}
+                size="regular"
+                startDecorator="Search"
+                role="searchbox"
+                accessibilityLabel={strings.title || 'Search'}
+                placeholder={strings.placeholder || ''}
+                value={keyword}
+                onChangeText={onChangeText}
+                onSubmitEditing={onSubmit}
+                onKeyPress={onKeyPress}
+                {...({ onKeyDown: onKeyPress } as Record<string, unknown>)}
+                returnKeyType="search"
+                autoCorrect={false}
+                autoCapitalize="none"
+            />
+        </View>
+    );
 
     return (
         <View className="w-full">
             <Redirect ref={redirectRef} />
-            <Row className="items-center gap-2 border-b border-border px-3 py-2">
-                <Icon icon="Search" size={20} className="text-muted-foreground" />
-                <Input
-                    ref={inputRef}
-                    className="min-w-0 flex-1"
-                    role="searchbox"
-                    accessibilityLabel={strings.title || 'Search'}
-                    placeholder={strings.placeholder || ''}
-                    value={keyword}
-                    onChangeText={onChangeText}
-                    onSubmitEditing={onSubmit}
-                    onKeyPress={onKeyPress}
-                    // the web's arrows come as keydown (a key press has none)
-                    {...({ onKeyDown: onKeyPress } as Record<string, unknown>)}
-                    returnKeyType="search"
-                    autoCorrect={false}
-                    autoCapitalize="none"
+            {mode === 'modal' && (
+                // the modal's own header bar, its Close where every modal has it
+                <ModalHeaderBar onClose={onClose}>{field}</ModalHeaderBar>
+            )}
+
+            {/* the chips, and the sort at the end of their row once there is something to sort */}
+            {scope && (
+                <SearchChips
+                    field={mode === 'modal' ? undefined : blockField}
+                    inset={INSET[mode]}
+                    query={query}
+                    scope={scope}
+                    strings={strings}
+                    onChange={change}
+                    // the sort: always in the window; in a block once there is something to sort
+                    trailing={hasQuery || mode === 'modal' ? (
+                                        <DropdownMenu
+                                            items={[
+                                                { id: 'best', title: strings.sort_best, selected: query.sort !== 'new' },
+                                                { id: 'new', title: strings.sort_new, selected: query.sort === 'new' },
+                                            ]}
+                                            onSelect={(item) => change(withSearchValue(query, 'sort', item.id === 'new' ? 'new' : null))}
+                                            triggerAccessibilityLabel={(strings.sort || '') + ': ' + (query.sort === 'new' ? strings.sort_new : strings.sort_best)}
+                                        >
+                                            <NeoButton
+                                                label={query.sort === 'new' ? strings.sort_new : strings.sort_best}
+                                                image="ChevronDown"
+                                                imagePlacement="trailing"
+                                                style="bordered"
+                                                controlSize="small"
+                                                interactive
+                                            />
+                                        </DropdownMenu>
+                    ) : null}
                 />
-                {loading && <View className="size-4 rounded-full border-2 border-border border-t-accent-foreground web:animate-spin" aria-hidden />}
-                {mode === 'modal' && (
-                    <NeoButton
-                        image="X"
-                        controlSize="small"
-                        borderShape="circle"
-                        accessibilityLabel={strings.close || 'Close'}
-                        onPress={onClose}
-                    />
-                )}
-            </Row>
+            )}
 
-            {scope && <SearchChips query={query} scope={scope} strings={strings} onChange={change} />}
-
-            <View className="px-3 pb-3">
+            <View className={'pb-2 ' + LIST[mode]}>
+                    {/* the result count for screen readers (the tabs show it): one region, mounted before its text changes */}
+                    <Text className="sr-only" role="status" aria-live="polite">{hasQuery && results ? (tried && !groups.length ? noResults : fillString(strings.count, total)) : ''}</Text>
                     {!hasQuery ? (mode === 'explore' ? null : (
-                        <Text className="py-6 text-center text-sm text-muted-foreground">{strings.hint || ''}</Text>
-                    )) : error && !data ? (
-                        <Text className="py-6 text-center text-sm text-destructive">{strings.error || ''}</Text>
+                        <View className={STATE_LINE}><Text className="text-sm text-muted-foreground">{strings.hint || ''}</Text></View>
+                    )) : error && !results ? (
+                        <View className={STATE_LINE}><Text className="text-sm text-destructive">{strings.error || ''}</Text></View>
+                    ) : !results ? (
+                        // the first answer for the words: the box the hint had, so nothing moves while it loads
+                        <View className={STATE_LINE + ' h-11'} aria-busy />
                     ) : results ? (
                         <>
                             {/* a failed request for new words: the last results stay, dimmed, under the error */}
                             {error && <Text className="pt-3 text-sm text-destructive" role="alert">{strings.error || ''}</Text>}
-                            <Row className="items-center justify-between gap-3 pb-2 pt-3">
-                                <Text className="text-sm font-medium text-muted-foreground" role="status" aria-live="polite">
-                                    {fillString(strings.count, total)}
-                                </Text>
-                                <DropdownMenu
-                                    items={[
-                                        { id: 'best', title: strings.sort_best, selected: query.sort !== 'new' },
-                                        { id: 'new', title: strings.sort_new, selected: query.sort === 'new' },
-                                    ]}
-                                    onSelect={(item) => change(withSearchValue(query, 'sort', item.id === 'new' ? 'new' : null))}
-                                    triggerAccessibilityLabel={(strings.sort || '') + ': ' + (query.sort === 'new' ? strings.sort_new : strings.sort_best)}
-                                >
-                                    <NeoButton
-                                        label={query.sort === 'new' ? strings.sort_new : strings.sort_best}
-                                        image="ChevronDown"
-                                        imagePlacement="trailing"
-                                        style="borderless"
-                                        controlSize="small"
-                                        interactive
-                                    />
-                                </DropdownMenu>
-                            </Row>
-
                             {tabs && (
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-1 pb-2" accessibilityRole="tablist">
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-1 px-2 pt-3" accessibilityRole="tablist">
                                     <NeoButton
-                                        label={strings.tab_all}
+                                        label={strings.tab_all + ' ' + allTotal}
                                         controlSize="small"
                                         selected={!query.tab}
                                         accessibilityRole="tab"
@@ -213,21 +278,24 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             )}
 
                             {groups.map((group) => (
-                                <View key={group.name} className={'py-1' + (error ? ' opacity-50' : '')}>
-                                    <Row className="items-center gap-2 py-2">
-                                        <Icon icon={group.icon} size={16} className="text-foreground" />
-                                        <Text className="text-sm font-semibold text-foreground" role="heading" aria-level={3}>{group.title}</Text>
-                                    </Row>
+                                <View key={group.name} className={'pt-4 web:transition-opacity' + (error || loading ? ' opacity-50' : '')}>
+                                    {/* a tab names the module it shows; without tabs the heading says how many */}
+                                    {!(oneGroup && tabs) && (
+                                        <Text className="px-2 pb-1 text-xs font-medium text-muted-foreground" role="heading" aria-level={3}>
+                                            {group.title}
+                                            {!tabs && ' ' + countText(group.count, group.count_more)}
+                                        </Text>
+                                    )}
                                     {group.items.map((item, index) => {
                                         const at = flat.findIndex((f) => f.item === item);
-                                        return <SearchHit key={String(item.id ?? index) + (item.search_kind ?? '')} data={item} icon={group.icon} active={at === active} onOpen={onClose} />;
+                                        return <SearchHit key={String(item.id ?? index) + (item.search_kind ?? '')} data={item} icon={group.icon} active={at === active} openLabel={strings.open} onOpen={onClose} />;
                                     })}
                                     {!oneGroup && (group.count > group.items.length || group.count_more) && (
                                         <NeoButton
                                             label={group.count ? fillString(strings.show_all, countText(group.count, group.count_more), group.title) : strings.more}
                                             style="borderless"
                                             controlSize="small"
-                                            classNames={{ root: 'self-start' }}
+                                            classNames={{ root: 'self-start ms-2' }}
                                             onPress={() => change(withSearchValue(query, 'tab', group.name))}
                                         />
                                     )}
@@ -239,23 +307,27 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                                     label={strings.more}
                                     controlSize="small"
                                     loading={extraLoading}
-                                    classNames={{ root: 'self-start mt-2' }}
+                                    classNames={{ root: 'self-start mt-2 ms-2' }}
                                     onPress={showMore}
                                 />
                             )}
 
-                            {!groups.length && !loading && (
-                                <View className="py-6">
-                                    {appStatic('components_content_empty', {})}
-                                    <Text className="text-center text-sm text-muted-foreground">{strings.empty}</Text>
+                            {/* kept while new words load (dimmed), so the window does not shrink and grow back */}
+                            {/* nothing found: after words or a filter of the member's own, the list says so in its own rows (the
+                                shared EmptyState, `rows`); a window only opened with a scope shows its hint, no empty state */}
+                            {!groups.length && (tried ? (
+                                <View className={'pt-3' + (loading ? ' opacity-50' : '')}>
+                                    <EmptyState layout="rows" fallbackTitle={noResults} state={{ icon: 'SearchX', title: noResults, text: strings.empty }} />
                                 </View>
-                            )}
+                            ) : (
+                                <View className={STATE_LINE}><Text className="text-sm text-muted-foreground">{strings.hint || ''}</Text></View>
+                            ))}
                         </>
                     ) : null}
             </View>
 
             {mode !== 'page' && hasQuery && (
-                <Row className="items-center justify-end border-t border-border px-3 py-2">
+                <Row className={'items-center justify-end border-t border-border py-2 ' + INSET[mode]}>
                     <NeoButtonLink
                         href={searchResultsHref(query)}
                         label={strings.full}

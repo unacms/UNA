@@ -382,6 +382,7 @@ class BxBaseServicesSearch extends BxDol
             'sort_best' => '_sys_search_window_sort_best',
             'sort_new' => '_sys_search_window_sort_new',
             'full' => '_sys_search_window_full',
+            'open' => '_sys_search_window_open',
             'filters' => '_sys_search_window_filters',
             'filter' => '_sys_search_chip_filter',
             'me' => '_sys_search_chip_created_by_me',
@@ -407,6 +408,8 @@ class BxBaseServicesSearch extends BxDol
         $aResult['remove'] = _t('_sys_search_chip_remove', '{0}');
         $aResult['created_by_value'] = _t('_sys_search_chip_created_by_value', '{0}');
         $aResult['in'] = _t('_sys_search_chip_in', '{0}');
+        $aResult['no_results'] = _t('_sys_search_window_no_results');
+        $aResult['no_results_for'] = _t('_sys_search_window_no_results_for', '{0}');
 
         return $aResult;
     }
@@ -917,6 +920,7 @@ class BxBaseServicesSearch extends BxDol
                 continue;
 
             $sChips .= $oTemplate->parseHtmlByName('search_window_chip.html', [
+                'group' => 'bx-btn-group',
                 'class' => 'bx-search-window-chip-active',
                 'attrs' => 'disabled="disabled"',
                 'icon' => '',

@@ -8,7 +8,7 @@ import { ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { NeoButton } from 'app/design/controls';
+import { NeoButton, NeoButtonGroup } from 'app/design/controls';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import CheckBox from 'app/ui/atoms/checkbox';
 import { Icon } from 'app/ui/atoms/icon';
@@ -196,10 +196,6 @@ function FilterRow({ icon, label, selected, showArrow, onPress, trailing }) {
     );
 }
 
-function ChipDivider() {
-    return <View className="w-px self-stretch bg-border/70" />;
-}
-
 function ActiveFilterChip({ filter, onEdit, onToggleOperator, onRemove }) {
     const { t } = useTranslation();
     const count = filter.values?.length || 0;
@@ -207,33 +203,15 @@ function ActiveFilterChip({ filter, onEdit, onToggleOperator, onRemove }) {
         ? (count > 1 ? t('is none of') : t('is not'))
         : (count > 1 ? t('is any of') : t('is'));
     const valueLabel = count === 1 ? filter.values[0].label : `${count} ${filter.caption}`;
-    const segment = 'flex-row items-center gap-1.5 px-2.5 h-full web:hover:bg-muted/40';
 
+    // one button group: the field, its operator and value (each edits it) and a remove button
     return (
-        <Row className="h-8 items-center rounded-full border border-border bg-background overflow-hidden shrink-0">
-            <Pressable onPress={onEdit} className={segment}>
-                <Icon icon={filter.icon || 'ListFilter'} size={14} className="text-muted-foreground" />
-                <Text className="text-xs font-medium text-foreground">{filter.caption}</Text>
-            </Pressable>
-            <ChipDivider />
-            <Pressable onPress={onToggleOperator} className={cn(segment, 'justify-center')}>
-                <Text className="text-xs text-muted-foreground">{operator}</Text>
-            </Pressable>
-            <ChipDivider />
-            <Pressable onPress={onEdit} className={cn(segment, 'max-w-[160px]')}>
-                <Text className="text-xs font-medium text-foreground" numberOfLines={1}>
-                    {valueLabel}
-                </Text>
-            </Pressable>
-            <ChipDivider />
-            <Pressable
-                onPress={onRemove}
-                accessibilityLabel={t('Remove')}
-                className="h-full w-8 items-center justify-center web:hover:bg-muted/40"
-            >
-                <Icon icon="X" size={14} className="text-muted-foreground" />
-            </Pressable>
-        </Row>
+        <NeoButtonGroup controlSize="small" accessibilityLabel={filter.caption} className="shrink-0">
+            <NeoButton label={filter.caption} image={filter.icon || 'ListFilter'} onPress={onEdit} />
+            <NeoButton label={operator} onPress={onToggleOperator} />
+            <NeoButton label={valueLabel} onPress={onEdit} classNames={{ root: 'max-w-[160px]' }} />
+            <NeoButton image="X" accessibilityLabel={t('Remove')} onPress={onRemove} />
+        </NeoButtonGroup>
     );
 }
 

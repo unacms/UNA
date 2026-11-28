@@ -643,8 +643,9 @@ class BxBasePage extends BxDolPage
             }
         }
 
-        // a module's page: the module, unless it is the context's own module (a group's page searches the group)
-        if($sModule && ($sModuleTitle = $oSearch->getModuleSearchTitle($sModule)) !== '' && (!$oProfile || $oProfile->getModule() != $sModule)) {
+        // a module's page: the module, unless it is the context's own module (a group's page searches the group); a system page
+        // (Explore, the dashboard) is no section: its search is the header's global one, not the system's "Pages" search
+        if($sModule && $sModule != 'system' && ($sModuleTitle = $oSearch->getModuleSearchTitle($sModule)) !== '' && (!$oProfile || $oProfile->getModule() != $sModule)) {
             $aResult['section'] = $sModule;
             if(!$aResult['title'])
                 $aResult['title'] = _t('_sys_search_action_section', mb_strtolower($sModuleTitle));
@@ -973,12 +974,12 @@ class BxBasePage extends BxDolPage
 
         // The page's Search: the search window with the page's scope (getSearchAction), as the site's Search button,
         // in the modules the apps search (sys_api_search_sections).
+        // A page without one says so (null): the apps then add no Search of their own (they guess one for an older UNA).
         BxDolSearchUnified::getInstance()->setApiSections(true);
-        if(($aSearch = $this->getSearchAction())) {
-            $a['search'] = $aSearch;
-            if(isset($a['menu']) && is_array($a['menu']))
-                $a['menu']['search'] = $aSearch;
-        }
+        $aSearch = $this->getSearchAction();
+        $a['search'] = $aSearch ? $aSearch : null;
+        if(isset($a['menu']) && is_array($a['menu']))
+            $a['menu']['search'] = $a['search'];
 
         // The words of the apps' own landing pages (the home splash, Sign up), in the viewer's language, so Studio's
         // language strings reach them; a project's own text in the app wins.

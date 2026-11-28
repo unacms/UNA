@@ -263,7 +263,8 @@ class BxBaseCover extends BxDolCover
             'class' => $sClass,
             'data' => $sData,
             'title' => bx_html_attribute($aSearch['title']),
-            'label' => bx_process_output($aSearch['title']),
+            // the visible label is just "Search" (its place says where); the title and accessible name keep the scope
+            'label' => _t('_Search'),
             'icon' => BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate)->getIconAsHtml('search', ['aria-hidden' => 'true']),
         ]);
     }

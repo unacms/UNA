@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The search window: what a search that finds nothing says, in the results' own rows. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_search_window_no_results"><![CDATA[No results]]></string_add>
+    <string_add name="_sys_search_window_no_results_for"><![CDATA[No results for “{0}”]]></string_add>
+</resources>

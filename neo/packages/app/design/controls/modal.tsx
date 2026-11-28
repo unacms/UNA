@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useId, useRef, type ComponentType, type ReactNode, type Ref } from 'react';
+import { createContext, useContext, useEffect, useCallback, useId, useRef, useState, type ComponentType, type ReactNode, type Ref } from 'react';
 import { Modal as ModalDef, Platform } from 'react-native'
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { View, ScrollView, Row } from 'app/design/view'
@@ -36,12 +36,13 @@ const isIPadWeb =
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     );
 const modalSettings = appSetting('theme', 'modal');
-// Space between a web dialog and the viewport's edges, in px: the fog's `p-4`. Change them together.
+// Space between a web dialog and the viewport's edges, in px: `p-4` inside the box that clips the dialog (so its
+// shadow paints in that room instead of being cut off at the top and bottom). Change them together.
 const DIALOG_INSET = 16;
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
 
-function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef }: { title?: ReactNode; titleId?: string; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any> }) {
+function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef, onHeight }: { title?: ReactNode; titleId?: string; headerBorder: boolean; onClose?: () => void; onBack?: () => void; closeRef?: Ref<any>; onHeight?: (height: number) => void }) {
     const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
@@ -49,7 +50,7 @@ function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef }
     // A string title reads as a block's title (its size and 16px padding); Back and Close are the
     // small (36px) bordered circle buttons a block's header uses, 16px from the edges.
     return (
-        <Row className={`items-center justify-${align} ${headerBorder ? modalSettings.header : modalSettings.header_plain}`}>
+        <Row className={`items-center justify-${align} ${headerBorder ? modalSettings.header : modalSettings.header_plain}`} onLayout={onHeight ? (e: any) => onHeight(Math.round(e.nativeEvent.layout.height)) : undefined}>
             {(title && type === 'string') && (
                 <View className='flex-1 px-11 justify-center items-center'>
                     <Text className={`${modalSettings.title} text-center`}
@@ -65,13 +66,47 @@ function ModalHeader({ title, titleId, headerBorder, onClose, onBack, closeRef }
                     <NeoButton style="bordered" controlSize="small" borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Back')} onPress={onBack} />
                 </View>
             )}
-            {(onClose && type === 'string') && (
-                <View ref={closeRef} className='absolute right-4 top-0 bottom-0 justify-center items-center'>
-                    <NeoButton style="bordered" role="close" controlSize="small" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
-                </View>
-            )}
+            {(onClose && type === 'string') && <ModalClose ref={closeRef} onClose={onClose} />}
         </Row>
     );
+}
+
+/** The modal's Close: the small (36px) bordered circle, 16px from the header's end, centred on its row. */
+function ModalClose({ onClose, ref }: { onClose: () => void; ref?: Ref<any> }) {
+    const { t } = useTranslation();
+    return (
+        <View ref={ref} className='absolute right-4 top-0 bottom-0 justify-center items-center'>
+            <NeoButton style="bordered" role="close" controlSize="small" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
+        </View>
+    );
+}
+
+/**
+ * A modal's header bar with content of its own in place of a title (the search window's field): the same bar as a
+ * titled modal's (16px padding, the line under it) and its Close in the same place.
+ */
+export function ModalHeaderBar({ children, onClose, headerBorder = true }: { children?: ReactNode; onClose?: () => void; headerBorder?: boolean }) {
+    return (
+        <Row className={`items-center ${headerBorder ? modalSettings.header : modalSettings.header_plain}`}>
+            <Row className={`flex-1 min-w-0 items-center ${onClose ? 'pe-11' : ''}`}>{children}</Row>
+            {onClose && <ModalClose onClose={onClose} />}
+        </Row>
+    );
+}
+
+/**
+ * The room a modal gives its body: on a dialog that takes the height of its content (desktop), the most its body
+ * can hold (the window less the dialog's inset, its header and the body's padding), so content that grows (the feed
+ * composer's editor) grows the dialog up to there and then scrolls inside. `null` where the modal fills the screen
+ * (phones) or its height is fixed: content fills what it has.
+ */
+const ModalRoomContext = createContext<number | null>(null);
+export const useModalRoom = () => useContext(ModalRoomContext);
+
+/** The vertical padding of a Tailwind padding class (`p-4`, `px-3 py-2`, `p-0`), in px. */
+function paddingY(cls: string): number {
+    const y = /(?:^|\s)py-(\d+(?:\.5)?)(?:\s|$)/.exec(cls) ?? /(?:^|\s)p-(\d+(?:\.5)?)(?:\s|$)/.exec(cls);
+    return y ? Number(y[1]) * 4 * 2 : 0;
 }
 
 export type ModalProps = {
@@ -262,10 +297,16 @@ export function Modal({
 
     const offset = (title ? 56 : isIos ? insets?.bottom + insets?.top : 0);
     const styles = { maxHeight: heightActual - offset - dialogInset }
+    // a web dialog sized by its content: what its body can hold before the dialog meets the window's inset
+    const [headerHeight, setHeaderHeight] = useState(0);
     // The panel never grows past the room inside the fog (`max-h-full`), so its body shrinks to
     // fit whatever the header really takes; `offset` above is only the header's minimum.
     let dialogHeight: number | 'auto' = heightActual;
     if (isDialog) dialogHeight = fillHeight ? heightActual - dialogInset : 'auto';
+    // web, a dialog as tall as its content: the most its body holds (a `top` dialog sits 48px lower: `sm:pt-16`)
+    const bodyRoom = isWeb && dialogHeight === 'auto' && heightActual > 0
+        ? Math.max(0, heightActual - dialogInset - (position === 'top' && !autoHeight ? 48 : 0) - headerHeight - paddingY(padding))
+        : null;
     const dialogClass = isDialog ? maxWidth + ' max-h-full ' + modalSettings.dialog : '';
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
     const isOuterClose = (typeof onClose === 'function' && outerClickClose !== false);
@@ -275,6 +316,8 @@ export function Modal({
         'center': 'sm:items-center items-start ',
     };
     const sClassPosition = positionClasses[position] || positionClasses.center;
+    // Web: a `top` dialog keeps its top edge where it is (only its bottom moves as its content grows or shrinks), the others centre.
+    const webAlign = position === 'top' && !autoHeight ? 'justify-start sm:pt-16' : 'sm:justify-center';
     const Cnt: ComponentType<any> = scrollable ? (isWeb ? ScrollView : ModalKbAwareScroll) : View
     const modalBottomOffset = 24 + (insets?.bottom ?? 0)
 
@@ -462,6 +505,7 @@ export function Modal({
         onClose={tryClose}
         onBack={onBack}
         closeRef={closeRef}
+        onHeight={setHeaderHeight}
     />
         <Cnt
             ref={scrollable ? scrollRef : undefined}
@@ -476,7 +520,7 @@ export function Modal({
                 onClick={handleContentPress}
                 className="flex-auto web:cursor-default"
             >
-                {children}
+                <ModalRoomContext.Provider value={bodyRoom}>{children}</ModalRoomContext.Provider>
             </View>
         </Cnt></>
 
@@ -495,10 +539,10 @@ export function Modal({
                 <View
                     ref={fogRef}
                     style={undefined}
-                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${isDialog ? 'p-4' : ''} ${modalSettings.fog} `}/* justify-start for post form small web */
+                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onClick={handleWebOuterPress}
                 >
-                    <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
+                    <RemoveScroll className={`flex-1  flex flex-col w-full ${isDialog ? 'p-4' : ''} ${webAlign} ${autoHeight && 'justify-center'} overflow-hidden`} >
                         <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: dialogHeight }} className={`w-full left-0 right-0 z-50 mx-auto ${modalSettings.container} ${dialogClass}`}>
                        
                             {content}

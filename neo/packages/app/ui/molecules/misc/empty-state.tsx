@@ -52,7 +52,40 @@ type EmptyStateProps = {
     previewScale?: number;
     /** False inside a block beside others (a denied action's message): only as tall as its words. */
     fill?: boolean;
+    /**
+     * `rows`: in a list of rows (search results), the words as one row of that list, the icon where a row's picture
+     * is, over two faint placeholder rows, still (not loading), so the list keeps its shape and nearly its size. As the
+     * site's `emptyState(..., 'rows')` (empty_state_rows.html).
+     */
+    layout?: 'centred' | 'rows';
 };
+
+function EmptyStateRows({ state, fallbackTitle }: Readonly<{ state?: EmptyStateData | null; fallbackTitle: string }>) {
+    const ghost = (opacity: string, title: string, meta: string) => (
+        <Row className={'items-center gap-3 p-2 ' + opacity} aria-hidden>
+            <View className="size-10 shrink-0 rounded-xl bg-button" />
+            <View className="flex-1 gap-2">
+                <View className={'h-2.5 rounded-full bg-button ' + title} />
+                <View className={'h-2 rounded-full bg-button ' + meta} />
+            </View>
+        </Row>
+    );
+    return (
+        <View className="w-full">
+            <Row className="items-center gap-3 p-2">
+                <View className="size-10 shrink-0 items-center justify-center rounded-xl bg-button" aria-hidden>
+                    {state?.icon ? <Icon icon={state.icon} size={20} className="text-muted-foreground" /> : null}
+                </View>
+                <View className="min-w-0 flex-1">
+                    <Text className="text-sm font-medium text-foreground" numberOfLines={1}>{state?.title || fallbackTitle}</Text>
+                    {state?.text ? <Text className="text-xs text-muted-foreground">{state.text}</Text> : null}
+                </View>
+            </Row>
+            {ghost('opacity-60', 'w-2/5', 'w-1/4')}
+            {ghost('opacity-40', 'w-1/3', 'w-1/5')}
+        </View>
+    );
+}
 
 const DURATION_MS = 320;
 
@@ -62,7 +95,7 @@ const DURATION_MS = 320;
  * config can set them). When skeletons were showing while the list loaded, the words fade in as they go; with
  * reduce motion they appear at once.
  */
-export default function EmptyState({ fromSkeletons = false, state, fallbackTitle, fill = true }: Readonly<EmptyStateProps>) {
+export default function EmptyState({ fromSkeletons = false, state, fallbackTitle, fill = true, layout = 'centred' }: Readonly<EmptyStateProps>) {
     // Null until the setting is known: the fade waits for it rather than play for someone who turned motion off.
     const reduceMotion = useReduceMotionSetting();
     const wordsOpacity = useAnimatedValue(fromSkeletons ? 0 : 1);
@@ -80,6 +113,8 @@ export default function EmptyState({ fromSkeletons = false, state, fallbackTitle
     const [menuOpen, setMenuOpen] = useState(false);
     const title = state?.title || fallbackTitle;
     const buttons = state?.buttons ?? [];
+
+    if (layout === 'rows') return <EmptyStateRows state={state} fallbackTitle={fallbackTitle} />;
 
     // On web at least the list's share of a tall window (60svh), so the words sit mid-page, not in its top third.
     return (

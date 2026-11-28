@@ -1081,14 +1081,97 @@
         @apply bg-blue-700 border-blue-700;
     }
 
+    /* Button group (.bx-btn-group around .bx-btn segments, as NEO's NeoButtonGroup): one shape, the segments' own fills joined edge to edge,
+       the group's outer corners on its first and last segment and square ones between, a hairline between segments, each segment with its own
+       focus ring (lifted over its neighbours), hover and press. A main button with attached ones, such as an active filter and its remove button.
+       common.css has the older rules (corners, a white divider); these replace its divider. Studio has its own (see "Joined button groups"). */
+    body:not(.bx-std) .bx-btn-group {
+        @apply inline-flex items-stretch;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn {
+        @apply m-0 focus-visible:z-10;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn:not(:first-child) {
+        @apply rounded-s-none;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn:not(:last-child) {
+        @apply rounded-e-none;
+    }
+    /* an icon-only segment (.bx-btn-icon, round on its own) takes the outer corners of a labelled button of its size */
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon:first-child {
+        @apply rounded-s-xl;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon:last-child {
+        @apply rounded-e-xl;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon.bx-btn-small:first-child {
+        @apply rounded-s-[calc(10px_*_var(--bx-radius-scale))];
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn.bx-btn-icon.bx-btn-small:last-child {
+        @apply rounded-e-[calc(10px_*_var(--bx-radius-scale))];
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn + .bx-btn:not(:focus-visible) {
+        @apply border-s-black/10 dark:border-s-white/10;
+    }
+    body:not(.bx-std) .bx-btn-group > .bx-btn:not(:first-child)::after {
+        content: none;
+    }
+
     /* Search window (BxBaseSearchWindow, inc/js/classes/BxDolSearchWindow.js): a wider dialog than other popups, as tall as its content up
        to the window less room around it, the results scrolling inside. Active chips, a pressed "Title only" and the current results tab take
        the open button's accent colours (the rule above), so the window reads like NEO's (Chip selected). */
     .bx-artificer .bx-popup-width.bx-search-window-box {
-        @apply w-full md:w-[42rem];
+        @apply w-full md:w-[42rem] overflow-visible;
     }
     .bx-search-window-popup {
-        max-height: min(44rem, calc(100vh - 4rem));
+        max-height: min(44rem, calc(100vh - 5rem)); /* 4rem above it (BxDolSearchWindow.open), 1rem below */
+    }
+    /* The window keeps its height while it asks again: the last results stay, dimmed, until the new ones replace them, so only a real
+       change in the results moves the window's bottom edge (its top never moves). Before a search the window is only its field, the
+       chips and a line of hint; nothing found is three rows tall, as a few results (BxBaseFunctions::emptyState, 'rows'). */
+    .bx-search-window-results {
+        @apply transition-opacity duration-150;
+    }
+    .bx-search-window-results[aria-busy="true"] {
+        @apply opacity-50;
+    }
+    /* In a block (Explore, the results page) the window is the feed's composer trigger: one row with the standard field (the
+       wrapper look of the site's fields, search icon inside, 44px) and "+ Filter" at its side (moved there by BxDolSearchWindow,
+       44px, icon-only below lg), no divider; the chips and the sort on a second row only when there is one to show. */
+    .bx-search-window-page .bx-search-window-form {
+        @apply gap-2 border-0 p-0;
+    }
+    .bx-artificer .bx-search-window-page .bx-search-window-form .bx-search-window-field {
+        @apply h-11 ps-3 pe-3; /* over the field wrapper's p-0 */
+    }
+    .bx-search-window-page .bx-search-window-input {
+        @apply text-base;
+    }
+    .bx-search-window-page .bx-search-window-chips-wrap {
+        @apply px-0;
+    }
+    .bx-search-window-page .bx-search-window-chips-wrap:not(:has(.bx-search-window-chips > *)) {
+        @apply pt-0;
+    }
+    .bx-search-window-page .bx-search-window-chips:not(:has(> *)) {
+        @apply hidden;
+    }
+    .bx-search-window-page .bx-search-window-dropdown {
+        @apply start-auto end-0 top-0;
+    }
+    .bx-search-window-page .bx-search-window-results {
+        @apply -mx-2 px-0;
+    }
+    /* "+ Filter" and a filter's own picker (Created by, Date, a module's field) open as a small dropdown under the chips, over the
+       results, with the site's popup surface and menu rows (.bx-menu-ver in a .bx-popup), not as rows of full-width fields. */
+    .bx-search-window-chips-wrap {
+        @apply relative z-10;
+    }
+    .bx-search-window-dropdown {
+        @apply absolute start-4 top-full z-20 mt-1 w-72 max-w-[calc(100%-2rem)] max-h-80 overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-gray-800 p-2 smooth-shadow-popover;
+    }
+    .bx-search-window-dropdown-sep {
+        @apply my-1 border-t border-gray-200 dark:border-gray-700;
     }
     .bx-search-window-input::-webkit-search-cancel-button {
         @apply hidden;
@@ -1098,8 +1181,43 @@
     body:not(.bx-std) .bx-btn.bx-search-window-tab[aria-selected="true"] {
         @apply bg-blue-200/60 hover:bg-blue-200/60 dark:bg-blue-900/60 dark:hover:bg-blue-900/60 text-blue-700 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-300;
     }
-    .bx-search-window-items > .bx-search-window-item-active {
-        @apply rounded-xl ring-2 ring-blue-600 dark:ring-blue-400;
+    /* Results as a command palette's list: the list sits 8px from the window's edge and each row pads 8px, so pictures line up
+       with the group labels and the search icon 16px in, while a row's highlight (the popup menus' hover colour, 12px round)
+       reaches 8px past them. Rows are flat (the modules' live search units without their card), a 40px picture, the title and
+       one muted line; the row chosen with the arrow keys takes the highlight and "Open ↵" at its end. */
+    /* an icon-only chip ("+ Filter" in the window) has no caption: its empty label takes no room */
+    .bx-search-window-chip > span:empty {
+        @apply hidden;
+    }
+    .bx-search-window-items {
+        @apply gap-0;
+    }
+    .bx-search-window-items > .bx-def-unit-live-search {
+        @apply relative mb-0;
+    }
+    .bx-search-window-items > .bx-def-unit-live-search > a {
+        @apply rounded-xl bg-transparent p-2 shadow-none ring-0 hover:bg-gray-200/50 dark:bg-transparent dark:hover:bg-gray-700/50 transition-colors duration-150 ease-out;
+    }
+    .bx-search-window-items .bx-def-thumb,
+    .bx-search-window-items .bx-def-thumb-size {
+        @apply size-10 min-w-10;
+    }
+    .bx-search-window-items .bx-def-unit-info {
+        @apply min-w-0 flex-1 ps-3;
+    }
+    .bx-search-window-items .bx-def-ui-title {
+        @apply truncate text-sm font-medium text-gray-900 dark:text-gray-100;
+    }
+    .bx-search-window-items .bx-def-ui-type,
+    .bx-search-window-items .bx-def-font-meta {
+        @apply truncate text-xs text-gray-500 dark:text-gray-400;
+    }
+    .bx-search-window-items > .bx-search-window-item-active > a {
+        @apply bg-gray-200/50 dark:bg-gray-700/50;
+    }
+    .bx-search-window-items > .bx-search-window-item-active > a::after {
+        content: attr(data-open) " \21B5";
+        @apply ms-auto shrink-0 ps-3 text-xs font-medium text-gray-500 dark:text-gray-400;
     }
 
     /* Help tour (Shepherd): the vendored plugins_public/shepherd/css/shepherd.css paints the primary button #3288e6 with 75% white text (#cce1f9, 2.71:1) and is
@@ -1336,7 +1454,8 @@
         @apply rounded-md;
     }
     /* The wrapper carries the field look (the site inputs' below) and its focus ring, as the input inside it takes the focus; that input is bare and takes the sides. */
-    .bx-artificer .bx-form-input-wrapper-password {
+    .bx-artificer .bx-form-input-wrapper-password,
+    .bx-artificer .bx-search-window-page .bx-search-window-field {
         @apply rounded-xl border-0 p-0 font-normal;
         @apply bg-white dark:bg-gray-800 focus-within:bg-white dark:focus-within:bg-gray-800;
         @apply text-gray-800 dark:text-gray-200;
@@ -1451,6 +1570,13 @@
     .bx-artificer .bx-form-input-price,
     .bx-artificer .bx-form-input-wrapper-password .bx-form-input-password {
         @apply min-h-[3.25rem] py-2 leading-6;
+    }
+
+    /* Small fields (.bx-form-input-small): as tall as a small button (bx-btn-small, 36px) with 14px text, for a field in a row of
+       small buttons (the search window's sort beside its chips), as Studio's toolbar fields. */
+    .bx-artificer .bx-form-input-select.bx-form-input-small,
+    .bx-artificer .bx-form-input-text.bx-form-input-small {
+        @apply min-h-0 h-9 py-0 text-sm leading-5;
     }
 
     /* A single select is a menu, not a text field: NEO's chevron (Lucide chevron-down, 20px, muted: gray-600, gray-400 in dark) 16px from the end. */
@@ -2104,7 +2230,8 @@
         }
     }
     /*
-     * Menus in popups (More, add content, item menus, language and design switchers) all take the header More list's
+     * Menus in popups (More, add content, item menus, language and design switchers, and the search window's dropdowns, also
+     * on a page) all take the header More list's
      * look: 44px rows like the header tabs and NEO's regular menu items, 16px from the label to either side, 12px corners,
      * 4px apart (NEO's gap-1). The list is inset 8px, so each row's 12px corner sits inside the popup's 20px one. Horizontal menus
      * (share icons and the like), the apps grid (the homepage menu) and the cards of "Create your profile" keep
@@ -2112,7 +2239,7 @@
      * The rows are matched by structure and styled in plain CSS:
      * naming the bx-stl-mil* classes here would make Tailwind's @apply of them circular.
      */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         /* A column with a gap rather than Artificer's 1px row margins (menu.css): hidden rows leave no gap, and the
@@ -2121,21 +2248,21 @@
         flex-direction: column;
         gap: 0.25rem;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards)::after,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards):not(.bx-menu-highlight-list)::before {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards)::after,
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards):not(.bx-menu-highlight-list)::before {
         display: none; /* bx-clearfix's table boxes would be flex items, with a gap of their own; the highlight's ::before stays */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li {
         position: relative;
         margin-top: 0;
         border-width: 0;
     }
     /* A focused row draws its ring on its edge, as NEO's do, and above its neighbours, so the current item's blue row
        next to it doesn't cover the ring. */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:has(:focus-visible) {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:has(:focus-visible) {
         z-index: 1;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li a:focus-visible {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li a:focus-visible {
         outline-offset: 0;
     }
     /* The indent wrapper already gives these popups 8px above and below the list. */
@@ -2143,17 +2270,17 @@
         margin-top: 0;
         margin-bottom: 0;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .sys-action-element-holder > a {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li,
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a,
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > span > a,
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .sys-action-element-holder > a {
         border-radius: var(--bx-radius-xl);
         font-size: 1rem;
         line-height: 1.5rem;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .sys-action-element-holder > a {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a,
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > span > a,
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .sys-action-element-holder > a {
         display: flex;
         align-items: center;
         width: 100%;
@@ -2172,37 +2299,37 @@
      * accent row (blue-100 / blue-900, its label blue-700 / blue-300) with a solid blue-600 circle and a white glyph,
      * so the circle still shows on the blue row. Rows without an icon only take the label.
      */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a:has(> .bx-stl-mii > *) {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li > a:has(> .bx-stl-mii > *) {
         padding-inline-start: 0.5rem; /* the circle sits 8px in from the row's side; 6px above and below in the 44px row */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii:has(> *) {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii:has(> *) {
         @apply shrink-0 w-8 h-8 rounded-full ltr:mr-2 rtl:ml-2 bg-gray-200/50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400;
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii > * {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii > * {
         @apply w-5 h-5 m-0 text-xl;
         color: inherit;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii > img {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mii > img {
         @apply w-8 h-8 rounded-full object-cover; /* a picture fills the circle */
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mit {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li .bx-stl-mit {
         @apply text-sm font-medium text-gray-600 dark:text-gray-400; /* every menu's label: 14px medium, as the main menu's tabs and NEO's menus */
         transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:hover .bx-stl-mii:has(> *) {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:hover .bx-stl-mii:has(> *) {
         @apply bg-gray-300 dark:bg-gray-700 text-gray-950 dark:text-gray-50;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:hover .bx-stl-mit {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li:hover .bx-stl-mit {
         @apply text-gray-950 dark:text-gray-50;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active {
         @apply bg-blue-100 dark:bg-blue-900;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active .bx-stl-mit {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active .bx-stl-mit {
         @apply text-blue-700 dark:text-blue-300;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
+    .bx-artificer :is(.bx-popup, .bx-search-window-dropdown) ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide):not(.bx-menu-floating-blocks):not(.bx-menu-list-desc-cards) > li.bx-menu-tab-active .bx-stl-mii:has(> *) {
         @apply bg-blue-600 text-white;
     }
     /* Header: the More list's rows are drawn as the main menu's tabs: a 24px icon without its circle, 12px from the row's side and
