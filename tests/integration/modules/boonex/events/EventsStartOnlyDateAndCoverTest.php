@@ -98,6 +98,23 @@ class EventsStartOnlyDateAndCoverTest extends BxDolIntegrationTestCase
         $this->assertNotEmpty($aUnitVars['date_start_f']);
         $this->assertSame('', $aUnitVars['date_end']);
         $this->assertSame('', $aUnitVars['date_end_f']);
+
+        // An event with neither date_start nor date_end must not crash the site timeline or unitVars.
+        $oDb = BxDolDb::getInstance();
+        $oDb->query("UPDATE `bx_events_data` SET `date_start` = 0, `date_end` = 0 WHERE `id` = :id", ['id' => $iEventId]);
+        $aUndatedPost = $oModule->serviceGetTimelinePost([
+            'id' => 0,
+            'object_id' => $iEventId,
+            'owner_id' => $iAdminProfileId,
+            'date' => time(),
+            'content' => '',
+            'title' => '',
+            'description' => '',
+            'action' => 'added',
+        ]);
+        $this->assertIsArray($aUndatedPost);
+        $this->assertArrayNotHasKey('date_start', $aUndatedPost['content']);
+        $this->assertArrayNotHasKey('date_end', $aUndatedPost['content']);
     }
 
     public function testCoverInputEnabledOnEventAddAndEditForms(): void

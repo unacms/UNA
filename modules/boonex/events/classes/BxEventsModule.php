@@ -784,10 +784,10 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
                 'title_attr' => bx_html_attribute($a['content']['title']),
                 'url' => $a['content']['url'],
                 'bx_if:date' => [
-                    'condition' => $oDateStart,
+                    'condition' => (bool)$oDateStart,
                     'content' => [
                         'date' => $oDateStart ? bx_time_js($aContentInfo['date_start'], BX_FORMAT_DATE_TIME, true) : '',
-                        'date_c' => $oDateStart->format('c'),
+                        'date_c' => $oDateStart ? $oDateStart->format('c') : '',
                 ]],
                 'bx_if:location' => array(
                     'condition' => !!$sLocationString,
