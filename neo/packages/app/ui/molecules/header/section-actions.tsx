@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NeoButton } from 'app/design/controls';
-import { getHeaderToolbarNeoButtonDefaults } from 'app/lib/util';
 import Link from 'app/ui/atoms/link';
 import { useCurrentUser } from 'app/context/user';
 import { useIsDesktop } from 'app/context/measure';
