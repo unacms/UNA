@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio and the installer: the notice and the label of a preview module (sys_modules.preview). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_msg_module_preview"><![CDATA[{0} is a preview: it is still being built and may change in an update. Try it on a test site before you rely on it.]]></string_add>
+    <string_add name="_sys_txt_module_preview"><![CDATA[Preview]]></string_add>
+</resources>

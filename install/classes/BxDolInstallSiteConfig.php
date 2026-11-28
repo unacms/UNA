@@ -1068,6 +1068,9 @@ EOF;
                 $sId = $this->getFieldId($sKey . '-' . $sUri);
                 $bAvailable = empty($aConfigs[$sUri]) || $oModulesTools->hasDependencies($aConfigs[$sUri]);
                 $sNote = $bAvailable ? '' : '<span class="bx-install-module-note">' . _t('_sys_inst_conf_module_needs_composer') . '</span>';
+                // A preview is unfinished: it is offered, and says so.
+                if ($bAvailable && !empty($aConfigs[$sUri]['preview']))
+                    $sNote = '<span class="bx-install-module-note">' . _t('_sys_txt_module_preview') . '</span>';
                 $sItems .= '<li class="bx-install-module' . ($bAvailable ? '' : ' bx-install-module-unavailable') . '">'
                     . '<input type="checkbox" id="' . $sId . '" name="' . $sKey . '[]" value="' . bx_html_attribute($sUri) . '"'
                     . ($bAvailable && in_array($sUri, $aSelected) ? ' checked="checked"' : '') . ($bAvailable ? '' : ' disabled="disabled"') . ' />'

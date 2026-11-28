@@ -26,6 +26,11 @@ $aConfig = array(
     ),
 
     /**
+     * Unfinished: installed and updated like any module, labelled as a preview in Studio and the installer.
+     */
+    'preview' => true,
+
+    /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
     'home_dir' => 'boonex/editor/',

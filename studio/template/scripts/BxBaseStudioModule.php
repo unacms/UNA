@@ -97,7 +97,11 @@ class BxBaseStudioModule extends BxDolStudioModule
         if($sResult === false)
             return false;
 
-        if(($sMessage = self::getDeprecationMessage($this->aModule)) != '')
+        // A deprecation notice takes the place of the preview one.
+        $sMessage = self::getDeprecationMessage($this->aModule);
+        if($sMessage == '')
+            $sMessage = self::getPreviewMessage($this->aModule);
+        if($sMessage != '')
             $sResult = MsgBox($sMessage) . $sResult;
 
         return $sResult;

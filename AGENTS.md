@@ -122,6 +122,10 @@ A module is retired in three steps, never by deleting it from a release.
 2. **Final update pack.** Its migration moves the module's data and settings to the core or to the replacement, and turns that feature on. It does not uninstall the module, so no data is lost.
 3. **Removal in the next major version.** The module leaves the package; uninstalling it on old sites is up to the admin.
 
+## Preview modules
+
+Everything that can be installed from this repository is maintained: a site may have it, so it gets update packs and fixes. A module that isn't finished is marked, not hidden: `'preview' => true` in its `install/config.php`. Install and update copy it to `sys_modules.preview`; Studio shows a notice on the module's page, and Studio's downloaded list and the install wizard label it "Preview". Drop the key when the module is finished. A module made for one client and never meant for release belongs in that client's repository, not here.
+
 `$aHiddenModules` in `install/classes/BxDolInstallSiteConfig.php` is separate: it only hides a module from the install wizard, with no notice, for modules that new sites shouldn't get but that aren't deprecated.
 
 ## NEO (`neo/`)

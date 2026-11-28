@@ -530,6 +530,10 @@ class BxBaseStudioStore extends BxDolStudioStore
                 'title' => $aModule['title'],
                 'vendor' => strtolower($aModule['vendor']) == 'boonex' ? 'UNA INC' : $aModule['vendor'],
                 'version' => $aModule['version'],
+                'bx_if:preview' => array(
+                    'condition' => !empty($aModule['preview']),
+                    'content' => array()
+                ),
                 'dir' => $aModule['dir'],
                 'more_menu_id' => $sMoreMenuId,
                 'more_title' => bx_html_attribute(_t('_adm_str_txt_more_actions', $aModule['title'])),

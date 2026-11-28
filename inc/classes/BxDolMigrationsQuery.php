@@ -183,16 +183,68 @@ class BxDolMigrationsQuery extends BxDolDb
     }
 
     /**
+     * Deprecation that a module's install/config.php declares, as stored in `sys_modules`: `'deprecated' => true`,
+     * or `'deprecated' => array('replaced_by' => 'bx_polls')`, 'system' when the core now does what the module did.
+     *
+     * It is here, not in BxDolModuleQuery (which calls it), because migrations also run inside a system update
+     * pack, in the request that copied the new files: classes that request loaded before the copy, such as
+     * BxDolModuleQuery, are still the previous version there. Migration code uses only the migration classes.
+     *
+     * @return array{deprecated: int, replaced_by: string}|null null when the config doesn't say
+     */
+    public static function getConfigDeprecation($aConfig): ?array
+    {
+        if (!is_array($aConfig) || !array_key_exists('deprecated', $aConfig))
+            return null;
+
+        $mixedValue = $aConfig['deprecated'];
+        $sReplacedBy = is_array($mixedValue) && isset($mixedValue['replaced_by']) && is_string($mixedValue['replaced_by']) ? $mixedValue['replaced_by'] : '';
+
+        return [
+            'deprecated' => !empty($mixedValue) ? 1 : 0,
+            'replaced_by' => !empty($mixedValue) ? get_mb_substr($sReplacedBy, 0, 32) : '',
+        ];
+    }
+
+    /**
      * Copies a module config's deprecation to `sys_modules`, when the config says and the columns are there.
      */
     public function setModuleDeprecation(string $sUri, array $aConfig): void
     {
-        $aSet = BxDolModuleQuery::getConfigDeprecation($aConfig);
+        $aSet = self::getConfigDeprecation($aConfig);
         if ($aSet === null || !$this->isColumn('sys_modules', 'deprecated') || !$this->isColumn('sys_modules', 'replaced_by'))
             return;
 
         $oStatement = $this->_pdo()->prepare("UPDATE `sys_modules` SET `deprecated` = ?, `replaced_by` = ? WHERE `uri` = ?");
         $oStatement->execute([$aSet['deprecated'], $aSet['replaced_by'], $sUri]);
+    }
+
+    /**
+     * Whether a module's install/config.php marks it as a preview (`'preview' => true`); a config without the key
+     * is a finished module. Here rather than in BxDolModuleQuery (which calls it) for the reason given at
+     * getConfigDeprecation: a system update pack runs migrations with the previous BxDolModuleQuery loaded.
+     *
+     * @return array{preview: int}|null null when there is no config to read
+     */
+    public static function getConfigPreview($aConfig): ?array
+    {
+        if (!is_array($aConfig) || empty($aConfig['name']))
+            return null;
+
+        return ['preview' => !empty($aConfig['preview']) ? 1 : 0];
+    }
+
+    /**
+     * Copies a module config's preview mark to `sys_modules`, when the column is there.
+     */
+    public function setModulePreview(string $sUri, array $aConfig): void
+    {
+        $aSet = self::getConfigPreview($aConfig);
+        if ($aSet === null || !$this->isColumn('sys_modules', 'preview'))
+            return;
+
+        $oStatement = $this->_pdo()->prepare("UPDATE `sys_modules` SET `preview` = ? WHERE `uri` = ?");
+        $oStatement->execute([$aSet['preview'], $sUri]);
     }
 
     public function isColumn(string $sTable, string $sColumn): bool

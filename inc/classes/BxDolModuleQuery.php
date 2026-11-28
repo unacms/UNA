@@ -349,16 +349,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
      */
     public static function getConfigDeprecation($aConfig)
     {
-        if(!is_array($aConfig) || !array_key_exists('deprecated', $aConfig))
-            return null;
-
-        $mixedValue = $aConfig['deprecated'];
-        $sReplacedBy = is_array($mixedValue) && isset($mixedValue['replaced_by']) && is_string($mixedValue['replaced_by']) ? $mixedValue['replaced_by'] : '';
-
-        return [
-            'deprecated' => !empty($mixedValue) ? 1 : 0,
-            'replaced_by' => !empty($mixedValue) ? get_mb_substr($sReplacedBy, 0, 32) : '',
-        ];
+        return BxDolMigrationsQuery::getConfigDeprecation($aConfig);
     }
 
     /**
@@ -373,6 +364,34 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
     {
         $aSet = self::getConfigDeprecation($aConfig);
         if($aSet === null || !$this->isFieldExists('sys_modules', 'deprecated') || !$this->isFieldExists('sys_modules', 'replaced_by'))
+            return false;
+
+        return $this->updateModule($aSet, ['id' => (int)$iModuleId]) !== false;
+    }
+
+    /**
+     * Whether a module's install/config.php marks it as a preview: unfinished work that is installed and updated
+     * like any module, labelled so admins know it may change. The config says `'preview' => true`; a config
+     * without the key is a finished module, so dropping the key clears the mark on the next update.
+     * @param array $aConfig module config
+     * @return array|null `preview`, or null when there is no config to read
+     */
+    public static function getConfigPreview($aConfig)
+    {
+        return BxDolMigrationsQuery::getConfigPreview($aConfig);
+    }
+
+    /**
+     * Copy the preview mark from a module's config to its `sys_modules` row, apart from the other columns
+     * for the same reason as setModuleDeprecation.
+     * @param int $iModuleId module id
+     * @param array $aConfig module config
+     * @return bool whether the row was written
+     */
+    public function setModulePreview($iModuleId, $aConfig)
+    {
+        $aSet = self::getConfigPreview($aConfig);
+        if($aSet === null || !$this->isFieldExists('sys_modules', 'preview'))
             return false;
 
         return $this->updateModule($aSet, ['id' => (int)$iModuleId]) !== false;

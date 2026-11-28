@@ -2071,6 +2071,7 @@ CREATE TABLE `sys_modules` (
   `sync_app` tinyint(1) NOT NULL default '1',
   `deprecated` tinyint(1) NOT NULL default '0',
   `replaced_by` varchar(32) NOT NULL default '',
+  `preview` tinyint(1) NOT NULL default '0',
   `hash` varchar(32) NOT NULL default '',
   `updated` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
