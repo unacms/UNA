@@ -28,7 +28,6 @@ export const settingsElements = {
         hide_cover_for_context: false,
         back_button_url_for_profile: '/friends',
         view_by_module: {
-            bx_events: 'min',
             bx_spaces: 'none',
             bx_jobs: 'max',
         },

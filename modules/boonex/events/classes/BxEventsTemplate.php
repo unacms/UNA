@@ -61,16 +61,16 @@ class BxEventsTemplate extends BxBaseModGroupsTemplate
 
         $aContentInfo = $this->getModule()->_oDb->getContentInfoById($aData[$CNF['FIELD_ID']]);
 
-        $oDateStart = date_create('@' . $aContentInfo['date_start']);
+        $oDateStart = !empty($aContentInfo['date_start']) ? date_create('@' . $aContentInfo['date_start']) : false;
         if ($oDateStart)
             $oDateStart->setTimezone(new DateTimeZone($aContentInfo['timezone'] ? $aContentInfo['timezone'] : 'UTC'));
 
-        $oDateEnd = date_create('@' . $aContentInfo['date_end']);
+        $oDateEnd = !empty($aContentInfo['date_end']) ? date_create('@' . $aContentInfo['date_end']) : false;
         if ($oDateEnd)
             $oDateEnd->setTimezone(new DateTimeZone($aContentInfo['timezone'] ? $aContentInfo['timezone'] : 'UTC'));
 
         $isPublic = CHECK_ACTION_RESULT_ALLOWED === $this->getModule()->checkAllowedView($aData) || $oPrivacy->isPartiallyVisible($aData[$CNF['FIELD_ALLOW_VIEW_TO']]);        
-        if ($isPublic) {
+        if ($isPublic && $oDateStart) {
             $aVars['bx_if:info']['content']['members'] = $oDateStart->format(getParam($CNF['PARAM_FORMAT_DATE']));
         }
 

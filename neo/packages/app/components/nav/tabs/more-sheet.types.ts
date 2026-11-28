@@ -25,8 +25,4 @@ export type NativeMoreSheetProps = {
     items: MoreSheetItem[];
     onSelect: (item: MoreSheetItem) => void;
     profile?: MoreSheetProfile | null;
-    /** Toggles the operator agent; shown as an icon on the right of the header row. */
-    onAgentPress?: () => void;
-    /** Agent chat is open: the icon shows the toggled (selected) look. */
-    agentActive?: boolean;
 };

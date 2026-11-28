@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { NeoButton } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
 import { useCurrentUser } from 'app/context/user';
+import { useIsDesktop } from 'app/context/measure';
+import { getHeaderToolbarNeoButtonDefaults } from 'app/lib/util';
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import type { SearchScope } from 'app/lib/search-window';
 
@@ -29,12 +31,14 @@ export function useSectionActions(pageData: any): SectionActions {
 /** The section's Add ("Add post", the module's own icon): its create form in a modal, as the section's Add on wider screens. */
 export function SectionAddButton({ add, buttonProps }: { add: NonNullable<SectionActions['add']>; buttonProps?: Record<string, unknown> }) {
     const { t } = useTranslation();
+    const isDesktop = useIsDesktop();
     const [pageData, setPageData] = useState<any>(false);
 
     return (
         <>
             <FormModal pageData={pageData} setPageData={setPageData} url={pageData?.url} modalView={undefined} historyUrl={undefined} />
             <NeoButton
+                {...getHeaderToolbarNeoButtonDefaults(isDesktop)}
                 image={add.icon}
                 borderShape="circle"
                 tooltip={t(add.title)}
@@ -52,9 +56,17 @@ export function SectionAddButton({ add, buttonProps }: { add: NonNullable<Sectio
 /** Global search on phones: Explore with its field focused, the apps' search page. */
 export function ExploreSearchButton({ buttonProps }: { buttonProps?: Record<string, unknown> }) {
     const { t } = useTranslation();
+    const isDesktop = useIsDesktop();
     return (
         <Link href="/explore?search=1" mode="plain" alt={t('Search')}>
-            <NeoButton image="Search" borderShape="circle" accessibilityLabel={t('Search')} {...(buttonProps || {})} interactive={false} />
+            <NeoButton
+                {...getHeaderToolbarNeoButtonDefaults(isDesktop)}
+                image="Search"
+                borderShape="circle"
+                accessibilityLabel={t('Search')}
+                {...(buttonProps || {})}
+                interactive={false}
+            />
         </Link>
     );
 }

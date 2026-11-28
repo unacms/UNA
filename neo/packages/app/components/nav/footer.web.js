@@ -4,18 +4,16 @@ import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile/profile';
-import { useLocalSearchParams, usePathname } from 'app/lib/hooks/router';
+import { usePathname } from 'app/lib/hooks/router';
 import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
-import { useFooter, useFooterHeight, useSetFooterHeight } from 'app/context/jotai/layout';
+import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { cueAttributes } from 'app/lib/sound';
 import { isTabBarLabelsEnabled } from 'app/lib/util';
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
-import { NeoButton } from 'app/design/controls';
 import { cn } from 'app/lib/util';
-import { OperatorAgentPanel, useOperatorAgentAvailable } from 'app/ui/molecules/system/operator-agent';
 import {
     TAB_BAR_VISIBLE_LIMIT,
     avatarTabPredicate,
@@ -263,18 +261,12 @@ function TabAvatar({ currentUser, url }) {
 /**
  * Last tab when the menu collapses into More. Like the native tab bars: a
  * `{profile}` item first in More makes the tab the viewer's avatar and heads
- * the menu (avatar, name, "View profile" and the operator agent button); if
- * the profile is its only link and there is no agent, the avatar is a plain
- * profile tab. Below `lg` the header's account item (and its Agent button) is
- * hidden, so the agent opens from here.
+ * the menu (avatar, name, "View profile"); if the profile is its only link,
+ * the avatar is a plain profile tab.
  */
 function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
     const { t } = useTranslation();
-    const params = useLocalSearchParams();
-    const footerHeight = useFooterHeight();
     const [menuOpen, setMenuOpen] = useState(false);
-    const [agentOpen, setAgentOpen] = useState(false);
-    const hasAgent = useOperatorAgentAvailable(!!currentUser);
     const allItems = useMemo(
         () => buildTabBarMoreMenuItems({
             visible: visibleTabs,
@@ -289,7 +281,6 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
     const { header: profileItem, items: profileMenuItems, profileOnly } = splitProfileMoreMenu({
         items: allItems,
         overflow: overflowTabs,
-        hasAgent,
     });
     const items = profileItem ? profileMenuItems : allItems;
     const isOverflowActive = overflowTabs.some((tab) =>
@@ -306,11 +297,6 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
         );
     }
 
-    const toggleAgent = () => {
-        setMenuOpen(false);
-        setAgentOpen((open) => !open);
-    };
-
     return (
         <View className="flex-1 min-w-0">
             <DropdownMenu
@@ -321,13 +307,11 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
                 onOpenChange={setMenuOpen}
                 items={items}
                 triggerClassName="group flex-1 w-full h-full min-w-0"
-                header={profileItem || hasAgent ? (
+                header={profileItem ? (
                     <MoreMenuHeader
                         profileItem={profileItem}
                         currentUser={currentUser}
-                        agentActive={agentOpen}
                         onProfilePress={() => setMenuOpen(false)}
-                        onAgentPress={hasAgent ? toggleAgent : null}
                     />
                 ) : null}
             >
@@ -338,76 +322,54 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
                     title={profileItem ? profileItem.title : t('More')}
                 />
             </DropdownMenu>
-            {hasAgent ? (
-                <OperatorAgentPanel
-                    open={agentOpen}
-                    onClose={() => setAgentOpen(false)}
-                    bottomOffset={footerHeight + 8}
-                    params={params}
-                />
-            ) : null}
         </View>
     );
 }
 
-/** Top of the More menu: the profile row (opens the profile) and the Agent button. */
-function MoreMenuHeader({ profileItem, currentUser, agentActive, onProfilePress, onAgentPress }) {
+/** Top of the More menu: the profile row (opens the profile). */
+function MoreMenuHeader({ profileItem, currentUser, onProfilePress }) {
     const { t } = useTranslation();
     return (
         <Row className="items-center gap-2 pb-1.5 mb-1.5 border-b border-border">
-            {profileItem ? (
-                <Link
-                    href={profileItem.link}
-                    onClick={onProfilePress}
-                    className="flex-1 min-w-0"
-                    alt={profileItem.title}
+            <Link
+                href={profileItem.link}
+                onClick={onProfilePress}
+                className="flex-1 min-w-0"
+                alt={profileItem.title}
+            >
+                <Row
+                    className={cn(
+                        'items-center gap-3 rounded-lg p-2 web:hover:bg-muted/50 web:cursor-pointer',
+                        profileItem.selected && 'bg-accent'
+                    )}
                 >
-                    <Row
-                        className={cn(
-                            'items-center gap-3 rounded-lg p-2 web:hover:bg-muted/50 web:cursor-pointer',
-                            profileItem.selected && 'bg-accent'
-                        )}
-                    >
-                        <View className="w-11 h-11">
-                            <Profile
-                                {...currentUser}
-                                url_avatar={currentUser?.avatar}
-                                color={currentUser?.color}
-                                url={profileItem.link}
-                                showLinks={false}
-                                displayType="unit_wo_info"
-                                displaySize="base"
-                            />
-                        </View>
-                        <View className="flex-1 min-w-0">
-                            <Text
-                                numberOfLines={1}
-                                className={cn(
-                                    'text-sm font-semibold',
-                                    profileItem.selected ? 'text-accent-foreground' : 'text-foreground'
-                                )}
-                            >
-                                {currentUser?.display_name || profileItem.title}
-                            </Text>
-                            <Text numberOfLines={1} className="text-xs text-muted-foreground">
-                                {t('View profile')}
-                            </Text>
-                        </View>
-                    </Row>
-                </Link>
-            ) : (
-                <View className="flex-1" />
-            )}
-            {onAgentPress ? (
-                <NeoButton
-                    style="borderless"
-                    borderShape="circle"
-                    image="Sparkles"
-                    selected={agentActive}
-                    accessibilityLabel={t(agentActive ? 'operator_agent_close' : 'operator_agent_open')}
-                    onPress={onAgentPress}
-                />
-            ) : null}
+                    <View className="w-11 h-11">
+                        <Profile
+                            {...currentUser}
+                            url_avatar={currentUser?.avatar}
+                            color={currentUser?.color}
+                            url={profileItem.link}
+                            showLinks={false}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                        />
+                    </View>
+                    <View className="flex-1 min-w-0">
+                        <Text
+                            numberOfLines={1}
+                            className={cn(
+                                'text-sm font-semibold',
+                                profileItem.selected ? 'text-accent-foreground' : 'text-foreground'
+                            )}
+                        >
+                            {currentUser?.display_name || profileItem.title}
+                        </Text>
+                        <Text numberOfLines={1} className="text-xs text-muted-foreground">
+                            {t('View profile')}
+                        </Text>
+                    </View>
+                </Row>
+            </Link>
         </Row>
     );
 }
