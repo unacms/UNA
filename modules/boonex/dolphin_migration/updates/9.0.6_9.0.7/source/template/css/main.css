@@ -1,0 +1,23 @@
+.bx-migrate-not-finished {
+	color:limegreen;
+	font-weight:bold;
+}
+
+.bx-migrate-error {
+	font-weight:bold;
+	color:red;
+}
+table#bx-grid-table-bx_dolphin_migration_transfers td{
+	text-align:center;
+}
+
+.bx-grid-header-cnt > div{
+	width:50%;	
+}
+.bx-form-input-wrapper-input_set > button{
+	margin-right:2rem;
+}
+
+#bx-grid-wrap-bx_dolphin_migration_transfers {
+	margin-top: 1rem;
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Studio > Settings > Security: the Trusted proxies setting. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_stg_cpt_option_sys_trusted_proxies"><![CDATA[Trusted proxies]]></string_add>
+    <string_add name="_adm_stg_inf_option_sys_trusted_proxies"><![CDATA[Addresses or CIDR ranges of public proxies and CDNs in front of the site, such as Cloudflare, separated by commas or new lines. Proxies on private networks don't need to be listed. The visitor's address is the nearest one in X-Forwarded-For that isn't a trusted proxy, so list every public proxy that requests pass through.]]></string_add>
+</resources>

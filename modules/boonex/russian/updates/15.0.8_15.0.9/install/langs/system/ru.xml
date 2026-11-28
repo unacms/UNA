@@ -1,0 +1,1077 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_ATT_REJECTED_E"><![CDATA[Ваш профиль не одобрен: в нём не хватает сведений или есть недопустимые. Если у вас есть вопросы, <a target=_blank href="contact.php">напишите нам</a> и укажите ID профиля.]]></string_upd>
+	<string_upd name="_ATT_SUSPENDED_E"><![CDATA[Ваш профиль временно заблокирован. Вы можете активировать его <a target=_blank href="change_status.php">здесь</a>. Если у вас есть вопросы, <a target=_blank href="contact.php">напишите нам</a>.]]></string_upd>
+	<string_add name="_report_n_reports_few"><![CDATA[{0} жалобы]]></string_add>
+	<string_add name="_report_n_reports_one"><![CDATA[{0} жалоба]]></string_add>
+	<string_upd name="_adm_api_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+	<string_add name="_adm_api_popup_title_add_key"><![CDATA[Добавить ключ API]]></string_add>
+	<string_add name="_adm_api_popup_title_add_origin"><![CDATA[Добавить источник]]></string_add>
+	<string_add name="_adm_api_ttl_sync_api"><![CDATA[Синхр.]]></string_add>
+	<string_add name="_adm_bp_btn_section_edit"><![CDATA[Настройки раздела]]></string_add>
+	<string_add name="_adm_bp_dsc_block_header_icon"><![CDATA[Крупная иконка (шрифтовая иконка, SVG код или эмодзи) в плитке перед заголовком и описанием блока.]]></string_add>
+	<string_upd name="_adm_bp_dsc_block_icon"><![CDATA[Небольшая иконка (шрифтовая иконка, SVG код или эмодзи) перед заголовком блока, в его строке.]]></string_upd>
+	<string_add name="_adm_bp_err_section_not_found"><![CDATA[Эта страница не входит в раздел.]]></string_add>
+	<string_add name="_adm_bp_err_section_save"><![CDATA[Не удалось сохранить настройки раздела. Попробуйте ещё раз.]]></string_add>
+	<string_add name="_adm_bp_mi_page_title"><![CDATA[Заголовок]]></string_add>
+	<string_upd name="_adm_bp_txt_block_active"><![CDATA[Показывать на сайте]]></string_upd>
+	<string_upd name="_adm_bp_txt_block_active_api"><![CDATA[Показывать в приложениях]]></string_upd>
+	<string_add name="_adm_bp_txt_block_advanced"><![CDATA[Дополнительно]]></string_add>
+	<string_add name="_adm_bp_txt_block_header_icon"><![CDATA[Иконка шапки]]></string_add>
+	<string_upd name="_adm_bp_txt_block_icon"><![CDATA[Иконка заголовка]]></string_upd>
+	<string_add name="_adm_bp_txt_block_padding_size"><![CDATA[Размер отступов]]></string_add>
+	<string_add name="_adm_bp_txt_block_padding_size_info"><![CDATA[Расстояние от края блока до заголовка и содержимого. Только для отображений блока с отступами.]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_compact"><![CDATA[Компактный]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_large"><![CDATA[Крупный]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_regular"><![CDATA[Обычный]]></string_add>
+	<string_add name="_adm_bp_txt_block_title_size"><![CDATA[Размер заголовка]]></string_add>
+	<string_add name="_adm_bp_txt_block_title_size_info"><![CDATA[Размер текста заголовка блока на сайте и в приложениях. Только для отображений блока с заголовком.]]></string_add>
+	<string_add name="_adm_bp_txt_page_cover_owner"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит, с её картинкой. Выберите, кому и где её показывать.]]></string_add>
+	<string_add name="_adm_bp_txt_page_cover_owner_others"><![CDATA[Эта страница показывает обложку человека, группы или события, которому она принадлежит. Когда участник открывает свой собственный список, страница показывает свою обложку.]]></string_add>
+	<string_add name="_adm_bp_txt_page_cover_title_info"><![CDATA[Заменяет название страницы или её раздела. Если пусто, показывается это название.]]></string_add>
+	<string_upd name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[На выбранных размерах экрана обложка не показывается, на сайте и в приложениях. У заголовка страницы свои настройки на вкладке «Заголовок».]]></string_upd>
+	<string_add name="_adm_bp_txt_page_same_as_section"><![CDATA[Как в разделе]]></string_add>
+	<string_add name="_adm_bp_txt_page_section_hidden_on"><![CDATA[{0}, скрыто на: {1}]]></string_add>
+	<string_add name="_adm_bp_txt_page_section_summary"><![CDATA[Как в разделе: {0}]]></string_add>
+	<string_add name="_adm_bp_txt_page_section_with_picture"><![CDATA[{0}, со своей картинкой]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Заголовок скрыт на]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[На выбранных размерах экрана заголовок страницы не показывается, на сайте и в приложениях.]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_owner"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит, поэтому здесь нечего настраивать.]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_owner_others"><![CDATA[Заголовок этой страницы — имя человека, группы или события, которому она принадлежит. Эти настройки действуют, когда участник открывает свой собственный список.]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_show"><![CDATA[Заголовок]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_show_info"><![CDATA[Название страницы или её раздела над вкладками и блоками на сайте и в заголовке приложений.]]></string_add>
+	<string_add name="_adm_bp_txt_section_pages"><![CDATA[Эти настройки получают страницы раздела ({0}), у которых выбрано «Как в разделе».]]></string_add>
+	<string_add name="_adm_bp_txt_section_popup"><![CDATA[Настройки раздела: {0}]]></string_add>
+	<string_add name="_adm_bp_txt_section_title_as_cover"><![CDATA[Как у обложки]]></string_add>
+	<string_add name="_adm_bp_txt_section_title_show_info"><![CDATA[«Как у обложки» показывает заголовок там же и тем же людям, что и обложку.]]></string_add>
+	<string_add name="_adm_dbd_btn_ver_access_enable"><![CDATA[Включить автообновления]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_is_latest_beta"><![CDATA[Установлена последняя бета-версия]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_is_latest_stable"><![CDATA[Установлена последняя стабильная версия]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_is_newer"><![CDATA[Новее последнего выпуска]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_access_on"><![CDATA[Автообновления доступны]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_update_to"><![CDATA[Доступно обновление: {0}]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_check_failed"><![CDATA[Не удалось проверить обновления]]></string_add>
+	<string_add name="_adm_dsg_btn_icon_remove_icon_dark"><![CDATA[Удалить иконку для тёмной темы]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_logo_email"><![CDATA[Удалить логотип писем для светлой темы]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_logo_email_dark"><![CDATA[Удалить логотип писем для тёмной темы]]></string_add>
+	<string_add name="_adm_dsg_btn_tmpl_make_default"><![CDATA[Сделать основным]]></string_add>
+	<string_add name="_adm_dsg_inf_email_section"><![CDATA[Показывается в шапке писем. Загрузите PNG, JPEG или GIF: почтовые клиенты блокируют SVG. Без него письма используют логотип сайта, если он в одном из этих форматов.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_upload_icon_dark"><![CDATA[Файл .svg или .png, который вкладки браузера показывают в тёмной теме вместо иконок выше. Chrome не применяет стили тёмной темы внутри SVG-иконки, поэтому один адаптивный SVG на тёмных вкладках Chrome остаётся тёмным: загрузите здесь светлую версию.]]></string_add>
+	<string_upd name="_adm_dsg_inf_icon_upload_icon_svg"><![CDATA[Файл .svg. Firefox и Safari применяют его стили prefers-color-scheme, вкладки Chrome — нет: для тёмной темы загрузите ещё иконку ниже.]]></string_upd>
+	<string_add name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Рисует углы плавной кривой в браузерах, которые это поддерживают, например в Chrome. В остальных углы остаются круглыми.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[Плавный угол выглядит меньше круглого того же радиуса. Там, где углы плавные, радиусы умножаются на это число, от 1 до 2.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_accent"><![CDATA[Цвет ссылок, кнопок, переключателей и рамки фокуса на сайте, в Студии и в приложениях. Каждый вариант сохраняет читаемость текста (WCAG AA) в светлой и тёмной теме.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_corners"><![CDATA[Насколько скруглены углы блоков, кнопок, полей и всплывающих окон на сайте и в Студии. Капсулы и круги сохраняют форму.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_forms"><![CDATA[Как формы подписывают однострочные текстовые поля на сайте и в приложениях. Отдельному виду формы можно задать свой стиль в разделе <a href="{0}">Формы</a>. Приложение без плавающих подписей показывает их над полями.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_header"><![CDATA[Ширина страниц, ширина шапки и подвала и место главного меню в шапке для каждого макета страницы, отдельно для гостей и для участников. Им следуют сайт и приложения; шаблон может задать свои в своих настройках.]]></string_add>
+	<string_add name="_adm_dsg_lnk_tmpl_page"><![CDATA[Открыть «Дизайнер › Шаблон»]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_low_contrast_dark"><![CDATA[Этот логотип плохо виден на тёмном фоне. Загрузите светлую версию для тёмной темы.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_note_designer"><![CDATA[Логотип задаётся в «Дизайнер › Лого», для всех шаблонов.]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_blue"><![CDATA[Синий]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_graphite"><![CDATA[Графит]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_green"><![CDATA[Зелёный]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_indigo"><![CDATA[Индиго]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_orange"><![CDATA[Оранжевый]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_rose"><![CDATA[Розовый]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_teal"><![CDATA[Бирюзовый]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_violet"><![CDATA[Фиолетовый]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_footer_width"><![CDATA[Ширина подвала]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_footer_width_full"><![CDATA[Во всю ширину]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_footer_width_page"><![CDATA[По ширине страницы]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align"><![CDATA[Главное меню]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_center"><![CDATA[По центру]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_end"><![CDATA[В конце]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_start"><![CDATA[В начале]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_application"><![CDATA[Макет приложения]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_standard"><![CDATA[Обычный макет]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width"><![CDATA[Ширина шапки]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width_full"><![CDATA[Во всю ширину]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width_page"><![CDATA[По ширине страницы]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Плавающие: в пустом поле, на верхней границе после заполнения]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Над полем]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width"><![CDATA[Ширина страницы]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_full"><![CDATA[Во всю ширину]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_limited"><![CDATA[Ограничена]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_px"><![CDATA[Ширина страницы в пикселях]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_radius_large"><![CDATA[Большой]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_radius_none"><![CDATA[Без скругления]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_radius_small"><![CDATA[Маленький]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_accent"><![CDATA[Цвета]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_corners"><![CDATA[Углы]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_forms"><![CDATA[Формы]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_header"><![CDATA[Страница, шапка и подвал]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_template_note"><![CDATA[Шаблон сайта выбирается в «Дизайнер › Шаблон».]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_make_default_confirm"><![CDATA[Сделать {0} шаблоном сайта? Все увидят его, если сами не выбрали другой.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_dark_src_none"><![CDATA[Нет. В тёмной теме письма показывают логотип светлой темы.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_dark_src_site"><![CDATA[Не задан. Письма используют логотип сайта для тёмной темы.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_section"><![CDATA[Логотип в письмах]]></string_add>
+	<string_add name="_adm_dsg_txt_email_src_none"><![CDATA[Нет. Письма показывают название сайта текстом.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_src_site"><![CDATA[Не задан. Письма используют логотип сайта.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_src_unusable"><![CDATA[Не PNG, JPEG или GIF, поэтому письма его не показывают.]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_upload_icon_dark"><![CDATA[Загрузить иконку для тёмной темы]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_preview_icon_dark"><![CDATA[Иконка для тёмной темы]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_src_none_icon_dark"><![CDATA[Нет. Тёмные вкладки показывают иконку выше.]]></string_add>
+	<string_add name="_adm_err_modules_deprecated"><![CDATA[Приложение {0} устарело, установить его нельзя.]]></string_add>
+	<string_add name="_adm_err_modules_missing_php_packages"><![CDATA[Этому модулю нужны PHP-библиотеки, которые не установлены: {0}. Выполните "composer install" в папке UNA или установите UNA из релизного пакета, в котором они есть.]]></string_add>
+	<string_upd name="_adm_err_oauth_empty_key_secret"><![CDATA[Чтобы открыть магазин, введите ключ и секрет аккаунта UNA в <a href="{0}">настройках</a>.]]></string_upd>
+	<string_upd name="_adm_err_operation_failed"><![CDATA[Операция не удалась. Попробуйте ещё раз, а если снова не получится, загляните в журналы.]]></string_upd>
+	<string_add name="_adm_form_dsc_displays_label_style"><![CDATA[Плавающие подписи применяются к однострочным текстовым полям. У остальных полей подписи остаются сверху.]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_action"><![CDATA[Действие]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_added"><![CDATA[Дата]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_object"><![CDATA[Тип записи]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_object_id"><![CDATA[Запись]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_profile"><![CDATA[Исполнитель]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_source"><![CDATA[Протокол]]></string_add>
+	<string_add name="_adm_form_txt_crumb_display"><![CDATA[Отображение]]></string_add>
+	<string_add name="_adm_form_txt_crumb_list"><![CDATA[Список данных]]></string_add>
+	<string_add name="_adm_form_txt_crumb_search_form"><![CDATA[Форма поиска]]></string_add>
+	<string_add name="_adm_form_txt_badges_empty"><![CDATA[Значков пока нет]]></string_add>
+	<string_add name="_adm_form_txt_badges_empty_select_module"><![CDATA[Значков пока нет. Выберите модуль, чтобы добавить значок.]]></string_add>
+	<string_add name="_adm_pgt_txt_code"><![CDATA[Код]]></string_add>
+	<string_add name="_adm_form_txt_displays_label_style"><![CDATA[Подписи полей]]></string_add>
+	<string_add name="_adm_form_txt_displays_label_style_default"><![CDATA[Как на сайте]]></string_add>
+	<string_add name="_adm_lmi_cpt_admin"><![CDATA[Журнал Студии]]></string_add>
+	<string_add name="_adm_lmi_cpt_connectors"><![CDATA[Подключения]]></string_add>
+	<string_add name="_adm_lmi_cpt_pgt_languages"><![CDATA[Языки]]></string_add>
+	<string_add name="_adm_msg_module_deprecated"><![CDATA[Приложение {0} устарело и больше не получает новых версий. Оно будет удалено в следующей основной версии UNA.]]></string_add>
+	<string_add name="_adm_msg_module_deprecated_core"><![CDATA[Приложение {0} устарело: его возможности теперь есть в UNA. Оно будет удалено в следующей основной версии UNA.]]></string_add>
+	<string_add name="_adm_msg_module_deprecated_replaced"><![CDATA[Приложение {0} устарело, его заменяет {1}. Оно будет удалено в следующей основной версии UNA.]]></string_add>
+	<string_add name="_adm_nav_dsc_menus_button_size"><![CDATA[Размер всех кнопок этого меню на сайте и в приложениях. «Автоматически» оставляет каждой кнопке размер, заданный стилем меню.]]></string_add>
+	<string_add name="_adm_nav_dsc_menus_button_style"><![CDATA[Как выглядят кнопки этого меню на сайте и в приложениях. «Автоматически» оставляет кнопку стиля меню и делает её стеклянной поверх обложки. Выберите «Стекло» для меню поверх изображения, «Обычные» для меню на ровном фоне.]]></string_add>
+	<string_upd name="_adm_nav_txt_items_active_api"><![CDATA[Показывать в приложениях]]></string_upd>
+	<string_add name="_adm_nav_txt_menus_button_auto"><![CDATA[Автоматически]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size"><![CDATA[Размер кнопок]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_large"><![CDATA[Большие]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav"><![CDATA[Навигация раздела в приложениях]]></string_add>
+	<string_add name="_adm_nav_dsc_menus_section_nav"><![CDATA[Если это меню раздела (вкладки его страниц), как приложения показывают его на больших экранах: «Вкладки» над содержимым, как на сайте, или «Боковая панель», колонка рядом с содержимым, для раздела с большим числом страниц. Для телефонов и планшетов есть своя настройка ниже.]]></string_add>
+	<string_add name="_adm_nav_dsc_menus_section_nav_small"><![CDATA[Если это меню раздела, как приложения показывают его на телефонах и планшетах: «Вкладки» над содержимым или «Список», когда раздел открывается списком своих страниц, а каждая страница открывается из него с кнопкой «Назад» (настройки аккаунта). Для списка нужна собственная страница раздела, которую меню называет в настройках для приложений (hub); меню без неё показывает вкладки.]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_tabs"><![CDATA[Вкладки]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_sidebar"><![CDATA[Боковая панель]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_small"><![CDATA[Навигация раздела в приложениях на телефонах и планшетах]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_small_list"><![CDATA[Список]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Мини]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Обычные]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_small"><![CDATA[Маленькие]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style"><![CDATA[Стиль кнопок]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Стекло]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Без фона]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Обычные]]></string_add>
+	<string_add name="_adm_pgt_btn_get_more"><![CDATA[Найти ещё]]></string_add>
+	<string_add name="_adm_pgt_txt_language"><![CDATA[Язык]]></string_add>
+	<string_add name="_adm_pgt_txt_status"><![CDATA[Состояние]]></string_add>
+	<string_add name="_adm_pgt_txt_status_default"><![CDATA[По умолчанию]]></string_add>
+	<string_add name="_adm_pgt_txt_status_off"><![CDATA[Выкл.]]></string_add>
+	<string_add name="_adm_pgt_txt_status_on"><![CDATA[Вкл.]]></string_add>
+	<string_upd name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Самый большой файл, который может загрузить участник с этим членством, в любом приложении (0 = без ограничений; могут действовать другие системные ограничения).]]></string_upd>
+	<string_upd name="_adm_prm_dsc_level_quota_number"><![CDATA[Сколько файлов может загрузить участник с этим членством (0 = без ограничений).]]></string_upd>
+	<string_upd name="_adm_prm_dsc_level_quota_size"><![CDATA[Сколько места может занять участник с этим членством во всех приложениях (0 = без ограничений).]]></string_upd>
+	<string_upd name="_adm_prm_txt_level_administrator"><![CDATA[Оператор]]></string_upd>
+	<string_upd name="_adm_prm_txt_level_unauthenticated"><![CDATA[Гости]]></string_upd>
+	<string_add name="_adm_rl_txt_action_use_mcp"><![CDATA[Использовать операторские инструменты через MCP]]></string_add>
+	<string_add name="_adm_rl_txt_action_use_mcp_dsc"><![CDATA[]]></string_add>
+	<string_upd name="_adm_stg_cpt_category_account"><![CDATA[Аккаунты]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_acl"><![CDATA[Членство]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_notifications"><![CDATA[Электронная почта]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_permalinks"><![CDATA[Ссылки и SEO]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_security"><![CDATA[Защита запросов]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_site_settings"><![CDATA[Сайт]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_social_settings"><![CDATA[Поделиться]]></string_upd>
+	<string_add name="_adm_stg_cpt_category_api_preview"><![CDATA[Предварительная версия API v2]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Уменьшать картинки перед загрузкой до этой ширины (0 = не уменьшать)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Уменьшать картинки перед загрузкой до этой высоты (0 = не уменьшать)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Список «Начало работы» для операторов]]></string_upd>
+	<string_upd name="_adm_stg_inf_option_site_tour_home"><![CDATA[Показывает операторам блок «Начало работы» на главной странице, пока все шаги не сделаны или блок не скрыт. Шаги редактируются в Студии > Навигация > «Начало работы: операторы».]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Кто может зарегистрироваться]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[Срок жизни 2FA-кода, секунд (0 = отправлять код при каждом входе)]]></string_upd>
+	<string_add name="_adm_stg_err_option_sys_account_join"><![CDATA[Для режима «Только по приглашению» нужно приложение «Приглашения», но его не удалось добавить. Добавьте его в магазине приложений и сохраните снова.]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Максимум профилей в аккаунте (0 = без ограничений)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Максимум попыток входа (0 = без ограничений)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Аккаунты без профайла]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_admin_log_days_before_expire"><![CDATA[Хранить записи журнала Студии, дней (0 = без ограничения)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_admin_log_enable"><![CDATA[Вести журнал Студии]]></string_add>
+	<string_add name="_adm_stg_inf_option_sys_admin_log_enable"><![CDATA[Изменения, которые операторы вносят в Студии, а агенты — на сайте, со значениями до и после.]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Подписи полей]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_application_member"><![CDATA[Положение главного меню на страницах-приложениях для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_application_visitor"><![CDATA[Положение главного меню на страницах-приложениях для гостей]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_standard_member"><![CDATA[Положение главного меню на обычных страницах для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_standard_visitor"><![CDATA[Положение главного меню на обычных страницах для гостей]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_application_member"><![CDATA[Ширина шапки на страницах-приложениях для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_application_visitor"><![CDATA[Ширина шапки на страницах-приложениях для гостей]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_standard_member"><![CDATA[Ширина шапки на обычных страницах для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_standard_visitor"><![CDATA[Ширина шапки на обычных страницах для гостей]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Срок действия встраивания, дней (0 = без ограничений)]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_application_member"><![CDATA[Ширина страницы на страницах-приложениях для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_application_visitor"><![CDATA[Ширина страницы на страницах-приложениях для гостей]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_standard_member"><![CDATA[Ширина страницы на обычных страницах для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_standard_visitor"><![CDATA[Ширина страницы на обычных страницах для гостей]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[Срок жизни CSRF-токена, секунд (0 = без ограничений)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Блокировать контент после стольких жалоб (0 = не блокировать)]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_transcoder_unsigned_before"><![CDATA[Файлы редактора, загруженные до этого времени, открываются по ссылкам без подписи]]></string_add>
+	<string_add name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[Если выключено, посетители, которые не вошли, ничего не слышат, а их страницы не загружают звуки.]]></string_add>
+	<string_add name="_adm_stg_inf_option_sys_trusted_proxies"><![CDATA[Адреса или диапазоны CIDR публичных прокси-серверов и CDN перед сайтом, например Cloudflare, через запятую или с новой строки. Прокси в частных сетях указывать не нужно. Адрес посетителя — ближайший адрес в X-Forwarded-For, который не принадлежит доверенному прокси, поэтому укажите все публичные прокси, через которые проходят запросы.]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_accent"><![CDATA[Акцентный цвет]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_radius"><![CDATA[Размер скругления]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Плавные углы]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Множитель плавных углов]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_application_member"><![CDATA[Ширина подвала на страницах-приложениях для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_application_visitor"><![CDATA[Ширина подвала на страницах-приложениях для гостей]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_standard_member"><![CDATA[Ширина подвала на обычных страницах для участников]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_standard_visitor"><![CDATA[Ширина подвала на обычных страницах для гостей]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Максимум хештегов в публикации]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Максимум упоминаний в публикации]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Максимум прикреплённых ссылок в публикации (0 = без ограничений)]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_trusted_proxies"><![CDATA[Доверенные прокси]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_enable"><![CDATA[API v2 (предварительная версия, не для рабочих сайтов): включить /api/v2, который использует настольное приложение]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: ограничивать число запросов]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: сообщений ИИ-агентам в минуту (0 — без ограничения)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: запросов в минуту от одного участника или с одного адреса гостя (0 — без ограничения)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: предпросмотров ссылок в минуту (0 — без ограничения)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: поисковых запросов в минуту (0 — без ограничения)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: загрузок файлов в минуту (0 — без ограничения)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: изменений в минуту — публикации, правки, удаления, реакции (0 — без ограничения)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_mcp_enable"><![CDATA[MCP-сервер: разрешить ИИ-ассистентам подключаться к сайту]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_mcp_enable_info"><![CDATA[Включает /api/mcp: пользователи подключают ассистентов, например Claude или ChatGPT, в настройках аккаунта > Подключения, и их инструменты действуют с правами пользователя. Операторы получают и инструменты, включённые для них на вкладке Tools.]]></string_add>
+	<string_upd name="_adm_stg_cpt_category_sockets"><![CDATA[Обновления в реальном времени]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Звуки и для гостей]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Фоновые задачи: максимум параллельных обработчиков]]></string_upd>
+	<string_upd name="_adm_stg_cpt_type_system"><![CDATA[Общие]]></string_upd>
+	<string_add name="_adm_stg_cpt_category_sys_updates"><![CDATA[Обновления и обслуживание]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_app_banner"><![CDATA[Баннер мобильного приложения]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_members"><![CDATA[Участники]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_relations"><![CDATA[Отношения]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_security"><![CDATA[Безопасность]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_sign_in_protection"><![CDATA[Защита входа]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_sessions"><![CDATA[Сессии, cookie и заголовки]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_privacy"><![CDATA[Приватность]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_content"><![CDATA[Контент]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_posting"><![CDATA[Публикация]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_moderation"><![CDATA[Модерация]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_hashtags"><![CDATA[Хештеги и упоминания]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_search"><![CDATA[Поиск и просмотр]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_embeds"><![CDATA[Встраивание]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_editor"><![CDATA[Редактор и плеер]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_files"><![CDATA[Хранилище]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_uploads"><![CDATA[Загрузки]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_messaging"><![CDATA[Сообщения]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_payments"><![CDATA[Платежи]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_payments"><![CDATA[Платежи]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_store_account"><![CDATA[Аккаунт UNA Store]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_performance"><![CDATA[Производительность]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_bg_jobs"><![CDATA[Фоновые задачи]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_connections"><![CDATA[Исходящие соединения]]></string_add>
+	<string_add name="_adm_stg_cpt_type_advanced"><![CDATA[Дополнительно]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_logs"><![CDATA[Журналы]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_interface"><![CDATA[Интерфейс]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_studio"><![CDATA[Студия]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_ftp"><![CDATA[FTP]]></string_add>
+	<string_add name="_adm_stg_txt_unsaved_changes"><![CDATA[Изменения здесь не сохранены. Уйти, не сохраняя их?]]></string_add>
+	<string_upd name="_adm_str_err_download_failed"><![CDATA[Скачать не удалось. Попробуйте ещё раз.]]></string_upd>
+	<string_add name="_adm_str_txt_more_actions"><![CDATA[Другие действия: {0}]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_add"><![CDATA[Добавлено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_copy"><![CDATA[Скопировано]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_create"><![CDATA[Создано]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_delete"><![CDATA[Удалено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_disable"><![CDATA[Выключено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_edit"><![CDATA[Изменено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_enable"><![CDATA[Включено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_import"><![CDATA[Импортировано]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_insert"><![CDATA[Добавлено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_install"><![CDATA[Установлено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_move"><![CDATA[Перемещено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_order"><![CDATA[Порядок изменен]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_remove"><![CDATA[Удалено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_reorder"><![CDATA[Порядок изменен]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_reset"><![CDATA[Сброшено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_save"><![CDATA[Сохранено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_send"><![CDATA[Отправлено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_uninstall"><![CDATA[Удалено с сайта]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_update"><![CDATA[Обновлено]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_upload"><![CDATA[Загружено]]></string_add>
+	<string_add name="_adm_txt_admin_log_actor_via_agent"><![CDATA[{0} через агента {1}]]></string_add>
+	<string_add name="_adm_txt_admin_log_after"><![CDATA[После]]></string_add>
+	<string_add name="_adm_txt_admin_log_before"><![CDATA[До]]></string_add>
+	<string_add name="_adm_txt_admin_log_empty"><![CDATA[Изменения не записаны.]]></string_add>
+	<string_add name="_adm_txt_admin_log_field"><![CDATA[Поле]]></string_add>
+	<string_add name="_adm_txt_admin_log_item"><![CDATA[{0} (#{1})]]></string_add>
+	<string_add name="_adm_txt_admin_log_no_field_changes"><![CDATA[Поля этой записи до и после совпадают. Изменение может храниться в другом месте, например в переводе.]]></string_add>
+	<string_add name="_adm_txt_admin_log_object_any"><![CDATA[Любой тип записи]]></string_add>
+	<string_add name="_adm_txt_admin_log_period"><![CDATA[Период]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_1"><![CDATA[За сутки]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_30"><![CDATA[За 30 дней]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_365"><![CDATA[За 12 месяцев]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_7"><![CDATA[За 7 дней]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_any"><![CDATA[За всё время]]></string_add>
+	<string_add name="_adm_txt_admin_log_popup"><![CDATA[Изменения]]></string_add>
+	<string_add name="_adm_txt_admin_log_profile_any"><![CDATA[Любой исполнитель]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_agent"><![CDATA[Агент]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_any"><![CDATA[Любой протокол]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_cli"><![CDATA[Командная строка]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_mcp"><![CDATA[MCP]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_studio"><![CDATA[Студия]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_cmts"><![CDATA[Комментарии: {0}]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_content"><![CDATA[Контент: {0}]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_email"><![CDATA[Письмо]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_language"><![CDATA[Язык]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_module_data"><![CDATA[{0}: данные]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_studio"><![CDATA[Студия: {0}]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_accounts"><![CDATA[Аккаунт]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_acl_levels"><![CDATA[Уровень членства]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_acl_matrix"><![CDATA[Право доступа]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_agents_agents"><![CDATA[Агент]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_agents_models"><![CDATA[Модель ИИ]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_agents_tools"><![CDATA[Инструмент агента]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_api_keys"><![CDATA[Ключ API]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_badges"><![CDATA[Бейдж]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_cron_jobs"><![CDATA[Задание cron]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_email_templates"><![CDATA[Шаблон письма]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_display_inputs"><![CDATA[Поле формы]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_displays"><![CDATA[Вид формы]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_inputs"><![CDATA[Поле формы]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_pre_lists"><![CDATA[Список значений]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_pre_values"><![CDATA[Значение списка]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_localization_keys"><![CDATA[Языковой ключ]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_localization_strings"><![CDATA[Перевод]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_menu_items"><![CDATA[Пункт меню]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_menu_sets"><![CDATA[Набор меню]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_modules"><![CDATA[Модуль]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_form"><![CDATA[Форма]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_menu"><![CDATA[Меню]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_page"><![CDATA[Страница]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_storage"><![CDATA[Хранилище]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_options"><![CDATA[Настройка]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_pages_blocks"><![CDATA[Блок страницы]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_profiles"><![CDATA[Профиль]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_std_roles"><![CDATA[Роль Студии]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_std_roles_members"><![CDATA[Роль оператора]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_template"><![CDATA[Шаблон]]></string_add>
+	<string_add name="_adm_txt_admin_log_unchanged"><![CDATA[Без изменений ({0})]]></string_add>
+	<string_upd name="_cmt_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+	<string_add name="_cmt_txt_n_comments_few"><![CDATA[{0} комментария]]></string_add>
+	<string_add name="_cmt_txt_n_comments_one"><![CDATA[{0} комментарий]]></string_add>
+	<string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Настройки email сохранены.]]></string_upd>
+	<string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Пароль изменён.]]></string_upd>
+	<string_add name="_sys_acc_join_closed"><![CDATA[Никто]]></string_add>
+	<string_add name="_sys_acc_join_invite"><![CDATA[Только по приглашению]]></string_add>
+	<string_add name="_sys_acc_join_invite_add"><![CDATA[Только по приглашению (добавит приложение «Приглашения»)]]></string_add>
+	<string_add name="_sys_acc_join_open"><![CDATA[Все]]></string_add>
+	<string_add name="_sys_acc_profile_requirement_optional"><![CDATA[Необязателен: напоминание вверху каждой страницы]]></string_add>
+	<string_add name="_sys_acc_profile_requirement_prompt"><![CDATA[Предлагать после входа: окно «Создайте профайл» на первой странице]]></string_add>
+	<string_add name="_sys_acc_profile_requirement_required"><![CDATA[Обязателен: сначала направлять к созданию профайла]]></string_add>
+	<string_upd name="_sys_acl_action_account"><![CDATA[Чтобы использовать «{1}», нужен профиль. Всё, чем вы делитесь, публикуется от имени профиля.]]></string_upd>
+	<string_upd name="_sys_acl_action_create_account"><![CDATA[Создать аккаунт]]></string_upd>
+	<string_upd name="_sys_acl_action_not_allowed"><![CDATA[Ваше членство ({2}) не включает «{1}».]]></string_upd>
+	<string_upd name="_sys_acl_action_pending"><![CDATA[Ваш аккаунт ждёт одобрения. После одобрения вы сможете <b>{1}</b>. Есть вопросы? <a href="mailto:{7}">Напишите нам</a>.]]></string_upd>
+	<string_add name="_sys_acl_action_use_connectors"><![CDATA[Использовать коннекторы (ключи доступа для ассистентов и приложений)]]></string_add>
+	<string_upd name="_sys_acl_action_suspended"><![CDATA[Вы не можете {1}, потому что ваш профиль заблокирован. Если вы не знаете почему, <a href="mailto:{7}">напишите нам</a>.]]></string_upd>
+	<string_upd name="_sys_acl_action_unauthenticated"><![CDATA[Войдите или зарегистрируйтесь, чтобы использовать «{1}».]]></string_upd>
+	<string_add name="_sys_acl_state_account_title"><![CDATA[Сначала создайте профиль]]></string_add>
+	<string_add name="_sys_acl_state_not_allowed_title"><![CDATA[Нет в вашем членстве]]></string_add>
+	<string_add name="_sys_acl_state_pending_title"><![CDATA[Ожидает одобрения]]></string_add>
+	<string_add name="_sys_acl_state_suspended_title"><![CDATA[Профиль заблокирован]]></string_add>
+	<string_add name="_sys_acl_state_unauthenticated_title"><![CDATA[Войдите, чтобы продолжить]]></string_add>
+	<string_add name="_sys_acl_state_unconfirmed_title"><![CDATA[Подтвердите email]]></string_add>
+	<string_add name="_sys_agents_connectors_txt_tokens"><![CDATA[Ваши токены доступа]]></string_add>
+	<string_add name="_sys_agents_connectors_txt_tools"><![CDATA[Инструменты для ИИ-ассистентов]]></string_add>
+	<string_add name="_sys_agents_connectors_txt_tools_info"><![CDATA[Какие инструменты агентов ИИ-ассистенты получают через MCP. Операторские инструменты действуют на весь сайт. Инструменты участников действуют от имени участника, с его правами на сайте, и дать участникам можно только те, что для этого сделаны. Инструмент, выключенный на вкладке Tools, не выдаётся.]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_tool_off"><![CDATA[выключен]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_operators"><![CDATA[MCP для операторов]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_members"><![CDATA[MCP для пользователей]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_operators_only"><![CDATA[Только операторам]]></string_add>
+	<string_add name="_sys_agents_mcp_err_not_for_members"><![CDATA[Этот инструмент не сделан для участников: он действовал бы на весь сайт.]]></string_add>
+	<string_add name="_sys_agents_tools_txt_agents"><![CDATA[Агентам]]></string_add>
+	<string_add name="_sys_agents_tools_txt_operator_agent"><![CDATA[Агент-оператор]]></string_add>
+	<string_add name="_sys_agents_tools_err_locked"><![CDATA[Этот инструмент принадлежит агенту-оператору: можно менять только его переключатель MCP.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_created"><![CDATA[Ваш новый токен доступа, он показывается только один раз: {0} Скопируйте его сейчас и никому не передавайте. Адрес MCP-сервера: {1}]]></string_add>
+	<string_add name="_sys_api_tokens_txt_info"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT: в ассистенте добавьте коннектор с адресом MCP-сервера ниже и войдите на этот сайт, когда он попросит. Они работают с вашим контентом так же, как вы на сайте. Инструменту разработчика, который не умеет входить, нужен токен доступа.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_info_operator"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT: в ассистенте добавьте коннектор с адресом MCP-сервера ниже и войдите на этот сайт, когда он попросит. Поскольку вы оператор, они получают и операторские инструменты, включённые в Studio > Agents > Tools, которые могут изменить на сайте что угодно. Инструменту разработчика, который не умеет входить, нужен токен доступа.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_mcp_url"><![CDATA[Адрес MCP-сервера]]></string_add>
+	<string_add name="_sys_api_mcp_txt_off"><![CDATA[MCP-сервер на этом сайте выключен, поэтому ИИ-ассистенты пока не могут подключиться.]]></string_add>
+	<string_add name="_sys_api_mcp_txt_off_admin"><![CDATA[MCP-сервер на этом сайте выключен: включите его в Studio > Agents > Settings.]]></string_add>
+	<string_add name="_sys_api_mcp_clients_txt_title"><![CDATA[Подключить ассистента]]></string_add>
+	<string_add name="_sys_api_mcp_clients_txt_command"><![CDATA[Выполните команду или откройте ссылку, затем войдите на этот сайт в открывшемся браузере.]]></string_add>
+	<string_add name="_sys_api_mcp_clients_btn_add_to"><![CDATA[Добавить в {0}]]></string_add>
+	<string_add name="_sys_api_mcp_clients_txt_web"><![CDATA[Claude, ChatGPT и другие ассистенты в браузере: в Settings > Connectors добавьте свой коннектор с адресом MCP-сервера и войдите.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_title"><![CDATA[Название]]></string_add>
+	<string_add name="_sys_api_tokens_txt_title_info"><![CDATA[Для чего этот токен, например какой ассистент им пользуется]]></string_add>
+	<string_add name="_sys_api_tokens_txt_hint"><![CDATA[Токен]]></string_add>
+	<string_add name="_sys_api_tokens_txt_added"><![CDATA[Создан]]></string_add>
+	<string_add name="_sys_api_tokens_txt_last_used"><![CDATA[Последнее использование]]></string_add>
+	<string_add name="_sys_api_tokens_txt_expires"><![CDATA[Истекает]]></string_add>
+	<string_add name="_sys_api_tokens_txt_days"><![CDATA[Через {0} дн.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_never"><![CDATA[Никогда]]></string_add>
+	<string_add name="_sys_api_tokens_txt_never_used"><![CDATA[Ещё не использовался]]></string_add>
+	<string_add name="_sys_api_tokens_txt_expired"><![CDATA[Истёк]]></string_add>
+	<string_add name="_sys_api_tokens_txt_token"><![CDATA[Токен доступа]]></string_add>
+	<string_add name="_sys_api_tokens_txt_once"><![CDATA[Скопируйте токен сейчас: он показывается только один раз. Любой, у кого он есть, может действовать от вашего имени, поэтому никому его не передавайте и отзовите здесь, когда он станет не нужен.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_header"><![CDATA[В ИИ-ассистенте добавьте MCP-сервер с этим адресом и заголовком "Authorization: Bearer", за которым следует токен.]]></string_add>
+	<string_add name="_sys_api_tokens_btn_add"><![CDATA[Новый токен]]></string_add>
+	<string_add name="_sys_api_tokens_btn_create"><![CDATA[Создать]]></string_add>
+	<string_add name="_sys_api_tokens_btn_revoke"><![CDATA[Отозвать]]></string_add>
+	<string_add name="_sys_api_tokens_btn_copy"><![CDATA[Копировать]]></string_add>
+	<string_add name="_sys_api_tokens_popup_add"><![CDATA[Новый токен доступа]]></string_add>
+	<string_add name="_sys_api_tokens_popup_created"><![CDATA[Ваш новый токен доступа]]></string_add>
+	<string_add name="_sys_api_tokens_err_title"><![CDATA[Название должно быть от 1 до {0} символов]]></string_add>
+	<string_add name="_sys_api_tokens_err_expires"><![CDATA[Выберите срок действия токена]]></string_add>
+	<string_add name="_sys_api_tokens_err_too_many"><![CDATA[Можно иметь не больше {0} токенов. Сначала отзовите тот, которым больше не пользуетесь.]]></string_add>
+	<string_add name="_sys_agents_activity_splash"><![CDATA[Изменил заставку для гостей: {unit}]]></string_add>
+	<string_add name="_sys_audit_action_account_email_change_requested"><![CDATA[Запрошена смена email]]></string_add>
+	<string_add name="_sys_audit_msg_ffmpeg_not_runnable"><![CDATA[{0} не запускается на этом сервере ({1}): конвертация видео и аудио работать не будет. Установите ffmpeg для этого сервера и укажите путь к нему в BX_SYSTEM_FFMPEG в inc/header.inc.php или выполните здесь "composer install", чтобы скачать подходящую сборку.]]></string_add>
+	<string_add name="_sys_audit_msg_url_rewriting_fail"><![CDATA[Страницы вида /page/... возвращают 404. Добавьте правила перезаписи из конфигурации nginx для UNA.]]></string_add>
+	<string_add name="_sys_audit_msg_webserver_after_install"><![CDATA[Проверяется в аудите сервера в Студии после установки UNA.]]></string_add>
+	<string_add name="_sys_audit_msg_webserver_request_failed"><![CDATA[Сервер не смог открыть адрес своего сайта, поэтому проверка не выполнена.]]></string_add>
+	<string_add name="_sys_audit_unlimited"><![CDATA[Без ограничений]]></string_add>
+	<string_add name="_sys_audit_url_rewriting"><![CDATA[Перезапись URL]]></string_add>
+	<string_upd name="_sys_conn_msg_success"><![CDATA[Готово.]]></string_upd>
+	<string_upd name="_sys_et_txt_body_admin_email"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Сообщение от администрации сайта <a href="{site_url}">{site_name}</a>:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{MessageText}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_comment_replied"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{sender_display_name} ответил на Ваш комментарий:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{reply_text}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ответ можно посмотреть здесь: <a href="{page_url}">{page_title}</a>.</p>
+{email_footer}]]></string_upd>
+	<string_add name="_sys_et_txt_body_confirm_email_change"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Подтвердите {new_email} как email вашего аккаунта на {site_name} по этой ссылке:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">или введите этот код:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пока вы его не подтвердите, вход по {email}. Если вы этого не просили, просто не отвечайте на это письмо.</p>
+{email_footer}]]></string_add>
+	<string_upd name="_sys_et_txt_body_system_reported"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Была получена новая жалоба <b>{report_type}</b>:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{report_text}</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{report_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Посмотреть жалобу</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_confirmation"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Привет, {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пожалуйста, подтвердите ваш email, нажав по ссылке:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">или используя код:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_welcome"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Добро пожаловать, {name}!</h1>
+<p style="margin:0 auto 32px auto; max-width:380px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center;">Вы подтвердили свой профиль, и он готов к работе.<br />Добро пожаловать в {site_name}.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 24px auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{site_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Открыть {site_name}</a>
+</td></tr></tbody>
+</table>
+<p class="bx-email-muted" style="margin:32px auto 0 auto; max-width:400px; font:400 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#7b7d81; text-align:center;">Если понадобится помощь, свяжитесь с нами.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_delayed_module_uninstall"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Модуль: <b>{Module}</b></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Результат демонтажа: {Result}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+{email_footer}]]></string_upd>
+	<string_add name="_sys_et_txt_body_email_change_requested"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Кто-то попросил сменить email вашего аккаунта на {site_name} на {new_email}. Он сменится, когда новый адрес будет подтверждён. До тех пор вход по этому адресу.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Если это были не вы, войдите и смените пароль.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{account_settings_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Сменить пароль</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_add>
+	<string_add name="_sys_et_txt_body_email_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Теперь email вашего аккаунта на {site_name} — {new_email}. По этому адресу больше не войти.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Если это были не вы, ответьте на это письмо или свяжитесь с {site_name}.</p>
+{email_footer}]]></string_add>
+	<string_upd name="_sys_et_txt_body_forgot"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Привет {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пожалуйста, нажмите по ссылке, чтобы сбросить свой пароль:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Сбросить мой пароль</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_mem_changed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Уровень членства профиля <b>{profile_name}</b> изменён на <b>{membership_level}</b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_mem_prolonged"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Уровень членства (<b>{membership_level}</b>) профиля <b>{profile_name}</b> был продлён.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_mem_expiration"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваше {membership_name} членство истекает через {expire_days} дней (-1 означает: уже истекло).</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Нажмите по ссылке, чтобы обновить ваше членство:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{page_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Обновить моё членство</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_profile_change_status_active"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Данные вашего аккаунта на сайте {site_name}:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Имя: {account_name}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Email: {account_email}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">URL: <a href="{site_url}">{site_url}</a></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_profile_change_status_pending"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Привет {profile_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш профиль ожидает одобрения. Мы сообщим Вам о результатах в ближайшее время.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_profile_change_status_suspended"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш профиль заблокирован.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account_change_status_activate"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш аккаунт и все связанные с ним профили активированы.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account_change_status_suspended"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш аккаунт и все связанные с ним профили заблокированы.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{account_output}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account_password_expired"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Срок действия вашего пароля истекает {expired_date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пожалуйста, войдите в систему и измените пароль.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_pruning"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{pruning_output}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_failed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Обновление не удалось в связи со следующей ошибкой:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{error_msg}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_modules_failed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">В процессе обновления модулей произошли следующие ошибки:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{conclusion}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_success"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Сайт был удачно обновлён до {new_version}.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Нужно зайти в <b>Студию &gt; Магазин Приложений &gt; Обновления</b>, чтобы проверить обновления для модулей.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_modules_success"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Следующие модули были удачно обновлены.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_bg_operation_failed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Фоновый процесс завершился ошибкой со следующим сообщением.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_manage_approve"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">У команды модераторов есть к вам вопрос о '{content_title}':</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
+{email_footer}]]></string_upd>
+	<string_add name="_sys_et_txt_body_password_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Здравствуйте, {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Пароль вашего аккаунта на {site_name} изменён.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Если это были не вы, сразу сбросьте пароль.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Сбросить пароль</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_add>
+	<string_add name="_sys_et_txt_name_system_confirm_email_change"><![CDATA[Подтверждение нового email]]></string_add>
+	<string_add name="_sys_et_txt_name_system_email_change_requested"><![CDATA[Уведомление о смене email]]></string_add>
+	<string_add name="_sys_et_txt_name_system_email_changed"><![CDATA[Уведомление: email изменён]]></string_add>
+	<string_add name="_sys_et_txt_name_system_password_changed"><![CDATA[Уведомление: пароль изменён]]></string_add>
+	<string_add name="_sys_et_txt_subject_confirm_email_change"><![CDATA[Подтвердите новый адрес email]]></string_add>
+	<string_add name="_sys_et_txt_subject_email_change_requested"><![CDATA[Ваш адрес email меняется]]></string_add>
+	<string_add name="_sys_et_txt_subject_email_changed"><![CDATA[Ваш адрес email изменён]]></string_add>
+	<string_add name="_sys_et_txt_subject_password_changed"><![CDATA[Ваш пароль изменён]]></string_add>
+	<string_add name="_sys_form_account_input_email_info_pending"><![CDATA[Ждёт подтверждения: {0}. Откройте ссылку, которую мы туда отправили. Чтобы отменить, сохраните текущий email.]]></string_add>
+	<string_upd name="_sys_form_account_input_name"><![CDATA[Ваше имя]]></string_upd>
+	<string_upd name="_sys_form_account_input_name_error"><![CDATA[Введите ваше имя. Оно не может начинаться с @.]]></string_upd>
+	<string_add name="_sys_form_account_input_password_info"><![CDATA[Не меньше 8 символов, с заглавной и строчной латинскими буквами и цифрой.]]></string_add>
+	<string_add name="_sys_form_account_input_password_new"><![CDATA[Новый пароль]]></string_add>
+	<string_add name="_sys_form_account_input_password_new_confirm"><![CDATA[Повторите новый пароль]]></string_add>
+	<string_upd name="_sys_form_account_input_password_error"><![CDATA[Используйте не меньше 8 символов: хотя бы одну заглавную букву, одну строчную и одну цифру.]]></string_upd>
+	<string_upd name="_sys_form_account_input_publish"><![CDATA[Зарегистрироваться]]></string_upd>
+	<string_add name="_sys_form_input_counter_limit"><![CDATA[Достигнут предел в {0} символов.]]></string_add>
+	<string_add name="_sys_form_confirm_phone_input_code_error_attempts"><![CDATA[Слишком много неверных кодов. <a href="{0}">Отправить новый код</a>.]]></string_add>
+	<string_add name="_sys_form_input_privacy_label"><![CDATA[Кто это видит: {0}]]></string_add>
+	<string_add name="_sys_form_txt_optional"><![CDATA[(необязательно)]]></string_add>
+	<string_add name="_sys_form_txt_unselect_all"><![CDATA[Снять всё]]></string_add>
+	<string_add name="_sys_grid_lbl_apps"><![CDATA[Приложения]]></string_add>
+	<string_add name="_sys_grid_txt_n_selected"><![CDATA[Выбрано: {0}]]></string_add>
+	<string_add name="_sys_grid_txt_clear_selection"><![CDATA[Снять выделение]]></string_add>
+	<string_add name="_sys_grid_txt_select_rows"><![CDATA[Сначала выберите строки.]]></string_add>
+	<string_add name="_sys_grid_txt_sort_by"><![CDATA[Сортировать по]]></string_add>
+	<string_add name="_sys_grid_txt_view"><![CDATA[Вид]]></string_add>
+	<string_add name="_sys_grid_txt_view_cards"><![CDATA[Карточки]]></string_add>
+	<string_add name="_sys_grid_txt_view_rows"><![CDATA[Строки]]></string_add>
+	<string_add name="_sys_grid_txt_show_items"><![CDATA[Показать пункты]]></string_add>
+	<string_add name="_sys_grid_lbl_show_in_apps"><![CDATA[Показывать в приложениях (веб-приложение, iOS, Android)]]></string_add>
+	<string_add name="_sys_grid_lbl_show_on_site"><![CDATA[Показывать на сайте]]></string_add>
+	<string_add name="_sys_grid_lbl_site"><![CDATA[Сайт]]></string_add>
+	<string_add name="_sys_inst_back"><![CDATA[Назад]]></string_add>
+	<string_upd name="_sys_inst_conf_desc_admin_email"><![CDATA[С ним вы входите на сайт, на него приходят уведомления сайта.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_admin_pwd"><![CDATA[Не менее {0} символов.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_admin_username"><![CDATA[Ваше собственное имя, а не роль.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_host"><![CDATA[Хост сервера MySQL или MariaDB.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_name"><![CDATA[Существующая пустая база данных.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_port"><![CDATA[Оставьте пустым для порта по умолчанию.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_pwd"><![CDATA[Пароль этого пользователя.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_sock"><![CDATA[Оставьте пустым, если подключение идёт не через файл сокета.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_user"><![CDATA[Пользователь, который может создавать и менять таблицы в этой базе.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_engine"><![CDATA[Все таблицы сайта используют этот движок. InnoDB, движок по умолчанию, сохраняет данные при внезапной остановке сервера.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_language"><![CDATA[Первый язык сайта.]]></string_upd>
+	<string_add name="_sys_inst_conf_desc_modules"><![CDATA[Выбраны приложения для начала работы. Добавлять и удалять приложения можно в любой момент в Студии.]]></string_add>
+	<string_upd name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Связывает сайт с вашей учётной записью UNA для приложений и обновлений из UNA Market. Можно добавить позже в Студии. Чтобы получить ключ и секрет, <a target="_blank" rel="noopener" href="https://unacms.com/login">войдите на unacms.com</a>, создайте проект для этого сайта (или откройте существующий) и скопируйте ключ и секрет проекта.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_root_dir"><![CDATA[Папка на сервере с файлами UNA, с косой чертой в конце.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_site_email"><![CDATA[Адрес, с которого сайт отправляет письма.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_site_url"><![CDATA[Адрес сайта, с косой чертой в конце.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_template"><![CDATA[Внешний вид сайта. Его можно сменить в Студии.]]></string_upd>
+	<string_add name="_sys_inst_conf_err_db_connect"><![CDATA[Проверьте хост, а также порт или сокет, если вы их указали.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_host"><![CDATA[Здесь ничего не отвечает. Укажите хост MySQL из панели хостинга, часто это localhost; в Docker — имя сервиса базы данных, например mysql.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_name"><![CDATA[Сначала создайте пустую базу данных с этим именем или укажите имя уже созданной.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_not_allowed"><![CDATA[Проверьте имя. Если база данных есть, дайте этому пользователю все права на неё в панели хостинга; если нет, сначала создайте её пустой.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_password"><![CDATA[Проверьте пароль этого пользователя.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_user"><![CDATA[Проверьте имя пользователя и то, что ему можно подключаться с этого веб-сервера.]]></string_add>
+	<string_add name="_sys_inst_conf_err_email"><![CDATA[Введите адрес электронной почты, например name@example.com.]]></string_add>
+	<string_add name="_sys_inst_conf_err_length_exact"><![CDATA[Должно быть {0} символов.]]></string_add>
+	<string_add name="_sys_inst_conf_err_password"><![CDATA[Используйте не менее {0} символов.]]></string_add>
+	<string_add name="_sys_inst_conf_err_required"><![CDATA[Заполните это поле.]]></string_add>
+	<string_add name="_sys_inst_conf_err_url"><![CDATA[Введите адрес, начиная с http:// или https://.]]></string_add>
+	<string_add name="_sys_inst_conf_err_url_slash"><![CDATA[Адрес должен заканчиваться косой чертой (/).]]></string_add>
+	<string_upd name="_sys_inst_conf_error"><![CDATA[Проверьте это значение.]]></string_upd>
+	<string_add name="_sys_inst_conf_example"><![CDATA[Пример: {0}]]></string_add>
+	<string_upd name="_sys_inst_conf_field_admin_email"><![CDATA[Ваш email]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_admin_pwd"><![CDATA[Пароль]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_admin_username"><![CDATA[Ваше имя]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_db_host"><![CDATA[Хост базы данных]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_db_port"><![CDATA[Порт базы данных]]></string_upd>
+	<string_add name="_sys_inst_conf_field_modules"><![CDATA[Приложения]]></string_add>
+	<string_upd name="_sys_inst_conf_field_oauth_key"><![CDATA[Ключ UNA]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_site_email"><![CDATA[Email отправителя]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_template"><![CDATA[Дизайн]]></string_upd>
+	<string_upd name="_sys_inst_conf_found"><![CDATA[<span class="bx-install-chip bx-install-chip-ok">Определено</span>]]></string_upd>
+	<string_add name="_sys_inst_conf_module_needs_composer"><![CDATA[Сначала выполните composer install в его папке]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_admin"><![CDATA[Инструменты сайта]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_admin_desc"><![CDATA[Защита от спама, текстовый редактор, аналитика и другие инструменты для работы сайта.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communication"><![CDATA[Сообщения и уведомления]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communication_desc"><![CDATA[Как участники узнают новости друг от друга и от сайта. Для обновлений Мессенджера в реальном времени нужен сервер Jot.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communities"><![CDATA[Сообщества]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communities_desc"><![CDATA[Где встречаются участники: обсуждения, группы, события и другое.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_content"><![CDATA[Лента и публикации]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_content_desc"><![CDATA[Чем делятся участники: лента, записи, фото, видео и файлы.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_developer"><![CDATA[Инструменты разработчика и переноса]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_developer_desc"><![CDATA[Для разработки приложений UNA и переноса сайта с Dolphin или SocialEngine. Не для рабочего сайта.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_money"><![CDATA[Платежи и магазин]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_money_desc"><![CDATA[Продажи, платные уровни и пожертвования. Каждому нужен платёжный провайдер.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_other"><![CDATA[Другие]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_other_desc"><![CDATA[Другие приложения.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_profiles"><![CDATA[Профили]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_profiles_desc"><![CDATA[Кто есть на сайте: участники и организации.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_services"><![CDATA[Сторонние сервисы]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_services_desc"><![CDATA[Нужны своя учётная запись, лицензия или серверное ПО.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_signin"><![CDATA[Вход через другие сервисы]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_signin_desc"><![CDATA[Каждому нужны ключи от своего сервиса.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_select_all"><![CDATA[Выбрать все]]></string_add>
+	<string_add name="_sys_inst_conf_modules_select_none"><![CDATA[Снять все]]></string_add>
+	<string_add name="_sys_inst_conf_modules_select_starter"><![CDATA[Стартовый набор]]></string_add>
+	<string_add name="_sys_inst_conf_modules_selected"><![CDATA[Выбрано: {0} из {1}]]></string_add>
+	<string_add name="_sys_inst_conf_next_apps"><![CDATA[Далее: приложения]]></string_add>
+	<string_add name="_sys_inst_conf_next_site"><![CDATA[Далее: сайт и ваша учётная запись]]></string_add>
+	<string_upd name="_sys_inst_conf_not_found"><![CDATA[<span class="bx-install-chip bx-install-chip-bad">Не определено</span>]]></string_upd>
+	<string_upd name="_sys_inst_conf_section_db_config"><![CDATA[База данных]]></string_upd>
+	<string_add name="_sys_inst_conf_section_db_config_desc"><![CDATA[UNA хранит всё в базе данных MySQL или MariaDB. Сначала создайте пустую базу и пользователя для неё в панели хостинга.]]></string_add>
+	<string_upd name="_sys_inst_conf_section_link_with_market"><![CDATA[Учётная запись UNA (необязательно)]]></string_upd>
+	<string_upd name="_sys_inst_conf_section_modules"><![CDATA[Язык, дизайн и приложения]]></string_upd>
+	<string_add name="_sys_inst_conf_section_operator"><![CDATA[Ваша учётная запись оператора]]></string_add>
+	<string_add name="_sys_inst_conf_section_operator_desc"><![CDATA[Эта учётная запись управляет сайтом и Студией. Свой профиль на сайте у неё появится позже, когда вы его создадите.]]></string_add>
+	<string_upd name="_sys_inst_conf_section_site_info"><![CDATA[Сайт]]></string_upd>
+	<string_add name="_sys_inst_conf_submit"><![CDATA[Установить UNA]]></string_add>
+	<string_add name="_sys_inst_conf_submit_apps"><![CDATA[Установить UNA с приложениями: {0}]]></string_add>
+	<string_upd name="_sys_inst_finish"><![CDATA[UNA установлена]]></string_upd>
+	<string_upd name="_sys_inst_help_finish"><![CDATA[Помощь с cron]]></string_upd>
+	<string_upd name="_sys_inst_help_permissions"><![CDATA[Помощь с установкой]]></string_upd>
+	<string_upd name="_sys_inst_help_site_config"><![CDATA[Помощь с базой данных и настройками]]></string_upd>
+	<string_add name="_sys_inst_in_progress"><![CDATA[Идёт установка]]></string_add>
+	<string_add name="_sys_inst_modules_back_to_progress"><![CDATA[Вернуться к установке]]></string_add>
+	<string_add name="_sys_inst_modules_count"><![CDATA[Установлено: {0} из {1}]]></string_add>
+	<string_add name="_sys_inst_modules_failed"><![CDATA[Не удалось завершить установку]]></string_add>
+	<string_add name="_sys_inst_modules_finishing"><![CDATA[Завершение…]]></string_add>
+	<string_add name="_sys_inst_modules_lead"><![CDATA[Не закрывайте эту вкладку до конца установки. Приложения устанавливаются по одному, поэтому это работает на любом сервере.]]></string_add>
+	<string_add name="_sys_inst_modules_network_error"><![CDATA[Сервер не ответил. Проверьте, что он работает, и повторите.]]></string_add>
+	<string_add name="_sys_inst_modules_retry"><![CDATA[Повторить]]></string_add>
+	<string_add name="_sys_inst_modules_skip"><![CDATA[Пропустить приложение]]></string_add>
+	<string_add name="_sys_inst_modules_state_active"><![CDATA[устанавливается]]></string_add>
+	<string_add name="_sys_inst_modules_state_done"><![CDATA[установлено]]></string_add>
+	<string_add name="_sys_inst_modules_state_failed"><![CDATA[ошибка]]></string_add>
+	<string_add name="_sys_inst_modules_state_skipped"><![CDATA[пропущено]]></string_add>
+	<string_add name="_sys_inst_modules_title"><![CDATA[Установка приложений]]></string_add>
+	<string_upd name="_sys_inst_msg_admin_account_not_found"><![CDATA[Учётная запись оператора не найдена по email: {0}]]></string_upd>
+	<string_add name="_sys_inst_msg_db_err_access"><![CDATA[Сервер базы данных не принял этого пользователя и пароль.]]></string_add>
+	<string_upd name="_sys_inst_msg_db_err_connect"><![CDATA[Не удалось подключиться к базе данных. Проверьте хост, пользователя и пароль.]]></string_upd>
+	<string_add name="_sys_inst_msg_db_err_host"><![CDATA[По этому адресу не отвечает сервер базы данных.]]></string_add>
+	<string_add name="_sys_inst_msg_db_err_not_allowed"><![CDATA[У этого пользователя нет доступной ему базы данных с таким именем.]]></string_add>
+	<string_upd name="_sys_inst_msg_db_err_select"><![CDATA[На сервере нет базы данных с таким именем.]]></string_upd>
+	<string_upd name="_sys_inst_msg_finish"><![CDATA[Что дальше:]]></string_upd>
+	<string_add name="_sys_inst_msg_finish_cron_docker"><![CDATA[Задания по расписанию уже работают: сервис cron в Docker запускает periodic/cron.php каждую минуту.]]></string_add>
+	<string_upd name="_sys_inst_msg_finish_cron_jobs"><![CDATA[Добавьте эту строку в crontab сервера:]]></string_upd>
+	<string_upd name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Удалите папку <b>install</b> с сервера. Сайт откроется после этого.]]></string_upd>
+	<string_upd name="_sys_inst_msg_form_error"><![CDATA[Проверьте отмеченные поля.]]></string_upd>
+	<string_add name="_sys_inst_msg_install_in_progress"><![CDATA[UNA устанавливается из другого браузера: продолжите там. Если та установка брошена, удалите на сервере inc/header.installing.php и inc/install.queue.php, затем обновите эту страницу.]]></string_add>
+	<string_add name="_sys_inst_msg_module_needs_composer"><![CDATA[Сначала выполните composer install в {0}.]]></string_add>
+	<string_add name="_sys_inst_msg_permissions_ok"><![CDATA[Всё готово: UNA может записывать во все нужные папки.]]></string_add>
+	<string_add name="_sys_inst_msg_queue_not_empty"><![CDATA[Ещё не все приложения установлены.]]></string_add>
+	<string_add name="_sys_inst_msg_queue_not_found"><![CDATA[Эта установка начата не в этом браузере или уже завершена. Начните заново с настройки сайта.]]></string_add>
+	<string_upd name="_sys_inst_msg_remove_install"><![CDATA[Удалите папку <b>install</b> с сервера и обновите эту страницу. Затем <a href="../studio/">откройте Студию</a>, чтобы добавить приложения и настроить сайт.]]></string_upd>
+	<string_add name="_sys_inst_open_site"><![CDATA[Открыть сайт]]></string_add>
+	<string_add name="_sys_inst_open_studio"><![CDATA[Открыть Студию]]></string_add>
+	<string_upd name="_sys_inst_site_config"><![CDATA[Настройка сайта]]></string_upd>
+	<string_add name="_sys_inst_site_config_lead"><![CDATA[Шаги 2–4: база данных, сайт и ваша учётная запись, затем приложения.]]></string_add>
+	<string_add name="_sys_inst_step_apps"><![CDATA[Приложения]]></string_add>
+	<string_add name="_sys_inst_step_database"><![CDATA[База данных]]></string_add>
+	<string_add name="_sys_inst_step_done"><![CDATA[Готово]]></string_add>
+	<string_add name="_sys_inst_step_install"><![CDATA[Установка]]></string_add>
+	<string_add name="_sys_inst_step_server"><![CDATA[Сервер]]></string_add>
+	<string_add name="_sys_inst_step_site"><![CDATA[Сайт]]></string_add>
+	<string_add name="_sys_inst_steps"><![CDATA[Шаги установки]]></string_add>
+	<string_add name="_sys_inst_title_meta"><![CDATA[Установка]]></string_add>
+	<string_add name="_sys_inst_welcome"><![CDATA[Установка UNA]]></string_add>
+	<string_add name="_sys_inst_welcome_lead"><![CDATA[Установка UNA на этот сервер проходит в шесть шагов и занимает несколько минут.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_apps"><![CDATA[Выбор приложений для начала работы.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_database"><![CDATA[Подключение к пустой базе данных MySQL или MariaDB.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_done"><![CDATA[Настройка заданий по расписанию и переход на сайт.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_install"><![CDATA[UNA устанавливает приложения по одному.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_server"><![CDATA[Проверка требований к серверу и прав на запись в папки UNA.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_site"><![CDATA[Название и адрес сайта, ваша учётная запись оператора.]]></string_add>
+	<string_upd name="_sys_location_country"><![CDATA[<i class="sys-icon map-pin"></i> {0}]]></string_upd>
+	<string_upd name="_sys_location_country_city"><![CDATA[<i class="sys-icon map-pin"></i> {2}, {1}, {0}]]></string_upd>
+	<string_upd name="_sys_location_country_city_street"><![CDATA[<i class="sys-icon map-pin"></i> {4} {3}, {2}, {1}, {0} ]]></string_upd>
+	<string_add name="_sys_location_ph_country"><![CDATA[Страна]]></string_add>
+	<string_upd name="_sys_location_status_undef"><![CDATA[Выберите страну, чтобы найти адрес]]></string_upd>
+	<string_upd name="_sys_manage_err_cannot_perform_action"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+	<string_add name="_sys_menu_item_info_onboarding_cover"><![CDATA[Она видна вверху главной страницы, которую гости видят первой.]]></string_add>
+	<string_add name="_sys_menu_item_info_onboarding_join"><![CDATA[Присоединиться к сайту может любой.]]></string_add>
+	<string_add name="_sys_menu_item_info_onboarding_logo"><![CDATA[Он виден в шапке сайта, в письмах и в приложениях.]]></string_add>
+	<string_add name="_sys_menu_item_info_onboarding_profile"><![CDATA[От имени этого профиля вы публикуете и отвечаете на сайте.]]></string_add>
+	<string_add name="_sys_menu_item_title_color_scheme"><![CDATA[Тема]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_privacy"><![CDATA[Приватность]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Аккаунт]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string_add>
+	<string_add name="_sys_menu_item_title_public_menu"><![CDATA[Обзор]]></string_add>
+	<string_add name="_sys_menu_item_title_member_followings"><![CDATA[Подписки]]></string_add>
+	<string_add name="_sys_menu_item_title_member_menu"><![CDATA[Вы]]></string_add>
+	<string_add name="_sys_menu_item_title_switch_profile"><![CDATA[Сменить профиль]]></string_add>
+	<string_upd name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в X]]></string_upd>
+	<string_add name="_sys_menu_item_title_sm_join_requested_short"><![CDATA[Запрос отправлен]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_short"><![CDATA[Вступить]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_accept"><![CDATA[Принять]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_decline"><![CDATA[Отклонить]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_invited"><![CDATA[Вас пригласили]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_joined"><![CDATA[Вы участник]]></string_add>
+	<string_add name="_sys_menu_item_title_system_da_profile"><![CDATA[Профиль и переключатель]]></string_add>
+	<string_add name="_sys_menu_item_title_system_da_stats"><![CDATA[Статистика]]></string_add>
+	<string_add name="_sys_menu_item_title_system_da_preferences"><![CDATA[Предпочтения]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_privacy"><![CDATA[Приватность]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Аккаунт (раздел)]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_section_profile"><![CDATA[Текущий профиль (раздел)]]></string_add>
+	<string_add name="_sys_menu_item_title_system_apps_menu"><![CDATA[Меню приложений]]></string_add>
+	<string_add name="_sys_menu_item_title_system_member_memberships"><![CDATA[Членство участника]]></string_add>
+	<string_add name="_sys_menu_item_title_system_switch_profile"><![CDATA[Переключение профиля]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в X]]></string_upd>
+	<string_add name="_sys_menu_set_title_profile_memberships"><![CDATA[Членство профиля]]></string_add>
+	<string_add name="_sys_menu_set_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string_add>
+	<string_add name="_sys_menu_set_title_account_preferences"><![CDATA[Предпочтения]]></string_add>
+	<string_add name="_sys_menu_set_title_apps_menu"><![CDATA[Меню приложений]]></string_add>
+	<string_add name="_sys_menu_set_title_apps_sidebar"><![CDATA[Боковая панель приложений]]></string_add>
+	<string_add name="_sys_menu_set_title_toolbar_application"><![CDATA[Панель инструментов приложения]]></string_add>
+	<string_add name="_sys_menu_template_title_list_desc"><![CDATA[Список с описаниями]]></string_add>
+	<string_add name="_sys_menu_template_title_list_desc_cards"><![CDATA[Карточки с описаниями]]></string_add>
+	<string_add name="_sys_menu_template_title_tiles"><![CDATA[Плитки]]></string_add>
+	<string_add name="_sys_menu_title_apps_menu"><![CDATA[Меню приложений]]></string_add>
+	<string_add name="_sys_menu_title_apps_sidebar"><![CDATA[Боковая панель приложений]]></string_add>
+	<string_add name="_sys_menu_title_profile_memberships"><![CDATA[Членство профиля]]></string_add>
+	<string_add name="_sys_menu_title_profile_stats_tiles"><![CDATA[Профиль - Статистика плитками]]></string_add>
+	<string_add name="_sys_menu_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string_add>
+	<string_add name="_sys_menu_title_account_preferences"><![CDATA[Предпочтения]]></string_add>
+	<string_add name="_sys_menu_title_toolbar_application"><![CDATA[Панель инструментов приложения]]></string_add>
+	<string_add name="_sys_menu_title_tabbar"><![CDATA[Панель вкладок]]></string_add>
+	<string_add name="_sys_menu_set_title_tabbar"><![CDATA[Панель вкладок]]></string_add>
+	<string_add name="_sys_menu_title_onboarding_operator"><![CDATA[Начало работы: операторы]]></string_add>
+	<string_add name="_sys_menu_set_title_onboarding_operator"><![CDATA[Начало работы: операторы]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding"><![CDATA[Начало работы]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_cover"><![CDATA[Добавьте обложку]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_join"><![CDATA[Выберите, кто может присоединиться]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_logo"><![CDATA[Добавьте логотип]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_profile"><![CDATA[Создайте свой профиль]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding"><![CDATA[Начало работы]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_cover"><![CDATA[Добавьте обложку]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_join"><![CDATA[Выберите, кто может присоединиться]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_logo"><![CDATA[Добавьте логотип]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_profile"><![CDATA[Создайте свой профиль]]></string_add>
+	<string_upd name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} упоминает вас: {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string_upd>
+	<string_add name="_sys_page_block_title_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+	<string_add name="_sys_page_block_title_account_settings_privacy"><![CDATA[Кто может видеть вас и писать вам]]></string_add>
+	<string_add name="_sys_page_block_title_system_create_profile"><![CDATA[Создать профиль (аккаунты без профиля)]]></string_add>
+	<string_add name="_sys_page_block_title_create_account_intro"><![CDATA[Вступление к регистрации]]></string_add>
+	<string_add name="_sys_page_block_title_onboarding"><![CDATA[Начало работы]]></string_add>
+	<string_upd name="_sys_page_block_title_membership_stats"><![CDATA[Ваше членство]]></string_upd>
+	<string_add name="_sys_page_block_desc_create_account"><![CDATA[Создайте аккаунт, чтобы присоединиться к сообществу.]]></string_add>
+	<string_add name="_sys_page_block_desc_login"><![CDATA[Введите данные, чтобы продолжить.]]></string_add>
+	<string_add name="_sys_page_block_title_dashboard_profiles"><![CDATA[Ваши профили]]></string_add>
+	<string_add name="_sys_page_block_title_system_dashboard_account"><![CDATA[Ваш аккаунт (панель)]]></string_add>
+	<string_add name="_sys_page_block_title_dashboard_account"><![CDATA[Ваш аккаунт]]></string_add>
+	<string_add name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Ваши профили (панель)]]></string_add>
+	<string_add name="_sys_page_block_title_system_onboarding"><![CDATA[Список «Начало работы»]]></string_add>
+	<string_add name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Список «Начало работы» для операторов]]></string_add>
+	<string_add name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Меню профиля (приложения)]]></string_add>
+	<string_add name="_sys_page_block_title_system_search_window"><![CDATA[Поиск]]></string_add>
+	<string_upd name="_sys_page_lang_block_terms"><![CDATA[<h2>Об этих правилах</h2>
+<p>Эти правила действуют для всех, кто заходит на {site_title} (далее «сайт») или пользуется им. Пользуясь сайтом или регистрируясь на нём, вы соглашаетесь с ними. Если вы не согласны, пожалуйста, не пользуйтесь сайтом.</p>
+<h2>Кто управляет сайтом</h2>
+<p>Сайтом {site_title} управляет его владелец (далее «мы»). Мы устанавливаем эти правила, решаем, как они применяются, и следим за их соблюдением.</p>
+<p>Сайт сделан на UNA — программе с открытым исходным кодом для сообществ, которую разрабатывает UNA, Inc. UNA, Inc. не управляет этим сайтом, не является стороной этих правил и не контролирует ни их, ни то, что здесь публикуется, ни то, как мы их применяем. Вопросы и жалобы о сайте направляйте нам, а не UNA, Inc.</p>
+<h2>Ваша учётная запись</h2>
+<ul>
+<li>Для регистрации вам должно быть не меньше 16 лет или больше, если этого требует закон там, где вы живёте.</li>
+<li>Указывайте при регистрации верные данные и поддерживайте их в актуальном состоянии.</li>
+<li>Храните пароль в тайне. Вы отвечаете за то, что происходит в вашей учётной записи, поэтому сразу сообщите нам, если думаете, что ею воспользовался кто-то другой.</li>
+<li>Не создавайте учётную запись за другого человека без его разрешения.</li>
+</ul>
+<h2>Ваши материалы</h2>
+<p>Права на то, что вы публикуете, остаются за вами. Публикуя материал, вы разрешаете нам хранить его, показывать выбранной вами аудитории и делать копии, которые нужны для работы сайта. Это разрешение прекращается, когда вы удаляете материал или учётную запись, кроме копий, которыми уже поделились другие участники, и копий, которые мы должны хранить ограниченное время, например резервных.</p>
+<p>Вы отвечаете за то, что публикуете. Публикуйте только то, чем имеете право делиться.</p>
+<h2>Правила поведения</h2>
+<p>На сайте запрещено:</p>
+<ul>
+<li>нарушать закон, помогать в этом другим или подталкивать их к этому;</li>
+<li>преследовать, запугивать и травить людей или нападать на них из-за того, кто они;</li>
+<li>раскрывать чужие личные данные без согласия их владельца;</li>
+<li>публиковать материалы, нарушающие чужие авторские права, права на товарные знаки и другие права;</li>
+<li>публиковать что-либо, что сексуализирует детей или эксплуатирует их;</li>
+<li>рассылать спам, мошенничать и выдавать себя за другого человека;</li>
+<li>загружать вредоносные программы, пытаться попасть в чужие учётные записи и закрытые разделы, собирать данные других участников без их согласия или мешать работе сайта.</li>
+</ul>
+<p>У сообщества могут быть и свои правила, которые показаны на сайте. Они тоже действуют.</p>
+<h2>Модерация</h2>
+<p>Мы можем проверять, скрывать и удалять материалы, а также ограничивать, приостанавливать и закрывать учётные записи, которые нарушают эти правила или создают угрозу сайту и другим людям. Когда это возможно, мы сообщим, что сделали и почему. Чтобы пожаловаться на материал или участника, воспользуйтесь кнопкой «Пожаловаться» на сайте или свяжитесь с нами.</p>
+<h2>Платные функции</h2>
+<p>Если на сайте есть платные уровни участия или другие платные функции, цена, состав и порядок отмены показываются до оплаты. Продление и возврат денег проходят на условиях, показанных при оплате, и по закону, который к вам применяется.</p>
+<h2>Чужие материалы и другие сайты</h2>
+<p>Материалы участников принадлежат их авторам и не обязательно отражают наше мнение. Ссылки на другие сайты даны для удобства. Мы не отвечаем за эти сайты.</p>
+<h2>Удаление учётной записи</h2>
+<p>Вы можете в любой момент перестать пользоваться сайтом и удалить учётную запись в её настройках. Мы можем закрыть учётную запись, как описано в разделе «Модерация».</p>
+<h2>Отказ от гарантий и ограничение ответственности</h2>
+<p>Мы предоставляем сайт «как есть» и «по мере доступности». Мы стараемся, чтобы он работал и был безопасным, но не можем обещать, что он всегда будет доступен, без ошибок и в безопасности. В той мере, в какой это допускает закон, мы не отвечаем за косвенные убытки и за убытки от материалов и действий других участников. Эти правила не лишают вас прав, которые даёт вам закон и от которых нельзя отказаться.</p>
+<h2>Изменения правил</h2>
+<p>Мы можем обновлять эти правила. Действующая версия всегда находится на этой странице. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте. Если вы продолжаете пользоваться сайтом после вступления изменений в силу, вы принимаете обновлённые правила.</p>
+<h2>Применимое право</h2>
+<p>К этим правилам применяется право страны, в которой мы находимся. Если вы живёте в другой стране, за вами сохраняется защита, которую дают её обязательные законы о правах потребителей.</p>
+<h2>Контакты</h2>
+<p>С вопросами об этих правилах обращайтесь к нам по контактам, указанным на сайте.</p>]]></string_upd>
+	<string_upd name="_sys_page_lang_block_privacy"><![CDATA[<h2>Кто отвечает за ваши данные</h2>
+<p>Сайтом {site_title} (далее «сайт») управляет его владелец (далее «мы»). Мы решаем, какие персональные данные собирает сайт, зачем и как долго их хранить, и отвечаем за них. В некоторых законах эта роль называется оператором или контролёром данных.</p>
+<p>Сайт сделан на UNA — программе с открытым исходным кодом для сообществ, которую разрабатывает UNA, Inc. UNA, Inc. не управляет этим сайтом. Сбор, использование и хранение персональных данных здесь полностью зависят от нашего решения и находятся под нашим контролем, а не под контролем UNA, Inc. Вопросы и запросы о ваших данных направляйте нам.</p>
+<h2>Что мы собираем</h2>
+<ul>
+<li><strong>Данные учётной записи:</strong> адрес электронной почты и пароль, а также номер телефона, если вы его добавите. Мы не храним пароль в читаемом виде.</li>
+<li><strong>Профиль и материалы:</strong> данные и фотографии профиля, а также то, что вы публикуете, комментируете, оцениваете, на что подписываетесь и куда вступаете. Кто видит каждый материал, зависит от выбранных вами настроек приватности.</li>
+<li><strong>Сообщения:</strong> личные сообщения хранятся на серверах сайта, чтобы их можно было доставить.</li>
+<li><strong>Данные об использовании и устройстве:</strong> какие страницы вы открываете и что делаете, а также время, IP-адрес, браузер, тип устройства и язык. Наши серверы также ведут журналы запросов и ошибок.</li>
+<li><strong>Cookies и локальное хранилище:</strong> один cookie сохраняет вход на сайт, другие запоминают настройки, например язык и тему. Если вы пользуетесь нашим мобильным приложением и разрешили уведомления, мы храним токен устройства, чтобы их отправлять. Если мы подключим сервисы других компаний, например аналитику или рекламу, мы назовём их в этой политике вместе с cookies, которые они ставят.</li>
+<li><strong>Платежи:</strong> если вы что-то покупаете на сайте, оплату обрабатывает платёжный сервис. Мы получаем подтверждение оплаты, а не полные данные карты.</li>
+<li><strong>От других людей:</strong> другие участники могут упомянуть вас, отметить или пригласить по электронной почте.</li>
+</ul>
+<h2>Зачем мы их используем</h2>
+<ul>
+<li>чтобы ваша учётная запись работала, а ваши материалы видела выбранная вами аудитория;</li>
+<li>чтобы отправлять письма и уведомления о вашей учётной записи и активности; их можно отключить в настройках, кроме обязательных, например для сброса пароля;</li>
+<li>чтобы присылать новости сайта, только если вы согласились их получать;</li>
+<li>чтобы сайт оставался безопасным: бороться со спамом, злоупотреблениями и мошенничеством и разбирать жалобы;</li>
+<li>чтобы понимать, как пользуются сайтом, и улучшать его;</li>
+<li>чтобы выполнять требования закона.</li>
+</ul>
+<p>Если закон требует правового основания для обработки персональных данных, мы опираемся на соглашение с вами (Правила пользования), наш законный интерес в том, чтобы сайт был безопасным и полезным, ваше согласие (его можно отозвать в любой момент) и обязанности, которые возлагает на нас закон.</p>
+<h2>Кто может их видеть</h2>
+<ul>
+<li><strong>Другие участники и посетители</strong> видят ваш профиль и публикации в пределах ваших настроек приватности.</li>
+<li><strong>Сервисы, которые помогают нам вести сайт,</strong> например хостинг, хранилище файлов, отправка писем и приём платежей, обрабатывают данные по нашему поручению и только для оказания своих услуг.</li>
+<li><strong>Государственные органы</strong> получают данные, когда этого требует закон или когда это нужно для защиты чьих-то прав и безопасности.</li>
+<li><strong>Новый владелец</strong> получает данные, если сайт перейдёт к кому-то другому, и эта политика продолжит действовать.</li>
+</ul>
+<p>Мы не продаём ваши персональные данные и не передаём их для рекламы.</p>
+<p>Наши серверы и сервисы могут находиться в других странах. Если этого требует закон, данные, которые туда передаются, защищены мерами, которые он предусматривает, например стандартными договорными условиями.</p>
+<h2>Как долго мы их храним</h2>
+<p>Данные учётной записи и материалы хранятся, пока существует учётная запись. Когда вы удаляете учётную запись, мы удаляем профиль и удаляем или обезличиваем ваши материалы в течение 30 дней, кроме того, что обязаны хранить по закону. Копии в резервных копиях удаляются в течение 90 дней. Журналы серверов хранятся до 90 дней.</p>
+<h2>Ваши права</h2>
+<ul>
+<li><strong>Доступ и копия:</strong> вы можете узнать у нас, какие данные о вас мы храним, и получить их копию.</li>
+<li><strong>Исправление:</strong> большую часть данных можно исправить самостоятельно в настройках профиля и учётной записи или попросить об этом нас.</li>
+<li><strong>Удаление:</strong> вы можете удалить свои материалы или всю учётную запись в её настройках.</li>
+<li><strong>Возражение и согласие:</strong> вы можете возразить против некоторых способов использования данных и отозвать данное согласие, например отписавшись от рассылки.</li>
+</ul>
+<p>Чтобы воспользоваться этими правами, свяжитесь с нами. Сначала нам может понадобиться подтвердить вашу личность. В зависимости от того, где вы живёте, вы также можете подать жалобу в орган по защите персональных данных.</p>
+<h2>Безопасность</h2>
+<p>Мы принимаем разумные меры для защиты ваших данных, например ограничиваем круг людей, у которых есть к ним доступ. Полностью защищённых систем не бывает, поэтому мы не можем этого гарантировать. Используйте надёжный пароль, который вы больше нигде не используете. Если утечка затронет ваши данные, мы сообщим вам, когда этого требует закон.</p>
+<h2>Дети</h2>
+<p>Сайт не предназначен для детей младше 16 лет. Мы сознательно не собираем их данные. Если вы считаете, что ребёнок передал нам персональные данные, свяжитесь с нами, и мы их удалим.</p>
+<h2>Изменения политики</h2>
+<p>Мы можем обновлять эту политику. Действующая версия всегда находится на этой странице. О существенных изменениях мы сообщим участникам до того, как они вступят в силу, например на сайте или по электронной почте.</p>
+<h2>Контакты</h2>
+<p>С вопросами и запросами о ваших данных обращайтесь к нам по контактам, указанным на сайте.</p>]]></string_upd>
+	<string_add name="_sys_page_meta_description_entry"><![CDATA[{0} на сайте {1}.]]></string_add>
+	<string_add name="_sys_page_title_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+	<string_add name="_sys_page_title_account_settings_privacy"><![CDATA[Приватность]]></string_add>
+	<string_add name="_sys_page_title_system_account_settings_connectors"><![CDATA[Аккаунт - Подключения]]></string_add>
+	<string_add name="_sys_page_title_system_account_settings_privacy"><![CDATA[Аккаунт - Приватность]]></string_add>
+	<string_add name="_sys_page_title_with_site"><![CDATA[{0} · {1}]]></string_add>
+	<string_add name="_sys_paginate_next"><![CDATA[Следующая страница]]></string_add>
+	<string_add name="_sys_paginate_prev"><![CDATA[Предыдущая страница]]></string_add>
+	<string_upd name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> предлагает вам дружбу]]></string_upd>
+	<string_upd name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> и вы теперь друзья]]></string_upd>
+	<string_add name="_sys_profile_joined_ntfs"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> теперь с нами]]></string_add>
+	<string_upd name="_sys_profile_subscription_added"><![CDATA[У вас новый подписчик: <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_add name="_sys_profile_unit_view"><![CDATA[Смотреть профиль]]></string_add>
+	<string_add name="_sys_profile_unit_you"><![CDATA[Вы]]></string_add>
+	<string_add name="_sys_search_action_context"><![CDATA[Поиск в «{0}»]]></string_add>
+	<string_add name="_sys_search_action_section"><![CDATA[Поиск: {0}]]></string_add>
+	<string_add name="_sys_search_ai_txt_placeholder"><![CDATA[Опишите, что вы ищете…]]></string_add>
+	<string_add name="_sys_search_chip_all"><![CDATA[Все]]></string_add>
+	<string_add name="_sys_search_chip_any_time"><![CDATA[В любое время]]></string_add>
+	<string_add name="_sys_search_chip_anyone"><![CDATA[Любой]]></string_add>
+	<string_add name="_sys_search_chip_apply"><![CDATA[Применить]]></string_add>
+	<string_add name="_sys_search_chip_created_by"><![CDATA[Автор]]></string_add>
+	<string_add name="_sys_search_chip_created_by_me"><![CDATA[Я]]></string_add>
+	<string_add name="_sys_search_chip_created_by_placeholder"><![CDATA[Введите имя]]></string_add>
+	<string_add name="_sys_search_chip_created_by_value"><![CDATA[Автор: {0}]]></string_add>
+	<string_add name="_sys_search_chip_date"><![CDATA[Дата]]></string_add>
+	<string_add name="_sys_search_chip_date_created"><![CDATA[Создано]]></string_add>
+	<string_add name="_sys_search_chip_date_ends"><![CDATA[Окончание]]></string_add>
+	<string_add name="_sys_search_chip_date_field"><![CDATA[Дата]]></string_add>
+	<string_add name="_sys_search_chip_date_from"><![CDATA[С]]></string_add>
+	<string_add name="_sys_search_chip_date_starts"><![CDATA[Начало]]></string_add>
+	<string_add name="_sys_search_chip_date_to"><![CDATA[По]]></string_add>
+	<string_add name="_sys_search_chip_filter"><![CDATA[Фильтр]]></string_add>
+	<string_add name="_sys_search_chip_find_person"><![CDATA[Найти человека…]]></string_add>
+	<string_add name="_sys_search_chip_in"><![CDATA[В: {0}]]></string_add>
+	<string_add name="_sys_search_chip_past_month"><![CDATA[За 30 дней]]></string_add>
+	<string_add name="_sys_search_chip_past_week"><![CDATA[За 7 дней]]></string_add>
+	<string_add name="_sys_search_chip_past_year"><![CDATA[За год]]></string_add>
+	<string_add name="_sys_search_chip_remove"><![CDATA[Убрать «{0}»]]></string_add>
+	<string_add name="_sys_search_chip_starts_month"><![CDATA[Начало в ближайшие 30 дней]]></string_add>
+	<string_add name="_sys_search_chip_starts_week"><![CDATA[Начало в ближайшие 7 дней]]></string_add>
+	<string_add name="_sys_search_chip_title_only"><![CDATA[Только в названиях]]></string_add>
+	<string_add name="_sys_search_window_count"><![CDATA[Результаты поиска ({0})]]></string_add>
+	<string_add name="_sys_search_window_empty"><![CDATA[Попробуйте другие слова или уберите фильтр.]]></string_add>
+	<string_add name="_sys_search_window_empty_title"><![CDATA[Ничего не найдено]]></string_add>
+	<string_add name="_sys_search_window_error"><![CDATA[Поиск не сработал. Попробуйте ещё раз.]]></string_add>
+	<string_add name="_sys_search_window_filters"><![CDATA[Фильтры]]></string_add>
+	<string_add name="_sys_search_window_full"><![CDATA[Открыть все результаты]]></string_add>
+	<string_add name="_sys_search_window_hint"><![CDATA[Введите запрос, чтобы искать везде, где у вас есть доступ.]]></string_add>
+	<string_add name="_sys_search_window_hint_scope"><![CDATA[Введите запрос, чтобы искать здесь, или уберите фильтр, чтобы искать везде.]]></string_add>
+	<string_add name="_sys_search_window_keys"><![CDATA[↑ ↓ — выбрать, Enter — открыть, Esc — закрыть]]></string_add>
+	<string_add name="_sys_search_window_loading"><![CDATA[Ищем…]]></string_add>
+	<string_add name="_sys_search_window_more"><![CDATA[Показать ещё]]></string_add>
+	<string_add name="_sys_search_window_placeholder"><![CDATA[Поиск…]]></string_add>
+	<string_add name="_sys_search_window_placeholder_ai"><![CDATA[Найдите или задайте вопрос…]]></string_add>
+	<string_add name="_sys_search_window_show_all"><![CDATA[Показать все ({0}) в разделе «{1}»]]></string_add>
+	<string_add name="_sys_search_window_sort"><![CDATA[Сортировка]]></string_add>
+	<string_add name="_sys_search_window_sort_best"><![CDATA[Лучшие совпадения]]></string_add>
+	<string_add name="_sys_search_window_sort_new"><![CDATA[Сначала новые]]></string_add>
+	<string_add name="_sys_search_window_tab_all"><![CDATA[Все]]></string_add>
+	<string_add name="_sys_search_window_tabs"><![CDATA[Результаты по разделам]]></string_add>
+	<string_add name="_sys_search_window_title"><![CDATA[Поиск]]></string_add>
+	<string_upd name="_sys_tour_launcher_welcome_title"><![CDATA[Добро пожаловать в Студию]]></string_upd>
+	<string_upd name="_sys_tour_launcher_welcome_txt"><![CDATA[В Студии настраивается сайт. Этот короткий тур покажет приложения, с которых стоит начать. Запустить его снова можно из меню аккаунта.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_designer_title"><![CDATA[Дизайнер]]></string_upd>
+	<string_upd name="_sys_tour_launcher_designer_txt"><![CDATA[Задайте логотип, выберите шаблон и измените обложку, которую гости видят первой.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_accounts_title"><![CDATA[Аккаунты]]></string_upd>
+	<string_upd name="_sys_tour_launcher_accounts_txt"><![CDATA[Управляйте аккаунтами участников и выбирайте операторов и модераторов. Модераторы следят за контентом и профилями на самом сайте, не в Студии.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_page_title"><![CDATA[Страницы]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_page_txt"><![CDATA[Добавляйте, удаляйте и переставляйте блоки на любой странице или создавайте новые страницы. Здесь же настройки видимости и SEO.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_menus_title"><![CDATA[Навигация]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Редактируйте меню: добавляйте, переставляйте и скрывайте ссылки, меняйте иконки и выбирайте, кто видит каждый пункт.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_add_apps_title"><![CDATA[Магазин приложений]]></string_upd>
+	<string_upd name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA сразу есть основные приложения. Остальные берите здесь: модули, шаблоны, языки и интеграции.]]></string_upd>
+	<string_add name="_sys_tour_step"><![CDATA[{0} из {1}]]></string_add>
+	<string_add name="_sys_tour_back"><![CDATA[Назад]]></string_add>
+	<string_add name="_sys_tour_close"><![CDATA[Закрыть тур]]></string_add>
+	<string_add name="_sys_txt_auth_or"><![CDATA[или]]></string_add>
+	<string_add name="_sys_txt_access_denied_guest_page"><![CDATA[Войдите или зарегистрируйтесь, чтобы открыть эту страницу.]]></string_add>
+	<string_add name="_sys_txt_access_denied_text"><![CDATA[У вас нет доступа к этому.]]></string_add>
+	<string_add name="_sys_txt_access_denied_title"><![CDATA[Нет доступа]]></string_add>
+	<string_upd name="_sys_txt_account_profile_system"><![CDATA[У вас ещё нет профиля.]]></string_upd>
+	<string_add name="_sys_txt_account_email_change_confirmed"><![CDATA[Новый email подтверждён]]></string_add>
+	<string_add name="_sys_txt_account_email_change_failed"><![CDATA[Ссылка больше не действует, или этот email теперь у другого аккаунта. Смените email ещё раз, чтобы получить новую ссылку.]]></string_add>
+	<string_add name="_sys_txt_account_email_change_sent"><![CDATA[Мы отправили ссылку для подтверждения на {0}. Пока вы её не откроете, вход по {1}.]]></string_add>
+	<string_add name="_sys_txt_add"><![CDATA[Добавить]]></string_add>
+	<string_add name="_sys_txt_add_entry"><![CDATA[Добавить: {0}]]></string_add>
+	<string_upd name="_sys_txt_confirm_email_sent_failed"><![CDATA[Не удалось отправить письмо с подтверждением. Попробуйте ещё раз позже.]]></string_upd>
+	<string_upd name="_sys_txt_confirm_email_success"><![CDATA[Ваш email подтверждён.]]></string_upd>
+	<string_upd name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[Не удалось отправить SMS. Попробуйте ещё раз позже.]]></string_upd>
+	<string_add name="_sys_txt_sms_send_limit"><![CDATA[Отправлено слишком много кодов. Попробуйте снова через час.]]></string_add>
+	<string_add name="_sys_txt_empty_invitations_text"><![CDATA[Когда вас пригласят в группу, событие или другое сообщество, приглашение появится здесь.]]></string_add>
+	<string_add name="_sys_txt_empty_invitations_title"><![CDATA[Приглашений нет]]></string_add>
+	<string_add name="_sys_txt_empty_list_add"><![CDATA[Добавить]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_add"><![CDATA[Добавьте сюда что-нибудь первым.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_connections"><![CDATA[Здесь появятся ваши связи.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_favorite"><![CDATA[Здесь появится то, что вы добавите в избранное.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_followed"><![CDATA[Здесь появится то, на что вы подпишетесь.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_joined"><![CDATA[Здесь появится то, к чему вы присоединитесь.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_online"><![CDATA[Сейчас никого нет в сети.]]></string_add>
+	<string_add name="_sys_txt_empty_search_text"><![CDATA[Попробуйте другие слова или меньше фильтров.]]></string_add>
+	<string_add name="_sys_txt_empty_search_title"><![CDATA[Ничего не найдено]]></string_add>
+	<string_upd name="_sys_txt_forgot_pasword_check_email"><![CDATA[Если этот email есть у аккаунта, мы отправили на него ссылку для сброса пароля.]]></string_upd>
+	<string_upd name="_sys_txt_forgot_pasword_check_phone"><![CDATA[Если этот номер есть у аккаунта, мы отправили на него SMS со ссылкой для сброса пароля.]]></string_upd>
+	<string_upd name="_sys_txt_forgot_pasword_error_occured"><![CDATA[Не удалось отправить письмо для сброса пароля. Попробуйте ещё раз позже.]]></string_upd>
+	<string_upd name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[Не удалось отправить код для входа. Попробуйте ещё раз позже.]]></string_upd>
+	<string_add name="_sys_txt_login_agreement"><![CDATA[Заходя, Вы соглашаетесь с <a href="{0}">Правилами пользования</a> и <a href="{1}">Политикой конфиденциальности</a>.]]></string_add>
+	<string_add name="_sys_txt_join_closed"><![CDATA[Регистрация на сайте закрыта.]]></string_add>
+	<string_add name="_sys_txt_join_description"><![CDATA[Уже есть аккаунт?]]></string_add>
+	<string_add name="_sys_txt_login_description"><![CDATA[Нет аккаунта?]]></string_add>
+	<string_upd name="_sys_txt_login_description_action"><![CDATA[Зарегистрироваться]]></string_upd>
+	<string_add name="_sys_txt_page_lang_block_review"><![CDATA[Эту заметку видите только вы. На странице всё ещё текст, который идёт с UNA. Проверьте его, измените то, что не подходит вашему сайту, и сохраните в Студии, чтобы скрыть заметку.]]></string_add>
+	<string_add name="_sys_txt_page_lang_block_review_action"><![CDATA[Проверить в Студии]]></string_add>
+	<string_add name="_sys_txt_profile_joined_sample"><![CDATA[теперь с нами]]></string_add>
+	<string_add name="_sys_txt_profile_not_available_text"><![CDATA[Возможно, он ждёт проверки или сейчас отключён.]]></string_add>
+	<string_add name="_sys_txt_profile_not_available_title"><![CDATA[Этот профиль недоступен]]></string_add>
+	<string_upd name="_sys_txt_unsubscribe_error_occured"><![CDATA[Эта ссылка для отписки не работает. Войдите и измените настройки email или напишите нам, и мы отпишем вас.]]></string_upd>
+	<string_add name="_sys_txt_sidebar_resize"><![CDATA[Изменить ширину боковой панели]]></string_add>
+	<string_add name="_sys_uploader_crop_change_picture"><![CDATA[Заменить изображение]]></string_add>
+	<string_add name="_sys_uploader_crop_choose_cover"><![CDATA[Загрузить обложку]]></string_add>
+	<string_add name="_sys_uploader_crop_choose_picture"><![CDATA[Загрузить изображение]]></string_add>
+	<string_add name="_sys_uploader_crop_edit_cover"><![CDATA[Изменить обложку]]></string_add>
+	<string_add name="_sys_uploader_crop_edit_picture"><![CDATA[Изменить изображение]]></string_add>
+	<string_add name="_sys_uploader_crop_popup_title"><![CDATA[Обрезка изображения]]></string_add>
+	<string_add name="_sys_uploader_crop_remove_picture"><![CDATA[Удалить]]></string_add>
+	<string_add name="_view_n_views_few"><![CDATA[{0} просмотра]]></string_add>
+	<string_add name="_view_n_views_one"><![CDATA[{0} просмотр]]></string_add>
+	<string_add name="_vote_n_votes_few"><![CDATA[{0} голоса]]></string_add>
+	<string_add name="_vote_n_votes_one"><![CDATA[{0} голос]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_log"><![CDATA[Логировать время]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[Видеть залогированное время всех]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[Видеть оплачиваемое время]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Править оплачиваемое время]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Управлять свойствами]]></string_add>
+	<string_add name="_sys_onboarding_done"><![CDATA[Всё готово]]></string_add>
+	<string_add name="_sys_onboarding_hide"><![CDATA[Скрыть]]></string_add>
+	<string_add name="_sys_onboarding_join_closed"><![CDATA[Присоединиться к сайту нельзя: форма регистрации выключена.]]></string_add>
+	<string_add name="_sys_onboarding_join_invite"><![CDATA[Присоединиться к сайту могут только приглашённые.]]></string_add>
+	<string_add name="_sys_onboarding_join_open"><![CDATA[Присоединиться к сайту может любой.]]></string_add>
+	<string_add name="_sys_onboarding_progress"><![CDATA[Готово {0} из {1}]]></string_add>
+	<string_add name="_sys_onboarding_state_done"><![CDATA[Готово]]></string_add>
+	<string_add name="_sys_onboarding_state_locked"><![CDATA[Нужен предыдущий шаг]]></string_add>
+	<string_add name="_sys_onboarding_state_todo"><![CDATA[Нужно сделать]]></string_add>
+	<string_add name="_sys_membership_stats_files"><![CDATA[Файлов: {0}]]></string_add>
+	<string_add name="_sys_membership_stats_files_one"><![CDATA[1 файл]]></string_add>
+	<string_add name="_sys_membership_stats_max_file_size"><![CDATA[Размер файла до]]></string_add>
+	<string_add name="_sys_membership_stats_no_end"><![CDATA[Без срока окончания]]></string_add>
+	<string_add name="_sys_membership_stats_of"><![CDATA[{0} из {1}]]></string_add>
+	<string_add name="_sys_membership_stats_see_plans"><![CDATA[Уровни членства]]></string_add>
+	<string_add name="_sys_membership_stats_unlimited"><![CDATA[Без ограничений]]></string_add>
+	<string_add name="_sys_membership_stats_until"><![CDATA[Действует до {0}]]></string_add>
+	<string_add name="_sys_membership_stats_used"><![CDATA[Занято {0}]]></string_add>
+	<string_add name="_favorite_popup_title_do"><![CDATA[Добавить в избранное]]></string_add>
+	<string_add name="_favorite_popup_title_edit_list"><![CDATA[Изменить список]]></string_add>
+	<string_add name="_adm_bp_txt_section_search"><![CDATA[Поиск в разделе]]></string_add>
+	<string_add name="_adm_bp_txt_section_search_info"><![CDATA[Кнопка «Поиск» в строке заголовка раздела (или в строке вкладок), которая ищет по содержимому раздела.]]></string_add>
+</resources>

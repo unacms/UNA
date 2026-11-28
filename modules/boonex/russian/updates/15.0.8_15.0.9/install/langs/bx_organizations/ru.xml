@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_orgs_form_profile_display_edit_privacy"><![CDATA[Приватность]]></string_add>
+	<string_upd name="_bx_orgs_form_profile_input_org_name_err"><![CDATA[Имя обязательно и не может начинаться с @.]]></string_upd>
+	<string_add name="_bx_orgs_menu_item_title_system_memberships"><![CDATA[Организации (участник)]]></string_add>
+	<string_add name="_bx_orgs_menu_item_title_memberships"><![CDATA[Ваши организации]]></string_add>
+	<string_add name="_bx_organizations_txt_empty_title"><![CDATA[Организаций пока нет]]></string_add>
+	<string_upd name="_bx_orgs_err_cannot_perform"><![CDATA[Не удалось выполнить действие. Попробуйте ещё раз.]]></string_upd>
+	<string_upd name="_bx_orgs_email_friend_request_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{SenderUrl}">{SenderDisplayName}</a> хочет подружиться с вами. <a href="{FriendsLink}">Ответить</a>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_join_request_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Получен запрос на присоединение к организации <a href="{EntryUrl}">{EntryTitle}</a> от <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_join_reject_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш запрос на присоединение к организации <a href="{EntryUrl}">{EntryTitle}</a> был отклонен администратором организации.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_join_confirm_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш запрос на присоединение к организации <a href="{EntryUrl}">{EntryTitle}</a> был одобрен.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_fan_remove_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш профиль был удален из организации <a href="{EntryUrl}">{EntryTitle}</a> администратором организации.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_fan_become_admin_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы получили статус администратора организации <a href="{EntryUrl}">{EntryTitle}</a>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_admin_become_fan_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Вы были лишены статуса администратора организации <a href="{EntryUrl}">{EntryTitle}</a></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_set_role_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Ваш статус в организации <a href="{EntryUrl}">{EntryTitle}</a> был изменен на <b>{Role}</b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_orgs_email_invitation_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> пригласил Вас в организацию <a href="{EntryUrl}">{EntryTitle}</a>.</p>
+{email_footer}]]></string_upd>
+</resources>

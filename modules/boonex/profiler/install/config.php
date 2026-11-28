@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_profiler',
     'title' => 'Profiler',
     'note' => 'Profiler, timings, performance',
-    'version' => '15.0.4.DEV',
+    'version' => '15.0.4',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

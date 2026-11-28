@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Studio captions of the upload security token settings. -->
+<resources name="en" flag="en" title="English">
+    <string_add name="_adm_stg_cpt_option_sys_security_upload_token_enable"><![CDATA[Enable upload security tokens]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_security_upload_token_lifetime"><![CDATA[Upload security token lifetime]]></string_add>
+</resources>

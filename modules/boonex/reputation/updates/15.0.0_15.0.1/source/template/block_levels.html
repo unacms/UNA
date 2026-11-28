@@ -1,0 +1,14 @@
+<div class="bx-reputation-levels">
+    <bx_repeat:levels>
+        <div class="bx-reputation-level flex items-center w-full mt-2 first:mt-0">
+            <bx_if:icon>
+                <div class="bx-reputation-l-icon ltr:mr-2 rtl:ml-2">
+                    <bx_if:icon_font><i class="sys-icon __icon__"></i></bx_if:icon_font>
+                    <bx_if:icon_html>__icon__</bx_if:icon_html>
+                </div>
+            </bx_if:icon>
+            <div class="bx-reputation-l-title flex-1 text-2xl font-semibold">__title__</div>
+            <div class="bx-reputation-l-points text-center text-xl">__points__</div>
+        </div>
+    </bx_repeat:levels>
+</div>

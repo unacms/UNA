@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Sentence case for Studio titles, buttons, grid columns, page names and option captions. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_persons_page_title_sys_create_profile"><![CDATA[Create a profile - person]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_edit_profile"><![CDATA[Edit profile]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_edit_profile_badge"><![CDATA[Edit badge]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_delete_profile"><![CDATA[Delete profile]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_view_profile"><![CDATA[View profile]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_view_profile_closed"><![CDATA[View profile with limited visibility]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_friend_requests"><![CDATA[Friend requests]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_profile_info"><![CDATA[Profile info]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_recent"><![CDATA[New people]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_manage"><![CDATA[Manage own people]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_manage_administration"><![CDATA[Manage all people]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_active"><![CDATA[Active people]]></string_upd>
+    <string_upd name="_bx_persons_page_title_sys_online"><![CDATA[Online people]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_delete_with_content"><![CDATA[Delete with data]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_edit_profile"><![CDATA[Edit person]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_edit_badge"><![CDATA[Edit badge]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_delete_profile"><![CDATA[Delete profile and data]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_delete_account"><![CDATA[Delete account]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_delete_account_content"><![CDATA[Delete account and data]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_relation_add"><![CDATA[Add relationship]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_relation_delete"><![CDATA[Remove relationship]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_more_actions"><![CDATA[More actions]]></string_upd>
+    <string_upd name="_bx_persons_menu_item_title_system_related_me"><![CDATA[Relationships with me]]></string_upd>
+</resources>

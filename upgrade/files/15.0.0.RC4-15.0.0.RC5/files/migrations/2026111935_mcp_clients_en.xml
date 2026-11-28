@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Connectors: commands and install links that add the MCP server to Claude Code, Codex, Cursor and VS Code. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_api_mcp_clients_txt_title"><![CDATA[Connect an assistant]]></string_add>
+    <string_add name="_sys_api_mcp_clients_txt_command"><![CDATA[Run the command, or open the link, then sign in to this site in the browser that opens.]]></string_add>
+    <string_add name="_sys_api_mcp_clients_btn_add_to"><![CDATA[Add to {0}]]></string_add>
+    <string_add name="_sys_api_mcp_clients_txt_web"><![CDATA[Claude, ChatGPT and other assistants on the web: in Settings > Connectors, add a custom connector with the MCP server URL, then sign in.]]></string_add>
+</resources>

@@ -1,0 +1,21 @@
+<div class="__class__ bx-base-text-unit bx-base-text-unit-gallery bx-base-content-card bx-def-gal-unit-size flex flex-col w-full p-2 box-border">
+    <div class="bx-base-text-unit-cnt bx-base-content-card-cnt bx-def-box bx-def-color-bg-box">
+        <bx_if:thumb>
+            <a class="bx-base-content-card-media" href="__content_url__" aria-hidden="true" tabindex="-1">
+                <span class="bx-base-content-card-img" style="background-image:url(__gallery_url__)"></span>
+            </a>
+        </bx_if:thumb>
+        <div class="bx-base-text-unit-text bx-base-content-card-info">
+            <div class="bx-base-content-card-name">
+                <a class="bx-base-content-card-title" href="__content_url__">__title__</a>
+                <div class="bx-base-text-unit-badges">__badges__</div>
+            </div>
+            <bx_if:meta><div class="bx-base-text-unit-info bx-base-content-card-meta"><div class="bx-base-general-unit-meta">__meta__</div></div></bx_if:meta>
+            <bx_if:show_buy>
+                <div class="bx-snipcart-unit-actions bx-base-content-card-actions bx-menu-btn-size-small">
+                    <a class="bx-btn bx-btn-primary bx-snipcart-buy" href="__buy_url__">__buy_title__</a>
+                </div>
+            </bx_if:show_buy>
+        </div>
+    </div>
+</div>

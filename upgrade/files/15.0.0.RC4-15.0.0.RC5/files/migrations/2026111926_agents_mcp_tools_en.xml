@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Connectors: which agent tools AI assistants get through MCP, for operators and for members. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_agents_connectors_txt_tokens"><![CDATA[Your access tokens]]></string_add>
+    <string_add name="_sys_agents_connectors_txt_tools"><![CDATA[Tools for AI assistants]]></string_add>
+    <string_add name="_sys_agents_connectors_txt_tools_info"><![CDATA[Which agent tools AI assistants get through MCP. Operator tools act on the whole site. Member tools act as the member, with their permissions on the site, and only tools made for that can be given to members. A tool turned off on the Tools tab is not given.]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_operators"><![CDATA[Operators]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_members"><![CDATA[Members]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_operators_only"><![CDATA[Operators only]]></string_add>
+    <string_add name="_sys_agents_mcp_txt_tool_off"><![CDATA[off]]></string_add>
+    <string_add name="_sys_agents_mcp_err_not_for_members"><![CDATA[This tool is not made for members: it would act on the whole site.]]></string_add>
+    <string_upd name="_sys_api_tokens_txt_info_operator"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account. As an operator, your tokens also give them the operator tools switched on below, which can change anything on the site. Make a token for each assistant, and revoke one to cut it off.]]></string_upd>
+</resources>

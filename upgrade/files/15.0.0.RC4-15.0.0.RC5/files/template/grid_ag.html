@@ -1,0 +1,67 @@
+<div id="__id_wrap__" class="bx-grid-ag-wrap">
+    <bx_if:display_header>
+        <div class="bx-grid-header__class__">
+            __title_row__
+            <div class="bx-grid-header-cnt bx-def-padding-sec-bottom">
+                <bx_if:filter>
+                    <div class="bx-grid-header-controls-filter">
+                        __controls__
+                    </div>
+                </bx_if:filter>
+                <bx_if:counter>
+                    <div class="bx-grid-header-controls-counter bx-def-margin-thd-leftright">
+                        <span class="bx-grid-header-controls-counter-value">__counter__</span>
+                    </div>
+                </bx_if:counter>
+                <div class="bx-grid-ag-header-end">
+                <bx_if:actions_independent>
+                    <div class="bx-grid-header-controls-independent">
+                        <div class="bx-grid-ag-header-btns">__actions_independent__</div>
+                    </div>
+                </bx_if:actions_independent>
+                __view__
+                <bx_if:actions_bulk>
+                    <div id="__id_bulk__" class="bx-grid-ag-bulk">
+                        <button type="button" class="bx-btn bx-grid-ag-bulk-toggle" aria-haspopup="menu" aria-expanded="false" onclick="bx_menu_popup_inline('#__id_bulk__-menu', this, {pointer: {align: 'right'}});">
+                            <u>__txt_actions__</u><span class="bx-grid-ag-bulk-count"></span>
+                            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                        __actions_bulk__
+                    </div>
+                </bx_if:actions_bulk>
+                </div>
+            </div>
+        </div>
+    </bx_if:display_header>
+    <div id="__id_cont__" class="bx-grid-ag-host">
+        <div id="__id_table__" class="bx-grid-ag-selection" hidden></div>
+        <div id="__id_grid__" class="bx-grid-ag ag-theme-quartz"></div>
+    </div>
+</div>
+<script type="application/json" id="bx-grid-ag-cfg-__object__">__config__</script>
+<script>
+$(document).ready(function () {
+    var eCfg = document.getElementById('bx-grid-ag-cfg-__object__');
+    if (!eCfg || typeof BxDolGridAg !== 'function')
+        return;
+
+    var oCfg = JSON.parse(eCfg.textContent);
+    if (window.glGrids === undefined)
+        window.glGrids = {};
+
+    if (undefined == glGrids[oCfg.object])
+        glGrids[oCfg.object] = new BxDolGrid(oCfg.object, oCfg.bx);
+    else
+        glGrids[oCfg.object].init({
+            start: oCfg.bx.start,
+            per_page: oCfg.bx.per_page,
+            filter: oCfg.bx.filter,
+            query_append: oCfg.bx.query_append
+        });
+
+    // Kept by object name, as glGrids keeps the classic script: a page's own scripts can reach the AG grid.
+    if (window.glGridsAg === undefined)
+        window.glGridsAg = {};
+    glGridsAg[oCfg.object] = new BxDolGridAg(oCfg, glGrids[oCfg.object]);
+});
+</script>

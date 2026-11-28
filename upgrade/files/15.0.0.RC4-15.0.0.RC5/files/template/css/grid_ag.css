@@ -1,0 +1,934 @@
+/*
+ * AG Grid Quartz, drawn like the Studio list: a white card, a quiet header,
+ * horizontal rules only. Switches, links and buttons keep the Studio styles.
+ *
+ * This file is not built by Tailwind, so it names the site's tokens itself:
+ * - the accent is rgb(var(--bx-accent-N)), the scale Studio > Designer > Settings > Accent color
+ *   sets (template/css/tailwind.css), so links, the selection and the bulk bar follow it;
+ * - corners are var(--bx-radius-*), the scale Designer's Corners setting sizes;
+ * - grays are UNA's gray scale (tailwind.config.js: NEO's neutrals), written as hex because that
+ *   scale is not published as variables.
+ */
+.bx-grid-ag-wrap {
+    background: #fff;
+    border: 1px solid #e4e4e7;
+    border-radius: var(--bx-radius-2xl);
+    box-shadow: 0 1px 2px rgb(24 24 27 / 0.04);
+}
+
+/* The corners are cut on the parts, not on the frame: the Actions menu hangs out of the header
+   over the rows and past the frame's edge. */
+.bx-grid-ag-wrap > .bx-grid-header {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+
+.bx-grid-ag-wrap > .bx-grid-ag-host {
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    overflow: clip;
+}
+
+.bx-grid-ag-wrap > .bx-grid-ag-host:first-child {
+    border-radius: inherit;
+}
+
+/* In Studio the grid is the content of a Studio block, which is the frame: the grid draws no
+   card of its own inside it, as the classic grid draws none. */
+.bx-std .bx-grid-ag-wrap {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+.bx-grid-ag-wrap .bx-grid-header {
+    border-bottom: 1px solid #f4f4f5;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-cnt {
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter,
+.bx-grid-ag-wrap .bx-grid-header-controls-independent {
+    align-items: center;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-form-element-wrapper:has(.select2-container) {
+    width: auto;
+    margin: 0;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .select2-container {
+    width: 12rem !important;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-counter {
+    flex-grow: 0;
+    color: #71717a;
+    font-size: 0.8125rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-header-controls-independent {
+    margin-left: auto;
+}
+
+.bx-grid-ag.ag-theme-quartz {
+    --bx-grid-ag-bg: transparent; /* rows sit on the block's surface, as the classic grid's (see "Rows" below) */
+    --bx-grid-ag-fg: #18181b;
+    --bx-grid-ag-muted: #71717a;
+    --bx-grid-ag-header: #f4f4f5; /* the column titles on a fill of their own, gray-100; solid, so rows scroll under it */
+    --bx-grid-ag-border: #f4f4f5;
+    --bx-grid-ag-accent: rgb(var(--bx-accent-600));
+    --bx-grid-ag-selected: rgb(var(--bx-accent-50));
+    --bx-grid-ag-hover: rgb(228 228 231 / 0.5); /* the menu items' hover fill, gray-200/50 */
+    --bx-grid-ag-odd: rgb(0 0 0 / 0.04); /* the classic grid's alternate rows, .bx-def-color-bg-hl */
+    --bx-grid-ag-open: #f4f4f5;
+    --bx-grid-ag-radius: 0;
+
+    --ag-active-color: var(--bx-grid-ag-accent);
+    --ag-background-color: var(--bx-grid-ag-bg);
+    --ag-foreground-color: var(--bx-grid-ag-fg);
+    --ag-header-foreground-color: var(--bx-grid-ag-muted);
+    --ag-secondary-foreground-color: var(--bx-grid-ag-muted);
+    --ag-border-color: var(--bx-grid-ag-border);
+    --ag-header-background-color: var(--bx-grid-ag-header);
+    --ag-odd-row-background-color: var(--bx-grid-ag-odd);
+    --ag-row-hover-color: var(--bx-grid-ag-hover);
+    --ag-selected-row-background-color: var(--bx-grid-ag-selected);
+    --ag-font-family: inherit;
+    --ag-font-size: 14px;
+    --ag-cell-horizontal-padding: 14px;
+    --ag-header-column-separator-display: none;
+    --ag-header-column-resize-handle-display: none;
+    --ag-borders: none;
+    --ag-row-border-style: solid;
+    --ag-row-border-width: 0;
+    --ag-row-border-color: #f4f4f5;
+    --ag-checkbox-border-radius: 4px;
+    --ag-border-radius: 0;
+    --ag-wrapper-border-radius: 0;
+    color-scheme: light;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-root-wrapper {
+    border: 0;
+    border-radius: 0;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header {
+    border-bottom: 0;
+    box-shadow: inset 0 -1px 0 #e4e4e7; /* the line under the titles takes none of the header's height, so they sit in its middle */
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    line-height: 18px; /* room for the letters' tails: the text clips what overflows it */
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3f3f46;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-header-cell,
+.bx-grid-ag.ag-theme-quartz .ag-cell {
+    border-right: 0;
+}
+
+.bx-grid-ag.ag-theme-quartz .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
+    border-color: transparent;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag {
+    width: 100%;
+    height: 16rem;
+    min-height: 9rem;
+    max-height: min(40rem, calc(100vh - 14rem));
+}
+
+.bx-grid-ag .bx-grid-ag-cell {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+    gap: 0.35rem;
+    color: #18181b;
+}
+
+.bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn) {
+    color: rgb(var(--bx-accent-600));
+    text-decoration: none;
+}
+
+.bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn):hover {
+    color: rgb(var(--bx-accent-700));
+}
+
+.bx-grid-ag-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* A column as wide as what is in it (a switch, action buttons, a count, an icon; BxDolGridAg._columnHug): nothing in
+   it wraps or is cut, and a focused button keeps its whole ring. */
+.bx-grid-ag .ag-cell.bx-grid-ag-hug .bx-grid-ag-cell,
+.bx-grid-ag .ag-cell.bx-grid-ag-hug .bx-grid-ag-text {
+    overflow: visible;
+    white-space: nowrap;
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-expand {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.bx-grid-ag-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bx-radius-lg);
+    background: transparent;
+    color: #71717a; /* gray-500: 4.8:1 on the card, a control needs 3:1 */
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.bx-grid-ag-chevron:hover,
+.bx-grid-ag-chevron.is-open {
+    color: #3f3f46;
+}
+
+/* Keyboard focus on the grid's own buttons: the site's ring, in the accent. */
+.bx-grid-ag-chevron:focus-visible,
+.bx-grid-ag .bx-grid-secret-toggle:focus-visible,
+.bx-grid-ag .ag-selection-checkbox input:focus-visible {
+    outline: 2px solid rgb(var(--bx-accent-600));
+    outline-offset: 2px;
+}
+
+html.dark .bx-grid-ag-chevron:focus-visible,
+html.dark .bx-grid-ag .bx-grid-secret-toggle:focus-visible,
+html.dark .bx-grid-ag .ag-selection-checkbox input:focus-visible,
+.dark .bx-grid-ag-chevron:focus-visible,
+.dark .bx-grid-ag .bx-grid-secret-toggle:focus-visible,
+.dark .bx-grid-ag .ag-selection-checkbox input:focus-visible {
+    outline-color: rgb(var(--bx-accent-400));
+}
+
+/* The grid's own cell wrapper (the row checkbox, the drag handle) is as tall as the row, so
+   what it holds sits on the row's middle line like every other cell. The checkbox cell is a
+   flex box too: its wrapper is not always the cell's direct child. */
+.bx-grid-ag .ag-cell > .ag-cell-wrapper {
+    height: 100%;
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-select {
+    display: flex;
+    align-items: center;
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-select .ag-cell-wrapper {
+    align-items: center;
+    height: 100%;
+}
+
+.bx-grid-ag.bx-grid-ag-cards .ag-cell.bx-grid-ag-select {
+    padding-left: 20px;
+}
+
+/* A row action the row does not allow now, as the classic grid greys it. */
+.bx-grid-ag .bx-btn.bx-btn-disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.bx-grid-ag-chevron:hover {
+    background-color: rgb(0 0 0 / 0.05);
+}
+
+html.dark .bx-grid-ag-chevron,
+html.dark .bx-grid-ag .bx-grid-drag-handle,
+html.dark .bx-grid-ag .ag-drag-handle,
+.dark .bx-grid-ag-chevron,
+.dark .bx-grid-ag .bx-grid-drag-handle,
+.dark .bx-grid-ag .ag-drag-handle {
+    color: #a1a1aa; /* gray-400: 5.8:1 on the dark card */
+}
+
+html.dark .bx-grid-ag-chevron:hover,
+html.dark .bx-grid-ag-chevron.is-open,
+.dark .bx-grid-ag-chevron:hover,
+.dark .bx-grid-ag-chevron.is-open {
+    color: #e4e4e7;
+}
+
+html.dark .bx-grid-ag-chevron:hover,
+.dark .bx-grid-ag-chevron:hover {
+    background-color: rgb(255 255 255 / 0.08);
+}
+
+.bx-grid-ag .ag-cell.bx-grid-ag-expand .bx-grid-ag-cell {
+    justify-content: center;
+    overflow: visible;
+}
+
+.bx-grid-ag-chevron svg {
+    display: block;
+    transition: transform 0.15s ease;
+}
+
+.bx-grid-ag .bx-switcher-cont {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+
+.bx-grid-ag .bx-item-icon,
+.bx-grid-ag img.bx-item-icon,
+.bx-grid-ag svg.bx-item-icon {
+    width: 21px;
+    height: 21px;
+    max-width: 21px;
+    max-height: 21px;
+    font-size: 21px;
+    line-height: 1;
+}
+
+.bx-grid-ag-chevron.is-open svg {
+    transform: rotate(90deg);
+}
+
+.bx-grid-ag .ag-row.bx-grid-ag-row-open {
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.bx-grid-ag .ag-row.bx-grid-ag-row-open .ag-cell {
+    height: 52px !important;
+    min-height: 0 !important;
+    max-height: 52px !important;
+    top: 0 !important;
+}
+
+.bx-grid-ag-items {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background: #fafafc;
+    border-top: 1px solid #f4f4f5;
+}
+
+.bx-grid-ag-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 44px;
+    padding: 0 0.85rem 0 2.5rem;
+    border-bottom: 1px solid #f4f4f5;
+    background: #fafafc;
+}
+
+/* An opened row's items in the items grid's columns, with a caption line like the grid's header. */
+.bx-grid-ag-item.is-columns {
+    gap: 0;
+    padding: 0 0.5rem 0 1.5rem;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0 0.5rem;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-cell.is-controls {
+    overflow: visible;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-cell .bx-grid-ag-actions {
+    justify-content: flex-end;
+}
+
+/* The items' Actions: their caption over their buttons, at the right, as the grid's own Actions column has them. */
+.bx-grid-ag-item .bx-grid-ag-item-cell.is-actions {
+    justify-content: flex-end;
+}
+
+.bx-grid-ag-items-head {
+    height: 36px !important;
+    font-size: 13px;
+    font-weight: 500;
+    color: #71717a;
+}
+
+.bx-grid-ag-items-head .bx-grid-ag-item-cell {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bx-grid-ag-item-empty {
+    color: #71717a;
+}
+
+.bx-grid-ag-item-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-item .bx-grid-ag-item-actions {
+    flex: 0 0 5.5rem;
+    width: 5.5rem;
+    margin-left: auto;
+    justify-content: flex-start;
+}
+
+.bx-grid-ag .bx-grid-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.5rem;
+    color: #71717a;
+    cursor: move;
+}
+
+.bx-grid-ag .ag-drag-handle {
+    color: #71717a;
+    cursor: move;
+}
+
+.bx-grid-ag-item.is-dragging {
+    opacity: 0.55;
+}
+
+.bx-grid-ag .bx-grid-ag-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    width: 100%;
+}
+
+.bx-grid-ag .bx-grid-ag-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    color: #18181b;
+}
+
+.bx-grid-ag .bx-grid-ag-profile img {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    object-fit: cover;
+}
+
+.bx-grid-ag-wrap .bx-grid-footer .bx-def-hr {
+    display: none;
+}
+
+.bx-grid-ag-wrap .bx-grid-footer-cnt {
+    padding: 0.65rem 1rem;
+    border-top: 1px solid #f4f4f5;
+}
+
+
+html.dark .bx-grid-ag-wrap,
+.dark .bx-grid-ag-wrap {
+    background: #27272a;
+    border-color: #3f3f46;
+    box-shadow: none;
+}
+
+html.dark .bx-grid-ag-wrap .bx-grid-header-controls-counter,
+.dark .bx-grid-ag-wrap .bx-grid-header-controls-counter {
+    color: #a1a1aa; /* gray-400: 5.8:1 on the dark card (gray-500 is 3.1:1) */
+}
+
+html.dark .bx-grid-ag-wrap .bx-grid-header,
+.dark .bx-grid-ag-wrap .bx-grid-header,
+html.dark .bx-grid-ag-wrap .bx-grid-footer-cnt,
+.dark .bx-grid-ag-wrap .bx-grid-footer-cnt {
+    border-color: #3f3f46;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz,
+.dark .bx-grid-ag.ag-theme-quartz {
+    --bx-grid-ag-bg: transparent;
+    --bx-grid-ag-fg: #e4e4e7;
+    --bx-grid-ag-muted: #a1a1aa;
+    --bx-grid-ag-header: #27272a; /* gray-800 */
+    --bx-grid-ag-border: #3f3f46;
+    --bx-grid-ag-accent: rgb(var(--bx-accent-400));
+    --bx-grid-ag-selected: rgb(var(--bx-accent-900) / 0.5);
+    --bx-grid-ag-hover: rgb(63 63 70 / 0.5);
+    --bx-grid-ag-odd: rgb(255 255 255 / 0.04);
+    --bx-grid-ag-open: #27272a;
+    color-scheme: dark;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz .ag-header,
+.dark .bx-grid-ag.ag-theme-quartz .ag-header {
+    box-shadow: inset 0 -1px 0 #3f3f46;
+}
+
+html.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text,
+.dark .bx-grid-ag.ag-theme-quartz .ag-header-cell-text {
+    color: #d4d4d8;
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-cell,
+.dark .bx-grid-ag .bx-grid-ag-cell {
+    color: #e4e4e7;
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn),
+.dark .bx-grid-ag .bx-grid-ag-cell a:not(.bx-btn) {
+    color: rgb(var(--bx-accent-400));
+}
+
+html.dark .bx-grid-ag-items,
+.dark .bx-grid-ag-items,
+html.dark .bx-grid-ag-item,
+.dark .bx-grid-ag-item {
+    background: #18181b;
+    border-color: #3f3f46;
+}
+
+/* Rows: plain list rows on the block's surface, as the classic grid's (no card, no divider): every other row is tinted as
+   the classic grid tints it (.bx-def-color-bg-hl, black/white at 4%), and the row under the pointer takes the menu items'
+   hover fill (gray-200/50, gray-700/50 in dark; .bx-menu-highlight-list) in their 150ms ease-out. A selected row keeps
+   the accent tint. An opened row's items (Navigation > Menus) are part of the row: no surface of their own. From
+   tablets up the script adds bx-grid-ag-cards, which only gives the cells more room and pins no column. */
+.bx-grid-ag.bx-grid-ag-cards.ag-theme-quartz {
+    --ag-cell-horizontal-padding: 16px;
+}
+
+/* The fill of the row under the pointer and of a selected row is the row's ::before, under its cells. Selection wins. */
+.bx-grid-ag .ag-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    pointer-events: none;
+    transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.bx-grid-ag .ag-row.ag-row-hover:not(.ag-full-width-row):not(.ag-row-selected)::before {
+    background-color: var(--bx-grid-ag-hover);
+}
+
+.bx-grid-ag .ag-row.ag-row-selected::before {
+    background-color: var(--bx-grid-ag-selected);
+}
+
+/* An opened row and its items share one solid fill, so they read as one row (the items cover the rows they are drawn
+   over until the rows below move down for them). */
+.bx-grid-ag .ag-row.bx-grid-ag-row-open,
+.bx-grid-ag .bx-grid-ag-items,
+html.dark .bx-grid-ag .bx-grid-ag-items,
+.dark .bx-grid-ag .bx-grid-ag-items {
+    background: var(--bx-grid-ag-open);
+    border-top: 0;
+}
+
+.bx-grid-ag .bx-grid-ag-item,
+html.dark .bx-grid-ag .bx-grid-ag-item,
+.dark .bx-grid-ag .bx-grid-ag-item {
+    background: transparent;
+    border-bottom: 0;
+}
+
+/* The list of a header select: at least 16rem wide, however narrow the select is, and an option stays on one line. */
+.select2-container.bx-grid-ag-filter-dropdown .select2-dropdown {
+    min-width: 16rem;
+}
+
+.select2-container.bx-grid-ag-filter-dropdown .select2-results__option {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Until the first rows are in and the columns have their widths: the grid keeps its place, nothing of it shows. */
+.bx-grid-ag.bx-grid-ag-pending {
+    visibility: hidden;
+}
+
+/* An opened row's item that opens onto items of its own (a form's display onto its fields): the arrow's column, and
+   those items under the item, set in a step. Its height is counted in BxDolGridAg::_rowHeight (36px for the captions,
+   44px a line): no padding or border here. */
+.bx-grid-ag .bx-grid-ag-item-cell.bx-grid-ag-item-chevron {
+    display: flex;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+}
+
+.bx-grid-ag .bx-grid-ag-items2 {
+    margin: 0;
+    padding: 0 0 0 32px;
+    border: 0;
+    background: rgb(0 0 0 / 0.03);
+}
+
+html.dark .bx-grid-ag .bx-grid-ag-items2,
+.dark .bx-grid-ag .bx-grid-ag-items2 {
+    background: rgb(255 255 255 / 0.03);
+}
+
+/* Rows / Cards: two icon buttons side by side; the pressed one is the view shown. */
+.bx-grid-ag-wrap .bx-std-block-caption > .bx-grid-header-controls-independent {
+    /* on the title row, at its right end at any width */
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+/* Rows / cards: Studio's segmented switch (.bx-std-segmented, tailwind.css), drawn the same on the site, where Studio's
+   styles are not: a 36px gray track with the selected tab raised on white. In Studio its plate slides (page.js). */
+.bx-grid-ag-view.bx-std-segmented {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    flex: 0 0 auto;
+    padding: 0.25rem;
+    border-radius: var(--bx-radius-lg, 0.5rem);
+    background-color: rgb(0 0 0 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.05);
+}
+
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.75rem;
+    margin: 0;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: calc(var(--bx-radius-lg, 0.5rem) - 0.1875rem);
+    background: transparent;
+    color: rgb(75 85 99);
+    cursor: pointer;
+    transition: color 150ms;
+}
+
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment:hover,
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    color: rgb(17 24 39);
+}
+
+.bx-grid-ag-view:not([data-bx-seg]) .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    background-color: rgb(255 255 255);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment:focus-visible {
+    outline: 2px solid rgb(59 130 246);
+    outline-offset: 0;
+}
+
+.dark .bx-grid-ag-view.bx-std-segmented {
+    background-color: rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+}
+
+.dark .bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment {
+    color: rgb(209 213 219);
+}
+
+.dark .bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment:hover,
+.dark .bx-grid-ag-view .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    color: rgb(255 255 255);
+}
+
+.dark .bx-grid-ag-view:not([data-bx-seg]) .bx-grid-ag-view-btn.bx-std-segment[aria-selected="true"] {
+    background-color: rgb(255 255 255 / 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* The grid's own buttons and the switch, on the title row's right: the buttons first. */
+.bx-grid-ag-wrap .bx-std-block-caption > .bx-grid-header-controls-independent {
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Bulk actions: the "Actions" button at the right end of the header, after the grid's own
+   buttons. Its menu is the site's popup menu, built on the server. */
+/* The grid's own buttons and Actions keep together at the right end, and move to the next line
+   together when the header is too narrow for them. */
+.bx-grid-ag-wrap .bx-grid-ag-header-end {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag-header-end .bx-grid-header-controls-independent {
+    margin: 0;
+}
+
+.bx-grid-ag-bulk {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag-header-btns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bx-grid-ag-wrap .bx-grid-ag-header-btns > .bx-btn {
+    margin: 0;
+}
+
+/* A header button's SVG icon takes the button's text colour, as its font icons do (Studio paints
+   a bare .sys-icon in the accent). */
+.bx-grid-ag-wrap .bx-grid-header .bx-btn svg.sys-icon:not(.sys-colored) {
+    color: inherit;
+}
+
+.bx-grid-ag-bulk-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+}
+
+.bx-grid-ag-bulk-toggle svg {
+    transition: transform 0.15s ease;
+}
+
+.bx-grid-ag-bulk-toggle[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+}
+
+/* Phones (set by the script below 768px): every row is a card with the row's columns as lines,
+   and no column header. The header above stacks: the filters on one line, then the count, the
+   grid's buttons (icons only) and Actions. */
+.bx-grid-ag.bx-grid-ag-phone.ag-theme-quartz {
+    --ag-row-border-width: 0;
+}
+
+.bx-grid-ag-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 10px 16px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.bx-grid-ag-card-check {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+/* The row's buttons: in the card's top right corner, outside the lines, which keep clear of them. */
+.bx-grid-ag-card-actions {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bx-grid-ag-card-has-actions .bx-grid-ag-card-fields {
+    padding-right: 3rem;
+}
+
+.bx-grid-ag-card-actions .bx-btn {
+    margin: 0;
+}
+
+/* A line for each column: its title, then its value, on one line as tall as a switch (28px). */
+.bx-grid-ag-card-fields {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.bx-grid-ag-card-field {
+    display: grid;
+    grid-template-columns: minmax(6rem, 35%) minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    height: 28px;
+    min-width: 0;
+}
+
+/* A count is a plain link, in rows and in cards: no capsule, no ring (the button's ring is its ::after). */
+.bx-grid-ag .bx-grid-count.bx-btn {
+    display: inline;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: rgb(var(--bx-accent-600));
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    vertical-align: baseline;
+}
+
+.bx-grid-ag .bx-grid-count.bx-btn::after,
+.bx-grid-ag .bx-grid-count.bx-btn::before {
+    display: none;
+}
+
+.bx-grid-ag .bx-grid-count.bx-btn:hover {
+    text-decoration: underline;
+}
+
+.bx-grid-ag-card-caption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: #71717a;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-card-caption > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bx-grid-ag-card-value {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bx-grid-ag-card-value .bx-grid-ag-text,
+.bx-grid-ag-card-value > a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+html.dark .bx-grid-ag-card-caption,
+.dark .bx-grid-ag-card-caption {
+    color: #a1a1aa;
+}
+
+@media (max-width: 767px) {
+    /* The filters (or breadcrumbs), then the search on a line of its own, as they come; then the count on the left
+       and the grid's buttons on the right of one line. */
+    .bx-grid-ag-wrap .bx-grid-header-cnt {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter {
+        display: flex;
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter > *,
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-form-element-wrapper {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        margin: 0;
+    }
+
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter > :has(input[type="text"]),
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-form-element-wrapper:has(input[type="text"]) {
+        flex: 1 1 100%;
+    }
+
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter select,
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter input[type="text"],
+    .bx-grid-ag-wrap .bx-grid-header-controls-filter .select2-container {
+        width: 100% !important;
+        min-width: 0;
+    }
+
+    .bx-grid-ag-wrap .bx-grid-header-controls-counter {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+        margin: 0;
+        text-align: left;
+    }
+
+    .bx-grid-ag-wrap .bx-grid-ag-header-end {
+        flex: 0 0 auto;
+        margin-left: auto;
+    }
+
+    /* The grid's own buttons show their icons only; the label stays their name. */
+    .bx-grid-ag-wrap .bx-grid-ag-header-btns > .bx-btn:has(svg, i) u {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}
+
+
+/* The sort select of the cards view: among the header's filters, as wide as they are; above the cards when the grid has
+   no filters. */
+.bx-grid-ag-wrap .bx-grid-header-controls-filter .bx-grid-ag-phone-sort {
+    margin: 0;
+}
+
+.bx-grid-ag-wrap > .bx-grid-ag-phone-sort {
+    box-sizing: border-box;
+    margin: 0 12px 8px;
+}

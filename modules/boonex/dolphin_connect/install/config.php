@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_dolcon',
     'title' => 'Dolphin connect',
     'note' => 'Dolphin login, join with a Dolphin account',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

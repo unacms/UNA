@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_polls_form_entry_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_polls_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_add name="_bx_polls_txt_empty_title"><![CDATA[No polls yet]]></string_add>
+	<string_add name="_bx_polls_txt_subentry_vote_counter_one"><![CDATA[{0} vote]]></string_add>
+</resources>

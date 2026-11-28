@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_fontawesome',
     'title' => 'Font Awesome Pro',
     'note' => 'Font Awesome, icons',
-    'version' => '15.0.2.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

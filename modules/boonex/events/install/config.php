@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_events',
     'title' => 'Events',
     'note' => 'Events, meetups, happenings, things scheduled on a date',
-    'version' => '15.0.6.DEV',
+    'version' => '15.0.6',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

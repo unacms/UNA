@@ -1,0 +1,49 @@
+# One site of the release check: nginx, php-fpm and MariaDB around an unpacked package.
+# Used by site.sh, which sets UNA_SITE (the unpacked package), UNA_REPO (this repository, for the
+# image and server settings) and UNA_PORT. The image and settings are those of docker-compose.yml.
+services:
+
+    web:
+        image: nginx:1.28
+        ports:
+            - "127.0.0.1:${UNA_PORT}:${UNA_PORT}"
+        environment:
+            UNA_PORT: ${UNA_PORT}
+            NGINX_ENVSUBST_FILTER: '^UNA_'
+        volumes:
+            - ${UNA_REPO}/scripts/docker-compose/nginx.conf:/etc/nginx/templates/default.conf.template:ro
+            - ${UNA_SITE}:/opt/una
+
+    php:
+        image: ${UNA_PHP_IMAGE:-una-release-check-php}
+        build:
+            context: ${UNA_REPO}
+            dockerfile: scripts/docker-compose/PHP.Dockerfile
+        environment:
+            UNA_PORT: ${UNA_PORT}
+            UNA_CRON_RUNNER: docker
+            UNA_SKIP_INSTALL_FOLDER_CHECK: "1"
+            PHP_DISPLAY_ERRORS: "0"
+        volumes:
+            - ${UNA_REPO}/scripts/docker-compose/php.ini:/usr/local/etc/php/php.ini:ro
+            - ${UNA_REPO}/scripts/docker-compose/php-fpm-pool.conf:/usr/local/etc/php-fpm.d/zz-una.conf:ro
+            - ${UNA_SITE}:/opt/una
+        depends_on:
+            mysql:
+                condition: service_healthy
+
+    mysql:
+        image: ${UNA_DB_IMAGE:-mariadb:11.8}
+        environment:
+            MYSQL_ROOT_PASSWORD: 'root'
+            MYSQL_USER: 'una'
+            MYSQL_PASSWORD: 'una'
+            MYSQL_DATABASE: 'una'
+        volumes:
+            - ${UNA_REPO}/scripts/docker-compose/mysqld.cnf:/etc/mysql/conf.d/mysqld.cnf:ro
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            interval: 5s
+            timeout: 5s
+            retries: 30
+            start_period: 30s

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Agreed vocabulary (una-vocabulary skill): Sign in/Sign out/Sign up, People, Members, Chats, Private messages, Memberships, Email campaigns. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_ntfs_alert_action_group_info_fan_personal"><![CDATA[Someone joined your group, page or organization.]]></string_upd>
+    <string_upd name="_bx_ntfs_alert_action_group_info_fan_follow_member"><![CDATA[Someone you follow gained new members.]]></string_upd>
+    <string_upd name="_bx_ntfs_alert_action_group_info_fan_follow_context"><![CDATA[A space you follow gained new members.]]></string_upd>
+    <string_upd name="_bx_ntfs_alert_action_fan_added_personal"><![CDATA[New members]]></string_upd>
+    <string_upd name="_bx_ntfs_alert_action_fan_added_follow_member"><![CDATA[New members]]></string_upd>
+    <string_upd name="_bx_ntfs_alert_action_fan_added_follow_context"><![CDATA[New members]]></string_upd>
+</resources>

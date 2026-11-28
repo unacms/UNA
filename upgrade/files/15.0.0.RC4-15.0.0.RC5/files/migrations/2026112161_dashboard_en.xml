@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Dashboard: "Your membership" block (level, storage against limits), "Create your profile" and "Your profiles". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_page_block_title_membership_stats"><![CDATA[Your membership]]></string_upd>
+    <string_add name="_sys_page_block_title_system_create_profile"><![CDATA[Create your profile (accounts without a profile)]]></string_add>
+    <string_add name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Your profiles (dashboard)]]></string_add>
+    <string_add name="_sys_page_block_title_dashboard_profiles"><![CDATA[Your profiles]]></string_add>
+    <string_add name="_sys_membership_stats_unlimited"><![CDATA[Unlimited]]></string_add>
+    <string_add name="_sys_membership_stats_until"><![CDATA[Active until {0}]]></string_add>
+    <string_add name="_sys_membership_stats_no_end"><![CDATA[No end date]]></string_add>
+    <string_add name="_sys_membership_stats_files_one"><![CDATA[1 file]]></string_add>
+    <string_add name="_sys_membership_stats_files"><![CDATA[{0} files]]></string_add>
+    <string_add name="_sys_membership_stats_of"><![CDATA[{0} of {1}]]></string_add>
+    <string_add name="_sys_membership_stats_used"><![CDATA[{0} used]]></string_add>
+    <string_add name="_sys_membership_stats_max_file_size"><![CDATA[File size limit]]></string_add>
+    <string_add name="_sys_membership_stats_see_plans"><![CDATA[See memberships]]></string_add>
+</resources>

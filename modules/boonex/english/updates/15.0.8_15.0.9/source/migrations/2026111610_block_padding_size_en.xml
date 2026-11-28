@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Pages > block: the size of its padding. -->
+<resources name="en" flag="gb" title="English" category="System">
+	<string_add name="_adm_bp_txt_block_padding_size"><![CDATA[Padding]]></string_add>
+	<string_add name="_adm_bp_txt_block_padding_size_compact"><![CDATA[Compact]]></string_add>
+	<string_add name="_adm_bp_txt_block_padding_size_info"><![CDATA[Space between the block's edge and its title and content. Only for block layouts with padding.]]></string_add>
+	<string_add name="_adm_bp_txt_block_padding_size_regular"><![CDATA[Regular]]></string_add>
+	<string_add name="_adm_bp_txt_block_padding_size_relaxed"><![CDATA[Relaxed]]></string_add>
+</resources>

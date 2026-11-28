@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio captions of the API v2 rate limit settings. -->
+<resources name="en" flag="en" title="English">
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: limit the number of requests]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: requests a minute from one member or one guest address (0 for no limit)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: changes a minute, such as posts, edits, deletions and reactions (0 for no limit)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: searches a minute (0 for no limit)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: link previews a minute (0 for no limit)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: messages to AI agents a minute (0 for no limit)]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: file uploads a minute (0 for no limit)]]></string_add>
+</resources>

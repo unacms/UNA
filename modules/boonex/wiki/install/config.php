@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_wiki',
     'title' => 'Wiki',
     'note' => 'Wiki pages, documentation',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

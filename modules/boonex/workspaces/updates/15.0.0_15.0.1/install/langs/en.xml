@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_workspaces_form_profile_input_fullname_err"><![CDATA[Name is required and cannot start with @.]]></string_upd>
+	<string_upd name="_bx_workspaces_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string_upd>
+	<string_add name="_bx_workspaces_menu_item_info_create_profile"><![CDATA[For a workspace your team shares.]]></string_add>
+	<string_upd name="_bx_workspaces_menu_item_title_entries_home"><![CDATA[Workspaces]]></string_upd>
+	<string_upd name="_bx_workspaces_grid_column_title_adm_last_online"><![CDATA[Last sign-in]]></string_upd>
+	<string_upd name="_bx_workspaces_email_friend_request_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{SenderUrl}">{SenderDisplayName}</a> wants to be friends with you. <a href="{FriendsLink}">Respond</a>.</p>
+{email_footer}]]></string_upd>
+</resources>

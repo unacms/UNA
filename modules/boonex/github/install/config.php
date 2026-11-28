@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_github',
     'title' => 'GitHub',
     'note' => 'GitHub integration',
-    'version' => '15.0.0',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

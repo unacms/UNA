@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_files_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_files_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_files_form_entry_input_attachment_err"><![CDATA[File is required. Please upload a file.]]></string_upd>
+	<string_upd name="_bx_files_form_entry_input_attachments_err"><![CDATA[File is required. Please upload some file(s).]]></string_upd>
+	<string_add name="_bx_files_txt_empty_title"><![CDATA[No files yet]]></string_add>
+</resources>

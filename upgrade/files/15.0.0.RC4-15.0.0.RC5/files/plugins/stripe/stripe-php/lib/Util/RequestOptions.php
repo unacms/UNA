@@ -1,0 +1,277 @@
+<?php
+
+namespace Stripe\Util;
+
+/**
+ * @phpstan-type RequestOptionsArray array{api_key?: string, idempotency_key?: string, stripe_account?: string, stripe_context?: string|\Stripe\StripeContext, stripe_version?: string, api_base?: string, max_network_retries?: int, headers?: Array }
+ *
+ * @psalm-type RequestOptionsArray = array{api_key?: string, idempotency_key?: string, stripe_account?: string, stripe_context?: string|\Stripe\StripeContext, stripe_version?: string, api_base?: string, max_network_retries?: int, headers?: Array }
+ */
+class RequestOptions
+{
+    const API_KEY_SERIALIZATION_CONSTANT = 'API_KEY_SERIALIZATION_CONSTANT';
+
+    /**
+     * @internal Explicitly clears Stripe-Account, including the process-global fallback.
+     * An empty string cannot identify an account and is removed before sending headers.
+     */
+    const STRIPE_ACCOUNT_UNSET = '';
+
+    /**
+     * @var array<string> a list of headers that should be persisted across requests
+     */
+    public static $HEADERS_TO_PERSIST = [
+        'Stripe-Account',
+        'Stripe-Context',
+        'Stripe-Version',
+    ];
+
+    /** @var array<string, string> */
+    public $headers;
+
+    /** @var null|string */
+    public $apiKey;
+
+    /** @var null|string */
+    public $apiBase;
+
+    /** @var null|int */
+    public $maxNetworkRetries;
+
+    /**
+     * @param null|string $key
+     * @param array<string, string> $headers
+     * @param null|string $base
+     * @param null|int $maxNetworkRetries
+     */
+    public function __construct($key = null, $headers = [], $base = null, $maxNetworkRetries = null)
+    {
+        $this->apiKey = $key;
+        $this->headers = $headers;
+        $this->apiBase = $base;
+        $this->maxNetworkRetries = $maxNetworkRetries;
+    }
+
+    /**
+     * Serializes request options without the API key.
+     */
+    public function __serialize(): array
+    {
+        return [
+            'apiKey' => self::API_KEY_SERIALIZATION_CONSTANT,
+            'headers' => $this->headers,
+            'apiBase' => $this->apiBase,
+            'maxNetworkRetries' => $this->maxNetworkRetries,
+        ];
+    }
+
+    /**
+     * Restores request options with a placeholder, discarding API keys embedded
+     * by older SDK versions too. Restored resources require reattachApiKey()
+     * before making requests.
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->apiKey = self::API_KEY_SERIALIZATION_CONSTANT;
+        $this->headers = $data['headers'] ?? [];
+        $this->apiBase = $data['apiBase'] ?? null;
+        $this->maxNetworkRetries = $data['maxNetworkRetries'] ?? null;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function __debugInfo()
+    {
+        return [
+            'apiKey' => self::redactApiKey($this->apiKey),
+            'headers' => $this->headers,
+            'apiBase' => $this->apiBase,
+            'maxNetworkRetries' => $this->maxNetworkRetries,
+        ];
+    }
+
+    /**
+     * Unpacks an options array and merges it into the existing RequestOptions
+     * object.
+     *
+     * @param null|array|RequestOptions|string $options a key => value array
+     * @param bool $strict when true, forbid string form and arbitrary keys in array form
+     *
+     * @return RequestOptions
+     */
+    public function merge($options, $strict = false)
+    {
+        self::assertApiKeyAttached($this->apiKey);
+        $other_options = self::parse($options, $strict);
+        if (null === $other_options->apiKey) {
+            $other_options->apiKey = $this->apiKey;
+        }
+        if (null === $other_options->apiBase) {
+            $other_options->apiBase = $this->apiBase;
+        }
+        if (null === $other_options->maxNetworkRetries) {
+            $other_options->maxNetworkRetries = $this->maxNetworkRetries;
+        }
+        $other_options->headers = \array_merge($this->headers, $other_options->headers);
+
+        // special handling for stripe_context
+        // if other sent an empty string, then we should unset
+        if (\array_key_exists('Stripe-Context', $other_options->headers) && '' === $other_options->headers['Stripe-Context']) {
+            unset($other_options->headers['Stripe-Context']);
+        }
+
+        return $other_options;
+    }
+
+    /**
+     * @internal
+     *
+     * @param null|string $apiKey
+     *
+     * @throws \Stripe\Exception\AuthenticationException
+     */
+    public static function assertApiKeyAttached($apiKey)
+    {
+        if (self::API_KEY_SERIALIZATION_CONSTANT === $apiKey) {
+            throw new \Stripe\Exception\AuthenticationException(
+                'This object was unserialized without API credentials. Call '
+                . 'reattachApiKey($apiKey) on the object before making requests. '
+                . 'Global and per-call API keys do not reattach credentials '
+                . 'to an unserialized object.'
+            );
+        }
+    }
+
+    /**
+     * Discards all headers that we don't want to persist across requests.
+     */
+    public function discardNonPersistentHeaders()
+    {
+        foreach ($this->headers as $k => $v) {
+            if (!\in_array($k, self::$HEADERS_TO_PERSIST, true)) {
+                unset($this->headers[$k]);
+            }
+        }
+    }
+
+    /**
+     * Unpacks an options array into an RequestOptions object.
+     *
+     * @param null|array|RequestOptions|string $options a key => value array
+     * @param bool $strict when true, forbid string form and arbitrary keys in array form
+     *
+     * @return RequestOptions
+     *
+     * @throws \Stripe\Exception\InvalidArgumentException
+     */
+    public static function parse($options, $strict = false)
+    {
+        if ($options instanceof self) {
+            return clone $options;
+        }
+
+        if (null === $options) {
+            return new RequestOptions(null, [], null);
+        }
+
+        if (\is_string($options)) {
+            if ($strict) {
+                $message = 'Do not pass a string for request options. If you want to set the '
+                    . 'API key, pass an array like ["api_key" => <apiKey>] instead.';
+
+                throw new \Stripe\Exception\InvalidArgumentException($message);
+            }
+
+            return new RequestOptions($options, [], null);
+        }
+
+        if (\is_array($options)) {
+            $headers = [];
+            $key = null;
+            $base = null;
+            $maxNetworkRetries = null;
+
+            if (\array_key_exists('api_key', $options)) {
+                $key = $options['api_key'];
+                unset($options['api_key']);
+            }
+            if (\array_key_exists('idempotency_key', $options)) {
+                $headers['Idempotency-Key'] = $options['idempotency_key'];
+                unset($options['idempotency_key']);
+            }
+            if (\array_key_exists('stripe_account', $options)) {
+                // Preserve explicit null so ApiRequestor can suppress the global fallback.
+                $headers['Stripe-Account'] = null !== $options['stripe_account'] ? $options['stripe_account'] : self::STRIPE_ACCOUNT_UNSET;
+                unset($options['stripe_account']);
+            }
+            if (\array_key_exists('stripe_context', $options)) {
+                if (null !== $options['stripe_context']) {
+                    $headers['Stripe-Context'] = (string) $options['stripe_context'];
+                }
+                unset($options['stripe_context']);
+            }
+            if (\array_key_exists('stripe_version', $options)) {
+                if (null !== $options['stripe_version']) {
+                    $headers['Stripe-Version'] = $options['stripe_version'];
+                }
+                unset($options['stripe_version']);
+            }
+            if (\array_key_exists('max_network_retries', $options)) {
+                if (null !== $options['max_network_retries']) {
+                    $maxNetworkRetries = $options['max_network_retries'];
+                }
+                unset($options['max_network_retries']);
+            }
+            if (\array_key_exists('api_base', $options)) {
+                $base = $options['api_base'];
+                unset($options['api_base']);
+            }
+            if (\array_key_exists('headers', $options)) {
+                $headers = \array_merge($headers, $options['headers']);
+                unset($options['headers']);
+            }
+
+            if ($strict && !empty($options)) {
+                $message = 'Got unexpected keys in options array: ' . \implode(', ', \array_keys($options));
+
+                throw new \Stripe\Exception\InvalidArgumentException($message);
+            }
+
+            return new RequestOptions($key, $headers, $base, $maxNetworkRetries);
+        }
+
+        $message = 'The second argument to Stripe API method calls is an '
+            . 'optional per-request apiKey, which must be a string, or '
+            . 'per-request options, which must be an array. (HINT: you can set '
+            . 'a global apiKey by "Stripe::setApiKey(<apiKey>)")';
+
+        throw new \Stripe\Exception\InvalidArgumentException($message);
+    }
+
+    /**
+     * Masks all but the key's prefix and last four characters, so debug
+     * output can identify a key without revealing it.
+     *
+     * @internal
+     *
+     * @param null|string $apiKey
+     *
+     * @return string
+     */
+    public static function redactApiKey($apiKey)
+    {
+        if (null === $apiKey) {
+            return '';
+        }
+
+        $pieces = \explode('_', $apiKey, 3);
+        $last = \array_pop($pieces);
+        $redactedLast = \strlen($last) > 4
+            ? (\str_repeat('*', \strlen($last) - 4) . \substr($last, -4))
+            : $last;
+        $pieces[] = $redactedLast;
+
+        return \implode('_', $pieces);
+    }
+}

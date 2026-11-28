@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The homepage and main menu item is titled after the module, not "People" (the Persons item's title). -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_workspaces_menu_item_title_entries_home"><![CDATA[Workspaces]]></string_upd>
+</resources>

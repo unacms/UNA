@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_elasticsearch',
     'title' => 'ElasticSearch',
     'note' => 'Elasticsearch, search index, translate site content into different languages',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

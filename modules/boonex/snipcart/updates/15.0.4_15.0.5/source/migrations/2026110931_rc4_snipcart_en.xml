@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_snipcart_page_title_sys_home"><![CDATA[Shopping]]></string_upd>
+	<string_upd name="_bx_snipcart_page_title_home"><![CDATA[Shopping]]></string_upd>
+	<string_upd name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Shopping]]></string_upd>
+	<string_upd name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Shopping]]></string_upd>
+</resources>

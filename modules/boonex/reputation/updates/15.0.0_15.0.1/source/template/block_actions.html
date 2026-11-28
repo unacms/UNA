@@ -1,0 +1,20 @@
+<div class="bx-reputation-actions">
+    <div class="bx-reputation-a-items">
+        <div class="bx-reputation-a-item flex items-center w-full mt-2 first:mt-0 font-semibold">
+            <div class="bx-reputation-ai-action flex-1"><bx_text:_bx_reputation_txt_unit_action /></div>
+            <div class="bx-reputation-ai-points-active w-1/5 text-center"><bx_text:_bx_reputation_txt_points_active /></div>
+            <div class="bx-reputation-ai-points-passive w-1/5 text-center"><bx_text:_bx_reputation_txt_points_passive /></div>
+        </div>
+        <bx_repeat:actions>
+            <div class="bx-reputation-a-item flex items-center w-full mt-2 first:mt-0">
+                <div class="bx-reputation-ai-action flex-1">__action__</div>
+                <div class="bx-reputation-ai-points-active w-1/5 text-xl text-center">__points_active__</div>
+                <div class="bx-reputation-ai-points-passive w-1/5 text-xl text-center">__points_passive__</div>
+            </div>
+        </bx_repeat:actions>
+    </div>
+</div>
+<div class="bx-reputation-a-footer mt-4 flex justify-between items-center">
+    <div class="bx-reputation-af-legend bx-def-font-meta"><bx_text:_bx_reputation_txt_actions_legend /></div>
+    <bx_if:show_paginate>__paginate__</bx_if:show_paginate>
+</div>

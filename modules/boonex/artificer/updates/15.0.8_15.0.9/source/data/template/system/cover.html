@@ -1,0 +1,49 @@
+<bx_if:logged_in>
+<style>
+    .bx-hide-when-logged-in {
+        display:none !important;
+    }
+</style>
+</bx_if:logged_in>
+<div class="bx-menu-toolbar-padding pt-16">
+    <bx_if:band>
+    <div class="bx-cover-gap overflow-hidden __band_class__">
+        <div class="bx-cover-wrapper<bx_if:empty_cover_class> bx-cover-empty</bx_if:empty_cover_class> relative h-44" <bx_if:bg>style="background-image:url(__image_url__)"</bx_if:bg>>
+            <bx_if:actions>
+                <div class="bx-cover-actions relative flex h-full items-end justify-center pb-4">__actions__</div>
+            </bx_if:actions>
+        </div>
+    </div>
+    </bx_if:band>
+    <bx_if:title_section>
+        <div class="bx-cover-title bg-white dark:bg-gray-900 __title_class__">
+            <div class="bx-def-page-width mx-auto px-4 box-border">
+                <div class="flex items-center gap-2 py-2.5 min-w-0">
+                    <bx_if:section_icon>
+                        <span class="flex size-11 shrink-0 items-center justify-center text-gray-900 dark:text-gray-50">__icon__</span>
+                    </bx_if:section_icon>
+                    <h1 class="flex-1 min-w-0 truncate text-xl leading-7 font-bold tracking-tight text-gray-900 dark:text-gray-50">__title__</h1>
+                    <div class="bx-cover-actions shrink-0">__actions__</div>
+                    <bx_if:search>__search__</bx_if:search>
+                    <bx_if:add>
+                        <!-- The section's add action, as NEO's (conductor web-ui.js AddMenu): glass prominent, small, the module's own icon
+                             (its create item in its "My" menu); a pill with the label from lg, round and icon-only below. Beside the
+                             header's own Add (the site's Add menu), with the module's icon. -->
+                        <a class="bx-cover-add bx-btn bx-btn-primary bx-btn-glass bx-btn-small bx-btn-icon-mobile shrink-0" href="__url__" title="__title__" aria-label="__title__">__icon__<span class="bx-btn-icon-mobile-label">__label__</span></a>
+                    </bx_if:add>
+                </div>
+            </div>
+        </div>
+    </bx_if:title_section>
+    <bx_if:title_page>
+        <div class="bx-cover-title bx-def-page-width mx-auto px-4 box-border lg:-mb-2 __title_class__">
+            <div class="flex items-center gap-2 pt-4 min-w-0">
+                <h1 class="flex-1 min-w-0 text-4xl leading-tight font-bold tracking-tight text-gray-900 dark:text-gray-50">__title__</h1>
+                <div class="bx-cover-actions shrink-0">__actions__</div>
+            </div>
+        </div>
+    </bx_if:title_page>
+    <bx_if:title_sr>
+        <h1 class="sr-only __class__">__title__</h1>
+    </bx_if:title_sr>
+</div>

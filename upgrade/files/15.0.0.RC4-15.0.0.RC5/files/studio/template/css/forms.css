@@ -1,0 +1,107 @@
+@import url(../../../template/css/forms.css);
+
+
+/**
+ * General
+ */
+.bx-form-caption a {
+    color: inherit;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+}
+.bx-form-caption a:hover {
+    color: inherit;
+    text-decoration-style: solid;
+}
+
+select.bx-form-field-type option {
+    padding-left: 25px;
+    background-repeat: no-repeat;
+    background-position: 5px 0px;
+}
+
+
+/**
+ * Image uploader with with manager
+ */
+div.bx-form-input-preview {}
+div.bx-form-input-preview img {
+    max-width: 768px; 
+    max-height: 256px;
+}
+div.bx-form-input-preview-empty {}
+
+
+/**
+ * Translatable fields.
+ */
+div.bx-form-input-wrapper-textarea {
+    position: relative;
+}
+
+div.bx-form-input-translator {
+    position: absolute;
+    top: -22px;
+}
+.bx-dir-ltr div.bx-form-input-translator {
+    right: 0px;
+}
+.bx-dir-rtl div.bx-form-input-translator {
+    left: 0px;
+}
+
+div.bx-form-input-language,
+div.bx-form-input-language-current{
+    position: relative;
+    height: 17px;
+    line-height: 17px;
+}
+
+div.bx-form-input-language {
+    white-space: nowrap
+}
+
+div.bx-form-input-language-current {
+    font-weight: bold;
+}
+
+/**
+ * Translatable textarea with Editor switcher.
+ */
+.bx-form-input-wrapper-textarea.bx-form-input-translatable .bx-form-input-translation {
+    position: relative;
+}
+.bx-form-input-wrapper-textarea.bx-form-input-translatable .bx-form-input-textarea-switcher {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+.bx-form-input-wrapper-textarea.bx-form-input-translatable .bx-form-input-textarea-switcher > div {
+    top: auto;
+    bottom: -1.75rem;
+}
+
+/* A short code field (bx-form-input-textarea-small: a block's icon name, emoji or inline SVG): about four lines,
+   scrolling beyond that, in place of CodeMirror's 300px. */
+textarea.bx-form-input-textarea-small + .CodeMirror {
+    height: 6rem;
+}
+
+/* A list of checkboxes: Select all / Unselect all above its options (BxBaseFormView::_genInputsSet). */
+.bx-form-input-checkbox_set-toggle {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    margin-bottom: 0.25rem;
+}
+.bx-form-input-checkbox_set-toggle button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: rgb(var(--bx-accent-600));
+    font-size: 13px;
+    cursor: pointer;
+}
+.bx-form-input-checkbox_set-toggle button:hover {
+    text-decoration: underline;
+}

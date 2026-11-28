@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_azrb2c',
     'title' => 'Azure B2C Connect',
     'note' => 'Azure B2C login, join with an Azure B2C account',
-    'version' => '13.0.0.DEV',
+    'version' => '13.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

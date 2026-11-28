@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Share: Twitter is X. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_upd name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в X]]></string_upd>
+    <string_upd name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в X]]></string_upd>
+</resources>

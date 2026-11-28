@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_market',
     'title' => 'Marketplace',
     'note' => 'Products, market listings, things for sale',
-    'version' => '15.0.8.DEV',
+    'version' => '15.0.8',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

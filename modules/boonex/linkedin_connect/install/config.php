@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_linkedin',
     'title' => 'LinkedIn connect',
     'note' => 'LinkedIn login, join with a LinkedIn account',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

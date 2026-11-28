@@ -1,0 +1,59 @@
+<div class="bx-messenger-talks-list-area">
+	<div class="bx-messenger-talks-list-header bx-db-header">
+		<button type="button" onclick="oNavMenu.toggleMenuPanel()" title="<bx_text_attribute:_bx_messenger_nav_menu_title_view />" class="xl:hidden bx-btn bx-btn-small bx-messenger-talks-list-header-menu">
+			<i class="sys-icon menu" aria-hidden="true"></i>
+		</button>
+		<div class="bx-messenger-talks-list-header-title-area">
+			<div id="bx-messenger-inbox-area-title" class="bx-db-title bx-messenger-talks-list-header-title __custom_class_title__">
+				<bx_text:_bx_messenger_list_area_inbox />
+			</div>
+			<div id="bx-messenger-search-block" class="bx-messenger-talks-list-header-search-area __custom_class_search__">
+				<input id="bx-messenger-filter-talks"
+					   name="filter-talks"
+					   onInput="oMessenger.searchByItems(this.value);"
+					   class="bx-def-font-inputs bx-form-input-text" placeholder="<bx_text:_bx_messenger_title_search />"
+					   aria-label="<bx_text_attribute:_bx_messenger_title_search />"
+					   type="search" />
+				<div class="bx-messenger-talks-list-header-search-area-icon">
+					<button type="button" onclick="oMessenger.clearSearch()" title="<bx_text_attribute:_bx_messenger_search_clear />" aria-label="<bx_text_attribute:_bx_messenger_search_clear />">
+						<i class="sys-icon x" aria-hidden="true"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="bx-db-menu bx-messenger-talks-list-header-buttons">
+			<button type="button" onclick="oMessenger.toggleFilterTalks()" title="<bx_text_attribute:_bx_messenger_title_search />" class="bx-btn bx-btn-small">
+				<i class="sys-icon search" aria-hidden="true"></i>
+			</button>
+			<bx_if:create>
+				<button type="button" onclick="oMessenger.createList();" title="<bx_text_attribute:_bx_messenger_lots_menu_create_lot_title />" id="bx-messenger-create-post-button" class="bx-btn bx-btn-small">
+					<i class="sys-icon square-pen" aria-hidden="true"></i>
+				</button>
+			</bx_if:create>
+			<bx_if:featured>
+				<button type="button" onclick="oMessenger.showStarred(this);" title="<bx_text_attribute:_bx_messenger_lots_menu_star_title />" id="bx-messenger-show-important-button" class="bx-btn bx-btn-small" aria-pressed="false">
+					<i class="sys-icon star" aria-hidden="true"></i>
+				</button>
+			</bx_if:featured>
+		</div>
+	</div>
+	<nav class="bx-messenger-items-list">
+		<ul role="list">
+			<li class="bx-messenger-always-top hidden divide-y-0">
+				<a href="javascript:void(0);" onclick="oNavMenu.showHistoryPanel();" class="group">
+					<div class="bx-messenger-always-top-create-new">
+						<i class="sys-icon messages-square"></i>
+					</div>
+					<div class="w-full">
+						<div class="flex items-center justify-between">
+							<p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
+								<bx_text:_bx_messenger_users_creation_new_message />
+							</p>
+						</div>
+					</div>
+				</a>
+			</li>
+			__items__
+		</ul>
+	</nav>
+</div>

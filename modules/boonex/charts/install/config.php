@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_charts',
     'title' => 'Charts',
     'note' => 'Charts, graphs, diagrams',
-    'version' => '15.0.2.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

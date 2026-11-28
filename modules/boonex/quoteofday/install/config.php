@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_quoteofday',
     'title' => 'Quote of the Day',
     'note' => 'Quote of the day, daily quotes',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

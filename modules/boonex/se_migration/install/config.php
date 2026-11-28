@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_se_migration',
     'title' => 'SocialEngine Migration',
     'note' => 'SocialEngine migration, import from SocialEngine',
-    'version' => '9.0.0',
+    'version' => '9.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

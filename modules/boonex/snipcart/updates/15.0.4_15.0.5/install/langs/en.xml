@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_snipcart_form_entry_input_title_err"><![CDATA[Title is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_snipcart_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_snipcart_form_settings_input_mode_err"><![CDATA[Mode is required. Please fill in this field.]]></string_upd>
+	<string_upd name="_bx_snipcart_form_settings_input_currency_err"><![CDATA[Currency is required. Please fill in this field.]]></string_upd>
+	<string_upd name="_bx_snipcart_menu_item_title_system_entries_home"><![CDATA[Snipcart]]></string_upd>
+	<string_upd name="_bx_snipcart_menu_item_title_entries_home"><![CDATA[Snipcart]]></string_upd>
+</resources>

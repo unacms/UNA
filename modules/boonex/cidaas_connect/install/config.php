@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_cidaascon',
     'title' => 'Cidaas Connect',
     'note' => 'Cidaas login, join with a Cidaas account',
-    'version' => '15.0.0.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

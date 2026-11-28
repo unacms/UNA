@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- OAuth2 consent page of a native app (the desktop app, API v2): what the `api` scope allows, and where the browser goes back to. -->
+<resources name="ru" flag="ru" title="Russian" category="OAuth2 Server">
+    <string_add name="_bx_oauth_authorize_scope_api"><![CDATA[Оно сможет читать, публиковать, комментировать, ставить реакции и отправлять сообщения от имени вашего аккаунта, от того из ваших профилей, который в этот момент используется на сайте. Переключение профиля в приложении переключает его и на сайте.]]></string_add>
+    <string_add name="_bx_oauth_authorize_redirect"><![CDATA[После выбора браузер вернётся на <strong>{0}</strong>. Продолжайте, только если вы сами начали этот вход.]]></string_add>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_ntfs_txt_empty_text"><![CDATA[Здесь появятся реакции, комментарии, упоминания и новые подписчики.]]></string_add>
+	<string_add name="_bx_ntfs_txt_empty_title"><![CDATA[Уведомлений пока нет]]></string_add>
+	<string_upd name="_bx_ntfs_email_new_event_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{content}</div>
+{email_footer}]]></string_upd>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation: how the apps show a section's menu on phones and tablets. The settings page's Overview item and menu block are gone. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_nav_txt_menus_section_nav_small"><![CDATA[Section navigation in the apps on phones and tablets]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_section_nav_small"><![CDATA[When this menu is a section's menu, how the apps show it on phones and tablets: Tabs above the content, or List, where the section opens on a list of its pages and each page opens from it with Back (the account's Settings). List needs the section's own page, which the menu names in its App config (hub); a menu without one keeps tabs.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_section_nav_small_list"><![CDATA[List]]></string_add>
+    <string_upd name="_adm_nav_dsc_menus_section_nav"><![CDATA[When this menu is a section's menu (the tabs of its pages), how the apps show it on large screens: Tabs above the content, as the site shows them, or Sidebar, a column beside the content, for a section with many pages. Phones and tablets have their own setting, below.]]></string_upd>
+    <string_del name="_sys_menu_item_title_account_settings_overview"></string_del>
+    <string_del name="_sys_menu_item_title_system_account_settings_overview"></string_del>
+    <string_del name="_sys_page_block_title_settings"></string_del>
+</resources>

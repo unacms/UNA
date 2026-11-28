@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_stories',
     'title' => 'Stories',
     'note' => 'Stories, photo stories, video stories',
-    'version' => '14.0.0.DEV',
+    'version' => '14.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

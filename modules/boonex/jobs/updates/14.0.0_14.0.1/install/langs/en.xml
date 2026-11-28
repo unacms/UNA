@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_jobs_form_profile_input_name_err"><![CDATA[Name is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_jobs_form_profile_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string_upd>
+	<string_upd name="_bx_jobs_form_questionnaire_input_question_err"><![CDATA[Please answer the question.]]></string_upd>
+	<string_upd name="_bx_jobs_page_block_title_entries_in_context"><![CDATA[Jobs in this community]]></string_upd>
+	<string_add name="_bx_jobs_menu_item_title_sm_members_one"><![CDATA[{0} assignee]]></string_add>
+	<string_add name="_bx_jobs_txt_unit_view"><![CDATA[View job]]></string_add>
+	<string_add name="_bx_jobs_txt_empty_title"><![CDATA[No jobs yet]]></string_add>
+	<string_upd name="_bx_jobs_txt_invite_popup_error_invitation_absent"><![CDATA[Sorry, an error has occurred. You cannot join this job. The invitation is expired or deleted.]]></string_upd>
+	<string_upd name="_bx_jobs_txt_invite_popup_error_invitation_wrong_user"><![CDATA[Sorry, an error has occurred. You cannot join this job. This invitation cannot be used by you.]]></string_upd>
+	<string_upd name="_bx_jobs_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_upd name="_bx_jobs_email_join_request_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New request to join <a href="{EntryUrl}">{EntryTitle}</a> job from <a href="{NewMemberUrl}">{NewMemberDisplayName}</a></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_jobs_email_join_reject_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was rejected by job admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_jobs_email_join_confirm_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your request to join <a href="{EntryUrl}">{EntryTitle}</a> job was confirmed by the job admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_jobs_email_fan_remove"><![CDATA[Profile was removed from job members]]></string_upd>
+	<string_upd name="_bx_jobs_email_fan_remove_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile was removed from <a href="{EntryUrl}">{EntryTitle}</a> job by the job admin.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_jobs_email_fan_become_admin_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You are an admin of <a href="{EntryUrl}">{EntryTitle}</a> job now.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_jobs_email_admin_become_fan_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your admin status was revoked from <a href="{EntryUrl}">{EntryTitle}</a> job.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_jobs_email_set_role_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your status in <a href="{EntryUrl}">{EntryTitle}</a> job was changed to <b>{Role}</b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_jobs_email_invitation_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{InviterUrl}">{InviterDisplayName}</a> invited you to <a href="{EntryUrl}">{EntryTitle} job</a>.</p>
+{email_footer}]]></string_upd>
+</resources>

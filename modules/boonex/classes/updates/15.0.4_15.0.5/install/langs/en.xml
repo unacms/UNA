@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_classes_form_entry_input_title_err"><![CDATA[Title is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_classes_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_classes_form_poll_input_text_err"><![CDATA[Question is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_classes_category_form_entry_input_value_err"><![CDATA[Value is required. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_classes_form_post_input_link_err_delete"><![CDATA[The link could not be removed. Please try again.]]></string_upd>
+	<string_upd name="_bx_classes_form_attach_link_input_url_err"><![CDATA[Correct Link is required. Please fill in this field.]]></string_upd>
+	<string_upd name="_bx_classes_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string_upd>
+	<string_add name="_bx_classes_txt_empty_title"><![CDATA[No classes yet]]></string_add>
+	<string_upd name="_bx_classes_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_upd name="_bx_classes_txt_err_cant_add_class_without_context"><![CDATA[A class can only be added inside a community.]]></string_upd>
+	<string_add name="_bx_classes_txt_poll_answer_vote_counter_one"><![CDATA[{0} vote]]></string_add>
+</resources>

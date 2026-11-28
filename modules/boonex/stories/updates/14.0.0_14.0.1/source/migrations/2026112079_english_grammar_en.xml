@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_stories_form_entry_input_title_err"><![CDATA[Caption is required min 3 max 160.]]></string_upd>
+    <string_upd name="_bx_stories_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+    <string_upd name="_bx_stories_form_entry_input_pictures_err"><![CDATA[Content is required. Please select at least one photo or video.]]></string_upd>
+</resources>

@@ -1,0 +1,1103 @@
+<?php defined('BX_DOL') or die('hack attempt');
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    OAuth2 OAuth2 server
+ * @ingroup     UnaModules
+ *
+ * @{
+ */
+
+class BxOAuthUserCredentialsStorage extends OAuth2\Storage\Pdo implements OAuth2\Storage\UserCredentialsInterface
+{
+    /**
+     * Clients of native apps (RFC 8252), by their ids. They sign in for API v2 and are the only
+     * clients with rules of their own (PKCE, loopback redirects, see BxOAuthAuthorizeController).
+     * They are built in: none has a row in bx_oauth_clients, so a site without API v2 has the
+     * clients it always had, in Studio and for every endpoint that looks a client up. None has a
+     * secret. Its `api` scope is its own: it is not in bx_oauth_scopes.
+     */
+    const NATIVE_APP_CLIENTS = array(
+        'una-desktop' => array(
+            'title' => 'UNA Desktop',
+            'redirect_uri' => 'http://127.0.0.1/callback',
+            'grant_types' => 'authorization_code,refresh_token',
+            'scope' => 'api',
+        ),
+    );
+
+    /**
+     * A native app's client as a row of bx_oauth_clients, false when the id is not one or API v2
+     * is off. Native apps are clients of API v2, a preview that is off as installed: while it is
+     * off the server doesn't know them (the id is like any other then, and a site's own client of
+     * that id works as it always did); while it is on the id is the native app's, whatever the
+     * table has. The id is matched as it is written, letter case too.
+     * @return array|false
+     */
+    public static function getNativeAppClient($sClientId)
+    {
+        if (!is_string($sClientId) || !isset(self::NATIVE_APP_CLIENTS[$sClientId]) || !getParam(BxDolApiV2Router::OPTION_ENABLE))
+            return false;
+
+        return array('id' => 0, 'client_id' => $sClientId, 'client_secret' => null, 'parent_id' => 0, 'user_id' => 0) + self::NATIVE_APP_CLIENTS[$sClientId];
+    }
+
+    public function isNativeAppClient($sClientId)
+    {
+        return self::getNativeAppClient($sClientId) !== false;
+    }
+
+    /**
+     * Ids of the clients MCP clients (Claude, ChatGPT and the like) register for themselves (RFC 7591,
+     * BxOAuthModule::actionRegister). They are public clients of the MCP server (BxDolMcpServer) with the rules of
+     * native apps (PKCE with S256, the `api` scope) and redirects matched exactly, a loopback one on any port.
+     */
+    const MCP_CLIENT_PREFIX = 'mcp-';
+
+    /**
+     * Whether a client is one an MCP client registered: an id of MCP_CLIENT_PREFIX with a row and no secret, while
+     * the MCP server is on (BxDolMcpServer::isEnabled()).
+     */
+    public function isMcpClient($sClientId)
+    {
+        if (!is_string($sClientId) || !str_starts_with($sClientId, self::MCP_CLIENT_PREFIX) || !BxDolMcpServer::isEnabled())
+            return false;
+
+        $aClient = parent::getClientDetails($sClientId);
+        return is_array($aClient) && empty($aClient['client_secret']);
+    }
+
+    // what the library asks about a client: a native app's is answered here, any other by the library, as it always was
+
+    public function getClientDetails($sClientId)
+    {
+        if (($aClient = self::getNativeAppClient($sClientId)) !== false)
+            return $aClient;
+
+        return parent::getClientDetails($sClientId);
+    }
+
+    public function isPublicClient($sClientId)
+    {
+        if (self::getNativeAppClient($sClientId) !== false)
+            return true;
+
+        return parent::isPublicClient($sClientId);
+    }
+
+    public function checkClientCredentials($sClientId, $sClientSecret = null)
+    {
+        // a native app has no secret: it is never the one who knows it
+        if (self::getNativeAppClient($sClientId) !== false)
+            return false;
+
+        return parent::checkClientCredentials($sClientId, $sClientSecret);
+    }
+
+    public function checkUserCredentials($sLogin, $sPassword)
+    {
+        return ($sErrorMsg = bx_check_password($sLogin, $sPassword)) ? false : true;
+    }
+
+    public function getUser($sLogin)
+    {
+        return $this->getUserDetails($sLogin);
+    }
+    
+    public function getUserDetails($sLogin)
+    {
+        if (!($oAccount = BxDolAccount::getInstance($sLogin)))
+            return false;
+
+        if (!($oProfile = BxDolProfile::getInstanceByAccount($oAccount->id())))
+            return false;
+
+        // don't allow login under another profile
+        if ($oProfile->getAccountId() != $oAccount->id()) {
+            // force switch to own profile
+            if ($oAccount->updateProfileContextAuto())
+                $oProfile = BxDolProfile::getInstanceByAccount($oAccount->id(), true);
+        }
+
+        if (!$oProfile)
+            return false;
+
+        return array('user_id' => $oProfile->id());
+    }
+
+    public function checkRestrictedGrantType($iClientId, $sGrantType)
+    {
+        $aDetails = $this->getClientDetails($iClientId);
+        if (isset($aDetails['grant_types'])) {
+            $aGrantTypes = explode(',', $aDetails['grant_types']);
+
+            return in_array($sGrantType, (array) $aGrantTypes);
+        }
+
+        // if grant_types are not defined, then none are restricted
+        return true;
+    }
+}
+
+class BxOAuthModule extends BxDolModule
+{
+    protected $_oStorage;
+    protected $_oServer;
+    protected $_oAPI;
+
+    function __construct(&$aModule)
+    {
+        parent::__construct($aModule);        
+    }
+
+    public function checkAllowedOrigins()
+    {
+        $aClient = array();
+        if (isset($_SERVER['HTTP_ORIGIN']) && parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST) != parse_url(BX_DOL_URL_ROOT, PHP_URL_HOST)) {
+
+            $aClient = $this->_oDb->getClientByAllowedOriginUrl($_SERVER['HTTP_ORIGIN']);
+            if (!$aClient) {
+                header('HTTP/1.0 403 Forbidden');
+                echo _t("_Access denied");
+                exit;
+            } 
+
+            header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+            
+            if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
+                header('Access-Control-Allow-Methods: POST, GET');
+                header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Custom-Header, X-Requested-With');                    
+                exit(0);
+            }            
+        }
+        return $aClient;
+    }
+
+    public function initOAuth($sClientId)
+    {
+        if ($this->_oStorage)
+            return;        
+
+        // check cross origin request
+        
+        $aClient = $this->checkAllowedOrigins();
+
+        // get the client data if it wasn't set before
+        
+        if (empty($aClient))
+            $aClient = $sClientId ? $this->getClient($sClientId) : false;
+        
+        if (!$aClient)
+            $aClient = array('grant_types' => 'authorization_code');
+        
+        if (!$aClient['grant_types'])
+            $aClient['grant_types'] = 'authorization_code';
+        
+        $aGrantTypes = explode(',', $aClient['grant_types']);
+
+
+        // configure OAuth storage and server
+
+        $this->_oStorage = $this->getStorage();
+
+        $iRefreshTokenLifetime = (int)getParam('bx_oauth2_refresh_token_lifetime');
+        $aServerConfig = array(
+            'require_exact_redirect_uri' => false,
+            'refresh_token_lifetime' => $iRefreshTokenLifetime ? $iRefreshTokenLifetime : 7779000, // set lifetime to 90 days
+        );
+        $this->_oServer = new OAuth2\Server($this->_oStorage, $aServerConfig);
+
+        // The library's authorize controller, set up as the server sets up its own, plus the rules of native apps
+        // (PKCE, loopback redirects), see BxOAuthAuthorizeController. It is there for every request, whatever
+        // client the lines above found: the client the request itself names decides which rules apply.
+        bx_import('AuthorizeController', $this->_aModule);
+        $this->_oServer->setAuthorizeController(new BxOAuthAuthorizeController(
+            $this->_oStorage,
+            array('code' => new OAuth2\ResponseType\AuthorizationCode($this->_oStorage)),
+            $aServerConfig,
+            new OAuth2\Scope($this->_oStorage)
+        ));
+
+        // add grand types
+
+        // Add the "Client Credentials" grant type (it is the simplest of the grant types)
+        if (in_array('client_credentials', $aGrantTypes))
+            $this->_oServer->addGrantType(new OAuth2\GrantType\ClientCredentials($this->_oStorage));
+
+        // Add the "Authorization Code" grant type (this is where the oauth magic happens)
+        if (in_array('authorization_code', $aGrantTypes))
+            $this->_oServer->addGrantType(new OAuth2\GrantType\AuthorizationCode($this->_oStorage));
+
+        // Add the "Password" grant type (generate client_id with empty client_secret)
+        if (in_array('password', $aGrantTypes))
+            $this->_oServer->addGrantType(new OAuth2\GrantType\UserCredentials($this->_oStorage));
+
+        // Add the "Refresh Token" grant type
+        if (in_array('refresh_token', $aGrantTypes))
+            $this->_oServer->addGrantType(new OAuth2\GrantType\RefreshToken($this->_oStorage, array(
+                'always_issue_new_refresh_token' => getParam('bx_oauth2_always_issue_new_refresh_token') ? true : false,
+                // 'unset_refresh_token_after_use' => false,
+            )));
+    }
+
+    /**
+     * A client by its id: a native app's built-in one while API v2 is on
+     * (BxOAuthUserCredentialsStorage::getNativeAppClient), otherwise its row of bx_oauth_clients,
+     * as it always was.
+     * @return array the client, empty when there is none
+     */
+    public function getClient($sClientId)
+    {
+        if (($aClient = BxOAuthUserCredentialsStorage::getNativeAppClient($sClientId)) !== false)
+            return $aClient;
+
+        return $this->_oDb->getClientsBy(array('type' => 'client_id', 'client_id' => $sClientId));
+    }
+
+    public function getStorage()
+    {
+        if ($this->_oStorage)
+            return $this->_oStorage;
+
+        return new BxOAuthUserCredentialsStorage(BxDolDb::getLink(), array (
+            'client_table' => 'bx_oauth_clients',
+            'access_token_table' => 'bx_oauth_access_tokens',
+            'refresh_token_table' => 'bx_oauth_refresh_tokens',
+            'code_table' => 'bx_oauth_authorization_codes',
+            'user_table' => 'sys_accounts',
+            'jwt_table'  => '',
+            'jti_table'  => '',
+            'scope_table'  => 'bx_oauth_scopes',
+            'public_key_table'  => '',
+        ));
+    }
+
+    /**
+     * An access token that hasn't expired, for resource servers such as API v2.
+     * No origin check and no output: the caller decides how to answer.
+     * @param string $sToken bearer token
+     * @return array|false ['profile_id' => int, 'client_id' => string, 'scopes' => [string], 'expires' => int]
+     */
+    public function serviceGetAccessTokenData($sToken)
+    {
+        if (!is_string($sToken) || !preg_match('/^[A-Za-z0-9]{20,80}$/', $sToken))
+            return false;
+
+        $aToken = $this->getStorage()->getAccessToken($sToken);
+        if (empty($aToken) || empty($aToken['user_id']) || (int)$aToken['expires'] < time())
+            return false;
+
+        return array(
+            'profile_id' => (int)$aToken['user_id'],
+            'client_id' => (string)$aToken['client_id'],
+            'scopes' => preg_split('/[\s,]+/', trim((string)$aToken['scope']), -1, PREG_SPLIT_NO_EMPTY),
+            'expires' => (int)$aToken['expires'],
+        );
+    }
+
+    /**
+     * @page public_api API Public
+     * @section public_api_token /m/oauth2/token
+     * 
+     * Get the token for the future communication with @ref private_api
+     * 
+     * **HTTP Method:** 
+     * `POST`
+     *
+     * **Request params:**
+     * - `grant_type` - for API it's better to use 'password' grant type
+     * - `username` - login email
+     * - `password` - login password
+     * - `client_id` - client ID from bx_oauth_clients table
+     *
+     * **Response (success):**
+     * @code
+     * {  
+     *    "access_token":"cdd7056d0adafa9ead87526ca22367c6b0df8273",
+     *    "expires_in":3600,
+     *    "token_type":"Bearer",
+     *    "scope":"basic",
+     *    "refresh_token":"c3d7f6f4b7cc640214ae0cba2b194872c3089f1c"
+     * }
+     * @endcode
+     *
+     * **Response (error):**
+     * @code
+     * {  
+     *    "error":"short error description here",
+     *    "error_description":"long error description here"
+     * }
+     * @endcode
+     */
+    function actionToken ()
+    {
+        $this->initOAuth(bx_get('client_id'));
+        
+        // Handle a request for an OAuth2.0 Access Token and send the response to the client
+        $this->_oServer->handleTokenRequest(OAuth2\Request::createFromGlobals())->send();
+    }
+
+    /**
+     * @page public_api API Public
+     * @section public_api_revoke /m/oauth2/revoke
+     * 
+     * Revoke token 
+     * 
+     * **HTTP Method:** 
+     * `POST`
+     *
+     * **Request params:**
+     * - `token` - token to revoke
+     *
+     * **Request header:**
+     * @code
+     * Authorization: Bearer 9802c4a34e1535d8c3b721604ee0e7fb04116c49
+     * @endcode
+     *
+     * **Response (success):**
+     * @code
+     * {  
+     *    "revoked":true,
+     * }
+     * @endcode
+     *
+     * **Response (error):**
+     * @code
+     * {  
+     *    "error":"short error description here",
+     *    "error_description":"long error description here"
+     * }
+     * @endcode
+     */
+    function actionRevoke ()
+    {
+        $this->initOAuth($this->getClientIdFromAccessTokenHeader());
+        $this->_oServer->handleRevokeRequest(OAuth2\Request::createFromGlobals())->send();
+    }
+
+    /**
+     * Authenicated or public call to the "safe" and "public" service methods 
+     */
+    function actionCom ($sMethod)
+    {
+        if (!$this->_oAPI) {
+            bx_import('API', $this->_aModule);
+            $this->_oAPI = new BxOAuthAPI($this);
+        }
+
+        $bPublic = $this->_oAPI->isPublicAPI(bx_get('module') ? bx_get('module') : 'bx_api', $sMethod, bx_get('class') ? bx_get('class') : false);
+        if ($bPublic) {
+
+            if (!$this->_oDb->getClientsBy(array('type' => 'client_id', 'client_id' => bx_get('client_id')))) {
+                $this->_oAPI->errorOutput(403, 'access_denied', '"public" services need valid "client_id" parameter');
+                return;
+            }
+
+            $this->checkAllowedOrigins();
+            $this->_oAPI->com($sMethod, array(), $bPublic);
+        }
+        else {
+            if (!$this->_oAPI->isSafeAPI(bx_get('module') ? bx_get('module') : 'bx_api', $sMethod, bx_get('class') ? bx_get('class') : false)) {
+                $this->_oAPI->errorOutput(403, 'access_denied', 'Only "public" and "safe" services can be called, or method doesn\'t exist');
+                return;
+            }
+
+            $this->initOAuth($this->getClientIdFromAccessTokenHeader());
+
+            // Handle a request to a resource and authenticate the access token
+            if (!$this->_oServer->verifyResourceRequest(OAuth2\Request::createFromGlobals())) {
+                $this->_oServer->getResponse()->send();
+                return;
+            }
+
+            $aToken = $this->_oServer->getAccessTokenData(OAuth2\Request::createFromGlobals());
+
+            $aScope = explode(',', $this->_oAPI->aAction2Scope['api']);
+            $aScopeToken = explode(',', $aToken['scope']);
+            if (!array_intersect($aScopeToken, $aScope)) {
+                $this->_oAPI->errorOutput(403, 'insufficient_scope', 'The request requires higher privileges than provided by the access token');
+                return;
+            }
+
+            $this->_oAPI->com($sMethod, $aToken, false);
+        }
+    }
+
+    /**
+     * Authenicated call to the API
+     */
+    function actionApi ($sAction)
+    {
+        $this->initOAuth($this->getClientIdFromAccessTokenHeader());
+        
+        // Handle a request to a resource and authenticate the access token
+        if (!$this->_oServer->verifyResourceRequest(OAuth2\Request::createFromGlobals())) {
+            $this->_oServer->getResponse()->send();
+            return;
+        }
+
+        $aToken = $this->_oServer->getAccessTokenData(OAuth2\Request::createFromGlobals());
+
+        if (!$this->_oAPI) {
+            bx_import('API', $this->_aModule);
+            $this->_oAPI = new BxOAuthAPI($this);
+        }
+
+        if (!$sAction || !method_exists($this->_oAPI, $sAction) || in_array($sAction, $this->_oAPI->aExceptionsAPI)) {
+            $this->_oAPI->errorOutput(404, 'not_found', 'No such API endpoint available');
+            return;
+        }
+
+        $aScope = explode(',', $this->_oAPI->aAction2Scope[$sAction]);
+        $aScopeToken = explode(',', $aToken['scope']);
+        if (!array_intersect($aScopeToken, $aScope)) {
+            $this->_oAPI->errorOutput(403, 'insufficient_scope', 'The request requires higher privileges than provided by the access token');
+            return;
+        }
+
+        $this->_oAPI->$sAction($aToken);
+    }
+
+    /**
+     * Authorization endpoint, see processAuthorizeRequest.
+     */
+    function actionAuth ()
+    {
+        $this->initOAuth(bx_get('client_id'));
+
+        $oRequest = OAuth2\Request::createFromGlobals();
+        $oResponse = new OAuth2\Response();
+
+        switch ($this->processAuthorizeRequest($oRequest, $oResponse)) {
+            case 'error':
+                // a native app waits for its redirect, so with a valid redirect_uri the error goes back to it
+                // (RFC 6749 4.1.2.1); every other client gets the site's error page, as before
+                if ($oResponse->isRedirection() && ($this->_isNativeAppRequest() || $this->_isMcpClientRequest())) {
+                    $oResponse->send();
+                    break;
+                }
+                require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
+                $this->_oTemplate->getPage(false, MsgBox($this->_getAuthorizeError($oResponse)));
+                break;
+
+            case 'login':
+                require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
+                bx_login_form(false, false, $this->getAuthorizeUrl());
+                break;
+
+            case 'create_profile':
+                // back here once the profile is made: profile modules send a new profile's account to `custom-referrer`
+                BxDolSession::getInstance()->setValue('custom-referrer', $this->getAuthorizeUrl());
+                header('Location: ' . BxDolPage::getProfileRequiredUrl());
+                exit;
+
+            case 'consent':
+                $oPage = BxDolPage::getObjectInstanceByURI('oauth-authorization');
+                $this->_oTemplate->getPage(false, $oPage->getCode());
+                break;
+
+            default: // 'response': a redirect back to the client, with a code or an error
+                $oResponse->send();
+        }
+    }
+
+    /**
+     * Decide on an authorize request. initOAuth must be called before.
+     *
+     * A code is issued only for a profile of the signed-in account, chosen in the consent form
+     * (POST with the consent token). A GET can't approve anything. Without asking, only a
+     * confidential client (one with a secret, so a code is of no use to anyone else) is approved:
+     * for a profile that was connected to it before, or for the only profile of the account.
+     *
+     * An account with no profile to connect as gets the consent form with Create profile, a link to this request
+     * with `create_profile`: that GET goes to profile creation and back here (actionAuth).
+     *
+     * @return string 'error' (invalid request), 'login' (guest), 'consent' (show the consent form),
+     *         'create_profile' (go to profile creation) or 'response' ($oResponse holds the redirect to the client)
+     */
+    public function processAuthorizeRequest($oRequest, $oResponse)
+    {
+        if (!$this->_oServer->validateAuthorizeRequest($oRequest, $oResponse))
+            return 'error';
+
+        if (!isLogged())
+            return 'login';
+
+        $sClientId = $this->_oServer->getAuthorizeController()->getClientId();
+        $aProfiles = $this->_getAuthorizeProfiles();
+
+        if (!$aProfiles && 'GET' == $oRequest->server('REQUEST_METHOD') && $oRequest->query('create_profile')) {
+            return 'create_profile';
+        }
+
+        if ('POST' == $oRequest->server('REQUEST_METHOD') && null !== ($mixedProfileId = $oRequest->request('profile_id'))) {
+            // the answer from the consent form
+            $iProfileId = is_scalar($mixedProfileId) ? (int)$mixedProfileId : 0;
+
+            // "Cancel", or a profile of another account
+            if (!$iProfileId || !isset($aProfiles[$iProfileId])) {
+                $this->_oServer->handleAuthorizeRequest($oRequest, $oResponse, false);
+                return 'response';
+            }
+
+            if ($this->isConsentTokenValid($oRequest->request('csrf_token'))) {
+                $this->_oServer->handleAuthorizeRequest($oRequest, $oResponse, true, $iProfileId);
+                return 'response';
+            }
+
+            // no valid consent token, so it wasn't sent from the consent form: ask again
+            return 'consent';
+        }
+
+        if ($aProfiles && !$this->_oStorage->isPublicClient($sClientId)) {
+            $iProfileId = (int)$this->_oDb->getSavedProfile($sClientId, $aProfiles);
+            if (!$iProfileId && 1 == count($aProfiles))
+                $iProfileId = (int)array_key_first($aProfiles);
+
+            if ($iProfileId) {
+                $this->_oServer->handleAuthorizeRequest($oRequest, $oResponse, true, $iProfileId);
+                return 'response';
+            }
+        }
+
+        return 'consent';
+    }
+
+    /**
+     * Consent form. The page with it can be opened directly, so the request is validated here too,
+     * and the form carries only the values the OAuth library accepted.
+     */
+    function serviceAuthorization ()
+    {
+        if (!isLogged())
+            return MsgBox(_t('_Access denied'));
+
+        $this->initOAuth(bx_get('client_id'));
+
+        $oRequest = OAuth2\Request::createFromGlobals();
+        $oResponse = new OAuth2\Response();
+        if (!$this->_oServer->validateAuthorizeRequest($oRequest, $oResponse))
+            return MsgBox($this->_getAuthorizeError($oResponse));
+
+        $aParams = $this->getAuthorizeParams();
+
+        // A native app: what it asks for, and where the browser goes back to, so a person can tell an app on
+        // this computer from a website. Its PKCE challenge is in the form too: the form's POST is validated as
+        // the request was. Every other client gets the page as it always was.
+        // An MCP client (Claude, ChatGPT ...) that registered itself gets the same: it names itself, so where the
+        // browser goes back to is what a person can check.
+        $bNativeApp = $this->_isNativeAppRequest();
+        $bMcpClient = $this->_isMcpClientRequest();
+        $aNativeApp = $bNativeApp ? BxOAuthUserCredentialsStorage::getNativeAppClient($aParams['client_id']) : false;
+        $sTitle = $aNativeApp ? $aNativeApp['title'] : $this->_oDb->getClientTitle($aParams['client_id']);
+        $sRedirectHost = $bNativeApp || $bMcpClient ? $this->_getRedirectHost($aParams) : '';
+
+        // what the `api` scope of a native app or an MCP client allows, one line each
+        $aScopes = array();
+        if (($bNativeApp || $bMcpClient) && in_array('api', preg_split('/[\s,]+/', $aParams['scope'], -1, PREG_SPLIT_NO_EMPTY), true)) {
+            $sIcon = BxTemplFunctions::getInstance()->getIconAsHtml('check');
+            foreach (array('read', 'write', 'messages', 'profiles') as $sScope)
+                $aScopes[] = array('icon' => $sIcon, 'title' => _t('_bx_oauth_authorize_can_' . $sScope));
+        }
+
+        // the list's lead-in is the end of the first line, not a heading of its own
+        $sText = _t('_bx_oauth_authorize_lead', $this->_escapeAttribute($sTitle), $this->_escapeAttribute(getParam('site_title')));
+        if ($aScopes)
+            $sText .= ' ' . _t('_bx_oauth_authorize_can');
+
+        $aProfileRows = $this->_getAuthorizeProfileRows();
+
+        $aVars = array(
+            'text' => $sText,
+            'bx_if:scopes' => array(
+                'condition' => !empty($aScopes),
+                'content' => array('bx_repeat:items' => $aScopes),
+            ),
+            'bx_if:redirect' => array(
+                'condition' => $sRedirectHost !== '',
+                'content' => array('redirect_text' => _t('_bx_oauth_authorize_redirect', $this->_escapeAttribute($sRedirectHost))),
+            ),
+            'url' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth',
+            'csrf_token' => $this->_escapeAttribute($this->getConsentToken()),
+            'client_id' => $this->_escapeAttribute($aParams['client_id']),
+            'response_type' => $this->_escapeAttribute($aParams['response_type']),
+            'redirect_uri' => $this->_escapeAttribute($aParams['redirect_uri']),
+            'scope' => $this->_escapeAttribute($aParams['scope']),
+            'state' => $this->_escapeAttribute($aParams['state']),
+            'bx_if:pkce' => array(
+                'condition' => isset($aParams['code_challenge']),
+                'content' => array(
+                    'code_challenge' => $this->_escapeAttribute($aParams['code_challenge'] ?? ''),
+                    'code_challenge_method' => $this->_escapeAttribute($aParams['code_challenge_method'] ?? ''),
+                ),
+            ),
+            'bx_if:profiles' => array(
+                'condition' => !empty($aProfileRows),
+                'content' => array('bx_repeat:profiles' => $aProfileRows),
+            ),
+            // an account with no profile yet can't connect: what to do, and a way back here once it's done
+            'bx_if:no_profiles' => array(
+                'condition' => empty($aProfileRows),
+                'content' => array(
+                    'no_profile_text' => _t('_bx_oauth_authorize_no_profile', $this->_escapeAttribute($sTitle)),
+                    'create_profile_url' => $this->_escapeAttribute($this->getAuthorizeUrl(array('create_profile' => 1))),
+                ),
+            ),
+            'footer' => BxTemplFunctions::getInstance()->designBoxFooter(BxDolService::call('system', 'get_agreement', array('_bx_oauth_authorize_agreement'), 'TemplServiceLogin')),
+        );
+
+        $this->_oTemplate->addCss('main.css');
+        return $this->_oTemplate->parseHtmlByName('page_auth.html', $aVars);
+    }
+
+    /**
+     * Params of the authorize request validated last, as the OAuth library accepted them.
+     * Call it only after a successful validateAuthorizeRequest.
+     */
+    public function getAuthorizeParams()
+    {
+        $oController = $this->_oServer->getAuthorizeController();
+
+        $aParams = array(
+            'client_id' => (string)$oController->getClientId(),
+            'response_type' => (string)$oController->getResponseType(),
+            'redirect_uri' => (string)$oController->getRedirectUri(),
+            'scope' => (string)$oController->getScope(),
+        );
+        if (($sState = $oController->getState()) !== null && $sState !== '')
+            $aParams['state'] = (string)$sState;
+
+        // PKCE of a native app (BxOAuthAuthorizeController): the challenge goes through the sign-in and the consent form with the rest
+        $sChallenge = method_exists($oController, 'getCodeChallenge') ? (string)$oController->getCodeChallenge() : '';
+        if ($sChallenge !== '') {
+            $aParams['code_challenge'] = $sChallenge;
+            $aParams['code_challenge_method'] = 'S256';
+        }
+
+        return $aParams;
+    }
+
+    /**
+     * This authorize request again, as the OAuth library accepted it: where sign-in and profile creation come back to.
+     * Call it only after a successful validateAuthorizeRequest.
+     */
+    public function getAuthorizeUrl($aExtra = array())
+    {
+        return BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'auth/?' . http_build_query(array_merge($this->getAuthorizeParams(), $aExtra));
+    }
+
+    /**
+     * Token of the consent form, tied to the account and its session. Without it a consent can't be given.
+     */
+    public function getConsentToken()
+    {
+        $iAccountId = (int)getLoggedId();
+        if (!$iAccountId)
+            return '';
+
+        $oSession = BxDolSession::getInstance();
+        // A remembered user (memberID/memberPassword cookies with `sys_session_auth` off) may have no session
+        // cookie, and a plain start() does nothing then, so the session is started explicitly.
+        if (!$oSession->getId())
+            $oSession->start(true);
+        if (!($sSessionId = $oSession->getId()))
+            return '';
+
+        return hash_hmac('sha256', 'bx_oauth_consent|' . $iAccountId . '|' . $sSessionId, BX_DOL_SECRET);
+    }
+
+    public function isConsentTokenValid($sToken)
+    {
+        if (!is_string($sToken) || '' === $sToken)
+            return false;
+
+        $sExpected = $this->getConsentToken();
+        return '' !== $sExpected && hash_equals($sExpected, $sToken);
+    }
+
+    /**
+     * A value for an HTML attribute or text. Underscores are encoded too, so a value can't
+     * make the template engine put another template key (`__csrf_token__`) in its place.
+     */
+    protected function _escapeAttribute($s)
+    {
+        return str_replace('_', '&#95;', htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+    }
+
+    /**
+     * Profiles a code can be issued for: those of the signed-in account, by id.
+     */
+    protected function _getAuthorizeProfiles()
+    {
+        $oAccount = BxDolAccount::getInstance();
+        return $oAccount ? $oAccount->getProfiles() : array();
+    }
+
+    /**
+     * Rows of the consent form: the profiles of the signed-in account a person can act as, each with its
+     * own submit button. The same profiles as the account's profile switcher lists.
+     */
+    protected function _getAuthorizeProfileRows()
+    {
+        $oModuleDb = BxDolModuleQuery::getInstance();
+
+        $aRows = array();
+        foreach ($this->_getAuthorizeProfiles() as $aProfile) {
+            if (!$oModuleDb->isEnabledByName($aProfile['type']) || !BxDolService::call($aProfile['type'], 'act_as_profile'))
+                continue;
+
+            $oProfile = BxDolProfile::getInstance($aProfile['id']);
+            if (!$oProfile)
+                continue;
+
+            $aRows[] = array(
+                'id' => (int)$aProfile['id'],
+                'unit' => $oProfile->getUnit(0, array('template' => 'unit_wo_links')),
+                'connect_label' => $this->_escapeAttribute(_t('_bx_oauth_connect_as', $oProfile->getDisplayName())),
+            );
+        }
+
+        return $aRows;
+    }
+
+    /**
+     * Whether the authorize request validated last names a native app, see BxOAuthAuthorizeController.
+     */
+    protected function _isNativeAppRequest()
+    {
+        $oController = $this->_oServer->getAuthorizeController();
+        return method_exists($oController, 'isNativeAppRequest') && $oController->isNativeAppRequest();
+    }
+
+    /**
+     * Whether the authorize request validated last names a client an MCP client registered.
+     */
+    protected function _isMcpClientRequest()
+    {
+        $oController = $this->_oServer->getAuthorizeController();
+        return method_exists($oController, 'isMcpClientRequest') && $oController->isMcpClientRequest();
+    }
+
+    /**
+     * Where the browser goes back to after the consent page: host[:port] of the redirect in the
+     * request, or of the registered one when the request has none.
+     */
+    protected function _getRedirectHost($aParams)
+    {
+        $sUri = $aParams['redirect_uri'];
+        if ($sUri === '') {
+            $aClient = $this->_oStorage->getClientDetails($aParams['client_id']);
+            $sUri = is_array($aClient) ? (string)$aClient['redirect_uri'] : '';
+        }
+
+        $aUri = $sUri !== '' ? parse_url($sUri) : false;
+        if (!is_array($aUri) || empty($aUri['host']))
+            return '';
+
+        return $aUri['host'] . (isset($aUri['port']) ? ':' . (int)$aUri['port'] : '');
+    }
+
+    protected function _getAuthorizeError($oResponse)
+    {
+        $s = $oResponse->getParameter('error_description');
+        return htmlspecialchars_adv($s ? $s : _t('_error occured'));
+    }
+
+    /**
+     * Authorization server metadata (RFC 8414) for MCP clients (BxDolMcpServer::serveWellKnown): where they register,
+     * sign a person in and get tokens.
+     * @param string $sIssuer the issuer, the site's URL with no trailing slash
+     */
+    public function serviceGetAuthorizationServerMetadata($sIssuer)
+    {
+        $sBase = BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri();
+
+        return array(
+            'issuer' => (string)$sIssuer,
+            'authorization_endpoint' => $sBase . 'auth',
+            'token_endpoint' => $sBase . 'token',
+            'registration_endpoint' => $sBase . 'register',
+            'revocation_endpoint' => $sBase . 'revoke',
+            'response_types_supported' => array('code'),
+            'grant_types_supported' => array('authorization_code', 'refresh_token'),
+            'code_challenge_methods_supported' => array('S256'),
+            'token_endpoint_auth_methods_supported' => array('none', 'client_secret_post', 'client_secret_basic'),
+            'scopes_supported' => array(BxDolApiV2Auth::SCOPE),
+            'service_documentation' => BX_DOL_URL_ROOT . 'page.php?i=account-settings-connectors',
+        );
+    }
+
+    /**
+     * @page public_api API Public
+     * @section public_api_register /m/oauth2/register
+     *
+     * Dynamic client registration (RFC 7591) for MCP clients such as Claude or ChatGPT: a client registers itself
+     * before it signs a person in, with no one at the site doing anything. It becomes a public client
+     * (BxOAuthUserCredentialsStorage::isMcpClient): PKCE with S256, the `api` scope, its redirects matched exactly.
+     * Only while the MCP server is on (Studio > Agents > Settings). A few registrations a minute from an address.
+     *
+     * **HTTP Method:** `POST`, a JSON body: `redirect_uris` (required: https:// or loopback ones), `client_name`,
+     * and when sent `token_endpoint_auth_method` `none`, `grant_types` of `authorization_code` and `refresh_token`,
+     * `response_types` `code`.
+     *
+     * **Response:** 201 with the client (`client_id`, `client_id_issued_at`, `client_name`, `redirect_uris`, ...),
+     * or 400 with `error` `invalid_redirect_uri` or `invalid_client_metadata` and `error_description`.
+     */
+    public function actionRegister ()
+    {
+        $aHeaders = array('Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'Content-Type', 'Access-Control-Allow-Methods' => 'POST');
+        $sMethod = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        if ($sMethod === 'OPTIONS')
+            return $this->_jsonAnswer(204, null, $aHeaders);
+        if ($sMethod !== 'POST')
+            return $this->_jsonAnswer(405, array('error' => 'invalid_request', 'error_description' => 'Register with POST'), $aHeaders + array('Allow' => 'POST'));
+        if (!BxDolMcpServer::isEnabled())
+            return $this->_jsonAnswer(404, array('error' => 'not_found', 'error_description' => 'The MCP server is off on this site'), $aHeaders);
+
+        $sSubject = BxDolApiV2RateLimit::subject(0);
+        if ($sSubject !== null && ($iWait = BxDolApiV2RateLimit::hit($sSubject, 'mcp_register', self::REGISTER_PER_MINUTE)) > 0)
+            return $this->_jsonAnswer(429, array('error' => 'too_many_requests', 'error_description' => 'Try again in ' . $iWait . ' s'), $aHeaders + array('Retry-After' => (string)$iWait));
+
+        $aBody = json_decode((string)file_get_contents('php://input', false, null, 0, 65536), true, 16);
+        $mixedClient = self::checkRegistration(is_array($aBody) ? $aBody : null);
+        if (isset($mixedClient['error']))
+            return $this->_jsonAnswer(400, $mixedClient, $aHeaders);
+
+        $sClientId = BxOAuthUserCredentialsStorage::MCP_CLIENT_PREFIX . bin2hex(random_bytes(16));
+        $iNow = time();
+        if (!$this->_oDb->addClient(array(
+            'title' => $mixedClient['client_name'],
+            'client_id' => $sClientId,
+            'client_secret' => '',
+            'redirect_uri' => implode(' ', $mixedClient['redirect_uris']),
+            'grant_types' => 'authorization_code,refresh_token',
+            'scope' => BxDolApiV2Auth::SCOPE,
+            'parent_id' => 0,
+            'user_id' => 0,
+        )))
+            return $this->_jsonAnswer(500, array('error' => 'server_error', 'error_description' => 'The client could not be registered'), $aHeaders);
+
+        return $this->_jsonAnswer(201, array(
+            'client_id' => $sClientId,
+            'client_id_issued_at' => $iNow,
+            'client_name' => $mixedClient['client_name'],
+            'redirect_uris' => $mixedClient['redirect_uris'],
+            'grant_types' => array('authorization_code', 'refresh_token'),
+            'response_types' => array('code'),
+            'token_endpoint_auth_method' => 'none',
+            'scope' => BxDolApiV2Auth::SCOPE,
+        ), $aHeaders);
+    }
+
+    /** Registrations a minute from one address (actionRegister). */
+    const REGISTER_PER_MINUTE = 10;
+
+    /**
+     * The client a registration (RFC 7591) asks for, checked: ['client_name' => ..., 'redirect_uris' => [...]], or
+     * ['error' => ..., 'error_description' => ...].
+     * @param array|null $aBody the request's JSON body
+     */
+    public static function checkRegistration($aBody)
+    {
+        if (!is_array($aBody))
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'Send the client metadata as a JSON object');
+
+        // the redirect rules are the authorize controller's, loaded only for the OAuth server (initOAuth)
+        bx_import('AuthorizeController', 'bx_oauth');
+
+        $aUris = $aBody['redirect_uris'] ?? null;
+        if (!is_array($aUris) || !$aUris || count($aUris) > 5 || !array_is_list($aUris))
+            return array('error' => 'invalid_redirect_uri', 'error_description' => 'redirect_uris is a list of one to five URLs');
+        foreach ($aUris as $sUri)
+            if (!BxOAuthAuthorizeController::isMcpRedirectUri($sUri))
+                return array('error' => 'invalid_redirect_uri', 'error_description' => 'A redirect URI is https:// or a loopback one (http://127.0.0.1, http://[::1], http://localhost), with no fragment');
+        $aUris = array_values(array_unique($aUris));
+        if (strlen(implode(' ', $aUris)) > 255)
+            return array('error' => 'invalid_redirect_uri', 'error_description' => 'The redirect URIs are too long');
+
+        if (isset($aBody['token_endpoint_auth_method']) && $aBody['token_endpoint_auth_method'] !== 'none')
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'Only public clients register here: token_endpoint_auth_method is none');
+        if (isset($aBody['grant_types']) && (!is_array($aBody['grant_types']) || array_diff($aBody['grant_types'], array('authorization_code', 'refresh_token'))))
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'grant_types are authorization_code and refresh_token');
+        if (isset($aBody['response_types']) && (!is_array($aBody['response_types']) || array_diff($aBody['response_types'], array('code'))))
+            return array('error' => 'invalid_client_metadata', 'error_description' => 'response_types is code');
+
+        $sName = isset($aBody['client_name']) && is_string($aBody['client_name']) ? trim(strip_tags($aBody['client_name'])) : '';
+        if ($sName === '')
+            $sName = (string)parse_url($aUris[0], PHP_URL_HOST);
+        $sName = get_mb_substr($sName, 0, 100);
+
+        return array('client_name' => $sName, 'redirect_uris' => $aUris);
+    }
+
+    /**
+     * The apps (MCP clients, the desktop app and other OAuth clients) the signed-in account connected: their titles
+     * and a button to disconnect each, for account settings > Connectors. Empty for a guest and when there are none.
+     */
+    public function serviceConnectedApps()
+    {
+        $aProfileIds = $this->_getAccountProfileIds();
+        if (!$aProfileIds)
+            return bx_is_api() ? array() : '';
+
+        $aApps = array();
+        foreach ($this->_oDb->getConnectedApps($aProfileIds) as $aRow) {
+            $aNative = BxOAuthUserCredentialsStorage::getNativeAppClient($aRow['client_id']);
+            $aApps[] = array(
+                'client_id' => $aRow['client_id'],
+                'title' => $aNative ? $aNative['title'] : ($aRow['title'] !== null && $aRow['title'] !== '' ? $aRow['title'] : $aRow['client_id']),
+            );
+        }
+
+        if (bx_is_api())
+            return $aApps ? array(bx_api_get_block('msg', _t('_bx_oauth_connected_apps_api', implode(', ', array_column($aApps, 'title'))))) : array();
+
+        if (!$aApps)
+            return '';
+
+        $aRows = array();
+        foreach ($aApps as $aApp)
+            $aRows[] = array(
+                'app_title' => $this->_escapeAttribute($aApp['app_title']),
+                'client_id' => $this->_escapeAttribute($aApp['client_id']),
+                'url' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'disconnect',
+                'csrf_token' => $this->_escapeAttribute($this->getAccountToken('disconnect')),
+                'disconnect' => _t('_bx_oauth_connected_apps_disconnect'),
+                'confirm' => bx_js_string(_t('_bx_oauth_connected_apps_confirm', $aApp['title'])),
+            );
+
+        return $this->_oTemplate->parseHtmlByName('connected_apps.html', array(
+            'title' => _t('_bx_oauth_connected_apps'),
+            'info' => _t('_bx_oauth_connected_apps_info'),
+            'bx_repeat:apps' => $aRows,
+        ));
+    }
+
+    /**
+     * Disconnect an app from the signed-in account (POST from serviceConnectedApps): its codes and tokens for the
+     * account's profiles are deleted, so it has to be connected again.
+     */
+    public function actionDisconnect ()
+    {
+        $sBack = BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink('page.php?i=account-settings-connectors');
+
+        $sClientId = bx_get('client_id');
+        $aProfileIds = $this->_getAccountProfileIds();
+        if ('POST' == ($_SERVER['REQUEST_METHOD'] ?? '') && is_string($sClientId) && $sClientId !== '' && $aProfileIds && $this->isAccountTokenValid('disconnect', bx_get('csrf_token')))
+            $this->_oDb->disconnectApp($sClientId, $aProfileIds);
+
+        header('Location: ' . $sBack, true, 303);
+        exit;
+    }
+
+    /**
+     * A token of a form of the signed-in account's own, tied to the account, its session and what the form does.
+     */
+    public function getAccountToken($sPurpose)
+    {
+        $iAccountId = (int)getLoggedId();
+        $oSession = BxDolSession::getInstance();
+        if (!$iAccountId || !($sSessionId = $oSession->getId()))
+            return '';
+
+        return hash_hmac('sha256', 'bx_oauth_' . $sPurpose . '|' . $iAccountId . '|' . $sSessionId, BX_DOL_SECRET);
+    }
+
+    public function isAccountTokenValid($sPurpose, $sToken)
+    {
+        $sExpected = $this->getAccountToken($sPurpose);
+        return is_string($sToken) && $sToken !== '' && $sExpected !== '' && hash_equals($sExpected, $sToken);
+    }
+
+    protected function _getAccountProfileIds()
+    {
+        return isLogged() ? array_map('intval', array_keys($this->_getAuthorizeProfiles())) : array();
+    }
+
+    protected function _jsonAnswer($iStatus, $mBody, $aHeaders = array())
+    {
+        http_response_code((int)$iStatus);
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-store');
+        foreach ($aHeaders as $sName => $sValue)
+            header($sName . ': ' . $sValue);
+        if ($mBody !== null)
+            echo json_encode($mBody, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return null;
+    }
+
+    function serviceGetClientsBy ($aParams = array())
+    {
+    	return $this->_oDb->getClientsBy($aParams);
+    }
+
+    function serviceAddClient ($aClient)
+    {
+        if (!isset($aClient['client_id'])) {
+            bx_import('FormAdd', 'bx_oauth');
+            for ($i = 0; $i < 99 ; ++$i) {
+                $aClient['client_id'] = strtolower(genRndPwd(BxOAuthFormAdd::$LENGTH_ID, false));
+                if (!$this->_oDb->getClientTitle($aClient['client_id'])) // check for uniq
+                    break;
+            }
+        }
+
+        if (!isset($aClient['client_secret'])) {
+            bx_import('FormAdd', 'bx_oauth');
+            $aClient['client_secret'] = strtolower(genRndPwd(BxOAuthFormAdd::$LENGTH_SECRET, false));
+        }
+
+        if (!isset($aClient['scope']))
+            $aClient['scope'] = 'market';
+
+        if (!isset($aClient['user_id']))
+            $aClient['user_id'] = bx_get_logged_profile_id();
+
+        if (!isset($aClient['title']) && isset($aClient['redirect_uri']) && ($sHost = parse_url($aClient['redirect_uri'], PHP_URL_HOST)))
+            $aClient['title'] = $sHost;
+
+    	return $this->_oDb->addClient($aClient);
+    }
+
+	function serviceUpdateClientsBy ($aParamsSet, $aParamsWhere)
+    {
+    	return $this->_oDb->updateClientsBy($aParamsSet, $aParamsWhere);
+    }
+
+	function serviceDeleteClientsBy ($aParams)
+    {
+    	return $this->_oDb->deleteClientsBy($aParams);
+    }
+
+    function studioSettings ()
+    {
+        if (!isAdmin()) {
+            $this->_oTemplate->displayAccessDenied ();
+            return;
+        }
+
+        $oGrid = BxDolGrid::getObjectInstance('bx_oauth', BxDolStudioTemplate::getInstance());
+        if ($oGrid)
+            return $oGrid->getCode();
+
+        return '';
+    }
+
+    function getClientIdFromAccessTokenHeader()
+    {
+        if (isset($_SERVER['HTTP_AUTHORIZATION']))
+            $sAuthHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION']))
+            $sAuthHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        if (empty($sAuthHeader))
+            return false;
+        
+        if (false === stripos($sAuthHeader, 'Bearer'))
+            return false;
+
+        return $this->_oDb->getClientIdByAccessToken(trim(substr($sAuthHeader, 6)));
+    }
+}
+
+/** @} */

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Introduction tours: shorter texts, and the strings of the new controls and menu item (BxDolTours). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_sys_tour_back"><![CDATA[Back]]></string_add>
+    <string_add name="_sys_tour_close"><![CDATA[Close tour]]></string_add>
+    <string_add name="_sys_tour_step"><![CDATA[{0} of {1}]]></string_add>
+    <string_add name="_sys_menu_item_title_system_tour"><![CDATA[Introduction Tour]]></string_add>
+    <string_add name="_sys_menu_item_title_tour"><![CDATA[Introduction Tour]]></string_add>
+    <string_upd name="_sys_tour_launcher_welcome_title"><![CDATA[Welcome to Studio]]></string_upd>
+    <string_upd name="_sys_tour_launcher_welcome_txt"><![CDATA[Studio is where you set up your site: apps, design, pages, menus, forms, permissions and languages. This short tour shows where things are.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_apps_title"><![CDATA[Your apps]]></string_upd>
+    <string_upd name="_sys_tour_launcher_apps_txt"><![CDATA[Each tile is an app: a module, a tool, a language or a template. Apps you install show up here.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_designer_title"><![CDATA[Designer]]></string_upd>
+    <string_upd name="_sys_tour_launcher_designer_txt"><![CDATA[Set the logo, pick a template and edit the cover page that guests see first.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_accounts_title"><![CDATA[Accounts]]></string_upd>
+    <string_upd name="_sys_tour_launcher_accounts_txt"><![CDATA[Manage member accounts and choose who is an administrator or a moderator. They look after content and profiles on the site itself, not in Studio.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_dashboard_title"><![CDATA[Dashboard]]></string_upd>
+    <string_upd name="_sys_tour_launcher_dashboard_txt"><![CDATA[See how the site is doing: the UNA version, storage use, server checks and cache.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_page_title"><![CDATA[Pages]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_page_txt"><![CDATA[Add, remove and rearrange blocks on any page, or create new pages. Visibility and SEO settings are here too.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_permissions_title"><![CDATA[Permissions]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_permissions_txt"><![CDATA[Create membership levels and choose what each level can do.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_forms_title"><![CDATA[Forms]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_forms_txt"><![CDATA[Change the fields of any form, the lists they use and how each form is shown.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_menus_title"><![CDATA[Navigation]]></string_upd>
+    <string_upd name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Edit the menus: add, reorder and hide links, change icons and choose who sees each item.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_polyglot_title"><![CDATA[Polyglot]]></string_upd>
+    <string_upd name="_sys_tour_launcher_polyglot_txt"><![CDATA[Choose the site languages and edit any text on the site, including the texts of this tour.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_reorganize_title"><![CDATA[Rearrange apps]]></string_upd>
+    <string_upd name="_sys_tour_launcher_reorganize_txt"><![CDATA[Open this menu and choose Manage Apps to move apps around or remove the ones you do not use. You can start this tour again from here.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_favourites_title"><![CDATA[The Dock]]></string_upd>
+    <string_upd name="_sys_tour_launcher_favourites_txt"><![CDATA[Apps you opened recently stay here, one click away. In edit mode you can keep an app in the Dock.]]></string_upd>
+    <string_upd name="_sys_tour_launcher_add_apps_title"><![CDATA[App Store]]></string_upd>
+    <string_upd name="_sys_tour_launcher_add_apps_txt"><![CDATA[UNA starts with the core apps. Get more here: modules, templates, languages and integrations.]]></string_upd>
+    <string_upd name="_sys_tour_homepage_welcome_title"><![CDATA[This is your homepage]]></string_upd>
+    <string_upd name="_sys_tour_homepage_welcome_txt"><![CDATA[It fills up as your site grows. Add apps and arrange page blocks in Studio, then invite people and post something.]]></string_upd>
+    <string_upd name="_sys_tour_homepage_account_menu_title"><![CDATA[Your account menu]]></string_upd>
+    <string_upd name="_sys_tour_homepage_account_menu_txt"><![CDATA[Switch profiles, check notifications and open your account settings here. You can start this tour again from this menu.]]></string_upd>
+</resources>

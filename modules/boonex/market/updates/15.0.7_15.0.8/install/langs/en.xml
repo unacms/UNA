@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_market_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_market_form_entry_input_name_err"><![CDATA[Identifier should be unique and is needed for internal usage. Please fill in this field]]></string_upd>
+	<string_upd name="_bx_market_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_market_form_license_input_order_err"><![CDATA[Order is required. Please fill in this field.]]></string_upd>
+	<string_upd name="_bx_market_form_license_input_license_err"><![CDATA[License should be unique and is needed for internal usage. Please fill in this field.]]></string_upd>
+	<string_upd name="_bx_market_grid_action_err_cannot_perform"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_add name="_bx_market_vote_counter_one"><![CDATA[{0} rating]]></string_add>
+	<string_add name="_bx_market_txt_empty_title"><![CDATA[No products yet]]></string_add>
+	<string_upd name="_bx_market_et_txt_body_purchased"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {client_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">You've purchased <a href="{product_url}">{product_name}</a> product from <a href="{vendor_url}">{vendor_name}</a>.<br />Your license is <b>{license}</b>.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
+{email_footer}]]></string_upd>
+	<string_add name="_bx_market_et_txt_name_unauthorized_purchase"><![CDATA[Unauthorized product purchase.]]></string_add>
+	<string_add name="_bx_market_et_txt_subject_unauthorized_purchase"><![CDATA[Your product {product_name} was purchased without permission.]]></string_add>
+	<string_add name="_bx_market_et_txt_body_unauthorized_purchase"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello, {vendor_name}</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your product <a href="{product_url}">{product_name}</a> was purchased by <a href="{client_url}">{client_name}</a> without permission.<br />A registered license is <b>{license}</b>.</p>
+{email_footer}]]></string_add>
+</resources>

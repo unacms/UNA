@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Grammar only: "Please," without the comma, "cannot", "is required", "log in" as a verb, "Share on", "email", single spaces. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_bx_azrb2c_information_block"><![CDATA[
+        <p>This module can be used to log in to this site using Azure AD B2C accounts.</p>
+        <p>To make it work make new registration in <a target="_blank" href="https://portal.azure.com/">Azure portal</a> then goto Azure AD B2C service. <br />
+        When asked specify the following Redirect URI:<br />
+            <ul>
+                <li>Redirect URL: <strong>{0}</strong></li>
+            </ul>
+            When registration is complete go to "Overview"  to copy Application (client) ID and Directory (tenant) ID. <br /> 
+            Client secret can be generated in "Certificates & secrets". <br />
+            For more info please refer to <a target="_blank" href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app">official documentation</a>. <br />
+            Domain and Tenant can be found in Application Overview > Endpoints, Tenant is first part of URI in any B2C endpoints URLs. 
+        
+        </p>]]></string_upd>
+</resources>

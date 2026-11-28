@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Names of the previous/next page buttons. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_sys_paginate_prev"><![CDATA[Предыдущая страница]]></string_add>
+    <string_add name="_sys_paginate_next"><![CDATA[Следующая страница]]></string_add>
+</resources>

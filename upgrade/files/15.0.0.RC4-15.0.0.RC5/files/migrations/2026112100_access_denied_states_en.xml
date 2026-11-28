@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Denied actions say why and what to do: titles of the states, plainer ACL messages, "No access" in place of "Error". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_acl_action_account"><![CDATA[You need a profile to use “{1}”. What you share here is published as your profile.]]></string_upd>
+    <string_upd name="_sys_acl_action_unauthenticated"><![CDATA[Log in or sign up to use “{1}”.]]></string_upd>
+    <string_upd name="_sys_acl_action_not_allowed"><![CDATA[Your membership ({2}) doesn't include “{1}”.]]></string_upd>
+    <string_add name="_sys_acl_state_account_title"><![CDATA[Create a profile first]]></string_add>
+    <string_add name="_sys_acl_state_unauthenticated_title"><![CDATA[Log in to continue]]></string_add>
+    <string_add name="_sys_acl_state_not_allowed_title"><![CDATA[Not in your membership]]></string_add>
+    <string_add name="_sys_acl_state_unconfirmed_title"><![CDATA[Confirm your email]]></string_add>
+    <string_add name="_sys_acl_state_pending_title"><![CDATA[Waiting for approval]]></string_add>
+    <string_add name="_sys_acl_state_suspended_title"><![CDATA[Profile suspended]]></string_add>
+    <string_add name="_sys_txt_access_denied_title"><![CDATA[No access]]></string_add>
+    <string_add name="_sys_txt_access_denied_text"><![CDATA[You don't have access to this.]]></string_add>
+</resources>

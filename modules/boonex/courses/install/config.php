@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_courses',
     'title' => 'Courses',
     'note' => 'Courses, lessons, learning',
-    'version' => '15.0.5.DEV',
+    'version' => '15.0.5',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

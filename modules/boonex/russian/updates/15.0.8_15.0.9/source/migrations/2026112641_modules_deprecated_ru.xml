@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio: notices for a deprecated module (sys_modules.deprecated), and the error when one is installed. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_msg_module_deprecated"><![CDATA[Приложение {0} устарело и больше не получает новых версий. Оно будет удалено в следующей основной версии UNA.]]></string_add>
+    <string_add name="_adm_msg_module_deprecated_core"><![CDATA[Приложение {0} устарело: его возможности теперь есть в UNA. Оно будет удалено в следующей основной версии UNA.]]></string_add>
+    <string_add name="_adm_msg_module_deprecated_replaced"><![CDATA[Приложение {0} устарело, его заменяет {1}. Оно будет удалено в следующей основной версии UNA.]]></string_add>
+    <string_add name="_adm_err_modules_deprecated"><![CDATA[Приложение {0} устарело, установить его нельзя.]]></string_add>
+</resources>

@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_workspaces',
     'title' => 'Workspaces',
     'note' => 'Workspaces, sub-profiles',
-    'version' => '15.0.0.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

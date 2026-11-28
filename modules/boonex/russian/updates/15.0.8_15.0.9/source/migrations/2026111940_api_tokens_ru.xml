@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Connectors: personal access tokens for AI assistants (the MCP server) in account settings and Studio > Agents. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_lmi_cpt_connectors"><![CDATA[Подключения]]></string_add>
+    <string_add name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+    <string_add name="_sys_menu_item_title_system_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+    <string_add name="_sys_page_block_title_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+    <string_add name="_sys_page_title_account_settings_connectors"><![CDATA[Подключения]]></string_add>
+    <string_add name="_sys_page_title_system_account_settings_connectors"><![CDATA[Аккаунт - Подключения]]></string_add>
+    <string_add name="_sys_api_tokens_txt_info"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT. Они работают с вашим контентом так же, как вы на сайте. Создайте отдельный токен для каждого ассистента; отзовите токен, чтобы отключить его.]]></string_add>
+    <string_add name="_sys_api_tokens_txt_info_operator"><![CDATA[Подключите к своему аккаунту ИИ-ассистентов, например Claude или ChatGPT. Поскольку вы оператор, ваши токены дают им и инструменты агента-оператора (Studio > Agents), которые могут изменить на сайте что угодно. Создайте отдельный токен для каждого ассистента; отзовите токен, чтобы отключить его.]]></string_add>
+    <string_add name="_sys_api_tokens_txt_mcp_url"><![CDATA[Адрес MCP-сервера]]></string_add>
+    <string_add name="_sys_api_tokens_txt_title"><![CDATA[Название]]></string_add>
+    <string_add name="_sys_api_tokens_txt_title_info"><![CDATA[Для чего этот токен, например какой ассистент им пользуется]]></string_add>
+    <string_add name="_sys_api_tokens_txt_hint"><![CDATA[Токен]]></string_add>
+    <string_add name="_sys_api_tokens_txt_added"><![CDATA[Создан]]></string_add>
+    <string_add name="_sys_api_tokens_txt_last_used"><![CDATA[Последнее использование]]></string_add>
+    <string_add name="_sys_api_tokens_txt_expires"><![CDATA[Истекает]]></string_add>
+    <string_add name="_sys_api_tokens_txt_days"><![CDATA[Через {0} дн.]]></string_add>
+    <string_add name="_sys_api_tokens_txt_never"><![CDATA[Никогда]]></string_add>
+    <string_add name="_sys_api_tokens_txt_never_used"><![CDATA[Ещё не использовался]]></string_add>
+    <string_add name="_sys_api_tokens_txt_expired"><![CDATA[Истёк]]></string_add>
+    <string_add name="_sys_api_tokens_txt_token"><![CDATA[Токен доступа]]></string_add>
+    <string_add name="_sys_api_tokens_txt_once"><![CDATA[Скопируйте токен сейчас: он показывается только один раз. Любой, у кого он есть, может действовать от вашего имени, поэтому никому его не передавайте и отзовите здесь, когда он станет не нужен.]]></string_add>
+    <string_add name="_sys_api_tokens_txt_created"><![CDATA[Ваш новый токен доступа, он показывается только один раз: {0} Скопируйте его сейчас и никому не передавайте. Адрес MCP-сервера: {1}]]></string_add>
+    <string_add name="_sys_api_tokens_txt_header"><![CDATA[В ИИ-ассистенте добавьте MCP-сервер с этим адресом и заголовком "Authorization: Bearer", за которым следует токен.]]></string_add>
+    <string_add name="_sys_api_tokens_btn_add"><![CDATA[Новый токен]]></string_add>
+    <string_add name="_sys_api_tokens_btn_create"><![CDATA[Создать]]></string_add>
+    <string_add name="_sys_api_tokens_btn_revoke"><![CDATA[Отозвать]]></string_add>
+    <string_add name="_sys_api_tokens_btn_copy"><![CDATA[Копировать]]></string_add>
+    <string_add name="_sys_api_tokens_popup_add"><![CDATA[Новый токен доступа]]></string_add>
+    <string_add name="_sys_api_tokens_popup_created"><![CDATA[Ваш новый токен доступа]]></string_add>
+    <string_add name="_sys_api_tokens_err_title"><![CDATA[Название должно быть от 1 до {0} символов]]></string_add>
+    <string_add name="_sys_api_tokens_err_expires"><![CDATA[Выберите срок действия токена]]></string_add>
+    <string_add name="_sys_api_tokens_err_too_many"><![CDATA[Можно иметь не больше {0} токенов. Сначала отзовите тот, которым больше не пользуетесь.]]></string_add>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Plain error messages without "Please report.", "(0 = ...)" captions, profile name errors, Events and Messenger wording. -->
+<resources name="ru" flag="ru" title="Russian" category="Antispam">
+    <string_upd name="_bx_antispam_option_toxicity_filter_threshold"><![CDATA[Порог токсичности, с которого текст считается токсичным (от 0 до 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_toxicity"><![CDATA[Порог токсичности (от 0 до 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_threat"><![CDATA[Порог угрозы (от 0 до 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_identity_attack"><![CDATA[Порог атаки на личность (от 0 до 100)]]></string_upd>
+    <string_upd name="_bx_antispam_option_lasso_moderation_threshold_profanity"><![CDATA[Порог ненормативной лексики (от 0 до 100)]]></string_upd>
+</resources>

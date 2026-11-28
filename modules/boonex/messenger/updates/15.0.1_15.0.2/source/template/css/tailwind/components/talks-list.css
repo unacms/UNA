@@ -1,0 +1,73 @@
+.bx-messenger-talks-list-area {
+    @apply dark:border-gray-800 max-h-full flex flex-col;
+}
+
+/* Every column's header is a standard block header: the same padding, and as tall as a small button with its padding,
+   with or without buttons, so the dividers under the columns line up. */
+.bx-messenger-talks-list-header {
+    @apply w-full p-4 flex gap-2 md:gap-3 items-center min-h-[4.25rem];
+}
+
+.bx-messenger-talks-list-header-buttons {
+    @apply flex flex-none gap-1 md:gap-2 max-w-none;
+}
+
+/* Starred only: the star filled while it is on (oMessenger.showStarred) */
+.bx-messenger-talks-list-header-buttons .star.fill {
+    fill: currentColor;
+}
+
+.bx-messenger-talks-list-header-title-area {
+    @apply relative justify-end flex gap-3 w-full whitespace-nowrap min-w-0 overflow-hidden;
+}
+
+.bx-messenger-talks-list-header-title {
+    @apply grow self-center min-w-0 truncate;
+}
+
+.bx-messenger-items-list
+{
+    @apply h-full max-h-full overflow-y-auto scroll-smooth rounded-none min-h-0 flex-1 border-t border-gray-200 dark:border-gray-800;
+    scrollbar-width: none;
+}
+
+.bx-messenger-items-list ul {
+    @apply p-0 divide-y divide-gray-200/50 dark:divide-gray-800/50;
+}
+
+.bx-messenger-talks-list-header-search-area {
+    @apply w-full relative;
+}
+
+.bx-messenger-talks-list-header-search-area-icon {
+    @apply absolute right-1 pl-3 flex items-center top-2 right-2 hidden opacity-0;
+}
+
+.bx-artificer .bx-messenger-talks-list-header-search-area-icon {
+    @apply opacity-100;
+}
+
+.bx-messenger-talks-list-header-search-area-icon .sys-icon {
+    @apply h-5 w-5 text-gray-400;
+}
+
+.bx-messenger-talks-list-search-input {
+    @apply block w-full pl-12 pr-3 py-2
+           rounded-md
+           border border-gray-300 dark:border-gray-700 bg-gray-50
+           dark:bg-gray-900 placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-gray-900
+           focus:ring-2 focus:text-gray-900 focus:placeholder-gray-300 dark:focus:placeholder-gray-700
+           dark:focus:text-gray-100 focus:ring-blue-500 focus:border-opacity-70 focus:ring-opacity-20
+           focus:border-blue-500 text-base font-normal;
+}
+
+.bx-messenger-always-top a {
+    @apply block bg-gray-100 dark:bg-gray-800 w-full min-w-0 flex-1 flex items-center gap-3 p-2;
+}
+
+.bx-messenger-always-top-create-new {
+    @apply flex-shrink-0 h-12 w-12 justify-center flex items-center rounded-full text-white dark:group-hover:text-gray-200 group-hover:text-gray-700 bg-gray-500 dark:bg-gray-900;
+}
+
+
+

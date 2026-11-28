@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_reviews',
     'title' => 'Reviews',
     'note' => 'Reviews, ratings, opinions',
-    'version' => '14.0.0.DEV',
+    'version' => '14.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

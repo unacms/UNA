@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Designer > Logo > Email logo: a light and a dark mode logo for the email header. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_dsg_btn_logo_remove_logo_email"><![CDATA[Удалить логотип писем для светлой темы]]></string_add>
+    <string_add name="_adm_dsg_btn_logo_remove_logo_email_dark"><![CDATA[Удалить логотип писем для тёмной темы]]></string_add>
+    <string_add name="_adm_dsg_inf_email_section"><![CDATA[Показывается в шапке писем. Загрузите PNG, JPEG или GIF: почтовые клиенты блокируют SVG. Без него письма используют логотип сайта, если он в одном из этих форматов.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_dark_src_none"><![CDATA[Нет. В тёмной теме письма показывают логотип светлой темы.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_dark_src_site"><![CDATA[Не задан. Письма используют логотип сайта для тёмной темы.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_section"><![CDATA[Логотип в письмах]]></string_add>
+    <string_add name="_adm_dsg_txt_email_src_none"><![CDATA[Нет. Письма показывают название сайта текстом.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_src_site"><![CDATA[Не задан. Письма используют логотип сайта.]]></string_add>
+    <string_add name="_adm_dsg_txt_email_src_unusable"><![CDATA[Не PNG, JPEG или GIF, поэтому письма его не показывают.]]></string_add>
+</resources>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_ntfs_form_etemplate_input_err_select"><![CDATA[This field is required. Please select a value.]]></string_upd>
+	<string_upd name="_bx_ntfs_form_etemplate_input_err_enter"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+	<string_upd name="_bx_ntfs_page_title_system_settings"><![CDATA[Notification settings]]></string_upd>
+	<string_upd name="_bx_ntfs_page_title_settings"><![CDATA[Notification settings]]></string_upd>
+	<string_upd name="_bx_ntfs_menu_item_title_system_notifications_all"><![CDATA[All notifications]]></string_upd>
+	<string_upd name="_bx_ntfs_menu_item_title_notifications_all"><![CDATA[All notifications]]></string_upd>
+	<string_upd name="_bx_ntfs_menu_item_title_system_notifications_site"><![CDATA[On site]]></string_upd>
+	<string_upd name="_bx_ntfs_menu_item_title_notifications_site"><![CDATA[On site]]></string_upd>
+	<string_upd name="_bx_ntfs_option_events_per_page"><![CDATA[Notifications per page]]></string_upd>
+	<string_upd name="_bx_ntfs_option_events_per_preview"><![CDATA[Notifications in the preview]]></string_upd>
+	<string_upd name="_bx_ntfs_option_events_hide_site"><![CDATA[Hidden on-site notifications]]></string_upd>
+	<string_upd name="_bx_ntfs_option_events_hide_email"><![CDATA[Hidden email notifications]]></string_upd>
+	<string_upd name="_bx_ntfs_option_events_hide_push"><![CDATA[Hidden push notifications]]></string_upd>
+	<string_upd name="_bx_ntfs_option_enable_group_settings"><![CDATA[Group notification settings by category]]></string_upd>
+	<string_upd name="_bx_ntfs_option_enable_clicked_indicator"><![CDATA[Mark notifications that haven't been clicked yet with a dot]]></string_upd>
+	<string_upd name="_bx_ntfs_option_delivery_timeout"><![CDATA[Delay before sending email and push notifications, in seconds]]></string_upd>
+	<string_upd name="_bx_ntfs_option_delivery_timeout_inf"><![CDATA[With 0 they go to the email and push queues at once. Any other value holds them in the Notifications queue first.]]></string_upd>
+	<string_upd name="_bx_ntfs_option_queue_add_threshold"><![CDATA[Notifications queue limit]]></string_upd>
+	<string_upd name="_bx_ntfs_option_queue_add_threshold_inf"><![CDATA[New notifications wait while the Notifications queue holds more items than this. With 0 they wait until it is empty.]]></string_upd>
+	<string_upd name="_bx_ntfs_option_queue_add_limit"><![CDATA[Notifications to process per cron run]]></string_upd>
+	<string_upd name="_bx_ntfs_option_queue_add_limit_inf"><![CDATA[With 0 all waiting notifications are processed at once.]]></string_upd>
+	<string_upd name="_bx_ntfs_option_processed_event"><![CDATA[Last processed notification event]]></string_upd>
+	<string_upd name="_bx_ntfs_option_clear_interval"><![CDATA[Keep notifications for, in days (0: no limit)]]></string_upd>
+	<string_upd name="_bx_ntfs_option_enable_own_actions"><![CDATA[Notify members about their own actions]]></string_upd>
+	<string_upd name="_bx_ntfs_option_enable_comment_post_ext"><![CDATA[Notify members about new comments on content they have commented on]]></string_upd>
+	<string_upd name="_bx_ntfs_option_enable_reply_as_comment"><![CDATA[Count replies as comments in 'New comments' notifications]]></string_upd>
+	<string_upd name="_bx_ntfs_option_summary_chars"><![CDATA[Summary length, in characters (cropped when a notification is saved)]]></string_upd>
+	<string_upd name="_bx_ntfs_option_owner_name_chars"><![CDATA[Author name length in notifications, in characters]]></string_upd>
+	<string_upd name="_bx_ntfs_option_content_chars"><![CDATA[Content title length in notifications, in characters]]></string_upd>
+	<string_upd name="_bx_ntfs_option_email_subject_chars"><![CDATA[Email subject length, in characters (0: no limit)]]></string_upd>
+	<string_upd name="_bx_ntfs_option_push_message_chars"><![CDATA[Push message length, in characters]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_group_action_required"><![CDATA[Action required]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_group_info_fan_personal"><![CDATA[Someone joined your group, page or organization.]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_group_info_fan_follow_member"><![CDATA[Someone you follow gained new members.]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_group_info_fan_follow_context"><![CDATA[A space you follow gained new members.]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_group_info_content_personal"><![CDATA[New posts on your profile or in your spaces, reposts of your posts and updates to tasks assigned to you.]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_group_info_timeline_post_personal"><![CDATA[Someone posted on your timeline.]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_mention_added_personal"><![CDATA[Mentions]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_friendship_added_personal"><![CDATA[New friends]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_subscription_added_personal"><![CDATA[New followers]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_replyPost_personal"><![CDATA[Replies to your comments]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_doVote_personal"><![CDATA[New likes]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_doVoteUp_personal"><![CDATA[New 'Up' votes]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_doVoteDown_personal"><![CDATA[New 'Down' votes]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_fan_added_personal"><![CDATA[New members]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_fan_added_follow_member"><![CDATA[New members]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_fan_added_follow_context"><![CDATA[New members]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_join_invitation_notif_personal"><![CDATA[Invitations to join]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_publish_failed_personal"><![CDATA[Scheduled publishing failed]]></string_upd>
+	<string_upd name="_bx_ntfs_alert_action_publish_succeeded_personal"><![CDATA[Scheduled publishing succeeded]]></string_upd>
+	<string_add name="_bx_ntfs_alert_action_info_publish_failed_personal"><![CDATA[Content you scheduled could not be published.]]></string_add>
+	<string_add name="_bx_ntfs_alert_action_info_publish_succeeded_personal"><![CDATA[Content you scheduled was published.]]></string_add>
+	<string_upd name="_bx_ntfs_setting_type_follow_context"><![CDATA[Activity in groups, events and other spaces you follow]]></string_upd>
+	<string_upd name="_bx_ntfs_setting_type_other"><![CDATA[Other activity]]></string_upd>
+	<string_add name="_bx_ntfs_txt_empty_text"><![CDATA[Reactions, comments, mentions and new followers show here.]]></string_add>
+	<string_add name="_bx_ntfs_txt_empty_title"><![CDATA[No notifications yet]]></string_add>
+	<string_upd name="_bx_ntfs_txt_object_publish_succeeded"><![CDATA[Your {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> is published.]]></string_upd>
+	<string_upd name="_bx_ntfs_email_new_event_body"><![CDATA[{email_header}
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{content}</div>
+{email_footer}]]></string_upd>
+	<string_upd name="_bx_ntfs_grid_column_title_active"><![CDATA[Available]]></string_upd>
+	<string_upd name="_bx_ntfs_grid_column_title_value"><![CDATA[On by default]]></string_upd>
+</resources>

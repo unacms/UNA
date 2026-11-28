@@ -1,0 +1,60 @@
+<script language="javascript">
+    var sUrlRoot = '<bx_url_root />';
+    var sLang = '__lang__';
+
+    $(document).ready(function () {
+        bx_time('__lang_with_country__');
+        bx_redirect_for_external_links($('.bx-def-vanilla-html'));
+        bx_clicked_stack_register();
+    });
+
+    // the PWA's service worker, when Studio > Designer > PWA turns it on
+    if (__service_worker__ && navigator.serviceWorker)
+        navigator.serviceWorker.register('sw.js.php');
+
+    var oMediaPhone = window.matchMedia('__css_media_phone__');
+    var oMediaPhone2 = window.matchMedia('__css_media_phone2__');
+    var oMediaTablet = window.matchMedia('__css_media_tablet__');
+    var oMediaTablet2 = window.matchMedia('__css_media_tablet2__');
+    var oMediaDesktop = window.matchMedia('__css_media_desktop__');
+
+    function fMediaCallback(e) {
+        if (oMediaPhone.matches)
+            $('html').addClass('bx-media-phone');
+        else
+            $('html').removeClass('bx-media-phone');
+        
+        if (oMediaPhone2.matches)
+            $('html').addClass('bx-media-phone2');
+        else
+            $('html').removeClass('bx-media-phone2');
+        
+        if (oMediaTablet.matches)
+            $('html').addClass('bx-media-tablet');
+        else
+            $('html').removeClass('bx-media-tablet');
+        
+        if (oMediaTablet2.matches)
+            $('html').addClass('bx-media-tablet2');
+        else
+            $('html').removeClass('bx-media-tablet2');
+
+        if (oMediaDesktop.matches)
+            $('html').addClass('bx-media-desktop');
+        else
+            $('html').removeClass('bx-media-desktop');
+    }
+
+    oMediaPhone.addListener(fMediaCallback);
+    oMediaPhone2.addListener(fMediaCallback);
+    oMediaTablet.addListener(fMediaCallback);
+    oMediaTablet2.addListener(fMediaCallback);
+    oMediaDesktop.addListener(fMediaCallback);
+
+    fMediaCallback(null);
+
+    var aIncludedCss = __included_css__;
+    var aIncludedJs = __included_js__;
+
+    __socket_engine__
+</script>

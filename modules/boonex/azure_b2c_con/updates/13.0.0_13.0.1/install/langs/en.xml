@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_azrb2c_information_block"><![CDATA[
+        <p>This module can be used to sign in to this site using Azure AD B2C accounts.</p>
+        <p>To make it work make new registration in <a target="_blank" href="https://portal.azure.com/">Azure portal</a> then goto Azure AD B2C service. <br />
+        When asked specify the following Redirect URI:<br />
+            <ul>
+                <li>Redirect URL: <strong>{0}</strong></li>
+            </ul>
+            When registration is complete go to "Overview"  to copy Application (client) ID and Directory (tenant) ID. <br /> 
+            Client secret can be generated in "Certificates & secrets". <br />
+            For more info please refer to <a target="_blank" href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app">official documentation</a>. <br />
+            Domain and Tenant can be found in Application Overview > Endpoints, Tenant is first part of URI in any B2C endpoints URLs. 
+        
+        </p>]]></string_upd>
+	<string_upd name="_bx_azrb2c_auth_title"><![CDATA[Continue with Azure AD B2C]]></string_upd>
+	<string_upd name="_bx_azrb2c_option_group"><![CDATA[Only members of this group can sign up or sign in]]></string_upd>
+	<string_upd name="_bx_azrb2c_et_password_generated_body"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Temporary password - <b>{password}</b></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Change it after logging-in.</p>
+{email_footer}]]></string_upd>
+</resources>

@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_timeline',
     'title' => 'Timeline',
     'note' => 'Feed updates, timeline',
-    'version' => '15.0.9.DEV',
+    'version' => '15.0.9',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

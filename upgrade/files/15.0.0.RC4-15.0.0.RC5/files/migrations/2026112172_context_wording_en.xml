@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- "context" in member-facing strings becomes "community" (una-vocabulary skill). Studio wording keeps "context". -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_sample_context"><![CDATA[community]]></string_upd>
+    <string_upd name="_sys_form_labels_input_caption_list_context"><![CDATA[from communities' labels]]></string_upd>
+</resources>

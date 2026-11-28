@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_tasks_option_personal_prefix"><![CDATA[Task number prefix for tasks outside communities]]></string_add>
+	<string_add name="_bx_tasks_option_personal_prefix_err"><![CDATA[Use 2 to 10 Latin letters and digits, starting with a letter.]]></string_add>
+	<string_upd name="_bx_tasks_form_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+	<string_upd name="_bx_tasks_form_entry_input_delete_confirm_info"><![CDATA[This action cannot be undone]]></string_upd>
+	<string_upd name="_bx_tasks_form_list_entry_input_title_err"><![CDATA[Title is required min 3 max 160.]]></string_upd>
+	<string_add name="_bx_tasks_form_context_input_sys_prefix"><![CDATA[Prefix]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix"><![CDATA[Task number prefix]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix_err"><![CDATA[Use 2 to 10 Latin letters and digits, starting with a letter.]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix_err_taken"><![CDATA[Another community uses or used this prefix. Please choose another one.]]></string_add>
+	<string_add name="_bx_tasks_form_context_input_prefix_info"><![CDATA[Task numbers start with it, as in UNA-12. Links with a previous prefix keep working.]]></string_add>
+	<string_upd name="_bx_tasks_form_time_input_object_id_err"><![CDATA[This field in essential. Please fill it in.]]></string_upd>
+	<string_add name="_bx_tasks_form_time_input_sys_billable"><![CDATA[Billable]]></string_add>
+	<string_add name="_bx_tasks_form_time_input_billable"><![CDATA[Billable]]></string_add>
+	<string_upd name="_bx_tasks_form_pv_input_err"><![CDATA[This field is required. Please fill it in.]]></string_upd>
+	<string_add name="_bx_tasks_form_import_input_source"><![CDATA[Source]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_source_linear"><![CDATA[Linear]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_destination"><![CDATA[Destination]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_params"><![CDATA[Params]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_submit"><![CDATA[Import]]></string_add>
+	<string_add name="_bx_tasks_form_import_input_err"><![CDATA[This field in essential. Please fill it in.]]></string_add>
+	<string_upd name="_bx_tasks_category_form_entry_input_value_err"><![CDATA[Value is required. Please fill in this field]]></string_upd>
+	<string_add name="_bx_tasks_page_block_title_system_entry_time_summary"><![CDATA[Task Logged Time by Person]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_system_context_time_summary"><![CDATA[Context Logged Time by Person]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_import"><![CDATA[Import]]></string_add>
+	<string_upd name="_bx_tasks_grid_action_title_adm_clear_reports"><![CDATA[Clear reports]]></string_upd>
+	<string_upd name="_bx_tasks_grid_column_title_tm_context_id"><![CDATA[Community]]></string_upd>
+	<string_add name="_bx_tasks_grid_column_title_tm_billable"><![CDATA[Billable]]></string_add>
+	<string_upd name="_bx_tasks_grid_action_confirm_pv_delete"><![CDATA[This action will remove the item from all tasks in every community and it cannot be undone. Do you want to proceed?]]></string_upd>
+	<string_add name="_bx_tasks_txt_empty_title"><![CDATA[No tasks yet]]></string_add>
+	<string_add name="_bx_tasks_txt_billable"><![CDATA[Billable]]></string_add>
+	<string_add name="_bx_tasks_txt_non_billable"><![CDATA[Non-billable]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_today"><![CDATA[Today]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_this_week"><![CDATA[This Week]]></string_add>
+	<string_add name="_bx_tasks_txt_timers_stats_all_time"><![CDATA[All Time]]></string_add>
+	<string_upd name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_add name="_bx_tasks_txt_msg_schedule_action"><![CDATA[The action was scheduled.]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_stickers"><![CDATA[<a href="{author_link}">{author_name}</a> changed labels to <b>{value}</b>]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_stickers_none"><![CDATA[<a href="{author_link}">{author_name}</a> removed the labels]]></string_add>
+	<string_add name="_bx_tasks_txt_time_logged"><![CDATA[Logged]]></string_add>
+	<string_add name="_bx_tasks_txt_time_billed"><![CDATA[Billable]]></string_add>
+	<string_add name="_bx_tasks_txt_time_original"><![CDATA[Original]]></string_add>
+	<string_add name="_bx_tasks_txt_time_by_timer"><![CDATA[Timer]]></string_add>
+	<string_add name="_bx_tasks_txt_time_by_hand"><![CDATA[Manual]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_tm_value_total"><![CDATA[Total]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_tm_value_manual"><![CDATA[Manual]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_tm_value_billed"><![CDATA[Billable]]></string_add>
+	<string_add name="_bx_tasks_form_time_input_value_billed"><![CDATA[Billable time]]></string_add>
+	<string_add name="_bx_tasks_page_title_sys_entries_billing_in_context"><![CDATA[Tasks Billing in Context]]></string_add>
+	<string_add name="_bx_tasks_page_title_entries_billing_in_context"><![CDATA[Billing]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_system_context_billing_summary"><![CDATA[Context Billable Time by Person]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_context_billing_summary"><![CDATA[Billable Time]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_view_context_billing"><![CDATA[Billing in Context]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_view_context_billing"><![CDATA[Billing]]></string_add>
+	<string_add name="_bx_tasks_alert_action_timer_stopped_personal"><![CDATA[Pause a timer that ran for too long]]></string_add>
+	<string_add name="_bx_tasks_txt_notification_timer_stopped"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was paused: it ran for too long]]></string_add>
+	<string_add name="_bx_tasks_txt_notification_timer_stopped_in_context"><![CDATA[The timer of <b class="bx-ntfs-content-profile">{entry_author_name}</b> on <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} in <b class="bx-ntfs-content-profile">{owner_name}</b> was paused: it ran for too long]]></string_add>
+	<string_add name="_bx_tasks_option_timer_running_limit"><![CDATA[Pause a timer that runs without a pause for longer than, hours (0 for never)]]></string_add>
+	<string_add name="_bx_tasks_txt_time_period"><![CDATA[Period]]></string_add>
+</resources>

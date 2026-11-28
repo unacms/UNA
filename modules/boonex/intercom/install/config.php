@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_intercom',
     'title' => 'Intercom',
     'note' => 'Intercom, customer chat, support',
-    'version' => '15.0.2.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_new_comments',
     'title' => 'Unread comments',
     'note' => 'New comments, unread comments',
-    'version' => '9.0.0',
+    'version' => '9.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

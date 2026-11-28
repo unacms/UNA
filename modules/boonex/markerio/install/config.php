@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_markerio',
     'title' => 'Marker.io',
     'note' => 'Marker.io, visual feedback, bug reports',
-    'version' => '13.0.3.DEV',
+    'version' => '13.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

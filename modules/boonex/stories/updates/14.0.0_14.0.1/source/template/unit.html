@@ -1,0 +1,28 @@
+<div class="bx-base-text-unit bx-base-text-unit-ext bx-def-box bx-def-box-round-corners bx-def-color-bg-box mb-3 md:mb-4 lg:mb-6 text-left">
+    <div class="bx-stories-unit-text-cont px-4 pt-4 pb-2">
+        <div class="bx-base-text-unit-title">
+            <a href="__content_url__">__title__</a>
+        </div>
+        <bx_if:meta>
+            <div class="bx-base-text-unit-info mt-1 mb-2">
+                <div class="bx-base-general-unit-meta">__meta__</div>
+            </div>
+        </bx_if:meta>
+        <div class="bx-base-text-unit-summary bx-clearfix">__summary__</div> 
+    </div>
+    <div class="bx-stories-unit-images-cont px-1 pb-4">
+        <div class="bx-stories-unit-images">
+            <bx_repeat:browse>
+                <a class="bx-stories-unit-image" title="__title_attr__" href="__url__">
+                    <img alt="__title_attr__" src="__img_url__" />
+                    <bx_if:show_play>
+                        <div class="bx-stories-media-play rounded"><i class="sys-icon play"></i></div>
+                    </bx_if:show_play>
+                    <bx_if:show_duration>
+                        <div class="bx-stories-media-duration px-2 py-1 border rounded text-base">__duration__</div>
+                    </bx_if:show_duration>
+                </a>
+            </bx_repeat:browse>
+        </div> 
+    </div> 
+</div>

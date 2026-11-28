@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_stripe_connect',
     'title' => 'Stripe Connect',
     'note' => 'Stripe Connect, payments, eCommerce',
-    'version' => '15.0.4.DEV',
+    'version' => '15.0.4',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

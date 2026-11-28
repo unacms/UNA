@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Designer > Icon: the dark mode favicon field, and the SVG hint no longer says one SVG is enough for dark tabs. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_dsg_txt_icon_upload_icon_dark"><![CDATA[Загрузить иконку для тёмной темы]]></string_add>
+    <string_add name="_adm_dsg_inf_icon_upload_icon_dark"><![CDATA[Файл .svg или .png, который вкладки браузера показывают в тёмной теме вместо иконок выше. Chrome не применяет стили тёмной темы внутри SVG-иконки, поэтому один адаптивный SVG на тёмных вкладках Chrome остаётся тёмным: загрузите здесь светлую версию.]]></string_add>
+    <string_add name="_adm_dsg_txt_icon_preview_icon_dark"><![CDATA[Иконка для тёмной темы]]></string_add>
+    <string_add name="_adm_dsg_btn_icon_remove_icon_dark"><![CDATA[Удалить иконку для тёмной темы]]></string_add>
+    <string_add name="_adm_dsg_txt_icon_src_none_icon_dark"><![CDATA[Нет. Тёмные вкладки показывают иконку выше.]]></string_add>
+    <string_upd name="_adm_dsg_inf_icon_upload_icon_svg"><![CDATA[Файл .svg. Firefox и Safari применяют его стили prefers-color-scheme, вкладки Chrome — нет: для тёмной темы загрузите ещё иконку ниже.]]></string_upd>
+</resources>

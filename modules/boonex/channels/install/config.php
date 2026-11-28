@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_channels',
     'title' => 'Channels',
     'note' => 'Channels, hashtags, topics',
-    'version' => '15.0.3.DEV',
+    'version' => '15.0.3',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

@@ -1,0 +1,1389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="en" title="English">
+	<string_upd name="_ADM_PROFILE_SEND_MSG"><![CDATA[Message sent.]]></string_upd>
+	<string_upd name="_ATT_REJECTED_E"><![CDATA[Your profile was not approved because some information is missing or not allowed. If you have questions, <a target=_blank href="contact.php">contact us</a> and mention your profile ID.]]></string_upd>
+	<string_upd name="_ATT_SUSPENDED_E"><![CDATA[Your profile is suspended for now. You can activate it <a target=_blank href="change_status.php">here</a>. If you have questions, <a target=_blank href="contact.php">contact us</a>.]]></string_upd>
+	<string_upd name="_ATT_UNCONFIRMED_E"><![CDATA[You will need to follow the link supplied in the email to get your account submitted for approval. <br />Send me <a target=_blank href="activation_email.php">confirmation email</a>.]]></string_upd>
+	<string_upd name="_DELETE_SUCCESS"><![CDATA[Your account was deleted.]]></string_upd>
+	<string_upd name="_Enter_value_here"><![CDATA[Please enter a value here]]></string_upd>
+	<string_upd name="_favorite_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+	<string_upd name="_feature_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+	<string_upd name="_Member Login"><![CDATA[Sign in]]></string_upd>
+	<string_add name="_report_n_reports_one"><![CDATA[{0} report]]></string_add>
+	<string_upd name="_report_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+	<string_upd name="_adm_api_btn_apply_all"><![CDATA[Apply all apps settings]]></string_upd>
+	<string_upd name="_adm_api_btn_remove_all"><![CDATA[Remove all apps settings]]></string_upd>
+	<string_upd name="_adm_api_btn_export_all"><![CDATA[Export all apps settings]]></string_upd>
+	<string_upd name="_adm_api_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_add name="_adm_api_popup_title_add_key"><![CDATA[Add API key]]></string_add>
+	<string_add name="_adm_api_popup_title_add_origin"><![CDATA[Add origin]]></string_add>
+	<string_add name="_adm_api_ttl_sync_api"><![CDATA[Keep in sync]]></string_add>
+	<string_add name="_adm_bp_btn_section_edit"><![CDATA[Edit section settings]]></string_add>
+	<string_add name="_adm_bp_dsc_block_header_icon"><![CDATA[A larger icon (font icon, SVG or Emoji code) in a tile before the block's title and description.]]></string_add>
+	<string_upd name="_adm_bp_dsc_block_icon"><![CDATA[A small icon (font icon, SVG or Emoji code) before the block's title, on its line.]]></string_upd>
+	<string_upd name="_adm_bp_dsc_page_uri"><![CDATA[Page address used after 'youdomain.com/page/'. It must be unique and it cannot be changed later.]]></string_upd>
+	<string_upd name="_adm_bp_err_page_layout"><![CDATA[Please select a page layout.]]></string_upd>
+	<string_add name="_adm_bp_err_section_not_found"><![CDATA[This page is not in a section.]]></string_add>
+	<string_add name="_adm_bp_err_section_save"><![CDATA[The section settings could not be saved. Please try again.]]></string_add>
+	<string_add name="_adm_bp_mi_page_title"><![CDATA[Title]]></string_add>
+	<string_upd name="_adm_bp_scs_save"><![CDATA[Changes saved.]]></string_upd>
+	<string_upd name="_adm_bp_txt_block_active"><![CDATA[Show on the site]]></string_upd>
+	<string_upd name="_adm_bp_txt_block_active_api"><![CDATA[Show in the apps]]></string_upd>
+	<string_add name="_adm_bp_txt_block_advanced"><![CDATA[Advanced]]></string_add>
+	<string_add name="_adm_bp_txt_block_header_icon"><![CDATA[Header icon]]></string_add>
+	<string_upd name="_adm_bp_txt_block_icon"><![CDATA[Title icon]]></string_upd>
+	<string_add name="_adm_bp_txt_block_padding_size"><![CDATA[Padding]]></string_add>
+	<string_add name="_adm_bp_txt_block_padding_size_info"><![CDATA[Space between the block's edge and its title and content. Only for block layouts with padding.]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_compact"><![CDATA[Compact]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_large"><![CDATA[Large]]></string_add>
+	<string_add name="_adm_bp_txt_block_size_regular"><![CDATA[Regular]]></string_add>
+	<string_add name="_adm_bp_txt_block_title_size"><![CDATA[Title size]]></string_add>
+	<string_add name="_adm_bp_txt_block_title_size_info"><![CDATA[Text size of the block's title, on the site and in the apps. Only for block layouts with a title.]]></string_add>
+	<string_upd name="_adm_bp_txt_page_cover_image"><![CDATA[Custom cover]]></string_upd>
+	<string_add name="_adm_bp_txt_page_cover_owner"><![CDATA[This page shows the cover of the person, group or event it belongs to, with its picture. Choose who sees it and where.]]></string_add>
+	<string_add name="_adm_bp_txt_page_cover_owner_others"><![CDATA[This page shows the cover of the person, group or event it belongs to. When members open their own list, the page shows its own cover instead.]]></string_add>
+	<string_upd name="_adm_bp_txt_page_cover_title"><![CDATA[Custom title]]></string_upd>
+	<string_add name="_adm_bp_txt_page_cover_title_info"><![CDATA[Replaces the page's or its section's name. Empty uses that name.]]></string_add>
+	<string_upd name="_adm_bp_txt_page_cover_hidden_on_info"><![CDATA[The cover stays off on the screen sizes you pick, on the site and in the apps. The page title has its own settings under Title.]]></string_upd>
+	<string_add name="_adm_bp_txt_page_same_as_section"><![CDATA[Same as section]]></string_add>
+	<string_add name="_adm_bp_txt_page_section_hidden_on"><![CDATA[{0}, hidden on {1}]]></string_add>
+	<string_add name="_adm_bp_txt_page_section_summary"><![CDATA[Same as section: {0}]]></string_add>
+	<string_add name="_adm_bp_txt_page_section_with_picture"><![CDATA[{0}, with its own picture]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_hidden_on"><![CDATA[Title hidden on]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_hidden_on_info"><![CDATA[The page title stays off on the screen sizes you pick, on the site and in the apps.]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_owner"><![CDATA[The name of the person, group or event this page belongs to is its title, so there is nothing to set here.]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_owner_others"><![CDATA[The name of the person, group or event this page belongs to is its title. These settings apply when members open their own list.]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_show"><![CDATA[Title]]></string_add>
+	<string_add name="_adm_bp_txt_page_title_show_info"><![CDATA[The page's name, or its section's, above its tabs and blocks on the site, and in the header of the apps.]]></string_add>
+	<string_add name="_adm_bp_txt_section_pages"><![CDATA[The pages of this section ({0}) that are set to "Same as section" take these settings.]]></string_add>
+	<string_add name="_adm_bp_txt_section_popup"><![CDATA[Section settings: {0}]]></string_add>
+	<string_add name="_adm_bp_txt_section_title_as_cover"><![CDATA[Same as cover]]></string_add>
+	<string_add name="_adm_bp_txt_section_title_show_info"><![CDATA["Same as cover" shows the title where the cover shows, to the same people.]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_is_latest_beta"><![CDATA[Latest Beta Installed]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_is_latest_stable"><![CDATA[Latest Stable Installed]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_is_newer"><![CDATA[Newer than the latest release]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_update_to"><![CDATA[Update available: {0}]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_check_failed"><![CDATA[Couldn't check for updates]]></string_add>
+	<string_add name="_adm_dbd_txt_ver_access_on"><![CDATA[Automatic updates are available]]></string_add>
+	<string_add name="_adm_dbd_btn_ver_access_enable"><![CDATA[Enable automatic updates]]></string_add>
+	<string_upd name="_adm_dbd_msg_q_clean_success"><![CDATA[Queue cleared.]]></string_upd>
+	<string_upd name="_adm_dbd_msg_c_clean_success"><![CDATA[Cache cleared.]]></string_upd>
+	<string_add name="_adm_dsg_btn_icon_remove_icon_dark"><![CDATA[Remove the dark mode icon]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_logo_email"><![CDATA[Remove the light mode email logo]]></string_add>
+	<string_add name="_adm_dsg_btn_logo_remove_logo_email_dark"><![CDATA[Remove the dark mode email logo]]></string_add>
+	<string_add name="_adm_dsg_btn_tmpl_make_default"><![CDATA[Make default]]></string_add>
+	<string_add name="_adm_dsg_inf_email_section"><![CDATA[Shown in the header of emails. Upload a PNG, JPEG or GIF: email clients block SVG. Without it, emails use the site logo when it is one of these.]]></string_add>
+	<string_add name="_adm_dsg_inf_icon_upload_icon_dark"><![CDATA[An .svg or .png file that browser tabs show in dark mode, in place of the icons above. Chrome ignores the dark mode styles inside an SVG icon, so one adaptive SVG stays dark on dark Chrome tabs: upload a light version here.]]></string_add>
+	<string_upd name="_adm_dsg_inf_icon_upload_icon_svg"><![CDATA[An .svg file. Firefox and Safari follow its prefers-color-scheme styles, Chrome tabs don't: for dark mode, add the icon below too.]]></string_upd>
+	<string_add name="_adm_dsg_inf_settings_radius_smooth"><![CDATA[Draws corners as a smooth curve in browsers that support it, such as Chrome. Other browsers keep round corners.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_radius_smooth_factor"><![CDATA[A smooth corner looks smaller than a round one of the same radius. Where corners are smooth, radii are multiplied by this number, from 1 to 2.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_accent"><![CDATA[The color of links, buttons, switches and focus rings, on the site, in Studio and in the apps. Every preset keeps text readable (WCAG AA) in light and dark mode.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_corners"><![CDATA[How round the corners of blocks, buttons, fields and popups are, on the site and in Studio. Pills and circles keep their shape.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_forms"><![CDATA[How forms label their one-line text fields, on the site and in the apps. A form display can use a style of its own, set in <a href="{0}">Forms</a>. An app without floating labels shows them above the fields.]]></string_add>
+	<string_add name="_adm_dsg_inf_settings_section_header"><![CDATA[How wide pages are, how wide the header and the footer are and where the main menu sits in the header, for each page layout, for visitors and for members. The site and the apps follow these; a template can set its own in its settings.]]></string_add>
+	<string_add name="_adm_dsg_lnk_tmpl_page"><![CDATA[Open Designer › Template]]></string_add>
+	<string_upd name="_adm_dsg_scs_save"><![CDATA[Changes saved.]]></string_upd>
+	<string_add name="_adm_dsg_txt_logo_low_contrast_dark"><![CDATA[This logo is hard to see on a dark background. Upload a light version for dark mode.]]></string_add>
+	<string_add name="_adm_dsg_txt_logo_note_designer"><![CDATA[The logo is set in Designer › Logo, for every template.]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_blue"><![CDATA[Blue]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_graphite"><![CDATA[Graphite]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_green"><![CDATA[Green]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_indigo"><![CDATA[Indigo]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_orange"><![CDATA[Orange]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_rose"><![CDATA[Rose]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_teal"><![CDATA[Teal]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_accent_violet"><![CDATA[Violet]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_footer_width"><![CDATA[Footer width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_footer_width_full"><![CDATA[Full width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_footer_width_page"><![CDATA[Page width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align"><![CDATA[Main menu]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_center"><![CDATA[Center]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_end"><![CDATA[End]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_align_start"><![CDATA[Start]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_application"><![CDATA[Application layout]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_standard"><![CDATA[Standard layout]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width"><![CDATA[Header width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width_full"><![CDATA[Full width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_header_width_page"><![CDATA[Page width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_label_style_adaptive"><![CDATA[Floating: in the empty field, on its top edge once filled]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_label_style_regular"><![CDATA[Above the field]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width"><![CDATA[Page width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_full"><![CDATA[Full width]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_limited"><![CDATA[Limited]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_page_width_px"><![CDATA[Page width in pixels]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_radius_large"><![CDATA[Large]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_radius_none"><![CDATA[None]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_radius_small"><![CDATA[Small]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_accent"><![CDATA[Colors]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_corners"><![CDATA[Corners]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_forms"><![CDATA[Forms]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_section_header"><![CDATA[Page, header and footer]]></string_add>
+	<string_add name="_adm_dsg_txt_settings_template_note"><![CDATA[The site template is chosen in Designer › Template.]]></string_add>
+	<string_add name="_adm_dsg_txt_tmpl_make_default_confirm"><![CDATA[Make {0} the site template? Everyone sees it unless they pick another template themselves.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_dark_src_none"><![CDATA[None. Emails show the light mode logo in dark mode too.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_dark_src_site"><![CDATA[Not set. Emails use the site's dark mode logo.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_section"><![CDATA[Email logo]]></string_add>
+	<string_add name="_adm_dsg_txt_email_src_none"><![CDATA[None. Emails show the site name as text.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_src_site"><![CDATA[Not set. Emails use the site logo.]]></string_add>
+	<string_add name="_adm_dsg_txt_email_src_unusable"><![CDATA[Not a PNG, JPEG or GIF, so emails don't show it.]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_upload_icon_dark"><![CDATA[Upload a dark mode icon]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_preview_icon_dark"><![CDATA[Dark mode icon]]></string_add>
+	<string_add name="_adm_dsg_txt_icon_src_none_icon_dark"><![CDATA[None. Dark tabs show the icon above.]]></string_add>
+	<string_add name="_adm_err_modules_deprecated"><![CDATA[{0} is deprecated and cannot be installed.]]></string_add>
+	<string_add name="_adm_err_modules_missing_php_packages"><![CDATA[This module needs PHP libraries that are not installed: {0}. Run "composer install" in the UNA folder, or install UNA from a release package, which includes them.]]></string_add>
+	<string_upd name="_adm_err_oauth_empty_key_secret"><![CDATA[To browse the store, enter your UNA account key and secret in <a href="{0}">Settings</a>.]]></string_upd>
+	<string_upd name="_adm_err_operation_failed"><![CDATA[The operation failed. Please try again, and check the logs if it fails again.]]></string_upd>
+	<string_upd name="_adm_form_btn_fields_create"><![CDATA[Add new field]]></string_upd>
+	<string_upd name="_adm_form_btn_fields_visible"><![CDATA[Visible for]]></string_upd>
+	<string_upd name="_adm_form_btn_pre_lists_create"><![CDATA[Add new list]]></string_upd>
+	<string_upd name="_adm_form_btn_pre_values_create"><![CDATA[Add new item]]></string_upd>
+	<string_add name="_adm_form_dsc_displays_label_style"><![CDATA[Floating labels apply to one-line text fields. Other fields keep their labels above them.]]></string_add>
+	<string_upd name="_adm_form_err_search_forms_essential"><![CDATA[The field is required. Please fill in.]]></string_upd>
+	<string_add name="_adm_form_txt_admin_log_action"><![CDATA[Action]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_added"><![CDATA[Date]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_object"><![CDATA[Entry type]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_object_id"><![CDATA[Entry]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_profile"><![CDATA[Actor]]></string_add>
+	<string_add name="_adm_form_txt_admin_log_source"><![CDATA[Protocol]]></string_add>
+	<string_add name="_adm_form_txt_crumb_display"><![CDATA[Display]]></string_add>
+	<string_add name="_adm_form_txt_crumb_list"><![CDATA[Data list]]></string_add>
+	<string_add name="_adm_form_txt_crumb_search_form"><![CDATA[Search form]]></string_add>
+	<string_add name="_adm_form_txt_badges_empty"><![CDATA[No badges yet]]></string_add>
+	<string_add name="_adm_form_txt_badges_empty_select_module"><![CDATA[No badges yet. Choose a module to add one.]]></string_add>
+	<string_add name="_adm_pgt_txt_code"><![CDATA[Code]]></string_add>
+	<string_upd name="_adm_form_txt_reports_checked_by"><![CDATA[Checked by]]></string_upd>
+	<string_upd name="_adm_form_txt_displays_gl_title"><![CDATA[System name]]></string_upd>
+	<string_add name="_adm_form_txt_displays_label_style"><![CDATA[Field labels]]></string_add>
+	<string_add name="_adm_form_txt_displays_label_style_default"><![CDATA[As on the site]]></string_add>
+	<string_upd name="_adm_form_txt_field_checker_email"><![CDATA[Email (correct email address format)]]></string_upd>
+	<string_upd name="_adm_form_txt_field_required"><![CDATA[Required]]></string_upd>
+	<string_upd name="_adm_form_txt_fields_caption_system"><![CDATA[System name]]></string_upd>
+	<string_upd name="_adm_form_txt_fields_visible"><![CDATA[Visible for]]></string_upd>
+	<string_upd name="_adm_form_txt_forms_gl_title"><![CDATA[System name]]></string_upd>
+	<string_upd name="_adm_form_txt_pre_lists_gl_title"><![CDATA[System name]]></string_upd>
+	<string_upd name="_adm_form_txt_pre_lists_gl_use_for_sets"><![CDATA[Use for sets]]></string_upd>
+	<string_upd name="_adm_form_txt_search_forms_sortable_fields"><![CDATA[Sortable fields]]></string_upd>
+	<string_upd name="_adm_form_txt_search_forms_fields_search_type"><![CDATA[Search type]]></string_upd>
+	<string_upd name="_adm_form_txt_search_forms_title"><![CDATA[System name]]></string_upd>
+	<string_upd name="_adm_ipbl_Stored_members_caption"><![CDATA[Stored IPs of signed-in members]]></string_upd>
+	<string_add name="_adm_lmi_cpt_admin"><![CDATA[Studio log]]></string_add>
+	<string_add name="_adm_lmi_cpt_connectors"><![CDATA[Connectors]]></string_add>
+	<string_add name="_adm_lmi_cpt_pgt_languages"><![CDATA[Languages]]></string_add>
+	<string_add name="_adm_msg_module_deprecated"><![CDATA[{0} is deprecated and gets no new versions. It will be removed in the next major version of UNA.]]></string_add>
+	<string_add name="_adm_msg_module_deprecated_core"><![CDATA[{0} is deprecated: what it does is now part of UNA. It will be removed in the next major version of UNA.]]></string_add>
+	<string_add name="_adm_msg_module_deprecated_replaced"><![CDATA[{0} is deprecated and replaced by {1}. It will be removed in the next major version of UNA.]]></string_add>
+	<string_upd name="_adm_msg_modules_success_added_to_cart"><![CDATA[Added to the cart.]]></string_upd>
+	<string_upd name="_adm_msg_modules_success_checkouted"><![CDATA[Payment accepted. The purchased apps show up in Apps -&gt; Purchases within a few minutes. If they don't, contact the vendor with your payment details.]]></string_upd>
+	<string_upd name="_adm_msg_modules_success_delete"><![CDATA[The package was deleted.]]></string_upd>
+	<string_upd name="_adm_msg_modules_success_disable"><![CDATA[The app was disabled.]]></string_upd>
+	<string_upd name="_adm_msg_modules_success_enable"><![CDATA[The app was enabled.]]></string_upd>
+	<string_upd name="_adm_msg_modules_success_install"><![CDATA[The app was installed.]]></string_upd>
+	<string_upd name="_adm_msg_modules_success_uninstall"><![CDATA[The app was uninstalled.]]></string_upd>
+	<string_upd name="_adm_msg_oauth_need_authorize"><![CDATA[You need to sign in to your <b>UNA</b> account to get data: <a href="{0}">sign in to UNA</a>.]]></string_upd>
+	<string_upd name="_adm_msg_oauth_non_owner_logged"><![CDATA[WARNING: You are signed in to an <a href="{0}">UNA.IO</a> account which is different from the account that generated UNA Key & Secret for your domain.]]></string_upd>
+	<string_upd name="_adm_nav_btn_items_gl_create"><![CDATA[Add new item]]></string_upd>
+	<string_upd name="_adm_nav_btn_items_gl_import"><![CDATA[Import items]]></string_upd>
+	<string_upd name="_adm_nav_btn_items_gl_visible"><![CDATA[Visible for]]></string_upd>
+	<string_upd name="_adm_nav_btn_menus_create"><![CDATA[Add new menu]]></string_upd>
+	<string_upd name="_adm_nav_btn_sets_create"><![CDATA[Add new set]]></string_upd>
+	<string_add name="_adm_nav_dsc_menus_button_size"><![CDATA[The size of every button in this menu, on the site and in the apps. Automatic leaves each button the size the menu's style gives it.]]></string_add>
+	<string_add name="_adm_nav_dsc_menus_button_style"><![CDATA[How the buttons in this menu look, on the site and in the apps. Automatic keeps the button of the menu's style and makes it glass over a cover picture. Choose Glass for a menu that sits over a picture, Regular for one on a plain surface.]]></string_add>
+	<string_upd name="_adm_nav_err_menus_set_name"><![CDATA[Please assign a Set.]]></string_upd>
+	<string_upd name="_adm_nav_err_menus_style"><![CDATA[Please select a presentation style.]]></string_upd>
+	<string_upd name="_adm_nav_txt_items_gl_title_system"><![CDATA[System name]]></string_upd>
+	<string_upd name="_adm_nav_txt_items_gl_visible"><![CDATA[Visible for]]></string_upd>
+	<string_upd name="_adm_nav_txt_items_active_api"><![CDATA[Show in the apps]]></string_upd>
+	<string_add name="_adm_nav_txt_menus_button_auto"><![CDATA[Automatic]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size"><![CDATA[Button size]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_large"><![CDATA[Large]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav"><![CDATA[Section navigation in the apps]]></string_add>
+	<string_add name="_adm_nav_dsc_menus_section_nav"><![CDATA[When this menu is a section's menu (the tabs of its pages), how the apps show it on large screens: Tabs above the content, as the site shows them, or Sidebar, a column beside the content, for a section with many pages. Phones and tablets have their own setting, below.]]></string_add>
+	<string_add name="_adm_nav_dsc_menus_section_nav_small"><![CDATA[When this menu is a section's menu, how the apps show it on phones and tablets: Tabs above the content, or List, where the section opens on a list of its pages and each page opens from it with Back (the account's Settings). List needs the section's own page, which the menu names in its App config (hub); a menu without one keeps tabs.]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_tabs"><![CDATA[Tabs]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_sidebar"><![CDATA[Sidebar]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_small"><![CDATA[Section navigation in the apps on phones and tablets]]></string_add>
+	<string_add name="_adm_nav_txt_menus_section_nav_small_list"><![CDATA[List]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_mini"><![CDATA[Mini]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_regular"><![CDATA[Regular]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_size_small"><![CDATA[Small]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style"><![CDATA[Button style]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Glass]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Plain]]></string_add>
+	<string_add name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Regular]]></string_add>
+	<string_upd name="_adm_nav_txt_menus_gl_title"><![CDATA[System name]]></string_upd>
+	<string_upd name="_adm_nav_txt_sets_gl_title"><![CDATA[System name]]></string_upd>
+	<string_upd name="_adm_page_cpt_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_adm_pgt_btn_add_new_key"><![CDATA[Create new key]]></string_upd>
+	<string_add name="_adm_pgt_btn_get_more"><![CDATA[Get more]]></string_add>
+	<string_upd name="_adm_pgt_scs_recompiled"><![CDATA[Languages recompiled.]]></string_upd>
+	<string_upd name="_adm_pgt_scs_restored"><![CDATA[Languages restored.]]></string_upd>
+	<string_upd name="_adm_pgt_txt_etemplates_gl_name_system"><![CDATA[System title]]></string_upd>
+	<string_add name="_adm_pgt_txt_language"><![CDATA[Language]]></string_add>
+	<string_add name="_adm_pgt_txt_status"><![CDATA[Status]]></string_add>
+	<string_add name="_adm_pgt_txt_status_default"><![CDATA[Default]]></string_add>
+	<string_add name="_adm_pgt_txt_status_off"><![CDATA[Off]]></string_add>
+	<string_add name="_adm_pgt_txt_status_on"><![CDATA[On]]></string_add>
+	<string_upd name="_adm_pgt_scs_et_hf_save"><![CDATA[Changes saved.]]></string_upd>
+	<string_upd name="_adm_prm_btn_add_level"><![CDATA[Add new level]]></string_upd>
+	<string_upd name="_adm_prm_dsc_level_quota_max_file_size"><![CDATA[Largest file a member with this level can upload, in any app (0 = no limit; other system limits may apply).]]></string_upd>
+	<string_upd name="_adm_prm_dsc_level_quota_number"><![CDATA[How many files a member with this level can upload (0 = no limit).]]></string_upd>
+	<string_upd name="_adm_prm_dsc_level_password_expired"><![CDATA[Days after which the password must be changed (0 = never).]]></string_upd>
+	<string_upd name="_adm_prm_dsc_level_password_expired_notify"><![CDATA[Days before the password expires to start reminding the member (0 = no reminders).]]></string_upd>
+	<string_upd name="_adm_prm_dsc_level_quota_size"><![CDATA[How much storage a member with this level can use across all apps (0 = no limit).]]></string_upd>
+	<string_upd name="_adm_prm_txt_level_administrator"><![CDATA[Operator]]></string_upd>
+	<string_upd name="_adm_prm_txt_level_unauthenticated"><![CDATA[Guests]]></string_upd>
+	<string_upd name="_adm_prm_txt_max_file_size"><![CDATA[Maximum file size]]></string_upd>
+	<string_upd name="_adm_prm_txt_max_files"><![CDATA[Maximum files]]></string_upd>
+	<string_upd name="_adm_rl_btn_role_add"><![CDATA[Add new role]]></string_upd>
+	<string_add name="_adm_rl_txt_action_use_mcp"><![CDATA[Use the operator tools through MCP]]></string_add>
+	<string_add name="_adm_rl_txt_action_use_mcp_dsc"><![CDATA[]]></string_add>
+	<string_upd name="_adm_stg_cpt_category_account"><![CDATA[Accounts]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_acl"><![CDATA[Memberships]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_notifications"><![CDATA[Email]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_permalinks"><![CDATA[Links and SEO]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_security"><![CDATA[Request protection]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_site_settings"><![CDATA[Site]]></string_upd>
+	<string_upd name="_adm_stg_cpt_category_social_settings"><![CDATA[Sharing]]></string_upd>
+	<string_add name="_adm_stg_cpt_category_api_preview"><![CDATA[API v2 preview]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_client_image_resize_width"><![CDATA[Resize images before upload to this width (0 = don't resize)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_client_image_resize_height"><![CDATA[Resize images before upload to this height (0 = don't resize)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Get started checklist for operators]]></string_upd>
+	<string_upd name="_adm_stg_inf_option_site_tour_home"><![CDATA[Shows operators the "Get started" block on the homepage until every step is done or they hide it. Edit its steps in Studio > Navigation > "Get started: operators".]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_site_tour_studio"><![CDATA[Studio tour]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_smart_app_banner"><![CDATA[Smart app banner]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_account_join"><![CDATA[Who can join]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_account_2fa_enable"><![CDATA[Enable two-factor authentication]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_account_2fa_lifetime"><![CDATA[2FA code lifetime, seconds (0 = send a code at each sign-in)]]></string_upd>
+	<string_add name="_adm_stg_err_option_sys_account_join"><![CDATA[Invitation only needs the Invitations app, and it could not be added. Add it in App Store, then save again.]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_account_limit_profiles_number"><![CDATA[Maximum profiles per account (0 = no limit)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_account_limit_incorrect_login_attempts"><![CDATA[Maximum sign-in attempts (0 = no limit)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_account_disable_login_form"><![CDATA[Disable sign-in form]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_accounts_password_log_count"><![CDATA[Number of stored old passwords (0 = do not store)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_lock_from_unauthenticated_exceptions"><![CDATA[Comma-separated list of page URIs available to unauthenticated users]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_delete"><![CDATA[Delete accounts with no sign-in within N days]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_value_sys_account_pruning_no_login_suspend"><![CDATA[Suspend accounts with no sign-in within N days]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_value_sys_account_pruning_no_profile_delete"><![CDATA[Delete accounts that created no profile within N days]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_account_require_profile"><![CDATA[Accounts without a profile]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_admin_log_days_before_expire"><![CDATA[Keep Studio log entries, days (0 = no limit)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_admin_log_enable"><![CDATA[Keep the Studio log]]></string_add>
+	<string_add name="_adm_stg_inf_option_sys_admin_log_enable"><![CDATA[Changes that operators make in Studio and that agents make on the site, with values before and after.]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_autoupdate_force_modified_files"><![CDATA[Force automatic updates]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_autoupdate"><![CDATA[Automatic system updates]]></string_upd>
+	<string_upd name="_adm_stg_inf_option_sys_autoupdate"><![CDATA[Try to update core system and modules automatically.]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_captcha_default"><![CDATA[Default Captcha]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_content_cache_engine"><![CDATA[Content cache engine (other than File option may require custom server setup)]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_form_label_style"><![CDATA[Field labels]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_application_member"><![CDATA[Main menu alignment on Application pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_application_visitor"><![CDATA[Main menu alignment on Application pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_standard_member"><![CDATA[Main menu alignment on Standard pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_align_standard_visitor"><![CDATA[Main menu alignment on Standard pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_application_member"><![CDATA[Header width on Application pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_application_visitor"><![CDATA[Header width on Application pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_standard_member"><![CDATA[Header width on Standard pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_header_width_standard_visitor"><![CDATA[Header width on Standard pages for visitors]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_embed_lifetime"><![CDATA[Embed lifetime, days (0 = no limit)]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_application_member"><![CDATA[Page width on Application pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_application_visitor"><![CDATA[Page width on Application pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_standard_member"><![CDATA[Page width on Standard pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_page_width_standard_visitor"><![CDATA[Page width on Standard pages for visitors]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_per_page_search_keyword_single"><![CDATA[Keyword search results]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_per_page_search_keyword_plural"><![CDATA[Site search results]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_per_page_search_extended"><![CDATA[Extended search results]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_per_page_recommendations"><![CDATA[Browse recommendations]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_push_wonderpush_access_token"><![CDATA[WonderPush: access token]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_push_wonderpush_web_key"><![CDATA[WonderPush: web key]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_security_form_token_lifetime"><![CDATA[CSRF token lifetime, seconds (0 = no limit)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Block content after this many reports (0 = never block)]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_storage_s3_amz_iam_role"><![CDATA[Authenticate using Amazon IAM Role (S3v4alt storage only)]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_transcoder_unsigned_before"><![CDATA[Editor files uploaded before this time open by links without a signature]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_live_search_limit"><![CDATA[Live search results]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Profile search results]]></string_upd>
+	<string_add name="_adm_stg_inf_option_sys_sounds_guests"><![CDATA[When this is off, visitors who haven't signed in hear nothing, and their pages don't load the sounds.]]></string_add>
+	<string_add name="_adm_stg_inf_option_sys_trusted_proxies"><![CDATA[Addresses or CIDR ranges of public proxies and CDNs in front of the site, such as Cloudflare, separated by commas or new lines. Proxies on private networks don't need to be listed. The visitor's address is the nearest one in X-Forwarded-For that isn't a trusted proxy, so list every public proxy that requests pass through.]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_accent"><![CDATA[Accent color]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_radius"><![CDATA[Corner size]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_radius_smooth"><![CDATA[Smooth corners]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_design_radius_smooth_factor"><![CDATA[Smooth corner multiplier]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_application_member"><![CDATA[Footer width on Application pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_application_visitor"><![CDATA[Footer width on Application pages for visitors]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_standard_member"><![CDATA[Footer width on Standard pages for members]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_footer_width_standard_visitor"><![CDATA[Footer width on Standard pages for visitors]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_metatags_hashtags_max"><![CDATA[Maximum hashtags per post]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_metatags_mentions_max"><![CDATA[Maximum mentions per post]]></string_upd>
+	<string_upd name="_adm_stg_cpt_option_sys_attach_links_max"><![CDATA[Maximum attached links per post (0 = no limit)]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_trusted_proxies"><![CDATA[Trusted proxies]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_api_root_page_member"><![CDATA[Home page for signed-in members]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_enable"><![CDATA[API v2 (preview, not for production): turn on /api/v2, which the desktop app uses]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit"><![CDATA[API v2: limit the number of requests]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_agent"><![CDATA[API v2: messages to AI agents a minute (0 for no limit)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_general"><![CDATA[API v2: requests a minute from one member or one guest address (0 for no limit)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_preview"><![CDATA[API v2: link previews a minute (0 for no limit)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_search"><![CDATA[API v2: searches a minute (0 for no limit)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_upload"><![CDATA[API v2: file uploads a minute (0 for no limit)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_api_v2_rate_limit_write"><![CDATA[API v2: changes a minute, such as posts, edits, deletions and reactions (0 for no limit)]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_mcp_enable"><![CDATA[MCP server: let AI assistants connect to the site]]></string_add>
+	<string_add name="_adm_stg_cpt_option_sys_mcp_enable_info"><![CDATA[Turns on /api/mcp: members connect assistants such as Claude or ChatGPT in account settings > Connectors, and their tools act with the member's permissions. Operators also get the tools switched on for them on the Tools tab.]]></string_add>
+	<string_upd name="_adm_stg_cpt_category_sockets"><![CDATA[Real-time updates]]></string_upd>
+	<string_add name="_adm_stg_cpt_option_sys_sounds_guests"><![CDATA[Play for guests too]]></string_add>
+	<string_upd name="_adm_stg_cpt_option_sys_bg_jobs_workers_limit"><![CDATA[Background jobs: maximum parallel workers]]></string_upd>
+	<string_upd name="_adm_stg_cpt_type_system"><![CDATA[General]]></string_upd>
+	<string_add name="_adm_stg_cpt_category_sys_updates"><![CDATA[Updates and maintenance]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_app_banner"><![CDATA[Mobile app banner]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_members"><![CDATA[Members]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_relations"><![CDATA[Relationships]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_security"><![CDATA[Security]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_sign_in_protection"><![CDATA[Sign-in protection]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_sessions"><![CDATA[Sessions, cookies and headers]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_privacy"><![CDATA[Privacy]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_content"><![CDATA[Content]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_posting"><![CDATA[Posting]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_moderation"><![CDATA[Moderation]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_hashtags"><![CDATA[Hashtags and mentions]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_search"><![CDATA[Search and browsing]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_embeds"><![CDATA[Embeds]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_editor"><![CDATA[Editor and player]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_files"><![CDATA[Storage]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_uploads"><![CDATA[Uploads]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_messaging"><![CDATA[Messaging]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_payments"><![CDATA[Payments]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_payments"><![CDATA[Payments]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_store_account"><![CDATA[UNA Store account]]></string_add>
+	<string_add name="_adm_stg_cpt_type_system_performance"><![CDATA[Performance]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_bg_jobs"><![CDATA[Background jobs]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_connections"><![CDATA[Outgoing connections]]></string_add>
+	<string_add name="_adm_stg_cpt_type_advanced"><![CDATA[Advanced]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_logs"><![CDATA[Logs]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_interface"><![CDATA[Interface]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_studio"><![CDATA[Studio]]></string_add>
+	<string_add name="_adm_stg_cpt_category_sys_ftp"><![CDATA[FTP]]></string_add>
+	<string_upd name="_adm_stg_scs_save"><![CDATA[Settings saved.]]></string_upd>
+	<string_upd name="_adm_stg_txt_mix_title_err"><![CDATA[Title is required. Please fill in this field.]]></string_upd>
+	<string_add name="_adm_stg_txt_unsaved_changes"><![CDATA[Your changes here are not saved. Leave without saving them?]]></string_add>
+	<string_upd name="_adm_str_err_download_failed"><![CDATA[The download failed. Please try again.]]></string_upd>
+	<string_upd name="_adm_str_msg_download_successfully"><![CDATA[Downloaded. You can install it in Apps &gt; Downloaded.]]></string_upd>
+	<string_upd name="_adm_str_msg_download_and_install_successfully"><![CDATA[Downloaded and installed.]]></string_upd>
+	<string_add name="_adm_str_txt_more_actions"><![CDATA[More actions for {0}]]></string_add>
+	<string_upd name="_adm_strg_err_width"><![CDATA[Width is required. Please fill in this field.]]></string_upd>
+	<string_upd name="_adm_strg_err_height"><![CDATA[Height is required. Please fill in this field.]]></string_upd>
+	<string_add name="_adm_txt_admin_log_a_add"><![CDATA[Added]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_copy"><![CDATA[Copied]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_create"><![CDATA[Created]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_delete"><![CDATA[Deleted]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_disable"><![CDATA[Turned off]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_edit"><![CDATA[Edited]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_enable"><![CDATA[Turned on]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_import"><![CDATA[Imported]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_insert"><![CDATA[Added]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_install"><![CDATA[Installed]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_move"><![CDATA[Moved]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_order"><![CDATA[Reordered]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_remove"><![CDATA[Removed]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_reorder"><![CDATA[Reordered]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_reset"><![CDATA[Reset]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_save"><![CDATA[Saved]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_send"><![CDATA[Sent]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_uninstall"><![CDATA[Uninstalled]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_update"><![CDATA[Updated]]></string_add>
+	<string_add name="_adm_txt_admin_log_a_upload"><![CDATA[Uploaded]]></string_add>
+	<string_add name="_adm_txt_admin_log_actor_via_agent"><![CDATA[{0} via agent {1}]]></string_add>
+	<string_add name="_adm_txt_admin_log_after"><![CDATA[After]]></string_add>
+	<string_add name="_adm_txt_admin_log_before"><![CDATA[Before]]></string_add>
+	<string_add name="_adm_txt_admin_log_empty"><![CDATA[No changes recorded.]]></string_add>
+	<string_add name="_adm_txt_admin_log_field"><![CDATA[Field]]></string_add>
+	<string_add name="_adm_txt_admin_log_item"><![CDATA[{0} (#{1})]]></string_add>
+	<string_add name="_adm_txt_admin_log_no_field_changes"><![CDATA[The fields of this entry are the same before and after. The change may be stored elsewhere, such as in a translation.]]></string_add>
+	<string_add name="_adm_txt_admin_log_object_any"><![CDATA[Any entry type]]></string_add>
+	<string_add name="_adm_txt_admin_log_period"><![CDATA[Period]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_1"><![CDATA[Last 24 hours]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_30"><![CDATA[Last 30 days]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_365"><![CDATA[Last 12 months]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_7"><![CDATA[Last 7 days]]></string_add>
+	<string_add name="_adm_txt_admin_log_period_any"><![CDATA[Any time]]></string_add>
+	<string_add name="_adm_txt_admin_log_popup"><![CDATA[Changes]]></string_add>
+	<string_add name="_adm_txt_admin_log_profile_any"><![CDATA[Any actor]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_agent"><![CDATA[Agent]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_any"><![CDATA[Any protocol]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_api"><![CDATA[API]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_cli"><![CDATA[Command line]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_mcp"><![CDATA[MCP]]></string_add>
+	<string_add name="_adm_txt_admin_log_source_studio"><![CDATA[Studio]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_cmts"><![CDATA[Comments: {0}]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_content"><![CDATA[Content: {0}]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_email"><![CDATA[Email]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_language"><![CDATA[Language]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_module_data"><![CDATA[{0}: data]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_studio"><![CDATA[Studio: {0}]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_accounts"><![CDATA[Account]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_acl_levels"><![CDATA[Membership level]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_acl_matrix"><![CDATA[Permission]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_agents_agents"><![CDATA[Agent]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_agents_models"><![CDATA[AI model]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_agents_tools"><![CDATA[Agent tool]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_api_keys"><![CDATA[API key]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_badges"><![CDATA[Badge]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_cron_jobs"><![CDATA[Cron job]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_email_templates"><![CDATA[Email template]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_display_inputs"><![CDATA[Form field]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_displays"><![CDATA[Form display]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_inputs"><![CDATA[Form field]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_pre_lists"><![CDATA[Predefined list]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_form_pre_values"><![CDATA[Predefined list value]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_localization_keys"><![CDATA[Language key]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_localization_strings"><![CDATA[Translation]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_menu_items"><![CDATA[Menu item]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_menu_sets"><![CDATA[Menu set]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_modules"><![CDATA[Module]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_form"><![CDATA[Form]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_menu"><![CDATA[Menu]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_page"><![CDATA[Page]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_objects_storage"><![CDATA[Storage]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_options"><![CDATA[Setting]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_pages_blocks"><![CDATA[Page block]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_profiles"><![CDATA[Profile]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_std_roles"><![CDATA[Studio role]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_sys_std_roles_members"><![CDATA[Operator role]]></string_add>
+	<string_add name="_adm_txt_admin_log_t_template"><![CDATA[Template]]></string_add>
+	<string_add name="_adm_txt_admin_log_unchanged"><![CDATA[Unchanged fields ({0})]]></string_add>
+	<string_upd name="_adm_txt_login_title"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_adm_txt_login_subtitle"><![CDATA[Enter your email and password to sign in to Studio.]]></string_upd>
+	<string_upd name="_adm_txt_modules_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_cmt_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+	<string_upd name="_cmt_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_upd name="_cmt_msg_login_required"><![CDATA[<a href="{0}">Sign in</a> or <a href="{1}">sign up</a> to comment.]]></string_upd>
+	<string_add name="_cmt_txt_n_comments_one"><![CDATA[{0} comment]]></string_add>
+	<string_upd name="_sys_account_settings_email_successfully_submitted"><![CDATA[Email settings saved.]]></string_upd>
+	<string_upd name="_sys_account_settings_pwd_successfully_submitted"><![CDATA[Password changed.]]></string_upd>
+	<string_upd name="_sys_account_settings_info_successfully_submitted"><![CDATA[Account settings saved.]]></string_upd>
+	<string_add name="_sys_acc_join_closed"><![CDATA[Nobody]]></string_add>
+	<string_add name="_sys_acc_join_invite"><![CDATA[Invitation only]]></string_add>
+	<string_add name="_sys_acc_join_invite_add"><![CDATA[Invitation only (adds the Invitations app)]]></string_add>
+	<string_add name="_sys_acc_join_open"><![CDATA[Anyone]]></string_add>
+	<string_add name="_sys_acc_profile_requirement_optional"><![CDATA[Optional: a reminder bar on every page]]></string_add>
+	<string_add name="_sys_acc_profile_requirement_prompt"><![CDATA[Ask after sign-in: a “Create your profile” window on the first page]]></string_add>
+	<string_add name="_sys_acc_profile_requirement_required"><![CDATA[Required: send to profile creation before anything else]]></string_add>
+	<string_upd name="_sys_acl_action_account"><![CDATA[You need a profile to use “{1}”. What you share here is published as your profile.]]></string_upd>
+	<string_upd name="_sys_acl_action_create_account"><![CDATA[Create account]]></string_upd>
+	<string_upd name="_sys_acl_action_not_allowed"><![CDATA[Your membership ({2}) doesn't include “{1}”.]]></string_upd>
+	<string_upd name="_sys_acl_action_pending"><![CDATA[Your account is waiting for approval. Once it is approved you can <b>{1}</b>. Questions? <a href="mailto:{7}">Email us</a>.]]></string_upd>
+	<string_add name="_sys_acl_action_use_connectors"><![CDATA[Use connectors (access tokens for assistants and apps)]]></string_add>
+	<string_upd name="_sys_acl_action_suspended"><![CDATA[You cannot {1} because your profile is suspended. If you don't know why, <a href="mailto:{7}">email us</a>.]]></string_upd>
+	<string_upd name="_sys_acl_action_unauthenticated"><![CDATA[Sign in or sign up to use “{1}”.]]></string_upd>
+	<string_add name="_sys_acl_state_account_title"><![CDATA[Create a profile first]]></string_add>
+	<string_add name="_sys_acl_state_not_allowed_title"><![CDATA[Not in your membership]]></string_add>
+	<string_add name="_sys_acl_state_pending_title"><![CDATA[Waiting for approval]]></string_add>
+	<string_add name="_sys_acl_state_suspended_title"><![CDATA[Profile suspended]]></string_add>
+	<string_add name="_sys_acl_state_unauthenticated_title"><![CDATA[Sign in to continue]]></string_add>
+	<string_add name="_sys_acl_state_unconfirmed_title"><![CDATA[Confirm your email]]></string_add>
+	<string_upd name="_sys_agents_form_field_err_enter"><![CDATA[This field is required. Please enter something here.]]></string_upd>
+	<string_upd name="_sys_agents_form_field_err_select"><![CDATA[This field is required. Please select something here.]]></string_upd>
+	<string_add name="_sys_agents_connectors_txt_tokens"><![CDATA[Your access tokens]]></string_add>
+	<string_add name="_sys_agents_connectors_txt_tools"><![CDATA[Tools for AI assistants]]></string_add>
+	<string_add name="_sys_agents_connectors_txt_tools_info"><![CDATA[Which agent tools AI assistants get through MCP. Operator tools act on the whole site. Member tools act as the member, with their permissions on the site, and only tools made for that can be given to members. A tool turned off on the Tools tab is not given.]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_tool_off"><![CDATA[off]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_operators"><![CDATA[MCP for operators]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_members"><![CDATA[MCP for members]]></string_add>
+	<string_add name="_sys_agents_mcp_txt_operators_only"><![CDATA[Operators only]]></string_add>
+	<string_add name="_sys_agents_mcp_err_not_for_members"><![CDATA[This tool is not made for members: it would act on the whole site.]]></string_add>
+	<string_add name="_sys_agents_tools_txt_agents"><![CDATA[Agents]]></string_add>
+	<string_add name="_sys_agents_tools_txt_operator_agent"><![CDATA[Operator agent]]></string_add>
+	<string_add name="_sys_agents_tools_err_locked"><![CDATA[This tool belongs to the operator agent: only its MCP switch can be changed.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_created"><![CDATA[Your new access token, shown only once: {0} Copy it now and keep it private. MCP server URL: {1}]]></string_add>
+	<string_add name="_sys_api_tokens_txt_info"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account: in the assistant, add a connector with the MCP server URL below and sign in to this site when it asks. They work with your own content the way you can on the site. A developer tool that can't sign in uses an access token instead.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_info_operator"><![CDATA[Connect AI assistants, such as Claude or ChatGPT, to your account: in the assistant, add a connector with the MCP server URL below and sign in to this site when it asks. As an operator, they also get the operator tools switched on in Studio > Agents > Tools, which can change anything on the site. A developer tool that can't sign in uses an access token instead.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_mcp_url"><![CDATA[MCP server URL]]></string_add>
+	<string_add name="_sys_api_mcp_txt_off"><![CDATA[The MCP server is off on this site, so AI assistants can't connect yet.]]></string_add>
+	<string_add name="_sys_api_mcp_txt_off_admin"><![CDATA[The MCP server is off on this site: turn it on in Studio > Agents > Settings.]]></string_add>
+	<string_add name="_sys_api_mcp_clients_txt_title"><![CDATA[Connect an assistant]]></string_add>
+	<string_add name="_sys_api_mcp_clients_txt_command"><![CDATA[Run the command, or open the link, then sign in to this site in the browser that opens.]]></string_add>
+	<string_add name="_sys_api_mcp_clients_btn_add_to"><![CDATA[Add to {0}]]></string_add>
+	<string_add name="_sys_api_mcp_clients_txt_web"><![CDATA[Claude, ChatGPT and other assistants on the web: in Settings > Connectors, add a custom connector with the MCP server URL, then sign in.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_title"><![CDATA[Name]]></string_add>
+	<string_add name="_sys_api_tokens_txt_title_info"><![CDATA[What the token is for, such as the assistant that uses it]]></string_add>
+	<string_add name="_sys_api_tokens_txt_hint"><![CDATA[Token]]></string_add>
+	<string_add name="_sys_api_tokens_txt_added"><![CDATA[Created]]></string_add>
+	<string_add name="_sys_api_tokens_txt_last_used"><![CDATA[Last used]]></string_add>
+	<string_add name="_sys_api_tokens_txt_expires"><![CDATA[Expires]]></string_add>
+	<string_add name="_sys_api_tokens_txt_days"><![CDATA[In {0} days]]></string_add>
+	<string_add name="_sys_api_tokens_txt_never"><![CDATA[Never]]></string_add>
+	<string_add name="_sys_api_tokens_txt_never_used"><![CDATA[Not used yet]]></string_add>
+	<string_add name="_sys_api_tokens_txt_expired"><![CDATA[Expired]]></string_add>
+	<string_add name="_sys_api_tokens_txt_token"><![CDATA[Access token]]></string_add>
+	<string_add name="_sys_api_tokens_txt_once"><![CDATA[Copy the token now: it is shown only once. Anyone who has it can act as you, so keep it private, and revoke it here when you no longer need it.]]></string_add>
+	<string_add name="_sys_api_tokens_txt_header"><![CDATA[In your AI assistant, add an MCP server with this URL and the header "Authorization: Bearer" followed by the token.]]></string_add>
+	<string_add name="_sys_api_tokens_btn_add"><![CDATA[New token]]></string_add>
+	<string_add name="_sys_api_tokens_btn_create"><![CDATA[Create]]></string_add>
+	<string_add name="_sys_api_tokens_btn_revoke"><![CDATA[Revoke]]></string_add>
+	<string_add name="_sys_api_tokens_btn_copy"><![CDATA[Copy]]></string_add>
+	<string_add name="_sys_api_tokens_popup_add"><![CDATA[New access token]]></string_add>
+	<string_add name="_sys_api_tokens_popup_created"><![CDATA[Your new access token]]></string_add>
+	<string_add name="_sys_api_tokens_err_title"><![CDATA[The name must be 1 to {0} characters long]]></string_add>
+	<string_add name="_sys_api_tokens_err_expires"><![CDATA[Choose when the token expires]]></string_add>
+	<string_add name="_sys_api_tokens_err_too_many"><![CDATA[You can have at most {0} tokens. Revoke one you no longer use first.]]></string_add>
+	<string_add name="_sys_agents_activity_splash"><![CDATA[Updated the guest splash: {unit}]]></string_add>
+	<string_upd name="_sys_audit_action_account_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_audit_action_account_failed_login_attempt"><![CDATA[Failed sign-in attempt]]></string_upd>
+	<string_upd name="_sys_audit_action_account_logout"><![CDATA[Sign out]]></string_upd>
+	<string_add name="_sys_audit_action_account_email_change_requested"><![CDATA[Email change requested]]></string_add>
+	<string_add name="_sys_audit_msg_ffmpeg_not_runnable"><![CDATA[{0} does not run on this server ({1}): video and audio conversion will not work. Install ffmpeg for this server and set BX_SYSTEM_FFMPEG in inc/header.inc.php to it, or run "composer install" here to download the matching build.]]></string_add>
+	<string_add name="_sys_audit_msg_url_rewriting_fail"><![CDATA[Pages like /page/... return 404. Add the rewrite rules from the UNA nginx configuration.]]></string_add>
+	<string_add name="_sys_audit_msg_webserver_after_install"><![CDATA[Checked in Studio's server audit once UNA is installed.]]></string_add>
+	<string_add name="_sys_audit_msg_webserver_request_failed"><![CDATA[The server couldn't request its own site URL, so this wasn't checked.]]></string_add>
+	<string_add name="_sys_audit_unlimited"><![CDATA[Unlimited]]></string_add>
+	<string_add name="_sys_audit_url_rewriting"><![CDATA[URL rewriting]]></string_add>
+	<string_add name="_sys_conn_friends_counter_one"><![CDATA[{0} friend]]></string_add>
+	<string_add name="_sys_conn_subscriptions_counter_one"><![CDATA[{0} follower]]></string_add>
+	<string_upd name="_sys_conn_msg_success"><![CDATA[Done.]]></string_upd>
+	<string_upd name="_sys_connect_error_join_unavailable"><![CDATA[Sorry, sign-up is unavailable now. Please try again later.]]></string_upd>
+	<string_upd name="_sys_connect_option_confirm_email"><![CDATA[Always confirm emails when signed up using this module]]></string_upd>
+	<string_upd name="_sys_connect_option_approve"><![CDATA[Always approve profiles when signed up using this module]]></string_upd>
+	<string_upd name="_sys_et_txt_body_admin_email"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Message from <a href="{site_url}">{site_name}</a> admin:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{MessageText}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_comment_replied"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">User {sender_display_name} posted reply to your comment:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{reply_text}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">View and reply here: <a href="{page_url}">{page_title}</a>.</p>
+{email_footer}]]></string_upd>
+	<string_add name="_sys_et_txt_body_confirm_email_change"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Confirm {new_email} as the email of your account on {site_name} with this link:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">or enter this code:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Until you confirm it, you sign in with {email}. If you didn't ask for this, ignore this email.</p>
+{email_footer}]]></string_add>
+	<string_upd name="_sys_et_txt_body_system_reported"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">New <b>{report_type}</b> report received:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{report_text}</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{report_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">View report</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_confirmation"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please confirm your email address by clicking the link below:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><a href="{conf_link}">{conf_link}</a></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">or use the code:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><span class="bx-email-title" style="display:inline-block; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:4px; color:#14171e;">{conf_code}</span></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_welcome"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Welcome, {name}!</h1>
+<p style="margin:0 auto 32px auto; max-width:380px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center;">You've confirmed your profile and it is ready to use.<br />Welcome to {site_name}.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 24px auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{site_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Open {site_name}</a>
+</td></tr></tbody>
+</table>
+<p class="bx-email-muted" style="margin:32px auto 0 auto; max-width:400px; font:400 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#7b7d81; text-align:center;">Feel free to contact us if you need some help.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_delayed_module_uninstall"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Module: <b>{Module}</b></p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Uninstallation result: {Result}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{Message}</p>
+{email_footer}]]></string_upd>
+	<string_add name="_sys_et_txt_body_email_change_requested"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Someone asked to change the email of your account on {site_name} to {new_email}. It changes when the new address is confirmed. Until then you sign in with this one.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, sign in and change your password.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{account_settings_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Change password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_add>
+	<string_add name="_sys_et_txt_body_email_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name}</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The email of your account on {site_name} is now {new_email}. This address no longer signs in.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reply to this email or contact {site_name}.</p>
+{email_footer}]]></string_add>
+	<string_upd name="_sys_et_txt_body_forgot"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Click the link below to reset your password, please:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Reset my password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_mem_changed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>{profile_name}</b> profile membership level is now <b>{membership_level}</b>.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_mem_prolonged"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>{profile_name}</b> profile membership level (<b>{membership_level}</b>) was prolonged.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_mem_expiration"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your {membership_name} membership will expire in {expire_days} days (-1 means already expired).</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Click the link below to renew your membership:</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{page_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Renew my membership</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_profile_change_status_active"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your {site_name} account details:</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Name: {account_name}</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Email: {account_email}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">URL: <a href="{site_url}">{site_url}</a></p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_profile_change_status_pending"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile is pending review. We will send you the review result shortly.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_profile_change_status_suspended"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your profile is currently suspended.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account_change_status_activate"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your account and all your related profiles are currently activated.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account_change_status_suspended"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your account and all your related profiles are currently suspended.</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{account_output}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_account_password_expired"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your password will expire {expired_date}</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please sign-in and change password</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_pruning"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{pruning_output}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_failed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Upgrade failed due to the following error:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{error_msg}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_modules_failed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The following errors appeared during modules upgrade:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{conclusion}</p>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_success"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Site was successfully upgraded to {new_version}.</p>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Please go to <b>Studio &gt; App Store &gt; Updates</b> to check for modules updates.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_upgrade_modules_success"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The following modules were successfully upgraded.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_bg_operation_failed"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Background operation failed with the following message.</p>
+<div class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:left; word-break:break-word;">{conclusion}</div>
+{email_footer}]]></string_upd>
+	<string_upd name="_sys_et_txt_body_manage_approve"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Moderation team has a question for you about '{content_title}':</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">{notes}</p>
+{email_footer}]]></string_upd>
+	<string_add name="_sys_et_txt_body_password_changed"><![CDATA[{email_header}
+<h1 class="bx-email-title" style="margin:0 0 20px 0; font:600 28px/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.084px; color:#14171e; text-align:center;">Hello {name} ({email})</h1>
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">The password of your account on {site_name} was changed.</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">If it wasn't you, reset your password now.</p>
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:16px auto 0 auto;">
+<tbody><tr><td align="center" bgcolor="#14171e" style="background-color:#14171e; border-radius:8px;">
+<a href="{forgot_password_url}" target="_blank" class="bx-email-btn" style="display:inline-block; background-color:#14171e; color:#ffffff; text-decoration:none; font:400 16px/24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius:8px; padding:16px 28px;">Reset password</a>
+</td></tr></tbody>
+</table>
+{email_footer}]]></string_add>
+	<string_add name="_sys_et_txt_name_system_confirm_email_change"><![CDATA[New email confirmation]]></string_add>
+	<string_upd name="_sys_et_txt_name_system_confirmation"><![CDATA[Profile email confirmation message]]></string_upd>
+	<string_add name="_sys_et_txt_name_system_email_change_requested"><![CDATA[Email change requested notice]]></string_add>
+	<string_add name="_sys_et_txt_name_system_email_changed"><![CDATA[Email changed notice]]></string_add>
+	<string_add name="_sys_et_txt_name_system_password_changed"><![CDATA[Password changed notice]]></string_add>
+	<string_add name="_sys_et_txt_subject_confirm_email_change"><![CDATA[Confirm your new email address]]></string_add>
+	<string_add name="_sys_et_txt_subject_email_change_requested"><![CDATA[Your email address is changing]]></string_add>
+	<string_add name="_sys_et_txt_subject_email_changed"><![CDATA[Your email address was changed]]></string_add>
+	<string_add name="_sys_et_txt_subject_password_changed"><![CDATA[Your password was changed]]></string_add>
+	<string_upd name="_sys_et_txt_subject_manage_approve"><![CDATA[Approval: a question about '{content_title}']]></string_upd>
+	<string_upd name="_sys_form_account_input_agreement_value"><![CDATA[By signing up, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string_upd>
+	<string_upd name="_sys_form_account_input_captcha"><![CDATA[Security image]]></string_upd>
+	<string_upd name="_sys_form_account_input_captcha_error"><![CDATA[Security image input failed. Please try again.]]></string_upd>
+	<string_upd name="_sys_form_account_input_delete_confirm_info"><![CDATA[This action cannot be undone.]]></string_upd>
+	<string_add name="_sys_form_account_input_email_info_pending"><![CDATA[Waiting for confirmation: {0}. Open the link we sent there. To cancel, save your current email.]]></string_add>
+	<string_upd name="_sys_form_account_input_email_uniq_error"><![CDATA[This email address is already registered. Please use <a href="{0}">Forgot password</a> to restore access to your account.]]></string_upd>
+	<string_upd name="_sys_form_account_input_name"><![CDATA[Your name]]></string_upd>
+	<string_upd name="_sys_form_account_input_name_error"><![CDATA[Enter your name. It can't start with @.]]></string_upd>
+	<string_upd name="_sys_form_account_input_password_current"><![CDATA[Current password]]></string_upd>
+	<string_add name="_sys_form_account_input_password_info"><![CDATA[At least 8 characters, with an uppercase letter, a lowercase letter and a digit.]]></string_add>
+	<string_add name="_sys_form_account_input_password_new"><![CDATA[New password]]></string_add>
+	<string_add name="_sys_form_account_input_password_new_confirm"><![CDATA[Confirm new password]]></string_add>
+	<string_upd name="_sys_form_account_input_password_current_error"><![CDATA[Current password isn't correct, please enter password you are using to sign in to this site.]]></string_upd>
+	<string_upd name="_sys_form_account_input_password_error"><![CDATA[Use at least 8 characters, with at least one uppercase letter, one lowercase letter and one digit.]]></string_upd>
+	<string_upd name="_sys_form_account_input_receive_updates"><![CDATA[Receive site updates]]></string_upd>
+	<string_upd name="_sys_form_account_input_publish"><![CDATA[Sign up]]></string_upd>
+	<string_add name="_sys_form_input_counter_limit"><![CDATA[You have reached the limit of {0} characters.]]></string_add>
+	<string_upd name="_sys_form_confirm_email_input_code"><![CDATA[Verification code]]></string_upd>
+	<string_upd name="_sys_form_confirm_email_input_code_error"><![CDATA[Verification code is invalid or expired, please sign in to your account and resend verification email.]]></string_upd>
+	<string_upd name="_sys_form_confirm_phone_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string_upd>
+	<string_add name="_sys_form_confirm_phone_input_code_error_attempts"><![CDATA[Too many wrong codes. <a href="{0}">Send a new code</a>.]]></string_add>
+	<string_upd name="_sys_form_display_account_create"><![CDATA[Create account]]></string_upd>
+	<string_upd name="_sys_form_display_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_form_display_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+	<string_upd name="_sys_form_display_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+	<string_upd name="_sys_form_forgot_password_phone_and_email_empty_error"><![CDATA[Please fill phone or email field]]></string_upd>
+	<string_add name="_sys_form_input_privacy_label"><![CDATA[Who can see it: {0}]]></string_add>
+	<string_upd name="_sys_form_labels_input_caption_list_context"><![CDATA[from communities' labels]]></string_upd>
+	<string_upd name="_sys_form_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_form_login_input_submit"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_form_login_input_code_error_invalid"><![CDATA[Wrong verification code. Please repeat code or <a href="{0}">change the phone number and repeat from the beginning</a>.]]></string_upd>
+	<string_upd name="_sys_profile_cf_set_successfully_submitted"><![CDATA[Content filter updated.]]></string_upd>
+	<string_upd name="_sys_profile_cf_manage_successfully_submitted"><![CDATA[Content filter updated.]]></string_upd>
+	<string_upd name="_sys_form_report_input_caption_text"><![CDATA[Report text]]></string_upd>
+	<string_upd name="_sys_form_report_input_caption_type"><![CDATA[Report type]]></string_upd>
+	<string_upd name="_sys_form_unsubscribe_input_receive_updates"><![CDATA[Receive site updates]]></string_upd>
+	<string_add name="_sys_form_txt_optional"><![CDATA[(optional)]]></string_add>
+	<string_add name="_sys_form_txt_unselect_all"><![CDATA[Unselect all]]></string_add>
+	<string_add name="_sys_grid_lbl_apps"><![CDATA[Apps]]></string_add>
+	<string_add name="_sys_grid_txt_n_selected"><![CDATA[{0} selected]]></string_add>
+	<string_add name="_sys_grid_txt_clear_selection"><![CDATA[Clear selection]]></string_add>
+	<string_add name="_sys_grid_txt_select_rows"><![CDATA[Select rows first.]]></string_add>
+	<string_add name="_sys_grid_txt_sort_by"><![CDATA[Sort by]]></string_add>
+	<string_add name="_sys_grid_txt_view"><![CDATA[View]]></string_add>
+	<string_add name="_sys_grid_txt_view_cards"><![CDATA[Cards]]></string_add>
+	<string_add name="_sys_grid_txt_view_rows"><![CDATA[Rows]]></string_add>
+	<string_add name="_sys_grid_txt_show_items"><![CDATA[Show items]]></string_add>
+	<string_add name="_sys_grid_lbl_show_in_apps"><![CDATA[Show in the apps (web app, iOS, Android)]]></string_add>
+	<string_add name="_sys_grid_lbl_show_on_site"><![CDATA[Show on the site]]></string_add>
+	<string_add name="_sys_grid_lbl_site"><![CDATA[Site]]></string_add>
+	<string_upd name="_sys_grid_total_count"><![CDATA[Count: {0}]]></string_upd>
+	<string_add name="_sys_inst_back"><![CDATA[Back]]></string_add>
+	<string_upd name="_sys_inst_conf_desc_admin_email"><![CDATA[You sign in with it, and the site's notices come to it.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_admin_pwd"><![CDATA[At least {0} characters.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_admin_username"><![CDATA[Your own name, not a role.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_host"><![CDATA[Host of your MySQL or MariaDB server.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_name"><![CDATA[An existing, empty database.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_port"><![CDATA[Leave empty for the default port.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_pwd"><![CDATA[That user's password.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_sock"><![CDATA[Leave empty unless the server is reached through a socket file.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_user"><![CDATA[A user that can create and change tables in this database.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_db_engine"><![CDATA[Every table of the site uses this engine. InnoDB, the default, keeps your data safe when the server stops unexpectedly.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_language"><![CDATA[The site's first language.]]></string_upd>
+	<string_add name="_sys_inst_conf_desc_modules"><![CDATA[The starter apps are selected. Add or remove apps in Studio at any time.]]></string_add>
+	<string_upd name="_sys_inst_conf_desc_oauth_key_secret"><![CDATA[Connects the site to your UNA account for apps and updates from the UNA Market. You can add it later in Studio. To get a key and secret, <a target="_blank" rel="noopener" href="https://unacms.com/login">sign in to unacms.com</a>, create a project for this site (or open one you already have) and copy the project's key and secret.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_root_dir"><![CDATA[Folder on the server with the UNA files, ending with a slash.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_site_email"><![CDATA[Address the site sends email from.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_site_url"><![CDATA[Address of the site, ending with a slash.]]></string_upd>
+	<string_upd name="_sys_inst_conf_desc_template"><![CDATA[How the site looks. You can change it in Studio.]]></string_upd>
+	<string_add name="_sys_inst_conf_err_db_connect"><![CDATA[Check the host, and the port or socket if you set one.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_host"><![CDATA[Nothing answers here. Use the MySQL host your hosting panel shows, often localhost; with Docker, the database service's name, such as mysql.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_name"><![CDATA[Create an empty database with this name first, or enter the name of one you have created.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_not_allowed"><![CDATA[Check the name. If the database exists, give this user all privileges on it in your hosting panel; if not, create it first, empty.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_password"><![CDATA[Check the password of this user.]]></string_add>
+	<string_add name="_sys_inst_conf_err_db_user"><![CDATA[Check the user name, and that this user may connect from this web server.]]></string_add>
+	<string_add name="_sys_inst_conf_err_email"><![CDATA[Enter an email address, like name@example.com.]]></string_add>
+	<string_add name="_sys_inst_conf_err_length_exact"><![CDATA[It has {0} characters.]]></string_add>
+	<string_add name="_sys_inst_conf_err_password"><![CDATA[Use at least {0} characters.]]></string_add>
+	<string_add name="_sys_inst_conf_err_required"><![CDATA[Fill in this field.]]></string_add>
+	<string_add name="_sys_inst_conf_err_url"><![CDATA[Enter the address starting with http:// or https://.]]></string_add>
+	<string_add name="_sys_inst_conf_err_url_slash"><![CDATA[End the address with a slash (/).]]></string_add>
+	<string_upd name="_sys_inst_conf_error"><![CDATA[Check this value.]]></string_upd>
+	<string_add name="_sys_inst_conf_example"><![CDATA[Example: {0}]]></string_add>
+	<string_upd name="_sys_inst_conf_field_admin_email"><![CDATA[Your email]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_admin_pwd"><![CDATA[Password]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_admin_username"><![CDATA[Your name]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_db_host"><![CDATA[Database host]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_db_port"><![CDATA[Database port]]></string_upd>
+	<string_add name="_sys_inst_conf_field_modules"><![CDATA[Apps]]></string_add>
+	<string_upd name="_sys_inst_conf_field_site_email"><![CDATA[Sender email]]></string_upd>
+	<string_upd name="_sys_inst_conf_field_template"><![CDATA[Design]]></string_upd>
+	<string_upd name="_sys_inst_conf_found"><![CDATA[<span class="bx-install-chip bx-install-chip-ok">Detected</span>]]></string_upd>
+	<string_add name="_sys_inst_conf_module_needs_composer"><![CDATA[Run composer install in its folder first]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_admin"><![CDATA[Site tools]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_admin_desc"><![CDATA[Spam protection, the text editor, analytics and other tools for running the site.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communication"><![CDATA[Messages and notifications]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communication_desc"><![CDATA[How people hear from each other and from the site. Messenger's live updates need the Jot server.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communities"><![CDATA[Communities]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_communities_desc"><![CDATA[Where people meet: discussions, groups, events and more.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_content"><![CDATA[Feed and posts]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_content_desc"><![CDATA[What people share: the feed, posts, photos, videos and files.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_developer"><![CDATA[Developer and migration tools]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_developer_desc"><![CDATA[For building UNA apps and moving a site from Dolphin or SocialEngine. Not for a live site.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_money"><![CDATA[Payments and shop]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_money_desc"><![CDATA[Selling, paid memberships and donations. Each needs a payment provider.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_other"><![CDATA[Other]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_other_desc"><![CDATA[More apps.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_profiles"><![CDATA[Profiles]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_profiles_desc"><![CDATA[Who people are on the site: members and organizations.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_services"><![CDATA[Third-party services]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_services_desc"><![CDATA[Need an account, a licence or server software of their own.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_signin"><![CDATA[Sign in with other services]]></string_add>
+	<string_add name="_sys_inst_conf_modules_group_signin_desc"><![CDATA[Each needs keys from its service before it works.]]></string_add>
+	<string_add name="_sys_inst_conf_modules_select_all"><![CDATA[Select all]]></string_add>
+	<string_add name="_sys_inst_conf_modules_select_none"><![CDATA[Select none]]></string_add>
+	<string_add name="_sys_inst_conf_modules_select_starter"><![CDATA[Starter apps]]></string_add>
+	<string_add name="_sys_inst_conf_modules_selected"><![CDATA[{0} of {1} selected]]></string_add>
+	<string_add name="_sys_inst_conf_next_apps"><![CDATA[Next: apps]]></string_add>
+	<string_add name="_sys_inst_conf_next_site"><![CDATA[Next: site and your account]]></string_add>
+	<string_upd name="_sys_inst_conf_not_found"><![CDATA[<span class="bx-install-chip bx-install-chip-bad">Not detected</span>]]></string_upd>
+	<string_upd name="_sys_inst_conf_section_db_config"><![CDATA[Database]]></string_upd>
+	<string_add name="_sys_inst_conf_section_db_config_desc"><![CDATA[UNA keeps everything in a MySQL or MariaDB database. Create an empty one and a user for it in your hosting panel first.]]></string_add>
+	<string_upd name="_sys_inst_conf_section_link_with_market"><![CDATA[UNA account (optional)]]></string_upd>
+	<string_upd name="_sys_inst_conf_section_modules"><![CDATA[Language, design and apps]]></string_upd>
+	<string_add name="_sys_inst_conf_section_operator"><![CDATA[Your operator account]]></string_add>
+	<string_add name="_sys_inst_conf_section_operator_desc"><![CDATA[This account runs the site and Studio. It gets a profile of its own later, when you create one on the site.]]></string_add>
+	<string_upd name="_sys_inst_conf_section_site_info"><![CDATA[Site]]></string_upd>
+	<string_add name="_sys_inst_conf_submit"><![CDATA[Install UNA]]></string_add>
+	<string_add name="_sys_inst_conf_submit_apps"><![CDATA[Install UNA with {0} apps]]></string_add>
+	<string_upd name="_sys_inst_finish"><![CDATA[UNA is installed]]></string_upd>
+	<string_upd name="_sys_inst_help_finish"><![CDATA[Help with cron]]></string_upd>
+	<string_upd name="_sys_inst_help_permissions"><![CDATA[Installation help]]></string_upd>
+	<string_upd name="_sys_inst_help_site_config"><![CDATA[Database and settings help]]></string_upd>
+	<string_add name="_sys_inst_in_progress"><![CDATA[Installation in progress]]></string_add>
+	<string_add name="_sys_inst_modules_back_to_progress"><![CDATA[Back to the installation]]></string_add>
+	<string_add name="_sys_inst_modules_count"><![CDATA[{0} of {1} installed]]></string_add>
+	<string_add name="_sys_inst_modules_failed"><![CDATA[The installation couldn't finish]]></string_add>
+	<string_add name="_sys_inst_modules_finishing"><![CDATA[Finishing…]]></string_add>
+	<string_add name="_sys_inst_modules_lead"><![CDATA[Keep this tab open until it's done. Each app installs on its own, so this works on any server.]]></string_add>
+	<string_add name="_sys_inst_modules_network_error"><![CDATA[The server didn't answer. Check that it is running, then try again.]]></string_add>
+	<string_add name="_sys_inst_modules_retry"><![CDATA[Try again]]></string_add>
+	<string_add name="_sys_inst_modules_skip"><![CDATA[Skip this app]]></string_add>
+	<string_add name="_sys_inst_modules_state_active"><![CDATA[installing]]></string_add>
+	<string_add name="_sys_inst_modules_state_done"><![CDATA[installed]]></string_add>
+	<string_add name="_sys_inst_modules_state_failed"><![CDATA[failed]]></string_add>
+	<string_add name="_sys_inst_modules_state_skipped"><![CDATA[skipped]]></string_add>
+	<string_add name="_sys_inst_modules_title"><![CDATA[Installing apps]]></string_add>
+	<string_upd name="_sys_inst_msg_admin_account_not_found"><![CDATA[The operator account wasn't found by its email: {0}]]></string_upd>
+	<string_add name="_sys_inst_msg_db_err_access"><![CDATA[The database server refused this user and password.]]></string_add>
+	<string_upd name="_sys_inst_msg_db_err_connect"><![CDATA[Couldn't connect to the database. Check the host, user and password.]]></string_upd>
+	<string_add name="_sys_inst_msg_db_err_host"><![CDATA[No database server answered at this host.]]></string_add>
+	<string_add name="_sys_inst_msg_db_err_not_allowed"><![CDATA[This user has no database with this name it may use.]]></string_add>
+	<string_upd name="_sys_inst_msg_db_err_select"><![CDATA[There's no database with this name on the server.]]></string_upd>
+	<string_upd name="_sys_inst_msg_finish"><![CDATA[Next steps:]]></string_upd>
+	<string_add name="_sys_inst_msg_finish_cron_docker"><![CDATA[Scheduled jobs already run: the Docker setup's cron service starts periodic/cron.php every minute.]]></string_add>
+	<string_upd name="_sys_inst_msg_finish_cron_jobs"><![CDATA[Add this line to the server's crontab:]]></string_upd>
+	<string_upd name="_sys_inst_msg_finish_delete_install_folder"><![CDATA[Delete the <b>install</b> folder from the server. The site opens once it's gone.]]></string_upd>
+	<string_upd name="_sys_inst_msg_form_error"><![CDATA[Some fields need attention.]]></string_upd>
+	<string_add name="_sys_inst_msg_install_in_progress"><![CDATA[UNA is being installed from another browser: continue there. If that installation was abandoned, delete inc/header.installing.php and inc/install.queue.php on the server, then reload this page.]]></string_add>
+	<string_add name="_sys_inst_msg_module_needs_composer"><![CDATA[Run composer install in {0} first.]]></string_add>
+	<string_add name="_sys_inst_msg_permissions_ok"><![CDATA[All set: UNA can write to every folder it needs.]]></string_add>
+	<string_add name="_sys_inst_msg_queue_not_empty"><![CDATA[Some apps aren't installed yet.]]></string_add>
+	<string_add name="_sys_inst_msg_queue_not_found"><![CDATA[This installation was not started in this browser, or it is already finished. Start again from the site configuration.]]></string_add>
+	<string_upd name="_sys_inst_msg_remove_install"><![CDATA[Delete the <b>install</b> folder from the server, then reload this page. After that, <a href="../studio/">open Studio</a> to add apps and set up the site.]]></string_upd>
+	<string_add name="_sys_inst_open_site"><![CDATA[Open the site]]></string_add>
+	<string_add name="_sys_inst_open_studio"><![CDATA[Open Studio]]></string_add>
+	<string_upd name="_sys_inst_site_config"><![CDATA[Set up your site]]></string_upd>
+	<string_add name="_sys_inst_site_config_lead"><![CDATA[Steps 2 to 4: the database, the site and your account, then the apps.]]></string_add>
+	<string_add name="_sys_inst_step_apps"><![CDATA[Apps]]></string_add>
+	<string_add name="_sys_inst_step_database"><![CDATA[Database]]></string_add>
+	<string_add name="_sys_inst_step_done"><![CDATA[Done]]></string_add>
+	<string_add name="_sys_inst_step_install"><![CDATA[Install]]></string_add>
+	<string_add name="_sys_inst_step_server"><![CDATA[Server]]></string_add>
+	<string_add name="_sys_inst_step_site"><![CDATA[Site]]></string_add>
+	<string_add name="_sys_inst_steps"><![CDATA[Installation steps]]></string_add>
+	<string_upd name="_sys_inst_title"><![CDATA[Install UNA {0}]]></string_upd>
+	<string_add name="_sys_inst_title_meta"><![CDATA[Installation]]></string_add>
+	<string_add name="_sys_inst_welcome"><![CDATA[Install UNA]]></string_add>
+	<string_add name="_sys_inst_welcome_lead"><![CDATA[This sets up UNA on this server in six steps. It takes a few minutes.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_apps"><![CDATA[Choose the apps to start with.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_database"><![CDATA[Connect to an empty MySQL or MariaDB database.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_done"><![CDATA[Set up scheduled jobs and open your site.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_install"><![CDATA[UNA installs the apps one at a time.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_server"><![CDATA[Check that the server meets the requirements and that UNA can write to its folders.]]></string_add>
+	<string_add name="_sys_inst_welcome_step_site"><![CDATA[Name the site, check its address and create your operator account.]]></string_add>
+	<string_upd name="_sys_location_country"><![CDATA[<i class="sys-icon map-pin"></i> {0}]]></string_upd>
+	<string_upd name="_sys_location_country_city"><![CDATA[<i class="sys-icon map-pin"></i> {2}, {1}, {0}]]></string_upd>
+	<string_upd name="_sys_location_country_city_street"><![CDATA[<i class="sys-icon map-pin"></i> {4} {3}, {2}, {1}, {0} ]]></string_upd>
+	<string_add name="_sys_location_ph_country"><![CDATA[Country]]></string_add>
+	<string_upd name="_sys_location_status_undef"><![CDATA[Choose a country to find the address]]></string_upd>
+	<string_upd name="_sys_manage_err_cannot_perform_action"><![CDATA[The action could not be completed. Please try again.]]></string_upd>
+	<string_add name="_sys_menu_item_info_onboarding_cover"><![CDATA[It shows at the top of the homepage, which guests see first.]]></string_add>
+	<string_add name="_sys_menu_item_info_onboarding_join"><![CDATA[Anyone can sign up.]]></string_add>
+	<string_add name="_sys_menu_item_info_onboarding_logo"><![CDATA[It shows in the site header, in emails and in the apps.]]></string_add>
+	<string_add name="_sys_menu_item_info_onboarding_profile"><![CDATA[You post and reply on the site as this profile.]]></string_add>
+	<string_add name="_sys_menu_item_title_color_scheme"><![CDATA[Theme]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_privacy"><![CDATA[Privacy]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_section_account"><![CDATA[Account]]></string_add>
+	<string_add name="_sys_menu_item_title_account_settings_section_profile"><![CDATA[{member_display_name}]]></string_add>
+	<string_upd name="_sys_menu_item_title_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+	<string_add name="_sys_menu_item_title_public_menu"><![CDATA[Browse]]></string_add>
+	<string_upd name="_sys_menu_item_title_cart"><![CDATA[Shopping cart]]></string_upd>
+	<string_upd name="_sys_menu_item_title_dashboard"><![CDATA[Dashboard]]></string_upd>
+	<string_upd name="_sys_menu_item_title_login"><![CDATA[Sign in]]></string_upd>
+	<string_add name="_sys_menu_item_title_member_followings"><![CDATA[Following]]></string_add>
+	<string_add name="_sys_menu_item_title_member_menu"><![CDATA[You]]></string_add>
+	<string_add name="_sys_menu_item_title_switch_profile"><![CDATA[Switch profile]]></string_add>
+	<string_upd name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Share on Facebook]]></string_upd>
+	<string_upd name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Share on X]]></string_upd>
+	<string_upd name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string_upd>
+	<string_upd name="_sys_menu_item_title_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_social_sharing_linked_in"><![CDATA[Share on LinkedIn]]></string_upd>
+	<string_upd name="_sys_menu_item_title_social_sharing_whatsapp"><![CDATA[Share on WhatsApp]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_social_sharing_whatsapp"><![CDATA[Share on WhatsApp]]></string_upd>
+	<string_upd name="_sys_menu_item_title_sm_join_paid"><![CDATA[Pay & join]]></string_upd>
+	<string_add name="_sys_menu_item_title_sm_join_requested_short"><![CDATA[Request sent]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_short"><![CDATA[Join]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_accept"><![CDATA[Accept]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_decline"><![CDATA[Decline]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_join_invited"><![CDATA[Invited]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_joined"><![CDATA[Joined]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_friends_mutual_one"><![CDATA[{0} mutual friend]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_friends_one"><![CDATA[{0} friend]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_members_one"><![CDATA[{0} member]]></string_add>
+	<string_upd name="_sys_menu_item_title_sm_fans_respond"><![CDATA[Respond to a member]]></string_upd>
+	<string_add name="_sys_menu_item_title_sm_subscribers_one"><![CDATA[{0} follower]]></string_add>
+	<string_add name="_sys_menu_item_title_sm_relations_one"><![CDATA[{0} relation]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_ap_profile_active"><![CDATA[Active profile]]></string_upd>
+	<string_add name="_sys_menu_item_title_system_da_profile"><![CDATA[Profile and switcher]]></string_add>
+	<string_add name="_sys_menu_item_title_system_da_stats"><![CDATA[Stats]]></string_add>
+	<string_add name="_sys_menu_item_title_system_da_preferences"><![CDATA[Preferences]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_ap_profile_notifications"><![CDATA[Notifications menu]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_ap_profile_create"><![CDATA[Create profile]]></string_upd>
+	<string_add name="_sys_menu_item_title_system_account_settings_privacy"><![CDATA[Privacy]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_section_account"><![CDATA[Account (section)]]></string_add>
+	<string_add name="_sys_menu_item_title_system_account_settings_section_profile"><![CDATA[Current profile (section)]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_add_content"><![CDATA[Add content]]></string_upd>
+	<string_add name="_sys_menu_item_title_system_apps_menu"><![CDATA[Apps menu]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_cart"><![CDATA[Shopping cart]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_logout"><![CDATA[Sign out]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_member_avatar"><![CDATA[Member avatar]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_member_followings"><![CDATA[Member following]]></string_upd>
+	<string_add name="_sys_menu_item_title_system_member_memberships"><![CDATA[Member memberships]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_member_menu"><![CDATA[Member menu]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_powered_by"><![CDATA[Powered by]]></string_upd>
+	<string_add name="_sys_menu_item_title_system_switch_profile"><![CDATA[Switch profile]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_public_menu"><![CDATA[Public menu]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Share on Facebook]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Share on X]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Share on Pinterest]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sm_befriend"><![CDATA[Add friend]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sm_join_paid"><![CDATA[Pay & join]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sm_nl"><![CDATA[New line]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sm_friends_mutual"><![CDATA[Mutual friends]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sm_ignore"><![CDATA[Ignore recommendation]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sm_ignore_befriend"><![CDATA[Ignore recommendation: befriend]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sm_ignore_subscribe"><![CDATA[Ignore recommendation: subscribe]]></string_upd>
+	<string_upd name="_sys_menu_set_title_cmts_item_counters"><![CDATA[Comment Counters]]></string_upd>
+	<string_add name="_sys_menu_set_title_profile_memberships"><![CDATA[Profile Memberships]]></string_add>
+	<string_add name="_sys_menu_set_title_dashboard_account"><![CDATA[Your account]]></string_add>
+	<string_add name="_sys_menu_set_title_account_preferences"><![CDATA[Preferences]]></string_add>
+	<string_add name="_sys_menu_set_title_apps_menu"><![CDATA[Apps Menu]]></string_add>
+	<string_add name="_sys_menu_set_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string_add>
+	<string_add name="_sys_menu_set_title_toolbar_application"><![CDATA[Application toolbar]]></string_add>
+	<string_add name="_sys_menu_template_title_list_desc"><![CDATA[List with descriptions]]></string_add>
+	<string_add name="_sys_menu_template_title_list_desc_cards"><![CDATA[Cards with descriptions]]></string_add>
+	<string_add name="_sys_menu_template_title_tiles"><![CDATA[Tiles]]></string_add>
+	<string_add name="_sys_menu_title_apps_menu"><![CDATA[Apps Menu]]></string_add>
+	<string_add name="_sys_menu_title_apps_sidebar"><![CDATA[Apps Sidebar]]></string_add>
+	<string_add name="_sys_menu_title_profile_memberships"><![CDATA[Profile Memberships]]></string_add>
+	<string_add name="_sys_menu_title_profile_stats_tiles"><![CDATA[Profile Stats as tiles]]></string_add>
+	<string_add name="_sys_menu_title_dashboard_account"><![CDATA[Your account]]></string_add>
+	<string_add name="_sys_menu_title_account_preferences"><![CDATA[Preferences]]></string_add>
+	<string_add name="_sys_menu_title_toolbar_application"><![CDATA[Application toolbar]]></string_add>
+	<string_add name="_sys_menu_title_tabbar"><![CDATA[Tab bar]]></string_add>
+	<string_add name="_sys_menu_set_title_tabbar"><![CDATA[Tab bar]]></string_add>
+	<string_upd name="_sys_menu_item_title_wiki_delete_version"><![CDATA[Delete version]]></string_upd>
+	<string_upd name="_sys_menu_item_title_wiki_delete_block"><![CDATA[Delete block]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sa_site"><![CDATA[Visit web app]]></string_upd>
+	<string_upd name="_sys_menu_item_title_sa_site"><![CDATA[Visit web app]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sa_edit"><![CDATA[Manage apps]]></string_upd>
+	<string_upd name="_sys_menu_item_title_sa_edit"><![CDATA[Manage apps]]></string_upd>
+	<string_upd name="_sys_menu_item_title_system_sa_tour"><![CDATA[Introduction tour]]></string_upd>
+	<string_upd name="_sys_menu_item_title_sa_tour"><![CDATA[Introduction tour]]></string_upd>
+	<string_upd name="_sys_menu_item_title_con_friends"><![CDATA[All friends]]></string_upd>
+	<string_upd name="_sys_menu_item_title_con_friend_requests"><![CDATA[Friend requests]]></string_upd>
+	<string_upd name="_sys_menu_item_title_con_friend_requested"><![CDATA[Sent requests]]></string_upd>
+	<string_add name="_sys_menu_title_onboarding_operator"><![CDATA[Get started: operators]]></string_add>
+	<string_add name="_sys_menu_set_title_onboarding_operator"><![CDATA[Get started: operators]]></string_add>
+	<string_upd name="_sys_menu_item_title_system_ntfs_context_invitations"><![CDATA[Notifications: context invitations]]></string_upd>
+	<string_add name="_sys_menu_item_title_system_onboarding"><![CDATA[Get started]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_cover"><![CDATA[Add a cover picture]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_join"><![CDATA[Choose who can sign up]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_logo"><![CDATA[Add your logo]]></string_add>
+	<string_add name="_sys_menu_item_title_system_onboarding_profile"><![CDATA[Create your profile]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding"><![CDATA[Get started]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_cover"><![CDATA[Add a cover picture]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_join"><![CDATA[Choose who can sign up]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_logo"><![CDATA[Add your logo]]></string_add>
+	<string_add name="_sys_menu_item_title_onboarding_profile"><![CDATA[Create your profile]]></string_add>
+	<string_upd name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} mentioned you in a {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string_upd>
+	<string_upd name="_sys_page_block_title_account_settings_delete"><![CDATA[Delete account]]></string_upd>
+	<string_add name="_sys_page_block_title_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+	<string_upd name="_sys_page_block_title_account_settings_email"><![CDATA[Email settings]]></string_upd>
+	<string_upd name="_sys_page_block_title_account_settings_info"><![CDATA[Edit account]]></string_upd>
+	<string_add name="_sys_page_block_title_account_settings_privacy"><![CDATA[Who can see and contact you]]></string_add>
+	<string_upd name="_sys_page_block_title_account_settings_pwd"><![CDATA[Change password]]></string_upd>
+	<string_upd name="_sys_page_block_title_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+	<string_upd name="_sys_page_block_title_chart_growth"><![CDATA[Growth charts]]></string_upd>
+	<string_upd name="_sys_page_block_title_cmts_administration"><![CDATA[Manage comments]]></string_upd>
+	<string_upd name="_sys_page_block_title_confirm_email"><![CDATA[Email confirmation]]></string_upd>
+	<string_upd name="_sys_page_block_title_confirm_phone"><![CDATA[Phone confirmation]]></string_upd>
+	<string_add name="_sys_page_block_title_system_create_profile"><![CDATA[Create your profile (accounts without a profile)]]></string_add>
+	<string_add name="_sys_page_block_title_create_account_intro"><![CDATA[Sign up introduction]]></string_add>
+	<string_upd name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend requests]]></string_upd>
+	<string_upd name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent friend requests]]></string_upd>
+	<string_upd name="_sys_page_block_title_recom_friends"><![CDATA[Friend suggestions]]></string_upd>
+	<string_add name="_sys_page_block_title_onboarding"><![CDATA[Get started]]></string_add>
+	<string_upd name="_sys_page_block_title_search_keyword_form"><![CDATA[Search form]]></string_upd>
+	<string_upd name="_sys_page_block_title_search_keyword_result"><![CDATA[Search result]]></string_upd>
+	<string_upd name="_sys_page_block_title_membership_stats"><![CDATA[Your membership]]></string_upd>
+	<string_add name="_sys_page_block_desc_create_account"><![CDATA[Create an account to join the community.]]></string_add>
+	<string_add name="_sys_page_block_desc_login"><![CDATA[Enter your details to continue.]]></string_add>
+	<string_upd name="_sys_page_block_system_title_login"><![CDATA[Sign in with sign-up link]]></string_upd>
+	<string_upd name="_sys_page_block_system_title_login_step2"><![CDATA[Sign in - step2]]></string_upd>
+	<string_upd name="_sys_page_block_system_title_login_step3"><![CDATA[Sign in - step3]]></string_upd>
+	<string_upd name="_sys_page_block_system_title_login_only"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - content]]></string_upd>
+	<string_add name="_sys_page_block_title_dashboard_profiles"><![CDATA[Your profiles]]></string_add>
+	<string_upd name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - audit]]></string_upd>
+	<string_add name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Your profiles (dashboard)]]></string_add>
+	<string_add name="_sys_page_block_title_system_dashboard_account"><![CDATA[Your account (dashboard)]]></string_add>
+	<string_add name="_sys_page_block_title_dashboard_account"><![CDATA[Your account]]></string_add>
+	<string_add name="_sys_page_block_title_system_onboarding"><![CDATA[Get started checklist]]></string_add>
+	<string_add name="_sys_page_block_title_system_onboarding_operator"><![CDATA[Get started checklist for operators]]></string_add>
+	<string_add name="_sys_page_block_title_system_profile_menu_apps"><![CDATA[Profile menu (apps)]]></string_add>
+	<string_add name="_sys_page_block_title_system_search_window"><![CDATA[Search]]></string_add>
+	<string_upd name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - reports]]></string_upd>
+	<string_upd name="_sys_page_block_title_logout"><![CDATA[Sign out]]></string_upd>
+	<string_upd name="_sys_page_block_title_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_page_block_title_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+	<string_upd name="_sys_page_block_title_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+	<string_upd name="_sys_page_block_title_privacy"><![CDATA[Privacy policy]]></string_upd>
+	<string_upd name="_sys_page_block_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string_upd>
+	<string_upd name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string_upd>
+	<string_upd name="_sys_page_block_title_terms"><![CDATA[Terms of service]]></string_upd>
+	<string_upd name="_sys_page_block_title_wiki_pages_list"><![CDATA[Pages list]]></string_upd>
+	<string_upd name="_sys_page_block_title_wiki_page_contents"><![CDATA[Page contents]]></string_upd>
+	<string_upd name="_sys_page_lang_block_terms"><![CDATA[<h2>About these terms</h2>
+<p>These terms apply to everyone who visits or uses {site_title} (the "site"). By using the site or signing up for an account, you agree to them. If you do not agree, please do not use the site.</p>
+<h2>Who runs this site</h2>
+<p>{site_title} is run by its operator ("we", "us"). We set these terms, decide how they apply and enforce them.</p>
+<p>The site is built with UNA, open-source community software made by UNA, Inc. UNA, Inc. does not run this site, is not a party to these terms and has no control over them, over what is posted here or over how we enforce them. Send questions and complaints about the site to us, not to UNA, Inc.</p>
+<h2>Your account</h2>
+<ul>
+<li>You must be at least 16 years old to sign up, or older if the law where you live sets a higher age.</li>
+<li>Give accurate information when you sign up and keep it up to date.</li>
+<li>Keep your password safe. You are responsible for what happens in your account, so tell us straight away if you think someone else has used it.</li>
+<li>Do not create an account for someone else without their permission.</li>
+</ul>
+<h2>Your content</h2>
+<p>You keep the rights to what you post. By posting it, you let us store it, show it to the audience you choose and make the copies that running the site needs. This permission ends when you delete the content or your account, apart from copies that other members have already shared and copies we must keep for a limited time, such as backups.</p>
+<p>You are responsible for what you post. Post only what you have the right to share.</p>
+<h2>Rules</h2>
+<p>When you use the site, do not:</p>
+<ul>
+<li>break the law, or help or encourage others to break it;</li>
+<li>harass, threaten or bully anyone, or attack people for who they are;</li>
+<li>share other people's private information without their consent;</li>
+<li>post content that infringes someone else's copyright, trademark or other rights;</li>
+<li>post anything that sexualises or exploits children;</li>
+<li>send spam, run scams or pretend to be someone else;</li>
+<li>upload malware, try to get into accounts or areas you are not allowed to use, collect other members' data without their consent, or disrupt the site.</li>
+</ul>
+<p>The community may also have rules of its own, which are shown on the site. They apply too.</p>
+<h2>Moderation</h2>
+<p>We may review, hide or remove content, and limit, suspend or close accounts that break these terms or put the site or other people at risk. Where we can, we will tell you what we did and why. To report content or a member, use the Report option on the site or contact us.</p>
+<h2>Paid features</h2>
+<p>If the site offers paid memberships or other paid features, the price, what you get and how to cancel are shown before you pay. Renewals and refunds follow the conditions shown when you pay and the law that applies to you.</p>
+<h2>Other people's content and other sites</h2>
+<p>Content posted by members belongs to them and does not necessarily reflect our views. Links to other websites are provided for convenience. We are not responsible for those websites.</p>
+<h2>Closing your account</h2>
+<p>You can stop using the site at any time and delete your account in your account settings. We may close an account as described under Moderation.</p>
+<h2>No warranty and limits of liability</h2>
+<p>We provide the site "as is" and "as available". We work to keep it running and safe, but we cannot promise that it will always be available, free of errors or secure. As far as the law allows, we are not liable for indirect losses or for losses caused by other members' content or actions. Nothing in these terms takes away rights that the law gives you and that cannot be waived.</p>
+<h2>Changes to these terms</h2>
+<p>We may update these terms. The current version is always on this page. If a change is significant, we will tell members before it takes effect, for example on the site or by email. If you keep using the site after a change takes effect, you accept the updated terms.</p>
+<h2>Applicable law</h2>
+<p>These terms are governed by the law of the country where we are based. If you live in another country, you also keep the protection that its mandatory consumer laws give you.</p>
+<h2>Contact</h2>
+<p>For questions about these terms, contact us through the contact details shown on the site.</p>]]></string_upd>
+	<string_upd name="_sys_page_lang_block_privacy"><![CDATA[<h2>Who is responsible for your data</h2>
+<p>{site_title} (the "site") is run by its operator ("we", "us"). We decide what personal data the site collects, why and for how long, and we are responsible for it. Some laws call this role the data controller.</p>
+<p>The site is built with UNA, open-source community software made by UNA, Inc. UNA, Inc. does not run this site. Collecting, using and storing personal data here is entirely at our discretion and under our control, not UNA, Inc.'s. Send questions and requests about your data to us.</p>
+<h2>What we collect</h2>
+<ul>
+<li><strong>Account details:</strong> your email address and password, and a phone number if you add one. We do not store your password in readable form.</li>
+<li><strong>Profile and content:</strong> your profile details and pictures, and what you post, comment, react to, follow or join. Who can see each item depends on the privacy settings you choose.</li>
+<li><strong>Messages:</strong> private messages are stored on the site's servers so they can be delivered.</li>
+<li><strong>Usage and device data:</strong> the pages you open and the actions you take, with the time, your IP address, browser, device type and language. Our servers also keep logs of requests and errors.</li>
+<li><strong>Cookies and local storage:</strong> a cookie keeps you signed in, and others remember settings such as language and theme. If you use our mobile app and allow notifications, we keep a device token to send them. If we add services of other companies, such as analytics or advertising, we name them in this policy together with the cookies they set.</li>
+<li><strong>Payments:</strong> if you buy something on the site, a payment provider handles the payment. We get a confirmation, not your full card details.</li>
+<li><strong>From other people:</strong> other members may mention you, tag you or invite you by email.</li>
+</ul>
+<h2>Why we use it</h2>
+<ul>
+<li>to run your account and show your content to the audience you chose;</li>
+<li>to send you emails and notifications about your account and activity, which you can turn off in your settings, except for essential ones such as password resets;</li>
+<li>to send you news about the site, only if you agreed to receive it;</li>
+<li>to keep the site safe: to stop spam, abuse and fraud and to handle reports;</li>
+<li>to understand how the site is used and improve it;</li>
+<li>to meet our legal obligations.</li>
+</ul>
+<p>Where the law requires a legal basis for using personal data, we rely on our agreement with you (the Terms of Service), our legitimate interest in running a safe and useful site, your consent (which you can withdraw at any time), and our legal obligations.</p>
+<h2>Who can see it</h2>
+<ul>
+<li><strong>Other members and visitors</strong> see your profile and posts as your privacy settings allow.</li>
+<li><strong>Service providers</strong> that help us run the site, such as hosting, storage, email delivery and payment providers, process data for us and only to provide their service.</li>
+<li><strong>Authorities</strong> get data when the law requires it, or when it is needed to protect someone's rights or safety.</li>
+<li><strong>A new operator</strong> gets the data if the site is transferred to someone else, and this policy continues to apply.</li>
+</ul>
+<p>We do not sell your personal data and do not share it for advertising.</p>
+<p>Our servers and service providers may be in countries other than yours. Where the law requires it, data sent there is protected by the safeguards that law sets out, such as standard contractual clauses.</p>
+<h2>How long we keep it</h2>
+<p>We keep your account data and content for as long as your account exists. When you delete your account, we delete your profile and delete or anonymise your content within 30 days, apart from what the law requires us to keep. Copies in backups are deleted within 90 days. Server logs are kept for up to 90 days.</p>
+<h2>Your rights</h2>
+<ul>
+<li><strong>Access and copy:</strong> you can ask us what data we hold about you and for a copy of it.</li>
+<li><strong>Correction:</strong> you can correct most of your data yourself in your profile and account settings, or ask us to.</li>
+<li><strong>Deletion:</strong> you can delete your content, or your whole account in your account settings.</li>
+<li><strong>Objection and consent:</strong> you can object to some uses of your data and withdraw any consent you gave, for example by unsubscribing from emails.</li>
+</ul>
+<p>To use these rights, contact us. We may need to confirm your identity first. Depending on where you live, you may also be able to complain to your data protection authority.</p>
+<h2>Security</h2>
+<p>We take reasonable steps to protect your data, such as limiting who can access it. No system is completely secure, so we cannot guarantee it. Use a strong password that you do not use anywhere else. If a breach affects your data, we will tell you where the law requires us to.</p>
+<h2>Children</h2>
+<p>The site is not meant for children under 16. We do not knowingly collect their data. If you believe a child has given us personal data, contact us and we will delete it.</p>
+<h2>Changes to this policy</h2>
+<p>We may update this policy. The current version is always on this page. If a change is significant, we will tell members before it takes effect, for example on the site or by email.</p>
+<h2>Contact</h2>
+<p>For questions or requests about your data, contact us through the contact details shown on the site.</p>]]></string_upd>
+	<string_add name="_sys_page_meta_description_entry"><![CDATA[{0} on {1}.]]></string_add>
+	<string_upd name="_sys_page_title_account_profile_switcher"><![CDATA[My profiles]]></string_upd>
+	<string_upd name="_sys_page_title_account_settings_delete"><![CDATA[Delete account]]></string_upd>
+	<string_add name="_sys_page_title_account_settings_connectors"><![CDATA[Connectors]]></string_add>
+	<string_upd name="_sys_page_title_account_settings_email"><![CDATA[Email settings]]></string_upd>
+	<string_upd name="_sys_page_title_account_settings_info"><![CDATA[Edit account]]></string_upd>
+	<string_add name="_sys_page_title_account_settings_privacy"><![CDATA[Privacy]]></string_add>
+	<string_upd name="_sys_page_title_account_settings_pwd"><![CDATA[Change password]]></string_upd>
+	<string_upd name="_sys_page_title_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+	<string_upd name="_sys_page_title_cmts_administration"><![CDATA[Manage comments]]></string_upd>
+	<string_upd name="_sys_page_title_confirm_email"><![CDATA[Email confirmation]]></string_upd>
+	<string_upd name="_sys_page_title_confirm_phone"><![CDATA[Phone confirmation]]></string_upd>
+	<string_upd name="_sys_page_title_logout"><![CDATA[Sign out]]></string_upd>
+	<string_upd name="_sys_page_title_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_page_title_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+	<string_upd name="_sys_page_title_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+	<string_upd name="_sys_page_title_privacy"><![CDATA[Privacy policy]]></string_upd>
+	<string_upd name="_sys_page_title_terms"><![CDATA[Terms of service]]></string_upd>
+	<string_upd name="_sys_page_title_system_about"><![CDATA[Info - about]]></string_upd>
+	<string_upd name="_sys_page_title_system_account_profile_switcher"><![CDATA[Account - my profiles]]></string_upd>
+	<string_upd name="_sys_page_title_system_account_settings_delete"><![CDATA[Account - delete]]></string_upd>
+	<string_add name="_sys_page_title_system_account_settings_connectors"><![CDATA[Account - connectors]]></string_add>
+	<string_upd name="_sys_page_title_system_account_settings_email"><![CDATA[Account - email settings]]></string_upd>
+	<string_upd name="_sys_page_title_system_account_settings_info"><![CDATA[Account - edit]]></string_upd>
+	<string_add name="_sys_page_title_system_account_settings_privacy"><![CDATA[Account - Privacy]]></string_add>
+	<string_upd name="_sys_page_title_system_account_settings_pwd"><![CDATA[Account - change password]]></string_upd>
+	<string_upd name="_sys_page_title_system_profile_settings_cfilter"><![CDATA[Content filter]]></string_upd>
+	<string_upd name="_sys_page_title_system_cmts_view"><![CDATA[Comments - view comment]]></string_upd>
+	<string_upd name="_sys_page_title_system_cmts_administration"><![CDATA[Comments - manage]]></string_upd>
+	<string_upd name="_sys_page_title_system_confirm_email"><![CDATA[Account create - email confirmation]]></string_upd>
+	<string_upd name="_sys_page_title_system_confirm_phone"><![CDATA[Account create - phone confirmation]]></string_upd>
+	<string_upd name="_sys_page_title_system_create_account"><![CDATA[Account - create]]></string_upd>
+	<string_upd name="_sys_page_title_system_dashboard_content"><![CDATA[Dashboard - content]]></string_upd>
+	<string_upd name="_sys_page_title_system_dashboard_reports"><![CDATA[Dashboard - reports]]></string_upd>
+	<string_upd name="_sys_page_title_system_dashboard_audit"><![CDATA[Dashboard - audit]]></string_upd>
+	<string_upd name="_sys_page_title_system_dashboard_admin"><![CDATA[Dashboard - administration]]></string_upd>
+	<string_upd name="_sys_page_title_system_forgot_password"><![CDATA[Sign in - forgot password]]></string_upd>
+	<string_upd name="_sys_page_title_system_search_keyword"><![CDATA[Search by keyword]]></string_upd>
+	<string_upd name="_sys_page_title_search_keyword"><![CDATA[Search by keyword]]></string_upd>
+	<string_upd name="_sys_page_title_system_login"><![CDATA[Sign in - step 1]]></string_upd>
+	<string_upd name="_sys_page_title_system_login_step2"><![CDATA[Sign in - step 2]]></string_upd>
+	<string_upd name="_sys_page_title_system_login_step3"><![CDATA[Sign in - step 3]]></string_upd>
+	<string_upd name="_sys_page_title_system_privacy"><![CDATA[Info - privacy policy]]></string_upd>
+	<string_upd name="_sys_page_title_sys_explore"><![CDATA[Info - explore]]></string_upd>
+	<string_upd name="_sys_page_title_sys_updates"><![CDATA[Info - updates]]></string_upd>
+	<string_upd name="_sys_page_title_sys_trends"><![CDATA[Info - trends]]></string_upd>
+	<string_upd name="_sys_page_title_system_terms"><![CDATA[Info - terms of service]]></string_upd>
+	<string_upd name="_sys_page_title_system_unsubscribe_news"><![CDATA[Unsubscribe from newsletters]]></string_upd>
+	<string_upd name="_sys_page_title_system_unsubscribe_notifications"><![CDATA[Unsubscribe from notifications]]></string_upd>
+	<string_upd name="_sys_page_title_system_studio_dashboard"><![CDATA[Studio dashboard]]></string_upd>
+	<string_upd name="_sys_page_title_unsubscribe_news"><![CDATA[Unsubscribe from site newsletters]]></string_upd>
+	<string_upd name="_sys_page_title_unsubscribe_notifications"><![CDATA[Unsubscribe from site notifications]]></string_upd>
+	<string_upd name="_sys_page_title_studio_dashboard"><![CDATA[Studio dashboard]]></string_upd>
+	<string_upd name="_sys_page_title_sys_wiki_add_page"><![CDATA[Wiki: add page]]></string_upd>
+	<string_upd name="_sys_page_title_wiki_add_page"><![CDATA[Add page]]></string_upd>
+	<string_upd name="_sys_page_block_title_wiki_add_page"><![CDATA[Add page]]></string_upd>
+	<string_add name="_sys_page_title_with_site"><![CDATA[{0} · {1}]]></string_add>
+	<string_upd name="_sys_page_title_wiki_page_contents"><![CDATA[Table of contents]]></string_upd>
+	<string_upd name="_sys_page_title_system_con_friends"><![CDATA[Connections - friends]]></string_upd>
+	<string_upd name="_sys_page_title_system_con_friend_requests"><![CDATA[Connections - friend requests]]></string_upd>
+	<string_upd name="_sys_page_title_con_friend_requests"><![CDATA[Friend requests]]></string_upd>
+	<string_upd name="_sys_page_title_system_con_friend_requested"><![CDATA[Connections - sent friend requests]]></string_upd>
+	<string_upd name="_sys_page_title_con_friend_requested"><![CDATA[Sent friend requests]]></string_upd>
+	<string_upd name="_sys_page_title_system_con_following"><![CDATA[Connections - following]]></string_upd>
+	<string_upd name="_sys_page_title_system_con_followers"><![CDATA[Connections - followers]]></string_upd>
+	<string_upd name="_sys_page_title_system_recom_friends"><![CDATA[Recommendations - friends]]></string_upd>
+	<string_upd name="_sys_page_title_recom_friends"><![CDATA[Friend suggestions]]></string_upd>
+	<string_upd name="_sys_page_title_system_recom_subscriptions"><![CDATA[Recommendations - subscriptions]]></string_upd>
+	<string_upd name="_sys_page_title_system_ntfs_context_invitations"><![CDATA[Notifications - context invitations]]></string_upd>
+	<string_add name="_sys_paginate_next"><![CDATA[Next page]]></string_add>
+	<string_add name="_sys_paginate_prev"><![CDATA[Previous page]]></string_add>
+	<string_upd name="_sys_profile_friend_request_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> sent you a friend request]]></string_upd>
+	<string_upd name="_sys_profile_friendship_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> accepted your friend request]]></string_upd>
+	<string_add name="_sys_profile_joined_ntfs"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> joined]]></string_add>
+	<string_upd name="_sys_profile_subscription_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> followed you]]></string_upd>
+	<string_add name="_sys_profile_unit_view"><![CDATA[View profile]]></string_add>
+	<string_add name="_sys_profile_unit_you"><![CDATA[You]]></string_add>
+	<string_upd name="_sys_sample_context"><![CDATA[community]]></string_upd>
+	<string_upd name="_sys_score_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+	<string_add name="_sys_search_action_context"><![CDATA[Search in {0}]]></string_add>
+	<string_add name="_sys_search_action_section"><![CDATA[Search {0}]]></string_add>
+	<string_add name="_sys_search_ai_txt_placeholder"><![CDATA[Describe what you are looking for…]]></string_add>
+	<string_add name="_sys_search_chip_all"><![CDATA[All]]></string_add>
+	<string_add name="_sys_search_chip_any_time"><![CDATA[Any time]]></string_add>
+	<string_add name="_sys_search_chip_anyone"><![CDATA[Anyone]]></string_add>
+	<string_add name="_sys_search_chip_apply"><![CDATA[Apply]]></string_add>
+	<string_add name="_sys_search_chip_created_by"><![CDATA[Created by]]></string_add>
+	<string_add name="_sys_search_chip_created_by_me"><![CDATA[Me]]></string_add>
+	<string_add name="_sys_search_chip_created_by_placeholder"><![CDATA[Type a name]]></string_add>
+	<string_add name="_sys_search_chip_created_by_value"><![CDATA[Created by: {0}]]></string_add>
+	<string_add name="_sys_search_chip_date"><![CDATA[Date]]></string_add>
+	<string_add name="_sys_search_chip_date_created"><![CDATA[Created]]></string_add>
+	<string_add name="_sys_search_chip_date_ends"><![CDATA[Ends]]></string_add>
+	<string_add name="_sys_search_chip_date_field"><![CDATA[Date of]]></string_add>
+	<string_add name="_sys_search_chip_date_from"><![CDATA[From]]></string_add>
+	<string_add name="_sys_search_chip_date_starts"><![CDATA[Starts]]></string_add>
+	<string_add name="_sys_search_chip_date_to"><![CDATA[To]]></string_add>
+	<string_add name="_sys_search_chip_filter"><![CDATA[Filter]]></string_add>
+	<string_add name="_sys_search_chip_find_person"><![CDATA[Find someone…]]></string_add>
+	<string_add name="_sys_search_chip_in"><![CDATA[In: {0}]]></string_add>
+	<string_add name="_sys_search_chip_past_month"><![CDATA[Past 30 days]]></string_add>
+	<string_add name="_sys_search_chip_past_week"><![CDATA[Past 7 days]]></string_add>
+	<string_add name="_sys_search_chip_past_year"><![CDATA[Past year]]></string_add>
+	<string_add name="_sys_search_chip_remove"><![CDATA[Remove {0}]]></string_add>
+	<string_add name="_sys_search_chip_starts_month"><![CDATA[Starting in the next 30 days]]></string_add>
+	<string_add name="_sys_search_chip_starts_week"><![CDATA[Starting in the next 7 days]]></string_add>
+	<string_add name="_sys_search_chip_title_only"><![CDATA[Title only]]></string_add>
+	<string_add name="_sys_search_window_count"><![CDATA[Search results ({0})]]></string_add>
+	<string_add name="_sys_search_window_empty"><![CDATA[Try other words or remove a filter.]]></string_add>
+	<string_add name="_sys_search_window_empty_title"><![CDATA[Nothing found]]></string_add>
+	<string_add name="_sys_search_window_error"><![CDATA[Search didn’t work. Please try again.]]></string_add>
+	<string_add name="_sys_search_window_filters"><![CDATA[Filters]]></string_add>
+	<string_add name="_sys_search_window_full"><![CDATA[Open full results]]></string_add>
+	<string_add name="_sys_search_window_hint"><![CDATA[Type to search everything you can see.]]></string_add>
+	<string_add name="_sys_search_window_hint_scope"><![CDATA[Type to search here, or remove the filter to search everywhere.]]></string_add>
+	<string_add name="_sys_search_window_keys"><![CDATA[↑ ↓ to choose, Enter to open, Esc to close]]></string_add>
+	<string_add name="_sys_search_window_loading"><![CDATA[Searching…]]></string_add>
+	<string_add name="_sys_search_window_more"><![CDATA[Show more]]></string_add>
+	<string_add name="_sys_search_window_placeholder"><![CDATA[Search…]]></string_add>
+	<string_add name="_sys_search_window_placeholder_ai"><![CDATA[Search or ask a question…]]></string_add>
+	<string_add name="_sys_search_window_show_all"><![CDATA[Show all {0} in {1}]]></string_add>
+	<string_add name="_sys_search_window_sort"><![CDATA[Sort by]]></string_add>
+	<string_add name="_sys_search_window_sort_best"><![CDATA[Best matches]]></string_add>
+	<string_add name="_sys_search_window_sort_new"><![CDATA[Newest first]]></string_add>
+	<string_add name="_sys_search_window_tab_all"><![CDATA[All]]></string_add>
+	<string_add name="_sys_search_window_tabs"><![CDATA[Results by section]]></string_add>
+	<string_add name="_sys_search_window_title"><![CDATA[Search]]></string_add>
+	<string_upd name="_sys_splash_err_domain_incorrect"><![CDATA[Domain is required. Please fill in this field, for example, my-first-site.]]></string_upd>
+	<string_upd name="_sys_storage_restriction_ext_allowed"><![CDATA[Please upload only files of these types: {0}]]></string_upd>
+	<string_upd name="_sys_tour_launcher_welcome_title"><![CDATA[Welcome to Studio]]></string_upd>
+	<string_upd name="_sys_tour_launcher_welcome_txt"><![CDATA[Studio is where you set up your site. This short tour shows the apps to start with. You can start it again from your account menu.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_designer_title"><![CDATA[Designer]]></string_upd>
+	<string_upd name="_sys_tour_launcher_designer_txt"><![CDATA[Set the logo, pick a template and edit the cover page that guests see first.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_accounts_title"><![CDATA[Accounts]]></string_upd>
+	<string_upd name="_sys_tour_launcher_accounts_txt"><![CDATA[Manage member accounts and choose who is an operator or a moderator. Moderators look after content and profiles on the site itself, not in Studio.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_page_title"><![CDATA[Pages]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_page_txt"><![CDATA[Add, remove and rearrange blocks on any page, or create new pages. Visibility and SEO settings are here too.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_menus_title"><![CDATA[Navigation]]></string_upd>
+	<string_upd name="_sys_tour_launcher_builder_menus_txt"><![CDATA[Edit the menus: add, reorder and hide links, change icons and choose who sees each item.]]></string_upd>
+	<string_upd name="_sys_tour_launcher_add_apps_title"><![CDATA[App Store]]></string_upd>
+	<string_upd name="_sys_tour_launcher_add_apps_txt"><![CDATA[UNA starts with the core apps. Get more here: modules, templates, languages and integrations.]]></string_upd>
+	<string_add name="_sys_tour_step"><![CDATA[{0} of {1}]]></string_add>
+	<string_add name="_sys_tour_back"><![CDATA[Back]]></string_add>
+	<string_add name="_sys_tour_close"><![CDATA[Close tour]]></string_add>
+	<string_upd name="_sys_txt_api_key"><![CDATA[API key]]></string_upd>
+	<string_add name="_sys_txt_auth_or"><![CDATA[or]]></string_add>
+	<string_add name="_sys_txt_access_denied_guest_page"><![CDATA[Sign in or sign up to see this page.]]></string_add>
+	<string_add name="_sys_txt_access_denied_text"><![CDATA[You don't have access to this.]]></string_add>
+	<string_add name="_sys_txt_access_denied_title"><![CDATA[No access]]></string_add>
+	<string_upd name="_sys_txt_account_profile_context_changed_success"><![CDATA[You switched to <b>{0}</b>.]]></string_upd>
+	<string_upd name="_sys_txt_account_unconfirmed_email"><![CDATA[Your email address is unconfirmed. Please check your email ({1}) for a confirmation letter and click email confirmation link or use confirmation code (6 digit) to <a href="{2}">confirm your email</a>. Can't find the letter? Check your SPAM folder or <a href="{0}">send the verification letter again</a>.]]></string_upd>
+	<string_upd name="_sys_txt_account_unconfirmed_phone"><![CDATA[Your phone is unconfirmed. Please confirm it on <a href="{0}">verification page</a>.]]></string_upd>
+	<string_upd name="_sys_txt_account_profile_system"><![CDATA[You don't have a profile yet.]]></string_upd>
+	<string_add name="_sys_txt_account_email_change_confirmed"><![CDATA[Your new email is confirmed]]></string_add>
+	<string_add name="_sys_txt_account_email_change_failed"><![CDATA[This link no longer works, or another account uses this email now. Change your email again to get a new link.]]></string_add>
+	<string_add name="_sys_txt_account_email_change_sent"><![CDATA[We sent a confirmation link to {0}. Until you open it, you sign in with {1}.]]></string_add>
+	<string_add name="_sys_txt_add"><![CDATA[Add]]></string_add>
+	<string_add name="_sys_txt_add_entry"><![CDATA[Add {0}]]></string_add>
+	<string_upd name="_sys_txt_confirm_email_error_occured"><![CDATA[Error occurred, please try to sign in to your account and resend verification email.]]></string_upd>
+	<string_upd name="_sys_txt_confirm_email_sent_failed"><![CDATA[The confirmation email could not be sent. Please try again later.]]></string_upd>
+	<string_upd name="_sys_txt_confirm_email_success"><![CDATA[Your email address is confirmed.]]></string_upd>
+	<string_upd name="_sys_txt_confirm_phone_set_phone_error_occured"><![CDATA[Error occurred, please try to sign in to your account and repeat verification.]]></string_upd>
+	<string_upd name="_sys_txt_confirm_phone_send_sms_error_occured"><![CDATA[The text message could not be sent. Please try again later.]]></string_upd>
+	<string_add name="_sys_txt_sms_send_limit"><![CDATA[Too many codes were sent. Try again in an hour.]]></string_add>
+	<string_add name="_sys_txt_empty_invitations_text"><![CDATA[When someone invites you to a group, event or other space, it shows here.]]></string_add>
+	<string_add name="_sys_txt_empty_invitations_title"><![CDATA[No invitations]]></string_add>
+	<string_add name="_sys_txt_empty_list_add"><![CDATA[Add new]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_add"><![CDATA[Be the first to add something here.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_connections"><![CDATA[Your connections show here.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_favorite"><![CDATA[What you add to favorites shows here.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_followed"><![CDATA[What you follow shows here.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_joined"><![CDATA[What you join shows here.]]></string_add>
+	<string_add name="_sys_txt_empty_list_text_online"><![CDATA[No one is online right now.]]></string_add>
+	<string_add name="_sys_txt_empty_search_text"><![CDATA[Try other words or fewer filters.]]></string_add>
+	<string_add name="_sys_txt_empty_search_title"><![CDATA[No results]]></string_add>
+	<string_upd name="_sys_txt_forgot_pasword_check_email"><![CDATA[If an account uses this email, we sent it a link to reset the password.]]></string_upd>
+	<string_upd name="_sys_txt_forgot_pasword_check_phone"><![CDATA[If an account uses this phone number, we sent it a text message with a link to reset the password.]]></string_upd>
+	<string_upd name="_sys_txt_forgot_pasword_error_occured"><![CDATA[The password reset email could not be sent. Please try again later.]]></string_upd>
+	<string_upd name="_sys_txt_forgot_pasword_logged_in"><![CDATA[You are already signed in. If you still wish to reset your password, please sign out first and then initiate the password recovery process.]]></string_upd>
+	<string_upd name="_sys_txt_form_submission_error"><![CDATA[Incorrect info. Please check your inputs and try to submit again.]]></string_upd>
+	<string_upd name="_sys_txt_homepage_cover"><![CDATA[Unity is strength... when there is teamwork and collaboration, wonderful things can be achieved.<br /><button class="bx-btn bx-hide-when-logged-in bx-def-margin-top" onclick="document.location='{0}'">Sign up now</button>]]></string_upd>
+	<string_upd name="_sys_txt_login_2fa_sms_error_occured"><![CDATA[The sign-in code could not be sent. Please try again later.]]></string_upd>
+	<string_add name="_sys_txt_login_agreement"><![CDATA[By signing in, you agree to the <a href="{0}">terms of service</a> and <a href="{1}">privacy policy</a>.]]></string_add>
+	<string_add name="_sys_txt_join_closed"><![CDATA[Sign-up is closed on this site.]]></string_add>
+	<string_add name="_sys_txt_join_description"><![CDATA[Already have an account?]]></string_add>
+	<string_upd name="_sys_txt_join_description_action"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_txt_join_text"><![CDATA[Signing up is quick and easy. Create your own community account to get started.]]></string_upd>
+	<string_upd name="_sys_txt_join_text_invite"><![CDATA[Registration is by invitation only. Use your invitation code to sign up.]]></string_upd>
+	<string_add name="_sys_txt_login_description"><![CDATA[Don't have an account?]]></string_add>
+	<string_upd name="_sys_txt_login_description_action"><![CDATA[Sign up]]></string_upd>
+	<string_add name="_sys_txt_page_lang_block_review"><![CDATA[Only you see this note. This page still has the text UNA comes with. Review it, change what doesn't fit your site and save it in Studio to hide this note.]]></string_add>
+	<string_add name="_sys_txt_page_lang_block_review_action"><![CDATA[Review in Studio]]></string_add>
+	<string_add name="_sys_txt_profile_joined_sample"><![CDATA[joined]]></string_add>
+	<string_add name="_sys_txt_profile_not_available_text"><![CDATA[It may be waiting for review or turned off for now.]]></string_add>
+	<string_add name="_sys_txt_profile_not_available_title"><![CDATA[This profile isn't available]]></string_add>
+	<string_upd name="_sys_txt_reset_pasword_success"><![CDATA[Your password was reset. You are welcome to sign in to your account.]]></string_upd>
+	<string_upd name="_sys_txt_splash_btn_join"><![CDATA[Sign up]]></string_upd>
+	<string_upd name="_sys_txt_splash_login"><![CDATA[Sign in]]></string_upd>
+	<string_upd name="_sys_txt_splash_join"><![CDATA[Sign up]]></string_upd>
+	<string_upd name="_sys_txt_unsubscribe_error_occured"><![CDATA[This unsubscribe link does not work. Sign in and change your email settings, or contact us and we will unsubscribe you.]]></string_upd>
+	<string_add name="_sys_txt_sidebar_resize"><![CDATA[Resize the sidebar]]></string_add>
+	<string_add name="_sys_uploader_crop_change_picture"><![CDATA[Change picture]]></string_add>
+	<string_add name="_sys_uploader_crop_choose_cover"><![CDATA[Upload a cover picture]]></string_add>
+	<string_add name="_sys_uploader_crop_choose_picture"><![CDATA[Upload a picture]]></string_add>
+	<string_add name="_sys_uploader_crop_edit_cover"><![CDATA[Edit cover picture]]></string_add>
+	<string_add name="_sys_uploader_crop_edit_picture"><![CDATA[Edit picture]]></string_add>
+	<string_add name="_sys_uploader_crop_popup_title"><![CDATA[Crop picture]]></string_add>
+	<string_add name="_sys_uploader_crop_remove_picture"><![CDATA[Remove]]></string_add>
+	<string_upd name="_sys_uploader_html5_number_of_files_exceeded"><![CDATA[You cannot upload any more files.]]></string_upd>
+	<string_add name="_view_n_views_one"><![CDATA[{0} view]]></string_add>
+	<string_upd name="_vote_err_not_enabled"><![CDATA[The feature is not available right now. Please try again later.]]></string_upd>
+	<string_add name="_vote_n_votes_one"><![CDATA[{0} vote]]></string_add>
+	<string_upd name="_sys_javascript_requred"><![CDATA[This site requires JavaScript! Please enable it in the browser!]]></string_upd>
+	<string_upd name="_sys_wiki_error_occured"><![CDATA[Error occurred (code:{0})]]></string_upd>
+	<string_upd name="_sys_wiki_block_deleted"><![CDATA[Block deleted.]]></string_upd>
+	<string_upd name="_sys_wiki_add_page_text"><![CDATA[Such wiki page doesn't exist.]]></string_upd>
+	<string_upd name="_adm_form_txt_groups_role_manage_fans"><![CDATA[Manage members]]></string_upd>
+	<string_upd name="_sys_page_title_redirect"><![CDATA[Redirect confirmation]]></string_upd>
+	<string_add name="_adm_form_txt_groups_role_time_log"><![CDATA[Log time]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_logged_any"><![CDATA[View logged time of everybody]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_view_billed"><![CDATA[View billable time]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_time_edit_billed"><![CDATA[Edit billable time]]></string_add>
+	<string_add name="_adm_form_txt_groups_role_manage_properties"><![CDATA[Manage properties]]></string_add>
+	<string_add name="_sys_onboarding_done"><![CDATA[You're set up]]></string_add>
+	<string_add name="_sys_onboarding_hide"><![CDATA[Hide]]></string_add>
+	<string_add name="_sys_onboarding_join_closed"><![CDATA[Nobody can sign up: the sign-up form is off.]]></string_add>
+	<string_add name="_sys_onboarding_join_invite"><![CDATA[Only people you invite can sign up.]]></string_add>
+	<string_add name="_sys_onboarding_join_open"><![CDATA[Anyone can sign up.]]></string_add>
+	<string_add name="_sys_onboarding_progress"><![CDATA[{0} of {1} done]]></string_add>
+	<string_add name="_sys_onboarding_state_done"><![CDATA[Done]]></string_add>
+	<string_add name="_sys_onboarding_state_locked"><![CDATA[Needs an earlier step]]></string_add>
+	<string_add name="_sys_onboarding_state_todo"><![CDATA[To do]]></string_add>
+	<string_add name="_sys_membership_stats_files"><![CDATA[{0} files]]></string_add>
+	<string_add name="_sys_membership_stats_files_one"><![CDATA[1 file]]></string_add>
+	<string_add name="_sys_membership_stats_max_file_size"><![CDATA[File size limit]]></string_add>
+	<string_add name="_sys_membership_stats_no_end"><![CDATA[No end date]]></string_add>
+	<string_add name="_sys_membership_stats_of"><![CDATA[{0} of {1}]]></string_add>
+	<string_add name="_sys_membership_stats_see_plans"><![CDATA[See memberships]]></string_add>
+	<string_add name="_sys_membership_stats_unlimited"><![CDATA[Unlimited]]></string_add>
+	<string_add name="_sys_membership_stats_until"><![CDATA[Active until {0}]]></string_add>
+	<string_add name="_sys_membership_stats_used"><![CDATA[{0} used]]></string_add>
+	<string_add name="_favorite_popup_title_do"><![CDATA[Add to favorites]]></string_add>
+	<string_add name="_favorite_popup_title_edit_list"><![CDATA[Edit list]]></string_add>
+	<string_add name="_adm_bp_txt_section_search"><![CDATA[Search in this section]]></string_add>
+	<string_add name="_adm_bp_txt_section_search_info"><![CDATA[A Search button in the section’s title row (or its tab row), which searches the section’s content.]]></string_add>
+</resources>

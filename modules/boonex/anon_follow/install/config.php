@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_anon_follow',
     'title' => 'Guest follow',
     'note' => 'Anonymous follow, follow without signing in',
-    'version' => '9.0.0',
+    'version' => '9.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

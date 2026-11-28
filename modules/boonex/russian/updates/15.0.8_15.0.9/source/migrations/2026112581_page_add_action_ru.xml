@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- A section's add button (the + in its title row, site and apps): its name and tooltip. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_txt_add"><![CDATA[Добавить]]></string_add>
+    <string_add name="_sys_txt_add_entry"><![CDATA[Добавить: {0}]]></string_add>
+</resources>

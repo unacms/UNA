@@ -1,0 +1,1284 @@
+<?php defined('BX_DOL') or die('hack attempt');
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    UnaBaseView UNA Base Representation Classes
+ * @{
+ */
+
+/**
+ * System service for creating system profile functionality.
+ */
+
+class BxBaseServiceAccount extends BxDol
+{
+    protected $_oAccountForms;
+    protected $_oAccountQuery;
+
+    /** The last confirmed key was a new email of an account, @see _confirmEmail */
+    protected $_bEmailChangeConfirmed = false;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->_oAccountForms = new BxTemplAccountForms();
+        $this->_oAccountQuery = BxDolAccountQuery::getInstance();
+    }
+
+    /**
+     * Whether an introduction tour is there for the viewer to start: the "Introduction Tour" menu items use it.
+     * @param $sTour BxDolTours::HOME or BxDolTours::STUDIO
+     */
+    public function serviceIsTourAvailable($sTour = BxDolTours::HOME)
+    {
+        return BxDolTours::getInstance()->isAvailable($sTour);
+    }
+
+    /**
+     * The "Get started" block: the onboarding checklist that the menu $sMenu holds (BxDolTours), drawn by the menu's
+     * template, its progress as the block's description and Hide as the block's button. With every step done it says
+     * "You're set up" and stays, its steps still there to go back to, until the account hides it;
+     * index.php?onboarding=1 (the account menu's "Get started") brings a hidden one back.
+     * The block can go on any page (Studio > Pages, block "Get started checklist"), with another menu as its parameter.
+     * The apps get an `onboarding` element with the menu's items (each with its `state`) and the hide request.
+     */
+    public function serviceGetBlockOnboarding($sMenu = BxDolTours::ONBOARDING_OPERATOR)
+    {
+        $oTours = BxDolTours::getInstance();
+        $bForced = bx_get('onboarding') == 1;
+        if(!$oTours->isOnboardingShown($sMenu, $bForced))
+            return '';
+
+        $oMenu = BxDolMenu::getObjectInstance($sMenu);
+        if(!$oMenu || !($oMenu instanceof BxBaseMenuOnboarding))
+            return '';
+
+        $mixedMenu = bx_is_api() ? $oMenu->getCodeAPI() : $oMenu->getCode();
+
+        list($iDone, $iSteps) = $oMenu->getProgress();
+        if(!$iSteps)
+            return '';
+
+        // "Create your profile" says the same as the "create a profile" message.
+        $aStates = $oMenu->getStates();
+        if(isset($aStates['profile']) && $aStates['profile'] != BxDolTours::STEP_DONE && ($oInformer = BxDolInformer::getInstance(BxDolTemplate::getInstance())))
+            $oInformer->remove('sys-account-profile-system');
+
+        $sDescription = $iDone == $iSteps ? _t('_sys_onboarding_done') : _t('_sys_onboarding_progress', $iDone, $iSteps);
+        $sHide = _t('_sys_onboarding_hide');
+
+        if(bx_is_api())
+            return [
+                'description' => $sDescription,
+                'content' => [bx_api_get_block('onboarding', [
+                    'menu' => $mixedMenu,
+                    'hide' => [
+                        'title' => $sHide,
+                        'icon' => 'X',
+                        'request_url' => 'system/onboarding_hide/TemplServiceAccount&params[]=' . $sMenu,
+                    ],
+                ])],
+            ];
+
+        return [
+            'description' => $sDescription,
+            'content' => $mixedMenu,
+            // Hide is the block's own close button: an X in the header's actions, named "Hide" for screen readers.
+            'buttons' => [
+                ['icon' => 'x', 'class' => 'bx-btn-icon', 'area_label' => '_sys_onboarding_hide', 'onclick' => "bx_onboarding_hide(this, '" . $sMenu . "')"],
+            ],
+        ];
+    }
+
+    /**
+     * Hides the onboarding checklist $sMenu for the logged in account, as the block's Hide button does on the site.
+     */
+    public function serviceOnboardingHide($sMenu = BxDolTours::ONBOARDING_OPERATOR)
+    {
+        return ['code' => BxDolTours::getInstance()->setSeen($sMenu) ? 0 : 1];
+    }
+
+    /**
+     * The state of a built-in step of the operators' checklist (BxDolTours::STEP_*): the add-on of its menu item.
+     */
+    public function serviceGetOnboardingStepState($sStep)
+    {
+        return BxDolTours::getInstance()->getStepState($sStep);
+    }
+
+    /**
+     * Whether a built-in step applies to this site: the cover step only while covers are on (Studio > Designer).
+     */
+    public function serviceIsOnboardingStepAvailable($sStep)
+    {
+        if($sStep == 'cover')
+            return getParam('sys_site_cover_disabled') != 'on';
+
+        return true;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services 
+     * @subsection bx_system_general-account Account
+     * @subsubsection bx_system_general-create_account_form create_account_form
+     * 
+     * @code bx_srv('system', 'create_account_form', [], 'TemplServiceAccount'); @endcode
+     * @code {{~system:create_account_form:TemplServiceAccount[{"no_login_text":true, "no_auth_buttons":true}]~}} @endcode
+     * 
+     * Join form.
+     * @param $aParams array of additional params, such as: 
+     *          - no_login_text
+     *          - no_auth_buttons
+     * 
+     * @see BxBaseServiceAccount::serviceGetCreatePostForm
+     */
+    /** 
+     * @ref bx_system_general-create_account_form "create_account_form"
+     */
+    public function serviceCreateAccountForm ($aParams = array())
+    {
+        $bApi = bx_is_api();
+
+        if (isLogged() && 'create-account' == bx_get('i')) {
+            if (!$bApi) {
+                header('Location: ' . BX_DOL_URL_ROOT);
+                exit;
+            }
+            else
+                return [
+                    ['id' => 2, 'type' => 'redirect', 'data' => ['uri' => '/']],
+                ];
+        }
+
+        $bAuthButtons = !isset($aParams['no_auth_buttons']) || false === (bool)$aParams['no_auth_buttons'];
+        $bLoginText = !isset($aParams['no_login_text']) || false === (bool)$aParams['no_login_text'];
+        $bFormShown = BxDolAccount::getJoinMode() != BxDolAccount::JOIN_CLOSED;
+
+        if($bApi) {
+            // With the form go the parts the block shows around it, as with the login form (BxBaseServiceLogin::serviceLoginForm).
+            $aFormExt = [
+                'request' => ['url' => '/api.php?r=system/create_account_form/TemplServiceAccount', 'immutable' => true],
+                'auth' => [
+                    'methods' => $bAuthButtons,
+                    'separator' => $bFormShown,
+                    'switch' => !$bLoginText ? null : [
+                        'text' => _t('_sys_txt_join_description'),
+                        'action' => _t('_sys_txt_join_description_action'),
+                        'url' => bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink('page.php?i=login')),
+                    ],
+                ],
+                'footer' => BxDolService::call('system', 'get_agreement', ['_sys_form_account_input_agreement_value', true], 'TemplServiceLogin'),
+            ];
+
+            $mixedResult = $this->_oAccountForms->createAccountForm($aParams);
+            // A list of blocks comes from a module which replaced the form, e.g. Invites when registration is by invitation only.
+            if(is_array($mixedResult) && array_is_list($mixedResult))
+                return $mixedResult;
+            else if(is_array($mixedResult))
+                return [bx_api_get_block('form', $mixedResult, ['ext' => $aFormExt])];
+            else if($mixedResult === true){
+                $sRedirectUrl = BxDolForm::getSubmittedValue('relocate','post');
+                if(empty($sRedirectUrl)){
+                    if (!getParam('sys_account_auto_profile_creation')){
+                        
+                        $aModulesProfile = bx_srv('system', 'get_modules_by_type', ['profile']);
+
+                        $sDefaultProfileType = getParam('sys_account_default_profile_type');
+                        if(count($aModulesProfile) == 1)
+                            $sProfileModule = $aModulesProfile[0]['name'];
+                        else if(!empty($sDefaultProfileType)) 
+                            $sProfileModule = $sDefaultProfileType;
+                        
+                        $sRedirectUrl = !empty($sProfileModule) ? bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink(BxDolService::call($sProfileModule, 'profile_create_url', array(false)))) : '/';
+
+                    }
+                    else{
+                        $sRedirectUrl = '/';
+                    }    
+                }
+                else{
+                    $parts = parse_url($sRedirectUrl);
+                    parse_str($parts['query'], $query);
+                    unset($query['_q']);
+                    $parts['query'] = http_build_query($query);
+                    $sRedirectUrl = $parts['path'] . (!empty($parts['query']) ? '?' . $parts['query'] : '');
+                }
+
+                return [
+                    bx_api_get_block('form', $this->_oAccountForms->getObjectFormAdd()->getCodeAPI(), [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/create_account_form/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ]),
+                    bx_api_get_block('redirect', ['uri' => $sRedirectUrl]),
+                ];
+            }
+            else
+                return [bx_api_get_msg($mixedResult)];
+        }
+
+        $oPemalink = BxDolPermalinks::getInstance();
+
+        if (isset($_SERVER['HTTP_REFERER']) && 0 === mb_stripos($_SERVER['HTTP_REFERER'], BX_DOL_URL_ROOT)) { // remember referrer
+            $sJoinReferrer = $_SERVER['HTTP_REFERER'];
+            $aNoRelocatePages = array('forgot-password', 'login', 'create-account', 'logout');
+            foreach ($aNoRelocatePages as $s) {
+                if (false !== mb_stripos($sJoinReferrer, $s)) {
+                    $sJoinReferrer = '';
+                    break;
+                }
+            }   
+            if ($sJoinReferrer)
+                BxDolSession::getInstance()->setValue('join-referrer', $sJoinReferrer);
+        }
+
+        // Nobody can join (Studio > Settings > Account > Who can join): the block says so instead of the form.
+        $aTmplVarsForm = ['content' => $bFormShown ? $this->_oAccountForms->createAccountForm($aParams) : MsgBox(_t('_sys_txt_join_closed'))];
+
+        // Other sign-in methods go under the form, after an "or".
+        $aTmplVarsAuth = [];
+        if($bAuthButtons)
+            $aTmplVarsAuth['content'] = BxDolService::call('system', 'member_auth_code', array(array(), $bFormShown), 'TemplServiceLogin');
+
+        $aTmplVarsLogin = [];
+        if($bLoginText)
+            $aTmplVarsLogin['url'] = bx_absolute_url($oPemalink->permalink('page.php?i=login'));
+        
+        return BxDolTemplate::getInstance()->parseHtmlByName('block_join.html', [
+            'bx_if:show_auth' => [
+                'condition' => !empty($aTmplVarsAuth),
+                'content' => $aTmplVarsAuth
+            ],
+            'bx_if:show_form' => [
+                'condition' => !empty($aTmplVarsForm),
+                'content' => $aTmplVarsForm,
+            ],
+            'bx_if:show_login' => [
+                'condition' => !empty($aTmplVarsLogin),
+                'content' => $aTmplVarsLogin
+            ],
+            'footer' => BxTemplFunctions::getInstance()->designBoxFooter(BxDolService::call('system', 'get_agreement', ['_sys_form_account_input_agreement_value'], 'TemplServiceLogin')),
+        ]);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-account Account
+     * @subsubsection bx_system_general-create_account_intro create_account_intro
+     *
+     * @code bx_srv('system', 'create_account_intro', [], 'TemplServiceAccount'); @endcode
+     * @code {{~system:create_account_intro:TemplServiceAccount~}} @endcode
+     *
+     * The picture and the words beside the sign-up form (Studio > Pages > Sign up): the illustration
+     * (create_account_illustration.html), a title, which is the page's heading, and a line of text. Where people sign up
+     * by invitation and the visitor has none, the words ask to request one. Nothing where nobody can sign up.
+     *
+     * The apps get one `static` item that names the `page_intro` element, with what to draw: `name`
+     * (`create_account`, or `create_account_invite` with the words about an invitation), `title`, `text` and `picture`
+     * (BxDolIllustration::getAPI: the shapes to draw, false for a picture they cannot draw). `static` is a type every
+     * app knows: one built before this block finds no `page_intro` of its own and draws nothing in its place.
+     */
+    /**
+     * @ref bx_system_general-create_account_intro "create_account_intro"
+     */
+    public function serviceCreateAccountIntro ()
+    {
+        $bApi = bx_is_api();
+
+        $sMode = BxDolAccount::getJoinMode();
+        if($sMode == BxDolAccount::JOIN_CLOSED)
+            return $bApi ? [] : '';
+
+        // By invitation only (getJoinMode says so only while Invitations is on): Invitations' check is empty for a
+        // visitor who came with an invitation, and they get the sign-up form.
+        $bInvite = $sMode == BxDolAccount::JOIN_INVITE && BxDolService::call('bx_invites', 'account_add_form_check') != '';
+
+        $sTitle = _t($bInvite ? '_sys_txt_join_title_invite' : '_sys_txt_join_title');
+        $sText = _t($bInvite ? '_sys_txt_join_text_invite' : '_sys_txt_join_text');
+
+        // The apps show the words as plain text; the site shows the language strings as they are.
+        if($bApi)
+            return [bx_api_get_block('static', [
+                'element' => 'page_intro',
+                // which intro it is, for an app that has words or a picture of its own for it
+                'name' => $bInvite ? 'create_account_invite' : 'create_account',
+                'title' => trim(html_entity_decode(strip_tags($sTitle), ENT_QUOTES | ENT_HTML5, 'UTF-8')),
+                'text' => trim(html_entity_decode(strip_tags($sText), ENT_QUOTES | ENT_HTML5, 'UTF-8')),
+                'picture' => BxDolIllustration::getAPI('create_account'),
+            ])];
+
+        return BxDolTemplate::getInstance()->parseHtmlByName('block_join_intro.html', [
+            'picture' => BxDolIllustration::getCode('create_account'),
+            'title' => $sTitle,
+            'text' => $sText,
+        ]);
+    }
+
+    public function serviceAccountSettingsEmail ($iAccountId = false)
+    {
+        if (false === $iAccountId || !isAdmin())
+            $iAccountId = getLoggedId();
+        
+        $bApi = bx_is_api();
+        
+        $mixedResult =$this->_oAccountForms->editAccountEmailSettingsForm($iAccountId);
+        
+        if($bApi) {
+            if(is_array($mixedResult)){
+                if (isset($mixedResult['form'] )){
+                    return [
+                        bx_api_get_msg($mixedResult['msg']),
+                        bx_api_get_block('form', $mixedResult['form'], [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/account_settings_email/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ])];
+                }
+                else{
+                return [bx_api_get_block('form', $mixedResult, [
+                    'ext' => [
+                        'request' => ['url' => '/api.php?r=system/account_settings_email/TemplServiceAccount', 'immutable' => true]
+                    ]
+                ])];
+                }
+            }
+            else
+                return [bx_api_get_msg($mixedResult)];
+        }    
+        
+        return $mixedResult;
+    }
+
+    public function serviceAccountSettingsPassword ($iAccountId = false)
+    {
+        if (false === $iAccountId || !isAdmin())
+            $iAccountId = getLoggedId();
+        
+        $bApi = bx_is_api();
+        
+        $mixedResult =$this->_oAccountForms->editAccountPasswordSettingsForm($iAccountId);
+        if($bApi) {
+            if(is_array($mixedResult)){
+                if (isset($mixedResult['form'] )){
+                    return [
+                        bx_api_get_msg($mixedResult['msg']),
+                        bx_api_get_block('form', $mixedResult['form'], [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/account_settings_password/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ])];
+                }
+                else{
+                    return [bx_api_get_block('form', $mixedResult, [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/account_settings_password/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ])];
+                }
+            }
+            else
+                return [bx_api_get_msg($mixedResult)];
+        }
+        
+        return $mixedResult;
+    }
+
+    public function serviceAccountSettingsInfo ($iAccountId = false)
+    {
+        if (false === $iAccountId || !isAdmin())
+            $iAccountId = getLoggedId();
+        
+        $bApi = bx_is_api();
+        
+        $mixedResult =$this->_oAccountForms->editAccountInfoForm($iAccountId);
+        
+        if($bApi) {
+            if(is_array($mixedResult)){
+                if (isset($mixedResult['form'] )){
+                    return [
+                        bx_api_get_msg($mixedResult['msg']),
+                        bx_api_get_block('form', $mixedResult['form'], [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/account_settings_info/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ])];
+                }
+                else{
+                return [bx_api_get_block('form', $mixedResult, [
+                    'ext' => [
+                            'request' => ['url' => '/api.php?r=system/account_settings_info/TemplServiceAccount', 'immutable' => true]
+                    ]
+                ])];
+                }
+            }
+            else
+                return [bx_api_get_msg($mixedResult)];
+        }    
+        return $mixedResult;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services
+     * @subsection bx_system_general-account Account
+     * @subsubsection bx_system_general-account_settings_connectors account_settings_connectors
+     *
+     * @code bx_srv('system', 'account_settings_connectors', [], 'TemplServiceAccount'); @endcode
+     *
+     * The signed-in account's personal access tokens for AI clients (the MCP server at /api/mcp)
+     * and API v2: where to connect, the tokens, making and revoking them. The same block is in
+     * Studio > Agents > Connectors for operators.
+     *
+     * @see BxBaseServiceAccount::serviceAccountSettingsConnectors
+     */
+    /**
+     * @ref bx_system_general-account_settings_connectors "account_settings_connectors"
+     */
+    public function serviceAccountSettingsConnectors ()
+    {
+        return BxDolApiTokens::getBlockCode();
+    }
+
+    /**
+     * Account settings > Privacy: who sees the current profile, posts on it and contacts it, from its module's
+     * privacy form display (CNF OBJECT_FORM_ENTRY_DISPLAY_EDIT_PRIVACY).
+     */
+    public function serviceAccountSettingsPrivacy ()
+    {
+        $oProfile = BxDolProfile::getInstance();
+        if (!$oProfile || !$this->serviceIsPrivacyAvailable())
+            return bx_is_api() ? [bx_api_get_msg(_t('_sys_txt_access_denied'))] : MsgBox(_t('_sys_txt_access_denied'));
+
+        return bx_srv($oProfile->getModule(), 'entity_edit_privacy', [$oProfile->getContentId()]);
+    }
+
+    /**
+     * Whether account settings show Privacy: the current profile's module has a privacy form, @see serviceAccountSettingsPrivacy
+     */
+    public function serviceIsPrivacyAvailable ()
+    {
+        if (!isLogged() || !($oProfile = BxDolProfile::getInstance()))
+            return false;
+
+        $sModule = $oProfile->getModule();
+        if ('system' == $sModule || !BxDolRequest::serviceExists($sModule, 'entity_edit_privacy'))
+            return false;
+
+        return (bool)bx_srv($sModule, 'is_privacy_form_available');
+    }
+
+    /**
+     * Whether account settings show Connectors (menu item visibility), @see BxDolApiTokens::isAvailable
+     */
+    public function serviceIsConnectorsAvailable ()
+    {
+        return BxDolApiTokens::isAvailable();
+    }
+
+    public function serviceAccountSettingsDelAccount ($iAccountId = false)
+    {
+        if (!$iAccountId)
+        	$iAccountId = bx_process_input(bx_get('id'), BX_DATA_INT);
+        if (!$iAccountId)
+            $iAccountId = getLoggedId();
+
+        $bApi = bx_is_api();
+        
+        $mixedResult = $this->_oAccountForms->deleteAccountForm($iAccountId);
+        
+        if($bApi) {
+            if(is_array($mixedResult)){
+                if (isset($mixedResult['form'] )){
+                    return [
+                        bx_api_get_msg($mixedResult['msg']),
+                        bx_api_get_block('form', $mixedResult['form'], [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/account_settings_del_account/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ])];
+                }
+                else{
+                    return [bx_api_get_block('form', $mixedResult, [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/account_settings_del_account/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ])];
+                }
+            }
+            else if(is_string($mixedResult))
+                return [
+                    bx_api_get_msg($mixedResult)
+                ];
+            else
+                return [
+                    ['id' => 2, 'type' => 'redirect', 'data' => ['uri' => '/']],
+                ];
+        }
+
+        return $mixedResult;
+    }
+
+    public function serviceAccountDelete($iId, $bWithContent = false)
+    {
+        if(($oAccount = BxDolAccount::getInstance($iId)) !== false)
+            return $oAccount->delete($bWithContent);
+
+        return false;
+    }
+
+    /**
+     * Display unsubscribe from newsletters form
+     */
+    public function serviceUnsubscribeNews()
+    {
+        return $this->_unsubscribeForm('sys_unsubscribe_news');
+    }
+
+    /**
+     * Display unsubscribe from notifications form
+     */
+    public function serviceUnsubscribeNotifications()
+    {
+        return $this->_unsubscribeForm('sys_unsubscribe_updates');
+    }
+    
+    /**
+     * Display confirmation statuses list
+     */
+    public function serviceGetConfirmationTypes()
+    {
+        $aResult = array();
+        $aChoices = array(BX_ACCOUNT_CONFIRMATION_NONE, BX_ACCOUNT_CONFIRMATION_EMAIL, BX_ACCOUNT_CONFIRMATION_PHONE, BX_ACCOUNT_CONFIRMATION_EMAIL_PHONE, BX_ACCOUNT_CONFIRMATION_EMAIL_OR_PHONE);
+        foreach($aChoices as $sChoice)
+            $aResult[$sChoice] = _t('_sys_acc_confirmation_type_' . $sChoice);
+        
+        return $aResult;
+    }
+
+    /**
+     * Choices of "Who can join" (sys_account_join) in Studio > Settings > Account. Invitation only adds the
+     * Invitations app when it isn't there yet (BxDolStudioFormCheckerHelper::checkJoinMode).
+     */
+    public function serviceGetJoinModes()
+    {
+        return [
+            BxDolAccount::JOIN_OPEN => _t('_sys_acc_join_open'),
+            BxDolAccount::JOIN_INVITE => _t(BxDolModuleQuery::getInstance()->isEnabledByName('bx_invites') ? '_sys_acc_join_invite' : '_sys_acc_join_invite_add'),
+            BxDolAccount::JOIN_CLOSED => _t('_sys_acc_join_closed'),
+        ];
+    }
+
+    /**
+     * Choices of "Accounts without a profile" (sys_account_require_profile) in Studio > Settings > Account.
+     */
+    public function serviceGetProfileRequirementModes()
+    {
+        return [
+            BxDolAccount::PROFILE_OPTIONAL => _t('_sys_acc_profile_requirement_optional'),
+            BxDolAccount::PROFILE_PROMPT => _t('_sys_acc_profile_requirement_prompt'),
+            BxDolAccount::PROFILE_REQUIRED => _t('_sys_acc_profile_requirement_required'),
+        ];
+    }
+
+    /**
+     * An app showed the "Create your profile" window it was asked for (`profile_prompt` in the viewer's data): it is not
+     * asked again until the next sign-in.
+     * @return array with `profile_prompt` - whether the window is still due (false after this call)
+     */
+    public function serviceAccountProfilePromptSeen()
+    {
+        if(isLogged())
+            BxDolAccount::setProfilePromptSeen();
+
+        return ['profile_prompt' => BxDolAccount::isProfilePromptDue()];
+    }
+
+    protected function _unsubscribeForm($sDisplay)
+    {
+        $iAccountId = bx_process_input(bx_get('id'));
+        $sCode = bx_process_input(bx_get('code'));
+
+        // validate input params
+
+        $oAccount = BxDolAccount::getInstance($iAccountId);
+        if (!$oAccount)
+            return MsgBox(_t('_sys_txt_unsubscribe_wrong_link'));
+
+        if ($sCode != $oAccount->getEmailHash())
+            return MsgBox(_t('_sys_txt_unsubscribe_wrong_link'));
+
+        $oForm = BxDolForm::getObjectInstance('sys_unsubscribe', $sDisplay);
+        if (!$oForm)
+            return MsgBox(_t('_sys_txt_unsubscribe_error_occured'));
+
+        // show form
+
+        $aAccountInfo = $oAccount->getInfo();
+        $aAccountInfo['code'] = $sCode;
+        $oForm->initChecker($aAccountInfo);
+
+        if ($oForm->isSubmittedAndValid()) {
+
+            if (!$oForm->update($oAccount->id()))
+                return MsgBox(_t('_sys_txt_unsubscribe_error_occured'));
+
+            return MsgBox(_t('_sys_txt_unsubscribe_email_settings_update_success'));
+        }
+
+        return '<div class="bx-def-padding-bottom">' . _t("_sys_txt_unsubscribe_info", $aAccountInfo['email']) . '</div>' . $oForm->getCode();
+    }
+
+    /**
+     * Display email confirmation form, if confirmation code is provided then try to confirm profile
+     */
+    public function serviceEmailConfirmation($sMsg = false)
+    {
+        $bApi = bx_is_api();
+        // if user is logged in and email is confirmed then just display a message, unless a new email waits for its code
+        if (isLogged() && !bx_get('code')) {
+            $oAccount = BxDolAccount::getInstance();
+            if ($oAccount->isConfirmedEmail() && !$oAccount->getEmailPending())
+                return $bApi ? [bx_api_get_msg(_t("_sys_txt_confirm_email_already_confirmed"))] : MsgBox(_t("_sys_txt_confirm_email_already_confirmed"));
+        }
+
+        // if confirmation code is provided in the URL - perform email confirmation right away
+        if (bx_get('code') !== false)
+            return $this->confirmEmail(bx_process_input(bx_get('code')));
+
+        // if user requested to resend verification letter then send letter and display message
+        if (bx_process_input(bx_get('resend')) && isLogged()) {
+            $oAccount = BxDolAccount::getInstance();
+            if ($oAccount->getEmailPending() ? $oAccount->sendEmailChangeConfirmation() : $oAccount->sendConfirmationEmail())
+                $sMsg = _t('_sys_txt_confirm_email_sent');
+            else
+                $sMsg = _t('_sys_txt_confirm_email_sent_failed');
+            return $bApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+        }
+
+        // show and process code verification form
+
+        $oForm = BxDolForm::getObjectInstance('sys_confirm_email', 'sys_confirm_email');
+        if (!$oForm)
+            return $bApi ? [bx_api_get_msg(_t("_sys_txt_confirm_email_error_occured"))] : MsgBox(_t("_sys_txt_confirm_email_error_occured"));
+
+        $oForm->initChecker();
+
+        if ($oForm->isSubmittedAndValid()) {
+
+            $oKey = BxDolKey::getInstance();
+            if (!$oKey){
+                return $bApi ? [bx_api_get_msg(_t("_sys_txt_confirm_email_error_occured"))] : MsgBox(_t("_sys_txt_confirm_email_error_occured"));
+            }
+            else{
+                $oRv = $this->confirmEmail(trim($oForm->getCleanValue('code')));
+                if (!$bApi)
+                    return $oRv;
+                
+                return $oRv;
+            }
+
+        }
+        
+        if ($bApi){
+            return [bx_api_get_block('form', $oForm->getCodeAPI(), [
+                'ext' => [
+                    'request' => ['url' => '/api.php?r=system/email_confirmation/TemplServiceAccount', 'immutable' => true]
+                ]
+            ])];
+        }
+
+        return '<div class="bx-def-padding-sec-bottom">' . _t("_sys_txt_confirm_email_desc") . '</div>' . $oForm->getCode();
+    }
+    
+    /**
+     * Display phone confirmation forms, if confirmation code is provided then try to confirm profile
+     */
+    public function servicePhoneConfirmation($sMsg = false)
+    {
+        // if user is logged in and phone is confirmed then just display a message
+        if (isLogged()) {
+            $oAccount = BxDolAccount::getInstance();
+            if ($oAccount->isConfirmedPhone())
+                return MsgBox(_t("_sys_txt_confirm_phone_already_confirmed"));
+            
+            $iStep = 1;
+            $a = $oAccount->getInfo();
+            $sPhoneNumber = $a['phone'];
+
+            // a code was sent: the phone it went to waits in the session, the account's phone changes once the code is entered
+            $oSession = BxDolSession::getInstance();
+            $aCode = $oSession->getValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+            if (is_array($aCode) && !empty($aCode['phone'])) {
+                $iStep = 2;
+                $sPhoneNumber = $aCode['phone'];
+            }
+        
+            if (bx_get('step'))
+                $iStep = (int)bx_get('step');
+        
+            // show and process phone set form
+            if ($iStep == 1){
+                $oForm = BxDolForm::getObjectInstance('sys_confirm_phone', 'sys_confirm_phone_set_phone');
+                if (!$oForm)
+                    return MsgBox(_t("_sys_txt_confirm_phone_set_phone_error_occured"));
+            
+                $oForm->initChecker(['phone' => $sPhoneNumber]);
+                if ($oForm->isSubmittedAndValid()) {
+                    $sPhoneNumber = trim($oForm->getCleanValue('phone'));
+                    if (!bx_sms_code_send_allowed($oAccount->id(), $sPhoneNumber)) {
+                        return MsgBox(_t('_sys_txt_sms_send_limit'));
+                    }
+
+                    $sActivationCode = (string)random_int(100000, 999999);
+                    $sActivationText =_t('_sys_txt_confirm_phone_sms_text', $sActivationCode);
+                    $mixedResult = null;
+                    /**
+                     * @hooks
+                     * @hookdef hook-account-before_confirm_phone_send_sms 'account', 'before_confirm_phone_send_sms' - hook in confirm phone 
+                     * - $unit_name - equals `account`
+                     * - $action - equals `before_confirm_phone_send_sms` 
+                     * - $object_id - account id 
+                     * - $sender_id - logged profile_id
+                     * - $extra_params - array of additional params with the following array keys:
+                     *      - `phone_number` - [string]  by ref, phone number to send sms, can be overridden in hook processing
+                     *      - `sms_text` - [string] by ref, text for sms, can be overridden in hook processing
+                     *      - `override_result` - [mixed] by ref, can be object, can be overridden in hook processing
+                     * @hook @ref hook-account-before_confirm_phone_send_sms
+                     */
+                    bx_alert('account', 'before_confirm_phone_send_sms', $oAccount->id(), bx_get_logged_profile_id(), [
+                        'phone_number' => &$sPhoneNumber, 
+                        'sms_text' => &$sActivationText, 
+
+                        'phone_number_ref' => &$sPhoneNumber, 
+                        'sms_text_ref' => &$sActivationText, 
+
+                        'override_result' => &$mixedResult
+                    ]);
+
+                    if ($mixedResult === null && ($oSms = BxDolSms::getObjectInstance()) !== false && !$oSms->send($sPhoneNumber,  $sActivationText))
+                        return MsgBox(_t("_sys_txt_confirm_phone_send_sms_error_occured"));
+
+                    $oSession->setValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE, [
+                        'code' => $sActivationCode,
+                        'phone' => $sPhoneNumber,
+                        'expires' => time() + BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME,
+                        'attempts_key' => (string)BxDolKey::getInstance()->getNewCounterKey(BX_ACCOUNT_2FA_LOGIN_CODE_LIFETIME),
+                    ]);
+                    header('Location: ' . bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=confirm-phone')));
+                } 
+                return '<div class="bx-def-padding-sec-bottom">' . _t("_sys_txt_confirm_phone_set_phone_desc_set_phone") . '</div>' .$oForm->getCode();
+            }
+        
+            if ($iStep == 2){
+                $oForm = BxDolForm::getObjectInstance('sys_confirm_phone', 'sys_confirm_phone_confirmation');
+                if (!$oForm)
+                    return MsgBox(_t("_sys_txt_confirm_phone_set_phone_confirmation_occured"));
+            
+                $oForm->initChecker();
+            
+                if ($oForm->isSubmittedAndValid()) {
+                    // the code checker (BxFormConfirmPhoneCheckerHelper::checkCodeExist) has checked the code and the phone it went to
+                    $oSession->unsetValue(BX_ACCOUNT_SESSION_KEY_FOR_PHONE_ACTIVATEION_CODE);
+                    if ($aCode['phone'] !== $a['phone']) {
+                        $iOwnerId = (int)BxDolAccountQuery::getInstance()->getIdByPhone($aCode['phone']);
+                        if (($iOwnerId && $iOwnerId != $oAccount->id()) || !$oAccount->updatePhone($aCode['phone'], false, $a['phone'] === '')) {
+                            return MsgBox(_t('_sys_form_confirm_phone_input_phone_error_not_unique'));
+                        }
+                    }
+
+                    $oAccount->updatePhoneConfirmed(true);
+                    return MsgBox(_t("_sys_txt_confirm_phone_confirm_success"));
+                } 
+                return '<div class="bx-def-padding-sec-bottom">' . _t("_sys_txt_confirm_phone_set_phone_desc_phone_confirmation") . '</div>' .$oForm->getCode();
+            }
+        }
+    }
+
+    /**
+     * Perform email confirmation
+     */
+    public function confirmEmail($sKey)
+    {
+        $bApi = bx_is_api();
+        
+        $mixedAccountId = $this->_confirmEmail($sKey);
+        if(is_string($mixedAccountId) && !is_numeric($mixedAccountId))
+            return $bApi ? [bx_api_get_msg($mixedAccountId)] : MsgBox($mixedAccountId);
+
+        // a new email of a confirmed account: back to the email settings, which show it
+        if($this->_bEmailChangeConfirmed) {
+            $sUrl = 'page.php?i=account-settings-email';
+            if($bApi)
+                return [bx_api_get_msg(_t('_sys_txt_account_email_change_confirmed')), bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink($sUrl))])];
+
+            $oTemplate = BxDolTemplate::getInstance();
+            $oTemplate->setPageNameIndex (BX_PAGE_TRANSITION);
+            $oTemplate->setPageHeader (_t('_sys_txt_account_email_change_confirmed'));
+            $oTemplate->setPageContent ('page_main_code', MsgBox(_t('_sys_txt_account_email_change_confirmed')));
+            $oTemplate->setPageContent ('url_relocate', bx_absolute_url(BxDolPermalinks::getInstance()->permalink(isLogged() ? $sUrl : 'page.php?i=login')));
+
+            $oTemplate->getPageCode();
+            exit;
+        }
+
+        if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled())
+            $oSockets->sendEvent('sys_account', $mixedAccountId, 'confirmed', '');
+
+        // redirect with success message
+        $sUrl = getParam('sys_redirect_after_email_confirmation');
+        /**
+         * @hooks
+         * @hookdef hook-account-after_email_confirmation 'account', 'after_email_confirmation' - hook after email confirmed
+         * - $unit_name - equals `account`
+         * - $action - equals `after_email_confirmation` 
+         * - $object_id - account id 
+         * - $sender_id - not used 
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `override_result` - [string] by ref, url for redirect after email confirmed, can be overridden in hook processing
+         * @hook @ref hook-account-after_email_confirmation
+         */
+        bx_alert('account', 'after_email_confirmation', $mixedAccountId, false, ['override_result' => &$sUrl]);
+        if ($bApi){
+            return  [bx_api_get_block('redirect', ['uri' => bx_api_get_relative_url(BxDolPermalinks::getInstance()->permalink($sUrl))])];
+        }
+
+        $oTemplate = BxDolTemplate::getInstance();
+        $oTemplate->setPageNameIndex (BX_PAGE_TRANSITION);
+        $oTemplate->setPageHeader (_t('_sys_txt_confirm_email_success'));
+        $oTemplate->setPageContent ('page_main_code', MsgBox(_t('_sys_txt_confirm_email_success')));
+        $oTemplate->setPageContent ('url_relocate', bx_absolute_url(BxDolPermalinks::getInstance()->permalink($sUrl)));
+
+        BxDolTemplate::getInstance()->getPageCode();
+        exit;
+    }
+
+    public function serviceConfirmEmail($sKey)
+    {
+        $bApi = bx_is_api();
+        $mixedAccountId = $this->_confirmEmail($sKey);
+        
+        if(is_string($mixedAccountId) && !is_numeric($mixedAccountId))
+            return $bApi ? [bx_api_get_msg($mixedAccountId)] : MsgBox($mixedAccountId);
+            
+        if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled()){
+			$oSockets->sendEvent('sys_account', $mixedAccountId, 'confirmed', '');
+		}
+        
+        bx_alert('account', 'after_email_confirmation', $mixedAccountId, false, ['override_result' => &$sUrl]);
+		
+        return true;
+    }
+
+    public function serviceGetOptionsResetPasswordRedirect()
+    {
+        $aResult = array();
+
+        $aChoices = array('home', 'profile', 'profile_edit', 'custom');
+        foreach($aChoices as $sChoice) 
+            $aResult[] = array('key' => $sChoice, 'value' => _t('_adm_stg_cpt_option_value_sys_account_reset_password_redirect_' . $sChoice));
+
+        return $aResult;
+    }
+
+    public function serviceGetOptionsSwitchToProfileRedirect()
+    {
+        $aResult = array();
+
+        $aChoices = array('back', 'home', 'profile', 'custom');
+        foreach($aChoices as $sChoice) 
+            $aResult[] = array('key' => $sChoice, 'value' => _t('_adm_stg_cpt_option_value_sys_account_switch_to_profile_redirect_' . $sChoice));
+
+        return $aResult;
+    }
+
+    public function serviceGetOptionsPruningInterval()
+    {
+        $aResult = array();
+
+        $aChoices = array('no_login_delete', 'no_login_suspend', 'no_confirm_delete', 'no_profile_delete');
+        foreach($aChoices as $sChoice) 
+            $aResult[] = array('key' => $sChoice, 'value' => _t('_adm_stg_cpt_option_value_sys_account_pruning_' . $sChoice));
+
+        return $aResult;
+    }
+            
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services 
+     * @subsection bx_system_general-account Account
+     * @subsubsection bx_system_general-forgot_password forgot_password
+     * 
+     * @code bx_srv('system', 'forgot_password', [], 'TemplServiceAccount'); @endcode
+     * @code {{~system:forgot_password:TemplServiceAccount~}} @endcode
+     * 
+     * Display forgot password form, 
+     * if reset password key is provided then reset password
+     * 
+     * @see BxBaseServiceAccount::serviceForgotPassword
+     */
+    /** 
+     * @ref bx_system_general-forgot_password "forgot_password"
+     */
+    public function serviceForgotPassword()
+    {
+        $bApi = bx_is_api();
+
+        if (isLogged() && 'forgot-password' == bx_get('i')) {
+            if (!$bApi) {
+                header('Location: ' . BX_DOL_URL_ROOT);
+                exit;
+            }
+            else
+                return [
+                    ['id' => 2, 'type' => 'redirect', 'data' => ['uri' => '/']],
+                ];
+        }
+
+        if (bx_get('key') !== false)
+            return $this->resetPassword();
+
+        $oForm = BxDolForm::getObjectInstance('sys_forgot_password', 'sys_forgot_password');
+        if (!$oForm)
+            return '';
+
+        $bNeedCheckEmailAndPhone = true;
+        $sCaptionKey = "_sys_txt_forgot_pasword_by_both_desc";
+        if (BxDolAccount::isNeedConfirmPhone()){
+            if (!BxDolAccount::isNeedConfirmEmail()){
+                unset($oForm->aInputs['email']);
+                $sCaptionKey = "_sys_txt_forgot_pasword_by_phone_desc";
+                $oForm->aInputs['phone']['checker']['func'] = 'PhoneExist';
+                $bNeedCheckEmailAndPhone = false;
+            }
+        }
+        else{
+            unset($oForm->aInputs['phone']);
+            $sCaptionKey = "_sys_txt_forgot_pasword_desc";
+            $oForm->aInputs['email']['checker']['func'] = 'EmailExist';
+            $bNeedCheckEmailAndPhone = false;
+        }
+
+        if ((BxDolAccount::isNeedConfirmPhone() && BxDolAccount::isNeedConfirmEmail())){
+            if (isset($oForm->aInputs['phone']))
+                $oForm->aInputs['phone']['required'] = false;
+            if (isset($oForm->aInputs['email']))
+                $oForm->aInputs['email']['required'] = false;
+        }
+
+        $oForm->initChecker();
+
+        $bShowErrorEmptyBoth = false;
+        if ($oForm->isSubmitted() && $bNeedCheckEmailAndPhone && $oForm->getCleanValue('phone') == '' && $oForm->getCleanValue('email') == ''){
+            $bShowErrorEmptyBoth = true;
+            $oForm->setValid(false);
+        }
+
+        $sResultMsg = '';
+        if ($oForm->isSubmittedAndValid()) {
+            $sEmail = $oForm->getCleanValue('email');
+            $sPhone = $oForm->getCleanValue('phone');
+
+            /*
+             * The reply is the same whether an account uses the email or phone or not, and whether the
+             * letter went out: anybody may ask, and the reply mustn't tell which addresses have accounts.
+             */
+            if (isset($oForm->aInputs['email']) &&  $sEmail != '') {
+                $oAccount = ($iAccountId = $this->_oAccountQuery->getIdByEmail($sEmail)) ? BxDolAccount::getInstance($iAccountId) : false;
+
+                if($oAccount && !$oAccount->sendResetPasswordEmail())
+                    bx_log('sys_debug', 'Reset password email was not sent to account ' . $iAccountId, BX_LOG_ERR);
+
+                $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_email"));
+                $sForm = '';
+            }
+
+            if (isset($oForm->aInputs['phone']) &&  $sPhone != '' && !($iAccountId = $this->_oAccountQuery->getIdByPhone($sPhone))) {
+                $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_phone"));
+                $sForm = '';
+            }
+            else if (isset($oForm->aInputs['phone']) &&  $sPhone != '') {
+                $aAccountInfo = $this->_oAccountQuery->getInfoById($iAccountId);
+
+                $sKey = bx_get_reset_password_key($aAccountInfo['email']);
+                $sForgotPasswordUrl = bx_get_reset_password_link_by_key($sKey); 
+
+                $sSmsText = _t('_sys_txt_forgot_pasword_sms_text', $sForgotPasswordUrl);
+
+                $mixedOverrideResult = null;
+                /**
+                 * @hooks
+                 * @hookdef hook-account-before_forgot_password_send_sms 'account', 'before_forgot_password_send_sms' - hook in  $oAccount->isConfirmed check
+                 * - $unit_name - equals `account`
+                 * - $action - equals `before_forgot_password_send_sms` 
+                 * - $object_id - account id 
+                 * - $sender_id - not used 
+                 * - $extra_params - array of additional params with the following array keys:
+                 *      - `phone_number` - [string]  by ref, phone number to send sms, can be overridden in hook processing
+                 *      - `sms_text` - [string] by ref, text for sms, can be overridden in hook processing
+                 *      - `override_result` - [mixed] by ref, can be object, can be overridden in hook processing
+                 * @hook @ref hook-account-before_forgot_password_send_sms
+                 */
+                bx_alert('account', 'before_forgot_password_send_sms', $aAccountInfo['id'], false, [
+                    'phone_number' => &$sPhone, 
+                    'sms_text' => &$sSmsText, 
+
+                    'phone_number_ref' => &$sPhone, 
+                    'sms_text_ref' => &$sSmsText, 
+
+                    'override_result' => &$mixedOverrideResult
+                ]);
+
+                if ($mixedOverrideResult === null) {
+                    if(($oSms = BxDolSms::getObjectInstance()) === false || !$oSms->send($sPhone,  $sSmsText))
+                        bx_log('sys_sms', 'Reset password SMS was not sent to account ' . $iAccountId, BX_LOG_ERR);
+
+                    $sResultMsg = MsgBox(_t("_sys_txt_forgot_pasword_check_phone"));
+                }
+
+                $sForm = '';
+            }
+            
+            if($bApi) {
+                return [
+                    bx_api_get_msg(strip_tags($sResultMsg)),
+                    bx_api_get_block('form', $oForm->getCodeAPI(), [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/forgot_password/TemplServiceAccount', 'immutable' => true]
+                        ]
+                    ])
+                ];
+            }
+        } 
+        else {
+            $sResultMsg = _t($sCaptionKey);
+
+            if($bApi) {
+                $aBlocks = [
+                    bx_api_get_block('form', $oForm->getCodeAPI(), [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/forgot_password/TemplServiceAccount', 'immutable' => true]
+                        ]
+                ])];
+
+                // On the page the hint goes under the block title, as the site shows it above the form;
+                // a form submitted to the request url above still gets the blocks alone.
+                return BxDolPage::getBlockProcessing() ? ['description' => $sResultMsg, 'content' => $aBlocks] : $aBlocks;
+            }
+
+            $sForm = $oForm->getCode();
+        }
+
+        return '<div class="bx-def-padding-sec-bottom">' . $sResultMsg . '</div>' . $sForm . ($bShowErrorEmptyBoth ? '<div class="bx-form-warn">' . _t("_sys_form_forgot_password_phone_and_email_empty_error") . '</div>' : '');
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services 
+     * @subsection bx_system_general-account Account
+     * @subsubsection bx_system_general-switch_profile switch_profile
+     * 
+     * @code bx_srv('system', 'switch_profile', [123], 'TemplServiceAccount'); @endcode
+     * @code {{~system:switch_profile:TemplServiceAccount:[123]~}} @endcode
+     * 
+     * Switch current user profile. 
+     * User can switch between profiles if multiple profiles are created.
+     * Also it's possible to switch to Organization profile if user is admin of Organization, 
+     * or other module which can `actAsProfile`.
+     * Admin can switch to any prifile by default
+     *
+     * @param $iSwitchToProfileId profile ID to switch to
+     * @return true on success or error message otherwise, so make sue to make strict (===) comparision
+     * 
+     * @see BxBaseServiceAccount::serviceSwitchProfile
+     */
+    /** 
+     * @ref bx_system_general-switch_profile "switch_profile"
+     */
+    public function serviceSwitchProfile($iSwitchToProfileId)
+    {
+        $oProfile = BxDolProfile::getInstance($iSwitchToProfileId);
+        if (!$oProfile) {
+            return _t('_sys_txt_error_occured');
+        }
+
+        $iViewerAccountId = getLoggedId();
+        $iSwitchToAccountId = $oProfile->getAccountId();
+        
+        $iViewerProfileId = bx_get_logged_profile_id();
+        $aCheck = checkActionModule($iViewerProfileId, 'switch to any profile', 'system', false);
+        $bAllowSwitchToAnyProfile = $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED;
+
+        $bCanSwitch = ($iSwitchToAccountId == $iViewerAccountId || $bAllowSwitchToAnyProfile);
+        /**
+         * @hooks
+         * @hookdef hook-account-check_switch_context 'account', 'check_switch_context' - hook on switch profile_id
+         * - $unit_name - equals `account`
+         * - $action - equals `check_switch_context` 
+         * - $object_id - account id 
+         * - $sender_id - viewer profile_id
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `switch_to_profile` - [int] profile_id to switch
+         *      - `viewer_account` - [int] viewer's profile_id, can be overridden in hook processing
+         *      - `override_result` - [bool] by ref, true if allow switch profile, otherwise false, can be overridden in hook processing
+         * @hook @ref hook-account-check_switch_context
+         */
+        bx_alert('account', 'check_switch_context', $iSwitchToAccountId, $iViewerProfileId, array('switch_to_profile' => $iSwitchToProfileId, 'viewer_account' => $iViewerAccountId, 'override_result' => &$bCanSwitch));
+
+        if (!$bCanSwitch) {
+            return isset($aCheck[CHECK_ACTION_MESSAGE]) ? $aCheck[CHECK_ACTION_MESSAGE] : _t('_sys_txt_error_occured'); 
+        } 
+
+        $oAccount = BxDolAccount::getInstance();
+        if (!$oAccount->updateProfileContext($iSwitchToProfileId)) {
+            return _t('_sys_txt_error_occured');
+        }
+
+        checkActionModule($iViewerProfileId, 'switch to any profile', 'system', true);
+        if (bx_is_api()){
+            return BxDolProfile::getDataForPage($iSwitchToProfileId);
+        }
+        return true;
+    }
+
+    /**
+     * Reset password procedure
+     */
+    public function resetPassword()
+    {
+        $bApi = bx_is_api();
+        $sKey = bx_process_input(bx_get('key'));
+
+        $oForm = BxDolForm::getObjectInstance('sys_forgot_password', 'sys_forgot_password_reset');
+        if(!empty($sKey) && isset($oForm->aInputs['key']))
+            $oForm->aInputs['key']['value'] = $sKey;
+
+        $oForm->initChecker();
+        if($oForm->isSubmittedAndValid()) {
+            $sErrorUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=forgot-password'));
+            if($bApi)
+                $sErrorUrl = bx_api_get_relative_url($sErrorUrl);
+
+            // check if key exists
+            $oKey = BxDolKey::getInstance();
+            $sKey = $oForm->getCleanValue('key');
+            if(!$oKey || !$oKey->isKeyExists($sKey))
+                return ($sMsg = _t('_sys_txt_reset_pasword_error_invalid_key', $sErrorUrl)) && $bApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+            // check if key data exists
+            $aKeyData = $oKey->getKeyData($sKey);
+            if(empty($aKeyData['email']))
+                return ($sMsg = _t('_sys_txt_reset_pasword_error_invalid_key', $sErrorUrl)) && $bApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+            // check if account with such email exists
+            $iAccountId = $this->_oAccountQuery->getIdByEmail($aKeyData['email']);
+            if(empty($iAccountId))
+                return ($sMsg = _t('_sys_txt_reset_pasword_error_not_found', $sErrorUrl)) && $bApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+            $sPassword = $oForm->getCleanValue('password');
+            $oAccount = BxDolAccount::getInstance($iAccountId);
+            if (!$oAccount || !$oAccount->updatePassword($sPassword))
+                return ($sMsg = _t('_sys_txt_reset_pasword_error_occured', $sErrorUrl)) && $bApi ?[ bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
+            $this->_oAccountQuery->unlockAccount($iAccountId);
+            $oKey->removeKey($sKey);
+
+            return ($sMsg = _t('_sys_txt_reset_pasword_success')) && $bApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg, 3) . bx_srv('system', 'login_form_only', array('', bx_get_reset_password_redirect($iAccountId)), 'TemplServiceLogin');
+        }
+
+        $sTitleReset = _t('_sys_page_title_forgot_password_reset');
+        BxDolTemplate::getInstance()->setPageHeader($sTitleReset);
+        if(($oPage = BxDolPage::getObjectInstanceByURI()) !== false)
+            $oPage->setTitle($sTitleReset);
+
+         if($bApi) {
+                return [
+                    bx_api_get_block('form', $oForm->getCodeAPI(), [
+                        'ext' => [
+                            'request' => ['url' => '/api.php?r=system/forgot_password/TemplServiceAccount', 'immutable' => true]
+                        ]
+                ])];
+            }
+
+        return $oForm->getCode();
+    }
+
+    /**
+     * Generate new password.
+     */
+    public function generateUserNewPwd($iAccountId)
+    {
+        $sPassword = genRndPwd(8, false);
+        $sSalt = genRndSalt();
+        $sPasswordHash = encryptUserPwd($sPassword, $sSalt);
+
+        $this->_oAccountQuery->logPassword($iAccountId);
+        if ((int)$this->_oAccountQuery->updatePassword($sPasswordHash, $sSalt, $iAccountId) > 0) {
+            bx_end_other_sessions($iAccountId, false);
+        }
+
+        /**
+         * @hooks
+         * @hookdef hook-account-edited 'account', 'edited' - hook on account edited
+         * - $unit_name - equals `account`
+         * - $action - equals `edited` 
+         * - $object_id - account id 
+         * - $sender_id - account id 
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `action` - [string] can be forgot_password/change_password or $sDisplayName  (display name for current form)
+         * @hook @ref hook-account-edited
+         */
+        bx_alert('account', 'edited', $iAccountId, $iAccountId, [
+            'action' => 'forgot_password'
+        ]);
+
+        return $sPassword;
+    }
+
+    protected function _confirmEmail($sKey)
+    {
+        // check if key exists
+        $oKey = BxDolKey::getInstanceWithScope(BX_KEY_SCOPE_ACCOUNT_EMAIL_CONFIRM);
+        if (!$oKey || !$oKey->isKeyExists($sKey))
+            return _t("_sys_txt_confirm_email_error_occured");
+
+        // check if key data exists
+        $aData = $oKey->getKeyData($sKey);
+        if (!isset($aData['account_id']))
+            return _t("_sys_txt_confirm_email_error_occured");
+
+        // check if account exists
+        $oAccount = BxDolAccount::getInstance($aData['account_id']);
+        if (!$oAccount)
+            return _t("_sys_txt_confirm_email_error_occured");
+
+        // a new email of an account: it replaces the current email, without signing anybody in
+        if (!empty($aData['email'])) {
+            $oKey->removeKey($sKey);
+            if (!$oAccount->confirmEmailChange($aData['email']))
+                return _t('_sys_txt_account_email_change_failed');
+
+            $this->_bEmailChangeConfirmed = true;
+            return (int)$aData['account_id'];
+        }
+
+        // remove key
+        $oKey->removeKey($sKey);
+
+        // confirm email
+        if (!$oAccount->updateEmailConfirmed(true))
+            return _t("_sys_txt_confirm_email_error_occured");
+
+        // login to user's account automatically
+        bx_login($aData['account_id'], bx_is_remember_me());
+
+        $oAccount->sendWelcomeEmail();
+
+        return (int)$aData['account_id'];
+    }
+}
+
+/** @} */

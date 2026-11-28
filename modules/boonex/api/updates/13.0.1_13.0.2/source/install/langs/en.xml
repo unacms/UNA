@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+    <string name="_sys_module_api"><![CDATA[API]]></string>
+    <string name="_bx_api"><![CDATA[API]]></string>
+    <string name="_bx_api_help"><![CDATA[This module doesn't provide any functionality to the end user, instead it provides additional API endpoints. It works oly with OAuth2 module.]]></string>
+
+    <!-- EMAIL TEMPLATES -->
+    <string name="_bx_api_et_txt_name_password_reset"><![CDATA[New password message]]></string>
+    <string name="_bx_api_et_txt_subject_password_reset"><![CDATA[Your new password]]></string>
+    <string name="_bx_api_et_txt_body_password_reset"><![CDATA[{email_header}
+<p class="bx-email-text" style="margin:0 auto 16px auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;">Your new password is:</p>
+<p class="bx-email-text" style="margin:0 auto 0 auto; max-width:480px; font:400 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing:-0.048px; color:#43454b; text-align:center; word-break:break-word;"><b>{password}</b></p>
+{email_footer}]]></string>
+</resources>

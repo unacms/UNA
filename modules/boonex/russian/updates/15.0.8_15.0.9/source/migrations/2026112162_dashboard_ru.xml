@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Dashboard: "Your membership" block (level, storage against limits), "Create your profile" and "Your profiles". -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_upd name="_sys_page_block_title_membership_stats"><![CDATA[Ваше членство]]></string_upd>
+    <string_add name="_sys_page_block_title_system_create_profile"><![CDATA[Создать профиль (аккаунты без профиля)]]></string_add>
+    <string_add name="_sys_page_block_title_system_dashboard_profiles"><![CDATA[Ваши профили (панель)]]></string_add>
+    <string_add name="_sys_page_block_title_dashboard_profiles"><![CDATA[Ваши профили]]></string_add>
+    <string_add name="_sys_membership_stats_unlimited"><![CDATA[Без ограничений]]></string_add>
+    <string_add name="_sys_membership_stats_until"><![CDATA[Действует до {0}]]></string_add>
+    <string_add name="_sys_membership_stats_no_end"><![CDATA[Без срока окончания]]></string_add>
+    <string_add name="_sys_membership_stats_files_one"><![CDATA[1 файл]]></string_add>
+    <string_add name="_sys_membership_stats_files"><![CDATA[Файлов: {0}]]></string_add>
+    <string_add name="_sys_membership_stats_of"><![CDATA[{0} из {1}]]></string_add>
+    <string_add name="_sys_membership_stats_used"><![CDATA[Занято {0}]]></string_add>
+    <string_add name="_sys_membership_stats_max_file_size"><![CDATA[Размер файла до]]></string_add>
+    <string_add name="_sys_membership_stats_see_plans"><![CDATA[Уровни членства]]></string_add>
+</resources>

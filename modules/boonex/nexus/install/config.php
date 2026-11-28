@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_nexus',
     'title' => 'Nexus',
     'note' => 'Nexus, mobile apps, desktop apps',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

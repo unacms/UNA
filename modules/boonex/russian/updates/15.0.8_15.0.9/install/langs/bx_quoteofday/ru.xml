@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_quoteofday_rss_max_items"><![CDATA[Максимум позиций из RSS]]></string_upd>
+</resources>

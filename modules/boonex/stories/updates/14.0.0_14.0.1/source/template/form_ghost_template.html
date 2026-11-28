@@ -1,0 +1,27 @@
+<div id="bx-uploader-file-{storage_object}-{file_id}" class="bx-uploader-ghost mt-2 flex items-start">
+    <div class="bx-uploader-ghost-cnt">
+        <a class="bx-anchor-invisible" name="story-media-{file_id}"></a>
+        <input type="hidden" name="__name__[]" value="{file_id}" />
+        <div class="bx-base-general-icon-wrapper">
+            <img src="{file_icon}" class="bx-def-round-corners bx-base-general-icon bx-base-general-icon-{file_id}" />
+        </div>
+        <span class="bx-base-general-uploader-ghost">
+            <a class="bx-btn bx-btn-small bx-def-margin-sec-right" href="javascript:void(0);" title="<bx_text:_sys_txt_form_entry_input_picture_delete />" onclick="bx_base_general_delete_ghost('{file_id}', '{file_url}', '{file_icon}', ['__editor_id__'], {js_instance_name});">
+                <bx_image_auto:times />
+            </a>
+            <a class="bx-btn bx-btn-small mr-2" href="javascript:void(0);" title="<bx_text:_sys_txt_form_entry_input_picture_copy />" onclick="bx_copy_to_clipboard('{file_url}');">
+                <bx_image_auto:copy />
+            </a>
+        </span>
+    </div>
+    <input placeholder="<bx_text:_bx_stories_form_entry_file_title />" class="bx-def-font-inputs bx-form-input-text block w-full py-2 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:text-gray-900 dark:focus:text-gray-100 focus:ring-blue-500 focus:border-opacity-70 focus:ring-opacity-20 focus:border-blue-500 text-sm text-gray-700 dark:text-gray-300 appearance-none" type="text" value="{file_title_attr}" name="title-{file_id}" />
+    <bx_if:set_thumb>
+        <span class="bx-base-general-use-as-thumb">
+            <input type="checkbox" name="__name_thumb__[]" value="{file_id}" onclick="bx_base_general_select_thumb(this)" id="__name_thumb__-{file_id}" /> 
+            <label for="__name_thumb__-{file_id}"><bx_text:_sys_txt_form_entry_input_picture_use_as_thumb /></label>
+        </span>
+    </bx_if:set_thumb>
+</div>
+<script>
+    $('#bx-uploader-file-{storage_object}-{file_id} .bx-base-general-use-as-thumb input[value="__thumb_id__"]').attr('checked', true);
+</script>

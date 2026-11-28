@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_xero',
     'title' => 'Xero',
     'note' => 'Xero, accounting',
-    'version' => '15.0.4.DEV',
+    'version' => '15.0.4',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

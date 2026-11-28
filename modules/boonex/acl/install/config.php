@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_acl',
     'title' => 'Memberships',
     'note' => 'Paid levels, membership levels, access',
-    'version' => '15.0.7.DEV',
+    'version' => '15.0.7',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

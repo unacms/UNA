@@ -1,0 +1,20 @@
+<div class="bx-stories-media-edit">
+    <div class="bx-stories-media-edit-cnt bx-def-padding">
+        __form__
+        <script language="javascript">
+            $(document).ready(function () {
+                $("#__form_id__").ajaxForm({ 
+                    dataType: "json",
+                    beforeSubmit: function (formData, jqForm, options) {
+                        bx_loading($("#__form_id__"), true);
+                    },
+                    success: function (oData) {
+                        $(".bx-popup-applied:visible").dolPopupHide();
+
+                        processJsonData(oData);
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>

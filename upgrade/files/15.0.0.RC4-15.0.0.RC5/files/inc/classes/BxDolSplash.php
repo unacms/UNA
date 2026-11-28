@@ -1,0 +1,461 @@
+<?php defined('BX_DOL') or die('hack attempt');
+/**
+ * Copyright (c) UNA, Inc - https://una.io
+ * MIT License - https://opensource.org/licenses/MIT
+ *
+ * @defgroup    UnaCore UNA Core
+ * @{
+ */
+
+/**
+ * The guest splash (Studio > Designer > Splash): what guests see on the home page, set per platform.
+ *
+ * The site shows `sys_site_splash_code` from splash.php when `sys_site_splash_enabled` is on, in the guests' page shell:
+ * between the site's header and footer, so the code has none of its own. The apps (NEO web, iOS,
+ * Android) ask for the home page through the page API (BxBasePage::getPageAPI), which says which client asks in
+ * `X-Neo-Platform`. When that platform's switch is on, the page comes back with `layout: 'splash'` and a `splash`
+ * object made here: `source: 'una'` and `code`, the platform's own code, else the shared code, prepared for the apps.
+ *
+ * A switch that was never saved (`''`) follows the older `sys_api_root_page_guest` option: `splash` is on.
+ *
+ * The forms' boxes on the site (`__login_form_in_box__`, `__join_form_in_box__`) take their padding and title sizes
+ * from the home page's sign-in and sign-up blocks (getFormInBox), the rows the apps' splash draws: Studio > Pages >
+ * Home > the block > Padding sizes the form on the site and in the apps.
+ *
+ * Code for the apps (see neo/AGENTS.md, "Guest splash"):
+ * - The site's markers become placeholder elements, `<neo-slot name="..."></neo-slot>`, which the apps draw with
+ *   their own components: `login_form` (`__login_form__`, `__login_form_in_box__`: the sign-in form with its social
+ *   sign-in buttons and the Sign up link, as the site's form has them), `join_link` (`__join_form__`,
+ *   `__join_form_in_box__`: the apps open Sign up rather than embed its form), `logo` (`__logo__`) and `illustration`
+ *   (`__illustration__`). `social_login` (the social sign-in buttons alone) has no marker; write the element.
+ * - `{site_title}` in text becomes `<neo-slot name="site_title">Site title</neo-slot>`, in attributes the plain title.
+ * - `{site_description}` becomes the site's tagline (getSiteDescription), as on the site.
+ * - `__join_link__` and `__login_link__` are the apps' own paths, `/create-account` and `/login`.
+ * - Macros run as on the site. `<main>` becomes a `<div>` (the apps have their own). Scripts, inline event handlers and javascript: links are removed, and so are the
+ *   elements that have a `data-site-only` attribute (parts for the site only).
+ */
+class BxDolSplash extends BxDolFactory implements iBxDolSingleton
+{
+    /** The apps' platforms, as NEO names them in `X-Neo-Platform`. */
+    public const PLATFORMS = ['web', 'ios', 'android'];
+
+    public const PLATFORM_DEFAULT = 'web';
+
+    /** What the apps draw in place of `<neo-slot name="...">`. */
+    public const SLOTS = ['login_form', 'social_login', 'join_link', 'logo', 'site_title', 'illustration'];
+
+    /**
+     * The home page's sign-in and join blocks (`module:method` of their service), which the apps' splash draws
+     * (the `login_form` and `join_link` slots, a project's own splash). A guest's home page gets them while they are off
+     * for the apps (`active_api`), marked `splash_only`: the splash draws them, the home page without the splash doesn't.
+     */
+    public const AUTH_BLOCKS = ['system:login_form', 'system:login_form_only', 'system:create_account_form', 'system:forgot_password'];
+
+    /** Elements with this attribute are left out of the apps' code. */
+    public const ATTR_SITE_ONLY = 'data-site-only';
+
+    /** Stands in for `{site_title}` until the code is parsed, so text and attributes can get different things. */
+    protected const TOKEN_SITE_TITLE = 'bxsplashsitetitletoken';
+
+    /** Elements the apps never get. */
+    protected const TAGS_REMOVED = ['script', 'base', 'meta'];
+
+    /** Elements an agent may not write: the site page shows the code as it is, to every guest. */
+    protected const TAGS_UNSAFE = ['script', 'base', 'meta', 'link', 'iframe', 'object', 'embed'];
+
+    /**
+     * Elements whose content libxml and browsers read differently ("<noscript><p title="</noscript><img onerror=...>">"):
+     * the check would pass code that a browser runs, so an agent may not write them at all.
+     */
+    protected const TAGS_PARSED_APART = ['noscript', 'template', 'textarea', 'title', 'xmp', 'plaintext', 'noembed', 'noframes', 'math', 'select'];
+
+    /** Attributes that hold an address. */
+    protected const ATTRS_URL = ['href', 'src', 'action', 'formaction', 'xlink:href', 'poster', 'background'];
+
+    protected function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Prevent cloning the instance
+     */
+    public function __clone()
+    {
+        if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
+            trigger_error('Clone is not allowed for the class: ' . get_class($this), E_USER_ERROR);
+    }
+
+    /**
+     * Get singleton instance of the class
+     */
+    public static function getInstance()
+    {
+        if(!isset($GLOBALS['bxDolClasses'][__CLASS__]))
+            $GLOBALS['bxDolClasses'][__CLASS__] = new BxDolSplash();
+
+        return $GLOBALS['bxDolClasses'][__CLASS__];
+    }
+
+    /**
+     * The app that asks, from `X-Neo-Platform`; anything else (another client, a link preview) counts as the web app.
+     */
+    public static function getPlatformFromRequest()
+    {
+        $sPlatform = isset($_SERVER['HTTP_X_NEO_PLATFORM']) ? mb_strtolower(trim((string)$_SERVER['HTTP_X_NEO_PLATFORM'])) : '';
+        return in_array($sPlatform, self::PLATFORMS, true) ? $sPlatform : self::PLATFORM_DEFAULT;
+    }
+
+    public static function isPlatform($sPlatform)
+    {
+        return in_array($sPlatform, self::PLATFORMS, true);
+    }
+
+    public static function getOptionEnabled($sPlatform)
+    {
+        return 'sys_site_splash_' . $sPlatform . '_enabled';
+    }
+
+    public static function getOptionCode($sPlatform)
+    {
+        return 'sys_site_splash_code_' . $sPlatform;
+    }
+
+    /**
+     * Whether guests of the app see the splash on the home page: the app's switch (`on` or `off`), else, while it was
+     * never saved, the older `sys_api_root_page_guest` option.
+     */
+    public function isEnabledForApp($sPlatform)
+    {
+        if(!self::isPlatform($sPlatform))
+            $sPlatform = self::PLATFORM_DEFAULT;
+
+        $sValue = getParam(self::getOptionEnabled($sPlatform));
+        if($sValue === 'on')
+            return true;
+        if($sValue === 'off')
+            return false;
+
+        return getParam('sys_api_root_page_guest') == 'splash';
+    }
+
+    /**
+     * The code an app shows as it is saved: its own code, else the shared code.
+     */
+    public function getCodeRawForApp($sPlatform)
+    {
+        if(!self::isPlatform($sPlatform))
+            $sPlatform = self::PLATFORM_DEFAULT;
+
+        $sCode = (string)getParam(self::getOptionCode($sPlatform));
+        if(trim($sCode) === '')
+            $sCode = (string)getParam('sys_site_splash_code');
+
+        return $sCode;
+    }
+
+    /**
+     * The `splash` object of the page API: `source: 'una'`, and `code` unless there is none.
+     */
+    public function getSplashAPI($sPlatform)
+    {
+        $aResult = ['source' => 'una'];
+
+        $sCode = $this->getCodeRawForApp($sPlatform);
+        if(trim($sCode) !== '' && ($sCode = $this->getCodeForApp($sCode)) !== '')
+            $aResult['code'] = $sCode;
+
+        return $aResult;
+    }
+
+    /**
+     * Splash code prepared for the apps: markers to placeholders, macros run, scripts and handlers removed.
+     */
+    public function getCodeForApp($sCode)
+    {
+        if(trim($sCode) === '')
+            return '';
+
+        $oTemplate = BxDolTemplate::getInstance();
+
+        $sLoginForm = $this->getSlot('login_form');
+        $sJoinLink = $this->getSlot('join_link');
+        $sCode = $oTemplate->parseHtmlByContent($sCode, [
+            'logo' => $this->getSlot('logo'),
+            'illustration' => $this->getSlot('illustration'),
+            'login_form' => $sLoginForm,
+            'login_form_in_box' => $sLoginForm,
+            'join_form' => $sJoinLink,
+            'join_form_in_box' => $sJoinLink,
+            'join_link' => '/create-account',
+            'login_link' => '/login',
+        ]);
+
+        $sCode = bx_process_macros($sCode);
+        $sCode = bx_replace_markers($sCode, ['site_title' => self::TOKEN_SITE_TITLE, 'site_description' => htmlspecialchars($this->getSiteDescription(), ENT_NOQUOTES | ENT_HTML5, 'UTF-8')]);
+
+        return $this->cleanForApp($sCode, (string)getParam('site_title'));
+    }
+
+    /**
+     * The site's tagline for `{site_description}`: the home page's description, else the site's default one
+     * (Studio > Languages, `_sys_page_meta_description_default`), the same words search results show. Plain text,
+     * entities decoded: escape it where it goes into HTML.
+     */
+    public function getSiteDescription()
+    {
+        return trim(html_entity_decode(strip_tags(BxDolPage::getMetaDescriptionByObject('sys_home')), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    }
+
+    /**
+     * The home page's tagline outside the splash (the apps' own splash text, the home cover): the site's description
+     * while the site's splash shows it, else the splash slogan (`_sys_txt_splash_slogan`), which an operator who keeps
+     * an older splash may have written. Plain text.
+     */
+    public function getTagline()
+    {
+        if(str_contains((string)getParam('sys_site_splash_code'), '{site_description}') && ($s = $this->getSiteDescription()) !== '')
+            return $s;
+
+        return trim(html_entity_decode(strip_tags(_t('_sys_txt_splash_slogan')), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    }
+
+    /**
+     * The site's illustration for `__illustration__`, the shapes NEO's built-in splash shows.
+     */
+    public function getIllustration()
+    {
+        return BxDolTemplate::getInstance()->parseHtmlByName('splash_illustration.html', []);
+    }
+
+    /**
+     * The home page's block (Studio > Pages > Home) that holds one of the splash's forms, by its service
+     * (`system:login_form`, `system:create_account_form`): its design box and its sizes. The block is off on the home
+     * page as installed and still is where the form's box is set: the apps' splash draws the block itself
+     * (AUTH_BLOCKS), the site's splash sizes its box as the block (getFormInBox). Empty when the page has none.
+     */
+    public function getAuthBlock($sSource)
+    {
+        foreach(BxDolPageQuery::getPageServiceBlocksDesign('sys_home') as $aBlock) {
+            $aContent = @unserialize($aBlock['content']);
+            if(is_array($aContent) && isset($aContent['module'], $aContent['method']) && $aContent['module'] . ':' . $aContent['method'] === $sSource)
+                return $aBlock;
+        }
+
+        return [];
+    }
+
+    /**
+     * A form of the site's splash in its box (`__login_form_in_box__`, `__join_form_in_box__`): a regular design box
+     * with the title, description and icon given, and the padding and title sizes of the home page's block for
+     * $sSource, so one setting (Studio > Pages > Home > the block > Padding) sizes the form's box on the site and in
+     * the apps.
+     * @param $sSource the block's service, `module:method`
+     * @param $mixedTitle the box's title, or [title, description, icon] (see BxBaseFunctions::designBoxContent)
+     */
+    public function getFormInBox($sSource, $mixedTitle, $sContent)
+    {
+        $aBlock = $this->getAuthBlock($sSource);
+        $sClasses = BxDolPageDesignbox::getSizeClasses(['designbox_id' => BX_DB_PADDING_DEF] + array_intersect_key($aBlock, ['padding_size' => 1, 'title_size' => 1]));
+
+        // The sizes are rules of the pages' stylesheet, which splash.php, not being a page, doesn't load.
+        $oTemplate = BxDolTemplate::getInstance();
+        if($sClasses !== '')
+            $oTemplate->addCss('page_layouts.css');
+
+        return $oTemplate->parseHtmlByName('designbox_container.html', [
+            'class_add' => $sClasses !== '' ? ' ' . $sClasses : '',
+            'bx_if:show_html_id' => [
+                'condition' => false,
+                'content' => [],
+            ],
+            'content' => DesignBoxContent($mixedTitle, $sContent, BX_DB_PADDING_DEF),
+        ]);
+    }
+
+    protected function getSlot($sName)
+    {
+        return BxDolTemplate::getInstance()->parseHtmlByName('splash_slot.html', ['name' => $sName]);
+    }
+
+    /**
+     * Removes what the apps must not run or show, and puts the site title in.
+     */
+    protected function cleanForApp($sHtml, $sSiteTitle)
+    {
+        if(trim($sHtml) === '')
+            return '';
+
+        $oDoc = new DOMDocument('1.0', 'UTF-8');
+        $oBody = $this->loadBody($oDoc, $sHtml);
+        if(!$oBody)
+            return '';
+
+        $this->cleanNode($oDoc, $oBody, $sSiteTitle);
+
+        $sResult = '';
+        foreach($oBody->childNodes as $oChild)
+            $sResult .= $oDoc->saveHTML($oChild);
+
+        return trim($sResult);
+    }
+
+    protected function loadBody($oDoc, $sHtml)
+    {
+        $bErrors = libxml_use_internal_errors(true);
+
+        // A whole document with its charset, so libxml reads the code as UTF-8 and keeps it all in the body.
+        $sDocument = BxDolTemplate::getInstance()->parseHtmlByName('splash_document.html', ['content' => $sHtml]);
+        $bLoaded = $sDocument !== '' && $oDoc->loadHTML($sDocument, LIBXML_NONET | LIBXML_HTML_NODEFDTD);
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($bErrors);
+
+        return $bLoaded ? $oDoc->getElementsByTagName('body')->item(0) : null;
+    }
+
+    /**
+     * What an agent may not write in splash code: script elements, frames, inline handlers and script addresses.
+     *
+     * @return string[] one description per kind of problem; empty when the code is clean
+     */
+    public function findUnsafe($sCode)
+    {
+        if(trim($sCode) === '')
+            return [];
+
+        $aFound = [];
+
+        // The saved code is served as it is, so its text is checked too, not only what libxml makes of it.
+        if(preg_match_all('/<\s*\/?\s*(' . implode('|', array_merge(self::TAGS_UNSAFE, self::TAGS_PARSED_APART)) . ')\b/i', $sCode, $aMatches))
+            foreach($aMatches[1] as $sTag)
+                $aFound['<' . mb_strtolower($sTag) . '>'] = true;
+        if(preg_match('/[\s"\'\/]on[a-z]+\s*=/i', $sCode))
+            $aFound['event handler attribute'] = true;
+        if(preg_match('/(java|vb)script\s*:|srcdoc\s*=/i', $sCode))
+            $aFound['script address'] = true;
+
+        $oDoc = new DOMDocument('1.0', 'UTF-8');
+        $oBody = $this->loadBody($oDoc, $sCode);
+        if(!$oBody)
+            return array_merge(array_keys($aFound), ['code that cannot be parsed']);
+
+        foreach($oBody->getElementsByTagName('*') as $oElement) {
+            $sTag = mb_strtolower($oElement->nodeName);
+            if(in_array($sTag, self::TAGS_UNSAFE, true))
+                $aFound['<' . $sTag . '>'] = true;
+
+            foreach($oElement->attributes as $oAttr) {
+                $sName = mb_strtolower($oAttr->nodeName);
+                if(strncmp($sName, 'on', 2) === 0 || $sName == 'srcdoc' || (in_array($sName, self::ATTRS_URL, true) && $this->isUnsafeUrl($oAttr->value)))
+                    $aFound[$sName . ' attribute'] = true;
+            }
+        }
+
+        return array_keys($aFound);
+    }
+
+    protected function cleanNode($oDoc, $oNode, $sSiteTitle)
+    {
+        // A copy: children are removed and replaced on the way.
+        $aChildren = [];
+        foreach($oNode->childNodes as $oChild)
+            $aChildren[] = $oChild;
+
+        $bRawText = $oNode instanceof DOMElement && in_array(mb_strtolower($oNode->nodeName), ['style', 'textarea', 'title'], true);
+
+        foreach($aChildren as $oChild) {
+            if($oChild instanceof DOMElement) {
+                $sTag = mb_strtolower($oChild->nodeName);
+                if(in_array($sTag, self::TAGS_REMOVED, true) || $oChild->hasAttribute(self::ATTR_SITE_ONLY)) {
+                    $oNode->removeChild($oChild);
+                    continue;
+                }
+
+                // The apps have a main landmark of their own, and a page has one.
+                if($sTag == 'main')
+                    $oChild = $this->renameElement($oDoc, $oChild, 'div');
+
+                $this->cleanAttributes($oChild, $sSiteTitle);
+                $this->cleanNode($oDoc, $oChild, $sSiteTitle);
+            }
+            elseif($oChild instanceof DOMComment) {
+                $oNode->removeChild($oChild);
+            }
+            elseif($oChild instanceof DOMText && bx_mb_strpos($oChild->nodeValue, self::TOKEN_SITE_TITLE) !== false) {
+                if($bRawText) {
+                    $oChild->nodeValue = str_replace(self::TOKEN_SITE_TITLE, $sSiteTitle, $oChild->nodeValue);
+                    continue;
+                }
+
+                // Text with the title in it: the text around it, and the title as a placeholder holding the title.
+                $aParts = explode(self::TOKEN_SITE_TITLE, $oChild->nodeValue);
+                foreach($aParts as $i => $sPart) {
+                    if($i > 0) {
+                        $oSlot = $oDoc->createElement('neo-slot');
+                        $oSlot->setAttribute('name', 'site_title');
+                        $oSlot->appendChild($oDoc->createTextNode($sSiteTitle));
+                        $oNode->insertBefore($oSlot, $oChild);
+                    }
+                    if($sPart !== '')
+                        $oNode->insertBefore($oDoc->createTextNode($sPart), $oChild);
+                }
+                $oNode->removeChild($oChild);
+            }
+        }
+    }
+
+    protected function renameElement($oDoc, $oElement, $sTag)
+    {
+        $oNew = $oDoc->createElement($sTag);
+        foreach($oElement->attributes as $oAttr)
+            $oNew->setAttribute($oAttr->nodeName, $oAttr->value);
+        while($oElement->firstChild)
+            $oNew->appendChild($oElement->firstChild);
+
+        $oElement->parentNode->replaceChild($oNew, $oElement);
+        return $oNew;
+    }
+
+    protected function cleanAttributes($oElement, $sSiteTitle)
+    {
+        $aRemove = [];
+        $aSet = [];
+        foreach($oElement->attributes as $oAttr) {
+            $sName = mb_strtolower($oAttr->nodeName);
+            if(strncmp($sName, 'on', 2) === 0 || $sName == 'srcdoc') {
+                $aRemove[] = $oAttr->nodeName;
+                continue;
+            }
+
+            if(in_array($sName, self::ATTRS_URL, true) && $this->isUnsafeUrl($oAttr->value)) {
+                $aRemove[] = $oAttr->nodeName;
+                continue;
+            }
+
+            if(bx_mb_strpos($oAttr->value, self::TOKEN_SITE_TITLE) !== false)
+                $aSet[$oAttr->nodeName] = str_replace(self::TOKEN_SITE_TITLE, $sSiteTitle, $oAttr->value);
+        }
+
+        foreach($aRemove as $sName)
+            $oElement->removeAttribute($sName);
+
+        // setAttribute takes the value as it is (saveHTML escapes it); assigning DOMAttr::$value would parse entities.
+        foreach($aSet as $sName => $sValue)
+            $oElement->setAttribute($sName, $sValue);
+    }
+
+    /**
+     * Script addresses (`javascript:`, `vbscript:`, `data:` other than images), however they are spaced or cased.
+     */
+    protected function isUnsafeUrl($sUrl)
+    {
+        $sUrl = mb_strtolower(preg_replace('/[\x00-\x20]+/', '', html_entity_decode((string)$sUrl, ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+        if(strncmp($sUrl, 'javascript:', 11) === 0 || strncmp($sUrl, 'vbscript:', 9) === 0)
+            return true;
+
+        return strncmp($sUrl, 'data:', 5) === 0 && strncmp($sUrl, 'data:image/', 11) !== 0;
+    }
+}
+
+/** @} */

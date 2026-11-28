@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_lucid',
     'title' => 'Lucid',
     'note' => 'Lucid, design template, site theme',
-    'version' => '15.0.7.DEV',
+    'version' => '15.0.7',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

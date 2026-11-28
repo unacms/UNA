@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_datafox',
     'title' => 'Data Fox',
     'note' => 'Data Fox, API integration',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.2',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

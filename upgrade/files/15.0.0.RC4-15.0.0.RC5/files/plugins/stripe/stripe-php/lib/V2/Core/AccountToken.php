@@ -1,0 +1,22 @@
+<?php
+
+// File generated from our OpenAPI spec
+
+namespace Stripe\V2\Core;
+
+/**
+ * Account tokens are single-use tokens which tokenize an account's <code>contact_email</code>, <code>display_name</code>, <code>contact_phone</code>, and <code>identity</code>.
+ * In live mode, you must create account tokens using a live publishable key.
+ * In a sandbox, you can create account tokens with secret or publishable keys.
+ *
+ * @property string $id Unique identifier for the token.
+ * @property string $object String representing the object's type. Objects of the same type share the same value of the object field.
+ * @property string $created Time at which the token was created. Represented as a RFC 3339 date &amp; time UTC value in millisecond precision, for example: 2022-09-18T13:22:18.123Z.
+ * @property string $expires_at Time at which the token will expire.
+ * @property bool $livemode Has the value <code>true</code> if the token exists in live mode or the value <code>false</code> if the object exists in test mode.
+ * @property bool $used Determines if the token has already been used (tokens can only be used once).
+ */
+class AccountToken extends \Stripe\ApiResource
+{
+    const OBJECT_NAME = 'v2.core.account_token';
+}

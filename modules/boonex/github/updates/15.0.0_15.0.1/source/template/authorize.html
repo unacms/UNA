@@ -1,0 +1,11 @@
+<div class="bx-github-authorize">
+    <div class="bx-github-authorize-cnt flex flex-col items-center">
+        <bx_if:show_authorize>
+            <a class="bx-btn" href="__authorize_url__"><bx_text:_bx_github_txt_login /></a>
+        </bx_if:show_authorize>
+        <bx_if:show_authorized>
+            <p class="text-xl font-bold"><bx_text:_bx_github_txt_authorized /></p>
+            <p><bx_text:_bx_github_txt_manage_here /> <a href="__manage_url__"><bx_text:_bx_github_txt_settings /></a></p>
+        </bx_if:show_authorized>
+    </div>
+</div>

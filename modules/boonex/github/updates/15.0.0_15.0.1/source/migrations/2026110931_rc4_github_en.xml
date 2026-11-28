@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- RC3 to RC4: message of a duplicate app, as in install/langs/en.xml. -->
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_github_err_app_already_exists"><![CDATA[The app with identical credentials already exists.]]></string_add>
+</resources>

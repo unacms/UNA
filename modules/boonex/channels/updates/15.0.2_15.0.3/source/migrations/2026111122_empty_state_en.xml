@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC3 -->
+<!-- Empty states of the channel lists for API clients (BxDolEmptyState). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_channels_txt_empty_title"><![CDATA[No channels to show]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text"><![CDATA[A channel appears as soon as someone uses a new hashtag in a post.]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text_level"><![CDATA[Top-level channels are named after the site's main labels. They appear once posts use those labels as hashtags.]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text_followed"><![CDATA[Channels you follow show here.]]></string_add>
+    <string_add name="_bx_channels_txt_empty_text_favorite"><![CDATA[Channels you add to favorites show here.]]></string_add>
+</resources>

@@ -17,7 +17,7 @@ $aConfig = array(
 	'name' => 'bx_messenger',
 	'title' => 'Messenger',
 	'note' => 'Messenger, instant messages, chat',
-	'version' => '15.0.2.DEV',
+	'version' => '15.0.2',
 	'vendor' => 'UNA INC',
 	'help_url' => '',
 

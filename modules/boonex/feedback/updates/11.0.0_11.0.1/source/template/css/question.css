@@ -1,0 +1,62 @@
+/*-- Forms custom element: Answers --*/
+.bx-form-input-answer {
+    position: relative;
+}
+.bx-form-input-answer-sample {
+    display: none;
+}
+.bx-form-input-answer-row {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.bx-form-input-answer-row.bx-fi-ar-chb {
+    margin-top: 0.25rem;
+}
+.bx-form-input-answer-row.bx-fi-ar-chb input {
+    margin-left: 0;
+}
+.bx-form-input-answer-cell.bx-fi-ac-txt {
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.bx-form-input-answer-cell.bx-fi-ac-btn {
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+.bx-form-input-answer-cell.bx-fi-ac-txt .bx-form-input-text {
+    margin-top: 0;
+}
+
+.bx-form-input-answer-add {
+    text-align: right;
+}
+.bx-form-input-answer-add .bx-form-input-button {
+    display: inline-block;
+    float: none;
+}
+
+
+/*-- Question --*/
+.bx-fdb-answer {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.bx-fdb-a-option {
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    
+    margin: 0;
+    padding: 0;
+}
+.bx-fdb-a-title {
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}

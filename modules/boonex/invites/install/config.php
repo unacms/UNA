@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_invites',
     'title' => 'Invitations',
     'note' => 'Invitations, invite codes, referrals',
-    'version' => '15.0.4.DEV',
+    'version' => '15.0.4',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

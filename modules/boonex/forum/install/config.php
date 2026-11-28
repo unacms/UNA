@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_forum',
     'title' => 'Discussions',
     'note' => 'Forum discussions, threads, questions',
-    'version' => '15.0.8.DEV',
+    'version' => '15.0.8',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

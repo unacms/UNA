@@ -1,0 +1,128 @@
+/*
+ * Introduction tours (bx_tour in inc/js/functions.js). A step looks like a standard popup: bx_tour_popup() gives
+ * Shepherd's parts the popup's classes (surface, ring, header, title, close button, content) and the buttons are
+ * bx-btn bx-btn-small. Shepherd's own stylesheet isn't loaded; this file holds only what a tour adds to a popup:
+ * showing and hiding a step, its width, the pointer (in the popup's colour, bx-popup-color-bg), the room it keeps
+ * from the highlighted element, and the dimmed page.
+ */
+
+/* --- the step: Shepherd shows and hides it --- */
+.shepherd-element.bx-tour {
+    width: calc(100vw - 2rem);
+    max-width: 24rem;
+    margin: 0;
+    outline: none;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.shepherd-element.bx-tour.shepherd-enabled {
+    opacity: 1;
+    visibility: visible;
+}
+.shepherd-element.bx-tour .shepherd-content {
+    outline: none;
+}
+.shepherd-target-click-disabled.shepherd-target-click-disabled.shepherd-target-click-disabled,
+.shepherd-target-click-disabled.shepherd-target-click-disabled.shepherd-target-click-disabled * {
+    pointer-events: none;
+}
+
+/* --- the pointer: a square of the popup's surface, turned, half under the popup --- */
+.shepherd-element.bx-tour > .shepherd-arrow {
+    position: absolute;
+    z-index: -1;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 2px;
+    transform: rotate(45deg);
+}
+.shepherd-element.bx-tour[data-popper-placement^=top] > .shepherd-arrow {
+    bottom: -0.5rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=bottom] > .shepherd-arrow {
+    top: -0.5rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=left] > .shepherd-arrow {
+    right: -0.5rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=right] > .shepherd-arrow {
+    left: -0.5rem;
+}
+.shepherd-element.bx-tour.shepherd-centered > .shepherd-arrow {
+    display: none;
+}
+
+/* The step keeps clear of the opening around its element (12px wider than the element, soft edges). */
+.shepherd-element.bx-tour[data-popper-placement^=bottom] {
+    margin-top: 1.25rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=top] {
+    margin-top: -1.25rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=right] {
+    margin-left: 1.25rem;
+}
+.shepherd-element.bx-tour[data-popper-placement^=left] {
+    margin-left: -1.25rem;
+}
+
+/* --- Shepherd's own overlay: under the tour's, unseen, it keeps clicks off the page --- */
+.shepherd-modal-overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9997;
+    width: 100vw;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+.shepherd-modal-overlay-container.shepherd-modal-is-visible {
+    height: 100vh;
+}
+.shepherd-modal-overlay-container.shepherd-modal-is-visible path {
+    pointer-events: all;
+}
+
+/* --- the dimmed page ---
+ * The tour's own overlay (bx_tour_spotlight): the step's element shows through an opening
+ * with soft edges. Shepherd's overlay stays under it, unseen, to keep clicks off the page.
+ */
+.bx-tour-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9998;
+    width: 100vw;
+    height: 100vh;
+
+    pointer-events: none;
+    animation: bx-tour-overlay-in 0.25s ease-out;
+}
+.bx-tour-overlay .bx-tour-dim {
+    fill: rgba(10, 10, 12, 0.5);
+}
+html.dark .bx-tour-overlay .bx-tour-dim {
+    fill: rgba(0, 0, 0, 0.68);
+}
+body.bx-tour-on .shepherd-modal-overlay-container.shepherd-modal-is-visible {
+    opacity: 0;
+}
+
+@keyframes bx-tour-overlay-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bx-tour-overlay {
+        animation: none;
+    }
+    .shepherd-element.bx-tour {
+        transition: none;
+    }
+}

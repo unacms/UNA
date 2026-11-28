@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_artificer',
     'title' => 'Artificer',
     'note' => 'Artificer, design template, site theme',
-    'version' => '15.0.9.DEV',
+    'version' => '15.0.9',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

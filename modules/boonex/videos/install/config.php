@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_videos',
     'title' => 'Videos',
     'note' => 'Videos',
-    'version' => '15.0.5.DEV',
+    'version' => '15.0.5',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_drupal',
     'title' => 'Drupal connect',
     'note' => 'Drupal login, join with a Drupal account',
-    'version' => '9.0.0.DEV',
+    'version' => '9.0.1',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

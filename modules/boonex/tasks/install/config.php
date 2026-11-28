@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_tasks',
     'title' => 'Tasks',
     'note' => 'Tasks, to-dos',
-    'version' => '15.0.9.DEV',
+    'version' => '15.0.9',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

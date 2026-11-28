@@ -18,7 +18,7 @@ $aConfig = array(
     'name' => 'bx_shopify',
     'title' => 'Shopify',
     'note' => 'Shopify, shop, products for sale',
-    'version' => '15.0.5.DEV',
+    'version' => '15.0.5',
     'vendor' => 'UNA INC',
     'help_url' => '',
 

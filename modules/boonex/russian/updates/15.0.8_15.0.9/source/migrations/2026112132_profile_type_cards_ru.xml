@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Menu template "Cards with descriptions". -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_sys_menu_template_title_list_desc_cards"><![CDATA[Карточки с описаниями]]></string_add>
+</resources>

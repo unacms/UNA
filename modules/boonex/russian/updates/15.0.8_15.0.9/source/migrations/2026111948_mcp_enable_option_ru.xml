@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The MCP server's own switch (Studio > Agents > Settings), and what Connectors says while it is off. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_stg_cpt_option_sys_mcp_enable"><![CDATA[MCP-сервер: разрешить ИИ-ассистентам подключаться к сайту]]></string_add>
+    <string_add name="_adm_stg_cpt_option_sys_mcp_enable_info"><![CDATA[Включает /api/mcp: пользователи подключают ассистентов, например Claude или ChatGPT, в настройках аккаунта > Подключения, и их инструменты действуют с правами пользователя. Операторы получают и инструменты, включённые для них на вкладке Tools.]]></string_add>
+    <string_add name="_sys_api_mcp_txt_off"><![CDATA[MCP-сервер на этом сайте выключен, поэтому ИИ-ассистенты пока не могут подключиться.]]></string_add>
+    <string_add name="_sys_api_mcp_txt_off_admin"><![CDATA[MCP-сервер на этом сайте выключен: включите его в Studio > Agents > Settings.]]></string_add>
+</resources>
