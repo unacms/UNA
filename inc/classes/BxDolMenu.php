@@ -103,6 +103,24 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     const BUTTON_SIZE_LARGE = 'large';
 
     /**
+     * How a menu of actions shows their counts (`sys_objects_menu`.`counters`, Studio > Navigation > a menu), on the
+     * site and in the apps (the menu's API carries the resolved value as `counters`):
+     * - auto (empty): the menu's own default (COUNTERS_DEFAULT of its class), label where it names none;
+     * - label: each action is its icon and its label; counts are not shown (a stats menu can show them);
+     * - count: each action shows its count as its label, its icon alone while the count is 0; pressing it acts;
+     * - group: each action is a group of two buttons, the action and its count, which opens who did it.
+     */
+    const COUNTERS_AUTO = '';
+    const COUNTERS_LABEL = 'label';
+    const COUNTERS_COUNT = 'count';
+    const COUNTERS_GROUP = 'group';
+
+    /**
+     * The counters a menu of this class shows when the menu is set to automatic: a menu class of actions names its own.
+     */
+    const COUNTERS_DEFAULT = self::COUNTERS_LABEL;
+
+    /**
      * How the apps show a section's menu on large screens (`sys_objects_menu`.`section_nav`, Studio > Navigation >
      * a menu), when the menu is the submenu of a section's pages (the menu's API carries it as `section_nav`):
      * - tabs (empty): a row of tabs above the content, as the site shows it;
@@ -173,6 +191,27 @@ class BxDolMenu extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     {
         $s = isset($this->_aObject['button_size']) ? (string)$this->_aObject['button_size'] : '';
         return isset(self::$_aButtonSizeClasses[$s]) ? $s : self::BUTTON_SIZE_AUTO;
+    }
+
+    /**
+     * Counters a menu can be given, the automatic one (empty) first.
+     */
+    public static function getCountersModes()
+    {
+        return [self::COUNTERS_AUTO, self::COUNTERS_LABEL, self::COUNTERS_COUNT, self::COUNTERS_GROUP];
+    }
+
+    /**
+     * How this menu's actions show their counts: one of COUNTERS_LABEL, COUNTERS_COUNT, COUNTERS_GROUP. Automatic, or
+     * anything else stored, is the menu class's own default (static::COUNTERS_DEFAULT).
+     */
+    public function getCounters()
+    {
+        $s = isset($this->_aObject['counters']) ? (string)$this->_aObject['counters'] : '';
+        if($s !== self::COUNTERS_AUTO && in_array($s, self::getCountersModes(), true))
+            return $s;
+
+        return in_array(static::COUNTERS_DEFAULT, self::getCountersModes(), true) && static::COUNTERS_DEFAULT !== self::COUNTERS_AUTO ? static::COUNTERS_DEFAULT : self::COUNTERS_LABEL;
     }
 
     /**

@@ -10,6 +10,7 @@
  *   primary                  — button variant=primary
  */
 
+import { countLabel } from 'app/lib/counters-mode'
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -100,6 +101,13 @@ export default function ElementLikes(props) {
         onUpdate: (next) => setObjectData((prev) => mergeState(prev, next)),
     });
 
+    // The count, for the counter and for an action that shows it as its label (the menu's Counters `count`).
+    const count =
+        objectData?.counter != undefined &&
+        objectData.counter?.count != undefined
+            ? objectData.counter.count
+            : '';
+
     // --- action button ---
 
     const { showAsButton, showLabel } = resolveActionButtonFlags(params);
@@ -122,7 +130,8 @@ export default function ElementLikes(props) {
             <ActionButton
                 key="action"
                 startDecorator={icon}
-                title={showLabel ? title : false}
+                title={params?.show_action_count ? countLabel(count) : showLabel ? title : false}
+                accessibilityLabel={title}
                 onPress={undoLike}
                 pressed={true}
                 selectedState="voted"
@@ -134,7 +143,8 @@ export default function ElementLikes(props) {
             <ActionButton
                 key="action"
                 startDecorator={icon}
-                title={showLabel ? title : false}
+                title={params?.show_action_count ? countLabel(count) : showLabel ? title : false}
+                accessibilityLabel={title}
                 onPress={!isDisabled ? doLike : () => {}}
                 disabled={isDisabled}
                 {...buttonProps}
@@ -145,11 +155,6 @@ export default function ElementLikes(props) {
     // --- counter ---
 
     const showCounterAsButton = resolveCounterAsButton(params);
-    const count =
-        objectData?.counter != undefined &&
-        objectData.counter?.count != undefined
-            ? objectData.counter.count
-            : '';
 
     const CounterButton = pickCounterButton(showCombined, showCounterAsButton);
 

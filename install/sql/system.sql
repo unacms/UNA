@@ -5235,6 +5235,7 @@ CREATE TABLE IF NOT EXISTS `sys_objects_menu` (
   `template_id` int(11) NOT NULL,
   `button_style` varchar(16) NOT NULL DEFAULT '',
   `button_size` varchar(16) NOT NULL DEFAULT '',
+  `counters` varchar(16) NOT NULL DEFAULT '',
   `section_nav` varchar(16) NOT NULL DEFAULT '',
   `section_nav_small` varchar(16) NOT NULL DEFAULT '',
   `config_api` text NOT NULL,

@@ -206,6 +206,7 @@ class BxBaseMenu extends BxDolMenu
             // How the menu's buttons look and how big they are: BxDolMenu::BUTTON_STYLE_* and BUTTON_SIZE_*, empty for automatic.
             'button_style' => $this->getButtonStyle(),
             'button_size' => $this->getButtonSize(),
+            'counters' => $this->getCounters(),
             // How the apps show the menu as a section's navigation on large screens: BxDolMenu::SECTION_NAV_*, empty for tabs.
             'section_nav' => $this->getSectionNav(),
             // And on phones and tablets: BxDolMenu::SECTION_NAV_SMALL_*, empty for tabs.

@@ -16,6 +16,8 @@ require_once('BxTimelineMenuItemActions.php');
  */
 class BxTimelineMenuItemCounters extends BxTimelineMenuItemActions
 {
+    protected $_bCodeApi = false;
+
     public function __construct($aObject, $oTemplate = false)
     {
         parent::__construct($aObject, $oTemplate);
@@ -27,6 +29,58 @@ class BxTimelineMenuItemCounters extends BxTimelineMenuItemActions
             'item-vote' => 'isAllowedVoteView',
             'item-reaction' => 'isAllowedReactionView',
         ));
+    }
+
+    /**
+     * The counters menu is the feed item's stats: its own Counters setting doesn't apply.
+     */
+    protected function _applyCounters()
+    {
+    }
+
+    /**
+     * The Counters of the feed item's actions menu, which says what this row still has to show on the site:
+     * all the counts beside labels, the reactions summary beside counts (who reacted), nothing beside button groups.
+     * The apps get the whole row and follow the same rule themselves, so an older app that shows labels keeps its counts.
+     */
+    protected function _getActionsCounters()
+    {
+        foreach(['menu_item_actions_all', 'menu_item_actions'] as $sKey)
+            if(($oMenu = BxDolMenu::getObjectInstance($this->_oModule->_oConfig->getObject($sKey))) !== false)
+                return $oMenu->getCounters();
+
+        return BxDolMenu::COUNTERS_LABEL;
+    }
+
+    /**
+     * The apps get every counter: they apply the actions' Counters themselves, so an older app keeps its counts.
+     */
+    public function getCodeAPI()
+    {
+        $bCodeApi = $this->_bCodeApi;
+        $this->_bCodeApi = true;
+        try {
+            return parent::getCodeAPI();
+        }
+        finally {
+            $this->_bCodeApi = $bCodeApi;
+        }
+    }
+
+    protected function _isVisible($a)
+    {
+        if(!$this->_bIsApi && !$this->_bCodeApi)
+            switch($this->_getActionsCounters()) {
+                case BxDolMenu::COUNTERS_GROUP:
+                    return false;
+
+                case BxDolMenu::COUNTERS_COUNT:
+                    if(!in_array($a['name'], ['item-vote', 'item-reaction', 'item-score']))
+                        return false;
+                    break;
+            }
+
+        return parent::_isVisible($a);
     }
 
     protected function _getMenuItemItemComment($aItem)

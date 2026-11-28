@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation: how a menu of actions shows their counts. -->
+<resources name="ru" flag="ru" title="Russian" category="System">
+    <string_add name="_adm_nav_txt_menus_counters"><![CDATA[Счётчики]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_counters"><![CDATA[Как действия в этом меню показывают свои счётчики, на сайте и в приложениях. Подписи: каждое действие показывает своё название, а счётчики может показать меню статистики. Счётчики: каждое действие показывает свой счётчик вместо названия, и только значок, пока счётчик равен 0. Группы кнопок: каждое действие — две соединённые кнопки, действие и его счётчик, который показывает, кто это сделал. Автоматически: выбор самого меню.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_counters_label"><![CDATA[Подписи]]></string_add>
+    <string_add name="_adm_nav_txt_menus_counters_count"><![CDATA[Счётчики]]></string_add>
+    <string_add name="_adm_nav_txt_menus_counters_group"><![CDATA[Группы кнопок]]></string_add>
+</resources>

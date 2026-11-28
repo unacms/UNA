@@ -1634,6 +1634,7 @@
 	<string name="_adm_nav_dsc_items_visible_for_levels"><![CDATA[Select user levels that can see this menu item]]></string>
 	<string name="_adm_nav_dsc_menus_button_size"><![CDATA[The size of every button in this menu, on the site and in the apps. Automatic leaves each button the size the menu's style gives it.]]></string>
 	<string name="_adm_nav_dsc_menus_button_style"><![CDATA[How the buttons in this menu look, on the site and in the apps. Automatic keeps the button of the menu's style and makes it glass over a cover picture. Choose Glass for a menu that sits over a picture, Regular for one on a plain surface.]]></string>
+	<string name="_adm_nav_dsc_menus_counters"><![CDATA[How the actions in this menu show their counts, on the site and in the apps. Labels: each action shows its name, and a stats menu can show the counts. Counts: each action shows its count in place of its name, and its icon alone while the count is 0. Button groups: each action is two joined buttons, the action and its count, which shows who did it. Automatic uses the menu's own choice.]]></string>
 	<string name="_adm_nav_dsc_menus_persistent"><![CDATA[Number of persistent menu items. Applicable for menus with 'Auto More' mechanism only.]]></string>
         <string name="_adm_nav_dsc_menus_set_name"><![CDATA[Assign a Set of menu Items]]></string>
 	<string name="_adm_nav_dsc_menus_set_title"><![CDATA[Descriptive name displayed in Studio only. Use at least 3 characters.]]></string>
@@ -1725,6 +1726,10 @@
 	<string name="_adm_nav_txt_menus_button_style_glass"><![CDATA[Glass]]></string>
 	<string name="_adm_nav_txt_menus_button_style_plain"><![CDATA[Plain]]></string>
 	<string name="_adm_nav_txt_menus_button_style_regular"><![CDATA[Regular]]></string>
+	<string name="_adm_nav_txt_menus_counters"><![CDATA[Counts]]></string>
+	<string name="_adm_nav_txt_menus_counters_count"><![CDATA[Counts]]></string>
+	<string name="_adm_nav_txt_menus_counters_group"><![CDATA[Button groups]]></string>
+	<string name="_adm_nav_txt_menus_counters_label"><![CDATA[Labels]]></string>
 	<string name="_adm_nav_txt_menus_create_popup"><![CDATA[Add New Menu]]></string>
 	<string name="_adm_nav_txt_menus_edit_popup"><![CDATA[Edit "{0}" Menu]]></string>
 	<string name="_adm_nav_txt_menus_gl_items"><![CDATA[Items]]></string>

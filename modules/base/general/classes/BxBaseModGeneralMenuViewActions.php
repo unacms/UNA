@@ -16,6 +16,12 @@ bx_import('BxDolPrivacy');
  */
 class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
 {
+    /**
+     * A content page's actions are button groups (the action and its count, who did it) unless the menu says
+     * otherwise (Studio > Navigation > the menu's Counters).
+     */
+    const COUNTERS_DEFAULT = BxDolMenu::COUNTERS_GROUP;
+
     protected $_sModule;
     protected $_oModule;
 
@@ -184,6 +190,13 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
             'show_do_view_as_button' => $this->_bShowAsButton,
             'show_do_view_label' => $this->_bShowTitle
         );
+        if(!$this->_bIsApi) {
+            $aCounters = $this->_getCountersOptions();
+            if(isset($aCounters['show_do_vote_label']))
+                $aCounters['show_do_view_label'] = $aCounters['show_do_vote_label'];
+            unset($aCounters['show_do_vote_label']);
+            $aObjectOptions = array_merge($aObjectOptions, $aCounters);
+        }
         if(!empty($aParams['object_options']) && is_array($aParams['object_options']))
             $aObjectOptions = array_merge($aObjectOptions, $aParams['object_options']);
 
@@ -217,8 +230,19 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
             'dynamic_mode' => $this->_bDynamicMode,
             'show_do_comment_as_button' => $this->_bShowAsButton,
             'show_do_comment_label' => $this->_bShowTitle,
-            'show_counter' => false
+            // the apps get the count and draw the menu's Counters themselves
+            'show_counter' => $this->_bIsApi
         );
+        if(!$this->_bIsApi)
+            switch($this->getCounters()) {
+                case BxDolMenu::COUNTERS_COUNT:
+                    $aObjectOptions = array_merge($aObjectOptions, ['show_do_comment_label' => false, 'show_counter' => true, 'show_counter_number_only' => true]);
+                    break;
+
+                case BxDolMenu::COUNTERS_GROUP:
+                    $aObjectOptions = array_merge($aObjectOptions, ['show_counter' => true, 'show_counter_number_only' => true]);
+                    break;
+            }
         if(!empty($aParams['object_options']) && is_array($aParams['object_options']))
             $aObjectOptions = array_merge($aObjectOptions, $aParams['object_options']);
 
@@ -230,6 +254,120 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
             return '';
 
         return array($sResult, $this->_sClassMiSa);
+    }
+
+    /**
+     * The actions and, on the site, their stats beside them: the counts of the menu's own reactions, comments and views,
+     * as the menu's Counters leave them to show (all beside labels, who reacted beside counts, none beside button
+     * groups). The apps build the same row from the menu's items.
+     */
+    public function getCode()
+    {
+        $sActions = parent::getCode();
+        if($this->_bIsApi || empty($sActions) || !is_string($sActions))
+            return $sActions;
+
+        $sStats = $this->_getStatsCode();
+        if($sStats === '')
+            return $sActions;
+
+        return BxDolTemplate::getInstance()->parseHtmlByName('menu_actions_stats.html', [
+            'actions' => $sActions,
+            'stats' => $sStats,
+        ]);
+    }
+
+    /**
+     * Counters of the menu's reaction, vote, score, comment and view items that are on, in the menu's order.
+     */
+    protected function _getStatsCode()
+    {
+        $sMode = $this->getCounters();
+        if($sMode === BxDolMenu::COUNTERS_GROUP || empty($this->_aContentInfo))
+            return '';
+
+        $CNF = &$this->_oModule->_oConfig->CNF;
+        $aReactionItems = ['reaction', 'vote', 'score'];
+
+        $aRaw = $this->getMenuItemsRaw();
+        $aStats = [];
+        foreach($aRaw as $aItem) {
+            $sName = $aItem['name'] ?? '';
+            if(empty($aItem['active']) || !$this->_isVisible($aItem))
+                continue;
+            if($sMode === BxDolMenu::COUNTERS_COUNT && !in_array($sName, $aReactionItems))
+                continue;
+
+            $sCounter = '';
+            $aSource = $this->_getStatsSource($sName);
+            if(empty($aSource['object']) || empty($aSource['id']))
+                continue;
+
+            switch($sName) {
+                case 'reaction':
+                case 'vote':
+                case 'score':
+                    $oObject = $sName == 'score' ? BxDolScore::getObjectInstance($aSource['object'], $aSource['id']) : BxDolVote::getObjectInstance($aSource['object'], $aSource['id']);
+                    if($oObject && $oObject->isEnabled() && $oObject->isAllowedVoteView())
+                        $sCounter = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
+                    break;
+
+                case 'comment':
+                    $oObject = BxTemplCmts::getObjectInstance($aSource['object'], $aSource['id']);
+                    if($oObject && $oObject->isEnabled() && $oObject->isViewAllowed() === CHECK_ACTION_RESULT_ALLOWED) {
+                        // Mounted at zero too, hidden: BxDolCmts.js shows it when the first comment is posted.
+                        $aStats[] = $oObject->getCounter(['show_counter_empty' => false, 'dynamic_mode' => $this->_bDynamicMode]);
+                        continue 2;
+                    }
+                    break;
+
+                case 'view':
+                    $oObject = BxDolView::getObjectInstance($aSource['object'], $aSource['id']);
+                    if($oObject && $oObject->isEnabled() && $oObject->isAllowedViewView())
+                        $sCounter = $oObject->getCounter(['show_counter_label_icon' => true, 'show_counter_label_text' => true, 'dynamic_mode' => $this->_bDynamicMode]);
+                    break;
+            }
+
+            if(trim(strip_tags($sCounter, '<img><svg><i>')) !== '')
+                $aStats[] = $sCounter;
+        }
+
+        return implode('', $aStats);
+    }
+
+    /**
+     * The object and the content a stats row item counts: the module's own objects for its content. A menu of actions
+     * for something else (an album's image) overrides it with the objects and the id its own items use.
+     */
+    protected function _getStatsSource($sName)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aKeys = ['reaction' => 'OBJECT_REACTIONS', 'vote' => 'OBJECT_VOTES', 'score' => 'OBJECT_SCORES', 'comment' => 'OBJECT_COMMENTS', 'view' => 'OBJECT_VIEWS'];
+        if(!isset($aKeys[$sName]))
+            return [];
+
+        return ['object' => $CNF[$aKeys[$sName]] ?? '', 'id' => $this->_iContentId];
+    }
+
+    /**
+     * A vote element's options for the menu's Counters on the site; the apps draw the menu's `counters` themselves.
+     */
+    protected function _getCountersOptions()
+    {
+        if($this->_bIsApi)
+            return [];
+
+        switch($this->getCounters()) {
+            case BxDolMenu::COUNTERS_COUNT:
+                // The count beside the action's own icon is the number alone.
+                return ['show_do_vote_label' => false, 'show_counter' => true, 'show_counter_empty' => false, 'show_counter_active' => false, 'show_counter_label_icon' => false, 'show_counter_style' => 'simple'];
+
+            case BxDolMenu::COUNTERS_GROUP:
+                return ['show_counter' => true, 'show_counter_empty' => false, 'show_counter_active' => true];
+        }
+
+        return ['show_counter' => false];
     }
 
     protected function _getMenuItemVote($aItem, $aParams = [])
@@ -277,11 +415,11 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
         if(!$oObject || !$oObject->isEnabled())
             return '';
 
-        $aObjectOptions = array(
+        $aObjectOptions = array_merge(array(
             'dynamic_mode' => $this->_bDynamicMode,
             'show_do_vote_as_button' => $this->_bShowAsButton,
             'show_do_vote_label' => $this->_bShowTitle
-        );
+        ), $this->_getCountersOptions());
         if(!empty($aParams['object_options']) && is_array($aParams['object_options']))
             $aObjectOptions = array_merge($aObjectOptions, $aParams['object_options']);
 

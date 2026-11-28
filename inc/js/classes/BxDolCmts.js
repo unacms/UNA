@@ -224,7 +224,7 @@ BxDolCmts.prototype.cmtUpdateCounter = function (oElement, oData)
     if(oData.countf != undefined && oData.countf.length != 0) {
         var oCounter = this._getCounter(oElement);
         if(oCounter && oCounter.length > 0)
-            oCounter.replaceWith(oData.countf);
+            oCounter.not('.sys-ac-number').replaceWith(oData.countf); // a number-only counter takes the number below
     }
 
     var oCounter = this._getCounter(oElement, true);
@@ -236,6 +236,17 @@ BxDolCmts.prototype.cmtUpdateCounter = function (oElement, oData)
         oCounter = oCounter.parents('.' + sClassHidden + ':first');
 
     oCounter.toggleClass(sClassHidden);
+
+    //--- A link that shows the count as its label (a feed item's Comment in a menu's Counters "count" or "group").
+    $('[data-cmt-count="' + this._sObjName + '"]').each(function() {
+        var sLabel = $(this).attr('data-cmt-label');
+        var sText = sLabel ? sLabel + ' ' + oData.count : String(oData.count);
+        var oTitle = $(this).find('.bx-menu-item-title');
+        if(oTitle.length)
+            oTitle.text(sText);
+        else
+            $(this).children().last().append($('<span class="bx-menu-item-title bx-def-margin-sec-left-auto"></span>').text(sText));
+    });
 };
 
 BxDolCmts.prototype.cmtUpdateCounterAs = function (oData)

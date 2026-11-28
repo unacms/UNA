@@ -41,6 +41,20 @@ class BxAlbumsMenuViewActionsMedia extends BxAlbumsMenuViewActions
         }
     }
 
+    /**
+     * The stats row counts the image or the video, as this menu's items do, not its album.
+     */
+    protected function _getStatsSource($sName)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aKeys = ['vote' => 'OBJECT_VOTES_MEDIA', 'score' => 'OBJECT_SCORES_MEDIA', 'comment' => 'OBJECT_COMMENTS_MEDIA', 'view' => 'OBJECT_VIEWS_MEDIA'];
+        if(!isset($aKeys[$sName]))
+            return parent::_getStatsSource($sName); // reactions: the same object as this menu's Reaction item
+
+        return ['object' => $CNF[$aKeys[$sName]] ?? '', 'id' => (int)$this->_iMediaId];
+    }
+
     protected function _isContentPublic($iMediaId, $aPublicGroups = [])
     {
         $CNF = &$this->_oModule->_oConfig->CNF;

@@ -20,6 +20,7 @@
  * `options` behaves as before: few, with "like" as the default.
  */
 
+import { countLabel } from 'app/lib/counters-mode';
 import React, { useState, useRef, useEffect, createContext, useContext, type ComponentType, type ReactNode } from 'react';
 import {
     Modal as ReactNativeModal,
@@ -1146,7 +1147,8 @@ export default function ElementReactions(props: ReactionsProps) {
             <ActionButton
                 key="action"
                 startDecorator={icon}
-                title={showLabel ? label : false}
+                // The menu's Counters `count`: the total is the label (the icon alone at 0); the name stays spoken.
+                title={params?.show_action_count ? countLabel(counterItems.reduce((sum, item) => sum + liveCount(item), 0)) : showLabel ? label : false}
                 accessibilityLabel={spokenLabel ?? label}
                 pressed={pressed}
                 selectedState={pressed ? 'voted' : undefined}

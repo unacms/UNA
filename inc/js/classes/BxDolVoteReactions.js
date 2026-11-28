@@ -28,6 +28,14 @@ function BxDolVoteReactions(oOptions)
 BxDolVoteReactions.prototype = Object.create(BxDolVote.prototype);
 BxDolVoteReactions.prototype.constructor = BxDolVoteReactions;
 
+/**
+ * A count shown as an action's label (a menu's Counters "count") is text: pressing it presses the action.
+ * The action's own control takes the keyboard, so the text needs no focus of its own.
+ */
+$(document).off('click.bxVoteCounterDo').on('click.bxVoteCounterDo', '.bx-vote-counter-do', function() {
+    $(this).closest('.sys-action').find('.bx-vote-do-vote').first().trigger('click');
+});
+
 BxDolVoteReactions.prototype.init = function()
 {
     BxDolVote.prototype.init.call(this);
@@ -295,11 +303,12 @@ BxDolVoteReactions.prototype.changeVotedBy = function(oLink, sReaction)
 
 BxDolVoteReactions.prototype._getCounter = function(oElement)
 {
+    // The counter inside the action and the object's other counters on the page (a stats row's summary): each
+    // takes the part of the answer in its own format, a reaction's count or the total.
     var oCounter = BxDolVote.prototype._getCounter.call(this, oElement);
-    if(oCounter && oCounter.length > 0)
-        return oCounter;
+    var oOthers = $('.' + this._aHtmlIds['counter']).find('.' + this._sSP + '-counter');
 
-    return $('.' + this._aHtmlIds['counter']).find('.' + this._sSP + '-counter');
+    return oCounter && oCounter.length > 0 ? oCounter.add(oOthers) : oOthers;
 };
 
 (function($) {
