@@ -27,10 +27,51 @@ class BxDolGridQuery extends BxDolDb
         return (bool)$oDb->getOne($oDb->prepare("SELECT 1 FROM `sys_objects_grid` WHERE `object` = ? LIMIT 1", $sObject));
     }
 
+    /**
+     * The engine of a grid object ('' for the classic grid), or false when there is no such object.
+     */
+    public static function getGridEngine ($sObject)
+    {
+        $oDb = BxDolDb::getInstance();
+        return $oDb->getOne($oDb->prepare("SELECT `engine` FROM `sys_objects_grid` WHERE `object` = ? LIMIT 1", $sObject));
+    }
+
     public static function setGridEngine ($sObject, $sEngine)
     {
         $oDb = BxDolDb::getInstance();
         return $oDb->query($oDb->prepare("UPDATE `sys_objects_grid` SET `engine` = ? WHERE `object` = ?", $sEngine, $sObject)) !== false;
+    }
+
+    /**
+     * The search in translatable fields (filter_fields_translatable): a row one of whose fields is a language key with
+     * a translation that matches. It is a subquery, not a join: the grid's own columns (`id`, `key`) stay its own and
+     * a row comes once, whatever number of languages matches.
+     * @param $aFields the grid's translatable fields
+     * @param $bLike LIKE, else full-text search
+     * @return string a condition for the grid query's WHERE, '' without fields
+     */
+    public static function getFilterTranslatableCond ($aFields, $sFilter, $bLike = true)
+    {
+        $aKeys = [];
+        // a field may name its table: `tm`.`title` (stored as tm`.`title, the outer quotes are added here)
+        foreach ((array)$aFields as $sField)
+            $aKeys[] = "`k`.`Key` = `" . implode('`.`', explode('.', str_replace('`', '', $sField))) . "`";
+        if (!$aKeys)
+            return '';
+
+        $oDb = BxDolDb::getInstance();
+        $sMatch = $bLike ? $oDb->prepareAsString("`s`.`String` LIKE ?", '%' . $sFilter . '%') : $oDb->prepareAsString("MATCH (`s`.`String`) AGAINST (?)", $sFilter);
+
+        return "EXISTS (SELECT 1 FROM `sys_localization_keys` AS `k` INNER JOIN `sys_localization_strings` AS `s` ON `k`.`ID` = `s`.`IDKey` WHERE (" . implode(' OR ', $aKeys) . ") AND " . $sMatch . ")";
+    }
+
+    /**
+     * Queries of the same columns as one table (a UNION in a derived table), so a grid's search, order and count
+     * apply to the rows of them all.
+     */
+    public static function getUnionSource ($aQueries, $sAlias = 'union_all')
+    {
+        return "SELECT * FROM ((" . implode(") UNION (", $aQueries) . ")) AS `" . str_replace('`', '', $sAlias) . "` WHERE 1";
     }
 
     static public function getGridObject ($sObject)

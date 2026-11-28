@@ -382,6 +382,7 @@
     "Save": "Enregistrer",
     "Enabled": "Activé",
     "Clear": "Effacer",
+    "Clear filter": "Effacer le filtre",
     "Are you sure?": "Êtes-vous sûr ?",
     "View All": "Tout voir",
     "Search...": "Rechercher...",
@@ -596,5 +597,6 @@
     "Total logged": "Total enregistré",
     "optional": "facultatif",
     "Upload a picture": "Téléverser une image",
-    "Change picture": "Changer l'image"
+    "Change picture": "Changer l'image",
+    "Remove preview": "Retirer l'aperçu"
 }

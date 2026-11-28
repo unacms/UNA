@@ -13,7 +13,6 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'deprecated' => 1,
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_editor',
     'title' => 'Editor',
@@ -25,6 +24,11 @@ $aConfig = array(
     'compatible_with' => array(
         '13.0.x'
     ),
+
+    /**
+     * Unfinished: installed and updated like any module, labelled as a preview in Studio and the installer.
+     */
+    'preview' => true,
 
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.

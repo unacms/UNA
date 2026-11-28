@@ -90,7 +90,8 @@ class BxBaseView extends BxDolView
         $bShowDoViewAsButton = !$bShowDoViewAsButtonSmall && isset($aParams['show_do_view_as_button']) && $aParams['show_do_view_as_button'] == true;
         $bShowScript = !isset($aParams['show_script']) || $aParams['show_script'] == true;
 
-        $bAllowedViewViewViewers = $this->isAllowedViewViewViewers();
+        // A count shown as an action's label (a menu's Counters `count`) is text: pressing it is the action's press.
+        $bAllowedViewViewViewers = $this->isAllowedViewViewViewers() && (!isset($aParams['show_counter_active']) || (bool)$aParams['show_counter_active'] === true);
 
         $sClass = 'sys-action-counter';
         if(isset($aParams['show_counter_only']) && (bool)$aParams['show_counter_only'] === true)

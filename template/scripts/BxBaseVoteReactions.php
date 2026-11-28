@@ -156,6 +156,9 @@ class BxBaseVoteReactions extends BxDolVoteReactions
 
         $aParams['id_counter'] = '';
 
+        // A count shown as the action's label (a menu's Counters `count`) is text: pressing it is the action's press.
+        $bActive = !isset($aParams['show_counter_active']) || (bool)$aParams['show_counter_active'] === true;
+
         $iResultC = $iResultS = 0;
         foreach($aReactions as $sName) {
             $iResultC += (int)$aVote['count_' . $sName];
@@ -182,17 +185,21 @@ class BxBaseVoteReactions extends BxDolVoteReactions
             'type' => $this->_sType,
             'style' => self::$_sCounterStyleSimple,
             'bx_if:show_link' => array(
-                'condition' => true,
+                'condition' => $bActive,
                 'content' => array(
                     'href' => 'javascript:void(0)',
                     'onclick' => 'javascript:' . $this->getJsClickCounter($aParams),
                     'title' => bx_html_attribute($this->_getTitleDoBy($aParams)),
-                    'counter' => parent::getCounter(array_merge($aParams, array('show_script' => false))),
+                    'counter' => $bActive ? parent::getCounter(array_merge($aParams, array('show_script' => false))) : '',
                 )
             ),
             'bx_if:show_text' => array(
-                'condition' => false,
-                'content' => array()
+                'condition' => !$bActive,
+                'content' => array(
+                    // BxDolVoteReactions.js passes a press on it to the action's own control.
+                    'text_class' => 'bx-vote-counter-do cursor-pointer',
+                    'counter' => !$bActive ? parent::getCounter(array_merge($aParams, array('show_script' => false))) : '',
+                )
             ),
             'script' => $bShowScript ? $this->getJsScript($aParams) : ''
         ));
@@ -245,6 +252,7 @@ class BxBaseVoteReactions extends BxDolVoteReactions
             'bx_if:show_text' => array(
                 'condition' => true,
                 'content' => array(
+                    'text_class' => '',
                     'counter' => $sResult,
                 )
             ),

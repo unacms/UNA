@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="ru" flag="ru" title="Russian">
+    <string name="_sys_module_persons"><![CDATA[Персоны]]></string>
     <string name="_bx_persons"><![CDATA[Персоны]]></string>
     <string name="_bx_persons_cmts"><![CDATA[Персоны - Комментарии]]></string>
     <string name="_bx_persons_reactions"><![CDATA[Персоны - Реакции]]></string>

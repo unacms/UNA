@@ -14,6 +14,8 @@
     <string name="_bx_tasks_option_plain_summary_chars"><![CDATA[Количество символов в описании публикации при отсутствующей картинке публикации]]></string>
     <string name="_bx_tasks_option_per_page_browse"><![CDATA[Количество элементов на странице]]></string>
     <string name="_bx_tasks_option_per_page_profile"><![CDATA[Количество элементов на странице профайла]]></string>
+    <string name="_bx_tasks_option_personal_prefix"><![CDATA[Префикс номеров задач вне сообществ]]></string>
+    <string name="_bx_tasks_option_personal_prefix_err"><![CDATA[Используйте от 2 до 10 латинских букв и цифр, первой должна быть буква.]]></string>
     <string name="_bx_tasks_option_rss_num"><![CDATA[Количество элементов в ленте RSS]]></string>
     <string name="_bx_tasks_option_searchable_fields"><![CDATA[Поля для поиска]]></string>
     <string name="_bx_tasks_option_auto_activation_for_categories"><![CDATA[Автоактивация для категорий]]></string>
@@ -124,7 +126,12 @@
     <string name="_bx_tasks_form_context_input_sys_gh_app_id"><![CDATA[GitHub: Приложение]]></string>
     <string name="_bx_tasks_form_context_input_gh_app_id"><![CDATA[GitHub: Приложение]]></string>
     <string name="_bx_tasks_form_context_input_sys_gh_username"><![CDATA[GitHub: Имя пользователя]]></string>
+    <string name="_bx_tasks_form_context_input_sys_prefix"><![CDATA[Префикс]]></string>
     <string name="_bx_tasks_form_context_input_gh_username"><![CDATA[GitHub: Имя пользователя]]></string>
+    <string name="_bx_tasks_form_context_input_prefix"><![CDATA[Префикс номеров задач]]></string>
+    <string name="_bx_tasks_form_context_input_prefix_err"><![CDATA[Используйте от 2 до 10 латинских букв и цифр, первой должна быть буква.]]></string>
+    <string name="_bx_tasks_form_context_input_prefix_err_taken"><![CDATA[Этот префикс используется или использовался другим сообществом. Выберите другой.]]></string>
+    <string name="_bx_tasks_form_context_input_prefix_info"><![CDATA[С него начинаются номера задач, например UNA-12. Ссылки с прежним префиксом продолжают работать.]]></string>
     <string name="_bx_tasks_form_context_input_sys_gh_repository"><![CDATA[GitHub: Репозиторий]]></string>
     <string name="_bx_tasks_form_context_input_gh_repository"><![CDATA[GitHub: Репозиторий]]></string>
     <string name="_bx_tasks_form_context_input_sys_do_submit"><![CDATA[Выполнить]]></string>

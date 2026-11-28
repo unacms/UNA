@@ -36,12 +36,12 @@ tests/composer.phar
 tests/.env
 tests/.phpunit.cache
 tests/.phpunit.result.cache
+tests/phpunit.shard.xml
 samples/img/*
 modules/boonex/acl_api
 modules/boonex/app_sumo
 modules/boonex/ether
 modules/boonex/market_api
-modules/boonex/media
 modules/boonex/una_mods
 modules/boonex/projects
 modules/vendor

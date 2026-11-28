@@ -28,6 +28,21 @@ type MessageInputProps = {
  * input leaves room for the avatar (if any); once it has content it becomes rounded-2xl
  * and the actions drop under the text.
  */
+/**
+ * Web: a press on the surface around the input (its padding is taller than the
+ * one-line editor) would otherwise focus the page's container. Send it to the input.
+ */
+export function focusInputOnMouseDown(e: { target: unknown; currentTarget: unknown; preventDefault: () => void }) {
+    const target = e.target as HTMLElement | null;
+    const surface = e.currentTarget as HTMLElement | null;
+    if (!target?.closest || !surface?.querySelector) return;
+    if (target.closest('[contenteditable="true"], textarea, input, a, button, [role="button"], [role="radio"]')) return;
+    const input = surface.querySelector<HTMLElement>('[contenteditable="true"], textarea');
+    if (!input) return;
+    e.preventDefault();
+    input.focus();
+}
+
 export function MessageInput({ expanded, avatar, actions, header, footer, children }: MessageInputProps) {
     const isDesktop = useIsDesktop();
     const growFromBottom = !isDesktop;
@@ -36,7 +51,10 @@ export function MessageInput({ expanded, avatar, actions, header, footer, childr
     const surface = hasLiquidGlass ? '' : 'bg-popover/80 backdrop-blur-lg shadow-btn-glass dark:shadow-btn-glass-deep';
 
     return (
-        <View className={`w-full flex-auto ${surface} ${rounded}`}>
+        <View
+            className={`w-full flex-auto web:cursor-text ${surface} ${rounded}`}
+            {...(isWeb ? { onMouseDown: focusInputOnMouseDown } : null)}
+        >
             {hasLiquidGlass ? <GlassSurface rounded={rounded} /> : null}
             {header}
             <Row className={`w-full gap-1 flex-auto ${growFromBottom ? 'items-end' : 'items-start'} `}>

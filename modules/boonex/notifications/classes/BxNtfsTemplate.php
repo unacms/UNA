@@ -431,6 +431,12 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
             $sBody = bx_replace_markers($aEtemplate['body'], $aEtParams);
         }
         else {
+            /**
+             * The button's label: a module can name its action in the email settings
+             * of the notification content (Messenger: Reply), else View.
+             */
+            $sButton = !empty($aContent['settings']['email']['button']) ? $aContent['settings']['email']['button'] : _t('_View');
+
             $sSubject = $sContent;
             $sBody = $this->parseHtmlByName('et_new_event.html', [
                 'bx_if:show_icon_image' => [
@@ -451,9 +457,11 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
                 'bx_if:show_summary' => [
                     'condition' => !empty($sSummary),
                     'content' => [
-                        'summary' => $sSummary
+                        // plain escaped text, cropped when the notification was saved; keep its line breaks
+                        'summary' => nl2br($sSummary)
                     ]
-                ]
+                ],
+                'button' => $sButton
             ]);
         }
 

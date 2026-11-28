@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Module title in Russian to match the new English title. -->
+<resources name="ru" flag="ru" title="Russian" category="Market">
+    <string_upd name="_sys_module_market"><![CDATA[Маркетплейс]]></string_upd>
+    <string_upd name="_bx_market"><![CDATA[Маркетплейс]]></string_upd>
+    <string_upd name="_bx_market_page_title_home"><![CDATA[Маркетплейс]]></string_upd>
+    <string_upd name="_bx_market_cmts"><![CDATA[Маркетплейс - Обзоры]]></string_upd>
+    <string_upd name="_bx_market_reactions"><![CDATA[Маркетплейс - Реакции]]></string_upd>
+    <string_upd name="_bx_market_page_title_sys_home"><![CDATA[Маркетплейс - Домой]]></string_upd>
+    <string_upd name="_bx_market_menu_title_submenu"><![CDATA[Маркетплейс - Подменю]]></string_upd>
+    <string_upd name="_bx_market_menu_set_title_submenu"><![CDATA[Маркетплейс - Подменю]]></string_upd>
+    <string_upd name="_bx_market_menu_item_title_system_entries_home"><![CDATA[Маркетплейс]]></string_upd>
+    <string_upd name="_bx_market_menu_item_title_entries_home"><![CDATA[Маркетплейс]]></string_upd>
+    <string_upd name="_bx_market_menu_item_title_system_entries_public"><![CDATA[Маркетплейс]]></string_upd>
+    <string_upd name="_bx_market_menu_item_title_entries_public"><![CDATA[Маркетплейс]]></string_upd>
+    <string_upd name="_bx_market_chart_growth"><![CDATA[Маркетплейс: Развитие]]></string_upd>
+    <string_upd name="_bx_market_chart_growth_speed"><![CDATA[Маркетплейс: Скорость развития]]></string_upd>
+</resources>

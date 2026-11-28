@@ -13,7 +13,7 @@ function BxDolVoteReactions(oOptions)
     this._bSingleMode = oOptions.bSingleMode === undefined ? 0 : oOptions.bSingleMode; // enable 'single' mode - vote with the only one available reaction when clicked.
 
     this._iTimeoutShowId = 0;
-    this._iTimeoutShowDelay = 750;
+    this._iTimeoutShowDelay = 800; // long enough that a click on the button, or a pointer passing over it, opens nothing
     this._iTimeoutHideId = 0;
     this._iTimeoutHideDelay = 1000;
     this._fOnVoteIn = null;
@@ -27,6 +27,14 @@ function BxDolVoteReactions(oOptions)
 
 BxDolVoteReactions.prototype = Object.create(BxDolVote.prototype);
 BxDolVoteReactions.prototype.constructor = BxDolVoteReactions;
+
+/**
+ * A count shown as an action's label (a menu's Counters "count") is text: pressing it presses the action.
+ * The action's own control takes the keyboard, so the text needs no focus of its own.
+ */
+$(document).off('click.bxVoteCounterDo').on('click.bxVoteCounterDo', '.bx-vote-counter-do', function() {
+    $(this).closest('.sys-action').find('.bx-vote-do-vote').first().trigger('click');
+});
 
 BxDolVoteReactions.prototype.init = function()
 {
@@ -204,6 +212,9 @@ BxDolVoteReactions.prototype.toggleDoPopup = function(oLink, iValue, oOptions)
     if(this._iTimeoutShowId)
         clearTimeout(this._iTimeoutShowId);
 
+    // the item that opened the popup keeps its hover look while the popup covers it
+    this._oDoHeld = $(oLink).closest('.bx-menu-item').length ? $(oLink).closest('.bx-menu-item') : $(oLink);
+
     oOptions = oOptions || {};
     oOptions = $.extend({}, {
         id: {value: this._aHtmlIds['do_popup'], force: true}, 
@@ -245,11 +256,17 @@ BxDolVoteReactions.prototype.onDoPopupShow = function(oPopup)
     };
 
     $(oPopup).hover(this._fOnDoPopupIn, this._fOnDoPopupOut);
+
+    if(this._oDoHeld)
+        this._oDoHeld.addClass('bx-hover-held');
 };
 
 BxDolVoteReactions.prototype.onDoPopupHide = function(oPopup)
 {
     $(oPopup).unbind('mouseenter', this._fOnDoPopupIn).unbind('mouseleave', this._fOnDoPopupOut);
+
+    if(this._oDoHeld)
+        this._oDoHeld.removeClass('bx-hover-held');
 };
 
 BxDolVoteReactions.prototype.onDoPopupIn = function(oPopup)
@@ -286,11 +303,12 @@ BxDolVoteReactions.prototype.changeVotedBy = function(oLink, sReaction)
 
 BxDolVoteReactions.prototype._getCounter = function(oElement)
 {
+    // The counter inside the action and the object's other counters on the page (a stats row's summary): each
+    // takes the part of the answer in its own format, a reaction's count or the total.
     var oCounter = BxDolVote.prototype._getCounter.call(this, oElement);
-    if(oCounter && oCounter.length > 0)
-        return oCounter;
+    var oOthers = $('.' + this._aHtmlIds['counter']).find('.' + this._sSP + '-counter');
 
-    return $('.' + this._aHtmlIds['counter']).find('.' + this._sSP + '-counter');
+    return oCounter && oCounter.length > 0 ? oCounter.add(oOthers) : oOthers;
 };
 
 (function($) {

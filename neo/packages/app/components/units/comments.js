@@ -1,3 +1,4 @@
+import { countersModeParams, menuCountersMode } from 'app/lib/counters-mode'
 import { useMemo, memo, useCallback, useState, useEffect } from 'react'
 import { Platform, Animated } from 'react-native'
 import { menuItemsByName, FeedbackHaptics, appSetting, getDataForMenu, attachmentKindByName } from 'app/lib/util';
@@ -136,6 +137,25 @@ function UnitCommentsDefault(props) {
         setPostData(formData)
     }, [])
 
+    // The author takes the link's card off and keeps the link: UNA marks the comment's links plain.
+    const [embedOff, setEmbedOff] = useState(false)
+    const handleRemoveEmbed = useCallback(async () => {
+        setEmbedOff(true)
+        try {
+            const result = await fetcher(
+                '/api.php?r=' +
+                appSetting('urls', 'cmts') +
+                '/&params[]=' +
+                encodeURIComponent(JSON.stringify({ module, object_id: objectId, action: 'embed_off', id: commentId }))
+            )
+            // UNA answers with the comment only when it saved the change
+            if (!result?.data?.browse)
+                setEmbedOff(false)
+        } catch {
+            setEmbedOff(false)
+        }
+    }, [module, objectId, commentId])
+
     if (hasData && dynamicData?.data?.browse?.data?.data[0]['i' + commentId]) {
         data =
             dynamicData?.data?.browse?.data?.data[0]['i' + commentId]
@@ -215,6 +235,14 @@ function UnitCommentsDefault(props) {
 
     const Badges = components['molecule']['badges'];
 
+
+    const countersMode = menuCountersMode(data?.menu_actions)
+    const actionItems = data?.menu_actions?.items || []
+    const counterItems = !countersMode || countersMode === 'label'
+        ? actionItems
+        : countersMode === 'count'
+          ? actionItems.filter((item) => ['score', 'scores'].includes(item?.data?.type))
+          : []
 
     const isShowReply = data?.menu_actions?.items?.find(
         (x) => x.name === 'item-reply'
@@ -319,9 +347,9 @@ function UnitCommentsDefault(props) {
                                 showLess={true}
                                 customClassName="u-vanilla-html-small"
                             />
-                            {!!data.embed && (
-                                <View>
-                                    <Embed data={data.embed} size="small" />
+                            {!!data.embed && !embedOff && (
+                                <View className="mt-2">
+                                    <Embed data={data.embed} size="small" onRemove={data.embed_removable ? handleRemoveEmbed : undefined} />
                                 </View>
                             )}
                         </View>
@@ -373,9 +401,9 @@ function UnitCommentsDefault(props) {
                                     displayType="element"
                                     showMatched={true}
                                     params={{
-                                        show_action: true,
-                                        show_counter: false,
-                                        show_combined: false,
+                                        // UNA's Counters for the comment's actions (Studio > Navigation); labels
+                                        // with the counts apart where it sends none.
+                                        ...(countersMode ? countersModeParams(countersMode) : { show_action: true, show_counter: false, show_combined: false }),
                                         button_size: 'xs',
                                         button_variant: 'link',
                                         button_rounded: true,
@@ -383,8 +411,11 @@ function UnitCommentsDefault(props) {
                                 />}
 
                                 <View className="ml-auto flex-row items-center gap-1">
-                                    {data.menu_actions?.items?.length > 0 && <Menu
+                                    {/* The counts apart beside labels; beside counts only scores, whose buttons don't draw
+                                        their count yet; button groups show them on the actions. */}
+                                    {counterItems.length > 0 && <Menu
                                         {...data.menu_actions}
+                                        items={counterItems}
                                         displayType="element"
                                         showMatched={true}
                                         params={{

@@ -13,6 +13,12 @@
  */
 class BxBaseCmtsMenuActions extends BxTemplMenuCustom
 {
+    /**
+     * A comment's actions show their counts as their labels unless the menu says otherwise (Studio > Navigation).
+     * The apps follow it (the menu's `counters`); on the site comments keep their own layout for now.
+     */
+    const COUNTERS_DEFAULT = BxDolMenu::COUNTERS_COUNT;
+
     protected static $_sModeActions = 'actions';
     protected static $_sModeCounters = 'counters';
 

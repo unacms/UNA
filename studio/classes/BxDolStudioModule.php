@@ -70,6 +70,40 @@ class BxDolStudioModule extends BxTemplStudioWidget
         return $oObject;
     }
 
+    /**
+     * What Studio says about a deprecated module, or '' when it is not deprecated.
+     * @param array $aModule `sys_modules` row
+     */
+    public static function getDeprecationMessage($aModule)
+    {
+        if(empty($aModule['deprecated']))
+            return '';
+
+        $sTitle = _t($aModule['title']);
+        $sReplacedBy = isset($aModule['replaced_by']) ? $aModule['replaced_by'] : '';
+        if($sReplacedBy == BX_DOL_STUDIO_MODULE_SYSTEM)
+            return _t('_adm_msg_module_deprecated_core', $sTitle);
+
+        if($sReplacedBy != '') {
+            $aReplacement = BxDolModuleQuery::getInstance()->getModuleByName($sReplacedBy);
+            return _t('_adm_msg_module_deprecated_replaced', $sTitle, !empty($aReplacement['title']) ? _t($aReplacement['title']) : $sReplacedBy);
+        }
+
+        return _t('_adm_msg_module_deprecated', $sTitle);
+    }
+
+    /**
+     * What Studio says about a preview module, or '' when it is not one.
+     * @param array $aModule `sys_modules` row
+     */
+    public static function getPreviewMessage($aModule)
+    {
+        if(empty($aModule['preview']))
+            return '';
+
+        return _t('_adm_msg_module_preview', _t($aModule['title']));
+    }
+
     public function init()
     {
         $this->aModule = BxDolModuleQuery::getInstance()->getModuleByName($this->sModule);
@@ -222,6 +256,15 @@ class BxDolStudioModule extends BxTemplStudioWidget
         if($aResult['code'] != 0)
             return $aResult;
 
+        BxDolAdminLog::record([
+            'source' => 'studio',
+            'object_type' => BxDolAdminLog::moduleObjectType($aModule),
+            'object_id' => (string)($aModule['name'] ?? ''),
+            'action' => $iEnabled == 0 ? 'enable' : 'disable',
+            'before' => ['enabled' => $iEnabled],
+            'after' => ['enabled' => 1 - $iEnabled],
+        ]);
+
         $this->aModule = $oDbModule->getModuleByName($this->sModule);
 
         $iEnabled = 1 - $iEnabled;
@@ -256,6 +299,15 @@ class BxDolStudioModule extends BxTemplStudioWidget
 
         $aResult = BxDolStudioInstallerUtils::getInstance()->perform($aModule['path'], 'uninstall', array('html_response' => true));
         if($aResult['code'] == BX_DOL_STUDIO_IU_RC_SUCCESS) {
+            BxDolAdminLog::record([
+                'source' => 'studio',
+                'object_type' => BxDolAdminLog::moduleObjectType($aModule),
+                'object_id' => (string)($aModule['name'] ?? ''),
+                'action' => 'uninstall',
+                'before' => ['enabled' => (int)($aModule['enabled'] ?? 0)],
+                'after' => '',
+            ]);
+
             $aResult = array_merge($aResult, array(
                 'page' => $aPage['name'],
                 'widget_id' => $iWidgetId,

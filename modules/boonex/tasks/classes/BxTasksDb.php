@@ -1093,6 +1093,236 @@ class BxTasksDb extends BxBaseModTextDb
         ]) !== false;
     }
 
+    /*
+     * Numbers of tasks (UNA-12). A community's row in bx_tasks_contexts keeps its current prefix and
+     * the last number it gave; the row of id 0 does it for the tasks in no community. Every prefix a
+     * community ever had stays in bx_tasks_prefixes, so no other community takes it and its old
+     * numbers still find the tasks.
+     */
+
+    public function addContextRow($iContextId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return $this->query("INSERT IGNORE INTO `" . $CNF['TABLE_CONTEXTS'] . "` (`id`) VALUES (:id)", [
+            'id' => (int)$iContextId
+        ]) !== false;
+    }
+
+    public function getContextPrefix($iContextId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (string)$this->getOne("SELECT `prefix` FROM `" . $CNF['TABLE_CONTEXTS'] . "` WHERE `id` = :id", [
+            'id' => (int)$iContextId
+        ]);
+    }
+
+    /**
+     * The current prefixes of communities (id => prefix), for a page of tasks at once.
+     */
+    public function getContextsPrefixes($aContextIds)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContextIds = array_unique(array_map('intval', $aContextIds));
+        if(!$aContextIds)
+            return [];
+
+        return $this->getPairs("SELECT `id`, `prefix` FROM `" . $CNF['TABLE_CONTEXTS'] . "` WHERE `id` IN (" . $this->implode_escape($aContextIds) . ")", 'id', 'prefix');
+    }
+
+    /**
+     * Sets a community's prefix, only while it is still $sPrior (another request may have set it).
+     */
+    public function updateContextPrefix($iContextId, $sPrefix, $sPrior)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->query("UPDATE `" . $CNF['TABLE_CONTEXTS'] . "` SET `prefix` = :prefix WHERE `id` = :id AND `prefix` = :prior", [
+            'id' => (int)$iContextId,
+            'prefix' => $sPrefix,
+            'prior' => $sPrior
+        ]) > 0;
+    }
+
+    /**
+     * The community a prefix is (or was) of, false for a free one.
+     */
+    public function getPrefixContextId($sPrefix)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $mixedResult = $this->getOne("SELECT `context_id` FROM `" . $CNF['TABLE_PREFIXES'] . "` WHERE `prefix` = :prefix", [
+            'prefix' => $sPrefix
+        ]);
+
+        return $mixedResult === false || $mixedResult === null ? false : (int)$mixedResult;
+    }
+
+    /**
+     * Keeps a prefix for a community: true when it is that community's now, false when another has it.
+     */
+    public function reservePrefix($sPrefix, $iContextId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $this->query("INSERT IGNORE INTO `" . $CNF['TABLE_PREFIXES'] . "` (`prefix`, `context_id`, `added`) VALUES (:prefix, :context_id, :added)", [
+            'prefix' => $sPrefix,
+            'context_id' => (int)$iContextId,
+            'added' => time()
+        ]);
+
+        return $this->getPrefixContextId($sPrefix) === (int)$iContextId;
+    }
+
+    /**
+     * The next number of a community's counter. LAST_INSERT_ID(expr) gives it to this connection
+     * only, so two tasks added at once never get the same number.
+     */
+    public function getNextNumber($iContextId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(!$this->query("UPDATE `" . $CNF['TABLE_CONTEXTS'] . "` SET `last_number` = LAST_INSERT_ID(`last_number` + 1) WHERE `id` = :id", ['id' => (int)$iContextId]))
+            return 0;
+
+        return (int)$this->getOne("SELECT LAST_INSERT_ID()");
+    }
+
+    /**
+     * Gives a task its number, once: a number never changes, even when the task moves to another community.
+     */
+    public function setTaskNumber($iContentId, $iContextId, $iNumber)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->query("UPDATE `" . $CNF['TABLE_ENTRIES'] . "` SET `" . $CNF['FIELD_NUMBER'] . "` = :number, `" . $CNF['FIELD_NUMBER_CONTEXT'] . "` = :context_id WHERE `" . $CNF['FIELD_ID'] . "` = :id AND `" . $CNF['FIELD_NUMBER'] . "` = 0", [
+            'id' => (int)$iContentId,
+            'context_id' => (int)$iContextId,
+            'number' => (int)$iNumber
+        ]) > 0;
+    }
+
+    /**
+     * The tasks which have no number yet (added before numbers), the oldest first.
+     */
+    public function getTasksWithoutNumber($iLimit = 1000)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return $this->getAll("SELECT `" . $CNF['FIELD_ID'] . "` AS `id`, `" . $CNF['FIELD_ALLOW_VIEW_TO'] . "` AS `allow_view_to` FROM `" . $CNF['TABLE_ENTRIES'] . "` WHERE `" . $CNF['FIELD_NUMBER'] . "` = 0 ORDER BY `" . $CNF['FIELD_ADDED'] . "` ASC, `" . $CNF['FIELD_ID'] . "` ASC LIMIT " . (int)$iLimit);
+    }
+
+    /**
+     * A task by its prefix, the community's current one or a former one, and its number.
+     */
+    public function getTaskIdByNumber($sPrefix, $iNumber)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->getOne("SELECT `te`.`" . $CNF['FIELD_ID'] . "` FROM `" . $CNF['TABLE_PREFIXES'] . "` AS `tp` INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `te`.`" . $CNF['FIELD_NUMBER_CONTEXT'] . "` = `tp`.`context_id` AND `te`.`" . $CNF['FIELD_NUMBER'] . "` = :number WHERE `tp`.`prefix` = :prefix LIMIT 1", [
+            'prefix' => $sPrefix,
+            'number' => (int)$iNumber
+        ]);
+    }
+
+    /**
+     * The SEO links of a community's tasks (on every page of a task) take its prefix: una-12.
+     */
+    public function updateSeoLinksByNumberContext($iContextId, $sPrefix)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return $this->query("UPDATE `sys_seo_links` AS `sl` INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `sl`.`param_value` = CAST(`te`.`" . $CNF['FIELD_ID'] . "` AS CHAR) SET `sl`.`uri` = CONCAT(:prefix, '-', `te`.`" . $CNF['FIELD_NUMBER'] . "`) WHERE `sl`.`module` = :module AND `sl`.`param_name` = 'id' AND `te`.`" . $CNF['FIELD_NUMBER_CONTEXT'] . "` = :context_id AND `te`.`" . $CNF['FIELD_NUMBER'] . "` > 0", [
+            'module' => $this->_oConfig->getName(),
+            'context_id' => (int)$iContextId,
+            'prefix' => mb_strtolower($sPrefix)
+        ]) !== false;
+    }
+
+    /**
+     * Keeps the SEO links of the tasks which have no number yet (made from their titles), before
+     * their numbers become their links, so the former links still lead to them. Then moves those
+     * links out of the way (~12, which no title makes): a title link `una-1` of one task would
+     * otherwise stop another from getting `una-1` as its number's link.
+     */
+    public function saveFormerSeoLinks()
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $sJoin = "`sys_seo_links` AS `sl` INNER JOIN `" . $CNF['TABLE_ENTRIES'] . "` AS `te` ON `sl`.`param_value` = CAST(`te`.`" . $CNF['FIELD_ID'] . "` AS CHAR)";
+        $sWhere = "`sl`.`module` = :module AND `sl`.`param_name` = 'id' AND `te`.`" . $CNF['FIELD_NUMBER'] . "` = 0";
+        $aBindings = ['module' => $this->_oConfig->getName()];
+
+        if($this->query("INSERT IGNORE INTO `" . $CNF['TABLE_FORMER_LINKS'] . "` (`page_uri`, `uri`, `content_id`) SELECT `sl`.`page_uri`, `sl`.`uri`, `te`.`" . $CNF['FIELD_ID'] . "` FROM " . $sJoin . " WHERE " . $sWhere . " AND `sl`.`uri` NOT LIKE '~%'", $aBindings) === false)
+            return false;
+
+        return $this->query("UPDATE " . $sJoin . " SET `sl`.`uri` = CONCAT('~', `sl`.`param_value`) WHERE " . $sWhere, $aBindings) !== false;
+    }
+
+    /**
+     * A lock of a community's prefix and counter for this connection, while its prefix changes or
+     * a task gets its number, so the links of its tasks always take the prefix it has.
+     */
+    public function lockPrefix($iContextId)
+    {
+        return (int)$this->getOne("SELECT GET_LOCK(" . $this->_getPrefixLockName() . ", 10)", ['name' => $this->_getPrefixLockSuffix($iContextId)]) === 1;
+    }
+
+    public function unlockPrefix($iContextId)
+    {
+        $this->getOne("SELECT RELEASE_LOCK(" . $this->_getPrefixLockName() . ")", ['name' => $this->_getPrefixLockSuffix($iContextId)]);
+    }
+
+    /**
+     * Locks are per server: the connection's database keeps sites on one server apart (DATABASE(),
+     * since BX_DATABASE_NAME is a list with several database servers), in 64 characters at most.
+     */
+    protected function _getPrefixLockName()
+    {
+        return "CONCAT(LEFT(MD5(IFNULL(DATABASE(), '')), 12), '_', :name)";
+    }
+
+    protected function _getPrefixLockSuffix($iContextId)
+    {
+        return $this->_oConfig->getName() . '_prefix_' . (int)$iContextId;
+    }
+
+    /**
+     * The task a former SEO link of a page named, 0 for none.
+     */
+    public function getContentIdByFormerSeoLink($sPageUri, $sUri)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->getOne("SELECT `content_id` FROM `" . $CNF['TABLE_FORMER_LINKS'] . "` WHERE `page_uri` = :page_uri AND `uri` = :uri LIMIT 1", [
+            'page_uri' => $sPageUri,
+            'uri' => $sUri
+        ]);
+    }
+
+    public function deleteFormerSeoLinks($iContentId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return $this->query("DELETE FROM `" . $CNF['TABLE_FORMER_LINKS'] . "` WHERE `content_id` = :content_id", [
+            'content_id' => (int)$iContentId
+        ]) !== false;
+    }
+
+    /**
+     * The SEO link of one task (on every page of it) after it got its number.
+     */
+    public function updateSeoLinksByTask($iContentId, $sUri)
+    {
+        return $this->query("UPDATE `sys_seo_links` SET `uri` = :uri WHERE `module` = :module AND `param_name` = 'id' AND `param_value` = :id", [
+            'module' => $this->_oConfig->getName(),
+            'id' => (string)(int)$iContentId,
+            'uri' => $sUri
+        ]) !== false;
+    }
+
     public function getPreLists($aParams = []) 
     {
         $CNF = &$this->_oConfig->CNF;

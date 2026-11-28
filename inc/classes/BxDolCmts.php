@@ -1592,6 +1592,25 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         echoJson($this->remove($iCmtId));
     }
     
+    /**
+     * Take the link preview card off a comment and keep its links: each external link of the text gets
+     * BX_LINK_PLAIN_CLASS, for which bx_linkify_embeded makes no card. Allowed to whom may edit the comment.
+     * @return bool whether the text changed
+     */
+    public function removeEmbed($iCmtId)
+    {
+        $aCmt = $this->getCommentSimple((int)$iCmtId);
+        if(empty($aCmt) || !$this->isEditAllowed($aCmt))
+            return false;
+
+        $sText = (string)($aCmt['cmt_text'] ?? '');
+        $sTextNew = bx_linkify_plain($sText);
+        if($sTextNew === $sText)
+            return false;
+
+        return (bool)$this->_oQuery->updateComments(['cmt_text' => $sTextNew], ['cmt_id' => (int)$iCmtId]);
+    }
+
     public function remove($iCmtId)
     {
         $aCmt = $this->_oQuery->getCommentsBy(array('type' => 'id', 'id' => $iCmtId));
@@ -2705,8 +2724,11 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
             bx_import('BxDolEmbed');
             $aCmt = $this->getCommentSimple($iCmtId);
+            $mixedEmbed = bx_linkify_embeded($aCmt['cmt_text'] ?? '');
             $aData = $this->getDataAPI(array_merge($aCmt, [
-                'embed' => bx_linkify_embeded($aCmt['cmt_text'] ?? ''),
+                'embed' => $mixedEmbed,
+                // the viewer may take the card off and keep the link (action 'embed_off' of get_data_api)
+                'embed_removable' => !empty($mixedEmbed) && $this->isEditAllowed($aCmt),
                 'menu_actions' => $aMenuActions,
                 'menu_manage' => $aMenuManage,
             ]));

@@ -22,7 +22,12 @@ class BxEditorGridToolbar extends BxTemplGrid
         $this->_sModule = 'bx_editor';
         $this->_oModule = BxDolModule::getInstance($this->_sModule);
         
-        $this->_sMode = bx_get('page') !== false && bx_get('page') !== 'settings' ? bx_get('page') : 'mini';
+        // The page names the mode (settings is the mini one); the grid's own requests (AG Grid's rows, the actions) send
+        // it back as 'mode'.
+        $sMode = bx_get('mode');
+        if($sMode === false)
+            $sMode = bx_get('page') !== false && bx_get('page') !== 'settings' ? bx_get('page') : 'mini';
+        $this->_sMode = in_array($sMode, ['mini', 'standard', 'full']) ? $sMode : 'mini';
         $this->_aQueryAppend['mode'] = $this->_sMode;
     }
 

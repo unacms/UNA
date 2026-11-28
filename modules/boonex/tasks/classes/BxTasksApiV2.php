@@ -1723,6 +1723,7 @@ class BxTasksApiV2 extends BxBaseModTextApiV2
         $CNF = &$this->_oModule->_oConfig->CNF;
         $this->_aAssignees = $this->_oModule->_oDb->getAssigneesByTasks(array_column($aContents, $CNF['FIELD_ID']));
         $this->_aLists = $this->_oModule->_oDb->getListsByIds(array_column($aContents, $CNF['FIELD_TASKLIST']));
+        $this->_oModule->primeIdentifiers($aContents);
         $aContexts = [];
         foreach ($aContents as $aContent)
             if (($iPrivacy = (int)$aContent[$CNF['FIELD_ALLOW_VIEW_TO']]) < 0)
@@ -1790,6 +1791,7 @@ class BxTasksApiV2 extends BxBaseModTextApiV2
         return [
             'id' => BxDolApiV2Map::id($iId),
             'module' => $this->_oModule->getName(),
+            'identifier' => ($sIdentifier = $this->_oModule->getIdentifier($aContent)) !== '' ? $sIdentifier : null,
             'title' => trim((string)$aContent[$CNF['FIELD_TITLE']]),
             'summary' => BxDolApiV2Map::text($sHtml, $iChars > 0 ? $iChars : self::SUMMARY_LENGTH),
             'body_html' => $this->_bFull ? $sHtml : null,
@@ -1878,10 +1880,11 @@ class BxTasksApiV2 extends BxBaseModTextApiV2
             'Task' => [
                 'type' => 'object',
                 'description' => 'A task. Its comments and reactions are those of the Item `content_id`.',
-                'required' => ['id', 'module', 'title', 'summary', 'body_html', 'context_id', 'context', 'list_id', 'list_title', 'author', 'assignees', 'due_at', 'completed', 'priority', 'state', 'type', 'estimate', 'labels', 'time_spent', 'timer', 'audience', 'moderation', 'stats', 'content_id', 'url', 'viewer', 'created_at', 'updated_at'],
+                'required' => ['id', 'module', 'identifier', 'title', 'summary', 'body_html', 'context_id', 'context', 'list_id', 'list_title', 'author', 'assignees', 'due_at', 'completed', 'priority', 'state', 'type', 'estimate', 'labels', 'time_spent', 'timer', 'audience', 'moderation', 'stats', 'content_id', 'url', 'viewer', 'created_at', 'updated_at'],
                 'properties' => [
                     'id' => $aId,
                     'module' => ['type' => 'string', 'example' => 'bx_tasks'],
+                    'identifier' => ['type' => ['string', 'null'], 'example' => 'UNA-12', 'description' => 'Its number with its community\'s prefix, as Linear has them; it keeps the number when it moves to another community. Its `url` ends with it in lowercase. Null for none'],
                     'title' => ['type' => 'string'],
                     'summary' => ['type' => 'string', 'description' => 'The start of its text, as plain text'],
                     'body_html' => ['type' => ['string', 'null'], 'description' => 'Its text as the site keeps it (user HTML the site filtered: sanitize it again before showing it). Only on single answers; null in lists'],

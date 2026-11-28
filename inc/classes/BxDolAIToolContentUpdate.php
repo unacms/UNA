@@ -75,7 +75,12 @@ class BxDolAIToolContentUpdate extends BxDolAITool
 
         $iPrevious = $this->actAs($profile_id);
 
+        $aBefore = bx_srv('system', 'get_info', [$module, $content_id, true], 'TemplServiceContent');
         $a = bx_srv('system', 'update', [$module, $content_id, $this->convertArrayToKeyValue($data)], 'TemplServiceContent');
+        if ($this->adminLogOk($a)) {
+            $aAfter = bx_srv('system', 'get_info', [$module, $content_id, true], 'TemplServiceContent');
+            $this->adminLog('content:' . $module, (string)$content_id, 'update', $aBefore, $aAfter ?: $a);
+        }
 
         $this->endActingAs($iPrevious);
 

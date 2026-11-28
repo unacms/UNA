@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Resources: the context columns and the module filter of the administration grid (#6374). -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_bx_resources_grid_filter_item_title_adm_select_one_filter3"><![CDATA[All Modules]]></string_add>
+    <string_add name="_bx_resources_grid_column_title_adm_context_cid"><![CDATA[Context]]></string_add>
+    <string_add name="_bx_resources_grid_column_title_adm_context_module"><![CDATA[Module]]></string_add>
+</resources>

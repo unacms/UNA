@@ -29,6 +29,7 @@ import { NO_CONFIRM, MenuObjectActions, runTaskAction } from './tasks/actions';
 import TasklistsPanel from './tasks/tasklists-panel';
 import TasksFilterSelector from './tasks/filter-selector';
 import {
+    OPEN_TASK_STORAGE_KEY,
     TASKS_HOME_PATH,
     TASKS_LIST_EVENT,
     apiUrl,
@@ -409,6 +410,29 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         if (refresh) emitTasksListRefresh();
         if (shouldBack) window.history.back();
     }, []);
+
+    // A task opened by direct URL (refresh / shared link) was handed over by the
+    // task page layout: open it here, inside the section shell.
+    useEffect(() => {
+        if (!isWeb) return;
+        let raw = null;
+        try {
+            raw = window.sessionStorage.getItem(OPEN_TASK_STORAGE_KEY);
+            if (raw) window.sessionStorage.removeItem(OPEN_TASK_STORAGE_KEY);
+        } catch {
+            return;
+        }
+        if (!raw) return;
+        const timer = setTimeout(() => {
+            try {
+                const task = JSON.parse(raw);
+                if (task?.url) openTask(task);
+            } catch {
+                // ignore a malformed hand-off
+            }
+        }, 0);
+        return () => clearTimeout(timer);
+    }, [openTask]);
 
     useEffect(() => {
         const url = activeTask?.url;

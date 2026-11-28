@@ -29,11 +29,12 @@ BxDolStudioNavigationImport.prototype.onChangeFilter = function() {
 	if(sValueSearch == this.sTextSearchInput)
 		sValueSearch = '';
 
+	// A select is applied at once; typing in the search field is applied once it pauses.
 	clearTimeout($this._iSearchTimeoutId);
     $this._iSearchTimeoutId = setTimeout(function () {
     	if(glGrids[$this.sObjNameGrid])
     		glGrids[$this.sObjNameGrid].setFilter(sValueSet + $this.sParamsDivider + sValueModule + $this.sParamsDivider + sValueSearch, true);
-    }, 500);
+    }, document.activeElement && document.activeElement.id == 'bx-grid-search-' + $this.sObjNameGrid ? 300 : 0);
 };
 
 BxDolStudioNavigationImport.prototype.onImport = function(oData) {

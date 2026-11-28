@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Navigation: how a menu of actions shows their counts. -->
+<resources name="en" flag="gb" title="English">
+    <string_add name="_adm_nav_txt_menus_counters"><![CDATA[Counts]]></string_add>
+    <string_add name="_adm_nav_dsc_menus_counters"><![CDATA[How the actions in this menu show their counts, on the site and in the apps. Labels: each action shows its name, and a stats menu can show the counts. Counts: each action shows its count in place of its name, and its icon alone while the count is 0. Button groups: each action is two joined buttons, the action and its count, which shows who did it. Automatic uses the menu's own choice.]]></string_add>
+    <string_add name="_adm_nav_txt_menus_counters_label"><![CDATA[Labels]]></string_add>
+    <string_add name="_adm_nav_txt_menus_counters_count"><![CDATA[Counts]]></string_add>
+    <string_add name="_adm_nav_txt_menus_counters_group"><![CDATA[Button groups]]></string_add>
+</resources>

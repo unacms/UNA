@@ -11,6 +11,7 @@ import { useWindowHeight, useIsDesktop } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { useTranslation } from 'react-i18next'
 import { StarsAction } from 'app/ui/atoms/stars'
+import { focusInputOnMouseDown } from 'app/components/elements/chat/parts/message-input'
 
 export default function FormComments(props) {
     const { t } = useTranslation()
@@ -137,7 +138,10 @@ export default function FormComments(props) {
         
         // Resting composer is a single-line pill; once there's content (or the
         // rich toolbar expands it) the taller box switches to a card radius.
-        <View className={`w-full flex-auto bg-popover/80 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep ${hasContent ? 'rounded-xl' : 'rounded-full'}`}>
+        <View
+            className={`w-full flex-auto web:cursor-text bg-popover/80 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep ${hasContent ? 'rounded-xl' : 'rounded-full'}`}
+            {...(isWeb ? { onMouseDown: focusInputOnMouseDown } : null)}
+        >
             {getFormFieldByData(
                 props.data.inputs['action'],
                 props.handleSubmit,
@@ -209,8 +213,10 @@ export default function FormComments(props) {
                                     {!isWeb ? (
                                         <FileButton field_name="cmt_image" style="borderless" size="sm" icon="Camera" source="camera" />
                                     ) : null}
-                                    {hasContent ? (
-                                        <View>
+                                    {/* Always mounted, hidden while empty: the button is a code-split
+                                        form field, and loading it at the first character suspended
+                                        the composer, which took the editor's focus. */}
+                                    <View className={hasContent ? '' : 'hidden'}>
                                             {getFormFieldByData(
                                                 submitInput,
                                                 handleSubmitWithSanitization,
@@ -231,8 +237,7 @@ export default function FormComments(props) {
                                                     tooltip: t('Post'),
                                                 }
                                             )}
-                                        </View>
-                                    ) : null}
+                                    </View>
                                 </Row>
                             </View>
                         </Row>

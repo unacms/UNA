@@ -88,6 +88,16 @@ Before opening the pull request:
 
 The pull request description must include the database migration SQL when the change has one. When it has none, say that there is no database migration.
 
+## CI
+
+Read [`docs/ci.md`](docs/ci.md) before changing `.github/workflows/`, `.github/scripts/` or anything a CI job reads (lockfiles, `scripts/railway/`, `tests/phpunit.xml`).
+
+- CI must never hide a failure or check less: no retries, longer timeouts, skipped tests or removed checks to get a green run. Find why a check needs a rerun instead.
+- A PR runs only what its diff can reach (the `What changed` job). When you make a test or build read a new place, add it to that job's rules or to the cache key it belongs to.
+- Required checks always report: skip steps inside the job, never the whole job with `if:`. Label and comment triggers go in their own workflow, not in `ci.yml`.
+- PR previews are opt-in with the `preview` label. Don't add it unless the person asks for a preview. Put `[no deploy]` in the PR title when a change must not reach production on merge.
+- Don't put `[skip ci]` in commits or PR titles. It skips the tests too.
+
 ## Database migrations
 
 Install SQL and language files reach only new installs. A PR that changes what an installed site has in its database also adds a migration, which `periodic/migration.php` (`BxDolMigrations`) applies once per database and records in `sys_migrations`. Read [`migrations/README.md`](migrations/README.md) before writing one.
@@ -104,14 +114,28 @@ Install SQL and language files reach only new installs. A PR that changes what a
 - The `Database migrations` check fails a PR that changes install SQL or language files without adding a new migration, unless the description says "No database migration." with the reason.
 - Until 15.0.0 is released, update packs are still needed for released versions; migrations run on sites that follow master, such as api.unacms.app.
 
+## Deprecating a module
+
+A module is retired in three steps, never by deleting it from a release.
+
+1. **Mark it.** In its `install/config.php` add `'deprecated' => true`, or `'deprecated' => array('replaced_by' => 'bx_polls')` (`'system'` when the core now does what it did). Install and update copy this to `sys_modules.deprecated` and `replaced_by`. Studio then shows a notice on the launcher and on the module's page, the installer and Studio's downloaded list stop offering it, and it cannot be installed on a site that doesn't have it. Sites that have it keep it working.
+2. **Final update pack.** Its migration moves the module's data and settings to the core or to the replacement, and turns that feature on. It does not uninstall the module, so no data is lost.
+3. **Removal in the next major version.** The module leaves the package; uninstalling it on old sites is up to the admin.
+
+## Preview modules
+
+Everything that can be installed from this repository is maintained: a site may have it, so it gets update packs and fixes. A module that isn't finished is marked, not hidden: `'preview' => true` in its `install/config.php`. Install and update copy it to `sys_modules.preview`; Studio shows a notice on the module's page, and Studio's downloaded list and the install wizard label it "Preview". Drop the key when the module is finished. A module made for one client and never meant for release belongs in that client's repository, not here.
+
+`$aHiddenModules` in `install/classes/BxDolInstallSiteConfig.php` is separate: it only hides a module from the install wizard, with no notice, for modules that new sites shouldn't get but that aren't deprecated.
+
 ## NEO (`neo/`)
 
 `neo/` is NEO, the Next.js and Expo client for UNA, kept here as a git subtree. Before changing anything under `neo/`, read [`neo/AGENTS.md`](neo/AGENTS.md). Claude Code loads it through `neo/CLAUDE.md` when it opens a file there.
 
 - Run NEO's yarn scripts from `neo/`, not from the UNA root.
 - Branch from `master` and open the PR here. Start the title of a NEO-only PR with `Neo:`.
-- Never commit to unacms/neo. It is a mirror that `.github/workflows/sync-neo.yml` pushes on every push to `master`, and client projects fork it.
+- Never commit to unacms/neo. It is a mirror that `.github/workflows/sync-neo.yml` pushes on every push to `master` that changes `neo/`, and client projects fork it.
 - Run `yarn typecheck` and `yarn lint` in `neo/` before you push. On a PR that touches `neo/`, the CI job `NEO lint and typecheck` runs both on the PR and on its base and fails on any new error.
-- CI deploys both halves to the `una-ci` Railway project: service `una` (UNA) and service `neo` (the NEO web client, built from `neo/` with `scripts/railway/neo/`). A PR gets `neo-pr-<n>.up.railway.app` (NEO) and `una-pr-<n>.up.railway.app` (UNA), Railway's own domains, so previews need no certificates of their own; master deploys production (`api.unacms.app`). See `.github/workflows/ci.yml` and `scripts/railway/`.
+- CI deploys both halves to the `una-ci` Railway project: service `una` (UNA) and service `neo` (the NEO web client, built from `neo/` with `scripts/railway/neo/`). A PR with the `preview` label gets `neo-pr-<n>.up.railway.app` (NEO) and `una-pr-<n>.up.railway.app` (UNA), Railway's own domains, so previews need no certificates of their own; master deploys the half that changed to production (`api.unacms.app`). See [`docs/ci.md`](docs/ci.md), `.github/workflows/ci.yml` and `scripts/railway/`.
 - A UNA service that NEO calls must return JSON for guests too; see [`neo/.agents/skills/una-api/SKILL.md`](neo/.agents/skills/una-api/SKILL.md).
 

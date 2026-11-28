@@ -20,6 +20,7 @@
  * `options` behaves as before: few, with "like" as the default.
  */
 
+import { countLabel } from 'app/lib/counters-mode';
 import React, { useState, useRef, useEffect, createContext, useContext, type ComponentType, type ReactNode } from 'react';
 import {
     Modal as ReactNativeModal,
@@ -395,7 +396,8 @@ function buildCounterCompound({
 // `hoverOpen`), or on click (`openOnPress`). Otherwise a click calls `onPress`.
 // ---------------------------------------------------------------------------
 
-const HOVER_OPEN_DELAY = 500;
+// Long enough that a pointer passing over the button, or about to click it, doesn't open the choice.
+const HOVER_OPEN_DELAY = 800;
 const HOVER_CLOSE_DELAY = 300;
 const HOVER_SLOP = 8;
 // Ignore the click that ends the long press which opened the popover.
@@ -712,6 +714,8 @@ function ReactionPopover({
     ) : null;
 
     const button = React.cloneElement(trigger, {
+        // The open popover covers the button; it still looks hovered while the choice is open.
+        ...(isWeb && modalVisible ? { hovered: true } : null),
         onPress: disabled ? undefined : handlePress,
         onLongPress: disabled ? undefined : handleLongPress,
         ...(isWeb ? {} : { [childRefProp]: buttonRef }),
@@ -1143,7 +1147,8 @@ export default function ElementReactions(props: ReactionsProps) {
             <ActionButton
                 key="action"
                 startDecorator={icon}
-                title={showLabel ? label : false}
+                // The menu's Counters `count`: the total is the label (the icon alone at 0); the name stays spoken.
+                title={params?.show_action_count ? countLabel(counterItems.reduce((sum, item) => sum + liveCount(item), 0)) : showLabel ? label : false}
                 accessibilityLabel={spokenLabel ?? label}
                 pressed={pressed}
                 selectedState={pressed ? 'voted' : undefined}

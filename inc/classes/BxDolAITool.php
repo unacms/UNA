@@ -29,6 +29,12 @@ class BxDolAITool extends Tool
      */
     protected static $_iMemberScope = 0;
 
+    /**
+     * The authenticated profile that invoked the tool (an MCP operator or member). 0 in an agent's own chat,
+     * where the bot profile from the SQL log context is the only identity available.
+     */
+    protected static $_iCallerProfile = 0;
+
     public static function setMemberScope(int $iProfileId): void
     {
         self::$_iMemberScope = max(0, $iProfileId);
@@ -37,6 +43,16 @@ class BxDolAITool extends Tool
     public static function getMemberScope(): int
     {
         return self::$_iMemberScope;
+    }
+
+    public static function setCallerProfile(int $iProfileId): void
+    {
+        self::$_iCallerProfile = max(0, $iProfileId);
+    }
+
+    public static function getCallerProfile(): int
+    {
+        return self::$_iCallerProfile;
     }
 
     /**
@@ -162,5 +178,57 @@ class BxDolAITool extends Tool
         }
         
         return $result;
+    }
+
+    protected function adminLog(string $sObjectType, string $sObjectId, string $sAction, $mixedBefore, $mixedAfter): void
+    {
+        try {
+            $aCtx = BxDolAIToolMysqlWrite::currentLogContext();
+            BxDolAdminLog::record([
+                'source' => 'agent',
+                'agent_id' => (int)($aCtx['agent_id'] ?? 0),
+                'profile_id' => BxDolAdminLog::callerProfile((int)($aCtx['profile_id'] ?? 0)),
+                'thread_id' => (string)($aCtx['thread_id'] ?? ''),
+                'object_type' => $sObjectType,
+                'object_id' => $sObjectId,
+                'action' => $sAction,
+                'before' => $mixedBefore,
+                'after' => $mixedAfter,
+            ]);
+        }
+        catch (Throwable $e) {
+            bx_log('sys_audit', $e->getMessage(), BX_LOG_ERR);
+        }
+    }
+
+    protected function adminLogOk($mixed): bool
+    {
+        if ($mixed === true)
+            return true;
+        if (!is_array($mixed))
+            return false;
+        if (isset($mixed['code']) && (int)$mixed['code'] !== 0)
+            return false;
+        if (!empty($mixed['error']))
+            return false;
+        if (!empty($mixed['msg']) && !isset($mixed['code']))
+            return false;
+
+        return true;
+    }
+
+    protected function adminLogId($mixed): string
+    {
+        if (!is_array($mixed))
+            return '';
+
+        foreach (['id', 'content_id', 'cmt_id', 'comment_id', 'account_id'] as $sKey)
+            if (isset($mixed[$sKey]) && !is_array($mixed[$sKey]) && (string)$mixed[$sKey] !== '' && (string)$mixed[$sKey] !== '0')
+                return (string)$mixed[$sKey];
+
+        if (isset($mixed['content']) && is_array($mixed['content']))
+            return $this->adminLogId($mixed['content']);
+
+        return '';
     }
 }

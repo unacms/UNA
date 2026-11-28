@@ -37,6 +37,8 @@ class BxTasksConfig extends BxBaseModTextConfig
             'TABLE_ENTRIES' => $aModule['db_prefix'] . 'tasks',
             'TABLE_LISTS' => $aModule['db_prefix'] . 'lists',
             'TABLE_CONTEXTS' => $aModule['db_prefix'] . 'contexts',
+            'TABLE_PREFIXES' => $aModule['db_prefix'] . 'prefixes',
+            'TABLE_FORMER_LINKS' => $aModule['db_prefix'] . 'former_links',
             'TABLE_ASSIGNMENTS' => $aModule['db_prefix'] . 'assignments',
             'TABLE_FILTERS' => $aModule['db_prefix'] . 'filters',
             'TABLE_TIME' => $aModule['db_prefix'] . 'time',
@@ -82,6 +84,8 @@ class BxTasksConfig extends BxBaseModTextConfig
             'FIELD_TASKS_LIST' => 'tasks_list',
             'FIELD_GH_ISSUE' => 'gh_issue',
             'FIELD_GH_ISSUE_URL' => 'gh_issue_url',
+            'FIELD_NUMBER' => 'number',
+            'FIELD_NUMBER_CONTEXT' => 'number_context_id',
             'FIELD_INITIAL_MEMBERS' => 'initial_members',
             'FIELD_DUE_DATE' => 'due_date',
             'FIELD_EXPIRED' => 'expired',
@@ -128,6 +132,9 @@ class BxTasksConfig extends BxBaseModTextConfig
 
             // hours a timer runs without a pause before the cron pauses it (BxTasksCronTimers), 0 for never
             'PARAM_TIMER_RUNNING_LIMIT' => 'bx_tasks_timer_running_limit',
+
+            // the prefix of the numbers of tasks in no community (TASK-12); a community has its own
+            'PARAM_PERSONAL_PREFIX' => 'bx_tasks_personal_prefix',
 
             // objects
             'OBJECT_STORAGE' => 'bx_tasks_covers',

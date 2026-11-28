@@ -69,6 +69,14 @@ function TimerDisplay({ data, resetNonce = 0 }) {
 export function TaskTimer({ data, className }) {
     const [timerData, setTimerData] = useState(data);
     const [resetNonce, setResetNonce] = useState(0);
+
+    // Reloaded data (a list that refreshed) replaces the copy this timer keeps: its time may be newer.
+    const [seenData, setSeenData] = useState(data);
+    if (seenData !== data) {
+        setSeenData(data);
+        setTimerData(data);
+    }
+
     const timerId = timerData?.id;
     const requestUrl = timerData?.request_url;
     const isRunning = timerData?.state === 'started';

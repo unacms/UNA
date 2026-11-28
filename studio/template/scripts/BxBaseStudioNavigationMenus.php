@@ -12,6 +12,7 @@ bx_import('BxDolStudioUtils');
 
 class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
 {
+    protected $_bFilterModuleInUrl = true;
     private $sCreateNew = 'sys_create_new';
     protected $sUrlViewItems;
 
@@ -211,12 +212,16 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
             return array();
         }
 
+        // The opened row draws the items with the items grid's own columns and their captions.
+        $oItems = BxDolGrid::getObjectInstance($this->_sAgItemsObject, $this->_oTemplate);
+
         return array(
             'expand' => array(
                 'object' => $this->_sAgItemsObject,
-                'field_id' => 'id',
-                'set' => 'set_name',
-                'module' => 'module',
+                'field_id' => '_id', // _agRow
+                'params' => array('set' => 'set_name', 'module' => 'module'),
+                'require' => 'set_name',
+                'columns' => $oItems && method_exists($oItems, 'getAgColumns') ? $oItems->getAgColumns() : array(),
             ),
         );
     }
@@ -276,7 +281,25 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
     {
         parent::_getFilterControls();
 
-        return  $this->getModulesSelectAll('getMenus') . $this->getSearchInput();
+        // The module the list is opened with (see _getFilterValue).
+        $sModule = $this->_getFilterModule();
+
+        // Menus > module > set: a set leads to its items.
+        $aNext = [];
+        if($sModule !== '') {
+            $aSets = $aCounter = [];
+            $this->oDb->getSets(['type' => 'by_module', 'value' => $sModule], $aSets, false);
+            $this->oDb->getItems(['type' => 'counter_by_sets'], $aCounter, false);
+
+            $aValues = [];
+            foreach($aSets as $aSet)
+                $aValues[$aSet['name']] = _t($aSet['title']) . ' (' . ($aCounter[$aSet['name']] ?? 0) . ')';
+            asort($aValues);
+
+            $aNext[] = ['label' => _t('_adm_nav_txt_menus_gl_set_title'), 'control' => $this->_getCrumbGoSelect('set', '', array_merge(['' => _t('_adm_nav_txt_select_set')], $aValues), BX_DOL_URL_STUDIO . 'builder_menu.php?page=items&module=' . rawurlencode($sModule) . '&set=')];
+        }
+
+        return $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_menu.php?page=menus', $sModule, $this->_getCrumbModules('getMenus', '_adm_nav_txt_all_modules'), $aNext) . $this->getSearchInput();
     }
 
     protected function _getFormObject($sAction, $aMenu = array())
@@ -429,6 +452,23 @@ class BxBaseStudioNavigationMenus extends BxDolStudioNavigationMenus
                         array('key' => BxDolMenu::BUTTON_SIZE_SMALL, 'value' => _t('_adm_nav_txt_menus_button_size_small')),
                         array('key' => BxDolMenu::BUTTON_SIZE_REGULAR, 'value' => _t('_adm_nav_txt_menus_button_size_regular')),
                         array('key' => BxDolMenu::BUTTON_SIZE_LARGE, 'value' => _t('_adm_nav_txt_menus_button_size_large')),
+                    ),
+                    'required' => '0',
+                    'db' => array (
+                        'pass' => 'Xss',
+                    ),
+                ),
+                'counters' => array(
+                    'type' => 'select',
+                    'name' => 'counters',
+                    'caption' => _t('_adm_nav_txt_menus_counters'),
+                    'info' => _t('_adm_nav_dsc_menus_counters'),
+                    'value' => isset($aMenu['counters']) ? $aMenu['counters'] : BxDolMenu::COUNTERS_AUTO,
+                    'values' => array(
+                        array('key' => BxDolMenu::COUNTERS_AUTO, 'value' => _t('_adm_nav_txt_menus_button_auto')),
+                        array('key' => BxDolMenu::COUNTERS_LABEL, 'value' => _t('_adm_nav_txt_menus_counters_label')),
+                        array('key' => BxDolMenu::COUNTERS_COUNT, 'value' => _t('_adm_nav_txt_menus_counters_count')),
+                        array('key' => BxDolMenu::COUNTERS_GROUP, 'value' => _t('_adm_nav_txt_menus_counters_group')),
                     ),
                     'required' => '0',
                     'db' => array (

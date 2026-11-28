@@ -35,6 +35,7 @@ class BxBaseGrid extends BxDolGrid
     protected $_fTextColumnsScale = null; ///< what the text columns' percent widths are multiplied by, see _getTextColumnsScale
     protected $_sCellClampText = ''; ///< the full text of the cell being built, when it is longer than one line: _getCellDefault wraps it
     protected $_aAgActionNames = ['edit' => '_Edit', 'delete' => '_Delete']; ///< names of the icon-only row actions that have no title (engine 'ag')
+    protected $_bAgRows = false; ///< _getDataAg is building rows for AG Grid (its cells take the API shape, with a little more)
     protected $_bAgSelect2 = false; ///< the filter selects of an engine 'ag' grid are select2 fields: only where the page styles select2 (Studio)
     protected $_iAgPerPageMax = 500; ///< the most rows one data_ag request returns (engine 'ag'), unless the grid's own page is larger
     protected $_aFilterAreaLabels = []; // filter name => accessible name (lang key or plain text); filter controls are rendered without a visible caption
@@ -1006,8 +1007,16 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _getCellSwitcherFor ($sFieldActive, $sAction, $sLabel, $sKey, $aField, $aRow)
     {
-        if($this->_bIsApi)
-            return ['type' => 'switcher', 'data' => isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : 0, 'fld' => $sFieldActive, 'action' => $sAction];
+        if($this->_bIsApi) {
+            $aCell = ['type' => 'switcher', 'data' => isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : 0, 'fld' => $sFieldActive, 'action' => $sAction];
+
+            // AG Grid: the id the switch acts on, which a grid may build for its switches (a permission's level and
+            // action). The API's shape stays as it is.
+            if($this->_bAgRows && ($sFieldId = $this->_aOptions['field_id']) && isset($aRow[$sFieldId]))
+                $aCell['id'] = $aRow[$sFieldId];
+
+            return $aCell;
+        }
 
         $sAttr = $this->_convertAttrs(
             $aField, 'attr_cell',
@@ -1742,6 +1751,7 @@ class BxBaseGrid extends BxDolGrid
         $bWasApi = $this->_bIsApi;
         $iShowTotal = isset($this->_aOptions['show_total_count']) ? $this->_aOptions['show_total_count'] : 0;
         $this->_bIsApi = true;
+        $this->_bAgRows = true;
         // The total is counted only when this option is on. Infinite row model needs it either way.
         $this->_aOptions['show_total_count'] = 1;
 
@@ -1768,6 +1778,7 @@ class BxBaseGrid extends BxDolGrid
             return $aResult;
         } finally {
             $this->_bIsApi = $bWasApi;
+            $this->_bAgRows = false;
             $this->_aOptions['show_total_count'] = $iShowTotal;
         }
     }
@@ -1777,8 +1788,10 @@ class BxBaseGrid extends BxDolGrid
      */
     protected function _agRow($aRow)
     {
+        // The row's id goes under a key no column has (_id, the 'field_id' of the config): a column may show the
+        // id's field as something else (the transfers' module title for a module name), and the actions need the id.
         $sKeyId = $this->_aOptions['field_id'];
-        $aOut = [$sKeyId => isset($aRow[$sKeyId]) ? $aRow[$sKeyId] : ''];
+        $aOut = ['_id' => isset($aRow[$sKeyId]) ? $aRow[$sKeyId] : ''];
 
         foreach ($this->_aOptions['fields'] as $sKey => $aField) {
             $mixedCell = $this->_agCell($sKey, $aField, $aRow);
@@ -1827,6 +1840,13 @@ class BxBaseGrid extends BxDolGrid
         }
 
         $mixedCell = $this->$sMethod($mixedValue, $sKey, $aField, $aRow);
+
+        // A grid's own cell that prints the classic grid's markup whatever the mode (the transfers' module and status):
+        // what is inside its <td>, as the classic grid shows it.
+        if (is_string($mixedCell) && preg_match('/^\s*<td\b[^>]*>(.*)<\/td>\s*$/is', $mixedCell, $aMatch)) {
+            return ['type' => 'text', 'value' => $aMatch[1], 'html' => 1];
+        }
+
         if (!is_array($mixedCell) || !isset($mixedCell['type'])) {
             return $mixedCell;
         }
@@ -1851,6 +1871,12 @@ class BxBaseGrid extends BxDolGrid
                 break;
 
             case 'switcher':
+                // The switch's own id is sent only when it is not the row's.
+                $sFieldId = $this->_aOptions['field_id'];
+                if (isset($aCell['id']) && isset($aRow[$sFieldId]) && (string)$aCell['id'] === (string)$aRow[$sFieldId]) {
+                    unset($aCell['id']);
+                }
+
                 $sFieldActive = isset($aCell['fld']) ? $aCell['fld'] : '';
                 $mixedActive = isset($aRow[$sFieldActive]) ? $aRow[$sFieldActive] : false;
                 $aCell['on'] = (int)(bool)$this->_isSwitcherOn($mixedActive, $sKey, $aField, $aRow);
@@ -1916,6 +1942,15 @@ class BxBaseGrid extends BxDolGrid
     }
 
     /**
+     * Columns of this grid as the AG config gives them, for a grid that draws this one's rows
+     * inside its own (a menu row opened onto its items).
+     */
+    public function getAgColumns()
+    {
+        return $this->_agColumns();
+    }
+
+    /**
      * Columns of the AG config: name, title, width, whether the column sorts, and its kind.
      */
     protected function _agColumns()
@@ -1963,7 +1998,7 @@ class BxBaseGrid extends BxDolGrid
 
         $aConfig = [
             'object' => $this->_sObject,
-            'field_id' => $this->_aOptions['field_id'],
+            'field_id' => '_id', // _agRow
             'sortable' => in_array('order', array_column($aColumns, 'kind')) ? 1 : 0,
             'sorting' => empty($this->_getOrderFields()) ? 0 : 1,
             'sorting_field' => $sOrderField,
@@ -1973,11 +2008,14 @@ class BxBaseGrid extends BxDolGrid
             'show_total_count' => empty($this->_aOptions['show_total_count']) ? 0 : 1,
             'empty' => _t('_Empty'),
             'text_selected' => _t('_sys_grid_txt_n_selected'),
+            'text_select_rows' => _t('_sys_grid_txt_select_rows'),
+            'text_sort' => _t('_sys_grid_txt_sort_by'),
             'text_select' => _t('_sys_grid_lbl_select'),
             'text_order' => _t('_sys_grid_lbl_order'),
             'text_expand' => _t('_sys_grid_txt_show_items'),
             'text_reveal' => _t('_sys_grid_secret_reveal'),
             'select2' => $this->_bAgSelect2 ? 1 : 0,
+            'search' => $this->_agSearchPhrase($sFilter),
             'columns' => $aColumns,
             'bx' => [
                 'csrf_token' => (string)BxDolForm::getCsrfToken(),
@@ -2018,6 +2056,32 @@ class BxBaseGrid extends BxDolGrid
 
         $sFilterControls = $this->_isFilter() ? $this->_getFilterControls() : '';
         $sTitleRow = $this->_getHeaderTitleRow();
+        $bActions = !empty($this->_aOptions['actions_independent']);
+
+        // Rows or cards. With a title row the switch and the grid's own buttons before it go there, beside the title.
+        $sView = $this->_oTemplate->parseHtmlByName('grid_ag_view.html', [
+            'txt_view' => bx_html_attribute(_t('_sys_grid_txt_view')),
+            'txt_view_rows' => bx_html_attribute(_t('_sys_grid_txt_view_rows')),
+            'txt_view_cards' => bx_html_attribute(_t('_sys_grid_txt_view_cards')),
+        ]);
+        if ($sTitleRow !== '')
+            $sTitleRow = $this->_oTemplate->parseHtmlByName('grid_header_title.html', [
+                'title' => self::HEADER_TITLE_SLOT,
+                'bx_if:actions_independent' => [
+                    'condition' => true,
+                    'content' => [
+                        'actions_independent' => $this->_oTemplate->parseHtmlByName('grid_ag_title_controls.html', [
+                            'bx_if:actions' => [
+                                'condition' => $bActions,
+                                'content' => [
+                                    'actions' => $bActions ? $this->_getActions('independent') : '',
+                                ],
+                            ],
+                            'view' => $sView,
+                        ]),
+                    ],
+                ],
+            ]);
 
         $aVars = [
             'object' => $this->_sObject,
@@ -2031,10 +2095,11 @@ class BxBaseGrid extends BxDolGrid
                 'content' => [
                     'class' => (empty($this->_aOptions['show_total_count']) ? ' bx-gh-no-counter' : '') . ($sTitleRow !== '' ? $this->_getHeaderTitleRowClass($sFilterControls) : ''),
                     'title_row' => $sTitleRow,
+                    'view' => $sTitleRow === '' ? $sView : '',
                     'bx_if:actions_independent' => [
-                        'condition' => !empty($this->_aOptions['actions_independent']) && $sTitleRow === '',
+                        'condition' => $bActions && $sTitleRow === '',
                         'content' => [
-                            'actions_independent' => $sTitleRow === '' ? $this->_getActions('independent') : '',
+                            'actions_independent' => $bActions && $sTitleRow === '' ? $this->_getActions('independent') : '',
                         ],
                     ],
                     'bx_if:filter' => [
@@ -2049,14 +2114,15 @@ class BxBaseGrid extends BxDolGrid
                             'counter' => '',
                         ],
                     ],
-                ],
-            ],
-            'bx_if:actions_bulk' => [
-                'condition' => !empty($this->_aOptions['actions_bulk']),
-                'content' => [
-                    'id_bulk' => 'bx-grid-ag-bulk-' . $this->_sObject,
-                    'actions_bulk' => $this->_getActions('bulk'),
-                    'txt_clear' => bx_html_attribute(_t('_sys_grid_txt_clear_selection')),
+                    // Bulk actions: a menu at the right end of the header, opened by an always visible button.
+                    'bx_if:actions_bulk' => [
+                        'condition' => !empty($this->_aOptions['actions_bulk']),
+                        'content' => [
+                            'id_bulk' => 'bx-grid-ag-bulk-' . $this->_sObject,
+                            'actions_bulk' => $this->_agBulkMenu('bx-grid-ag-bulk-' . $this->_sObject . '-menu'),
+                            'txt_actions' => _t('_sys_actions'),
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -2066,6 +2132,56 @@ class BxBaseGrid extends BxDolGrid
         $this->_addJsCssAg();
 
         return $this->_oTemplate->parseHtmlByName('grid_ag.html', $aVars);
+    }
+
+    /**
+     * The bulk actions as a site popup menu (the same one a row's settings button opens), hidden
+     * until the Actions button opens it. Each item carries the attributes the classic grid script
+     * binds a bulk action to, so the click runs the action on the selected rows. Destructive
+     * actions come last.
+     */
+    protected function _agBulkMenu($sId)
+    {
+        $aItems = [];
+        $aItemsLast = [];
+        foreach ($this->_aOptions['actions_bulk'] as $sKey => $a) {
+            if (empty($a) || !is_array($a) || empty($a['active']) || (empty($a['title']) && empty($a['icon']))) {
+                continue;
+            }
+
+            $aAttrs = [
+                'bx_grid_action_bulk' => $sKey,
+                'bx_grid_action_confirm' => !empty($a['confirm']) ? 1 : 0,
+                'bx_grid_action_reset_paginate' => false === strpos($sKey, 'delete') ? 0 : 1,
+            ];
+            $sAttrs = '';
+            foreach ($aAttrs as $sName => $mixedValue) {
+                $sAttrs .= ' ' . $sName . '="' . bx_html_attribute($mixedValue) . '"';
+            }
+
+            $aItem = [
+                'id' => $sId . '-' . $sKey,
+                'name' => $sKey,
+                'class' => '',
+                'link' => 'javascript:void(0)',
+                'onclick' => '',
+                'target' => '_self',
+                'icon' => !empty($a['icon']) ? $a['icon'] : '',
+                'title' => !empty($a['title']) ? $a['title'] : $sKey,
+                'attrs_add' => trim($sAttrs),
+            ];
+
+            if (false !== strpos($sKey, 'delete')) {
+                $aItemsLast[] = $aItem;
+            } else {
+                $aItems[] = $aItem;
+            }
+        }
+
+        // The site's template, in Studio too: a row's settings menu is drawn by it there as well.
+        $oMenu = new BxTemplMenu(['template' => 'menu_vertical.html', 'menu_id' => $sId . '-items', 'menu_items' => array_merge($aItems, $aItemsLast)], BxDolTemplate::getInstance());
+
+        return BxTemplFunctions::getInstance()->transBox($sId, $oMenu->getCode(), true);
     }
 
     /**
@@ -2121,6 +2237,15 @@ class BxBaseGrid extends BxDolGrid
     }
 
     /**
+     * What the search field shows for the filter the grid opens with: the filter itself, or the search phrase of a
+     * filter that carries more (a Studio grid's module and phrase).
+     */
+    protected function _agSearchPhrase($sFilter)
+    {
+        return (string)$sFilter;
+    }
+
+    /**
      * json_encode turns an empty array into [], which the classic grid script treats as a list.
      * Query append, popups and confirm texts are maps.
      */
@@ -2169,6 +2294,7 @@ class BxBaseGrid extends BxDolGrid
             '_sys_grid_secret_reveal',
             '_sys_grid_secret_hide',
             '_sys_grid_secret_password_prompt',
+            '_sys_txt_error_occured',
         ]);
     }
 }

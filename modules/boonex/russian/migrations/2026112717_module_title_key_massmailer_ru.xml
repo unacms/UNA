@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- The module title string the installer writes (BxDolModule::getTitleKey), in Russian as the module's own title. -->
+<resources name="ru" flag="ru" title="Russian" category="MassMailer">
+    <string_upd name="_sys_module_massmailer"><![CDATA[Mass Mailer]]></string_upd>
+</resources>

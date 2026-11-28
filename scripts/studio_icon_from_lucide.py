@@ -40,6 +40,7 @@ ICONS = [
     ('modules/boonex/editor/template/images/icons/std-icon.svg', 'editor', 'gray', 'text-initial', 80),
     ('modules/boonex/lucid/template/images/icons/std-icon.svg', 'lucid', 'purple', 'layout-panel-top', 80),
     ('modules/boonex/mapshow/template/images/icons/std-icon.svg', 'mapshow', 'green', 'map', 80),
+    ('modules/boonex/media/template/images/icons/std-icon.svg', 'media', 'gray', 'images', 80),
     ('studio/template/images/modules/bx_polls.svg', 'polls', 'green', 'vote', 72),
     ('modules/boonex/cas_connect/template/images/icons/std-icon.svg', 'cas', 'white', 'fingerprint-pattern', 80),
     # discontinued apps and integrations whose service is gone: a dashed placeholder on the gray plate

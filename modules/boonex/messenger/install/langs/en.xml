@@ -360,6 +360,10 @@
 	<string name="_bx_messenger_txt_sample_comment_reply_single"><![CDATA[reply]]></string>
 	<string name="_bx_messenger_txt_sample_comment_repost_single"><![CDATA[repost]]></string>
 	<string name="_bx_messenger_txt_sample_email_push"><![CDATA[sent {0}]]></string>
+	<string name="_bx_messenger_txt_email_message"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> sent you a message]]></string>
+	<string name="_bx_messenger_txt_email_message_in"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> sent a message in {entry_caption}]]></string>
+	<string name="_bx_messenger_txt_email_mention"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> mentioned you in a message]]></string>
+	<string name="_bx_messenger_txt_email_broadcast"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> sent a broadcast]]></string>
 	<string name="_bx_messenger_lot_parts_empty"><![CDATA[Choose at least one person to chat with.]]></string>
 	<string name="_bx_messenger_dont_update_title"><![CDATA[Don't update page title when new messages income]]></string>
 	<string name="_bx_messenger_acl_action_edit_messages"><![CDATA[Edit messages]]></string>

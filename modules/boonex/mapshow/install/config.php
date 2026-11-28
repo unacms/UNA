@@ -16,7 +16,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_mapshow',
-    'title' => 'Map Show',
+    'title' => 'Map',
     'note' => 'Maps, locations shown on a map',
     'version' => '1.0.0.DEV',
     'vendor' => 'UNA INC',

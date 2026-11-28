@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Module title: Azure AD Connect is now Microsoft Connect (una-vocabulary skill). Names, URIs and language keys stay. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_module_azrcon"><![CDATA[Microsoft Connect]]></string_upd>
+    <string_upd name="_bx_azrcon"><![CDATA[Microsoft Connect]]></string_upd>
+    <string_upd name="_bx_azrcon_settings"><![CDATA[Microsoft Connect]]></string_upd>
+    <string_upd name="_bx_azrcon_adm_stg_cpt_type"><![CDATA[Microsoft Connect]]></string_upd>
+    <string_upd name="_bx_azrcon_auth_title"><![CDATA[Continue with Microsoft]]></string_upd>
+    <string_upd name="_bx_azrcon_et_password_generated"><![CDATA[Microsoft Connect temporary password]]></string_upd>
+    <string_upd name="_bx_azrcon_information_block"><![CDATA[
+        <p>This module can be used to sign in to this site using Microsoft work or school accounts (Microsoft Entra ID, formerly Azure AD).</p>
+        <p>To make it work make new registration in <a target="_blank" href="https://portal.azure.com/">Azure portal</a> then goto Azure AD B2C service. <br />
+        When asked specify the following Redirect URI:<br />
+            <ul>
+                <li>Redirect URL: <strong>{0}</strong></li>
+            </ul>
+            When registration is complete go to "Overview"  to copy Application (client) ID and Directory (tenant) ID. <br /> 
+            Client secret can be generated in "Certificates & secrets". <br />
+            For more info please refer to <a target="_blank" href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app">official documentation</a>.
+        </p>]]></string_upd>
+</resources>

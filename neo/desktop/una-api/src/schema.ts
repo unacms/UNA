@@ -4925,6 +4925,11 @@ export interface components {
             id: components["schemas"]["Id"];
             /** @example bx_tasks */
             module: string;
+            /**
+             * @description Its number with its community's prefix, as Linear has them; it keeps the number when it moves to another community. Its `url` ends with it in lowercase. Null for none
+             * @example UNA-12
+             */
+            identifier: string | null;
             title: string;
             /** @description The start of its text, as plain text */
             summary: string;

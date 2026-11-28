@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Module title: Market is now Marketplace (una-vocabulary skill). Names, URIs and language keys stay. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_sys_module_market"><![CDATA[Marketplace]]></string_upd>
+    <string_upd name="_bx_market"><![CDATA[Marketplace]]></string_upd>
+    <string_upd name="_bx_market_cmts"><![CDATA[Marketplace reviews]]></string_upd>
+    <string_upd name="_bx_market_reactions"><![CDATA[Marketplace reactions]]></string_upd>
+    <string_upd name="_bx_market_page_title_sys_home"><![CDATA[Marketplace home]]></string_upd>
+    <string_upd name="_bx_market_page_title_home"><![CDATA[Marketplace]]></string_upd>
+    <string_upd name="_bx_market_menu_title_submenu"><![CDATA[Marketplace submenu]]></string_upd>
+    <string_upd name="_bx_market_menu_set_title_submenu"><![CDATA[Marketplace submenu]]></string_upd>
+    <string_upd name="_bx_market_menu_item_title_system_entries_home"><![CDATA[Marketplace]]></string_upd>
+    <string_upd name="_bx_market_menu_item_title_entries_home"><![CDATA[Marketplace]]></string_upd>
+    <string_upd name="_bx_market_chart_growth"><![CDATA[Marketplace: growth]]></string_upd>
+    <string_upd name="_bx_market_chart_growth_speed"><![CDATA[Marketplace: growth speed]]></string_upd>
+    <string_upd name="_bx_market_search_extended"><![CDATA[Marketplace search]]></string_upd>
+    <string_upd name="_bx_market_search_extended_cmts"><![CDATA[Marketplace comments search]]></string_upd>
+</resources>

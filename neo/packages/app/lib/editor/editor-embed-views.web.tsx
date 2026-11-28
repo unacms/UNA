@@ -1,14 +1,13 @@
 'use client'
-import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useFetch } from 'app/lib/hooks/use-fetch'
 import { appSetting } from 'app/lib/util'
-import EmbedJs from 'app/ui/molecules/content/embed'
+import Embed from 'app/ui/molecules/content/embed'
 import Html from 'app/ui/atoms/html'
 import { embedUrlFromImageSrc, tableMarkdownFromImageSrc } from './inline-video'
 import { markdownTableToHtml } from './markdown-table'
 
-const Embed = EmbedJs as ComponentType<{ data: Record<string, any> }>
 
 type EmbedView = { id: number; dom: HTMLElement; image: string } & ({ url: string } | { table: string })
 

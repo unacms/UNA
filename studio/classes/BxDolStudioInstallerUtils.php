@@ -30,6 +30,7 @@ define('BX_DOL_STUDIO_IU_RCE_WSV_MU', 106); //--- Wrong script version during mo
 define('BX_DOL_STUDIO_IU_RCE_WMV', 107); //--- Wrong module version during module update
 define('BX_DOL_STUDIO_IU_RCE_MODIFIED', 108);
 define('BX_DOL_STUDIO_IU_RCE_CHECKSUM_FAILED', 109);
+define('BX_DOL_STUDIO_IU_RCE_DEPRECATED', 110); //--- A deprecated module is not installed on a site that doesn't have it
 
 define('BX_DOL_STUDIO_IU_RCE_SUBACTION_FAILED', 200); //--- Error appeared in some subaction
 
@@ -635,6 +636,8 @@ class BxDolStudioInstallerUtils extends BxDolInstallerUtils implements iBxDolSin
             'uri' => $aConfig['home_uri'],
             'dir' => $aConfig['home_dir'],
             'note' => isset($aConfig['note']) ? bx_process_output($aConfig['note']) : '',
+            'deprecated' => !empty(BxDolModuleQuery::getConfigDeprecation($aConfig)['deprecated']),
+            'preview' => !empty(BxDolModuleQuery::getConfigPreview($aConfig)['preview']),
             'installed' => $bInstalled,
             'enabled' => $bEnabled
         );

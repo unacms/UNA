@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Notification emails of messages say who wrote and where; the message follows as the summary. -->
+<resources name="ru" flag="ru" title="Russian">
+    <string_add name="_bx_messenger_txt_email_message"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> прислал(а) вам сообщение]]></string_add>
+    <string_add name="_bx_messenger_txt_email_message_in"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> прислал(а) сообщение в «{entry_caption}»]]></string_add>
+    <string_add name="_bx_messenger_txt_email_mention"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> упомянул(а) вас в сообщении]]></string_add>
+    <string_add name="_bx_messenger_txt_email_broadcast"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> прислал(а) рассылку]]></string_add>
+</resources>

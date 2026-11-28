@@ -33,7 +33,9 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_tasks` (
   `tasks_list` int(11) NOT NULL,
   `gh_issue` int(11) NOT NULL default '0',
   `gh_issue_url` varchar(255) NOT NULL default '',
-  `completed` tinyint(4) NOT NULL DEFAULT '0', 
+  `number` int(11) NOT NULL default '0',
+  `number_context_id` int(11) NOT NULL default '0',
+  `completed` tinyint(4) NOT NULL DEFAULT '0',
   `expired` tinyint(4) NOT NULL DEFAULT '0', 
   `cf` int(11) NOT NULL default '1',
   `allow_view_to` varchar(16) NOT NULL DEFAULT '3',
@@ -41,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_tasks` (
   `status` enum('active','awaiting','failed','hidden') NOT NULL DEFAULT 'active',
   `status_admin` enum('active','hidden','pending') NOT NULL DEFAULT 'active',
   PRIMARY KEY (`id`),
+  KEY `number` (`number_context_id`,`number`),
   FULLTEXT KEY `title_text` (`title`,`text`)
 );
 
@@ -58,7 +61,29 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_contexts` (
   `gh_app_id` int(11) NOT NULL DEFAULT '0',
   `gh_username` varchar(64) NOT NULL DEFAULT '',
   `gh_repository` varchar(255) NOT NULL DEFAULT '',
+  `prefix` varchar(16) NOT NULL DEFAULT '',
+  `last_number` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
+);
+
+-- TABLE: every prefix of task numbers a community had (context 0: tasks in no community)
+CREATE TABLE IF NOT EXISTS `bx_tasks_prefixes` (
+  `prefix` varchar(16) NOT NULL,
+  `context_id` int(11) NOT NULL DEFAULT '0',
+  `added` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`prefix`),
+  KEY `context_id` (`context_id`)
+);
+
+-- TABLE: SEO links tasks had before their numbers became their links (view-task/fix-the-sign-in), which lead to the current ones
+CREATE TABLE IF NOT EXISTS `bx_tasks_former_links` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_uri` varchar(255) NOT NULL,
+  `uri` varchar(50) NOT NULL,
+  `content_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `page_uri` (`page_uri`(109),`uri`),
+  KEY `content_id` (`content_id`)
 );
 
 -- TABLE: assignment
@@ -557,9 +582,9 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_tasks_entry_add', 'priority', 2147483647, 1, 5),
 ('bx_tasks_entry_add', 'estimate', 2147483647, 1, 6),
 ('bx_tasks_entry_add', 'stickers', 2147483647, 1, 7),
-('bx_tasks_entry_add', 'initial_members', 192, 1, 8),
-('bx_tasks_entry_add', 'due_date', 192, 1, 9),
-('bx_tasks_entry_add', 'state', 192, 1, 10),
+('bx_tasks_entry_add', 'initial_members', 2147483647, 1, 8),
+('bx_tasks_entry_add', 'due_date', 2147483647, 1, 9),
+('bx_tasks_entry_add', 'state', 2147483647, 1, 10),
 ('bx_tasks_entry_add', 'controls', 2147483647, 1, 11),
 ('bx_tasks_entry_add', 'do_publish', 2147483647, 1, 12),
 ('bx_tasks_entry_add', 'do_cancel', 2147483647, 1, 13),
@@ -578,8 +603,8 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_tasks_entry_edit', 'priority', 2147483647, 1, 9),
 ('bx_tasks_entry_edit', 'estimate', 2147483647, 1, 10),
 ('bx_tasks_entry_edit', 'stickers', 2147483647, 1, 11),
-('bx_tasks_entry_edit', 'initial_members', 192, 1, 12),
-('bx_tasks_entry_edit', 'due_date', 192, 1, 13),
+('bx_tasks_entry_edit', 'initial_members', 2147483647, 1, 12),
+('bx_tasks_entry_edit', 'due_date', 2147483647, 1, 13),
 ('bx_tasks_entry_edit', 'cf', 2147483647, 1, 14),
 ('bx_tasks_entry_edit', 'controls_edit', 2147483647, 1, 15),
 ('bx_tasks_entry_edit', 'do_submit', 2147483647, 1, 16),
@@ -614,7 +639,7 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_tasks_entry_edit_estimate', 'do_submit', 2147483647, 1, 3),
 ('bx_tasks_entry_edit_estimate', 'do_cancel', 2147483647, 1, 4),
 
-('bx_tasks_entry_edit_due_date', 'due_date', 192, 1, 1),
+('bx_tasks_entry_edit_due_date', 'due_date', 2147483647, 1, 1),
 ('bx_tasks_entry_edit_due_date', 'controls_edit_popup', 2147483647, 1, 2),
 ('bx_tasks_entry_edit_due_date', 'do_submit', 2147483647, 1, 3),
 ('bx_tasks_entry_edit_due_date', 'do_cancel', 2147483647, 1, 4),
@@ -628,7 +653,7 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_tasks_entry_view', 'cat', 2147483647, 1, 7),
 ('bx_tasks_entry_view', 'added', 2147483647, 1, 8),
 ('bx_tasks_entry_view', 'changed', 2147483647, 1, 9),
-('bx_tasks_entry_view', 'due_date', 192, 1, 10),
+('bx_tasks_entry_view', 'due_date', 2147483647, 1, 10),
 ('bx_tasks_entry_view', 'state', 2147483647, 1, 11),
 ('bx_tasks_entry_view', 'gh_issue_url', 2147483647, 1, 12);
 
@@ -669,11 +694,13 @@ INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `c
 ('bx_tasks_context', 'bx_tasks', 'gh_app_id', '', '', 0, 'select', '_bx_tasks_form_context_input_sys_gh_app_id', '_bx_tasks_form_context_input_gh_app_id', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 0, 0),
 ('bx_tasks_context', 'bx_tasks', 'gh_username', '', '', 0, 'text', '_bx_tasks_form_context_input_sys_gh_username', '_bx_tasks_form_context_input_gh_username', '', 0, 0, 0, '', '', '', '', '', '', 'Xss', '', 0, 0),
 ('bx_tasks_context', 'bx_tasks', 'gh_repository', '', '', 0, 'text', '_bx_tasks_form_context_input_sys_gh_repository', '_bx_tasks_form_context_input_gh_repository', '', 0, 0, 0, '', '', '', '', '', '', 'Xss', '', 0, 0),
+('bx_tasks_context', 'bx_tasks', 'prefix', '', '', 0, 'text', '_bx_tasks_form_context_input_sys_prefix', '_bx_tasks_form_context_input_prefix', '_bx_tasks_form_context_input_prefix_info', 1, 0, 0, '', '', '', 'Preg', 'a:1:{s:4:"preg";s:28:"/^[A-Za-z][A-Za-z0-9]{1,9}$/";}', '_bx_tasks_form_context_input_prefix_err', '', '', 0, 0),
 ('bx_tasks_context', 'bx_tasks', 'do_submit', '_bx_tasks_form_context_input_do_submit', '', 0, 'submit', '_bx_tasks_form_context_input_sys_do_submit', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 1, 0),
 ('bx_tasks_context', 'bx_tasks', 'do_cancel', '_bx_tasks_form_context_input_do_cancel', '', 0, 'button', '_bx_tasks_form_context_input_sys_do_cancel', '', '', 0, 0, 0, 'a:2:{s:7:"onclick";s:45:"$(''.bx-popup-applied:visible'').dolPopupHide()";s:5:"class";s:22:"bx-def-margin-sec-left";}', '', '', '', '', '', '', '', 1, 0),
 ('bx_tasks_context', 'bx_tasks', 'controls', '', 'do_submit,do_cancel', 0, 'input_set', '_bx_tasks_form_context_input_sys_controls', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 1, 0);
 
 INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_for_levels`, `active`, `order`) VALUES
+('bx_tasks_context_edit', 'prefix', 2147483647, 1, 0),
 ('bx_tasks_context_edit', 'gh_username', 2147483647, 1, 1),
 ('bx_tasks_context_edit', 'gh_repository', 2147483647, 1, 2),
 ('bx_tasks_context_edit', 'gh_app_id', 2147483647, 1, 3),

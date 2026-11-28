@@ -606,6 +606,7 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         }
 
         // check page URI rewrite
+        $sPageSegment = $a[0];
         $aSeoUriRewritesInv = array_flip($aSeoUriRewrites);
         if (isset($aSeoUriRewritesInv[$a[0]]))
             $a[0] = $aSeoUriRewritesInv[$a[0]];
@@ -617,8 +618,18 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             return false;
 
         // page with params
-        if (!empty($a[1])) { 
+        if (!empty($a[1])) {
             $r = BxDolPageQuery::getSeoLink($aPage['module'], $a[0], ['uri' => $a[1]]);
+            if (!$r && ($r = self::getSeoLinkFallback($aPage['module'], $a[0], $a[1]))) {
+                // a former link of the content leads to its current one
+                $rCurrent = BxDolPageQuery::getSeoLink($aPage['module'], $a[0], ['param_value' => $r['param_value']]);
+                if ($rCurrent && $rCurrent['param_name'] == $r['param_name'] && $rCurrent['uri'] !== $a[1]) {
+                    unset($_GET['_q']);
+                    $a[0] = $sPageSegment;
+                    $a[1] = $rCurrent['uri'];
+                    return BX_DOL_URL_ROOT . bx_append_url_params(implode('/', $a), $_GET);
+                }
+            }
             if ($r)
                 $_GET[$r['param_name']] = $_REQUEST[$r['param_name']] = $r['param_value'];
         }
@@ -642,8 +653,47 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         return $oPage;
     }
     
+    /**
+     * The content an SEO link which isn't in sys_seo_links names: a module whose links change (a
+     * task's number takes its community's new prefix) knows its former ones.
+     * @param $sModule module of the page
+     * @param $sPageUri page URI
+     * @param $sUri the last part of the link
+     * @return array ['param_name' => ..., 'param_value' => ...] or false when no module knows it
+     */
+    static public function getSeoLinkFallback ($sModule, $sPageUri, $sUri)
+    {
+        $aLink = false;
+
+        /**
+         * @hooks
+         * @hookdef hook-system-seo_link_not_found 'system', 'seo_link_not_found' - hook to find the content of an SEO link which isn't in sys_seo_links
+         * - $unit_name - equals `system`
+         * - $action - equals `seo_link_not_found`
+         * - $object_id - not used
+         * - $sender_id - not used
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `module` - [string] module of the page
+         *      - `page_uri` - [string] page URI
+         *      - `uri` - [string] the last part of the link
+         *      - `link` - [array] by ref, set it to ['param_name' => 'id', 'param_value' => '12'] for the content the link names
+         * @hook @ref hook-system-seo_link_not_found
+         */
+        bx_alert('system', 'seo_link_not_found', 0, false, [
+            'module' => $sModule,
+            'page_uri' => $sPageUri,
+            'uri' => $sUri,
+            'link' => &$aLink,
+        ]);
+
+        if (!is_array($aLink) || !isset($aLink['param_name'], $aLink['param_value']) || !in_array($aLink['param_name'], ['id', 'profile_id'], true))
+            return false;
+
+        return ['param_name' => $aLink['param_name'], 'param_value' => (string)$aLink['param_value']];
+    }
+
 	/**
-     * Process SEO links. It takes request part from SEO link and process it 
+     * Process SEO links. It takes request part from SEO link and process it
      * to make it work as regular page link
      * @param $sRequest request URI with SEO link
      * @return true - if page was found and processed correctly, false - if page wasn't found

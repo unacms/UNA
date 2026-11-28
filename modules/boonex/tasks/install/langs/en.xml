@@ -13,6 +13,8 @@
     <string name="_bx_tasks_option_plain_summary_chars"><![CDATA[Number of characters in plain task description when task hasn't thumb]]></string>
     <string name="_bx_tasks_option_per_page_browse"><![CDATA[Number of items per page]]></string>
     <string name="_bx_tasks_option_per_page_profile"><![CDATA[Number of items on profile/group page]]></string>
+    <string name="_bx_tasks_option_personal_prefix"><![CDATA[Task number prefix for tasks outside communities]]></string>
+    <string name="_bx_tasks_option_personal_prefix_err"><![CDATA[Use 2 to 10 Latin letters and digits, starting with a letter.]]></string>
     <string name="_bx_tasks_option_rss_num"><![CDATA[Number of items in RSS feed]]></string>
     <string name="_bx_tasks_option_searchable_fields"><![CDATA[Searchable fields for keyword search]]></string>
     <string name="_bx_tasks_option_auto_activation_for_categories"><![CDATA[Auto-Activation For Categories]]></string>
@@ -123,7 +125,12 @@
     <string name="_bx_tasks_form_context_input_sys_gh_app_id"><![CDATA[GitHub App]]></string>
     <string name="_bx_tasks_form_context_input_gh_app_id"><![CDATA[GitHub App]]></string>
     <string name="_bx_tasks_form_context_input_sys_gh_username"><![CDATA[GitHub Username]]></string>
+    <string name="_bx_tasks_form_context_input_sys_prefix"><![CDATA[Prefix]]></string>
     <string name="_bx_tasks_form_context_input_gh_username"><![CDATA[GitHub Username]]></string>
+    <string name="_bx_tasks_form_context_input_prefix"><![CDATA[Task number prefix]]></string>
+    <string name="_bx_tasks_form_context_input_prefix_err"><![CDATA[Use 2 to 10 Latin letters and digits, starting with a letter.]]></string>
+    <string name="_bx_tasks_form_context_input_prefix_err_taken"><![CDATA[Another community uses or used this prefix. Please choose another one.]]></string>
+    <string name="_bx_tasks_form_context_input_prefix_info"><![CDATA[Task numbers start with it, as in UNA-12. Links with a previous prefix keep working.]]></string>
     <string name="_bx_tasks_form_context_input_sys_gh_repository"><![CDATA[GitHub Repository]]></string>
     <string name="_bx_tasks_form_context_input_gh_repository"><![CDATA[GitHub Repository]]></string>
     <string name="_bx_tasks_form_context_input_sys_do_submit"><![CDATA[Submit]]></string>

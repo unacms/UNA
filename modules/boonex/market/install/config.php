@@ -16,7 +16,7 @@ $aConfig = array(
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_market',
-    'title' => 'Market',
+    'title' => 'Marketplace',
     'note' => 'Products, market listings, things for sale',
     'version' => '15.0.8.DEV',
     'vendor' => 'UNA INC',

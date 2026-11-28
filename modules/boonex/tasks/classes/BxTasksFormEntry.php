@@ -228,6 +228,9 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
 
         $iContentId = parent::insert ($aValsToAdd, $isIgnore);
         if(!empty($iContentId)) {
+            // every way a task is added comes here: the site's forms, API v2, the import
+            $this->_oModule->assignNumber($iContentId);
+
             $this->processFiles($CNF['FIELD_COVER'], $iContentId, true);
 
             if(isset($this->aInputs['initial_members']))

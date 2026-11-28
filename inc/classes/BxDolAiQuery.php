@@ -325,7 +325,10 @@ class BxDolAiQuery extends BxDolDb
             'added' => time(),
         ]));
 
-        return (int)$this->lastId();
+        $iId = (int)$this->lastId();
+        BxDolAdminLog::recordSql($aContext, $sOp, $sTable, $sPkValue, $sBefore, $sAfter);
+
+        return $iId;
     }
 
     /**

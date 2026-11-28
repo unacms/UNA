@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNA-Migration-Min-System-Version: 15.0.0-RC4 -->
+<!-- Studio > Audit > Studio log: Actor, Entry type and Entry columns; no Agent column or filter. -->
+<resources name="en" flag="gb" title="English">
+    <string_upd name="_adm_form_txt_admin_log_object"><![CDATA[Entry type]]></string_upd>
+    <string_upd name="_adm_form_txt_admin_log_object_id"><![CDATA[Entry]]></string_upd>
+    <string_upd name="_adm_form_txt_admin_log_profile"><![CDATA[Actor]]></string_upd>
+    <string_upd name="_adm_txt_admin_log_object_any"><![CDATA[Any entry type]]></string_upd>
+    <string_upd name="_adm_txt_admin_log_profile_any"><![CDATA[Any actor]]></string_upd>
+    <string_add name="_adm_txt_admin_log_actor_via_agent"><![CDATA[{0} via agent {1}]]></string_add>
+    <string_del name="_adm_form_txt_admin_log_agent"></string_del>
+    <string_del name="_adm_txt_admin_log_agent_any"></string_del>
+</resources>

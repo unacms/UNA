@@ -101,13 +101,22 @@ class GridHeaderTitleRowTest extends BxDolTestCase
         $this->assertStringNotContainsString('bx-gh-title-only', $s, 'The filters follow in their own row.');
         $this->assertStringContainsString('<h2 class="bx-std-bcap-text">' . BxDolGrid::HEADER_TITLE_SLOT . '</h2>', $s);
 
-        // The buttons are in the title row, once, and come before the filters, as they show.
         $this->assertSame(1, substr_count($s, 'bx_grid_action_independent="add"'));
         $iTitle = strpos($s, BxDolGrid::HEADER_TITLE_SLOT);
         $iButton = strpos($s, 'bx_grid_action_independent="add"');
         $iFilter = strpos($s, 'bx-grid-header-controls-filter');
-        $this->assertTrue($iTitle < $iButton && $iButton < $iFilter);
         $this->assertStringContainsString('<div class="bx-std-bcap-controls bx-grid-header-controls-independent">', $s);
+
+        if ($sEngine === 'ag') {
+            // AG Grid: the grid's buttons and then the rows / cards switch, a segmented one, are in the title row.
+            $iView = strpos($s, 'bx-grid-ag-view-btn');
+            $this->assertSame(1, substr_count($s, 'class="bx-grid-ag-view bx-std-segmented"'));
+            $this->assertTrue($iTitle < $iButton && $iButton < $iView && $iView < $iFilter);
+        }
+        else {
+            // The buttons are in the title row, once, and come before the filters, as they show.
+            $this->assertTrue($iTitle < $iButton && $iButton < $iFilter);
+        }
 
         // Inside the grid's wrapper, where the grid script binds its buttons.
         $this->assertTrue(strpos($s, 'id="bx-grid-wrap-test_grid"') < $iButton);

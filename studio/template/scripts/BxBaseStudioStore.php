@@ -506,6 +506,10 @@ class BxBaseStudioStore extends BxDolStudioStore
             $bIcon = ($bCacheImage && substr($sIcon, 0, 10) == 'data:image') || strpos($sIcon, '.') !== false;
 
             $bInstalled = $aModule['installed'];
+            // A deprecated module can't be installed, so it isn't offered where it isn't installed.
+            if(!$bInstalled && !empty($aModule['deprecated']))
+                continue;
+
             $bQueued = !$bInstalled && $this->oDb->isQueued('action', $aModule['dir']);
 
             $sModules .= $oTemplate->parseHtmlByName('str_product_v1.html', array(
@@ -526,6 +530,10 @@ class BxBaseStudioStore extends BxDolStudioStore
                 'title' => $aModule['title'],
                 'vendor' => strtolower($aModule['vendor']) == 'boonex' ? 'UNA INC' : $aModule['vendor'],
                 'version' => $aModule['version'],
+                'bx_if:preview' => array(
+                    'condition' => !empty($aModule['preview']),
+                    'content' => array()
+                ),
                 'dir' => $aModule['dir'],
                 'more_menu_id' => $sMoreMenuId,
                 'more_title' => bx_html_attribute(_t('_adm_str_txt_more_actions', $aModule['title'])),

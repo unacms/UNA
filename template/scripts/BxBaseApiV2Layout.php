@@ -176,6 +176,9 @@ class BxBaseApiV2Layout
             $sObject = BxDolPageQuery::getPageObjectNameByURI($sUri, false, true);
             $aPage = $sObject ? BxDolPageQuery::getPageObject($sObject) : false;
             $aLink = $aPage ? BxDolPageQuery::getSeoLink($aPage['module'], $aPage['uri'], ['uri' => $sSeo]) : false;
+            // a former link of the content (a task's number with its community's former prefix)
+            if (!$aLink && $aPage)
+                $aLink = BxDolPage::getSeoLinkFallback($aPage['module'], $aPage['uri'], $sSeo);
             if (!$aLink || !is_array($aLink) || !preg_match('#^[a-z][a-z0-9_]{0,31}$#', (string)$aLink['param_name']))
                 throw BxDolApiV2Problem::notFound('The page');
             $aParams[$aLink['param_name']] = (string)$aLink['param_value'];

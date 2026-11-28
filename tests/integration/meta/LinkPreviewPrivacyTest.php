@@ -212,10 +212,20 @@ class LinkPreviewPrivacyTest extends BxDolIntegrationTestCase
         $oDb->cleanMemoryAll();
         $GLOBALS['glMemCache'] = []; // view checks are remembered for a page load
 
-        $sObject = BxDolPageQuery::getPageObjectNameByURI('view-persons-profile');
-        unset($GLOBALS['bxDolClasses']['BxDolPage!' . $sObject]);
-        $_GET = ['i' => 'view-persons-profile', 'id' => $iContentId, 'api' => 1];
-        $aData = BxDolPage::getObjectInstanceByURI('view-persons-profile')->getPageAPI();
+        // The module keeps the profile that was logged in when it was made: a test before this one, as admin, made the
+        // guest the profile's owner, who sees everything.
+        $oModule = BxDolModule::getInstance('bx_persons');
+        $iProfileWas = $oModule->setProfileId(0);
+
+        try {
+            $sObject = BxDolPageQuery::getPageObjectNameByURI('view-persons-profile');
+            unset($GLOBALS['bxDolClasses']['BxDolPage!' . $sObject]);
+            $_GET = ['i' => 'view-persons-profile', 'id' => $iContentId, 'api' => 1];
+            $aData = BxDolPage::getObjectInstanceByURI('view-persons-profile')->getPageAPI();
+        }
+        finally {
+            $oModule->setProfileId($iProfileWas);
+        }
 
         $this->assertArrayNotHasKey('page_status', $aData);
         $sDefault = bx_replace_markers(_t('_sys_page_meta_description_default'), ['site_title' => getParam('site_title')]);

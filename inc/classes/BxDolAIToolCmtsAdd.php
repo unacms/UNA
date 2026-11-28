@@ -89,6 +89,11 @@ class BxDolAIToolCmtsAdd extends BxDolAITool
             $a = $o->add($aData);
             unset($a['count']);
             unset($a['countf']);
+            if ($this->adminLogOk($a)) {
+                $sId = $this->adminLogId($a);
+                $aAfter = $sId !== '' ? $o->getCommentRow((int)$sId) : ['text' => $comment_text];
+                $this->adminLog('cmts:' . $module, $sId !== '' ? $sId : (string)$content_id, 'add', null, $aAfter ?: ['text' => $comment_text]);
+            }
         }
         else {
             $a = ['msg' => '_sys_txt_not_found', 'code' => 404];

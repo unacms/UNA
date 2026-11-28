@@ -21,7 +21,13 @@ define('BX_TASKS_STATE_DONE', 7);
 
 class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 {
+    /** The longest prefix of task numbers: UNA-12 has the prefix UNA. */
+    const PREFIX_MAX = 10;
+    const PREFIX_PATTERN = '/^[A-Za-z][A-Za-z0-9]{1,9}$/';
+
     protected $_aTimeRights = [];
+    /** The current prefixes of communities (id => prefix, 0 for the tasks in none), once per request. */
+    protected $_aPrefixes = [];
 
     function __construct(&$aModule)
     {
@@ -32,7 +38,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         $CNF = &$this->_oConfig->CNF;
         $this->_aSearchableNamesExcept = array_merge($this->_aSearchableNamesExcept, array(
             $CNF['FIELD_PUBLISHED'],
-            $CNF['FIELD_ALLOW_COMMENTS']
+            $CNF['FIELD_ALLOW_COMMENTS'],
+            $CNF['FIELD_NUMBER'],
+            $CNF['FIELD_NUMBER_CONTEXT']
         ));
     }
 
@@ -936,6 +944,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$this->isAllowManageByContext($iContextPid) || !($iContextAuthorPid = $this->getContextAuthorId($iContextPid)))
             return $this->_bIsApi ? [] : '';
 
+        // the prefix of the community's task numbers is made now if it has no task yet (and its row with it)
+        $this->getContextPrefix($iContextPid);
+
         $aContext = $this->_oDb->getContexts(['sample' => 'id', 'id' => $iContextPid]);
         $bContext = !empty($aContext) && is_array($aContext);
 
@@ -944,6 +955,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_CONTEXT'], $CNF['OBJECT_FORM_CONTEXT_DISPLAY_EDIT']);
         $oForm->setProfileId($iContextAuthorPid);
+        $oForm->setContextId($iContextPid);
         $oForm->initChecker($aContext);
         if($oForm->isSubmittedAndValid()) {
             if(!$bContext)
@@ -1674,6 +1686,254 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                 $aEntries[$aTask[$CNF['FIELD_ID']]] = $aTask[$CNF['FIELD_TITLE']];
 
         return $aEntries;
+    }
+
+    /*
+     * Numbers of tasks, as Linear has them: UNA-12 is the 12th task of the community whose prefix is
+     * UNA. The prefix is made from the community's name with its first task, and its administrators
+     * may change it on the Settings of its tasks. Every prefix a community had stays its own, so its
+     * old numbers and their links (view-task/una-12) still find the tasks. A task keeps its number
+     * when it moves to another community. Tasks in no community have the prefix of the
+     * bx_tasks_personal_prefix option.
+     */
+
+    /**
+     * The counter a task takes its number from: its community's, 0 for a task in none.
+     */
+    public function getNumberContextId($aContentInfo)
+    {
+        $iPrivacy = (int)($aContentInfo[$this->_oConfig->CNF['FIELD_ALLOW_VIEW_TO']] ?? 0);
+
+        return $iPrivacy < 0 ? -$iPrivacy : 0;
+    }
+
+    public function isPrefixValid($sPrefix)
+    {
+        return is_string($sPrefix) && preg_match(self::PREFIX_PATTERN, $sPrefix);
+    }
+
+    /**
+     * Whether a community may take a prefix: a valid one which no other community has or had.
+     */
+    public function isPrefixAvailable($sPrefix, $iContextId)
+    {
+        if(!$this->isPrefixValid($sPrefix))
+            return false;
+
+        $mixedOwner = $this->_oDb->getPrefixContextId(strtoupper($sPrefix));
+
+        return $mixedOwner === false || $mixedOwner === (int)$iContextId;
+    }
+
+    /**
+     * A community's prefix (0: the tasks in no community), made the first time it is needed.
+     */
+    public function getContextPrefix($iContextId, $bFresh = false)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $iContextId = (int)$iContextId;
+        if(!$bFresh && !empty($this->_aPrefixes[$iContextId]))
+            return $this->_aPrefixes[$iContextId];
+
+        $this->_oDb->addContextRow($iContextId);
+
+        $sPrefix = $this->_oDb->getContextPrefix($iContextId);
+        if($sPrefix === '') {
+            $aCandidates = [];
+            if($iContextId)
+                $aCandidates = $this->getPrefixCandidates(($oContext = BxDolProfile::getInstance($iContextId)) !== false ? $oContext->getDisplayName() : '', $iContextId);
+            else {
+                // the option's prefix as it is (TASK), made from it only when another community has it
+                $sOption = trim((string)getParam($CNF['PARAM_PERSONAL_PREFIX']));
+                if($this->isPrefixValid($sOption))
+                    $aCandidates[] = strtoupper($sOption);
+                $aCandidates = array_merge($aCandidates, $this->getPrefixCandidates($sOption !== '' ? $sOption : 'TASK', 0));
+            }
+
+            foreach(array_unique($aCandidates) as $sCandidate) {
+                if(!$this->_oDb->reservePrefix($sCandidate, $iContextId))
+                    continue;
+
+                // another request may have given the community its prefix meanwhile
+                $sPrefix = $this->_oDb->updateContextPrefix($iContextId, $sCandidate, '') ? $sCandidate : $this->_oDb->getContextPrefix($iContextId);
+                break;
+            }
+        }
+
+        return $this->_aPrefixes[$iContextId] = $sPrefix;
+    }
+
+    /**
+     * Changes a community's prefix (0: the tasks in no community). The former one stays the
+     * community's: its links lead to the tasks' new ones.
+     */
+    public function setContextPrefix($iContextId, $sPrefix)
+    {
+        $iContextId = (int)$iContextId;
+        if(!$this->isPrefixValid($sPrefix))
+            return false;
+
+        $sPrefix = strtoupper($sPrefix);
+        if(!$this->_oDb->lockPrefix($iContextId))
+            return false;
+
+        // read under the lock: a change finished by another request is the one this one changes
+        $sCurrent = $this->getContextPrefix($iContextId, true);
+        $bResult = $sPrefix === $sCurrent;
+        if(!$bResult && $this->_oDb->reservePrefix($sPrefix, $iContextId) && $this->_oDb->updateContextPrefix($iContextId, $sPrefix, $sCurrent)) {
+            $this->_aPrefixes[$iContextId] = $sPrefix;
+            $bResult = $this->_oDb->updateSeoLinksByNumberContext($iContextId, $sPrefix);
+        }
+
+        $this->_oDb->unlockPrefix($iContextId);
+
+        return $bResult;
+    }
+
+    /**
+     * The prefixes to try for a community, the best first: the initials of its name (UNA Core Team:
+     * UCT) or the start of a one word name (Marketing: MAR), then longer starts and numbers.
+     */
+    public function getPrefixCandidates($sName, $iContextId)
+    {
+        $sName = preg_replace('/[^\x20-\x7E]+/', ' ', $this->_transliterate((string)$sName));
+        $aWords = preg_split('/[^A-Z0-9]+/', strtoupper($sName), -1, PREG_SPLIT_NO_EMPTY);
+        // a prefix starts with a letter
+        while($aWords && ctype_digit($aWords[0][0]))
+            array_shift($aWords);
+
+        $aResult = [];
+        if($aWords) {
+            $sAll = implode('', $aWords);
+            $sBase = count($aWords) > 1 ? implode('', array_map(function($sWord) { return $sWord[0]; }, array_slice($aWords, 0, 4))) : substr($sAll, 0, 3);
+            if(strlen($sBase) < 2)
+                $sBase = substr($sAll, 0, 3);
+
+            if(strlen($sBase) >= 2) {
+                $aResult[] = $sBase;
+                for($i = 4; $i <= min(strlen($sAll), self::PREFIX_MAX); $i++)
+                    $aResult[] = substr($sAll, 0, $i);
+                for($i = 2; $i <= 99; $i++)
+                    $aResult[] = substr($sBase, 0, self::PREFIX_MAX - strlen((string)$i)) . $i;
+            }
+        }
+        $aResult[] = 'T' . (int)$iContextId;
+
+        return array_values(array_filter(array_unique($aResult), [$this, 'isPrefixValid']));
+    }
+
+    /**
+     * Gives a new task its number, the next of its community's counter.
+     * @return int the number, 0 when the task has one already or none could be given
+     */
+    public function assignNumber($iContentId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = $this->_oDb->getContentInfoById((int)$iContentId, true);
+        if(!$aContentInfo || (int)$aContentInfo[$CNF['FIELD_NUMBER']] > 0)
+            return 0;
+
+        $iContextId = $this->getNumberContextId($aContentInfo);
+        if(!$this->_oDb->lockPrefix($iContextId))
+            return 0;
+
+        // the prefix is read under the lock, so a prefix change can't come between it and the link
+        $iResult = 0;
+        if(($sPrefix = $this->getContextPrefix($iContextId, true)) !== '' && ($iNumber = $this->_oDb->getNextNumber($iContextId)) && $this->_oDb->setTaskNumber($iContentId, $iContextId, $iNumber)) {
+            // a link the task got before its number takes it too
+            $this->_oDb->updateSeoLinksByTask($iContentId, mb_strtolower($sPrefix . '-' . $iNumber));
+            $iResult = $iNumber;
+        }
+
+        $this->_oDb->unlockPrefix($iContextId);
+
+        return $iResult;
+    }
+
+    /**
+     * A task's number with its community's current prefix (UNA-12), '' for a task without one.
+     */
+    public function getIdentifier($mixedContent)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aContentInfo = is_array($mixedContent) ? $mixedContent : $this->_oDb->getContentInfoById((int)$mixedContent);
+        if(!$aContentInfo || ($iNumber = (int)($aContentInfo[$CNF['FIELD_NUMBER']] ?? 0)) <= 0)
+            return '';
+
+        $iContextId = (int)$aContentInfo[$CNF['FIELD_NUMBER_CONTEXT']];
+        if(!isset($this->_aPrefixes[$iContextId]))
+            $this->_aPrefixes[$iContextId] = $this->_oDb->getContextPrefix($iContextId);
+
+        return $this->_aPrefixes[$iContextId] !== '' ? $this->_aPrefixes[$iContextId] . '-' . $iNumber : '';
+    }
+
+    /**
+     * Reads the prefixes a list of tasks shows at once.
+     */
+    public function primeIdentifiers($aContents)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aIds = [];
+        foreach($aContents as $aContentInfo)
+            if(($iContextId = (int)($aContentInfo[$CNF['FIELD_NUMBER_CONTEXT']] ?? 0)) >= 0 && !isset($this->_aPrefixes[$iContextId]))
+                $aIds[] = $iContextId;
+        if(!$aIds)
+            return;
+
+        $aPrefixes = $this->_oDb->getContextsPrefixes($aIds);
+        foreach(array_unique($aIds) as $iContextId)
+            $this->_aPrefixes[$iContextId] = (string)($aPrefixes[$iContextId] ?? '');
+    }
+
+    /**
+     * A task by its number with the current or a former prefix of its community (una-12 or UNA-12).
+     */
+    public function getContentIdByIdentifier($sIdentifier)
+    {
+        if(!is_string($sIdentifier) || !preg_match('/^([A-Za-z][A-Za-z0-9]{1,9})-([1-9][0-9]{0,9})$/', $sIdentifier, $aMatches))
+            return 0;
+
+        return $this->_oDb->getTaskIdByNumber(strtoupper($aMatches[1]), (int)$aMatches[2]);
+    }
+
+    /**
+     * Latin letters for a name: intl's transliterator where PHP has it, otherwise Cyrillic letters
+     * by their code points and other accented letters by iconv.
+     */
+    protected function _transliterate($s)
+    {
+        if(function_exists('transliterator_transliterate') && ($sResult = transliterator_transliterate('Any-Latin; Latin-ASCII', $s)) !== false)
+            return $sResult;
+
+        // U+0430 ... U+044F, the lowercase Russian letters in their order
+        $aCyrillic = ['a', 'b', 'v', 'g', 'd', 'e', 'zh', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'kh', 'ts', 'ch', 'sh', 'shch', '', 'y', '', 'e', 'yu', 'ya'];
+        // U+0451 (yo), U+0454 (ye), U+0456 (i), U+0457 (yi), U+0491 (ghe with upturn)
+        $aCyrillicOther = [0x451 => 'e', 0x454 => 'ye', 0x456 => 'i', 0x457 => 'yi', 0x491 => 'g'];
+
+        $sResult = '';
+        foreach(mb_str_split($s) as $sChar) {
+            $iCode = mb_ord($sChar);
+            if($iCode >= 0x400 && $iCode <= 0x40F)
+                $iCode += 0x50;
+            else if(($iCode >= 0x410 && $iCode <= 0x42F) || $iCode == 0x490)
+                $iCode += $iCode == 0x490 ? 1 : 0x20;
+
+            if($iCode >= 0x430 && $iCode <= 0x44F)
+                $sResult .= $aCyrillic[$iCode - 0x430];
+            else if(isset($aCyrillicOther[$iCode]))
+                $sResult .= $aCyrillicOther[$iCode];
+            else
+                $sResult .= $sChar;
+        }
+
+        if(function_exists('iconv') && ($sAscii = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $sResult)) !== false)
+            $sResult = str_replace('?', '', $sAscii);
+
+        return $sResult;
     }
 
     public function getTimer($iContentId, $iProfileId)

@@ -589,7 +589,11 @@ class BxBaseStudioNavigationItems extends BxDolStudioNavigationItems
     {
         parent::_getFilterControls();
 
-        $sContent = $this->getModulesSelectOne('getItems') . $this->getSetsSelector($this->sModule);
+        // The title is Menus; under it: module > set, each one switches in place.
+        // Menus > module (goes to its menus) > set (switches in place among the module's sets).
+        $sContent = $this->getCrumbsOfList(BX_DOL_URL_STUDIO . 'builder_menu.php?page=menus', $this->sModule, $this->_getCrumbModules('getMenus', '_adm_nav_txt_all_modules'), [
+            ['label' => _t('_adm_nav_txt_menus_gl_set_title'), 'control' => $this->getSetsSelector($this->sModule)],
+        ]);
 
         $oForm = new BxTemplStudioFormView(array());
 

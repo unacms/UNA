@@ -85,16 +85,25 @@ export default function TasksTimersStats({ data, blockWrapperProps }: TasksTimer
         if (!requestUrl) return undefined;
 
         let latestRequest = 0;
-        // Logged time reaches this block without a page reload.
-        const subscription = emitter.addListener(EVENTS.taskTimer, async (event: { action?: string }) => {
-            if (!REFRESH_ACTIONS.includes(String(event.action))) return;
-
+        let mounted = true;
+        const reload = async () => {
             const request = ++latestRequest;
-            const response = await fetcher('/api.php?r=' + requestUrl);
+            const response = await fetcher('/api.php?r=' + requestUrl, false, { silent: true }).catch(() => null);
             const next = response?.data?.[0]?.data;
-            if (request === latestRequest && next?.periods) setStats(next);
+            if (mounted && request === latestRequest && next?.periods) setStats(next);
+        };
+
+        // Logged time reaches this block without a page reload.
+        const subscription = emitter.addListener(EVENTS.taskTimer, (event: { action?: string }) => {
+            if (REFRESH_ACTIONS.includes(String(event.action))) void reload();
         });
-        return () => subscription.remove();
+        // The page may come from the cache: time logged on another page while this block was
+        // not on screen is missing from it. Show what there is and reload in the background.
+        void reload();
+        return () => {
+            mounted = false;
+            subscription.remove();
+        };
     }, [requestUrl]);
 
     const periods = Array.isArray(stats?.periods) ? stats.periods : [];

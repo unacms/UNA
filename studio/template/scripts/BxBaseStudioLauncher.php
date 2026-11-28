@@ -101,7 +101,11 @@ class BxBaseStudioLauncher extends BxDolStudioLauncher
         if ($oTours->isAvailable(BxDolTours::STUDIO))
             $sResult .= $oTemplate->parseHtmlByName('launcher_tour.html', $oTours->getTemplateVars(BxDolTours::STUDIO));
 
-        $sResult .= BxDolInformer::getInstance($oTemplate)->display();
+        $oInformer = BxDolInformer::getInstance($oTemplate);
+        foreach(BxDolModuleQuery::getInstance()->getDeprecatedModules() as $aModule)
+            $oInformer->add('sys-std-module-deprecated-' . $aModule['name'], BxDolStudioModule::getDeprecationMessage($aModule), BX_INFORMER_ALERT);
+
+        $sResult .= $oInformer->display();
         
         $oTemplate->addInjection('injection_body_style', 'text', ' bx-std-page-launcher');
         return $sResult;

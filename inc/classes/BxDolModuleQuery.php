@@ -65,6 +65,7 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
     public function cleanModulesListCache()
     {
         $this->cleanMemory('BxDolModuleQuery::getModuleByName');
+        $this->cleanMemory('sys_modules');
         return $this->cleanCache('sys_modules_list');
     }
     function getModuleByUri($sUri, $bFromCache = true)
@@ -339,6 +340,77 @@ class BxDolModuleQuery extends BxDolDb implements iBxDolSingleton
         return $mixedRet;        
     }
     
+    /**
+     * Deprecation that a module's install/config.php declares, as stored in `sys_modules`.
+     * The config says `'deprecated' => true`, or `'deprecated' => array('replaced_by' => 'bx_polls')`,
+     * where 'system' means that the feature is now part of the core.
+     * @param array $aConfig module config
+     * @return array|null `deprecated` and `replaced_by`, or null when the config doesn't say
+     */
+    public static function getConfigDeprecation($aConfig)
+    {
+        return BxDolMigrationsQuery::getConfigDeprecation($aConfig);
+    }
+
+    /**
+     * Copy the deprecation from a module's config to its `sys_modules` row. Separate from the other columns:
+     * on a site whose code is newer than its database the columns may not be there yet, and nothing else
+     * of the install or update must fail on that.
+     * @param int $iModuleId module id
+     * @param array $aConfig module config
+     * @return bool whether the row was written
+     */
+    public function setModuleDeprecation($iModuleId, $aConfig)
+    {
+        $aSet = self::getConfigDeprecation($aConfig);
+        if($aSet === null || !$this->isFieldExists('sys_modules', 'deprecated') || !$this->isFieldExists('sys_modules', 'replaced_by'))
+            return false;
+
+        return $this->updateModule($aSet, ['id' => (int)$iModuleId]) !== false;
+    }
+
+    /**
+     * Whether a module's install/config.php marks it as a preview: unfinished work that is installed and updated
+     * like any module, labelled so admins know it may change. The config says `'preview' => true`; a config
+     * without the key is a finished module, so dropping the key clears the mark on the next update.
+     * @param array $aConfig module config
+     * @return array|null `preview`, or null when there is no config to read
+     */
+    public static function getConfigPreview($aConfig)
+    {
+        return BxDolMigrationsQuery::getConfigPreview($aConfig);
+    }
+
+    /**
+     * Copy the preview mark from a module's config to its `sys_modules` row, apart from the other columns
+     * for the same reason as setModuleDeprecation.
+     * @param int $iModuleId module id
+     * @param array $aConfig module config
+     * @return bool whether the row was written
+     */
+    public function setModulePreview($iModuleId, $aConfig)
+    {
+        $aSet = self::getConfigPreview($aConfig);
+        if($aSet === null || !$this->isFieldExists('sys_modules', 'preview'))
+            return false;
+
+        return $this->updateModule($aSet, ['id' => (int)$iModuleId]) !== false;
+    }
+
+    /**
+     * Installed modules that are deprecated.
+     * @return array module rows, in title order
+     */
+    public function getDeprecatedModules()
+    {
+        $aResult = [];
+        foreach($this->getModules() as $aModule)
+            if(!empty($aModule['deprecated']))
+                $aResult[] = $aModule;
+
+        return $aResult;
+    }
+
     public function checkModulesSubtypes()
     {
         return (int)$this->getOne("SELECT COUNT(`id`) FROM `sys_modules` WHERE `type` = :type AND `subtypes` <> 0", [

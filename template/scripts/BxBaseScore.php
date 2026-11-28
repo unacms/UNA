@@ -197,7 +197,8 @@ class BxBaseScore extends BxDolScore
         if($bShowDoVoteAsButton)
             $sClass .= ' bx-btn-height';
 
-        $bLink = $aParams['allowed_view_voters'] && !$aParams['value_empty'];
+        // A count shown as an action's label (a menu's Counters `count`) is text: pressing it is the action's press.
+        $bLink = $aParams['allowed_view_voters'] && !$aParams['value_empty'] && (!isset($aParams['show_counter_active']) || (bool)$aParams['show_counter_active'] === true);
         $sCounter = !$aParams['value_empty'] || $bShowEmpty ? $this->_getCounterLabel($aParams['value'], $aParams) : '';
 
         $aTmplVarsText = [

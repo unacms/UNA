@@ -76,8 +76,11 @@ class BxBaseSearchExtendedServices extends BxDol
             }
         };
 
-        if(($mDefValues = bx_get('filters')) !== false)
-            $fProcessDefValues(json_decode($mDefValues, true));
+        $aFilters = [];
+        if(($mDefValues = bx_get('filters')) !== false) {
+            $aFilters = json_decode($mDefValues, true);
+            $fProcessDefValues($aFilters);
+        }
 
         if(is_string($mParams)) {
             $aParams = bx_api_get_browse_params($mParams, true);
@@ -88,6 +91,13 @@ class BxBaseSearchExtendedServices extends BxDol
         }
         else
             $aParams = $mParams;
+
+        // On the site, filters in the address (the AI search block's) are the form's values, searched for at once, as
+        // the search form's own submit would.
+        if(!bx_is_api() && $aFilters && is_array($aFilters) && empty($aParams['cond']))
+            $aParams['cond'] = array_filter($aFilters, function($mixedValue) {
+                return !empty($mixedValue);
+            });
 
         $this->prepareParams($aParams);
 

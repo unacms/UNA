@@ -14,6 +14,11 @@
  */
 class BxTimelineMenuItemActions extends BxTemplMenuCustom
 {
+    /**
+     * A feed item's actions show their counts as their labels unless the menu says otherwise (Studio > Navigation).
+     */
+    const COUNTERS_DEFAULT = BxDolMenu::COUNTERS_COUNT;
+
     protected static $_sModeActions = 'actions';
     protected static $_sModeCounters = 'counters';
 
@@ -32,6 +37,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
     protected $_bShowCounters;
     protected $_bShowCountersEmpty;
     protected $_bShowCountersIcons;
+    protected $_bShowCountersActive;
 
     protected $_sTmplNameItem;
 
@@ -52,7 +58,10 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $this->_bShowCounters = false;
         $this->_bShowCountersEmpty = false;
         $this->_bShowCountersIcons = true;
+        $this->_bShowCountersActive = true;
         $this->_sTmplNameItem = 'menu_custom_item_hor.html';
+
+        $this->_applyCounters();
 
         $this->_aItem2CheckFunc = array(
             'item-view' => 'isAllowedViewCounter',
@@ -147,6 +156,38 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $this->_sTmplNameItem = $sName;
     }
 
+    /**
+     * The menu's Counters (Studio > Navigation > the menu) on the site: labels, counts or button groups. The apps get
+     * every element with its counter and draw the menu's `counters` themselves, so the API is left as it is.
+     */
+    protected function _applyCounters()
+    {
+        if($this->_bIsApi)
+            return;
+
+        switch($this->getCounters()) {
+            case BxDolMenu::COUNTERS_COUNT:
+                // the count is the label: no title, no count while there is none, and pressing it acts
+                $this->_bShowTitles = false;
+                $this->_bShowCounters = true;
+                $this->_bShowCountersEmpty = false;
+                $this->_bShowCountersActive = false;
+                $this->_bShowCountersIcons = false; // the action's own icon is already there
+                break;
+
+            case BxDolMenu::COUNTERS_GROUP:
+                $this->_bShowTitles = true;
+                $this->_bShowCounters = true;
+                $this->_bShowCountersEmpty = false;
+                $this->_bShowCountersActive = true;
+                break;
+
+            default:
+                $this->_bShowTitles = true;
+                $this->_bShowCounters = false;
+        }
+    }
+
     protected function _setBrowseParams($aBrowseParams = array())
     {
         $this->_sType = !empty($aBrowseParams['type']) ? $aBrowseParams['type'] : BX_TIMELINE_TYPE_DEFAULT;
@@ -172,6 +213,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iViewsObject = $this->_aEvent['views']['object_id'];
         $aViewsParams = array(
             'show_do_view_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters, 
             'show_counter_label_icon' => $this->_bShowCountersIcons,
             'dynamic_mode' => $this->_bDynamicMode
@@ -197,13 +239,47 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         return $oObject->$sViewsMethod($aViewsParams);
     }
 
+    /**
+     * The site's comment link with the number of comments: the number alone in place of the title with counts (the
+     * icon alone at 0), the title and the number with button groups. Built as the default item is.
+     */
+    protected function _getMenuItemCommentCounted($aItem)
+    {
+        if(!isset($this->_aEvent['comments']['system'], $this->_aEvent['comments']['object_id']))
+            return true;
+
+        $oCmts = $this->_oModule->getCmtsObject($this->_aEvent['comments']['system'], $this->_aEvent['comments']['object_id']);
+        if(!$oCmts)
+            return true;
+
+        $aItem = BxTemplMenu::_getMenuItem($aItem);
+        if($aItem === false)
+            return false;
+
+        $iCount = (int)$oCmts->getCommentsCountAll();
+        $sLabel = $this->_bShowTitles ? (string)$aItem['title'] : '';
+        $sTitle = $this->_bShowTitles ? $aItem['title'] . ($iCount > 0 ? ' ' . $iCount : '') : ($iCount > 0 ? (string)$iCount : '');
+
+        $aItem['title'] = $sTitle;
+        $aItem['bx_if:title']['condition'] = $sTitle !== '';
+        $aItem['bx_if:title']['content']['title'] = $sTitle;
+        $aItem['keep_title'] = true; // the count is the label
+
+        // BxDolCmts.js finds the link by its comments object and writes the new number when a comment is posted.
+        $aItem['attrs'] = ($aItem['attrs'] ?? '') . ' data-cmt-count="' . bx_html_attribute($oCmts->getJsObjectName()) . '"'
+                . ' data-cmt-label="' . bx_html_attribute($sLabel) . '"';
+
+        return $this->_getMenuItemDefault($aItem);
+    }
+
     protected function _getMenuItemItemComment($aItem)
     {
         /**
-         * For now use the default link (not Object based) for non-api calls.
+         * The site keeps the default link (not Object based), which opens the comments in place. With counts or button
+         * groups (the menu's Counters) the link shows the number of comments; its accessible name stays the action's.
          */
         if(!$this->_bIsApi)
-            return true;
+            return $this->_bShowCounters ? $this->_getMenuItemCommentCounted($aItem) : true;
 
         if(!isset($this->_aEvent['comments']) || !is_array($this->_aEvent['comments']) || !isset($this->_aEvent['comments']['system'])) 
             return false;
@@ -247,6 +323,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iVotesObject = $this->_aEvent['votes']['object_id'];
         $aVotesParams = array(
             'show_do_vote_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters,
             'show_counter_empty' => $this->_bShowCountersEmpty,
             'show_counter_label_icon' => $this->_bShowCountersIcons,
@@ -282,9 +359,10 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iReactionsObject = $this->_aEvent['reactions']['object_id'];
         $aReactionsParams = array(
             'show_do_vote_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters,
             'show_counter_empty' => $this->_bShowCountersEmpty,
-            'show_counter_style' => 'compound',
+            'show_counter_style' => $this->_bShowCountersIcons ? 'compound' : 'simple', // a count beside the action's own icon is the number alone
             'show_counter_label_icon' => $this->_bShowCountersIcons,
             'dynamic_mode' => $this->_bDynamicMode
         );
@@ -318,6 +396,7 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $iScoresObject = $this->_aEvent['scores']['object_id'];
         $aScoresParams = array(
             'show_do_vote_label' => $this->_bShowTitles,
+            'show_counter_active' => $this->_bShowCountersActive,
             'show_counter' => $this->_bShowCounters,
             'show_counter_empty' => $this->_bShowCountersEmpty,
             'show_counter_label_icon' => $this->_bShowCountersIcons,
@@ -352,8 +431,9 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
         $sReportsSystem = $this->_aEvent['reports']['system'];
         $iReportsObject = $this->_aEvent['reports']['object_id'];
         $aReportsParams = array(
-            'show_do_report_label' => $this->_bShowTitles,
-            'show_counter' => $this->_bShowCounters,
+            // a report is no public count: the action keeps its label in every Counters mode
+            'show_do_report_label' => true,
+            'show_counter' => false,
             'dynamic_mode' => $this->_bDynamicMode
         );
         
@@ -429,6 +509,14 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
             $aItem['class_link'] = '';
 
         $aItem['class_link'] = 'bx-menu-item-link' . (!empty($aItem['class_link']) ? ' ' : '') . $aItem['class_link'];
+
+        $bKeepTitle = !empty($aItem['keep_title']);
+        unset($aItem['keep_title']);
+
+        // Beside counts shown on their icons (the menu's Counters `count`) an action without a count (Share) is its
+        // icon alone too; its name stays in the link's title.
+        if(!$this->_bIsApi && !$this->_bShowTitles && !$bKeepTitle && !empty($aItem['icon']) && isset($aItem['bx_if:title']))
+            $aItem['bx_if:title']['condition'] = false;
 
         return parent::_getMenuItemDefault ($aItem);
     }

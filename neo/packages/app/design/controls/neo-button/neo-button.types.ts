@@ -78,6 +78,11 @@ export type NeoButtonProps = {
     disabled?: boolean
     loading?: boolean
     selected?: boolean
+    /**
+     * Web: draw the hover state while true, as if the pointer were on the button. For a button
+     * whose popover covers it (the reactions bar): the pointer leaves it but the user is still on it.
+     */
+    hovered?: boolean
     selectedState?: string
     addon?: NeoButtonAddon
     interactive?: boolean

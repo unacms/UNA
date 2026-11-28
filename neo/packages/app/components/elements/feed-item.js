@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Embed from 'app/ui/molecules/content/embed'
 import { cloneObject, appSetting } from 'app/lib/util';
 import { subscribeTimelineEdit } from 'app/lib/timeline-edits';
-import { ActionMenu, CounterMenu } from 'app/components/elements/feed-item-parts'
+import { ActionsAndStats } from 'app/components/elements/feed-item-parts'
 import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity-poll';
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -72,8 +72,7 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
                     data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
                         <View className="flex-auto  gap-2 mt-2 ">
                             
-                            {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
-                            <ActionMenu data={menu_actions2} />
+                            <ActionsAndStats actions={menu_actions2} counters={appSetting('feed', 'counters_menu') ? data.event.menu_counters : null} />
                         </View>
                     </View>)
                 }

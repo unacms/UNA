@@ -95,6 +95,21 @@ class BxDolInstallSiteConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array('profiles'), array_keys($o->getModuleGroups(array('persons'))), 'empty groups are left out');
     }
 
+    public function testDeprecatedModulesAreHiddenAndNoStarterAppIsDeprecated(): void
+    {
+        self::load();
+
+        $this->assertTrue(BxDolInstallSiteConfig::isHiddenModule(array('home_uri' => 'some_module', 'deprecated' => true)));
+        $this->assertTrue(BxDolInstallSiteConfig::isHiddenModule(array('home_uri' => 'some_module', 'deprecated' => array('replaced_by' => 'system'))));
+        $this->assertFalse(BxDolInstallSiteConfig::isHiddenModule(array('home_uri' => 'some_module', 'deprecated' => false)));
+        $this->assertFalse(BxDolInstallSiteConfig::isHiddenModule(array('home_uri' => 'some_module')));
+        $this->assertTrue(BxDolInstallSiteConfig::isHiddenModule(array('home_uri' => 'froala')));
+
+        foreach ((new BxDolInstallModulesTools())->getModules('module') as $aConfig)
+            if (in_array($aConfig['home_uri'], BxDolInstallSiteConfig::$aStarterModules))
+                $this->assertEmpty($aConfig['deprecated'] ?? null, $aConfig['home_uri'] . ' is a starter app and deprecated');
+    }
+
     public function testDiscontinuedModulesAndTemplatesAreNotOffered(): void
     {
         $o = self::config();
