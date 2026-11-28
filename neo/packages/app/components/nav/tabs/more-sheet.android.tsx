@@ -9,7 +9,6 @@ import {
     ModalBottomSheet,
     RNHostView,
     Row,
-    Spacer,
     Text,
     type ModalBottomSheetRef,
 } from '@expo/ui/jetpack-compose';
@@ -39,7 +38,6 @@ export const hasNativeMoreSheet = !!appSetting('theme', 'expo_ui', 'tabs')?.more
 
 const ICON_DP = 24;
 const AVATAR_DP = 44;
-const AGENT_BUTTON_DP = 44;
 // Compose resolves the family through React Native's font manager ('Inter'),
 // or the platform default for the system font.
 const FONT_FAMILY = nativeFonts.main === 'sans-serif' ? 'default' : nativeFonts.main;
@@ -133,32 +131,7 @@ function ProfileHeader({ profile, selectedColors, onPress }: { profile: MoreShee
     );
 }
 
-/**
- * Icon-only Agent button on the right of the header row — toggles the operator
- * agent. A muted circle at rest; the selected tab's indicator / ink while the
- * chat is open.
- */
-function AgentButton({ active, colors, onPress }: { active?: boolean; colors: SheetColors; onPress: () => void }) {
-    const { t } = useTranslation();
-    const fill = active ? colors.fill : colors.rest;
-    const ink = active ? colors.ink : colors.restInk;
-    return (
-        <Row
-            horizontalArrangement="center"
-            verticalAlignment="center"
-            modifiers={[
-                size(AGENT_BUTTON_DP, AGENT_BUTTON_DP),
-                clip(Shapes.Circle),
-                ...(fill ? [background(fill)] : []),
-                clickable(onPress),
-            ]}
-        >
-            <RowIcon icon="Sparkles" color={ink} sizeDp={22} label={t(active ? 'operator_agent_close' : 'operator_agent_open')} onPress={onPress} />
-        </Row>
-    );
-}
-
-export function NativeMoreSheet({ open, onOpenChange, items, onSelect, profile, onAgentPress, agentActive }: NativeMoreSheetProps) {
+export function NativeMoreSheet({ open, onOpenChange, items, onSelect, profile }: NativeMoreSheetProps) {
     const tabsSelected = appSetting('theme', 'native_tabs', 'selected');
     const colors: SheetColors = {
         fill: useNativeTokenColor(tabsSelected?.indicator) as string | undefined,
@@ -191,24 +164,18 @@ export function NativeMoreSheet({ open, onOpenChange, items, onSelect, profile, 
         onOpenChange(false);
     };
 
-    const hasHeader = !!profile || !!onAgentPress;
     return (
         // The sheet is a window of its own; its host only needs to be mounted.
         <Host style={{ position: 'absolute', width: 0, height: 0 }}>
             {mounted ? (
                 <ModalBottomSheet ref={sheetRef} onDismissRequest={handleDismiss} skipPartiallyExpanded>
                     <Column modifiers={[padding(12, 0, 12, 24)]} verticalArrangement={{ spacedBy: 2 }}>
-                        {hasHeader ? (
+                        {profile ? (
                             <Row verticalAlignment="center" horizontalArrangement={{ spacedBy: 8 }} modifiers={[fillMaxWidth(), padding(0, 0, 4, 0)]}>
-                                {profile ? (
-                                    <ProfileHeader profile={profile} selectedColors={colors} onPress={() => onSelect(profile.item)} />
-                                ) : (
-                                    <Spacer modifiers={[weight(1)]} />
-                                )}
-                                {onAgentPress ? <AgentButton active={agentActive} colors={colors} onPress={onAgentPress} /> : null}
+                                <ProfileHeader profile={profile} selectedColors={colors} onPress={() => onSelect(profile.item)} />
                             </Row>
                         ) : null}
-                        {hasHeader ? <HorizontalDivider modifiers={[padding(16, 8, 16, 8)]} /> : null}
+                        {profile ? <HorizontalDivider modifiers={[padding(16, 8, 16, 8)]} /> : null}
                         {items.map((item, index) => (
                             item.type === 'separator'
                                 ? <HorizontalDivider key={`separator-${index}`} modifiers={[padding(16, 8, 16, 8)]} />

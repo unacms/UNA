@@ -763,13 +763,13 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
 
         $CNF = $this->_oConfig->CNF;
 
-        $oDateStart = date_create('@' . $aContentInfo['date_start']);
+        $oDateStart = !empty($aContentInfo['date_start']) ? date_create('@' . $aContentInfo['date_start']) : false;
         if ($oDateStart){
             $oDateStart->setTimezone(new DateTimeZone($aContentInfo['timezone'] ? $aContentInfo['timezone'] : 'UTC'));
             $a['content']['date_start'] = $aContentInfo['date_start'];
         }
         
-        $oDateEnd = date_create('@' . $aContentInfo['date_end']);
+        $oDateEnd = !empty($aContentInfo['date_end']) ? date_create('@' . $aContentInfo['date_end']) : false;
         if ($oDateEnd){
             $oDateEnd->setTimezone(new DateTimeZone($aContentInfo['timezone'] ? $aContentInfo['timezone'] : 'UTC'));
             $a['content']['date_end'] = $aContentInfo['date_end'];
@@ -784,10 +784,10 @@ class BxEventsModule extends BxBaseModGroupsModule implements iBxDolCalendarServ
                 'title_attr' => bx_html_attribute($a['content']['title']),
                 'url' => $a['content']['url'],
                 'bx_if:date' => [
-                    'condition' => $oDateStart,
+                    'condition' => (bool)$oDateStart,
                     'content' => [
                         'date' => $oDateStart ? bx_time_js($aContentInfo['date_start'], BX_FORMAT_DATE_TIME, true) : '',
-                        'date_c' => $oDateStart->format('c'),
+                        'date_c' => $oDateStart ? $oDateStart->format('c') : '',
                 ]],
                 'bx_if:location' => array(
                     'condition' => !!$sLocationString,

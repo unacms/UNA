@@ -1121,7 +1121,7 @@
        to the window less room around it, the results scrolling inside. Active chips, a pressed "Title only" and the current results tab take
        the open button's accent colours (the rule above), so the window reads like NEO's (Chip selected). */
     .bx-artificer .bx-popup-width.bx-search-window-box {
-        @apply w-full md:w-[42rem];
+        @apply w-full md:w-[42rem] overflow-visible;
     }
     .bx-search-window-popup {
         max-height: min(44rem, calc(100vh - 5rem)); /* 4rem above it (BxDolSearchWindow.open), 1rem below */

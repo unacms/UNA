@@ -313,9 +313,9 @@ function formatDateUniversal(date: Date, t: TFunction, {
  * module-level tag switches to the device locale as soon as any component hydrates,
  * so a later-hydrating caller without it renders a different date order than SSR.
  */
-export const formatDateInterval = (dateStart: number, dateEnd: number, t: TFunction, locale: string = currentDateLocaleTag): string => {
+export const formatDateInterval = (dateStart: number, dateEnd: number | null | undefined, t: TFunction, locale: string = currentDateLocaleTag): string => {
     const start = new Date(dateStart * 1000);
-    const end = new Date(dateEnd * 1000);
+    const end = dateEnd ? new Date(dateEnd * 1000) : start;
 
     const isSingleDate = isSameCalendarDay(start, end);
     const isSingleTime = isSameClockTime(start, end);

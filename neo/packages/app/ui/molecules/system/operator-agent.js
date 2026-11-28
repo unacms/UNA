@@ -13,7 +13,6 @@ import emitter, { EVENTS } from 'app/context/emitter';
 import { appSetting, cn, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util';
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 import { useLocalSearchParams } from 'app/lib/hooks/router';
-import { hasNativeTabsMoreMenu } from 'app/components/nav/tabs/tab-menu';
 import { lazyComponent } from 'app/lib/lazy-component';
 import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/operator-block';
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
@@ -245,19 +244,16 @@ export function OperatorAgentPanel({ open, onClose, bottomOffset, params, childr
 
 /**
  * Header toolbar button that opens the operator agent in a dropdown, like
- * notifications. Renders nothing unless the viewer is an operator, and not when
- * the native tab bar's More menu hosts the trigger instead. The agent block
- * loads on the first open.
+ * notifications. Renders nothing unless the viewer is an operator. The agent
+ * block loads on the first open.
  */
 export function OperatorAgentHeaderButton({ buttonProps }) {
     const { t } = useTranslation();
-    const { currentUser } = useCurrentUser();
     const isDesktop = useIsDesktop();
     const windowHeight = useWindowHeight();
     const params = useLocalSearchParams();
     const [open, setOpen] = useState(false);
-    const hostedByTabBar = hasNativeTabsMoreMenu(currentUser);
-    const available = useOperatorAgentAvailable(!hostedByTabBar);
+    const available = useOperatorAgentAvailable();
 
     if (!available) return null;
 

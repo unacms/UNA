@@ -456,7 +456,7 @@ INSERT INTO `sys_form_inputs`(`object`, `module`, `name`, `value`, `values`, `ch
 INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for_levels`, `active`, `order`) VALUES 
 ('bx_event_add', 'time', 2147483647, 0, 1),
 ('bx_event_add', 'delete_confirm', 2147483647, 0, 2),
-('bx_event_add', 'cover', 2147483647, 0, 3),
+('bx_event_add', 'cover', 2147483647, 1, 3),
 ('bx_event_add', 'initial_members', 2147483647, 1, 4),
 ('bx_event_add', 'picture', 2147483647, 0, 5),
 ('bx_event_add', 'event_name', 2147483647, 1, 6),
@@ -489,7 +489,7 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_event_edit', 'time', 2147483647, 0, 1),
 ('bx_event_edit', 'initial_members', 2147483647, 0, 2),
 ('bx_event_edit', 'delete_confirm', 2147483647, 0, 3),
-('bx_event_edit', 'cover', 2147483647, 0, 4),
+('bx_event_edit', 'cover', 2147483647, 1, 4),
 ('bx_event_edit', 'picture', 2147483647, 0, 5),
 ('bx_event_edit', 'event_name', 2147483647, 1, 6),
 ('bx_event_edit', 'event_cat', 2147483647, 1, 7),

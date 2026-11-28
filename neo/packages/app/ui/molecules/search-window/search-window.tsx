@@ -77,6 +77,9 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
         : (results?.groups ?? []);
     const cursor = oneGroup ? (extra?.key === queryKey ? extra.cursor : oneGroup.cursor) : '';
     const total = oneGroup ? countText(oneGroup.count, oneGroup.count_more) : countText(results?.total ?? 0, !!results?.total_more);
+    const allTotal = oneGroup && allGroups.length
+        ? countText(allGroups.reduce((sum, group) => sum + group.count, 0), allGroups.some((group) => group.count_more))
+        : total;
     const flat = groups.flatMap((group) => group.items.map((item) => ({ item, group })));
 
     const change = (next: SearchQuery) => {
@@ -133,9 +136,14 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
         }
     };
 
+    const focusedRef = useRef(false);
+    const hasField = mode === 'modal' || !!scope;
     useEffect(() => {
-        if (autoFocus) setTimeout(() => inputRef.current?.focus?.(), 50);
-    }, [autoFocus]);
+        if (!autoFocus || !hasField || focusedRef.current) return;
+        focusedRef.current = true;
+        const id = setTimeout(() => inputRef.current?.focus?.(), 50);
+        return () => clearTimeout(id);
+    }, [autoFocus, hasField]);
 
     // a tab per module only where there is more than one: "All" counts them all, so no count row of its own
     const tabs = scope && scope.scope !== 'module' && allGroups.length > 1 ? allGroups : null;
@@ -250,7 +258,7 @@ export default function SearchWindow({ initialQuery = {}, mode = 'modal', autoFo
                             {tabs && (
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-1 px-2 pt-3" accessibilityRole="tablist">
                                     <NeoButton
-                                        label={strings.tab_all + ' ' + total}
+                                        label={strings.tab_all + ' ' + allTotal}
                                         controlSize="small"
                                         selected={!query.tab}
                                         accessibilityRole="tab"
